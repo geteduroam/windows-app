@@ -17,14 +17,14 @@ using System.Security;
 
 namespace EduroamApp
 {
-    public partial class Form1 : Form
+    public partial class frmMain : Form
     {
-        public Form1()
+        public frmMain()
         {
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void frmMain_load(object sender, EventArgs e)
         {
 
         }
@@ -37,17 +37,23 @@ namespace EduroamApp
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
+            // sets chosen to network to eduroam
             AvailableNetworkPack network = SetChosenNetwork();
-            string xmlPath = txtProfilePath.Text;
+
             // creates a new network profile
-            txtOutput.Text += (CreateNewProfile(network, xmlPath) ? "New profile successfully created." : "Creation of new profile failed.");
+            string xmlPath = txtProfilePath.Text;
+            txtOutput.Text += (CreateNewProfile(network, xmlPath) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
 
-            // downloads and installs client certificate and CA
+            // downloads and installs client certificate
             string certPassword = txtCertPwd.Text;
-            InstallCertificate(certPassword);
-                        
-            // connects to eduroam
+            txtOutput.Text += (InstallCertificate(certPassword).Item1 ? "Certificate installed successfully.\n" : "Certificate installation failed.\n");
+            txtOutput.Text += (InstallCertificate(certPassword).Item2 ? "CA installed successfully.\n" : "CA installation failed.\n");
 
+            // connects to eduroam
+            AvailableNetworkPack updatedNetwork = SetChosenNetwork();
+
+            var connectResult = Task.Run(() => ConnectAsync(updatedNetwork)).Result;            
+            txtOutput.Text += (connectResult ? "You are now connected to " + updatedNetwork.Ssid.ToString() + ".\n" : "Connection failed.\n");
         }
 
 
@@ -55,10 +61,16 @@ namespace EduroamApp
 
         // -------------------------------------------- FUNCIONS ------------------------------------------------------------
 
+        public async Task<bool> TestConnect(AvailableNetworkPack networkParam)
+        {
+            return await ConnectAsync(networkParam);
+        }
+
+
         /// <summary>
         /// Sets Eduroam as the chosen network to connect to. Exits the application if Eduroam is not available.
         /// </summary>
-        public static AvailableNetworkPack SetChosenNetwork()
+        public AvailableNetworkPack SetChosenNetwork()
         {
             // gets all available networks and stores them in a list
             List<AvailableNetworkPack> networks = NativeWifi.EnumerateAvailableNetworks().ToList();
@@ -85,7 +97,7 @@ namespace EduroamApp
         /// Lets user select an XML file containing a wireless network profile.
         /// </summary>
         /// <returns>Path of profile xml.</returns>
-        public static string GetProfileXml()
+        public string GetProfileXml()
         {
             string xmlPath = "not found";
 
@@ -101,7 +113,6 @@ namespace EduroamApp
                 xmlPath = openXmlDialog.FileName;
             }
 
-            string xmlFile = File.ReadAllText(xmlPath);
             return xmlPath;
         }
 
@@ -133,50 +144,60 @@ namespace EduroamApp
         /// Downloads and installs a client certificate as well as a Client Authority certificate.
         /// </summary>
         /// <param name="password">The certificate's password.</param>
-        public static void InstallCertificate(string password)
+        public Tuple<bool, bool> InstallCertificate(string password)
         {
-            // checks if valid certificate already exists
-            X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-            store.Open(OpenFlags.ReadWrite);
-            X509Certificate2Collection certs = store.Certificates.Find(X509FindType.FindBySubjectName, "eduroam_certificate.p12", true);
-            if (certs.Count < 1)
+            bool certSuccess = true;
+            bool caSuccess = true;
+
+            // creates directory to download certificate file to
+            string path = $@"{ Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) }\MyCertificates";
+            Directory.CreateDirectory(path);
+            // sets the file name
+            string certFile = "eduroam_certificate.p12";
+            string caFile = "Fyrkat+Root+CA.crt";
+
+            // downloads files from server
+            using (WebClient client = new WebClient())
             {
-                // creates directory to download certificate file to
-                string path = $@"{ Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) }\MyCertificates";
-                Directory.CreateDirectory(path);
-                // sets the file name
-                string file = "eduroam_certificate.p12";
-                // downloads certificate from server
-                using (WebClient client = new WebClient())
-                {
-                    client.DownloadFile("https://nofile.io/g/HeaP3RqE5P0HVgrmGSzzA2jHWeLQbfw2a40T0vXwWKGEt38oLZ3pUEGzrPYegha3/ericv%40fyrkat.no.p12", $@"{path}\{file}");
-                    Console.WriteLine($@"Certificate downloaded to {path}\{file}.");
-                }
-
-                // installs certficate to personal certificate store
-                X509Certificate2 certificate = new X509Certificate2($@"{path}\{file}", password, X509KeyStorageFlags.PersistKeySet); // include PersistKeySet flag so certificate is valid after reboot
-                store.Add(certificate);
-
-                //Console.WriteLine("Certificate added to: " + store.Name);
+                //client.DownloadFile("https://nofile.io/g/JFVD0GuZIlAN75eOSBWPf70HW7ttzarSoI6ToMvqXDNOgdQa1LBIyg1y2inkTlVZ/ericv%40fyrkat.no.p12/", $@"{path}\{certFile}");                
+                //client.DownloadFile("https://nofile.io/g/Y42wuToV5J2Cz1lyUdwaAcdrW6LIT6v228YduZFRRhb92sMfQ6zLZK828gHygotI/Fyrkat%2BRoot%2BCA.crt/", $@"{path}\{caFile}");                
             }
-            // closes the certificate store
-            store.Close();
 
-            // adds certificate authority to trusted root certificate authority store
-            X509Store caStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
-            X509Certificate2 ca = new X509Certificate2(@"C:\Users\lwerivel18\Documents\Certificates\Fyrkat+Root+CA.crt");
-            caStore.Open(OpenFlags.ReadWrite);
-            caStore.Add(ca);
-            store.Close();
-            //Console.WriteLine("Certificate Authority added to: " + caStore.Name);
+            // installs certficate to personal certificate store
+            try
+            {
+                X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+                store.Open(OpenFlags.ReadWrite);
+                X509Certificate2 certificate = new X509Certificate2($@"{path}\{certFile}", password, X509KeyStorageFlags.PersistKeySet); // include PersistKeySet flag so certificate is valid after reboot
+                store.Add(certificate);                
+                store.Close(); // closes the certificate store
+            }
+            catch (Exception) {
+                certSuccess = false;
+            }
+
+            // installs CA to trusted root certificate authority store
+            try
+            {
+                X509Store caStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
+                X509Certificate2 ca = new X509Certificate2($@"{path}\{caFile}");
+                caStore.Open(OpenFlags.ReadWrite);
+                caStore.Add(ca);
+                caStore.Close(); // closes the certificate store
+            }
+            catch (Exception) {
+                caSuccess = false;
+            }
+
+            return Tuple.Create(certSuccess, caSuccess); // returns two boolean values to confirm success
         }
 
 
         /// <summary>
-		/// Connects to the chosen wireless LAN
-		/// </summary>
-		/// <returns>True if successfully connected. False if not.</returns>
-		public static async Task<bool> ConnectAsync(AvailableNetworkPack networkParam)
+        /// Connects to the chosen wireless LAN.
+        /// </summary>
+        /// <returns>True if successfully connected. False if not.</returns>
+        public static async Task<bool> ConnectAsync(AvailableNetworkPack networkParam)
         {
             AvailableNetworkPack chosenWifi = networkParam;
 
@@ -187,9 +208,9 @@ namespace EduroamApp
                 interfaceId: chosenWifi.Interface.Id,
                 profileName: chosenWifi.ProfileName,
                 bssType: chosenWifi.BssType,
-                timeout: TimeSpan.FromSeconds(100));
+                timeout: TimeSpan.FromSeconds(10));
         }
 
-        
+
     }
 }
