@@ -1,6 +1,6 @@
 namespace EduroamApp
 {
-	partial class Form1
+	partial class frmMain
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -51,8 +51,10 @@ namespace EduroamApp
 			//
 			this.txtOutput.Location = new System.Drawing.Point(340, 12);
 			this.txtOutput.Name = "txtOutput";
+			this.txtOutput.ReadOnly = true;
 			this.txtOutput.Size = new System.Drawing.Size(356, 249);
 			this.txtOutput.TabIndex = 1;
+			this.txtOutput.TabStop = false;
 			this.txtOutput.Text = "";
 			//
 			// label1
@@ -69,7 +71,7 @@ namespace EduroamApp
 			this.btnConnect.Location = new System.Drawing.Point(113, 124);
 			this.btnConnect.Name = "btnConnect";
 			this.btnConnect.Size = new System.Drawing.Size(88, 45);
-			this.btnConnect.TabIndex = 4;
+			this.btnConnect.TabIndex = 2;
 			this.btnConnect.Text = "Connect to Eduroam";
 			this.btnConnect.UseVisualStyleBackColor = true;
 			this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
@@ -87,7 +89,7 @@ namespace EduroamApp
 			this.txtCertPwd.Name = "txtCertPwd";
 			this.txtCertPwd.PasswordChar = '*';
 			this.txtCertPwd.Size = new System.Drawing.Size(109, 20);
-			this.txtCertPwd.TabIndex = 7;
+			this.txtCertPwd.TabIndex = 1;
 			this.txtCertPwd.UseSystemPasswordChar = true;
 			//
 			// label2
@@ -99,7 +101,7 @@ namespace EduroamApp
 			this.label2.TabIndex = 6;
 			this.label2.Text = "Enter certificate password:";
 			//
-			// Form1
+			// frmMain
 			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -111,9 +113,8 @@ namespace EduroamApp
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.txtOutput);
 			this.Controls.Add(this.btnSelectProfile);
-			this.Name = "Form1";
-			this.Text = "Form1";
-			this.Load += new System.EventHandler(this.Form1_Load);
+			this.Name = "frmMain";
+			this.Load += new System.EventHandler(this.frmMain_load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
