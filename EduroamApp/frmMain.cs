@@ -37,7 +37,7 @@ namespace EduroamApp
 
 		private void btnConnect_Click(object sender, EventArgs e)
 		{
-			// sets chosen to network to eduroam
+			// sets eduroam as chosen network
 			AvailableNetworkPack network = SetChosenNetwork();
 
 			// creates a new network profile
@@ -46,8 +46,9 @@ namespace EduroamApp
 
 			// downloads and installs client certificate
 			string certPassword = txtCertPwd.Text;
-			txtOutput.Text += (InstallCertificate(certPassword).Item1 ? "Certificate installed successfully.\n" : "Certificate installation failed.\n");
-			txtOutput.Text += (InstallCertificate(certPassword).Item2 ? "CA installed successfully.\n" : "CA installation failed.\n");
+			var certificateResult = InstallCertificate(certPassword);
+			txtOutput.Text += (certificateResult.Item1 ? "Certificate installed successfully.\n" : "Certificate installation failed.\n");
+			txtOutput.Text += (certificateResult.Item2 ? "CA installed successfully.\n" : "CA installation failed.\n");
 
 			// connects to eduroam
 			AvailableNetworkPack updatedNetwork = SetChosenNetwork();
@@ -182,6 +183,8 @@ namespace EduroamApp
 				X509Store caStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
 				X509Certificate2 ca = new X509Certificate2($@"{path}\{caFile}");
 				caStore.Open(OpenFlags.ReadWrite);
+				// show messagebox to let users know about the CA installation warning
+				MessageBox.Show("You will now be prompted to install the Certificate Authority. In order to connect to eduroam, you need to accept this by pressing \"Yes\".","Accept Certificate Authority", MessageBoxButtons.OK);
 				caStore.Add(ca);
 				caStore.Close(); // closes the certificate store
 			}
