@@ -43,7 +43,6 @@
             // 
             // btnSelectProfile
             // 
-            this.btnSelectProfile.Enabled = false;
             this.btnSelectProfile.Location = new System.Drawing.Point(273, 92);
             this.btnSelectProfile.Name = "btnSelectProfile";
             this.btnSelectProfile.Size = new System.Drawing.Size(30, 23);
@@ -83,9 +82,9 @@
             // 
             // txtProfilePath
             // 
-            this.txtProfilePath.Enabled = false;
             this.txtProfilePath.Location = new System.Drawing.Point(158, 94);
             this.txtProfilePath.Name = "txtProfilePath";
+            this.txtProfilePath.ReadOnly = true;
             this.txtProfilePath.Size = new System.Drawing.Size(109, 20);
             this.txtProfilePath.TabIndex = 5;
             // 
