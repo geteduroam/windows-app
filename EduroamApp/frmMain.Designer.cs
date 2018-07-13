@@ -34,16 +34,21 @@ namespace EduroamApp
 			this.btnConnect = new System.Windows.Forms.Button();
 			this.txtProfilePath = new System.Windows.Forms.TextBox();
 			this.txtCertPwd = new System.Windows.Forms.TextBox();
-			this.label2 = new System.Windows.Forms.Label();
+			this.lblCertPwd = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.label3 = new System.Windows.Forms.Label();
+			this.txtUsername = new System.Windows.Forms.TextBox();
+			this.lblUsername = new System.Windows.Forms.Label();
+			this.cboMethod = new System.Windows.Forms.ComboBox();
+			this.label4 = new System.Windows.Forms.Label();
+			this.lblPassword = new System.Windows.Forms.Label();
+			this.txtPassword = new System.Windows.Forms.TextBox();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			//
 			// btnSelectProfile
 			//
-			this.btnSelectProfile.Location = new System.Drawing.Point(273, 92);
+			this.btnSelectProfile.Enabled = false;
+			this.btnSelectProfile.Location = new System.Drawing.Point(274, 241);
 			this.btnSelectProfile.Name = "btnSelectProfile";
 			this.btnSelectProfile.Size = new System.Drawing.Size(30, 23);
 			this.btnSelectProfile.TabIndex = 0;
@@ -53,7 +58,7 @@ namespace EduroamApp
 			//
 			// txtOutput
 			//
-			this.txtOutput.Location = new System.Drawing.Point(16, 270);
+			this.txtOutput.Location = new System.Drawing.Point(16, 352);
 			this.txtOutput.Name = "txtOutput";
 			this.txtOutput.ReadOnly = true;
 			this.txtOutput.Size = new System.Drawing.Size(291, 126);
@@ -64,7 +69,8 @@ namespace EduroamApp
 			// label1
 			//
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(12, 97);
+			this.label1.Enabled = false;
+			this.label1.Location = new System.Drawing.Point(13, 246);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(143, 13);
 			this.label1.TabIndex = 2;
@@ -72,7 +78,7 @@ namespace EduroamApp
 			//
 			// btnConnect
 			//
-			this.btnConnect.Location = new System.Drawing.Point(158, 202);
+			this.btnConnect.Location = new System.Drawing.Point(158, 284);
 			this.btnConnect.Name = "btnConnect";
 			this.btnConnect.Size = new System.Drawing.Size(145, 45);
 			this.btnConnect.TabIndex = 2;
@@ -82,7 +88,8 @@ namespace EduroamApp
 			//
 			// txtProfilePath
 			//
-			this.txtProfilePath.Location = new System.Drawing.Point(158, 94);
+			this.txtProfilePath.Enabled = false;
+			this.txtProfilePath.Location = new System.Drawing.Point(159, 243);
 			this.txtProfilePath.Name = "txtProfilePath";
 			this.txtProfilePath.ReadOnly = true;
 			this.txtProfilePath.Size = new System.Drawing.Size(109, 20);
@@ -90,21 +97,22 @@ namespace EduroamApp
 			//
 			// txtCertPwd
 			//
-			this.txtCertPwd.Location = new System.Drawing.Point(158, 152);
+			this.txtCertPwd.Location = new System.Drawing.Point(158, 136);
 			this.txtCertPwd.Name = "txtCertPwd";
-			this.txtCertPwd.PasswordChar = '*';
 			this.txtCertPwd.Size = new System.Drawing.Size(109, 20);
 			this.txtCertPwd.TabIndex = 1;
-			this.txtCertPwd.UseSystemPasswordChar = true;
+			this.txtCertPwd.Text = "eduroam";
+			this.txtCertPwd.Visible = false;
 			//
-			// label2
+			// lblCertPwd
 			//
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(12, 155);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(132, 13);
-			this.label2.TabIndex = 6;
-			this.label2.Text = "Enter certificate password:";
+			this.lblCertPwd.AutoSize = true;
+			this.lblCertPwd.Location = new System.Drawing.Point(12, 139);
+			this.lblCertPwd.Name = "lblCertPwd";
+			this.lblCertPwd.Size = new System.Drawing.Size(132, 13);
+			this.lblCertPwd.TabIndex = 6;
+			this.lblCertPwd.Text = "Enter certificate password:";
+			this.lblCertPwd.Visible = false;
 			//
 			// pictureBox1
 			//
@@ -116,34 +124,81 @@ namespace EduroamApp
 			this.pictureBox1.TabIndex = 8;
 			this.pictureBox1.TabStop = false;
 			//
-			// textBox1
+			// txtUsername
 			//
-			this.textBox1.Location = new System.Drawing.Point(158, 124);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.PasswordChar = '*';
-			this.textBox1.Size = new System.Drawing.Size(109, 20);
-			this.textBox1.TabIndex = 9;
-			this.textBox1.UseSystemPasswordChar = true;
+			this.txtUsername.Location = new System.Drawing.Point(159, 136);
+			this.txtUsername.Name = "txtUsername";
+			this.txtUsername.Size = new System.Drawing.Size(109, 20);
+			this.txtUsername.TabIndex = 9;
+			this.txtUsername.Text = "ericv@fyrkat.no";
+			this.txtUsername.Visible = false;
 			//
-			// label3
+			// lblUsername
 			//
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(12, 127);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(58, 13);
-			this.label3.TabIndex = 10;
-			this.label3.Text = "Username:";
+			this.lblUsername.AutoSize = true;
+			this.lblUsername.Location = new System.Drawing.Point(13, 139);
+			this.lblUsername.Name = "lblUsername";
+			this.lblUsername.Size = new System.Drawing.Size(58, 13);
+			this.lblUsername.TabIndex = 10;
+			this.lblUsername.Text = "Username:";
+			this.lblUsername.Visible = false;
+			//
+			// cboMethod
+			//
+			this.cboMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.cboMethod.FormattingEnabled = true;
+			this.cboMethod.Items.AddRange(new object[] {
+			"Certificate",
+			"Username and password"});
+			this.cboMethod.Location = new System.Drawing.Point(158, 98);
+			this.cboMethod.Name = "cboMethod";
+			this.cboMethod.Size = new System.Drawing.Size(145, 21);
+			this.cboMethod.TabIndex = 0;
+			this.cboMethod.SelectedIndexChanged += new System.EventHandler(this.cboMethod_SelectedIndexChanged);
+			//
+			// label4
+			//
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(13, 101);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(140, 13);
+			this.label4.TabIndex = 12;
+			this.label4.Text = "Choose connection method:";
+			this.label4.Click += new System.EventHandler(this.label4_Click);
+			//
+			// lblPassword
+			//
+			this.lblPassword.AutoSize = true;
+			this.lblPassword.Location = new System.Drawing.Point(13, 165);
+			this.lblPassword.Name = "lblPassword";
+			this.lblPassword.Size = new System.Drawing.Size(56, 13);
+			this.lblPassword.TabIndex = 10;
+			this.lblPassword.Text = "Password:";
+			this.lblPassword.Visible = false;
+			//
+			// txtPassword
+			//
+			this.txtPassword.Location = new System.Drawing.Point(159, 162);
+			this.txtPassword.Name = "txtPassword";
+			this.txtPassword.Size = new System.Drawing.Size(109, 20);
+			this.txtPassword.TabIndex = 9;
+			this.txtPassword.Text = "eduroameduroam";
+			this.txtPassword.Visible = false;
 			//
 			// frmMain
 			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(319, 413);
-			this.Controls.Add(this.textBox1);
-			this.Controls.Add(this.label3);
+			this.ClientSize = new System.Drawing.Size(319, 488);
+			this.Controls.Add(this.label4);
+			this.Controls.Add(this.cboMethod);
+			this.Controls.Add(this.txtPassword);
+			this.Controls.Add(this.lblPassword);
+			this.Controls.Add(this.txtUsername);
+			this.Controls.Add(this.lblUsername);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.txtCertPwd);
-			this.Controls.Add(this.label2);
+			this.Controls.Add(this.lblCertPwd);
 			this.Controls.Add(this.txtProfilePath);
 			this.Controls.Add(this.btnConnect);
 			this.Controls.Add(this.label1);
@@ -166,10 +221,14 @@ namespace EduroamApp
 		private System.Windows.Forms.Button btnConnect;
 		private System.Windows.Forms.TextBox txtProfilePath;
 		private System.Windows.Forms.TextBox txtCertPwd;
-		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label lblCertPwd;
 		private System.Windows.Forms.PictureBox pictureBox1;
-		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.TextBox txtUsername;
+		private System.Windows.Forms.Label lblUsername;
+		private System.Windows.Forms.ComboBox cboMethod;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.Label lblPassword;
+		private System.Windows.Forms.TextBox txtPassword;
 	}
 }
 

@@ -29,51 +29,97 @@ namespace EduroamApp
 		{
 			// sets eduroam as chosen network
 			AvailableNetworkPack network = SetChosenNetwork();
+			txtOutput.Text = $"Now connecting to {network.Ssid.ToString()}.\n";
 
-			txtOutput.Text = $"Now connecting to {network.Ssid.ToString()}.";
+			// sets default connection method
+			cboMethod.SelectedIndex = 0;
 		}
 
 		private void btnSelectProfile_Click(object sender, EventArgs e)
 		{
-			string filePath = GetProfileXml();
+			string filePath = GetXmlFile();
 			string fileName = Path.GetFileName(filePath);
 			txtProfilePath.Text = fileName;
 		}
 
 		private void btnConnect_Click(object sender, EventArgs e)
 		{
-			string filePath = GetProfileXml();
+			string filePath = GetXmlFile();
 			string fileName = Path.GetFileName(filePath);
 			txtProfilePath.Text = fileName;
-
-			// downloads and installs client certificate
-			string certPassword = txtCertPwd.Text;
-			var certificateResult = InstallCertificate(certPassword);
-			txtOutput.Text += (certificateResult.Item1 ? "Certificate installed successfully.\n" : "Certificate installation failed.\n");
-			txtOutput.Text += (certificateResult.Item2 ? "CA installed successfully.\n" : "CA installation failed.\n");
-			string caThumbprint = certificateResult.Item3;
+			string thumbprint = "8d043f808044894db8d8e06da2acf5f98fb4a610"; // default value is server thumbprint for login with username/password
 
 			// sets eduroam as chosen network
 			AvailableNetworkPack network = SetChosenNetwork();
 			string ssid = network.Ssid.ToString();
 			Guid interfaceID = network.Interface.Id;
 
+			if (cboMethod.SelectedIndex == 0)
+			{
+				// downloads and installs client certificate
+				string certPassword = txtCertPwd.Text;
+				var certificateResult = InstallCertificate(certPassword);
+				txtOutput.Text += certificateResult.Item1;
+				txtOutput.Text += certificateResult.Item2;
+				thumbprint = certificateResult.Item3; // gets thumbprint of CA
+			}
+
 			// configures profile xml
-			XElement newXml = ConfigureXml(filePath, ssid, caThumbprint);
+			XElement newXml = ConfigureProfileXml(filePath, ssid, thumbprint);
 
 			// creates a new network profile
-			string xmlPath = txtProfilePath.Text;
 			txtOutput.Text += (CreateNewProfile(interfaceID, newXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
 
+			if (cboMethod.SelectedIndex == 1)
+			{
+				// sets user data
+				string userDataXml = GetXmlFile();
+				string username = txtUsername.Text;
+				string password = txtPassword.Text;
+
+				XElement newUserData = ConfigureUserDataXml(userDataXml, username, password);
+				MessageBox.Show(newXml.ToString());
+				MessageBox.Show(newUserData.ToString());
+				SetUserData(interfaceID, ssid, newUserData);
+				// sets user data
+				//txtOutput.Text += (SetUserData(interfaceID, ssid, newUserData) ? "User data set successfully.\n" : "Setting user data failed.\n");
+			}
 
 			// connects to eduroam
-			AvailableNetworkPack updatedNetwork = SetChosenNetwork();
+			//AvailableNetworkPack updatedNetwork = SetChosenNetwork();
 
-			var connectResult = Task.Run(() => ConnectAsync(updatedNetwork)).Result;
-			txtOutput.Text += (connectResult ? "You are now connected to " + updatedNetwork.Ssid.ToString() + ".\n" : "Connection failed.\n");
+			//var connectResult = Task.Run(() => ConnectAsync(updatedNetwork)).Result;
+			//txtOutput.Text += (connectResult ? "You are now connected to " + updatedNetwork.Ssid.ToString() + ".\n" : "Connection failed.\n");
 		}
 
+		// lets user select wether they want to connect to eduroam using a certificate or username and password
+		private void cboMethod_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			int selectedMethod = cboMethod.SelectedIndex;
 
+			// shows/hides controls according to chosen connection method
+			switch (selectedMethod)
+			{
+				case 0:
+					lblCertPwd.Visible = true;
+					txtCertPwd.Visible = true;
+
+					lblUsername.Visible = false;
+					lblPassword.Visible = false;
+					txtUsername.Visible = false;
+					txtPassword.Visible = false;
+					break;
+				case 1:
+					lblUsername.Visible = true;
+					lblPassword.Visible = true;
+					txtUsername.Visible = true;
+					txtPassword.Visible = true;
+
+					lblCertPwd.Visible = false;
+					txtCertPwd.Visible = false;
+					break;
+			}
+		}
 
 
 		// -------------------------------------------- FUNCIONS ------------------------------------------------------------
@@ -109,9 +155,9 @@ namespace EduroamApp
 		/// Lets user select an XML file containing a wireless network profile.
 		/// </summary>
 		/// <returns>Path of profile xml.</returns>
-		public string GetProfileXml()
+		public string GetXmlFile()
 		{
-			string xmlPath = "not found";
+			string xmlPath = null;
 
 			OpenFileDialog openXmlDialog = new OpenFileDialog();
 
@@ -128,24 +174,37 @@ namespace EduroamApp
 			return xmlPath;
 		}
 
-		public XElement ConfigureXml(string xmlFile, string ssid, string thumb)
+
+
+
+		/// <summary>
+		/// Gets profile name, SSID name and CA thumbprint and inserts them into a template XML file.
+		/// </summary>
+		/// <param name="xmlFile">Template XML file path.</param>
+		/// <param name="ssid">Profile and SSID name.</param>
+		/// <param name="thumb">CA thumbprint.</param>
+		/// <returns>Edited profile XML file.</returns>
+		public XElement ConfigureProfileXml(string xmlFile, string ssid, string thumb)
 		{
+			// loads the XML file from its file path
 			XElement doc = XElement.Load(xmlFile);
-			XNamespace ns = "http://www.microsoft.com/networking/WLAN/profile/v1";
+
+			// shortens namespaces from XML file for easier typing
+			XNamespace ns1 = "http://www.microsoft.com/networking/WLAN/profile/v1";
 			XNamespace ns2 = "http://www.microsoft.com/networking/OneX/v1";
 			XNamespace ns3 = "http://www.microsoft.com/provisioning/EapHostConfig";
 			XNamespace ns4 = "http://www.microsoft.com/provisioning/BaseEapConnectionPropertiesV1";
-			XNamespace ns5 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV1";
+			XNamespace ns5 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV1";
 
+			// gets elements to edit from the XML template
+			XElement profileName = doc.Element(ns1 + "name");
 
-			XElement profileName = doc.Element(ns + "name");
+			XElement ssidName = doc.Element(ns1 + "SSIDConfig")
+									.Element(ns1 + "SSID")
+									.Element(ns1 + "name");
 
-			XElement ssidName = doc.Element(ns + "SSIDConfig")
-									.Element(ns + "SSID")
-									.Element(ns + "name");
-
-			XElement thumbprint = doc.Element(ns + "MSM")
-									 .Element(ns + "security")
+			XElement thumbprint = doc.Element(ns1 + "MSM")
+									 .Element(ns1 + "security")
 									 .Element(ns2 + "OneX")
 									 .Element(ns2 + "EAPConfig")
 									 .Element(ns3 + "EapHostConfig")
@@ -155,9 +214,48 @@ namespace EduroamApp
 									 .Element(ns5 + "ServerValidation")
 									 .Element(ns5 + "TrustedRootCA");
 
+			// sets elements to desired values
 			profileName.Value = ssid;
 			ssidName.Value = ssid;
 			thumbprint.Value = thumb;
+
+			// returns the edited xml file
+			return doc;
+		}
+
+		public XElement ConfigureUserDataXml(string xmlFile, string username, string password)
+		{
+			// loads the XML file from its file path
+			XElement doc = XElement.Load(xmlFile);
+
+			// shortens namespaces from XML file for easier typing
+			XNamespace ns1 = "http://www.microsoft.com/provisioning/EapHostUserCredentials";
+			//XNamespace ns2 = "http://www.microsoft.com/provisioning/EapCommon";
+			//XNamespace ns3 = "http://www.microsoft.com/provisioning/BaseEapMethodUserCredentials";
+
+			XNamespace cr1 = "http://www.microsoft.com/provisioning/EapUserPropertiesV1";
+			//XNamespace cr2 = "http://www.w3.org/2001/XMLSchema-instance";
+			XNamespace cr3 = "http://www.microsoft.com/provisioning/BaseEapUserPropertiesV1";
+			XNamespace cr4 = "http://www.microsoft.com/provisioning/MsPeapUserPropertiesV1";
+			XNamespace cr5 = "http://www.microsoft.com/provisioning/MsChapV2UserPropertiesV1";
+
+			XElement xmlUsername = doc.Element(ns1 + "Credentials")
+									  .Element(cr3 + "Eap")
+									  .Element(cr4 + "EapType")
+									  .Element(cr3 + "Eap")
+									  .Element(cr5 + "EapType")
+									  .Element(cr5 + "Username");
+
+			XElement xmlPassword = doc.Element(ns1 + "Credentials")
+									  .Element(cr3 + "Eap")
+									  .Element(cr4 + "EapType")
+									  .Element(cr3 + "Eap")
+									  .Element(cr5 + "EapType")
+									  .Element(cr5 + "Password");
+
+			// sets elements to desired values
+			//xmlUsername.Value = username;
+			//xmlPassword.Value = password;
 
 			return doc;
 		}
@@ -186,15 +284,24 @@ namespace EduroamApp
 			return NativeWifi.SetProfile(networkID, newProfileType, xmlContent, newSecurityType, overwrite);
 		}
 
+		// sets a profile's user data (for WPA2-Enterprise networks)
+		public static bool SetUserData(Guid networkID, string profileName, XElement userDataXml)
+		{
+			uint profileUserType = 0x00000001; // sets the profile user type to "WLAN_SET_EAPHOST_DATA_ALL_USERS"
+			string xmlContent = userDataXml.ToString();
+
+			return NativeWifi.SetProfileUserData(networkID, profileName, profileUserType, xmlContent);
+		}
+
 		/// <summary>
 		/// Downloads and installs a client certificate as well as a Client Authority certificate.
 		/// </summary>
 		/// <param name="password">The certificate's password.</param>
 		/// <returns>Certificate install success, CA install success and CA thumbprint.</returns>
-		public Tuple<bool, bool, string> InstallCertificate(string password)
+		public Tuple<string, string, string> InstallCertificate(string password)
 		{
-			bool certSuccess = true;
-			bool caSuccess = true;
+			string certResult = "Certificate installed successfully.\n";
+			string caResult = "CA installed successfully.\n";
 			string caThumbprint = null;
 
 			// creates directory to download certificate file to
@@ -205,11 +312,11 @@ namespace EduroamApp
 			string caFile = "Fyrkat+Root+CA.crt";
 
 			// downloads files from server
-			using (WebClient client = new WebClient())
-			{
-				//client.DownloadFile("https://nofile.io/g/JFVD0GuZIlAN75eOSBWPf70HW7ttzarSoI6ToMvqXDNOgdQa1LBIyg1y2inkTlVZ/ericv%40fyrkat.no.p12/", $@"{path}\{certFile}");
-				//client.DownloadFile("https://nofile.io/g/Y42wuToV5J2Cz1lyUdwaAcdrW6LIT6v228YduZFRRhb92sMfQ6zLZK828gHygotI/Fyrkat%2BRoot%2BCA.crt/", $@"{path}\{caFile}");
-			}
+			//using (WebClient client = new WebClient())
+			//{
+			//    client.DownloadFile("https://nofile.io/g/JFVD0GuZIlAN75eOSBWPf70HW7ttzarSoI6ToMvqXDNOgdQa1LBIyg1y2inkTlVZ/ericv%40fyrkat.no.p12/", $@"{path}\{certFile}");
+			//    client.DownloadFile("https://nofile.io/g/Y42wuToV5J2Cz1lyUdwaAcdrW6LIT6v228YduZFRRhb92sMfQ6zLZK828gHygotI/Fyrkat%2BRoot%2BCA.crt/", $@"{path}\{caFile}");
+			//}
 
 			// installs certficate to personal certificate store
 			try
@@ -217,11 +324,22 @@ namespace EduroamApp
 				X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
 				store.Open(OpenFlags.ReadWrite);
 				X509Certificate2 certificate = new X509Certificate2($@"{path}\{certFile}", password, X509KeyStorageFlags.PersistKeySet); // include PersistKeySet flag so certificate is valid after reboot
-				store.Add(certificate);
+
+
+				// checks if certificate is already installed
+				var certExist = store.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, true);
+				if (certExist != null && certExist.Count > 0)
+				{
+					certResult = "Certificate already installed.\n";
+				}
+				else
+				{
+					store.Add(certificate);
+				}
 				store.Close(); // closes the certificate store
 			}
 			catch (Exception) {
-				certSuccess = false;
+				certResult = "Certificate installation failed.\n";
 			}
 
 			// installs CA to trusted root certificate authority store
@@ -230,17 +348,28 @@ namespace EduroamApp
 				X509Store caStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
 				X509Certificate2 ca = new X509Certificate2($@"{path}\{caFile}");
 				caStore.Open(OpenFlags.ReadWrite);
-				// show messagebox to let users know about the CA installation warning
-				MessageBox.Show("You will now be prompted to install the Certificate Authority. In order to connect to eduroam, you need to accept this by pressing \"Yes\".","Accept Certificate Authority", MessageBoxButtons.OK);
-				caStore.Add(ca);
+
+				// checks if CA is already installed
+				var caExist = caStore.Certificates.Find(X509FindType.FindByThumbprint, ca.Thumbprint, true);
+				if (caExist != null && caExist.Count > 0)
+				{
+					caResult = "CA already installed.\n";
+				}
+				else
+				{
+					// show messagebox to let users know about the CA installation warning
+					MessageBox.Show("You will now be prompted to install the Certificate Authority. In order to connect to eduroam, you need to accept this by pressing \"Yes\".", "Accept Certificate Authority", MessageBoxButtons.OK);
+					caStore.Add(ca);
+				}
 				caThumbprint = ca.Thumbprint; // gets thumbprint of CA
 				caStore.Close(); // closes the certificate store
 			}
 			catch (Exception) {
-				caSuccess = false;
+				caResult = "CA installation failed.\n";
 			}
 
-			return Tuple.Create(certSuccess, caSuccess, caThumbprint); // returns two boolean values to confirm success
+			// returns results of certificate and CA installation, as well as the CA thumbprint
+			return Tuple.Create(certResult, caResult, caThumbprint);
 		}
 
 
@@ -260,6 +389,11 @@ namespace EduroamApp
 				profileName: chosenWifi.ProfileName,
 				bssType: chosenWifi.BssType,
 				timeout: TimeSpan.FromSeconds(10));
+		}
+
+		private void label4_Click(object sender, EventArgs e)
+		{
+
 		}
 
 
