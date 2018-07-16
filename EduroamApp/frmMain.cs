@@ -27,12 +27,20 @@ namespace EduroamApp
 
 		private void frmMain_load(object sender, EventArgs e)
 		{
-			// sets eduroam as chosen network
-			AvailableNetworkPack network = SetChosenNetwork();
-			txtOutput.Text = $"Now connecting to {network.Ssid.ToString()}.\n";
+			//// sets eduroam as chosen network
+			//AvailableNetworkPack network = SetChosenNetwork();
+			//txtOutput.Text = $"Now connecting to {network.Ssid.ToString()}.\n";
 
 			// sets default connection method
 			cboMethod.SelectedIndex = 0;
+		}
+
+
+		private void btnTestUserData_Click(object sender, EventArgs e)
+		{
+			AvailableNetworkPack network = SetChosenNetwork();
+
+			TestProfileUserData(network, "eduroam");
 		}
 
 		private void btnSelectProfile_Click(object sender, EventArgs e)
@@ -45,12 +53,13 @@ namespace EduroamApp
 		private void btnConnect_Click(object sender, EventArgs e)
 		{
 			string filePath = GetXmlFile();
-			string fileName = Path.GetFileName(filePath);
-			txtProfilePath.Text = fileName;
 			string thumbprint = "8d043f808044894db8d8e06da2acf5f98fb4a610"; // default value is server thumbprint for login with username/password
 
 			// sets eduroam as chosen network
 			AvailableNetworkPack network = SetChosenNetwork();
+			//TestNewProfile(network, filePath);
+			//SetProfileUserData(network, "eduroam");
+
 			string ssid = network.Ssid.ToString();
 			Guid interfaceID = network.Interface.Id;
 
@@ -65,31 +74,29 @@ namespace EduroamApp
 			}
 
 			// configures profile xml
-			XElement newXml = ConfigureProfileXml(filePath, ssid, thumbprint);
-
+			string newXml = ConfigureProfileXml(filePath, ssid, thumbprint);
+			//MessageBox.Show(newXml);
 			// creates a new network profile
+
 			txtOutput.Text += (CreateNewProfile(interfaceID, newXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
+
 
 			if (cboMethod.SelectedIndex == 1)
 			{
-				// sets user data
 				string userDataXml = GetXmlFile();
 				string username = txtUsername.Text;
 				string password = txtPassword.Text;
 
-				XElement newUserData = ConfigureUserDataXml(userDataXml, username, password);
-				MessageBox.Show(newXml.ToString());
-				MessageBox.Show(newUserData.ToString());
-				SetUserData(interfaceID, ssid, newUserData);
+				string newUserData = ConfigureUserDataXml(userDataXml, username, password);
+				MessageBox.Show(newUserData);
 				// sets user data
-				//txtOutput.Text += (SetUserData(interfaceID, ssid, newUserData) ? "User data set successfully.\n" : "Setting user data failed.\n");
+				txtOutput.Text += (SetUserData(interfaceID, ssid, newUserData) ? "User data set successfully.\n" : "Setting user data failed.\n");
 			}
 
 			// connects to eduroam
-			//AvailableNetworkPack updatedNetwork = SetChosenNetwork();
-
-			//var connectResult = Task.Run(() => ConnectAsync(updatedNetwork)).Result;
-			//txtOutput.Text += (connectResult ? "You are now connected to " + updatedNetwork.Ssid.ToString() + ".\n" : "Connection failed.\n");
+			AvailableNetworkPack updatedNetwork = SetChosenNetwork();
+			var connectResult = Task.Run(() => ConnectAsync(updatedNetwork)).Result;
+			txtOutput.Text += (connectResult ? "You are now connected to " + updatedNetwork.Ssid.ToString() + ".\n" : "Connection failed.\n");
 		}
 
 		// lets user select wether they want to connect to eduroam using a certificate or username and password
@@ -139,9 +146,12 @@ namespace EduroamApp
 			{
 				if (network.Ssid.ToString() == "eduroam")
 				{
-					if (network.ProfileName != "")
+					foreach (AvailableNetworkPack network2 in networks)
 					{
-						return network;
+						if (network2.Ssid.ToString() == "eduroam" && network2.ProfileName != "")
+						{
+							return network2;
+						}
 					}
 					return network;
 				}
@@ -184,26 +194,27 @@ namespace EduroamApp
 		/// <param name="ssid">Profile and SSID name.</param>
 		/// <param name="thumb">CA thumbprint.</param>
 		/// <returns>Edited profile XML file.</returns>
-		public XElement ConfigureProfileXml(string xmlFile, string ssid, string thumb)
+		public String ConfigureProfileXml(string xmlFile, string ssid, string thumb)
 		{
 			// loads the XML file from its file path
-			XElement doc = XElement.Load(xmlFile);
+			XDocument doc = XDocument.Load(xmlFile);
 
 			// shortens namespaces from XML file for easier typing
 			XNamespace ns1 = "http://www.microsoft.com/networking/WLAN/profile/v1";
 			XNamespace ns2 = "http://www.microsoft.com/networking/OneX/v1";
 			XNamespace ns3 = "http://www.microsoft.com/provisioning/EapHostConfig";
 			XNamespace ns4 = "http://www.microsoft.com/provisioning/BaseEapConnectionPropertiesV1";
-			XNamespace ns5 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV1";
+			// namespace changes depending on EAP-type
+			XNamespace ns5 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV1";//(cboMethod.SelectedIndex == 0 ? "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV1" : "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV1");
 
 			// gets elements to edit from the XML template
-			XElement profileName = doc.Element(ns1 + "name");
+			XElement profileName = doc.Root.Element(ns1 + "name");
 
-			XElement ssidName = doc.Element(ns1 + "SSIDConfig")
+			XElement ssidName = doc.Root.Element(ns1 + "SSIDConfig")
 									.Element(ns1 + "SSID")
 									.Element(ns1 + "name");
 
-			XElement thumbprint = doc.Element(ns1 + "MSM")
+			XElement thumbprint = doc.Root.Element(ns1 + "MSM")
 									 .Element(ns1 + "security")
 									 .Element(ns2 + "OneX")
 									 .Element(ns2 + "EAPConfig")
@@ -219,34 +230,37 @@ namespace EduroamApp
 			ssidName.Value = ssid;
 			thumbprint.Value = thumb;
 
+			// adds the xml declaration to the top of the document and converts it to string
+			string wDeclaration = doc.Declaration.ToString() + Environment.NewLine + doc.ToString();
+
 			// returns the edited xml file
-			return doc;
+			return wDeclaration;
 		}
 
-		public XElement ConfigureUserDataXml(string xmlFile, string username, string password)
+		public String ConfigureUserDataXml(string xmlFile, string username, string password)
 		{
 			// loads the XML file from its file path
-			XElement doc = XElement.Load(xmlFile);
+			XDocument doc = XDocument.Load(xmlFile);
 
 			// shortens namespaces from XML file for easier typing
 			XNamespace ns1 = "http://www.microsoft.com/provisioning/EapHostUserCredentials";
 			//XNamespace ns2 = "http://www.microsoft.com/provisioning/EapCommon";
 			//XNamespace ns3 = "http://www.microsoft.com/provisioning/BaseEapMethodUserCredentials";
 
-			XNamespace cr1 = "http://www.microsoft.com/provisioning/EapUserPropertiesV1";
+			//XNamespace cr1 = "http://www.microsoft.com/provisioning/EapUserPropertiesV1";
 			//XNamespace cr2 = "http://www.w3.org/2001/XMLSchema-instance";
 			XNamespace cr3 = "http://www.microsoft.com/provisioning/BaseEapUserPropertiesV1";
 			XNamespace cr4 = "http://www.microsoft.com/provisioning/MsPeapUserPropertiesV1";
 			XNamespace cr5 = "http://www.microsoft.com/provisioning/MsChapV2UserPropertiesV1";
 
-			XElement xmlUsername = doc.Element(ns1 + "Credentials")
+			XElement xmlUsername = doc.Root.Element(ns1 + "Credentials")
 									  .Element(cr3 + "Eap")
 									  .Element(cr4 + "EapType")
 									  .Element(cr3 + "Eap")
 									  .Element(cr5 + "EapType")
 									  .Element(cr5 + "Username");
 
-			XElement xmlPassword = doc.Element(ns1 + "Credentials")
+			XElement xmlPassword = doc.Root.Element(ns1 + "Credentials")
 									  .Element(cr3 + "Eap")
 									  .Element(cr4 + "EapType")
 									  .Element(cr3 + "Eap")
@@ -254,10 +268,13 @@ namespace EduroamApp
 									  .Element(cr5 + "Password");
 
 			// sets elements to desired values
-			//xmlUsername.Value = username;
-			//xmlPassword.Value = password;
+			xmlUsername.Value = username;
+			xmlPassword.Value = password;
 
-			return doc;
+			// adds the xml declaration to the top of the document and converts it to string
+			string wDeclaration = doc.Declaration.ToString() + Environment.NewLine + doc.ToString();
+
+			return wDeclaration;
 		}
 
 		/// <summary>
@@ -266,14 +283,11 @@ namespace EduroamApp
 		/// <param name="networkPack">Info about selected network.</param>
 		/// <param name="profileXml">Path of selected profile XML.</param>
 		/// <returns>True if succeeded, false if failed.</returns>
-		public static bool CreateNewProfile(Guid networkID, XElement profileXml)
+		public static bool CreateNewProfile(Guid networkID, string profileXml)
 		{
 			// sets the profile type to be Per User (value = 2)
 			// if set to Per User, the security type parameter is not required
-			ProfileType newProfileType = ProfileType.PerUser;
-
-			// gets the content of the XML file
-			string xmlContent = profileXml.ToString();
+			ProfileType newProfileType = ProfileType.AllUser;
 
 			// security type not required
 			string newSecurityType = null;
@@ -281,16 +295,58 @@ namespace EduroamApp
 			// overwrites if profile already exists
 			bool overwrite = true;
 
-			return NativeWifi.SetProfile(networkID, newProfileType, xmlContent, newSecurityType, overwrite);
+			return NativeWifi.SetProfile(networkID, newProfileType, profileXml, newSecurityType, overwrite);
 		}
 
 		// sets a profile's user data (for WPA2-Enterprise networks)
-		public static bool SetUserData(Guid networkID, string profileName, XElement userDataXml)
+		public static bool SetUserData(Guid networkID, string profileName, string userDataXml)
 		{
 			uint profileUserType = 0x00000001; // sets the profile user type to "WLAN_SET_EAPHOST_DATA_ALL_USERS"
-			string xmlContent = userDataXml.ToString();
 
-			return NativeWifi.SetProfileUserData(networkID, profileName, profileUserType, xmlContent);
+			var userDataSuccess = NativeWifi.SetProfileUserData(networkID, profileName, profileUserType, userDataXml);
+			return userDataSuccess;
+		}
+
+
+		// TEST FUCNTION FOR NEW PROFILE
+		public static void TestNewProfile(AvailableNetworkPack networkPack)
+		{
+
+			// specifies the path of the XML-file containing the wireless profile
+			string xmlPath = @"C:\Users\lwerivel18\Documents\Wireless_profiles\GOODSHIT\PEAP-MSCHAPv2_hard.xml";
+			// stores the XML-file in a string
+			string xmlString = File.ReadAllText(xmlPath);
+
+			// sets the profile type to be Per User (value = 2)
+			// if set to Per User, the security type parameter is not required
+			ProfileType newProfileType = ProfileType.AllUser;
+
+			// security type not required
+			string newSecurityType = null;
+
+			// overwrites if profile already exists
+			bool overwrite = true;
+
+			// lets user know if success
+			bool newProfileSuccess = NativeWifi.SetProfile(networkPack.Interface.Id, newProfileType, xmlString, newSecurityType, overwrite);
+			Console.WriteLine(newProfileSuccess ? "New profile successfully created." : "Creation of new profile failed.");
+
+
+		}
+
+		// TEST FUNCTION FOR SET USER DATA
+		public static void TestProfileUserData(AvailableNetworkPack networkPack, string inputProfileName)
+		{
+			var networkInterfaceID = networkPack.Interface.Id; // gets the network interace ID
+			string profileName = inputProfileName; // gets the profile name to add the user data to
+			uint profileUserType = 0x00000001; // sets the profile user type to "WLAN_SET_EAPHOST_DATA_ALL_USERS"
+			// specifies the path of the XML-file containing the profile user data
+			string xmlPath = @"C:\Users\lwerivel18\Documents\Wireless_profiles\GOODSHIT\USERDATA_hard.xml";
+			// stores the XML-file in a string
+			string xmlString = File.ReadAllText(xmlPath);
+			Console.WriteLine(xmlString);
+			var setUserDataSuccess = NativeWifi.SetProfileUserData(networkInterfaceID, profileName, profileUserType, xmlString);
+			Console.WriteLine(setUserDataSuccess ? "User data set correctly." : "Set user data failed.");
 		}
 
 		/// <summary>
@@ -338,7 +394,8 @@ namespace EduroamApp
 				}
 				store.Close(); // closes the certificate store
 			}
-			catch (Exception) {
+			catch (Exception)
+			{
 				certResult = "Certificate installation failed.\n";
 			}
 
@@ -364,7 +421,8 @@ namespace EduroamApp
 				caThumbprint = ca.Thumbprint; // gets thumbprint of CA
 				caStore.Close(); // closes the certificate store
 			}
-			catch (Exception) {
+			catch (Exception)
+			{
 				caResult = "CA installation failed.\n";
 			}
 
