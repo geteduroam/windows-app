@@ -42,6 +42,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.lblPassword = new System.Windows.Forms.Label();
             this.txtPassword = new System.Windows.Forms.TextBox();
+            this.btnTestUserData = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -185,11 +186,22 @@
             this.txtPassword.Text = "eduroameduroam";
             this.txtPassword.Visible = false;
             // 
+            // btnTestUserData
+            // 
+            this.btnTestUserData.Location = new System.Drawing.Point(41, 284);
+            this.btnTestUserData.Name = "btnTestUserData";
+            this.btnTestUserData.Size = new System.Drawing.Size(75, 48);
+            this.btnTestUserData.TabIndex = 13;
+            this.btnTestUserData.Text = "TEST USER DATA";
+            this.btnTestUserData.UseVisualStyleBackColor = true;
+            this.btnTestUserData.Click += new System.EventHandler(this.btnTestUserData_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(319, 488);
+            this.Controls.Add(this.btnTestUserData);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.cboMethod);
             this.Controls.Add(this.txtPassword);
@@ -229,6 +241,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lblPassword;
         private System.Windows.Forms.TextBox txtPassword;
+        private System.Windows.Forms.Button btnTestUserData;
     }
 }
 
