@@ -43,6 +43,7 @@ namespace EduroamApp
 			this.lblPassword = new System.Windows.Forms.Label();
 			this.txtPassword = new System.Windows.Forms.TextBox();
 			this.btnExit = new System.Windows.Forms.Button();
+			this.btnTest = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			//
@@ -197,11 +198,22 @@ namespace EduroamApp
 			this.btnExit.UseVisualStyleBackColor = true;
 			this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
 			//
+			// btnTest
+			//
+			this.btnTest.Location = new System.Drawing.Point(40, 302);
+			this.btnTest.Name = "btnTest";
+			this.btnTest.Size = new System.Drawing.Size(75, 23);
+			this.btnTest.TabIndex = 14;
+			this.btnTest.Text = "Test cert";
+			this.btnTest.UseVisualStyleBackColor = true;
+			this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+			//
 			// frmMain
 			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(319, 522);
+			this.Controls.Add(this.btnTest);
 			this.Controls.Add(this.btnExit);
 			this.Controls.Add(this.label4);
 			this.Controls.Add(this.cboMethod);
@@ -243,6 +255,7 @@ namespace EduroamApp
 		private System.Windows.Forms.Label lblPassword;
 		private System.Windows.Forms.TextBox txtPassword;
 		private System.Windows.Forms.Button btnExit;
+		private System.Windows.Forms.Button btnTest;
 	}
 }
 

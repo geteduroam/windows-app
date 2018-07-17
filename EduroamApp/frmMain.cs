@@ -15,6 +15,8 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Security;
 using System.Xml.Linq;
+using System.Xml;
+using System.Xml.XPath;
 
 namespace EduroamApp
 {
@@ -51,7 +53,7 @@ namespace EduroamApp
 				return;
 			}
 
-			string thumbprint = "8d043f808044894db8d8e06da2acf5f98fb4a610"; // default value is CA thumbprint for login with username/password
+			string thumbprint = "8d043f808044894db8d8e06da2acf5f98fb4a610"; // default value is server thumbprint(?) for login with username/password
 
 			// sets eduroam as chosen network
 			AvailableNetworkPack network = SetChosenNetwork();
@@ -61,9 +63,10 @@ namespace EduroamApp
 			// CONNECT VIA CERTIFICATE
 			if (cboMethod.SelectedIndex == 0)
 			{
-				// downloads and installs client certificate
-				string certPassword = txtCertPwd.Text;
-				var certificateResult = InstallCertificate(certPassword);
+				// installs client certificate
+				//string certPassword = txtCertPwd.Text;
+				var getCertificates = GetCertFromString();
+				var certificateResult = InstallCertificatesFromFile(getCertificates.Item1, getCertificates.Item2);//InstallCertificate(certPassword);
 				txtOutput.Text += certificateResult.Item1; // outputs certificate installation success
 				txtOutput.Text += certificateResult.Item2; // outputs CA installation success
 				thumbprint = certificateResult.Item3; // gets thumbprint of CA
@@ -335,20 +338,12 @@ namespace EduroamApp
 			string caResult = "CA installed successfully.\n";
 			string caThumbprint = null;
 
-			// creates directory to download certificate file to
-			//string path = $@"{ Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) }\MyCertificates";
+			// sets the file path
 			string path = @"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles\Certificates";
-			//Directory.CreateDirectory(path);
-			// sets the file name
+
+			// sets the file names
 			string certFile = "eduroam_certificate.p12";
 			string caFile = "Fyrkat+Root+CA.crt";
-
-			// downloads files from server
-			//using (WebClient client = new WebClient())
-			//{
-			//    client.DownloadFile("https://nofile.io/g/JFVD0GuZIlAN75eOSBWPf70HW7ttzarSoI6ToMvqXDNOgdQa1LBIyg1y2inkTlVZ/ericv%40fyrkat.no.p12/", $@"{path}\{certFile}");
-			//    client.DownloadFile("https://nofile.io/g/Y42wuToV5J2Cz1lyUdwaAcdrW6LIT6v228YduZFRRhb92sMfQ6zLZK828gHygotI/Fyrkat%2BRoot%2BCA.crt/", $@"{path}\{caFile}");
-			//}
 
 			// installs certficate to personal certificate store
 			try
@@ -357,7 +352,7 @@ namespace EduroamApp
 				X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
 				store.Open(OpenFlags.ReadWrite);
 				X509Certificate2 certificate = new X509Certificate2($@"{path}\{certFile}", password, X509KeyStorageFlags.PersistKeySet); // include PersistKeySet flag so certificate is valid after reboot
-
+				//X509Certificate2 certFromString = GetCertFromString();
 				// checks if certificate is already installed
 				var certExist = store.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, true);
 				if (certExist != null && certExist.Count > 0)
@@ -410,6 +405,127 @@ namespace EduroamApp
 			return Tuple.Create(certResult, caResult, caThumbprint);
 		}
 
+		/// <summary>
+		/// Reads an EAP config file and gets information about client and server certificates.
+		/// </summary>
+		/// <returns>Certificate objects.</returns>
+		public Tuple<X509Certificate2, X509Certificate2> GetCertFromString()
+		{
+			// loads the XML file from its file path
+			XElement doc = XElement.Load(@"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles\Certificates\fyrkat_EAPConfig.eap-config");
+
+			// shortens namespaces from XML file for easier typing
+			XNamespace ns1 = "http://www.w3.org/2001/XMLSchema-instance";
+			XNamespace ns2 = "urn:RFC4282:realm";
+
+			// gets client certificate as base64
+			XElement clientCert = doc.Element("EAPIdentityProvider")
+											.Element("AuthenticationMethods")
+											.Element("AuthenticationMethod")
+											.Element("ClientSideCredential")
+											.Element("ClientCertificate");
+
+			// gets password for client certificate
+			XElement clientCertPwd = doc.Element("EAPIdentityProvider")
+									  .Element("AuthenticationMethods")
+									  .Element("AuthenticationMethod")
+									  .Element("ClientSideCredential")
+									  .Element("Passphrase");
+
+			// gets CA as base64
+			XElement xmlCa = doc.Element("EAPIdentityProvider")
+								.Element("AuthenticationMethods")
+								.Element("AuthenticationMethod")
+								.Element("ServerSideCredential")
+								.Element("CA");
+
+			// stores values
+			string base64Client = clientCert.Value;
+			string certPwd = clientCertPwd.Value;
+			string base64Ca = xmlCa.Value;
+
+			//decodes the client certificate from base64
+			var clientCertBytes = Convert.FromBase64String(base64Client);
+			var caBytes = Convert.FromBase64String(base64Ca);
+
+			// creates new certificate object
+			X509Certificate2 certificate = new X509Certificate2(clientCertBytes, certPwd, X509KeyStorageFlags.PersistKeySet);
+			X509Certificate2 ca = new X509Certificate2(caBytes);
+
+			return Tuple.Create(certificate, ca);
+		}
+
+		/// <summary>
+		/// Gets client certificate and CA and installs in respective certificate stores.
+		/// </summary>
+		/// <param name="clientCert">Client certificate object.</param>
+		/// <param name="ca">CA object.</param>
+		/// <returns>Certificate install success, CA install success and CA thumbprint.</returns>
+		public Tuple<string, string, string> InstallCertificatesFromFile(X509Certificate2 clientCert, X509Certificate2 ca)
+		{
+			// declare return values
+			string certResult = "Certificate installed successfully.\n";
+			string caResult = "CA installed successfully.\n";
+			string caThumbprint = null;
+
+			// installs client certficate to personal certificate store
+			try
+			{
+				// opens personal certificate store
+				X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+				store.Open(OpenFlags.ReadWrite);
+
+				// checks if certificate is already installed
+				var certExist = store.Certificates.Find(X509FindType.FindByThumbprint, clientCert.Thumbprint, true);
+				if (certExist != null && certExist.Count > 0)
+				{
+					certResult = "Certificate already installed.\n";
+				}
+				else
+				{
+					// adds certificate to store
+					store.Add(clientCert);
+				}
+				store.Close(); // closes the certificate store
+			}
+			catch (Exception)
+			{
+				certResult = "Certificate installation failed.\n";
+			}
+
+			// installs CA to trusted root certificate authority store
+			try
+			{
+				// opens trusted root certificate authority store
+				X509Store caStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
+				caStore.Open(OpenFlags.ReadWrite);
+
+				// checks if CA is already installed
+				var caExist = caStore.Certificates.Find(X509FindType.FindByThumbprint, ca.Thumbprint, true);
+				if (caExist != null && caExist.Count > 0)
+				{
+					caResult = "CA already installed.\n";
+				}
+				else
+				{
+					// show messagebox to let users know about the CA installation warning
+					MessageBox.Show("You will now be prompted to install the Certificate Authority. " +
+									"In order to connect to eduroam, you need to accept this by pressing \"Yes\" in the next dialog box.", "Accept Certificate Authority", MessageBoxButtons.OK);
+					// adds CA to store
+					caStore.Add(ca);
+				}
+				caThumbprint = ca.Thumbprint; // gets thumbprint of CA
+				caStore.Close(); // closes the certificate store
+			}
+			catch (Exception)
+			{
+				caResult = "CA installation failed.\n";
+			}
+
+			// returns results of certificate and CA installation, as well as the CA thumbprint
+			return Tuple.Create(certResult, caResult, caThumbprint);
+		}
+
 
 		/// <summary>
 		/// Connects to the chosen wireless LAN.
@@ -431,6 +547,11 @@ namespace EduroamApp
 		private void btnExit_Click(object sender, EventArgs e)
 		{
 			Application.Exit();
+		}
+
+		private void btnTest_Click(object sender, EventArgs e)
+		{
+			GetCertFromString();
 		}
 	}
 }
