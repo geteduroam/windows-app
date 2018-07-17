@@ -27,22 +27,10 @@ namespace EduroamApp
 
         private void frmMain_load(object sender, EventArgs e)
         {
-            //// sets eduroam as chosen network
-            //AvailableNetworkPack network = SetChosenNetwork();
-            //txtOutput.Text = $"Now connecting to {network.Ssid.ToString()}.\n";
-
             // sets default connection method
             cboMethod.SelectedIndex = 0;
         }
-
-
-        private void btnTestUserData_Click(object sender, EventArgs e)
-        {
-            AvailableNetworkPack network = SetChosenNetwork();
-
-            TestProfileUserData(network, "eduroam");
-        }
-
+        
         private void btnSelectProfile_Click(object sender, EventArgs e)
         {
             string filePath = GetXmlFile();
@@ -52,43 +40,59 @@ namespace EduroamApp
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
-            string filePath = GetXmlFile();
-            string thumbprint = "8d043f808044894db8d8e06da2acf5f98fb4a610"; // default value is server thumbprint for login with username/password
+            // opens dialog to select wireless profile XML
+            string profileXml = GetXmlFile(); 
+
+            // stop execution if no profile selected
+            if (profileXml == null)
+            {
+                MessageBox.Show("No file selected.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtOutput.Text += "No profile selected.";
+                return;
+            }
+
+            string thumbprint = "8d043f808044894db8d8e06da2acf5f98fb4a610"; // default value is CA thumbprint for login with username/password
 
             // sets eduroam as chosen network
             AvailableNetworkPack network = SetChosenNetwork();
-            //TestNewProfile(network, filePath);
-            //SetProfileUserData(network, "eduroam");
+            string ssid = network.Ssid.ToString(); // gets SSID
+            Guid interfaceID = network.Interface.Id; // gets interface ID
 
-            string ssid = network.Ssid.ToString();
-            Guid interfaceID = network.Interface.Id;
-
+            // CONNECT VIA CERTIFICATE
             if (cboMethod.SelectedIndex == 0)
             {
                 // downloads and installs client certificate
                 string certPassword = txtCertPwd.Text;
                 var certificateResult = InstallCertificate(certPassword);
-                txtOutput.Text += certificateResult.Item1;
-                txtOutput.Text += certificateResult.Item2;
+                txtOutput.Text += certificateResult.Item1; // outputs certificate installation success
+                txtOutput.Text += certificateResult.Item2; // outputs CA installation success
                 thumbprint = certificateResult.Item3; // gets thumbprint of CA
             }
 
-            // configures profile xml
-            string newXml = ConfigureProfileXml(filePath, ssid, thumbprint);
-            //MessageBox.Show(newXml);
+            // configures profile xml to include ssid name and correct thumbprint
+            string newXml = ConfigureProfileXml(profileXml, ssid, thumbprint);            
             // creates a new network profile
-
             txtOutput.Text += (CreateNewProfile(interfaceID, newXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
-
-
+            
+            // CONNECT WITH USERNAME+PASSWORD
             if (cboMethod.SelectedIndex == 1)
             {
+                // gets user data xml template
                 string userDataXml = GetXmlFile();
+
+                // stop execution if no profile selected
+                if (userDataXml == null)
+                {
+                    MessageBox.Show("No file selected.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    txtOutput.Text += "User data file not selected.";
+                    return;
+                }
+
+                // gets username and password from UI
                 string username = txtUsername.Text;
                 string password = txtPassword.Text;
-
+                // configures user data xml to include username and password
                 string newUserData = ConfigureUserDataXml(userDataXml, username, password);
-                MessageBox.Show(newUserData);
                 // sets user data
                 txtOutput.Text += (SetUserData(interfaceID, ssid, newUserData) ? "User data set successfully.\n" : "Setting user data failed.\n");
             }
@@ -133,8 +137,9 @@ namespace EduroamApp
 
 
         /// <summary>
-        /// Sets Eduroam as the chosen network to connect to. Exits the application if Eduroam is not available.
+        /// Sets eduroam as chosen network to connect to.
         /// </summary>
+        /// <returns>Network pack containing eudoram properties.</returns>
         public AvailableNetworkPack SetChosenNetwork()
         {
             // gets all available networks and stores them in a list
@@ -171,7 +176,7 @@ namespace EduroamApp
 
             OpenFileDialog openXmlDialog = new OpenFileDialog();
 
-            openXmlDialog.InitialDirectory = @"C:\Users\lwerivel18\Documents\Wireless_profiles"; // sets the initial directory of the open file dialog
+            openXmlDialog.InitialDirectory = @"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles\Profile XML"; // sets the initial directory of the open file dialog
             openXmlDialog.Filter = "XML Files (*.xml)|*.xml|All files (*.*)|*.*"; // sets filter for file types that appear in open file dialog
             openXmlDialog.FilterIndex = 0;
             openXmlDialog.RestoreDirectory = true;
@@ -188,12 +193,12 @@ namespace EduroamApp
 
 
         /// <summary>
-        /// Gets profile name, SSID name and CA thumbprint and inserts them into a template XML file.
+        /// Gets profile name, SSID name and CA thumbprint and inserts them into a wireless profile XML template.
         /// </summary>
-        /// <param name="xmlFile">Template XML file path.</param>
+        /// <param name="xmlFile">Path to profile xml template.</param>
         /// <param name="ssid">Profile and SSID name.</param>
         /// <param name="thumb">CA thumbprint.</param>
-        /// <returns>Edited profile XML file.</returns>
+        /// <returns>Configured XML file as string.</returns>
         public String ConfigureProfileXml(string xmlFile, string ssid, string thumb)
         {
             // loads the XML file from its file path
@@ -205,9 +210,9 @@ namespace EduroamApp
             XNamespace ns3 = "http://www.microsoft.com/provisioning/EapHostConfig";
             XNamespace ns4 = "http://www.microsoft.com/provisioning/BaseEapConnectionPropertiesV1";
             // namespace changes depending on EAP-type
-            XNamespace ns5 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV1";//(cboMethod.SelectedIndex == 0 ? "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV1" : "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV1");
+            XNamespace ns5 = (cboMethod.SelectedIndex == 0 ? "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV1" : "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV1");
 
-            // gets elements to edit from the XML template
+            // gets elements to edit
             XElement profileName = doc.Root.Element(ns1 + "name");
 
             XElement ssidName = doc.Root.Element(ns1 + "SSIDConfig")
@@ -237,6 +242,13 @@ namespace EduroamApp
             return wDeclaration;
         }
 
+        /// <summary>
+        /// Inserts username and password into user data XML file.
+        /// </summary>
+        /// <param name="xmlFile">Path to user data xml template.</param>
+        /// <param name="username">User's username.</param>
+        /// <param name="password">User's password.</param>
+        /// <returns>Configured XML file as string.</returns>
         public String ConfigureUserDataXml(string xmlFile, string username, string password)
         {
             // loads the XML file from its file path
@@ -244,15 +256,12 @@ namespace EduroamApp
 
             // shortens namespaces from XML file for easier typing
             XNamespace ns1 = "http://www.microsoft.com/provisioning/EapHostUserCredentials";
-            //XNamespace ns2 = "http://www.microsoft.com/provisioning/EapCommon";
-            //XNamespace ns3 = "http://www.microsoft.com/provisioning/BaseEapMethodUserCredentials";
-
-            //XNamespace cr1 = "http://www.microsoft.com/provisioning/EapUserPropertiesV1";
-            //XNamespace cr2 = "http://www.w3.org/2001/XMLSchema-instance";
+                        
             XNamespace cr3 = "http://www.microsoft.com/provisioning/BaseEapUserPropertiesV1";
             XNamespace cr4 = "http://www.microsoft.com/provisioning/MsPeapUserPropertiesV1";
             XNamespace cr5 = "http://www.microsoft.com/provisioning/MsChapV2UserPropertiesV1";
 
+            // gets elements to edit
             XElement xmlUsername = doc.Root.Element(ns1 + "Credentials")
                                       .Element(cr3 + "Eap")
                                       .Element(cr4 + "EapType")
@@ -280,12 +289,12 @@ namespace EduroamApp
         /// <summary>
         /// Creates new network profile according to selected network and profile XML.
         /// </summary>
-        /// <param name="networkPack">Info about selected network.</param>
-        /// <param name="profileXml">Path of selected profile XML.</param>
+        /// <param name="networkID">Interface ID of selected network.</param>
+        /// <param name="profileXml">Wireless profile XML converted to string.</param>
         /// <returns>True if succeeded, false if failed.</returns>
         public static bool CreateNewProfile(Guid networkID, string profileXml)
         {
-            // sets the profile type to be Per User (value = 2)
+            // sets the profile type to be All-user (value = 0)
             // if set to Per User, the security type parameter is not required
             ProfileType newProfileType = ProfileType.AllUser;
 
@@ -298,71 +307,38 @@ namespace EduroamApp
             return NativeWifi.SetProfile(networkID, newProfileType, profileXml, newSecurityType, overwrite);
         }
 
-        // sets a profile's user data (for WPA2-Enterprise networks)
+        /// <summary>
+        /// Sets a profile's user data for login with username + password.
+        /// </summary>
+        /// <param name="networkID">Interface ID of selected network.</param>
+        /// <param name="profileName">Name of associated wireless profile.</param>
+        /// <param name="userDataXml">User data XML converted to string.</param>
+        /// <returns>True if succeeded, false if failed.</returns>
         public static bool SetUserData(Guid networkID, string profileName, string userDataXml)
         {
-            uint profileUserType = 0x00000001; // sets the profile user type to "WLAN_SET_EAPHOST_DATA_ALL_USERS"
+            // sets the profile user type to "WLAN_SET_EAPHOST_DATA_ALL_USERS"
+            uint profileUserType = 0x00000001;
 
-            var userDataSuccess = NativeWifi.SetProfileUserData(networkID, profileName, profileUserType, userDataXml);
-            return userDataSuccess;
+            return NativeWifi.SetProfileUserData(networkID, profileName, profileUserType, userDataXml);
         }
 
-
-        // TEST FUCNTION FOR NEW PROFILE
-        public static void TestNewProfile(AvailableNetworkPack networkPack)
-        {
-
-            // specifies the path of the XML-file containing the wireless profile
-            string xmlPath = @"C:\Users\lwerivel18\Documents\Wireless_profiles\GOODSHIT\PEAP-MSCHAPv2_hard.xml";
-            // stores the XML-file in a string
-            string xmlString = File.ReadAllText(xmlPath);
-
-            // sets the profile type to be Per User (value = 2)
-            // if set to Per User, the security type parameter is not required
-            ProfileType newProfileType = ProfileType.AllUser;
-
-            // security type not required
-            string newSecurityType = null;
-
-            // overwrites if profile already exists
-            bool overwrite = true;
-
-            // lets user know if success
-            bool newProfileSuccess = NativeWifi.SetProfile(networkPack.Interface.Id, newProfileType, xmlString, newSecurityType, overwrite);
-            Console.WriteLine(newProfileSuccess ? "New profile successfully created." : "Creation of new profile failed.");
-
-
-        }
-
-        // TEST FUNCTION FOR SET USER DATA
-        public static void TestProfileUserData(AvailableNetworkPack networkPack, string inputProfileName)
-        {
-            var networkInterfaceID = networkPack.Interface.Id; // gets the network interace ID
-            string profileName = inputProfileName; // gets the profile name to add the user data to
-            uint profileUserType = 0x00000001; // sets the profile user type to "WLAN_SET_EAPHOST_DATA_ALL_USERS"
-            // specifies the path of the XML-file containing the profile user data
-            string xmlPath = @"C:\Users\lwerivel18\Documents\Wireless_profiles\GOODSHIT\USERDATA_hard.xml";
-            // stores the XML-file in a string
-            string xmlString = File.ReadAllText(xmlPath);
-            Console.WriteLine(xmlString);
-            var setUserDataSuccess = NativeWifi.SetProfileUserData(networkInterfaceID, profileName, profileUserType, xmlString);
-            Console.WriteLine(setUserDataSuccess ? "User data set correctly." : "Set user data failed.");
-        }
-
+        
         /// <summary>        
-        /// Downloads and installs a client certificate as well as a Client Authority certificate.
+        /// Downloads and installs a client certificate and Client Authority certificate.
         /// </summary>
         /// <param name="password">The certificate's password.</param>        
         /// <returns>Certificate install success, CA install success and CA thumbprint.</returns>
         public Tuple<string, string, string> InstallCertificate(string password)
         {
+            // declare return values
             string certResult = "Certificate installed successfully.\n";
             string caResult = "CA installed successfully.\n";
             string caThumbprint = null;
 
             // creates directory to download certificate file to
-            string path = $@"{ Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) }\MyCertificates";
-            Directory.CreateDirectory(path);
+            //string path = $@"{ Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) }\MyCertificates";
+            string path = @"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles\Certificates";
+            //Directory.CreateDirectory(path);
             // sets the file name
             string certFile = "eduroam_certificate.p12";
             string caFile = "Fyrkat+Root+CA.crt";
@@ -377,11 +353,11 @@ namespace EduroamApp
             // installs certficate to personal certificate store
             try
             {
-                X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+                // opens personal certificate store
+                X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser); 
                 store.Open(OpenFlags.ReadWrite);
                 X509Certificate2 certificate = new X509Certificate2($@"{path}\{certFile}", password, X509KeyStorageFlags.PersistKeySet); // include PersistKeySet flag so certificate is valid after reboot
-
-
+                
                 // checks if certificate is already installed
                 var certExist = store.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, true);
                 if (certExist != null && certExist.Count > 0)
@@ -390,6 +366,7 @@ namespace EduroamApp
                 }
                 else
                 {
+                    // adds certificate to store
                     store.Add(certificate);
                 }
                 store.Close(); // closes the certificate store
@@ -402,10 +379,11 @@ namespace EduroamApp
             // installs CA to trusted root certificate authority store
             try
             {
+                // opens trusted root certificate authority store
                 X509Store caStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
-                X509Certificate2 ca = new X509Certificate2($@"{path}\{caFile}");
                 caStore.Open(OpenFlags.ReadWrite);
-
+                X509Certificate2 ca = new X509Certificate2($@"{path}\{caFile}");
+                
                 // checks if CA is already installed
                 var caExist = caStore.Certificates.Find(X509FindType.FindByThumbprint, ca.Thumbprint, true);
                 if (caExist != null && caExist.Count > 0)
@@ -415,7 +393,9 @@ namespace EduroamApp
                 else
                 {
                     // show messagebox to let users know about the CA installation warning
-                    MessageBox.Show("You will now be prompted to install the Certificate Authority. In order to connect to eduroam, you need to accept this by pressing \"Yes\".", "Accept Certificate Authority", MessageBoxButtons.OK);
+                    MessageBox.Show("You will now be prompted to install the Certificate Authority. " +
+                                    "In order to connect to eduroam, you need to accept this by pressing \"Yes\" in the next dialog box.", "Accept Certificate Authority", MessageBoxButtons.OK);
+                    // adds CA to store
                     caStore.Add(ca);
                 }
                 caThumbprint = ca.Thumbprint; // gets thumbprint of CA
@@ -435,10 +415,8 @@ namespace EduroamApp
         /// Connects to the chosen wireless LAN.
         /// </summary>
         /// <returns>True if successfully connected. False if not.</returns>
-        public static async Task<bool> ConnectAsync(AvailableNetworkPack networkParam)
-        {
-            AvailableNetworkPack chosenWifi = networkParam;
-
+        public static async Task<bool> ConnectAsync(AvailableNetworkPack chosenWifi)
+        {            
             if (chosenWifi == null)
                 return false;
 
@@ -449,11 +427,10 @@ namespace EduroamApp
                 timeout: TimeSpan.FromSeconds(10));
         }
 
-        private void label4_Click(object sender, EventArgs e)
+        // exits the application
+        private void btnExit_Click(object sender, EventArgs e)
         {
-
+            Application.Exit();
         }
-
-
     }
 }

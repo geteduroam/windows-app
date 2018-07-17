@@ -42,7 +42,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.lblPassword = new System.Windows.Forms.Label();
             this.txtPassword = new System.Windows.Forms.TextBox();
-            this.btnTestUserData = new System.Windows.Forms.Button();
+            this.btnExit = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -103,6 +103,7 @@
             this.txtCertPwd.Size = new System.Drawing.Size(109, 20);
             this.txtCertPwd.TabIndex = 1;
             this.txtCertPwd.Text = "eduroam";
+            this.txtCertPwd.UseSystemPasswordChar = true;
             this.txtCertPwd.Visible = false;
             // 
             // lblCertPwd
@@ -165,7 +166,6 @@
             this.label4.Size = new System.Drawing.Size(140, 13);
             this.label4.TabIndex = 12;
             this.label4.Text = "Choose connection method:";
-            this.label4.Click += new System.EventHandler(this.label4_Click);
             // 
             // lblPassword
             // 
@@ -184,38 +184,39 @@
             this.txtPassword.Size = new System.Drawing.Size(109, 20);
             this.txtPassword.TabIndex = 9;
             this.txtPassword.Text = "eduroameduroam";
+            this.txtPassword.UseSystemPasswordChar = true;
             this.txtPassword.Visible = false;
             // 
-            // btnTestUserData
+            // btnExit
             // 
-            this.btnTestUserData.Location = new System.Drawing.Point(41, 284);
-            this.btnTestUserData.Name = "btnTestUserData";
-            this.btnTestUserData.Size = new System.Drawing.Size(75, 48);
-            this.btnTestUserData.TabIndex = 13;
-            this.btnTestUserData.Text = "TEST USER DATA";
-            this.btnTestUserData.UseVisualStyleBackColor = true;
-            this.btnTestUserData.Click += new System.EventHandler(this.btnTestUserData_Click);
+            this.btnExit.Location = new System.Drawing.Point(243, 487);
+            this.btnExit.Name = "btnExit";
+            this.btnExit.Size = new System.Drawing.Size(60, 23);
+            this.btnExit.TabIndex = 13;
+            this.btnExit.Text = "Exit";
+            this.btnExit.UseVisualStyleBackColor = true;
+            this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(319, 488);
-            this.Controls.Add(this.btnTestUserData);
+            this.ClientSize = new System.Drawing.Size(319, 522);
+            this.Controls.Add(this.btnExit);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.cboMethod);
             this.Controls.Add(this.txtPassword);
             this.Controls.Add(this.lblPassword);
-            this.Controls.Add(this.txtUsername);
             this.Controls.Add(this.lblUsername);
             this.Controls.Add(this.pictureBox1);
-            this.Controls.Add(this.txtCertPwd);
             this.Controls.Add(this.lblCertPwd);
             this.Controls.Add(this.txtProfilePath);
             this.Controls.Add(this.btnConnect);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.txtOutput);
             this.Controls.Add(this.btnSelectProfile);
+            this.Controls.Add(this.txtUsername);
+            this.Controls.Add(this.txtCertPwd);
             this.Name = "frmMain";
             this.Text = "Eduroam installer";
             this.Load += new System.EventHandler(this.frmMain_load);
@@ -241,7 +242,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label lblPassword;
         private System.Windows.Forms.TextBox txtPassword;
-        private System.Windows.Forms.Button btnTestUserData;
+        private System.Windows.Forms.Button btnExit;
     }
 }
 
