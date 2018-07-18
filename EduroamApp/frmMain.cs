@@ -35,25 +35,19 @@ namespace EduroamApp
         
         private void btnSelectProfile_Click(object sender, EventArgs e)
         {
-            string filePath = GetXmlFile();
+            string filePath = GetXmlFile("Select Wireless Profile");
+            
             string fileName = Path.GetFileName(filePath);
             txtProfilePath.Text = fileName;
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
-        {
-            // opens dialog to select wireless profile XML
-            string profileXml = GetXmlFile(); 
+        {           
+            // all CA thumbprints that will be added to Wireless Profile XML
+            List<string> thumbprints = new List<string>();
 
-            // stop execution if no profile selected
-            if (profileXml == null)
-            {
-                MessageBox.Show("No file selected.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtOutput.Text += "No profile selected.";
-                return;
-            }
-
-            string thumbprint = "8d043f808044894db8d8e06da2acf5f98fb4a610"; // default value is server thumbprint(?) for login with username/password
+            //thumbprint for login with username/password
+            thumbprints.Add("8d043f808044894db8d8e06da2acf5f98fb4a610"); 
 
             // sets eduroam as chosen network
             AvailableNetworkPack network = SetChosenNetwork();
@@ -62,34 +56,50 @@ namespace EduroamApp
 
             // CONNECT VIA CERTIFICATE
             if (cboMethod.SelectedIndex == 0)
-            {
-                // installs client certificate
-                //string certPassword = txtCertPwd.Text;
-                var getCertificates = GetCertFromString();
-                var certificateResult = InstallCertificatesFromFile(getCertificates.Item1, getCertificates.Item2);//InstallCertificate(certPassword);
-                txtOutput.Text += certificateResult.Item1; // outputs certificate installation success
-                txtOutput.Text += certificateResult.Item2; // outputs CA installation success
-                thumbprint = certificateResult.Item3; // gets thumbprint of CA
-            }
+            {               
+                // opens dialog to select EAP Config file
+                string eapConfigPath = GetXmlFile("Select EAP Config file");
+                // validates that file has been selected
+                if (validateFileSelection(eapConfigPath) == false) { return; } 
 
+                // gets a list of all client certificates and a list of all CAs
+                var getAllCertificates = GetCertificates(eapConfigPath);
+
+                // installs client certs
+                foreach (X509Certificate2 clientCert in getAllCertificates.Item1)
+                {
+                    // outputs result
+                    txtOutput.Text += InstallClientCertificate(clientCert);
+                }
+                // installs CAs
+                foreach (X509Certificate2 certAuth in getAllCertificates.Item2)
+                {
+                    var caResults = InstallCA(certAuth);
+                    // outputs result
+                    txtOutput.Text += caResults.Item1;
+                    // adds CA thumbprint to list if not null
+                    if (caResults.Item2 != null) { thumbprints.Add(caResults.Item2); }                    
+                }
+            }
+            
+
+            // opens dialog to select wireless profile XML
+            string profileXml = GetXmlFile("Select Wireless Profile");
+            // validates that a file has been selected
+            if (validateFileSelection(profileXml) == false) { return; }
+            
             // configures profile xml to include ssid name and correct thumbprint
-            string newXml = ConfigureProfileXml(profileXml, ssid, thumbprint);            
+            string newXml = ConfigureProfileXml(profileXml, ssid, thumbprints);            
             // creates a new network profile
             txtOutput.Text += (CreateNewProfile(interfaceID, newXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
             
             // CONNECT WITH USERNAME+PASSWORD
             if (cboMethod.SelectedIndex == 1)
             {
-                // gets user data xml template
-                string userDataXml = GetXmlFile();
-
-                // stop execution if no profile selected
-                if (userDataXml == null)
-                {
-                    MessageBox.Show("No file selected.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    txtOutput.Text += "User data file not selected.";
-                    return;
-                }
+                // opens dialog to select user data XML
+                string userDataXml = GetXmlFile("Select User Data XML");
+                // validates that a file has been selected
+                if (validateFileSelection(userDataXml) == false) { return; }
 
                 // gets username and password from UI
                 string username = txtUsername.Text;
@@ -173,16 +183,17 @@ namespace EduroamApp
         /// Lets user select an XML file containing a wireless network profile.
         /// </summary>
         /// <returns>Path of profile xml.</returns>
-        public string GetXmlFile()
+        public string GetXmlFile(string dialogTitle)
         {
             string xmlPath = null;
 
             OpenFileDialog openXmlDialog = new OpenFileDialog();
 
-            openXmlDialog.InitialDirectory = @"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles\Profile XML"; // sets the initial directory of the open file dialog
-            openXmlDialog.Filter = "XML Files (*.xml)|*.xml|All files (*.*)|*.*"; // sets filter for file types that appear in open file dialog
+            openXmlDialog.InitialDirectory = @"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles"; // sets the initial directory of the open file dialog
+            openXmlDialog.Filter = "All files (*.*)|*.*"; // sets filter for file types that appear in open file dialog
             openXmlDialog.FilterIndex = 0;
             openXmlDialog.RestoreDirectory = true;
+            openXmlDialog.Title = dialogTitle;
 
             if (openXmlDialog.ShowDialog() == DialogResult.OK)
             {
@@ -202,7 +213,7 @@ namespace EduroamApp
         /// <param name="ssid">Profile and SSID name.</param>
         /// <param name="thumb">CA thumbprint.</param>
         /// <returns>Configured XML file as string.</returns>
-        public String ConfigureProfileXml(string xmlFile, string ssid, string thumb)
+        public String ConfigureProfileXml(string xmlFile, string ssid, List<string> thumbprints)
         {
             // loads the XML file from its file path
             XDocument doc = XDocument.Load(xmlFile);
@@ -222,7 +233,7 @@ namespace EduroamApp
                                     .Element(ns1 + "SSID")
                                     .Element(ns1 + "name");
 
-            XElement thumbprint = doc.Root.Element(ns1 + "MSM")
+            XElement serverValidationElement = doc.Root.Element(ns1 + "MSM")
                                      .Element(ns1 + "security")
                                      .Element(ns2 + "OneX")
                                      .Element(ns2 + "EAPConfig")
@@ -230,13 +241,17 @@ namespace EduroamApp
                                      .Element(ns3 + "Config")
                                      .Element(ns4 + "Eap")
                                      .Element(ns5 + "EapType")
-                                     .Element(ns5 + "ServerValidation")
-                                     .Element(ns5 + "TrustedRootCA");
+                                     .Element(ns5 + "ServerValidation");
+                                     //.Element(ns5 + "TrustedRootCA");
 
             // sets elements to desired values
             profileName.Value = ssid;
             ssidName.Value = ssid;
-            thumbprint.Value = thumb;
+            
+            foreach (string thumb in thumbprints)
+            {
+                serverValidationElement.Add(new XElement(ns5 + "TrustedRootCA", thumb));
+            }
 
             // adds the xml declaration to the top of the document and converts it to string
             string wDeclaration = doc.Declaration.ToString() + Environment.NewLine + doc.ToString();
@@ -419,25 +434,13 @@ namespace EduroamApp
             XNamespace ns2 = "urn:RFC4282:realm";
 
             // gets client certificate as base64
-            XElement clientCert = doc.Element("EAPIdentityProvider")
-                                            .Element("AuthenticationMethods")
-                                            .Element("AuthenticationMethod")
-                                            .Element("ClientSideCredential")
-                                            .Element("ClientCertificate");
+            XElement clientCert = doc.DescendantsAndSelf().Elements().Where(d => d.Name.LocalName == "ClientCertificate").FirstOrDefault();
 
             // gets password for client certificate
-            XElement clientCertPwd = doc.Element("EAPIdentityProvider")
-                                      .Element("AuthenticationMethods")
-                                      .Element("AuthenticationMethod")
-                                      .Element("ClientSideCredential")
-                                      .Element("Passphrase");
+            XElement clientCertPwd = doc.DescendantsAndSelf().Elements().Where(d => d.Name.LocalName == "Passphrase").FirstOrDefault();
 
             // gets CA as base64
-            XElement xmlCa = doc.Element("EAPIdentityProvider")
-                                .Element("AuthenticationMethods")
-                                .Element("AuthenticationMethod")
-                                .Element("ServerSideCredential")
-                                .Element("CA");
+            XElement xmlCa = doc.DescendantsAndSelf().Elements().Where(d => d.Name.LocalName == "CA").FirstOrDefault();
 
             // stores values
             string base64Client = clientCert.Value;
@@ -456,74 +459,99 @@ namespace EduroamApp
         }
 
         /// <summary>
-        /// Gets client certificate and CA and installs in respective certificate stores.
+        /// Installs a client certificate.
         /// </summary>
-        /// <param name="clientCert">Client certificate object.</param>
-        /// <param name="ca">CA object.</param>
-        /// <returns>Certificate install success, CA install success and CA thumbprint.</returns>
-        public Tuple<string, string, string> InstallCertificatesFromFile(X509Certificate2 clientCert, X509Certificate2 ca)
+        /// <param name="cert">Client certificate object.</param>
+        /// <returns>Result of certificate installation./returns>
+        public string InstallClientCertificate(X509Certificate2 cert)
         {
-            // declare return values
-            string certResult = "Certificate installed successfully.\n";
-            string caResult = "CA installed successfully.\n";
-            string caThumbprint = null;
-                     
+            // gets certificate issuer
+            string certIssuer = cert.Issuer;
+            // return string
+            string certResult = "Certificate installed successfully: ";
+
             // installs client certficate to personal certificate store
             try
             {
                 // opens personal certificate store
                 X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-                store.Open(OpenFlags.ReadWrite); 
-                
+                store.Open(OpenFlags.ReadWrite);
+
                 // checks if certificate is already installed
-                var certExist = store.Certificates.Find(X509FindType.FindByThumbprint, clientCert.Thumbprint, true);
+                var certExist = store.Certificates.Find(X509FindType.FindByThumbprint, cert.Thumbprint, true);
                 if (certExist != null && certExist.Count > 0)
                 {
-                    certResult = "Certificate already installed.\n";
+                    certResult = "Certificate already installed: ";
                 }
                 else
                 {
                     // adds certificate to store
-                    store.Add(clientCert);
+                    store.Add(cert);
                 }
-                store.Close(); // closes the certificate store
+
+                // closes personal certificate store
+                store.Close(); 
             }
             catch (Exception)
             {
-                certResult = "Certificate installation failed.\n";
+                certResult = "Certificate installation failed: ";
             }
 
-            // installs CA to trusted root certificate authority store
+            return certResult + certIssuer + "\n";
+        }
+
+        /// <summary>
+        /// Installs a certificate authority.
+        /// </summary>
+        /// <param name="ca">Certificate authority object.</param>
+        /// <returns>Result of certificate installation and thumbprint.</returns>
+        public Tuple<string, string> InstallCA(X509Certificate2 ca)
+        {
+            // gets certificate issuer
+            string certIssuer = ca.Issuer;
+            // sets return string
+            string certResult = "CA installed successfully: ";
+
+            // thumbprint is updated if certificate install is successful
+            string certThumbprint = null;
+            
+
+            // installs client certficate to personal certificate store
             try
             {
                 // opens trusted root certificate authority store
-                X509Store caStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
-                caStore.Open(OpenFlags.ReadWrite);
+                X509Store store = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
+                store.Open(OpenFlags.ReadWrite);
 
                 // checks if CA is already installed
-                var caExist = caStore.Certificates.Find(X509FindType.FindByThumbprint, ca.Thumbprint, true);
-                if (caExist != null && caExist.Count > 0)
+                var certExist = store.Certificates.Find(X509FindType.FindByThumbprint, ca.Thumbprint, true);
+                if (certExist != null && certExist.Count > 0)
                 {
-                    caResult = "CA already installed.\n";
+                    // updates return string
+                    certResult = "CA already installed: ";
                 }
                 else
                 {
                     // show messagebox to let users know about the CA installation warning
                     MessageBox.Show("You will now be prompted to install the Certificate Authority. " +
-                                    "In order to connect to eduroam, you need to accept this by pressing \"Yes\" in the next dialog box.", "Accept Certificate Authority", MessageBoxButtons.OK);
+                                    "In order to connect to eduroam, you need to accept this by pressing \"Yes\" in the following dialog.", "Accept Certificate Authority", MessageBoxButtons.OK);
                     // adds CA to store
-                    caStore.Add(ca);
+                    store.Add(ca);
                 }
-                caThumbprint = ca.Thumbprint; // gets thumbprint of CA
-                caStore.Close(); // closes the certificate store
+                // closes trusted root certificate authority store
+                store.Close();
+                certThumbprint = ca.Thumbprint;
             }
             catch (Exception)
             {
-                caResult = "CA installation failed.\n";
+                // updates return string
+                certResult = "CA installation failed: ";
             }
 
-            // returns results of certificate and CA installation, as well as the CA thumbprint
-            return Tuple.Create(certResult, caResult, caThumbprint);
+            certResult += certIssuer + "\n";
+
+            // returns two values: return message and thumbprint
+            return Tuple.Create(certResult, certThumbprint);
         }
 
 
@@ -551,7 +579,88 @@ namespace EduroamApp
 
         private void btnTest_Click(object sender, EventArgs e)
         {
-            GetCertFromString();
+            
+        }
+
+        /// <summary>
+        /// Gets all client certificates and CAs from EAP config file.
+        /// </summary>
+        /// <param name="filePath">Filepath of EAP Config file.</param>
+        /// <returns>List of client certificates and list of CAs.</returns>
+        public Tuple<List<X509Certificate2>, List<X509Certificate2>> GetCertificates(string filePath)
+        {
+            // loads the XML file from its file path
+            XElement doc = XElement.Load(filePath);
+
+            string base64Client = null; // Client cert encoded to base64
+            byte[] clientBytes = null; // Client cert decoded from base64
+            string clientPwd = null; // Client cert password
+            X509Certificate2 clientCert = null; // Client cert object
+
+            string base64Ca = null; // CA encoded to base64
+            byte[] caBytes = null; // CA decoded from base64
+            X509Certificate2 ca = null; // CA object            
+
+            // gets all AuthenticationMethod elements
+            IEnumerable<XElement> authMethodElements = doc.DescendantsAndSelf().Elements().Where(au => au.Name.LocalName == "AuthenticationMethod");
+            IEnumerable<XElement> caElements = null;
+
+            // certificate lists to be populated
+            List<X509Certificate2> clientCertificates = new List<X509Certificate2>();
+            List<X509Certificate2> certAuthorities = new List<X509Certificate2>();
+
+            // gets client certificates and CAs and adds them to their respective lists
+            foreach (XElement el in authMethodElements)
+            {
+                // AuthenticationMethod element only has one ClientCertificate element, so gets first
+                base64Client = el.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "ClientCertificate").FirstOrDefault().Value;
+                if (base64Client != "") // excludes if empty
+                {
+                    // gets passphrase element
+                    clientPwd = el.DescendantsAndSelf().Elements().Where(pw => pw.Name.LocalName == "Passphrase").FirstOrDefault().Value;
+                    // converts from base64
+                    clientBytes = Convert.FromBase64String(base64Client);
+                    // creates certificate object
+                    clientCert = new X509Certificate2(clientBytes, clientPwd, X509KeyStorageFlags.PersistKeySet);
+                    // adds certificate object to list
+                    clientCertificates.Add(clientCert);
+                }  
+
+                // AuthenticationMethod element can have multiple CA elements, so loops through them
+                caElements = el.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "CA");
+                foreach (XElement caElement in caElements)
+                {
+                    base64Ca = caElement.Value;
+                    if (base64Ca != "") // excludes if empty
+                    {
+                        // converts from base64
+                        caBytes = Convert.FromBase64String(base64Ca);
+                        // creates certificate object
+                        ca = new X509Certificate2(caBytes);
+                        // adds certificate object to list
+                        certAuthorities.Add(ca);
+                    }
+                }                
+            }            
+            // returns both certificate lists
+            return Tuple.Create(clientCertificates, certAuthorities);
+        }
+
+
+        /// <summary>
+        /// Checks wether a file is chosen during an open file dialog.
+        /// </summary>
+        /// <param name="filePath">Filepath returned from open file dialog.</param>
+        /// <returns>True if valid filepath, false if not.</returns>
+        public bool validateFileSelection(string filePath)
+        {            
+            if (filePath == null)
+            {
+                MessageBox.Show("No file selected.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtOutput.Text += "No file selected.";
+                return false;
+            }
+            return true;
         }
     }
 }

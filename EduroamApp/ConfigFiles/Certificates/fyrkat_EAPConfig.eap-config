@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<EAPIdentityProviderList>
-	<!-- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="eap-metadata.xsd" -->
-	<EAPIdentityProvider>
-		<!-- ID="fyrkat.no" namespace="urn:RFC4282:realm" lang="en" version="1" -->
+<EAPIdentityProviderList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="eap-metadata.xsd">	
+	<EAPIdentityProvider ID="fyrkat.no" namespace="urn:RFC4282:realm" lang="en" version="1">		
 		<AuthenticationMethods>
 			<AuthenticationMethod>
 				<EAPMethod>
