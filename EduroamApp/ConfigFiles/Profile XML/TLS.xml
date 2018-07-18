@@ -41,7 +41,7 @@
 									<ServerValidation>
 										<DisableUserPromptForServerValidation>false</DisableUserPromptForServerValidation>
 										<ServerNames/>
-										<TrustedRootCA>THUMBPRINT</TrustedRootCA>
+										<!-- <TrustedRootCA>THUMBPRINT</TrustedRootCA> -->
 									</ServerValidation>
 									<DifferentUsername>false</DifferentUsername>
 									<PerformServerValidation xmlns="http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV2">true</PerformServerValidation>
