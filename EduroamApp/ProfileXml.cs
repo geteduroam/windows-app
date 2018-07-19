@@ -126,7 +126,7 @@ namespace EduroamApp
 
 
 			newProfile.Save(@"C:\Users\lwerivel18\Desktop\testFileFromC#.xml");
-			return "";
+			return newProfile.ToString();
 		}
 
 

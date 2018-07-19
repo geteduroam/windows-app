@@ -80,16 +80,13 @@ namespace EduroamApp
 				}
 			}
 
+			// creates new profile xml object
+			ProfileXml newProfile = new ProfileXml(ssid, thumbprints, ProfileXml.EapType.TLS);
+			// generates XML file
+			string xmlFile = newProfile.CreateProfileXml();
 
-			// opens dialog to select wireless profile XML
-			string profileXml = GetXmlFile("Select Wireless Profile");
-			// validates that a file has been selected
-			if (validateFileSelection(profileXml) == false) { return; }
-
-			// configures profile xml to include ssid name and correct thumbprint
-			string newXml = ConfigureProfileXml(profileXml, ssid, thumbprints);
 			// creates a new network profile
-			txtOutput.Text += (CreateNewProfile(interfaceID, newXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
+			txtOutput.Text += (CreateNewProfile(interfaceID, xmlFile) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
 
 			// CONNECT WITH USERNAME+PASSWORD
 			if (cboMethod.SelectedIndex == 1)
@@ -146,7 +143,6 @@ namespace EduroamApp
 
 		// -------------------------------------------- FUNCIONS ------------------------------------------------------------
 
-
 		/// <summary>
 		/// Sets eduroam as chosen network to connect to.
 		/// </summary>
@@ -176,10 +172,6 @@ namespace EduroamApp
 			// if no networks called "eduroam" are found, return nothing
 			return null;
 		}
-
-
-
-
 
 		/// <summary>
 		/// Gets profile name, SSID name and CA thumbprint and inserts them into a wireless profile XML template.
@@ -300,7 +292,6 @@ namespace EduroamApp
 			return NativeWifi.SetProfile(networkID, newProfileType, profileXml, newSecurityType, overwrite);
 		}
 
-
 		/// <summary>
 		/// Gets all client certificates and CAs from EAP config file.
 		/// </summary>
@@ -364,9 +355,6 @@ namespace EduroamApp
 			// returns both certificate lists
 			return Tuple.Create(clientCertificates, certAuthorities);
 		}
-
-
-
 
 		/// <summary>
 		/// Installs a client certificate.
