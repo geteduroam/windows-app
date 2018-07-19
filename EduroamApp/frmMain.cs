@@ -15,8 +15,6 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Security;
 using System.Xml.Linq;
-using System.Xml;
-using System.Xml.XPath;
 
 namespace EduroamApp
 {
@@ -179,29 +177,6 @@ namespace EduroamApp
 			return null;
 		}
 
-		/// <summary>
-		/// Lets user select an XML file containing a wireless network profile.
-		/// </summary>
-		/// <returns>Path of profile xml.</returns>
-		public string GetXmlFile(string dialogTitle)
-		{
-			string xmlPath = null;
-
-			OpenFileDialog openXmlDialog = new OpenFileDialog();
-
-			openXmlDialog.InitialDirectory = @"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles"; // sets the initial directory of the open file dialog
-			openXmlDialog.Filter = "All files (*.*)|*.*"; // sets filter for file types that appear in open file dialog
-			openXmlDialog.FilterIndex = 0;
-			openXmlDialog.RestoreDirectory = true;
-			openXmlDialog.Title = dialogTitle;
-
-			if (openXmlDialog.ShowDialog() == DialogResult.OK)
-			{
-				xmlPath = openXmlDialog.FileName;
-			}
-
-			return xmlPath;
-		}
 
 
 
@@ -325,138 +300,73 @@ namespace EduroamApp
 			return NativeWifi.SetProfile(networkID, newProfileType, profileXml, newSecurityType, overwrite);
 		}
 
-		/// <summary>
-		/// Sets a profile's user data for login with username + password.
-		/// </summary>
-		/// <param name="networkID">Interface ID of selected network.</param>
-		/// <param name="profileName">Name of associated wireless profile.</param>
-		/// <param name="userDataXml">User data XML converted to string.</param>
-		/// <returns>True if succeeded, false if failed.</returns>
-		public static bool SetUserData(Guid networkID, string profileName, string userDataXml)
-		{
-			// sets the profile user type to "WLAN_SET_EAPHOST_DATA_ALL_USERS"
-			uint profileUserType = 0x00000001;
-
-			return NativeWifi.SetProfileUserData(networkID, profileName, profileUserType, userDataXml);
-		}
-
 
 		/// <summary>
-		/// Downloads and installs a client certificate and Client Authority certificate.
+		/// Gets all client certificates and CAs from EAP config file.
 		/// </summary>
-		/// <param name="password">The certificate's password.</param>
-		/// <returns>Certificate install success, CA install success and CA thumbprint.</returns>
-		public Tuple<string, string, string> InstallCertificate(string password)
-		{
-			// declare return values
-			string certResult = "Certificate installed successfully.\n";
-			string caResult = "CA installed successfully.\n";
-			string caThumbprint = null;
-
-			// sets the file path
-			string path = @"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles\Certificates";
-
-			// sets the file names
-			string certFile = "eduroam_certificate.p12";
-			string caFile = "Fyrkat+Root+CA.crt";
-
-			// installs certficate to personal certificate store
-			try
-			{
-				// opens personal certificate store
-				X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-				store.Open(OpenFlags.ReadWrite);
-				X509Certificate2 certificate = new X509Certificate2($@"{path}\{certFile}", password, X509KeyStorageFlags.PersistKeySet); // include PersistKeySet flag so certificate is valid after reboot
-				//X509Certificate2 certFromString = GetCertFromString();
-				// checks if certificate is already installed
-				var certExist = store.Certificates.Find(X509FindType.FindByThumbprint, certificate.Thumbprint, true);
-				if (certExist != null && certExist.Count > 0)
-				{
-					certResult = "Certificate already installed.\n";
-				}
-				else
-				{
-					// adds certificate to store
-					store.Add(certificate);
-				}
-				store.Close(); // closes the certificate store
-			}
-			catch (Exception)
-			{
-				certResult = "Certificate installation failed.\n";
-			}
-
-			// installs CA to trusted root certificate authority store
-			try
-			{
-				// opens trusted root certificate authority store
-				X509Store caStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
-				caStore.Open(OpenFlags.ReadWrite);
-				X509Certificate2 ca = new X509Certificate2($@"{path}\{caFile}");
-
-				// checks if CA is already installed
-				var caExist = caStore.Certificates.Find(X509FindType.FindByThumbprint, ca.Thumbprint, true);
-				if (caExist != null && caExist.Count > 0)
-				{
-					caResult = "CA already installed.\n";
-				}
-				else
-				{
-					// show messagebox to let users know about the CA installation warning
-					MessageBox.Show("You will now be prompted to install the Certificate Authority. " +
-									"In order to connect to eduroam, you need to accept this by pressing \"Yes\" in the next dialog box.", "Accept Certificate Authority", MessageBoxButtons.OK);
-					// adds CA to store
-					caStore.Add(ca);
-				}
-				caThumbprint = ca.Thumbprint; // gets thumbprint of CA
-				caStore.Close(); // closes the certificate store
-			}
-			catch (Exception)
-			{
-				caResult = "CA installation failed.\n";
-			}
-
-			// returns results of certificate and CA installation, as well as the CA thumbprint
-			return Tuple.Create(certResult, caResult, caThumbprint);
-		}
-
-		/// <summary>
-		/// Reads an EAP config file and gets information about client and server certificates.
-		/// </summary>
-		/// <returns>Certificate objects.</returns>
-		public Tuple<X509Certificate2, X509Certificate2> GetCertFromString()
+		/// <param name="filePath">Filepath of EAP Config file.</param>
+		/// <returns>List of client certificates and list of CAs.</returns>
+		public Tuple<List<X509Certificate2>, List<X509Certificate2>> GetCertificates(string filePath)
 		{
 			// loads the XML file from its file path
-			XElement doc = XElement.Load(@"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles\Certificates\fyrkat_EAPConfig.eap-config");
+			XElement doc = XElement.Load(filePath);
 
-			// shortens namespaces from XML file for easier typing
-			XNamespace ns1 = "http://www.w3.org/2001/XMLSchema-instance";
-			XNamespace ns2 = "urn:RFC4282:realm";
+			string base64Client = null; // Client cert encoded to base64
+			byte[] clientBytes = null; // Client cert decoded from base64
+			string clientPwd = null; // Client cert password
+			X509Certificate2 clientCert = null; // Client cert object
 
-			// gets client certificate as base64
-			XElement clientCert = doc.DescendantsAndSelf().Elements().Where(d => d.Name.LocalName == "ClientCertificate").FirstOrDefault();
+			string base64Ca = null; // CA encoded to base64
+			byte[] caBytes = null; // CA decoded from base64
+			X509Certificate2 ca = null; // CA object
 
-			// gets password for client certificate
-			XElement clientCertPwd = doc.DescendantsAndSelf().Elements().Where(d => d.Name.LocalName == "Passphrase").FirstOrDefault();
+			// gets all AuthenticationMethod elements
+			IEnumerable<XElement> authMethodElements = doc.DescendantsAndSelf().Elements().Where(au => au.Name.LocalName == "AuthenticationMethod");
+			IEnumerable<XElement> caElements = null;
 
-			// gets CA as base64
-			XElement xmlCa = doc.DescendantsAndSelf().Elements().Where(d => d.Name.LocalName == "CA").FirstOrDefault();
+			// certificate lists to be populated
+			List<X509Certificate2> clientCertificates = new List<X509Certificate2>();
+			List<X509Certificate2> certAuthorities = new List<X509Certificate2>();
 
-			// stores values
-			string base64Client = clientCert.Value;
-			string certPwd = clientCertPwd.Value;
-			string base64Ca = xmlCa.Value;
+			// gets client certificates and CAs and adds them to their respective lists
+			foreach (XElement el in authMethodElements)
+			{
+				// AuthenticationMethod element only has one ClientCertificate element, so gets first
+				base64Client = el.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "ClientCertificate").FirstOrDefault().Value;
+				if (base64Client != "") // excludes if empty
+				{
+					// gets passphrase element
+					clientPwd = el.DescendantsAndSelf().Elements().Where(pw => pw.Name.LocalName == "Passphrase").FirstOrDefault().Value;
+					// converts from base64
+					clientBytes = Convert.FromBase64String(base64Client);
+					// creates certificate object
+					clientCert = new X509Certificate2(clientBytes, clientPwd, X509KeyStorageFlags.PersistKeySet);
+					// adds certificate object to list
+					clientCertificates.Add(clientCert);
+				}
 
-			//decodes the client certificate from base64
-			var clientCertBytes = Convert.FromBase64String(base64Client);
-			var caBytes = Convert.FromBase64String(base64Ca);
-
-			// creates new certificate object
-			X509Certificate2 certificate = new X509Certificate2(clientCertBytes, certPwd, X509KeyStorageFlags.PersistKeySet);
-			X509Certificate2 ca = new X509Certificate2(caBytes);
-
-			return Tuple.Create(certificate, ca);
+				// AuthenticationMethod element can have multiple CA elements, so loops through them
+				caElements = el.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "CA");
+				foreach (XElement caElement in caElements)
+				{
+					base64Ca = caElement.Value;
+					if (base64Ca != "") // excludes if empty
+					{
+						// converts from base64
+						caBytes = Convert.FromBase64String(base64Ca);
+						// creates certificate object
+						ca = new X509Certificate2(caBytes);
+						// adds certificate object to list
+						certAuthorities.Add(ca);
+					}
+				}
+			}
+			// returns both certificate lists
+			return Tuple.Create(clientCertificates, certAuthorities);
 		}
+
+
+
 
 		/// <summary>
 		/// Installs a client certificate.
@@ -555,6 +465,23 @@ namespace EduroamApp
 		}
 
 
+
+		/// <summary>
+		/// Sets a profile's user data for login with username + password.
+		/// </summary>
+		/// <param name="networkID">Interface ID of selected network.</param>
+		/// <param name="profileName">Name of associated wireless profile.</param>
+		/// <param name="userDataXml">User data XML converted to string.</param>
+		/// <returns>True if succeeded, false if failed.</returns>
+		public static bool SetUserData(Guid networkID, string profileName, string userDataXml)
+		{
+			// sets the profile user type to "WLAN_SET_EAPHOST_DATA_ALL_USERS"
+			uint profileUserType = 0x00000001;
+
+			return NativeWifi.SetProfileUserData(networkID, profileName, profileUserType, userDataXml);
+		}
+
+
 		/// <summary>
 		/// Connects to the chosen wireless LAN.
 		/// </summary>
@@ -571,81 +498,29 @@ namespace EduroamApp
 				timeout: TimeSpan.FromSeconds(10));
 		}
 
-		// exits the application
-		private void btnExit_Click(object sender, EventArgs e)
-		{
-			Application.Exit();
-		}
-
-		private void btnTest_Click(object sender, EventArgs e)
-		{
-
-		}
-
 		/// <summary>
-		/// Gets all client certificates and CAs from EAP config file.
+		/// Lets user select an XML file containing a wireless network profile.
 		/// </summary>
-		/// <param name="filePath">Filepath of EAP Config file.</param>
-		/// <returns>List of client certificates and list of CAs.</returns>
-		public Tuple<List<X509Certificate2>, List<X509Certificate2>> GetCertificates(string filePath)
+		/// <returns>Path of profile xml.</returns>
+		public string GetXmlFile(string dialogTitle)
 		{
-			// loads the XML file from its file path
-			XElement doc = XElement.Load(filePath);
+			string xmlPath = null;
 
-			string base64Client = null; // Client cert encoded to base64
-			byte[] clientBytes = null; // Client cert decoded from base64
-			string clientPwd = null; // Client cert password
-			X509Certificate2 clientCert = null; // Client cert object
+			OpenFileDialog openXmlDialog = new OpenFileDialog();
 
-			string base64Ca = null; // CA encoded to base64
-			byte[] caBytes = null; // CA decoded from base64
-			X509Certificate2 ca = null; // CA object
+			openXmlDialog.InitialDirectory = @"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles"; // sets the initial directory of the open file dialog
+			openXmlDialog.Filter = "All files (*.*)|*.*"; // sets filter for file types that appear in open file dialog
+			openXmlDialog.FilterIndex = 0;
+			openXmlDialog.RestoreDirectory = true;
+			openXmlDialog.Title = dialogTitle;
 
-			// gets all AuthenticationMethod elements
-			IEnumerable<XElement> authMethodElements = doc.DescendantsAndSelf().Elements().Where(au => au.Name.LocalName == "AuthenticationMethod");
-			IEnumerable<XElement> caElements = null;
-
-			// certificate lists to be populated
-			List<X509Certificate2> clientCertificates = new List<X509Certificate2>();
-			List<X509Certificate2> certAuthorities = new List<X509Certificate2>();
-
-			// gets client certificates and CAs and adds them to their respective lists
-			foreach (XElement el in authMethodElements)
+			if (openXmlDialog.ShowDialog() == DialogResult.OK)
 			{
-				// AuthenticationMethod element only has one ClientCertificate element, so gets first
-				base64Client = el.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "ClientCertificate").FirstOrDefault().Value;
-				if (base64Client != "") // excludes if empty
-				{
-					// gets passphrase element
-					clientPwd = el.DescendantsAndSelf().Elements().Where(pw => pw.Name.LocalName == "Passphrase").FirstOrDefault().Value;
-					// converts from base64
-					clientBytes = Convert.FromBase64String(base64Client);
-					// creates certificate object
-					clientCert = new X509Certificate2(clientBytes, clientPwd, X509KeyStorageFlags.PersistKeySet);
-					// adds certificate object to list
-					clientCertificates.Add(clientCert);
-				}
-
-				// AuthenticationMethod element can have multiple CA elements, so loops through them
-				caElements = el.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "CA");
-				foreach (XElement caElement in caElements)
-				{
-					base64Ca = caElement.Value;
-					if (base64Ca != "") // excludes if empty
-					{
-						// converts from base64
-						caBytes = Convert.FromBase64String(base64Ca);
-						// creates certificate object
-						ca = new X509Certificate2(caBytes);
-						// adds certificate object to list
-						certAuthorities.Add(ca);
-					}
-				}
+				xmlPath = openXmlDialog.FileName;
 			}
-			// returns both certificate lists
-			return Tuple.Create(clientCertificates, certAuthorities);
-		}
 
+			return xmlPath;
+		}
 
 		/// <summary>
 		/// Checks wether a file is chosen during an open file dialog.
@@ -662,5 +537,18 @@ namespace EduroamApp
 			}
 			return true;
 		}
+
+		// exits the application
+		private void btnExit_Click(object sender, EventArgs e)
+		{
+			Application.Exit();
+		}
+
+		private void btnTest_Click(object sender, EventArgs e)
+		{
+
+		}
+
+
 	}
 }
