@@ -54,8 +54,4 @@
 			</OneX>
 		</security>
 	</MSM>
-	<MacRandomization xmlns="http://www.microsoft.com/networking/WLAN/profile/v3">
-		<enableRandomization>false</enableRandomization>
-		<randomizationSeed>1342402056</randomizationSeed>
-	</MacRandomization>
 </WLANProfile>
