@@ -4,20 +4,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using System.Windows.Forms;
 
 namespace EduroamApp
 {
 	class ProfileXml
 	{
 		// Properties
-		public string Ssid { get; set; }
-		public string ProfileName { get; set; }
-		public List<string> Thumbprints { get; set; }
-		public ProfileXml.Eap EapType { get; set; }
-		public enum Eap
+		public string Ssid { get; set; } = "eduroam";
+		public List<string> Thumbprints { get; set; } = new List<string>();
+		public uint Eap { get; set; } = 13;
+		// enumerator for EAP types
+		public enum EapType
 		{
 			TLS = 13,
 			PEAP_MSCHAPv2 = 25
+		}
+
+
+		// Constructor
+		public ProfileXml(string ssid, List<string> tPrints, EapType eapType)
+		{
+			Ssid = ssid;
+			Thumbprints = tPrints;
+			Eap = (uint)eapType; // converts to uint value
 		}
 
 		// Namespaces
@@ -26,21 +36,96 @@ namespace EduroamApp
 		private XNamespace nsEHC = "http://www.microsoft.com/provisioning/EapHostConfig";
 		private XNamespace nsEC = "http://www.microsoft.com/provisioning/EapCommon";
 		private XNamespace nsBECP = "http://www.microsoft.com/provisioning/BaseEapConnectionPropertiesV1";
-		// TLS specific
+			// TLS specific
 		private XNamespace nsETCPv1 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV1";
 		private XNamespace nsETCPv2 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV2";
-		// MSCHAPv2 specific
+			// MSCHAPv2 specific
 		private XNamespace nsMPCPv1 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV1";
 		private XNamespace nsMPCPv2 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV2";
 		private XNamespace nsMPCPv3 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV3";
 		private XNamespace nsMCCP = "http://www.microsoft.com/provisioning/MsChapV2ConnectionPropertiesV1";
 
 
-		public string CreateProfileXml(string sName, string pName, int eapType, List<string> tPrints)
+		public string CreateProfileXml()
 		{
-			//XElement newProfile =
-			//    new XElement();
+			XElement newProfile =
+				new XElement(nsWLAN + "WLANProfile",
+					new XElement(nsWLAN + "name", Ssid),
+					new XElement(nsWLAN + "SSIDConfig",
+						new XElement(nsWLAN + "SSID",
+							new XElement(nsWLAN + "name", Ssid)
+						)
+					),
+					new XElement(nsWLAN + "connectionType", "ESS"),
+					new XElement(nsWLAN + "connectionMode", "auto"),
+					new XElement(nsWLAN + "MSM",
+						new XElement(nsWLAN + "security",
+							new XElement(nsWLAN + "authEncryption",
+								new XElement(nsWLAN + "authentication", "WPA2"),
+								new XElement(nsWLAN + "encryption", "AES"),
+								new XElement(nsWLAN + "useOneX", "true")
+							),
+							new XElement(nsWLAN + "PMKCacheMode", "enabled"),
+							new XElement(nsWLAN + "PMKCacheTTL", "720"),
+							new XElement(nsWLAN + "PMKCacheSize", "128"),
+							new XElement(nsWLAN + "preAuthMode", "disabled"),
+							new XElement(nsOneX + "OneX",
+								new XElement(nsOneX + "authMode", "user"),
+								new XElement(nsOneX + "EAPConfig",
+									new XElement(nsEHC + "EapHostConfig",
+										new XElement(nsEHC + "EapMethod",
+											new XElement(nsEC + "Type", Eap),
+											new XElement(nsEC + "VendorId", 0),
+											new XElement(nsEC + "VendorType", 0),
+											new XElement(nsEC + "AuthorId", 0)),
+										new XElement(nsEHC + "Config",
+											new XElement(nsBECP + "Eap",
+												new XElement(nsBECP + "Type", Eap),
+												new XElement(nsETCPv1 + "EapType",
+													new XElement(nsETCPv1 + "CredentialsSource",
+														new XElement(nsETCPv1 + "CertificateStore",
+															new XElement(nsETCPv1 + "SimpleCertSelection", "true")
+														)
+													),
+													new XElement(nsETCPv1 + "ServerValidation",
+														new XElement(nsETCPv1 + "DisableUserPromptForServerValidation", "false")
+													),
+													new XElement(nsETCPv1 + "DifferentUsername", "false"),
+													new XElement(nsETCPv2 + "PerformServerValidation", "true"),
+													new XElement(nsETCPv2 + "AcceptServerName", "false")
+												)
+											)
+										)
+									)
+								)
+							)
+						)
+					)
+				);
 
+			// if any thumbprints exist, add them to the profile
+			if (Thumbprints.Any())
+			{
+				// gets element where thumbprint child elements are to be created
+				XElement serverValidationElement = newProfile.Element(nsWLAN + "MSM")
+									 .Element(nsWLAN + "security")
+									 .Element(nsOneX + "OneX")
+									 .Element(nsOneX + "EAPConfig")
+									 .Element(nsEHC + "EapHostConfig")
+									 .Element(nsEHC + "Config")
+									 .Element(nsBECP + "Eap")
+									 .Element(nsETCPv1 + "EapType")
+									 .Element(nsETCPv1 + "ServerValidation");
+
+				// creates TrustedRootCA child elements and assigns thumbprint as value
+				foreach (string thumb in Thumbprints)
+				{
+					serverValidationElement.Add(new XElement(nsETCPv1 + "TrustedRootCA", thumb));
+				}
+			}
+
+
+			newProfile.Save(@"C:\Users\lwerivel18\Desktop\testFileFromC#.xml");
 			return "";
 		}
 
