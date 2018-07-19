@@ -230,7 +230,7 @@ namespace EduroamApp
 
             // adds the xml declaration to the top of the document and converts it to string
             string wDeclaration = doc.Declaration.ToString() + Environment.NewLine + doc.ToString();
-
+            
             // returns the edited xml file
             return wDeclaration;
         }
@@ -546,6 +546,13 @@ namespace EduroamApp
 
         private void btnTest_Click(object sender, EventArgs e)
         {
+            List<string> newList = new List<string>();
+            newList.Add("boyoboy");
+            newList.Add("isthisworking");
+
+            ProfileXml testProfile = new ProfileXml("eduroam", newList, ProfileXml.EapType.TLS);
+            //MessageBox.Show("TLS type: " + testProfile.Eap);
+            testProfile.CreateProfileXml();
             
         }
 
