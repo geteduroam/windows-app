@@ -80,29 +80,25 @@ namespace EduroamApp
 				}
 			}
 
-			// creates new profile xml object
-			ProfileXml newProfile = new ProfileXml(ssid, thumbprints, ProfileXml.EapType.TLS);
-			// generates XML file
-			string xmlFile = newProfile.CreateProfileXml();
+			// generates new profile xml
+			string profileXml = ProfileXml.CreateProfileXml(ssid, ProfileXml.EapType.PEAP_MSCHAPv2, thumbprints);
 
-			// creates a new network profile
-			txtOutput.Text += (CreateNewProfile(interfaceID, xmlFile) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
+			// creates a new wireless profile
+			txtOutput.Text += (CreateNewProfile(interfaceID, profileXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
 
 			// CONNECT WITH USERNAME+PASSWORD
 			if (cboMethod.SelectedIndex == 1)
 			{
-				// opens dialog to select user data XML
-				string userDataXml = GetXmlFile("Select User Data XML");
-				// validates that a file has been selected
-				if (validateFileSelection(userDataXml) == false) { return; }
-
 				// gets username and password from UI
 				string username = txtUsername.Text;
 				string password = txtPassword.Text;
-				// configures user data xml to include username and password
-				string newUserData = ConfigureUserDataXml(userDataXml, username, password);
+				// generates user data xml file
+				string userDataXml = UserDataXml.CreateUserDataXml(username, password);
+				MessageBox.Show(userDataXml);
+				XElement boi = XElement.Load(@"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles\ProfileXML\USERDATA.xml");
+				MessageBox.Show(boi.ToString());
 				// sets user data
-				txtOutput.Text += (SetUserData(interfaceID, ssid, newUserData) ? "User data set successfully.\n" : "Setting user data failed.\n");
+				txtOutput.Text += (SetUserData(interfaceID, ssid, boi.ToString()) ? "User data set successfully.\n" : "Setting user data failed.\n");
 			}
 
 			// connects to eduroam
@@ -173,59 +169,6 @@ namespace EduroamApp
 			return null;
 		}
 
-		/// <summary>
-		/// Gets profile name, SSID name and CA thumbprint and inserts them into a wireless profile XML template.
-		/// </summary>
-		/// <param name="xmlFile">Path to profile xml template.</param>
-		/// <param name="ssid">Profile and SSID name.</param>
-		/// <param name="thumb">CA thumbprint.</param>
-		/// <returns>Configured XML file as string.</returns>
-		public String ConfigureProfileXml(string xmlFile, string ssid, List<string> thumbprints)
-		{
-			// loads the XML file from its file path
-			XDocument doc = XDocument.Load(xmlFile);
-
-			// shortens namespaces from XML file for easier typing
-			XNamespace ns1 = "http://www.microsoft.com/networking/WLAN/profile/v1";
-			XNamespace ns2 = "http://www.microsoft.com/networking/OneX/v1";
-			XNamespace ns3 = "http://www.microsoft.com/provisioning/EapHostConfig";
-			XNamespace ns4 = "http://www.microsoft.com/provisioning/BaseEapConnectionPropertiesV1";
-			// namespace changes depending on EAP-type
-			XNamespace ns5 = (cboMethod.SelectedIndex == 0 ? "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV1" : "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV1");
-
-			// gets elements to edit
-			XElement profileName = doc.Root.Element(ns1 + "name");
-
-			XElement ssidName = doc.Root.Element(ns1 + "SSIDConfig")
-									.Element(ns1 + "SSID")
-									.Element(ns1 + "name");
-
-			XElement serverValidationElement = doc.Root.Element(ns1 + "MSM")
-									 .Element(ns1 + "security")
-									 .Element(ns2 + "OneX")
-									 .Element(ns2 + "EAPConfig")
-									 .Element(ns3 + "EapHostConfig")
-									 .Element(ns3 + "Config")
-									 .Element(ns4 + "Eap")
-									 .Element(ns5 + "EapType")
-									 .Element(ns5 + "ServerValidation");
-									 //.Element(ns5 + "TrustedRootCA");
-
-			// sets elements to desired values
-			profileName.Value = ssid;
-			ssidName.Value = ssid;
-
-			foreach (string thumb in thumbprints)
-			{
-				serverValidationElement.Add(new XElement(ns5 + "TrustedRootCA", thumb));
-			}
-
-			// adds the xml declaration to the top of the document and converts it to string
-			string wDeclaration = doc.Declaration.ToString() + Environment.NewLine + doc.ToString();
-
-			// returns the edited xml file
-			return wDeclaration;
-		}
 
 		/// <summary>
 		/// Inserts username and password into user data XML file.
@@ -534,14 +477,13 @@ namespace EduroamApp
 
 		private void btnTest_Click(object sender, EventArgs e)
 		{
-			List<string> newList = new List<string>();
-			newList.Add("boyoboy");
-			newList.Add("isthisworking");
+			//List<string> newList = new List<string>();
+			//newList.Add("boyoboy");
+			//newList.Add("isthisworking");
 
-			ProfileXml testProfile = new ProfileXml("eduroam", newList, ProfileXml.EapType.TLS);
-			//MessageBox.Show("TLS type: " + testProfile.Eap);
-			testProfile.CreateProfileXml();
+			//string mahXml = ProfileXml.CreateProfileXml("yesLord", ProfileXml.EapType.PEAP_MSCHAPv2, newList);
 
+			UserDataXml.CreateUserDataXml("myname", "ispassword");
 		}
 
 
