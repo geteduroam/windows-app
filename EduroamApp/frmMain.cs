@@ -31,26 +31,22 @@ namespace EduroamApp
 			cboMethod.SelectedIndex = 0;
 		}
 
-		private void btnSelectProfile_Click(object sender, EventArgs e)
-		{
-			string filePath = GetXmlFile("Select Wireless Profile");
-
-			string fileName = Path.GetFileName(filePath);
-			txtProfilePath.Text = fileName;
-		}
 
 		private void btnConnect_Click(object sender, EventArgs e)
 		{
-			// all CA thumbprints that will be added to Wireless Profile XML
-			List<string> thumbprints = new List<string>();
-
-			//thumbprint for login with username/password
-			thumbprints.Add("8d043f808044894db8d8e06da2acf5f98fb4a610");
-
 			// sets eduroam as chosen network
 			AvailableNetworkPack network = SetChosenNetwork();
 			string ssid = network.Ssid.ToString(); // gets SSID
 			Guid interfaceID = network.Interface.Id; // gets interface ID
+
+			// all CA thumbprints that will be added to Wireless Profile XML
+			List<string> thumbprints = new List<string>();
+			thumbprints.Add("8d043f808044894db8d8e06da2acf5f98fb4a610"); //thumbprint for login with username/password
+
+			// sets chosen EAP-type based on selected combobox item
+			ProfileXml.EapType eapType;
+			if (cboMethod.SelectedIndex == 0) { eapType = ProfileXml.EapType.TLS; } else { eapType = ProfileXml.EapType.PEAP_MSCHAPv2; };
+
 
 			// CONNECT VIA CERTIFICATE
 			if (cboMethod.SelectedIndex == 0)
@@ -81,7 +77,7 @@ namespace EduroamApp
 			}
 
 			// generates new profile xml
-			string profileXml = ProfileXml.CreateProfileXml(ssid, ProfileXml.EapType.PEAP_MSCHAPv2, thumbprints);
+			string profileXml = ProfileXml.CreateProfileXml(ssid, eapType, thumbprints);
 
 			// creates a new wireless profile
 			txtOutput.Text += (CreateNewProfile(interfaceID, profileXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
@@ -114,22 +110,16 @@ namespace EduroamApp
 			switch (selectedMethod)
 			{
 				case 0:
-					lblCertPwd.Visible = true;
-					txtCertPwd.Visible = true;
-
-					lblUsername.Visible = false;
-					lblPassword.Visible = false;
-					txtUsername.Visible = false;
-					txtPassword.Visible = false;
+					lblUsername.Enabled = false;
+					lblPassword.Enabled = false;
+					txtUsername.Enabled = false;
+					txtPassword.Enabled = false;
 					break;
 				case 1:
-					lblUsername.Visible = true;
-					lblPassword.Visible = true;
-					txtUsername.Visible = true;
-					txtPassword.Visible = true;
-
-					lblCertPwd.Visible = false;
-					txtCertPwd.Visible = false;
+					lblUsername.Enabled = true;
+					lblPassword.Enabled = true;
+					txtUsername.Enabled = true;
+					txtPassword.Enabled = true;
 					break;
 			}
 		}
