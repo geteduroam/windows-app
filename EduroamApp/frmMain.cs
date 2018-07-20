@@ -94,11 +94,9 @@ namespace EduroamApp
                 string password = txtPassword.Text;
                 // generates user data xml file
                 string userDataXml = UserDataXml.CreateUserDataXml(username, password);
-                MessageBox.Show(userDataXml);
-                XElement boi = XElement.Load(@"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles\ProfileXML\USERDATA.xml");
-                MessageBox.Show(boi.ToString());
+                
                 // sets user data
-                txtOutput.Text += (SetUserData(interfaceID, ssid, boi.ToString()) ? "User data set successfully.\n" : "Setting user data failed.\n");
+                txtOutput.Text += (SetUserData(interfaceID, ssid, userDataXml) ? "User data set successfully.\n" : "Setting user data failed.\n");
             }
 
             // connects to eduroam
