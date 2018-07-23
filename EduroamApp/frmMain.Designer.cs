@@ -30,7 +30,6 @@ namespace EduroamApp
 		{
 			this.txtOutput = new System.Windows.Forms.RichTextBox();
 			this.btnConnect = new System.Windows.Forms.Button();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.txtUsername = new System.Windows.Forms.TextBox();
 			this.lblUsername = new System.Windows.Forms.Label();
 			this.cboMethod = new System.Windows.Forms.ComboBox();
@@ -39,6 +38,7 @@ namespace EduroamApp
 			this.txtPassword = new System.Windows.Forms.TextBox();
 			this.btnExit = new System.Windows.Forms.Button();
 			this.btnTest = new System.Windows.Forms.Button();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			//
@@ -61,16 +61,6 @@ namespace EduroamApp
 			this.btnConnect.Text = "Connect";
 			this.btnConnect.UseVisualStyleBackColor = true;
 			this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
-			//
-			// pictureBox1
-			//
-			this.pictureBox1.Image = global::EduroamApp.Properties.Resources.eduroam_logo;
-			this.pictureBox1.Location = new System.Drawing.Point(182, 12);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(121, 58);
-			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-			this.pictureBox1.TabIndex = 8;
-			this.pictureBox1.TabStop = false;
 			//
 			// txtUsername
 			//
@@ -149,6 +139,16 @@ namespace EduroamApp
 			this.btnTest.UseVisualStyleBackColor = true;
 			this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
 			//
+			// pictureBox1
+			//
+			this.pictureBox1.Image = global::EduroamApp.Properties.Resources.eduroam_logo;
+			this.pictureBox1.Location = new System.Drawing.Point(182, 12);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(121, 58);
+			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.pictureBox1.TabIndex = 8;
+			this.pictureBox1.TabStop = false;
+			//
 			// frmMain
 			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -166,7 +166,7 @@ namespace EduroamApp
 			this.Controls.Add(this.txtOutput);
 			this.Controls.Add(this.txtUsername);
 			this.Name = "frmMain";
-			this.Text = "Eduroam installer";
+			this.Text = "Eduroam – installer";
 			this.Load += new System.EventHandler(this.frmMain_load);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.ResumeLayout(false);
