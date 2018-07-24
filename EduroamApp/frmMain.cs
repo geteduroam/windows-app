@@ -15,13 +15,25 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Security;
 using System.Xml.Linq;
+using Newtonsoft.Json;
+using System.Device.Location;
 
 namespace EduroamApp
 {
     public partial class frmMain : Form
     {
+        // list containing all identity providers
+        List<IdentityProvider> identityProviders;
+        // list containing all profiles of an identity provider
+        IdentityProviderProfile idProviderProfiles;
+        // id of selected institution
+        int idProviderId;
+        // id of selected institution profile
+        string profileId;
         // network pack for eduroam network
         AvailableNetworkPack network;
+        // flag indicates wether a client certificate is succesfully installed or not
+        int clientCertFlag = 0;
 
         public frmMain()
         {
@@ -29,14 +41,144 @@ namespace EduroamApp
         }
 
         private void frmMain_load(object sender, EventArgs e)
-        {
-            // sets default connection method
-            cboMethod.SelectedIndex = 0;
+        {            
+            
+
+            // url for json containing all identity providers / institutions
+            string allIdentityProvidersUrl = "https://cat.eduroam.org/user/API.php?action=listAllIdentityProviders&lang=en";
+
+            // json file as string
+            string idProviderJson = "";
+            try
+            {
+                // downloads json file from url as string
+                using (WebClient client = new WebClient())
+                {
+                    idProviderJson = client.DownloadString(allIdentityProvidersUrl);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error: couldn't fetch identity provider list. Exiting application.","Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //Application.Exit();
+            }
+
+            // gets list of identity providers from json file
+            identityProviders = JsonConvert.DeserializeObject<List<IdentityProvider>>(idProviderJson);
+            // adds countries to combobox
+            cboCountry.Items.AddRange(identityProviders.OrderBy(provider => provider.country).Select(provider => provider.country).Distinct().ToArray());
         }
-                
+
+        private void cboCountry_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // clear combobox
+            cboInstitution.Items.Clear();
+            // clear selected profile
+            profileId = null;
+
+            // adds identity providers from selected country to combobox
+            cboInstitution.Items.AddRange(identityProviders.Where(provider => provider.country == cboCountry.Text).OrderBy(provider => provider.title).Select(provider => provider.title).ToArray());
+        }
+
+        private void cboInstitution_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // clear combobox
+            cboProfiles.Items.Clear();
+            // clear selected profile
+            profileId = null;
+
+            // gets id of institution selected in combobox
+            idProviderId = identityProviders.Where(x => x.title == cboInstitution.Text).Select(x => x.id).First();
+            // adds institution id to url
+            string profilesUrl = $"https://cat.eduroam.org/user/API.php?action=listProfiles&id={idProviderId}&lang=en";
+
+            // json file as string
+            string profilesJson = "";
+            try
+            {
+                // downloads json file from url as string
+                using (WebClient client = new WebClient())
+                {
+                    profilesJson = client.DownloadString(profilesUrl);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error: couldn't fetch identity provider profiles.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            // gets identity provider profile from json
+            idProviderProfiles = JsonConvert.DeserializeObject<IdentityProviderProfile>(profilesJson);
+
+            // if an identity provider has more than one profile, add to combobox
+            if (idProviderProfiles.data.Count > 1)
+            {
+                // enable combobox
+                cboProfiles.Enabled = true;
+                // enable label
+                lblSelectProfile.Enabled = true;
+                // add profiles to combobox
+                cboProfiles.Items.AddRange(idProviderProfiles.data.Select(profile => profile.display).ToArray());
+            }
+            else
+            {
+                // gets the only profile id
+                profileId = idProviderProfiles.data.Single().id;
+                // disable combobox
+                cboProfiles.Enabled = false;
+                // disable label
+                lblSelectProfile.Enabled = false;
+            }
+        }
+
+        private void cboProfiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboProfiles.Text != "")
+            {
+                // gets profile id of profile selected in combobox
+                profileId = idProviderProfiles.data.Where(profile => profile.display == cboProfiles.Text).Select(x => x.id).Single();
+            }
+        }
+
 
         private void btnConnect_Click(object sender, EventArgs e)
         {
+            string generateEapUrl = $"https://cat.eduroam.org/user/API.php?action=generateInstaller&id=eap-config&lang=en&profile={profileId}";
+
+            // json file as string
+            string generateEapJson = "";
+            try
+            {
+                // downloads json file from url as string
+                using (WebClient client = new WebClient())
+                {
+                    generateEapJson = client.DownloadString(generateEapUrl);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error: couldn't fetch Eap Config generate.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            GenerateEapConfig eapConfigInstance = JsonConvert.DeserializeObject<GenerateEapConfig>(generateEapJson);
+
+            string eapConfigUrl = $"https://cat.eduroam.org/user/{eapConfigInstance.data.link}";
+            string eapConfigString = "";
+            try
+            {
+                // downloads config file from url as string
+                using (WebClient client = new WebClient())
+                {
+                    eapConfigString = client.DownloadString(eapConfigUrl);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error: couldn't fetch Eap Config file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            MessageBox.Show(eapConfigString);
+
             // sets eduroam as chosen network
             EduroamNetwork eduroamInstance = new EduroamNetwork(); // creates new instance of eduroam network
             network = eduroamInstance.networkPack; // gets network pack
@@ -48,12 +190,13 @@ namespace EduroamApp
             thumbprints.Add("8d043f808044894db8d8e06da2acf5f98fb4a610"); //thumbprint for login with username/password
                                    
 
-            int clientCertFlag = 0;
+
+            
             int caFlag = 0;
 
             // opens dialog to select EAP Config file
-            string eapConfigPath = GetXmlFile("Select EAP Config file");
-            // validates that file has been selected
+            string eapConfigPath = GetFileFromDialog("Select EAP Config file");
+            // cancel and present error message if no file selected
             if (validateFileSelection(eapConfigPath) == false) { return; }
 
             // gets a list of all client certificates and a list of all CAs
@@ -67,17 +210,17 @@ namespace EduroamApp
                 {
                     // outputs result
                     txtOutput.Text += InstallClientCertificate(clientCert);
-                }
-                clientCertFlag = 1;
+                }                
             }
             else
             {
-                //MessageBox.Show("No certificates could be found, please login with username and password.");
+                // if no certs to install, flag set to 0
+                // user will have to authenticate with username and password instead
                 clientCertFlag = 0;
             }
 
-            // checks if there are CAs to install
-            if (getAllCertificates.Item2.Any())
+            // checks if there are CAs to install and if client certs were succesfully installed
+            if (getAllCertificates.Item2.Any() && clientCertFlag != 0)
             {
                 // installs CAs
                 foreach (X509Certificate2 certAuth in getAllCertificates.Item2)
@@ -117,7 +260,9 @@ namespace EduroamApp
                 if (loginWithCredentials == DialogResult.Yes)
                 {
                     var logonForm = new frmLogon();
+                    // passes the current network pack as a parameter
                     logonForm.GetEduroamInstance(network);
+                    // shows the logon form as a dialog, so user can't interact with main form
                     logonForm.ShowDialog();
                 }                       
             }
@@ -129,63 +274,17 @@ namespace EduroamApp
             }            
         }
 
-        // lets user select wether they want to connect to eduroam using a certificate or username and password
-        private void cboMethod_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            int selectedMethod = cboMethod.SelectedIndex;
-
-            // shows/hides controls according to chosen connection method
-            switch (selectedMethod)
-            {
-                case 0:
-                    lblUsername.Enabled = false;
-                    lblPassword.Enabled = false;
-                    txtUsername.Enabled = false;
-                    txtPassword.Enabled = false;
-                    break;
-                case 1:
-                    lblUsername.Enabled = true;
-                    lblPassword.Enabled = true;
-                    txtUsername.Enabled = true;
-                    txtPassword.Enabled = true;
-                    break;
-            }
-        }
-
 
         // -------------------------------------------- FUNCIONS ------------------------------------------------------------
-        
-        /// <summary>
-        /// Sets eduroam as chosen network to connect to.
-        /// </summary>
-        /// <returns>Network pack containing eudoram properties.</returns>
-        public AvailableNetworkPack SetChosenNetwork()
+
+        public void LoadJson()
         {
-            // gets all available networks and stores them in a list
-            List<AvailableNetworkPack> networks = NativeWifi.EnumerateAvailableNetworks().ToList();
-
-            // sets eduroam as the chosen network,
-            // prefers a network with an existing profile
-            foreach (AvailableNetworkPack network in networks)
+            using (StreamReader r = new StreamReader("file.json"))
             {
-                if (network.Ssid.ToString() == "eduroam")
-                {
-                    foreach (AvailableNetworkPack network2 in networks)
-                    {
-                        if (network2.Ssid.ToString() == "eduroam" && network2.ProfileName != "")
-                        {
-                            return network2;
-                        }
-                    }
-                    return network;
-                }
+                string json = r.ReadToEnd();
+                List<IdentityProvider> items = JsonConvert.DeserializeObject<List<IdentityProvider>>(json);
             }
-
-            // if no networks called "eduroam" are found, return nothing
-            return null;
-        }             
-        
-     
+        }
 
         /// <summary>
         /// Creates new network profile according to selected network and profile XML.
@@ -234,7 +333,7 @@ namespace EduroamApp
 
             // gets all ClientSideCredential elements
             IEnumerable<XElement> clientCredElements = doc.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "ClientSideCredential");
-            IEnumerable<XElement> certElements = null; // list of client certificate elements
+            IEnumerable<XElement> certElements = null; // list of ClientCertificate elements
             IEnumerable<XElement> caElements = null; // list of CA elements
 
             // gets client certificates and adds them to client certificate list
@@ -244,6 +343,7 @@ namespace EduroamApp
                 certElements = el.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "ClientCertificate");
                 if (certElements.Any())
                 {
+                    // there should only be one ClientCertificate in a ClientSideCredential element, so gets the first one
                     base64Client = certElements.First().Value;
                     if (base64Client != "") // checks that the certificate value is not empty
                     {
@@ -255,16 +355,8 @@ namespace EduroamApp
                         clientCert = new X509Certificate2(clientBytes, clientPwd, X509KeyStorageFlags.PersistKeySet);
                         // adds certificate object to list
                         clientCertificates.Add(clientCert);
-                    }
-                    else
-                    {
-                        // MessageBox.Show("Client certificate is empty.");
-                    }
-                }
-                else
-                {
-                    // MessageBox.Show("No client certificates found.");
-                }
+                    }                    
+                }                
             }
 
             // gets CAs and adds them to CA list
@@ -282,42 +374,8 @@ namespace EduroamApp
                     certAuthorities.Add(caCert);
                 }
             }
-
-            // gets client certificates and CAs and adds them to their respective lists
-            //foreach (XElement el in authMethodElements)
-            //{
-                
-                //// AuthenticationMethod element only has one ClientCertificate element, so gets first
-                //base64Client = el.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "ClientCertificate").FirstOrDefault().Value;
-                //if (base64Client != "") // excludes if empty
-                //{
-                //    // gets passphrase element
-                //    clientPwd = el.DescendantsAndSelf().Elements().Where(pw => pw.Name.LocalName == "Passphrase").FirstOrDefault().Value;
-                //    // converts from base64
-                //    clientBytes = Convert.FromBase64String(base64Client);
-                //    // creates certificate object
-                //    clientCert = new X509Certificate2(clientBytes, clientPwd, X509KeyStorageFlags.PersistKeySet);
-                //    // adds certificate object to list
-                //    clientCertificates.Add(clientCert);
-                //}
-
-            //    // AuthenticationMethod element can have multiple CA elements, so loops through them
-            //    caElements = el.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "CA");
-            //    foreach (XElement caElement in caElements)
-            //    {
-            //        base64Ca = caElement.Value;
-            //        if (base64Ca != "") // excludes if empty
-            //        {
-            //            // converts from base64
-            //            caBytes = Convert.FromBase64String(base64Ca);
-            //            // creates certificate object
-            //            ca = new X509Certificate2(caBytes);
-            //            // adds certificate object to list
-            //            certAuthorities.Add(ca);
-            //        }
-            //    }
-            //}
-            // returns both certificate lists
+            
+            // returns lists of certificates
             return Tuple.Create(clientCertificates, certAuthorities);
         }
 
@@ -353,7 +411,10 @@ namespace EduroamApp
                 }
 
                 // closes personal certificate store
-                store.Close(); 
+                store.Close();
+
+                // sets flag to 1 to indicate succesful client certificate install
+                clientCertFlag = 1;
             }
             catch (Exception)
             {
@@ -439,10 +500,11 @@ namespace EduroamApp
         }
 
         /// <summary>
-        /// Lets user select an XML file containing a wireless network profile.
+        /// Lets user select a file through an OpenFileDialog.
         /// </summary>
-        /// <returns>Path of profile xml.</returns>
-        public string GetXmlFile(string dialogTitle)
+        /// <param name="dialogTitle">Title of the OpenFileDialog.</param>
+        /// <returns>Path of selected file.</returns>
+        public string GetFileFromDialog(string dialogTitle)
         {
             string xmlPath = null;
 
@@ -486,14 +548,24 @@ namespace EduroamApp
 
         private void btnTest_Click(object sender, EventArgs e)
         {
-            //List<string> newList = new List<string>();
-            //newList.Add("boyoboy");
-            //newList.Add("isthisworking");
 
-            //string mahXml = ProfileXml.CreateProfileXml("yesLord", ProfileXml.EapType.PEAP_MSCHAPv2, newList);
+            GeoCoordinateWatcher watcher = new GeoCoordinateWatcher();
 
-            UserDataXml.CreateUserDataXml("myname", "ispassword");
+            // Do not suppress prompt, and wait 1000 milliseconds to start.
+            watcher.TryStart(false, TimeSpan.FromMilliseconds(1000));
+
+            GeoCoordinate coord = watcher.Position.Location;
+
+            if (coord.IsUnknown != true)
+            {
+                MessageBox.Show($"Lat: {coord.Latitude}, Long: {coord.Longitude}");
+            }
+            else
+            {
+                MessageBox.Show("Unknown latitude and longitude.");
+            }
         }
-                
+
+        
     }
 }

@@ -40,7 +40,7 @@
             // 
             // txtPassword
             // 
-            this.txtPassword.Location = new System.Drawing.Point(102, 88);
+            this.txtPassword.Location = new System.Drawing.Point(141, 88);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(109, 20);
             this.txtPassword.TabIndex = 11;
@@ -50,7 +50,7 @@
             // lblPassword
             // 
             this.lblPassword.AutoSize = true;
-            this.lblPassword.Location = new System.Drawing.Point(17, 91);
+            this.lblPassword.Location = new System.Drawing.Point(20, 91);
             this.lblPassword.Name = "lblPassword";
             this.lblPassword.Size = new System.Drawing.Size(56, 13);
             this.lblPassword.TabIndex = 13;
@@ -59,7 +59,7 @@
             // lblUsername
             // 
             this.lblUsername.AutoSize = true;
-            this.lblUsername.Location = new System.Drawing.Point(17, 65);
+            this.lblUsername.Location = new System.Drawing.Point(20, 65);
             this.lblUsername.Name = "lblUsername";
             this.lblUsername.Size = new System.Drawing.Size(58, 13);
             this.lblUsername.TabIndex = 14;
@@ -67,7 +67,7 @@
             // 
             // txtUsername
             // 
-            this.txtUsername.Location = new System.Drawing.Point(102, 62);
+            this.txtUsername.Location = new System.Drawing.Point(141, 62);
             this.txtUsername.Name = "txtUsername";
             this.txtUsername.Size = new System.Drawing.Size(109, 20);
             this.txtUsername.TabIndex = 12;
@@ -77,7 +77,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(11, 19);
+            this.label1.Location = new System.Drawing.Point(19, 20);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(172, 20);
             this.label1.TabIndex = 15;
@@ -85,7 +85,7 @@
             // 
             // btnLogin
             // 
-            this.btnLogin.Location = new System.Drawing.Point(75, 123);
+            this.btnLogin.Location = new System.Drawing.Point(86, 125);
             this.btnLogin.Name = "btnLogin";
             this.btnLogin.Size = new System.Drawing.Size(81, 31);
             this.btnLogin.TabIndex = 16;
@@ -95,7 +95,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(154, 207);
+            this.btnCancel.Location = new System.Drawing.Point(197, 196);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(61, 23);
             this.btnCancel.TabIndex = 17;
@@ -106,16 +106,18 @@
             // lblStatus
             // 
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(63, 164);
+            this.lblStatus.Location = new System.Drawing.Point(78, 163);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(0, 13);
+            this.lblStatus.Size = new System.Drawing.Size(92, 13);
             this.lblStatus.TabIndex = 18;
+            this.lblStatus.Text = "Connection status";
+            this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // frmLogon
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(227, 242);
+            this.ClientSize = new System.Drawing.Size(270, 231);
             this.Controls.Add(this.lblStatus);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnLogin);
@@ -126,6 +128,7 @@
             this.Controls.Add(this.txtUsername);
             this.Name = "frmLogon";
             this.Text = "Eduroam – login";
+            this.Load += new System.EventHandler(this.frmLogon_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
