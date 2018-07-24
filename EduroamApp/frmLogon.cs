@@ -13,12 +13,24 @@ namespace EduroamApp
 {
 	public partial class frmLogon : Form
 	{
-		// network pack from previous form
+		// network pack from main form
 		AvailableNetworkPack network;
 
 		public frmLogon()
 		{
 			InitializeComponent();
+		}
+
+		public void GetEduroamInstance(AvailableNetworkPack existingNetwork)
+		{
+			// get network pack from main form
+			network = existingNetwork;
+		}
+
+		private void frmLogon_Load(object sender, EventArgs e)
+		{
+			// clears the status label
+			lblStatus.Text = "";
 		}
 
 		private void btnLogin_Click(object sender, EventArgs e)
@@ -42,10 +54,6 @@ namespace EduroamApp
 			lblStatus.Text = (connectResult ? "Connection success." : "Connection failed.");
 		}
 
-		public void GetEduroamInstance(AvailableNetworkPack existingNetwork)
-		{
-			network = existingNetwork;
-		}
 
 		/// <summary>
 		/// Sets a profile's user data for login with username + password.
