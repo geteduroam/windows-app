@@ -29,7 +29,7 @@ namespace EduroamApp
 		private void InitializeComponent()
 		{
 			this.txtOutput = new System.Windows.Forms.RichTextBox();
-			this.btnConnect = new System.Windows.Forms.Button();
+			this.btnDownloadEap = new System.Windows.Forms.Button();
 			this.btnExit = new System.Windows.Forms.Button();
 			this.btnTest = new System.Windows.Forms.Button();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -39,13 +39,13 @@ namespace EduroamApp
 			this.label2 = new System.Windows.Forms.Label();
 			this.cboProfiles = new System.Windows.Forms.ComboBox();
 			this.lblSelectProfile = new System.Windows.Forms.Label();
-			this.btnSelectConfigFile = new System.Windows.Forms.Button();
+			this.btnLocalEap = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			//
 			// txtOutput
 			//
-			this.txtOutput.Location = new System.Drawing.Point(17, 343);
+			this.txtOutput.Location = new System.Drawing.Point(17, 303);
 			this.txtOutput.Name = "txtOutput";
 			this.txtOutput.ReadOnly = true;
 			this.txtOutput.Size = new System.Drawing.Size(286, 126);
@@ -53,19 +53,19 @@ namespace EduroamApp
 			this.txtOutput.TabStop = false;
 			this.txtOutput.Text = "";
 			//
-			// btnConnect
+			// btnDownloadEap
 			//
-			this.btnConnect.Location = new System.Drawing.Point(17, 292);
-			this.btnConnect.Name = "btnConnect";
-			this.btnConnect.Size = new System.Drawing.Size(75, 45);
-			this.btnConnect.TabIndex = 2;
-			this.btnConnect.Text = "Connect (auto)";
-			this.btnConnect.UseVisualStyleBackColor = true;
-			this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
+			this.btnDownloadEap.Location = new System.Drawing.Point(17, 238);
+			this.btnDownloadEap.Name = "btnDownloadEap";
+			this.btnDownloadEap.Size = new System.Drawing.Size(105, 59);
+			this.btnDownloadEap.TabIndex = 2;
+			this.btnDownloadEap.Text = "Download config file and connect";
+			this.btnDownloadEap.UseVisualStyleBackColor = true;
+			this.btnDownloadEap.Click += new System.EventHandler(this.btnDownloadEap_Click);
 			//
 			// btnExit
 			//
-			this.btnExit.Location = new System.Drawing.Point(243, 475);
+			this.btnExit.Location = new System.Drawing.Point(243, 435);
 			this.btnExit.Name = "btnExit";
 			this.btnExit.Size = new System.Drawing.Size(60, 23);
 			this.btnExit.TabIndex = 13;
@@ -75,7 +75,7 @@ namespace EduroamApp
 			//
 			// btnTest
 			//
-			this.btnTest.Location = new System.Drawing.Point(17, 475);
+			this.btnTest.Location = new System.Drawing.Point(17, 435);
 			this.btnTest.Name = "btnTest";
 			this.btnTest.Size = new System.Drawing.Size(75, 23);
 			this.btnTest.TabIndex = 14;
@@ -152,22 +152,22 @@ namespace EduroamApp
 			this.lblSelectProfile.TabIndex = 20;
 			this.lblSelectProfile.Text = "Select profile:";
 			//
-			// btnSelectConfigFile
+			// btnLocalEap
 			//
-			this.btnSelectConfigFile.Location = new System.Drawing.Point(98, 292);
-			this.btnSelectConfigFile.Name = "btnSelectConfigFile";
-			this.btnSelectConfigFile.Size = new System.Drawing.Size(75, 45);
-			this.btnSelectConfigFile.TabIndex = 21;
-			this.btnSelectConfigFile.Text = "Select EAP config file";
-			this.btnSelectConfigFile.UseVisualStyleBackColor = true;
-			this.btnSelectConfigFile.Click += new System.EventHandler(this.btnSelectConfigFile_Click);
+			this.btnLocalEap.Location = new System.Drawing.Point(213, 256);
+			this.btnLocalEap.Name = "btnLocalEap";
+			this.btnLocalEap.Size = new System.Drawing.Size(90, 41);
+			this.btnLocalEap.TabIndex = 21;
+			this.btnLocalEap.Text = "Connect w/ local config file";
+			this.btnLocalEap.UseVisualStyleBackColor = true;
+			this.btnLocalEap.Click += new System.EventHandler(this.btnLocalEap_Click);
 			//
 			// frmMain
 			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(319, 510);
-			this.Controls.Add(this.btnSelectConfigFile);
+			this.ClientSize = new System.Drawing.Size(319, 467);
+			this.Controls.Add(this.btnLocalEap);
 			this.Controls.Add(this.lblSelectProfile);
 			this.Controls.Add(this.cboProfiles);
 			this.Controls.Add(this.label2);
@@ -177,7 +177,7 @@ namespace EduroamApp
 			this.Controls.Add(this.btnTest);
 			this.Controls.Add(this.btnExit);
 			this.Controls.Add(this.pictureBox1);
-			this.Controls.Add(this.btnConnect);
+			this.Controls.Add(this.btnDownloadEap);
 			this.Controls.Add(this.txtOutput);
 			this.Name = "frmMain";
 			this.Text = "Eduroam – installer";
@@ -190,7 +190,7 @@ namespace EduroamApp
 
 		#endregion
 		private System.Windows.Forms.RichTextBox txtOutput;
-		private System.Windows.Forms.Button btnConnect;
+		private System.Windows.Forms.Button btnDownloadEap;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Button btnExit;
 		private System.Windows.Forms.Button btnTest;
@@ -200,7 +200,7 @@ namespace EduroamApp
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.ComboBox cboProfiles;
 		private System.Windows.Forms.Label lblSelectProfile;
-		private System.Windows.Forms.Button btnSelectConfigFile;
+		private System.Windows.Forms.Button btnLocalEap;
 	}
 }
 

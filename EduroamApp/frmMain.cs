@@ -42,8 +42,6 @@ namespace EduroamApp
 
 		private void frmMain_load(object sender, EventArgs e)
 		{
-
-
 			// url for json containing all identity providers / institutions
 			string allIdentityProvidersUrl = "https://cat.eduroam.org/user/API.php?action=listAllIdentityProviders&lang=en";
 
@@ -55,7 +53,7 @@ namespace EduroamApp
 			}
 			catch (WebException ex)
 			{
-				MessageBox.Show("Error: couldn't fetch identity provider list. \nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Couldn't fetch identity provider list. \nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 				//Application.Exit();
 			}
@@ -98,7 +96,7 @@ namespace EduroamApp
 			}
 			catch (WebException ex)
 			{
-				MessageBox.Show("Error: couldn't fetch identity provider profiles.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Couldn't fetch identity provider profiles.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
@@ -136,39 +134,47 @@ namespace EduroamApp
 		}
 
 
-		private void btnConnect_Click(object sender, EventArgs e)
+		private void btnDownloadEap_Click(object sender, EventArgs e)
 		{
+			// checks if user has selected an institution and/or profile
 			if (profileId == null || profileId == "")
 			{
 				txtOutput.Text += "No institution or profile selected.\n";
-				return;
+				return; // exits function if no institution/profile selected
 			}
+
+			// adds profile ID to url containing json file, which in turn contains url to EAP config file download
 			string generateEapUrl = $"https://cat.eduroam.org/user/API.php?action=generateInstaller&id=eap-config&lang=en&profile={profileId}";
 
-			// json file as string
+			// json file
 			string generateEapJson = "";
+			// gets json as string
 			try
 			{
 				generateEapJson = urlToJson(generateEapUrl);
 			}
 			catch (WebException ex)
 			{
-				MessageBox.Show("Error: couldn't fetch Eap Config generate.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Couldn't fetch Eap Config generate.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
+			// converts json to GenerateEapConfig object
 			GenerateEapConfig eapConfigInstance = JsonConvert.DeserializeObject<GenerateEapConfig>(generateEapJson);
 
+			// gets url to EAP config file download from GenerateEapConfig object
 			string eapConfigUrl = $"https://cat.eduroam.org/user/{eapConfigInstance.data.link}";
 
+			// eap config file
 			string eapConfigString = "";
+			// gets eap config file as string
 			try
 			{
 				eapConfigString = urlToJson(eapConfigUrl);
 			}
 			catch (WebException ex)
 			{
-				MessageBox.Show("Error: couldn't fetch Eap Config file.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Couldn't fetch Eap Config file.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return;
 			}
 
@@ -177,7 +183,7 @@ namespace EduroamApp
 			/* Connect(eapConfigString); */
 		}
 
-		private void btnSelectConfigFile_Click(object sender, EventArgs e)
+		private void btnLocalEap_Click(object sender, EventArgs e)
 		{
 			// opens dialog to select EAP Config file
 			string eapConfigPath = GetFileFromDialog("Select EAP Config file");
@@ -206,15 +212,32 @@ namespace EduroamApp
 
 			// gets a list of all client certificates and a list of all CAs
 			var getAllCertificates = GetCertificates(eapString);
+			// opens trusted root certificate authority store
+			X509Store store;
 
-			// checks if there are certificates to install
+			// checks if there are any certificates to install
 			if (getAllCertificates.Item1.Any())
 			{
-				// installs client certs
+				// sets store to personal certificate store
+				store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+
+				// loops through list and attempts to install client certs
 				foreach (X509Certificate2 clientCert in getAllCertificates.Item1)
 				{
-					// outputs result
-					txtOutput.Text += InstallClientCertificate(clientCert);
+					try
+					{
+						// installs client certificate
+						InstallCertificate(clientCert, store);
+						// outputs result
+						txtOutput.Text += $"Certificate installed: {clientCert.FriendlyName}\n";
+						// sets flag
+						clientCertFlag = 1;
+					}
+					catch (CryptographicException ex)
+					{
+						// outputs error message if a certificate installation fails
+						txtOutput.Text += $"Certificate was not installed: {clientCert.FriendlyName}\nError: {ex.Message}";
+					}
 				}
 			}
 			else
@@ -224,17 +247,29 @@ namespace EduroamApp
 				clientCertFlag = 0;
 			}
 
-			// checks if there are CAs to install and if client certs were succesfully installed
-			if (getAllCertificates.Item2.Any() && clientCertFlag != 0)
+			// checks if there are CAs to install
+			if (getAllCertificates.Item2.Any())
 			{
-				// installs CAs
+				// sets store to trusted root certificate store
+				store = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
+
+				// loops through list and attempts to install CAs
 				foreach (X509Certificate2 certAuth in getAllCertificates.Item2)
 				{
-					var caResults = InstallCA(certAuth);
-					// outputs result
-					txtOutput.Text += caResults.Item1;
-					// adds CA thumbprint to list if not null
-					if (caResults.Item2 != null) { thumbprints.Add(caResults.Item2); }
+					try
+					{
+						// installs client certificate
+						InstallCertificate(certAuth,store);
+						// outputs result
+						txtOutput.Text += $"CA installed: {certAuth.FriendlyName}\n";
+						// adds thumbprint to list
+						thumbprints.Add(certAuth.Thumbprint);
+					}
+					catch (CryptographicException ex)
+					{
+						// outputs error message if a certificate installation fails
+						txtOutput.Text += $"CA was not installed: {certAuth.FriendlyName}\nError: {ex.Message}";
+					}
 				}
 			}
 
@@ -355,6 +390,8 @@ namespace EduroamApp
 						clientBytes = Convert.FromBase64String(base64Client);
 						// creates certificate object
 						clientCert = new X509Certificate2(clientBytes, clientPwd, X509KeyStorageFlags.PersistKeySet);
+						// sets friendly name of certificate
+						clientCert.FriendlyName = clientCert.GetNameInfo(X509NameType.SimpleName, false);
 						// adds certificate object to list
 						clientCertificates.Add(clientCert);
 					}
@@ -372,6 +409,8 @@ namespace EduroamApp
 					caBytes = Convert.FromBase64String(base64Ca);
 					// creates certificate object
 					caCert = new X509Certificate2(caBytes);
+					// sets friendly name of certificate
+					caCert.FriendlyName = caCert.GetNameInfo(X509NameType.SimpleName, false);
 					// adds certificate object to list
 					certAuthorities.Add(caCert);
 				}
@@ -382,102 +421,49 @@ namespace EduroamApp
 		}
 
 		/// <summary>
-		/// Installs a client certificate.
+		/// Installs client certificate in personal certificate store.
 		/// </summary>
-		/// <param name="cert">Client certificate object.</param>
-		/// <returns>Result of certificate installation./returns>
-		public string InstallClientCertificate(X509Certificate2 cert)
+		/// <param name="cert">Certificate object.</param>
+		public void InstallClientCertificate(X509Certificate2 cert)
 		{
-			// gets certificate issuer
-			string certIssuer = cert.Issuer;
-			// return string
-			string certResult = "Certificate installed successfully: ";
+			// opens personal certificate store
+			X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+			store.Open(OpenFlags.ReadWrite);
 
-			// installs client certficate to personal certificate store
-			try
-			{
-				// opens personal certificate store
-				X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-				store.Open(OpenFlags.ReadWrite);
+			// adds certificate to store
+			store.Add(cert);
 
-				// checks if certificate is already installed
-				var certExist = store.Certificates.Find(X509FindType.FindByThumbprint, cert.Thumbprint, true);
-				if (certExist != null && certExist.Count > 0)
-				{
-					certResult = "Certificate already installed: ";
-				}
-				else
-				{
-					// adds certificate to store
-					store.Add(cert);
-				}
-
-				// closes personal certificate store
-				store.Close();
-
-				// sets flag to 1 to indicate succesful client certificate install
-				clientCertFlag = 1;
-			}
-			catch (Exception)
-			{
-				certResult = "Certificate installation failed: ";
-			}
-
-			return certResult + certIssuer + "\n";
+			// closes personal certificate store
+			store.Close();
 		}
 
 		/// <summary>
-		/// Installs a certificate authority.
+		/// Installs a certificate object in the specified certificate store.
 		/// </summary>
-		/// <param name="ca">Certificate authority object.</param>
-		/// <returns>Result of certificate installation and thumbprint.</returns>
-		public Tuple<string, string> InstallCA(X509Certificate2 ca)
+		/// <param name="cert">Certificate object.</param>
+		public void InstallCertificate(X509Certificate2 cert, X509Store store)
 		{
-			// gets certificate issuer
-			string certIssuer = ca.Issuer;
-			// sets return string
-			string certResult = "CA installed successfully: ";
+			// opens certificate store
+			store.Open(OpenFlags.ReadWrite);
 
-			// thumbprint is updated if certificate install is successful
-			string certThumbprint = null;
-
-
-			// installs client certficate to personal certificate store
-			try
+			// check if CA already exists in store
+			if (store.Name == "Root")
 			{
-				// opens trusted root certificate authority store
-				X509Store store = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
-				store.Open(OpenFlags.ReadWrite);
-
-				// checks if CA is already installed
-				var certExist = store.Certificates.Find(X509FindType.FindByThumbprint, ca.Thumbprint, true);
-				if (certExist != null && certExist.Count > 0)
+				// show messagebox to let users know about the CA installation warning
+				var certExists = store.Certificates.Find(X509FindType.FindByThumbprint, cert.Thumbprint, true);
+				if (certExists == null || certExists.Count < 1)
 				{
-					// updates return string
-					certResult = "CA already installed: ";
+					MessageBox.Show("You will now be prompted to install a Certificate Authority. " +
+									"In order to connect to eduroam, you need to accept this by pressing \"Yes\" in the following dialog.",
+									"Accept Certificate Authority", MessageBoxButtons.OK);
 				}
-				else
-				{
-					// show messagebox to let users know about the CA installation warning
-					MessageBox.Show("You will now be prompted to install the Certificate Authority. " +
-									"In order to connect to eduroam, you need to accept this by pressing \"Yes\" in the following dialog.", "Accept Certificate Authority", MessageBoxButtons.OK);
-					// adds CA to store
-					store.Add(ca);
-				}
-				// closes trusted root certificate authority store
-				store.Close();
-				certThumbprint = ca.Thumbprint;
-			}
-			catch (Exception)
-			{
-				// updates return string
-				certResult = "CA installation failed: ";
 			}
 
-			certResult += certIssuer + "\n";
+			// adds certificate to store
+			store.Add(cert);
 
-			// returns two values: return message and thumbprint
-			return Tuple.Create(certResult, certThumbprint);
+			// closes certificate store
+			store.Close();
 		}
 
 		/// <summary>
@@ -508,7 +494,7 @@ namespace EduroamApp
 			OpenFileDialog fileDialog = new OpenFileDialog();
 
 			fileDialog.InitialDirectory = @"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles"; // sets the initial directory of the open file dialog
-			fileDialog.Filter = "All files (*.*)|*.*"; // sets filter for file types that appear in open file dialog
+			fileDialog.Filter = "EAP-CONFIG files (*.eap-config)|*.eap-config|All files (*.*)|*.*"; // sets filter for file types that appear in open file dialog
 			fileDialog.FilterIndex = 0;
 			fileDialog.RestoreDirectory = true;
 			fileDialog.Title = dialogTitle;
@@ -531,7 +517,11 @@ namespace EduroamApp
 			if (filePath == null)
 			{
 				MessageBox.Show("No file selected.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-				txtOutput.Text += "No file selected.\n";
+				return false;
+			}
+			else if (Path.GetExtension(filePath) != ".eap-config")
+			{
+				MessageBox.Show("File type not supported.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				return false;
 			}
 			return true;
@@ -551,6 +541,7 @@ namespace EduroamApp
 
 			// Do not suppress prompt, and wait 1000 milliseconds to start.
 			watcher.TryStart(false, TimeSpan.FromMilliseconds(1000));
+			watcher.Start();
 
 			GeoCoordinate coord = watcher.Position.Location;
 
