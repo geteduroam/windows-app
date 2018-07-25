@@ -39,6 +39,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.cboProfiles = new System.Windows.Forms.ComboBox();
             this.lblSelectProfile = new System.Windows.Forms.Label();
+            this.btnSelectConfigFile = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -56,9 +57,9 @@
             // 
             this.btnConnect.Location = new System.Drawing.Point(17, 292);
             this.btnConnect.Name = "btnConnect";
-            this.btnConnect.Size = new System.Drawing.Size(145, 45);
+            this.btnConnect.Size = new System.Drawing.Size(75, 45);
             this.btnConnect.TabIndex = 2;
-            this.btnConnect.Text = "Connect";
+            this.btnConnect.Text = "Connect (auto)";
             this.btnConnect.UseVisualStyleBackColor = true;
             this.btnConnect.Click += new System.EventHandler(this.btnConnect_Click);
             // 
@@ -151,11 +152,22 @@
             this.lblSelectProfile.TabIndex = 20;
             this.lblSelectProfile.Text = "Select profile:";
             // 
+            // btnSelectConfigFile
+            // 
+            this.btnSelectConfigFile.Location = new System.Drawing.Point(98, 292);
+            this.btnSelectConfigFile.Name = "btnSelectConfigFile";
+            this.btnSelectConfigFile.Size = new System.Drawing.Size(75, 45);
+            this.btnSelectConfigFile.TabIndex = 21;
+            this.btnSelectConfigFile.Text = "Select EAP config file";
+            this.btnSelectConfigFile.UseVisualStyleBackColor = true;
+            this.btnSelectConfigFile.Click += new System.EventHandler(this.btnSelectConfigFile_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(319, 510);
+            this.Controls.Add(this.btnSelectConfigFile);
             this.Controls.Add(this.lblSelectProfile);
             this.Controls.Add(this.cboProfiles);
             this.Controls.Add(this.label2);
@@ -188,6 +200,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.ComboBox cboProfiles;
         private System.Windows.Forms.Label lblSelectProfile;
+        private System.Windows.Forms.Button btnSelectConfigFile;
     }
 }
 
