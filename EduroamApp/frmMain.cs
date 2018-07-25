@@ -51,15 +51,12 @@ namespace EduroamApp
 			string idProviderJson = "";
 			try
 			{
-				// downloads json file from url as string
-				using (WebClient client = new WebClient())
-				{
-					idProviderJson = client.DownloadString(allIdentityProvidersUrl);
-				}
+				idProviderJson = urlToJson(allIdentityProvidersUrl);
 			}
-			catch (Exception)
+			catch (WebException ex)
 			{
-				MessageBox.Show("Error: couldn't fetch identity provider list. Exiting application.","Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Error: couldn't fetch identity provider list. \nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
 				//Application.Exit();
 			}
 
@@ -73,6 +70,7 @@ namespace EduroamApp
 		{
 			// clear combobox
 			cboInstitution.Items.Clear();
+			cboProfiles.Items.Clear();
 			// clear selected profile
 			profileId = null;
 
@@ -96,15 +94,12 @@ namespace EduroamApp
 			string profilesJson = "";
 			try
 			{
-				// downloads json file from url as string
-				using (WebClient client = new WebClient())
-				{
-					profilesJson = client.DownloadString(profilesUrl);
-				}
+				profilesJson = urlToJson(profilesUrl);
 			}
-			catch (Exception)
+			catch (WebException ex)
 			{
-				MessageBox.Show("Error: couldn't fetch identity provider profiles.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Error: couldn't fetch identity provider profiles.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
 			}
 
 			// gets identity provider profile from json
@@ -143,42 +138,61 @@ namespace EduroamApp
 
 		private void btnConnect_Click(object sender, EventArgs e)
 		{
+			if (profileId == null || profileId == "")
+			{
+				txtOutput.Text += "No institution or profile selected.\n";
+				return;
+			}
 			string generateEapUrl = $"https://cat.eduroam.org/user/API.php?action=generateInstaller&id=eap-config&lang=en&profile={profileId}";
 
 			// json file as string
 			string generateEapJson = "";
 			try
 			{
-				// downloads json file from url as string
-				using (WebClient client = new WebClient())
-				{
-					generateEapJson = client.DownloadString(generateEapUrl);
-				}
+				generateEapJson = urlToJson(generateEapUrl);
 			}
-			catch (Exception)
+			catch (WebException ex)
 			{
-				MessageBox.Show("Error: couldn't fetch Eap Config generate.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Error: couldn't fetch Eap Config generate.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
 			}
 
 			GenerateEapConfig eapConfigInstance = JsonConvert.DeserializeObject<GenerateEapConfig>(generateEapJson);
 
 			string eapConfigUrl = $"https://cat.eduroam.org/user/{eapConfigInstance.data.link}";
+
 			string eapConfigString = "";
 			try
 			{
-				// downloads config file from url as string
-				using (WebClient client = new WebClient())
-				{
-					eapConfigString = client.DownloadString(eapConfigUrl);
-				}
+				eapConfigString = urlToJson(eapConfigUrl);
 			}
-			catch (Exception)
+			catch (WebException ex)
 			{
-				MessageBox.Show("Error: couldn't fetch Eap Config file.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("Error: couldn't fetch Eap Config file.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
 			}
 
-			MessageBox.Show(eapConfigString);
+			txtOutput.Text += "EAP config file ready.\n";
+			//MessageBox.Show(eapConfigString);
+			/* Connect(eapConfigString); */
+		}
 
+		private void btnSelectConfigFile_Click(object sender, EventArgs e)
+		{
+			// opens dialog to select EAP Config file
+			string eapConfigPath = GetFileFromDialog("Select EAP Config file");
+			// cancel and present error message if no file selected
+			if (validateFileSelection(eapConfigPath) == false) { return; }
+
+			string eapConfigString = File.ReadAllText(eapConfigPath);
+			Connect(eapConfigString);
+		}
+
+		// -------------------------------------------- FUNCIONS ------------------------------------------------------------
+
+
+		public void Connect(string eapString)
+		{
 			// sets eduroam as chosen network
 			EduroamNetwork eduroamInstance = new EduroamNetwork(); // creates new instance of eduroam network
 			network = eduroamInstance.networkPack; // gets network pack
@@ -190,17 +204,8 @@ namespace EduroamApp
 			thumbprints.Add("8d043f808044894db8d8e06da2acf5f98fb4a610"); //thumbprint for login with username/password
 
 
-
-
-			int caFlag = 0;
-
-			// opens dialog to select EAP Config file
-			string eapConfigPath = GetFileFromDialog("Select EAP Config file");
-			// cancel and present error message if no file selected
-			if (validateFileSelection(eapConfigPath) == false) { return; }
-
 			// gets a list of all client certificates and a list of all CAs
-			var getAllCertificates = GetCertificates(eapConfigPath);
+			var getAllCertificates = GetCertificates(eapString);
 
 			// checks if there are certificates to install
 			if (getAllCertificates.Item1.Any())
@@ -231,13 +236,7 @@ namespace EduroamApp
 					// adds CA thumbprint to list if not null
 					if (caResults.Item2 != null) { thumbprints.Add(caResults.Item2); }
 				}
-				caFlag = 1;
 			}
-			else
-			{
-				caFlag = 0;
-			}
-
 
 			// sets chosen EAP-type based on wether certificate was successfully installed
 			ProfileXml.EapType eapType;
@@ -274,15 +273,18 @@ namespace EduroamApp
 			}
 		}
 
-
-		// -------------------------------------------- FUNCIONS ------------------------------------------------------------
-
-		public void LoadJson()
+		/// <summary>
+		/// Gets a json file as string from url.
+		/// </summary>
+		/// <param name="url">Url containing json file.</param>
+		/// <returns>Json string.</returns>
+		public string urlToJson(string url)
 		{
-			using (StreamReader r = new StreamReader("file.json"))
+			// downloads json file from url as string
+			using (WebClient client = new WebClient())
 			{
-				string json = r.ReadToEnd();
-				List<IdentityProvider> items = JsonConvert.DeserializeObject<List<IdentityProvider>>(json);
+				string jsonString = client.DownloadString(url);
+				return jsonString;
 			}
 		}
 
@@ -312,10 +314,10 @@ namespace EduroamApp
 		/// </summary>
 		/// <param name="filePath">Filepath of EAP Config file.</param>
 		/// <returns>List of client certificates and list of CAs.</returns>
-		public Tuple<List<X509Certificate2>, List<X509Certificate2>> GetCertificates(string filePath)
+		public Tuple<List<X509Certificate2>, List<X509Certificate2>> GetCertificates(string fileString)
 		{
 			// loads the XML file from its file path
-			XElement doc = XElement.Load(filePath);
+			XElement doc = XElement.Parse(fileString);
 
 			string base64Client = null; // Client cert encoded to base64
 			byte[] clientBytes = null; // Client cert decoded from base64
@@ -478,11 +480,6 @@ namespace EduroamApp
 			return Tuple.Create(certResult, certThumbprint);
 		}
 
-
-
-
-
-
 		/// <summary>
 		/// Connects to the chosen wireless LAN.
 		/// </summary>
@@ -506,22 +503,22 @@ namespace EduroamApp
 		/// <returns>Path of selected file.</returns>
 		public string GetFileFromDialog(string dialogTitle)
 		{
-			string xmlPath = null;
+			string filePath = null;
 
-			OpenFileDialog openXmlDialog = new OpenFileDialog();
+			OpenFileDialog fileDialog = new OpenFileDialog();
 
-			openXmlDialog.InitialDirectory = @"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles"; // sets the initial directory of the open file dialog
-			openXmlDialog.Filter = "All files (*.*)|*.*"; // sets filter for file types that appear in open file dialog
-			openXmlDialog.FilterIndex = 0;
-			openXmlDialog.RestoreDirectory = true;
-			openXmlDialog.Title = dialogTitle;
+			fileDialog.InitialDirectory = @"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles"; // sets the initial directory of the open file dialog
+			fileDialog.Filter = "All files (*.*)|*.*"; // sets filter for file types that appear in open file dialog
+			fileDialog.FilterIndex = 0;
+			fileDialog.RestoreDirectory = true;
+			fileDialog.Title = dialogTitle;
 
-			if (openXmlDialog.ShowDialog() == DialogResult.OK)
+			if (fileDialog.ShowDialog() == DialogResult.OK)
 			{
-				xmlPath = openXmlDialog.FileName;
+				filePath = fileDialog.FileName;
 			}
 
-			return xmlPath;
+			return filePath;
 		}
 
 		/// <summary>
@@ -534,7 +531,7 @@ namespace EduroamApp
 			if (filePath == null)
 			{
 				MessageBox.Show("No file selected.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-				txtOutput.Text += "No file selected.";
+				txtOutput.Text += "No file selected.\n";
 				return false;
 			}
 			return true;
@@ -546,6 +543,7 @@ namespace EduroamApp
 			Application.Exit();
 		}
 
+		// test functions
 		private void btnTest_Click(object sender, EventArgs e)
 		{
 
