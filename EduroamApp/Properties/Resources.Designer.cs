@@ -63,6 +63,16 @@ namespace EduroamApp.Properties {
 		/// <summary>
 		///   Looks up a localized resource of type System.Drawing.Bitmap.
 		/// </summary>
+		internal static System.Drawing.Bitmap _1280px_Uninett_logo_svg {
+			get {
+				object obj = ResourceManager.GetObject("1280px-Uninett_logo.svg", resourceCulture);
+				return ((System.Drawing.Bitmap)(obj));
+			}
+		}
+
+		/// <summary>
+		///   Looks up a localized resource of type System.Drawing.Bitmap.
+		/// </summary>
 		internal static System.Drawing.Bitmap eduroam_logo {
 			get {
 				object obj = ResourceManager.GetObject("eduroam_logo", resourceCulture);
