@@ -17,8 +17,8 @@ namespace EduroamApp
 
 		public class Geo
 		{
-			public string lon { get; set; }
-			public string lat { get; set; }
+			public double lon { get; set; }
+			public double lat { get; set; }
 		}
 	}
 }
