@@ -34,10 +34,17 @@ namespace EduroamApp
         AvailableNetworkPack network;
         // flag indicates wether a client certificate is succesfully installed or not
         int clientCertFlag = 0;
+        // gets coordinates of computer
+        GeoCoordinateWatcher watcher;
+        
 
         public frmMain()
         {
             InitializeComponent();
+
+            // starts GeoCoordinateWatcher when app starts
+            watcher = new GeoCoordinateWatcher();
+            watcher.TryStart(false, TimeSpan.FromMilliseconds(1000));
         }
 
         private void frmMain_load(object sender, EventArgs e)
@@ -62,6 +69,16 @@ namespace EduroamApp
             identityProviders = JsonConvert.DeserializeObject<List<IdentityProvider>>(idProviderJson);
             // adds countries to combobox
             cboCountry.Items.AddRange(identityProviders.OrderBy(provider => provider.country).Select(provider => provider.country).Distinct().ToArray());
+
+            try
+            {
+                string closestCountry = GetClosestInstitution(identityProviders);
+                cboCountry.SelectedIndex = cboCountry.FindStringExact(closestCountry);
+            }
+            catch (System.Exception ex)
+            {
+                txtOutput.Text += "Geolocation not set. \nException: " + ex.Message + "\n";
+            }
         }
 
         private void cboCountry_SelectedIndexChanged(object sender, EventArgs e)
@@ -194,7 +211,7 @@ namespace EduroamApp
             Connect(eapConfigString);
         }
 
-        // -------------------------------------------- FUNCIONS ------------------------------------------------------------
+        // ------------------------------------------------------------- FUNCIONS --------------------------------------------------------------------------
 
 
         public void Connect(string eapString)
@@ -321,6 +338,47 @@ namespace EduroamApp
                 string jsonString = client.DownloadString(url);
                 return jsonString;
             }
+        }
+
+        /// <summary>
+        /// Compares institution coordinates with user's coordinates and gets the closest institution.
+        /// </summary>
+        /// <param name="instList">List of all institutions.</param>
+        /// <returns>Country of closest institution.</returns>
+        public string GetClosestInstitution(List<IdentityProvider> instList)
+        {            
+            // user's coordinates
+            GeoCoordinate myCoord = watcher.Position.Location;
+            // institution's coordinates
+            GeoCoordinate instCoord = new GeoCoordinate();
+            // current distance
+            double currentDistance;
+            // closest institution
+            IdentityProvider closestInst = new IdentityProvider();
+            // shortest distance
+            double shortestDistance = double.MaxValue;
+
+            // loops through all institutions' coordinates and compares them with current shortest distance
+            foreach (IdentityProvider inst in instList)
+            {
+                if (inst.geo != null) // excludes if geo property not set
+                { 
+                    // gets lat and long
+                    instCoord.Latitude = inst.geo.First().lat;
+                    instCoord.Longitude = inst.geo.First().lon;
+                    // gets distance
+                    currentDistance = myCoord.GetDistanceTo(instCoord);
+                    // compares with current shortest distance
+                    if (currentDistance < shortestDistance)
+                    {
+                        shortestDistance = currentDistance;
+                        closestInst = inst;
+                    }
+                }
+            }
+                        
+            // returns country of institution closest to user
+            return closestInst.country;
         }
 
         /// <summary>
@@ -536,23 +594,14 @@ namespace EduroamApp
         // test functions
         private void btnTest_Click(object sender, EventArgs e)
         {
-
-            GeoCoordinateWatcher watcher = new GeoCoordinateWatcher();
-
-            // Do not suppress prompt, and wait 1000 milliseconds to start.
+            
             watcher.TryStart(false, TimeSpan.FromMilliseconds(1000));
-            watcher.Start();
-
             GeoCoordinate coord = watcher.Position.Location;
+            var thing = coord.GetDistanceTo(coord);
 
-            if (coord.IsUnknown != true)
-            {
-                MessageBox.Show($"Lat: {coord.Latitude}, Long: {coord.Longitude}");
-            }
-            else
-            {
-                MessageBox.Show("Unknown latitude and longitude.");
-            }
+            txtOutput.Text += ($"Lat: {coord.Latitude}, Long: {coord.Longitude}\n");
+            txtOutput.Text += $"{thing }";
+
         }
 
         
