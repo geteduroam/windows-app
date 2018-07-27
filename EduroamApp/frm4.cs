@@ -62,24 +62,34 @@ namespace EduroamApp
             return filePath;
         }
 
-        /// <summary>
-        /// Checks wether a file is chosen during an open file dialog.
-        /// </summary>
-        /// <param name="filePath">Filepath returned from open file dialog.</param>
-        /// <returns>True if valid filepath, false if not.</returns>
-        public bool validateFileSelection(string filePath)
+        
+        public bool validateFileSelection()
         {
-            if (filePath == null)
+            string filePath = txtFilepath.Text;
+
+            if (filePath == null || filePath == "")
             {
-                MessageBox.Show("No file selected.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please select a file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+            else if (!File.Exists(filePath))
+            {
+                MessageBox.Show("The specified file does not exist.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             else if (Path.GetExtension(filePath) != ".eap-config")
             {
-                MessageBox.Show("File type not supported.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("The file type you chose is not supported.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             return true;
+        }
+
+        public void ConnectWithFile()
+        {
+            string eapString = File.ReadAllText(txtFilepath.Text);
+            MessageBox.Show("Now connecting to eduroam...");
+            // Connect(eapString);
         }
     }
 }
