@@ -87,6 +87,7 @@ namespace EduroamApp
 				case 3:
 					break;
 				case 4:
+					if (frm4.validateFileSelection() == true) frm4.ConnectWithFile();
 					break;
 			}
 		}
