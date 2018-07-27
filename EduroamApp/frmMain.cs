@@ -44,7 +44,7 @@ namespace EduroamApp
 
             // starts GeoCoordinateWatcher when app starts
             watcher = new GeoCoordinateWatcher();
-            watcher.TryStart(false, TimeSpan.FromMilliseconds(1000));
+            watcher.TryStart(false, TimeSpan.FromMilliseconds(3000));
         }
 
         private void frmMain_load(object sender, EventArgs e)
@@ -595,13 +595,7 @@ namespace EduroamApp
         private void btnTest_Click(object sender, EventArgs e)
         {
             
-            watcher.TryStart(false, TimeSpan.FromMilliseconds(1000));
-            GeoCoordinate coord = watcher.Position.Location;
-            var thing = coord.GetDistanceTo(coord);
-
-            txtOutput.Text += ($"Lat: {coord.Latitude}, Long: {coord.Longitude}\n");
-            txtOutput.Text += $"{thing }";
-
+            
         }
 
         

@@ -12,9 +12,36 @@ namespace EduroamApp
 {
     public partial class frm2 : Form
     {
-        public frm2()
+        // makes the parent form accessible from this class
+        frmParent frmParent;
+        
+        public frm2(frmParent parentInstance)
         {
+            // gets the parent form instance
+            frmParent = parentInstance;
             InitializeComponent();
+        }              
+
+        /// <summary>
+        /// Checks which radio button is selected and loads corresponding form.
+        /// </summary>
+        public void GoToForm()
+        {
+            if (rdbDownload.Checked)
+            {
+                // loads "Select insitute and download" form
+                frmParent.LoadFrm3();
+            }
+            else if (rdbLocal.Checked)
+            {
+                // loads "Select local config file" form
+                frmParent.LoadFrm4();
+            }
+        }
+
+        private void rdbDownload_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -117,6 +117,18 @@
     <Compile Include="frm3.Designer.cs">
       <DependentUpon>frm3.cs</DependentUpon>
     </Compile>
+    <Compile Include="frm4.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm4.Designer.cs">
+      <DependentUpon>frm4.cs</DependentUpon>
+    </Compile>
+    <Compile Include="frm5.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frm5.Designer.cs">
+      <DependentUpon>frm5.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmLogon.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -151,6 +163,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frm3.resx">
       <DependentUpon>frm3.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm4.resx">
+      <DependentUpon>frm4.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="frm5.resx">
+      <DependentUpon>frm5.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmLogon.resx">
       <DependentUpon>frmLogon.cs</DependentUpon>

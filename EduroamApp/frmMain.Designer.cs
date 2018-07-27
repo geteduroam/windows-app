@@ -31,7 +31,6 @@
             this.txtOutput = new System.Windows.Forms.RichTextBox();
             this.btnDownloadEap = new System.Windows.Forms.Button();
             this.btnExit = new System.Windows.Forms.Button();
-            this.btnTest = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.cboCountry = new System.Windows.Forms.ComboBox();
             this.cboInstitution = new System.Windows.Forms.ComboBox();
@@ -40,7 +39,10 @@
             this.cboProfiles = new System.Windows.Forms.ComboBox();
             this.lblSelectProfile = new System.Windows.Forms.Label();
             this.btnLocalEap = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.btnTest = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtOutput
@@ -72,16 +74,6 @@
             this.btnExit.Text = "Exit";
             this.btnExit.UseVisualStyleBackColor = true;
             this.btnExit.Click += new System.EventHandler(this.btnExit_Click);
-            // 
-            // btnTest
-            // 
-            this.btnTest.Location = new System.Drawing.Point(17, 435);
-            this.btnTest.Name = "btnTest";
-            this.btnTest.Size = new System.Drawing.Size(75, 23);
-            this.btnTest.TabIndex = 14;
-            this.btnTest.Text = "Test";
-            this.btnTest.UseVisualStyleBackColor = true;
-            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
             // 
             // pictureBox1
             // 
@@ -162,11 +154,36 @@
             this.btnLocalEap.UseVisualStyleBackColor = true;
             this.btnLocalEap.Click += new System.EventHandler(this.btnLocalEap_Click);
             // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.Transparent;
+            this.panel1.Controls.Add(this.btnTest);
+            this.panel1.Location = new System.Drawing.Point(17, 435);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(88, 23);
+            this.panel1.TabIndex = 22;
+            // 
+            // btnTest
+            // 
+            this.btnTest.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.btnTest.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnTest.FlatAppearance.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.btnTest.FlatAppearance.BorderSize = 2;
+            this.btnTest.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTest.Location = new System.Drawing.Point(0, 0);
+            this.btnTest.Name = "btnTest";
+            this.btnTest.Size = new System.Drawing.Size(88, 23);
+            this.btnTest.TabIndex = 14;
+            this.btnTest.Text = "Test popup";
+            this.btnTest.UseVisualStyleBackColor = false;
+            this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(319, 467);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.btnLocalEap);
             this.Controls.Add(this.lblSelectProfile);
             this.Controls.Add(this.cboProfiles);
@@ -174,7 +191,6 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.cboInstitution);
             this.Controls.Add(this.cboCountry);
-            this.Controls.Add(this.btnTest);
             this.Controls.Add(this.btnExit);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.btnDownloadEap);
@@ -183,6 +199,7 @@
             this.Text = "Eduroam – installer";
             this.Load += new System.EventHandler(this.frmMain_load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -193,7 +210,6 @@
         private System.Windows.Forms.Button btnDownloadEap;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Button btnExit;
-        private System.Windows.Forms.Button btnTest;
         private System.Windows.Forms.ComboBox cboCountry;
         private System.Windows.Forms.ComboBox cboInstitution;
         private System.Windows.Forms.Label label1;
@@ -201,6 +217,8 @@
         private System.Windows.Forms.ComboBox cboProfiles;
         private System.Windows.Forms.Label lblSelectProfile;
         private System.Windows.Forms.Button btnLocalEap;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Button btnTest;
     }
 }
 
