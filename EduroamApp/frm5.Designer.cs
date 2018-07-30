@@ -28,44 +28,58 @@ namespace EduroamApp
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.txtPassword = new System.Windows.Forms.TextBox();
-			this.lblPassword = new System.Windows.Forms.Label();
-			this.lblUsername = new System.Windows.Forms.Label();
-			this.txtUsername = new System.Windows.Forms.TextBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.lblStatus = new System.Windows.Forms.Label();
+			this.pboStatus = new System.Windows.Forms.PictureBox();
+			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+			((System.ComponentModel.ISupportInitialize)(this.pboStatus)).BeginInit();
+			this.tableLayoutPanel1.SuspendLayout();
 			this.SuspendLayout();
 			//
-			// txtPassword
+			// label2
 			//
-			this.txtPassword.Location = new System.Drawing.Point(103, 200);
-			this.txtPassword.Name = "txtPassword";
-			this.txtPassword.Size = new System.Drawing.Size(109, 20);
-			this.txtPassword.TabIndex = 15;
-			this.txtPassword.UseSystemPasswordChar = true;
+			this.label2.AutoSize = true;
+			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label2.Location = new System.Drawing.Point(55, 50);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(138, 20);
+			this.label2.TabIndex = 6;
+			this.label2.Text = "Connection status";
 			//
-			// lblPassword
+			// lblStatus
 			//
-			this.lblPassword.AutoSize = true;
-			this.lblPassword.Location = new System.Drawing.Point(100, 184);
-			this.lblPassword.Name = "lblPassword";
-			this.lblPassword.Size = new System.Drawing.Size(56, 13);
-			this.lblPassword.TabIndex = 17;
-			this.lblPassword.Text = "Password:";
+			this.lblStatus.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.lblStatus.AutoSize = true;
+			this.lblStatus.Location = new System.Drawing.Point(3, 11);
+			this.lblStatus.Name = "lblStatus";
+			this.lblStatus.Size = new System.Drawing.Size(70, 13);
+			this.lblStatus.TabIndex = 7;
+			this.lblStatus.Text = "Connecting...";
 			//
-			// lblUsername
+			// pboStatus
 			//
-			this.lblUsername.AutoSize = true;
-			this.lblUsername.Location = new System.Drawing.Point(100, 133);
-			this.lblUsername.Name = "lblUsername";
-			this.lblUsername.Size = new System.Drawing.Size(58, 13);
-			this.lblUsername.TabIndex = 18;
-			this.lblUsername.Text = "Username:";
+			this.pboStatus.Anchor = System.Windows.Forms.AnchorStyles.Left;
+			this.pboStatus.Image = global::EduroamApp.Properties.Resources.ajax_loader;
+			this.pboStatus.Location = new System.Drawing.Point(79, 9);
+			this.pboStatus.Name = "pboStatus";
+			this.pboStatus.Size = new System.Drawing.Size(16, 16);
+			this.pboStatus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+			this.pboStatus.TabIndex = 8;
+			this.pboStatus.TabStop = false;
 			//
-			// txtUsername
+			// tableLayoutPanel1
 			//
-			this.txtUsername.Location = new System.Drawing.Point(103, 149);
-			this.txtUsername.Name = "txtUsername";
-			this.txtUsername.Size = new System.Drawing.Size(109, 20);
-			this.txtUsername.TabIndex = 16;
+			this.tableLayoutPanel1.ColumnCount = 2;
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 15F));
+			this.tableLayoutPanel1.Controls.Add(this.lblStatus, 0, 0);
+			this.tableLayoutPanel1.Controls.Add(this.pboStatus, 1, 0);
+			this.tableLayoutPanel1.Location = new System.Drawing.Point(59, 122);
+			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+			this.tableLayoutPanel1.RowCount = 1;
+			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(190, 35);
+			this.tableLayoutPanel1.TabIndex = 9;
 			//
 			// frm5
 			//
@@ -74,14 +88,15 @@ namespace EduroamApp
 			this.AutoScroll = true;
 			this.BackColor = System.Drawing.Color.White;
 			this.ClientSize = new System.Drawing.Size(448, 366);
-			this.Controls.Add(this.txtPassword);
-			this.Controls.Add(this.lblPassword);
-			this.Controls.Add(this.lblUsername);
-			this.Controls.Add(this.txtUsername);
+			this.Controls.Add(this.tableLayoutPanel1);
+			this.Controls.Add(this.label2);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Name = "frm5";
 			this.Text = "frm5";
 			this.Load += new System.EventHandler(this.frm5_Load);
+			((System.ComponentModel.ISupportInitialize)(this.pboStatus)).EndInit();
+			this.tableLayoutPanel1.ResumeLayout(false);
+			this.tableLayoutPanel1.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -89,9 +104,9 @@ namespace EduroamApp
 
 		#endregion
 
-		private System.Windows.Forms.TextBox txtPassword;
-		private System.Windows.Forms.Label lblPassword;
-		private System.Windows.Forms.Label lblUsername;
-		private System.Windows.Forms.TextBox txtUsername;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label lblStatus;
+		private System.Windows.Forms.PictureBox pboStatus;
+		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 	}
 }

@@ -46,13 +46,16 @@ namespace EduroamApp
 		{
 			string filePath = null;
 
-			OpenFileDialog fileDialog = new OpenFileDialog();
-
-			fileDialog.InitialDirectory = @"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles"; // sets the initial directory of the open file dialog
-			fileDialog.Filter = "EAP-CONFIG files (*.eap-config)|*.eap-config|All files (*.*)|*.*"; // sets filter for file types that appear in open file dialog
-			fileDialog.FilterIndex = 0;
-			fileDialog.RestoreDirectory = true;
-			fileDialog.Title = dialogTitle;
+			OpenFileDialog fileDialog = new OpenFileDialog
+			{
+				// sets the initial directory of the open file dialog
+				InitialDirectory = @"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles",
+				// sets filter for file types that appear in open file dialog
+				Filter = "EAP-CONFIG files (*.eap-config)|*.eap-config|All files (*.*)|*.*",
+				FilterIndex = 0,
+				RestoreDirectory = true,
+				Title = dialogTitle
+			};
 
 			if (fileDialog.ShowDialog() == DialogResult.OK)
 			{
@@ -62,12 +65,15 @@ namespace EduroamApp
 			return filePath;
 		}
 
-
-		public bool validateFileSelection()
+		/// <summary>
+		/// Checks if a config file has been selected, and if the filepath and type is valid.
+		/// </summary>
+		/// <returns>True if valid file, false if not.</returns>
+		public bool ValidateFileSelection()
 		{
 			string filePath = txtFilepath.Text;
 
-			if (filePath == null || filePath == "")
+			if (string.IsNullOrEmpty(filePath))
 			{
 				MessageBox.Show("Please select a file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
@@ -87,9 +93,14 @@ namespace EduroamApp
 
 		public void ConnectWithFile()
 		{
-			string eapString = File.ReadAllText(txtFilepath.Text);
-			MessageBox.Show("Now connecting to eduroam...");
-			// Connect(eapString);
+			// validates the selected config file
+			if (ValidateFileSelection())
+			{
+				// gets content of config file
+				string eapString = File.ReadAllText(txtFilepath.Text);
+				// gets certificates and creates wireless profile
+				ConnectToEduroam.Setup(eapString);
+			}
 		}
 	}
 }

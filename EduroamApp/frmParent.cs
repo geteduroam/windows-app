@@ -21,13 +21,13 @@ namespace EduroamApp
 {
 	public partial class frmParent : Form
 	{
-		int currentFormId = 0;
+		int currentFormId;
 		frm1 frm1;
 		frm2 frm2;
 		frm3 frm3;
 		frm4 frm4;
 		frm5 frm5;
-		GeoCoordinateWatcher watcher; // gets coordinates of computer
+		readonly GeoCoordinateWatcher watcher; // gets coordinates of computer
 
 		public frmParent()
 		{
@@ -43,18 +43,9 @@ namespace EduroamApp
 			nextForm.TopLevel = false;
 			nextForm.AutoScroll = true;
 			nextForm.Dock = DockStyle.Fill;
-			this.pnlContent.Controls.Clear();
-			this.pnlContent.Controls.Add(nextForm);
+			pnlContent.Controls.Clear();
+			pnlContent.Controls.Add(nextForm);
 			nextForm.Show();
-		}
-
-		private void Back()
-		{
-
-		}
-		private void Next()
-		{
-
 		}
 
 
@@ -84,9 +75,12 @@ namespace EduroamApp
 					frm2.GoToForm();
 					break;
 				case 3:
+					frm3.DownloadAndConnect();
+					LoadFrm5();
 					break;
 				case 4:
-					if (frm4.validateFileSelection() == true) frm4.ConnectWithFile();
+					frm4.ConnectWithFile();
+					LoadFrm5();
 					break;
 			}
 		}
@@ -110,25 +104,18 @@ namespace EduroamApp
 
 		private void btnCancel_Click(object sender, EventArgs e)
 		{
-			this.Close();
+			Close();
 		}
 
 		/// <summary>
 		/// Checks if an EAP-config file exists in the same folder as the executable
 		/// </summary>
-		/// <returns></returns>
+		/// <returns>True if file exists, false if not.</returns>
 		public bool ExistSelfExtract()
 		{
 			string exeLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			string[] files = Directory.GetFiles(exeLocation, "*.eap-config");
-			if (files.Length > 0)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
+			return files.Length > 0;
 		}
 
 		/// <summary>
@@ -191,14 +178,15 @@ namespace EduroamApp
 		}
 
 		/// <summary>
-		/// Loads form that lets user log in with username and password.
+		/// Loads form that shows connection status.
 		/// </summary>
 		public void LoadFrm5()
 		{
 			if (frm5 == null) frm5 = new frm5();
 			currentFormId = 5;
 			LoadNewForm(frm5);
-			btnNext.Text = "Connect";
+			btnNext.Text = "Close";
+			btnBack.Enabled = false;
 		}
 	}
 }

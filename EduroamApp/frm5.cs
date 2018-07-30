@@ -19,7 +19,11 @@ namespace EduroamApp
 
 		private void frm5_Load(object sender, EventArgs e)
 		{
-
+			if (ConnectToEduroam.Connect())
+			{
+				lblStatus.Text = "Connected to eduroam.";
+				pboStatus.Image = Properties.Resources.checkmark_16;
+			}
 		}
 	}
 }

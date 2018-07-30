@@ -10,14 +10,14 @@ namespace EduroamApp
 	class UserDataXml
 	{
 		// Namespaces
-		private static XNamespace nsEHUC = "http://www.microsoft.com/provisioning/EapHostUserCredentials";
-		private static XNamespace nsEC = "http://www.microsoft.com/provisioning/EapCommon";
-		private static XNamespace nsBEMUC = "http://www.microsoft.com/provisioning/BaseEapMethodUserCredentials";
-		private static XNamespace nsEUP = "http://www.microsoft.com/provisioning/EapUserPropertiesV1";
-		private static XNamespace nsXSI = "http://www.w3.org/2001/XMLSchema-instance";
-		private static XNamespace nsBEUP = "http://www.microsoft.com/provisioning/BaseEapUserPropertiesV1";
-		private static XNamespace nsMPUP = "http://www.microsoft.com/provisioning/MsPeapUserPropertiesV1";
-		private static XNamespace nsMCUP = "http://www.microsoft.com/provisioning/MsChapV2UserPropertiesV1";
+		private static readonly XNamespace nsEHUC = "http://www.microsoft.com/provisioning/EapHostUserCredentials";
+		private static readonly XNamespace nsEC = "http://www.microsoft.com/provisioning/EapCommon";
+		private static readonly XNamespace nsBEMUC = "http://www.microsoft.com/provisioning/BaseEapMethodUserCredentials";
+		private static readonly XNamespace nsEUP = "http://www.microsoft.com/provisioning/EapUserPropertiesV1";
+		private static readonly XNamespace nsXSI = "http://www.w3.org/2001/XMLSchema-instance";
+		private static readonly XNamespace nsBEUP = "http://www.microsoft.com/provisioning/BaseEapUserPropertiesV1";
+		private static readonly XNamespace nsMPUP = "http://www.microsoft.com/provisioning/MsPeapUserPropertiesV1";
+		private static readonly XNamespace nsMCUP = "http://www.microsoft.com/provisioning/MsChapV2UserPropertiesV1";
 
 		/// <summary>
 		/// Generates user data xml.
@@ -59,7 +59,7 @@ namespace EduroamApp
 					)
 				);
 
-			newUserData.Save(@"C:\Users\lwerivel18\Desktop\userDataFromC#.xml");
+			// newUserData.Save(@"C:\Users\lwerivel18\Desktop\userDataFromC#.xml");
 
 			// returns xml as string
 			return newUserData.ToString();

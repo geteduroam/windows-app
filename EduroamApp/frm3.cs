@@ -37,13 +37,13 @@ namespace EduroamApp
 		private void frm3_Load(object sender, EventArgs e)
 		{
 			// url for json containing all identity providers / institutions
-			string allIdentityProvidersUrl = "https://cat.eduroam.org/user/API.php?action=listAllIdentityProviders&lang=en";
+			const string allIdentityProvidersUrl = "https://cat.eduroam.org/user/API.php?action=listAllIdentityProviders&lang=en";
 
 			// json file as string
-			string idProviderJson = "";
+			string idProviderJson;
 			try
 			{
-				idProviderJson = urlToJson(allIdentityProvidersUrl);
+				idProviderJson = UrlToJson(allIdentityProvidersUrl);
 			}
 			catch (WebException ex)
 			{
@@ -54,7 +54,10 @@ namespace EduroamApp
 			// gets list of identity providers from json file
 			identityProviders = JsonConvert.DeserializeObject<List<IdentityProvider>>(idProviderJson);
 			// adds countries to combobox
-			cboCountry.Items.AddRange(identityProviders.OrderBy(provider => provider.country).Select(provider => provider.country).Distinct().ToArray());
+			cboCountry.Items.AddRange(identityProviders.OrderBy(provider => provider.Country)
+														.Select(provider => provider.Country)
+														.Distinct()
+														.ToArray());
 
 			// finds the country geographically closest to the user and selects it by default
 			try
@@ -62,8 +65,9 @@ namespace EduroamApp
 				string closestCountry = GetClosestInstitution(identityProviders);
 				cboCountry.SelectedIndex = cboCountry.FindStringExact(closestCountry);
 			}
-			catch (System.Exception)
+			catch (Exception)
 			{
+				// ignore
 			}
 		}
 
@@ -76,8 +80,8 @@ namespace EduroamApp
 			profileId = null;
 
 			// adds identity providers from selected country to combobox
-			cboInstitution.Items.AddRange(identityProviders.Where(provider => provider.country == cboCountry.Text)
-											.OrderBy(provider => provider.title).Select(provider => provider.title).ToArray());
+			cboInstitution.Items.AddRange(identityProviders.Where(provider => provider.Country == cboCountry.Text)
+											.OrderBy(provider => provider.Title).Select(provider => provider.Title).ToArray());
 		}
 
 		private void cboInstitution_SelectedIndexChanged(object sender, EventArgs e)
@@ -88,15 +92,15 @@ namespace EduroamApp
 			profileId = null;
 
 			// gets id of institution selected in combobox
-			idProviderId = identityProviders.Where(x => x.title == cboInstitution.Text).Select(x => x.id).First();
+			idProviderId = identityProviders.Where(x => x.Title == cboInstitution.Text).Select(x => x.Id).First();
 			// adds institution id to url
 			string profilesUrl = $"https://cat.eduroam.org/user/API.php?action=listProfiles&id={idProviderId}&lang=en";
 
 			// json file as string
-			string profilesJson = "";
+			string profilesJson;
 			try
 			{
-				profilesJson = urlToJson(profilesUrl);
+				profilesJson = UrlToJson(profilesUrl);
 			}
 			catch (WebException ex)
 			{
@@ -108,19 +112,19 @@ namespace EduroamApp
 			idProviderProfiles = JsonConvert.DeserializeObject<IdentityProviderProfile>(profilesJson);
 
 			// if an identity provider has more than one profile, add to combobox
-			if (idProviderProfiles.data.Count > 1)
+			if (idProviderProfiles.Data.Count > 1)
 			{
 				// enable combobox
 				cboProfiles.Enabled = true;
 				// enable label
 				lblSelectProfile.Enabled = true;
 				// add profiles to combobox
-				cboProfiles.Items.AddRange(idProviderProfiles.data.Select(profile => profile.display).ToArray());
+				cboProfiles.Items.AddRange(idProviderProfiles.Data.Select(profile => profile.Display).ToArray());
 			}
 			else
 			{
 				// gets the only profile id
-				profileId = idProviderProfiles.data.Single().id;
+				profileId = idProviderProfiles.Data.Single().Id;
 				// disable combobox
 				cboProfiles.Enabled = false;
 				// disable label
@@ -133,7 +137,7 @@ namespace EduroamApp
 			if (cboProfiles.Text != "")
 			{
 				// gets profile id of profile selected in combobox
-				profileId = idProviderProfiles.data.Where(profile => profile.display == cboProfiles.Text).Select(x => x.id).Single();
+				profileId = idProviderProfiles.Data.Where(profile => profile.Display == cboProfiles.Text).Select(x => x.Id).Single();
 			}
 		}
 
@@ -142,7 +146,7 @@ namespace EduroamApp
 		/// </summary>
 		/// <param name="url">Url containing json file.</param>
 		/// <returns>Json string.</returns>
-		public string urlToJson(string url)
+		public string UrlToJson(string url)
 		{
 			// downloads json file from url as string
 			using (WebClient client = new WebClient())
@@ -165,8 +169,6 @@ namespace EduroamApp
 			GeoCoordinate myCoord = watcher.Position.Location;
 			// institution's coordinates
 			GeoCoordinate instCoord = new GeoCoordinate();
-			// current distance
-			double currentDistance;
 			// closest institution
 			IdentityProvider closestInst = new IdentityProvider();
 			// shortest distance
@@ -175,16 +177,17 @@ namespace EduroamApp
 			// loops through all institutions' coordinates and compares them with current shortest distance
 			foreach (IdentityProvider inst in instList)
 			{
-				if (inst.geo != null) // excludes if geo property not set
+				if (inst.MyGeo != null) // excludes if geo property not set
 				{
 					// gets lat and long
-					instCoord.Latitude = inst.geo.First().lat;
-					instCoord.Longitude = inst.geo.First().lon;
-					// gets distance
-					currentDistance = myCoord.GetDistanceTo(instCoord);
-					// compares with current shortest distance
+					instCoord.Latitude = inst.MyGeo.First().Lat;
+					instCoord.Longitude = inst.MyGeo.First().Lon;
+					// gets current distance
+					double currentDistance = myCoord.GetDistanceTo(instCoord);
+					// compares with shortest distance
 					if (currentDistance < shortestDistance)
 					{
+						// sets the current distance as the shortest dstance
 						shortestDistance = currentDistance;
 						closestInst = inst;
 					}
@@ -192,7 +195,56 @@ namespace EduroamApp
 			}
 
 			// returns country of institution closest to user
-			return closestInst.country;
+			return closestInst.Country;
+		}
+
+		public void DownloadAndConnect()
+		{
+			// checks if user has selected an institution and/or profile
+			if (string.IsNullOrEmpty(profileId))
+			{
+				MessageBox.Show("Please select an institution and/or a profile.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return; // exits function if no institution/profile selected
+			}
+
+			// adds profile ID to url containing json file, which in turn contains url to EAP config file download
+			string generateEapUrl = $"https://cat.eduroam.org/user/API.php?action=generateInstaller&id=eap-config&lang=en&profile={profileId}";
+
+			// json file
+			string generateEapJson;
+			// gets json as string
+			try
+			{
+				generateEapJson = UrlToJson(generateEapUrl);
+			}
+			catch (WebException ex)
+			{
+				MessageBox.Show("Couldn't fetch Eap Config generate.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			// converts json to GenerateEapConfig object
+			GenerateEapConfig eapConfigInstance = JsonConvert.DeserializeObject<GenerateEapConfig>(generateEapJson);
+
+			// gets url to EAP config file download from GenerateEapConfig object
+			string eapConfigUrl = $"https://cat.eduroam.org/user/{eapConfigInstance.Data.Link}";
+
+			// eap config file
+			string eapConfigString = "";
+			// gets eap config file as string
+			try
+			{
+				eapConfigString = UrlToJson(eapConfigUrl);
+			}
+			catch (WebException ex)
+			{
+				MessageBox.Show("Couldn't fetch Eap Config file.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+
+			MessageBox.Show("EAP config file ready.", "Eduroam installer", MessageBoxButtons.OK, MessageBoxIcon.Information);
+			//MessageBox.Show(eapConfigString);
+			/* Connect(eapConfigString); */
 		}
 	}
 }

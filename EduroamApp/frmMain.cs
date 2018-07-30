@@ -56,7 +56,7 @@ namespace EduroamApp
 			string idProviderJson = "";
 			try
 			{
-				idProviderJson = urlToJson(allIdentityProvidersUrl);
+				idProviderJson = UrlToJson(allIdentityProvidersUrl);
 			}
 			catch (WebException ex)
 			{
@@ -68,7 +68,7 @@ namespace EduroamApp
 			// gets list of identity providers from json file
 			identityProviders = JsonConvert.DeserializeObject<List<IdentityProvider>>(idProviderJson);
 			// adds countries to combobox
-			cboCountry.Items.AddRange(identityProviders.OrderBy(provider => provider.country).Select(provider => provider.country).Distinct().ToArray());
+			cboCountry.Items.AddRange(identityProviders.OrderBy(provider => provider.Country).Select(provider => provider.Country).Distinct().ToArray());
 
 			try
 			{
@@ -90,7 +90,7 @@ namespace EduroamApp
 			profileId = null;
 
 			// adds identity providers from selected country to combobox
-			cboInstitution.Items.AddRange(identityProviders.Where(provider => provider.country == cboCountry.Text).OrderBy(provider => provider.title).Select(provider => provider.title).ToArray());
+			cboInstitution.Items.AddRange(identityProviders.Where(provider => provider.Country == cboCountry.Text).OrderBy(provider => provider.Title).Select(provider => provider.Title).ToArray());
 		}
 
 		private void cboInstitution_SelectedIndexChanged(object sender, EventArgs e)
@@ -101,7 +101,7 @@ namespace EduroamApp
 			profileId = null;
 
 			// gets id of institution selected in combobox
-			idProviderId = identityProviders.Where(x => x.title == cboInstitution.Text).Select(x => x.id).First();
+			idProviderId = identityProviders.Where(x => x.Title == cboInstitution.Text).Select(x => x.Id).First();
 			// adds institution id to url
 			string profilesUrl = $"https://cat.eduroam.org/user/API.php?action=listProfiles&id={idProviderId}&lang=en";
 
@@ -109,7 +109,7 @@ namespace EduroamApp
 			string profilesJson = "";
 			try
 			{
-				profilesJson = urlToJson(profilesUrl);
+				profilesJson = UrlToJson(profilesUrl);
 			}
 			catch (WebException ex)
 			{
@@ -121,19 +121,19 @@ namespace EduroamApp
 			idProviderProfiles = JsonConvert.DeserializeObject<IdentityProviderProfile>(profilesJson);
 
 			// if an identity provider has more than one profile, add to combobox
-			if (idProviderProfiles.data.Count > 1)
+			if (idProviderProfiles.Data.Count > 1)
 			{
 				// enable combobox
 				cboProfiles.Enabled = true;
 				// enable label
 				lblSelectProfile.Enabled = true;
 				// add profiles to combobox
-				cboProfiles.Items.AddRange(idProviderProfiles.data.Select(profile => profile.display).ToArray());
+				cboProfiles.Items.AddRange(idProviderProfiles.Data.Select(profile => profile.Display).ToArray());
 			}
 			else
 			{
 				// gets the only profile id
-				profileId = idProviderProfiles.data.Single().id;
+				profileId = idProviderProfiles.Data.Single().Id;
 				// disable combobox
 				cboProfiles.Enabled = false;
 				// disable label
@@ -146,7 +146,7 @@ namespace EduroamApp
 			if (cboProfiles.Text != "")
 			{
 				// gets profile id of profile selected in combobox
-				profileId = idProviderProfiles.data.Where(profile => profile.display == cboProfiles.Text).Select(x => x.id).Single();
+				profileId = idProviderProfiles.Data.Where(profile => profile.Display == cboProfiles.Text).Select(x => x.Id).Single();
 			}
 		}
 
@@ -154,7 +154,7 @@ namespace EduroamApp
 		private void btnDownloadEap_Click(object sender, EventArgs e)
 		{
 			// checks if user has selected an institution and/or profile
-			if (profileId == null || profileId == "")
+			if (string.IsNullOrEmpty(profileId))
 			{
 				txtOutput.Text += "No institution or profile selected.\n";
 				return; // exits function if no institution/profile selected
@@ -164,11 +164,11 @@ namespace EduroamApp
 			string generateEapUrl = $"https://cat.eduroam.org/user/API.php?action=generateInstaller&id=eap-config&lang=en&profile={profileId}";
 
 			// json file
-			string generateEapJson = "";
+			string generateEapJson;
 			// gets json as string
 			try
 			{
-				generateEapJson = urlToJson(generateEapUrl);
+				generateEapJson = UrlToJson(generateEapUrl);
 			}
 			catch (WebException ex)
 			{
@@ -180,14 +180,14 @@ namespace EduroamApp
 			GenerateEapConfig eapConfigInstance = JsonConvert.DeserializeObject<GenerateEapConfig>(generateEapJson);
 
 			// gets url to EAP config file download from GenerateEapConfig object
-			string eapConfigUrl = $"https://cat.eduroam.org/user/{eapConfigInstance.data.link}";
+			string eapConfigUrl = $"https://cat.eduroam.org/user/{eapConfigInstance.Data.Link}";
 
 			// eap config file
 			string eapConfigString = "";
 			// gets eap config file as string
 			try
 			{
-				eapConfigString = urlToJson(eapConfigUrl);
+				eapConfigString = UrlToJson(eapConfigUrl);
 			}
 			catch (WebException ex)
 			{
@@ -220,7 +220,7 @@ namespace EduroamApp
 			EduroamNetwork eduroamInstance = new EduroamNetwork(); // creates new instance of eduroam network
 			network = eduroamInstance.networkPack; // gets network pack
 			string ssid = eduroamInstance.ssid; // gets SSID
-			Guid interfaceID = eduroamInstance.interfaceId; // gets interface ID
+			Guid interfaceId = eduroamInstance.interfaceId; // gets interface ID
 
 			// all CA thumbprints that will be added to Wireless Profile XML
 			List<string> thumbprints = new List<string>();
@@ -291,14 +291,13 @@ namespace EduroamApp
 			}
 
 			// sets chosen EAP-type based on wether certificate was successfully installed
-			ProfileXml.EapType eapType;
-			if (clientCertFlag == 1) { eapType = ProfileXml.EapType.TLS; } else { eapType = ProfileXml.EapType.PEAP_MSCHAPv2; };
+			ProfileXml.EapType eapType = clientCertFlag == 1 ? ProfileXml.EapType.TLS : ProfileXml.EapType.PEAP_MSCHAPv2;
 
 			// generates new profile xml
 			string profileXml = ProfileXml.CreateProfileXml(ssid, eapType, thumbprints);
 
 			// creates a new wireless profile
-			txtOutput.Text += (CreateNewProfile(interfaceID, profileXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
+			txtOutput.Text += (CreateNewProfile(interfaceId, profileXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
 
 			eduroamInstance = new EduroamNetwork(); // creates new instance of eduroam network
 			network = eduroamInstance.networkPack; // gets updated network pack object
@@ -330,7 +329,7 @@ namespace EduroamApp
 		/// </summary>
 		/// <param name="url">Url containing json file.</param>
 		/// <returns>Json string.</returns>
-		public string urlToJson(string url)
+		public string UrlToJson(string url)
 		{
 			// downloads json file from url as string
 			using (WebClient client = new WebClient())
@@ -352,7 +351,6 @@ namespace EduroamApp
 			// institution's coordinates
 			GeoCoordinate instCoord = new GeoCoordinate();
 			// current distance
-			double currentDistance;
 			// closest institution
 			IdentityProvider closestInst = new IdentityProvider();
 			// shortest distance
@@ -361,24 +359,20 @@ namespace EduroamApp
 			// loops through all institutions' coordinates and compares them with current shortest distance
 			foreach (IdentityProvider inst in instList)
 			{
-				if (inst.geo != null) // excludes if geo property not set
-				{
-					// gets lat and long
-					instCoord.Latitude = inst.geo.First().lat;
-					instCoord.Longitude = inst.geo.First().lon;
-					// gets distance
-					currentDistance = myCoord.GetDistanceTo(instCoord);
-					// compares with current shortest distance
-					if (currentDistance < shortestDistance)
-					{
-						shortestDistance = currentDistance;
-						closestInst = inst;
-					}
-				}
+				if (inst.MyGeo == null) continue;
+				// gets lat and long
+				instCoord.Latitude = inst.MyGeo.First().Lat;
+				instCoord.Longitude = inst.MyGeo.First().Lon;
+				// gets distance
+				double currentDistance = myCoord.GetDistanceTo(instCoord);
+				// compares with current shortest distance
+				if (!(currentDistance < shortestDistance)) continue;
+				shortestDistance = currentDistance;
+				closestInst = inst;
 			}
 
 			// returns country of institution closest to user
-			return closestInst.country;
+			return closestInst.Country;
 		}
 
 		/// <summary>
@@ -412,15 +406,6 @@ namespace EduroamApp
 			// loads the XML file from its file path
 			XElement doc = XElement.Parse(fileString);
 
-			string base64Client = null; // Client cert encoded to base64
-			byte[] clientBytes = null; // Client cert decoded from base64
-			string clientPwd = null; // Client cert password
-			X509Certificate2 clientCert = null; // Client cert object
-
-			string base64Ca = null; // CA encoded to base64
-			byte[] caBytes = null; // CA decoded from base64
-			X509Certificate2 caCert = null; // CA object
-
 
 			// certificate lists to be populated
 			List<X509Certificate2> clientCertificates = new List<X509Certificate2>();
@@ -428,26 +413,25 @@ namespace EduroamApp
 
 			// gets all ClientSideCredential elements
 			IEnumerable<XElement> clientCredElements = doc.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "ClientSideCredential");
-			IEnumerable<XElement> certElements = null; // list of ClientCertificate elements
-			IEnumerable<XElement> caElements = null; // list of CA elements
 
 			// gets client certificates and adds them to client certificate list
 			foreach (XElement el in clientCredElements)
 			{
+				// list of ClientCertificate elements
+				var certElements = el.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "ClientCertificate").ToList();
 				// checks every ClientSideCredential element for ClientCertificate elements
-				certElements = el.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "ClientCertificate");
 				if (certElements.Any())
 				{
 					// there should only be one ClientCertificate in a ClientSideCredential element, so gets the first one
-					base64Client = certElements.First().Value;
+					string base64Client = certElements.First().Value; // Client cert encoded to base64
 					if (base64Client != "") // checks that the certificate value is not empty
 					{
 						// gets passphrase element
-						clientPwd = el.DescendantsAndSelf().Elements().Where(pw => pw.Name.LocalName == "Passphrase").FirstOrDefault().Value;
+						string clientPwd = el.DescendantsAndSelf().Elements().FirstOrDefault(pw => pw.Name.LocalName == "Passphrase").Value; // Client cert password
 						// converts from base64
-						clientBytes = Convert.FromBase64String(base64Client);
+						var clientBytes = Convert.FromBase64String(base64Client); // Client cert decoded from base64
 						// creates certificate object
-						clientCert = new X509Certificate2(clientBytes, clientPwd, X509KeyStorageFlags.PersistKeySet);
+						X509Certificate2 clientCert = new X509Certificate2(clientBytes, clientPwd, X509KeyStorageFlags.PersistKeySet); // Client cert object
 						// sets friendly name of certificate
 						clientCert.FriendlyName = clientCert.GetNameInfo(X509NameType.SimpleName, false);
 						// adds certificate object to list
@@ -457,16 +441,18 @@ namespace EduroamApp
 			}
 
 			// gets CAs and adds them to CA list
-			caElements = doc.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "CA");
+			IEnumerable<XElement> caElements = doc.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "CA");
 			foreach (XElement ca in caElements)
 			{
-				base64Ca = ca.Value;
-				if (base64Ca != "") // checks that the CA value is not empty
+				// CA encoded to base64
+				string base64Ca = ca.Value;
+				// checks that the CA value is not empty
+				if (base64Ca != "")
 				{
 					// converts from base64
-					caBytes = Convert.FromBase64String(base64Ca);
+					var caBytes = Convert.FromBase64String(base64Ca); // CA decoded from base64
 					// creates certificate object
-					caCert = new X509Certificate2(caBytes);
+					X509Certificate2 caCert = new X509Certificate2(caBytes); // CA object
 					// sets friendly name of certificate
 					caCert.FriendlyName = caCert.GetNameInfo(X509NameType.SimpleName, false);
 					// adds certificate object to list
@@ -478,22 +464,6 @@ namespace EduroamApp
 			return Tuple.Create(clientCertificates, certAuthorities);
 		}
 
-		/// <summary>
-		/// Installs client certificate in personal certificate store.
-		/// </summary>
-		/// <param name="cert">Certificate object.</param>
-		public void InstallClientCertificate(X509Certificate2 cert)
-		{
-			// opens personal certificate store
-			X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-			store.Open(OpenFlags.ReadWrite);
-
-			// adds certificate to store
-			store.Add(cert);
-
-			// closes personal certificate store
-			store.Close();
-		}
 
 		/// <summary>
 		/// Installs a certificate object in the specified certificate store.
@@ -509,7 +479,7 @@ namespace EduroamApp
 			{
 				// show messagebox to let users know about the CA installation warning
 				var certExists = store.Certificates.Find(X509FindType.FindByThumbprint, cert.Thumbprint, true);
-				if (certExists == null || certExists.Count < 1)
+				if (certExists.Count < 1)
 				{
 					MessageBox.Show("You will now be prompted to install a Certificate Authority. " +
 									"In order to connect to eduroam, you need to accept this by pressing \"Yes\" in the following dialog.",
@@ -549,13 +519,17 @@ namespace EduroamApp
 		{
 			string filePath = null;
 
-			OpenFileDialog fileDialog = new OpenFileDialog();
+			OpenFileDialog fileDialog = new OpenFileDialog
+			{
+				InitialDirectory = @"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles",
+				Filter = "EAP-CONFIG files (*.eap-config)|*.eap-config|All files (*.*)|*.*",
+				FilterIndex = 0,
+				RestoreDirectory = true,
+				Title = dialogTitle
+			};
 
-			fileDialog.InitialDirectory = @"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles"; // sets the initial directory of the open file dialog
-			fileDialog.Filter = "EAP-CONFIG files (*.eap-config)|*.eap-config|All files (*.*)|*.*"; // sets filter for file types that appear in open file dialog
-			fileDialog.FilterIndex = 0;
-			fileDialog.RestoreDirectory = true;
-			fileDialog.Title = dialogTitle;
+			// sets the initial directory of the open file dialog
+			// sets filter for file types that appear in open file dialog
 
 			if (fileDialog.ShowDialog() == DialogResult.OK)
 			{
