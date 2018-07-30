@@ -15,7 +15,6 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Security;
 using System.Xml.Linq;
-using Newtonsoft.Json;
 using System.Device.Location;
 
 namespace EduroamApp
