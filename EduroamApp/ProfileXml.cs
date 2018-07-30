@@ -17,19 +17,19 @@ namespace EduroamApp
         }
                 
         // Namespaces
-        private static XNamespace nsWLAN = "http://www.microsoft.com/networking/WLAN/profile/v1";
-        private static XNamespace nsOneX = "http://www.microsoft.com/networking/OneX/v1";
-        private static XNamespace nsEHC = "http://www.microsoft.com/provisioning/EapHostConfig";
-        private static XNamespace nsEC = "http://www.microsoft.com/provisioning/EapCommon";
-        private static XNamespace nsBECP = "http://www.microsoft.com/provisioning/BaseEapConnectionPropertiesV1";
+        private static readonly XNamespace nsWLAN = "http://www.microsoft.com/networking/WLAN/profile/v1";
+        private static readonly XNamespace nsOneX = "http://www.microsoft.com/networking/OneX/v1";
+        private static readonly XNamespace nsEHC = "http://www.microsoft.com/provisioning/EapHostConfig";
+        private static readonly XNamespace nsEC = "http://www.microsoft.com/provisioning/EapCommon";
+        private static readonly XNamespace nsBECP = "http://www.microsoft.com/provisioning/BaseEapConnectionPropertiesV1";
             // TLS specific
-        private static XNamespace nsETCPv1 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV1";
-        private static XNamespace nsETCPv2 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV2";
+        private static readonly XNamespace nsETCPv1 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV1";
+        private static readonly XNamespace nsETCPv2 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV2";
             // MSCHAPv2 specific
-        private static XNamespace nsMPCPv1 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV1";
-        private static XNamespace nsMPCPv2 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV2";
-        private static XNamespace nsMPCPv3 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV3";
-        private static XNamespace nsMCCP = "http://www.microsoft.com/provisioning/MsChapV2ConnectionPropertiesV1";
+        private static readonly XNamespace nsMPCPv1 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV1";
+        private static readonly XNamespace nsMPCPv2 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV2";
+        private static readonly XNamespace nsMPCPv3 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV3";
+        private static readonly XNamespace nsMCCP = "http://www.microsoft.com/provisioning/MsChapV2ConnectionPropertiesV1";
 
         
         /// <summary>
@@ -180,7 +180,7 @@ namespace EduroamApp
             }
 
 
-            newProfile.Save(@"C:\Users\lwerivel18\Desktop\testFileFromC#.xml");
+            // newProfile.Save(@"C:\Users\lwerivel18\Desktop\testFileFromC#.xml");
 
             // returns xml as string
             return newProfile.ToString();

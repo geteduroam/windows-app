@@ -8,17 +8,17 @@ namespace EduroamApp
 {   
     public class IdentityProvider
     {
-        public int entityID { get; set; }
-        public string country { get; set; }
-        public int icon { get; set; }
-        public string title { get; set; }
-        public List<Geo> geo { get; set; }
-        public int id { get; set; }
+        public int EntityId { get; set; }
+        public string Country { get; set; }
+        public int Icon { get; set; }
+        public string Title { get; set; }
+        public List<Geo> MyGeo { get; set; }
+        public int Id { get; set; }
 
         public class Geo
         {
-            public double lon { get; set; }
-            public double lat { get; set; }
+            public double Lon { get; set; }
+            public double Lat { get; set; }
         }
     }
 }

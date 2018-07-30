@@ -8,40 +8,40 @@ namespace EduroamApp
 {   
     public class IdProviderProfileAttributes
     {
-        public int status { get; set; }
-        public Data data { get; set; }
-        public string tou { get; set; }
+        public int Status { get; set; }
+        public Datum Data { get; set; }
+        public string Tou { get; set; }
 
         public class Options
         {
-            public int sign { get; set; }
-            public string device_id { get; set; }
-            public string mime { get; set; }
-            public string args { get; set; }
-            public int? hidden { get; set; }
-            public int? redirect { get; set; }
-            public string message { get; set; }
-            public int? no_cache { get; set; }
+            public int Sign { get; set; }
+            public string DeviceId { get; set; }
+            public string Mime { get; set; }
+            public string Args { get; set; }
+            public int? Hidden { get; set; }
+            public int? Redirect { get; set; }
+            public string Message { get; set; }
+            public int? NoCache { get; set; }
         }
 
         public class Device
         {
-            public string id { get; set; }
-            public string display { get; set; }
-            public int status { get; set; }
-            public int redirect { get; set; }
-            public int eap_customtext { get; set; }
-            public int device_customtext { get; set; }
-            public object message { get; set; }
-            public Options options { get; set; }
+            public string Id { get; set; }
+            public string Display { get; set; }
+            public int Status { get; set; }
+            public int Redirect { get; set; }
+            public int EapCustomtext { get; set; }
+            public int DeviceCustomtext { get; set; }
+            public object Message { get; set; }
+            public Options Options { get; set; }
         }
 
-        public class Data
+        public class Datum  
         {
-            public string local_email { get; set; }
-            public string local_phone { get; set; }
-            public string local_url { get; set; }
-            public List<Device> devices { get; set; }
+            public string LocalEmail { get; set; }
+            public string LocalPhone { get; set; }
+            public string LocalUrl { get; set; }
+            public List<Device> Devices { get; set; }
         }
     }
 }
