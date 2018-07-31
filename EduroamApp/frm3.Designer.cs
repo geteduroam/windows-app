@@ -30,10 +30,15 @@
         {
             this.lblSelectProfile = new System.Windows.Forms.Label();
             this.cboProfiles = new System.Windows.Forms.ComboBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblInstitution = new System.Windows.Forms.Label();
+            this.lblCountry = new System.Windows.Forms.Label();
             this.cboInstitution = new System.Windows.Forms.ComboBox();
             this.cboCountry = new System.Windows.Forms.ComboBox();
+            this.tlpLoading = new System.Windows.Forms.TableLayoutPanel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.tlpLoading.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // lblSelectProfile
@@ -57,23 +62,23 @@
             this.cboProfiles.TabIndex = 35;
             this.cboProfiles.SelectedIndexChanged += new System.EventHandler(this.cboProfiles_SelectedIndexChanged);
             // 
-            // label2
+            // lblInstitution
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(3, 53);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(87, 13);
-            this.label2.TabIndex = 34;
-            this.label2.Text = "Select institution:";
+            this.lblInstitution.AutoSize = true;
+            this.lblInstitution.Location = new System.Drawing.Point(3, 53);
+            this.lblInstitution.Name = "lblInstitution";
+            this.lblInstitution.Size = new System.Drawing.Size(87, 13);
+            this.lblInstitution.TabIndex = 34;
+            this.lblInstitution.Text = "Select institution:";
             // 
-            // label1
+            // lblCountry
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 3);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(78, 13);
-            this.label1.TabIndex = 33;
-            this.label1.Text = "Select country:";
+            this.lblCountry.AutoSize = true;
+            this.lblCountry.Location = new System.Drawing.Point(3, 3);
+            this.lblCountry.Name = "lblCountry";
+            this.lblCountry.Size = new System.Drawing.Size(78, 13);
+            this.lblCountry.TabIndex = 33;
+            this.lblCountry.Text = "Select country:";
             // 
             // cboInstitution
             // 
@@ -95,6 +100,41 @@
             this.cboCountry.TabIndex = 31;
             this.cboCountry.SelectedIndexChanged += new System.EventHandler(this.cboCountry_SelectedIndexChanged);
             // 
+            // tlpLoading
+            // 
+            this.tlpLoading.ColumnCount = 1;
+            this.tlpLoading.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60.71429F));
+            this.tlpLoading.Controls.Add(this.label1, 0, 0);
+            this.tlpLoading.Controls.Add(this.pictureBox1, 0, 1);
+            this.tlpLoading.Location = new System.Drawing.Point(160, 57);
+            this.tlpLoading.Name = "tlpLoading";
+            this.tlpLoading.RowCount = 2;
+            this.tlpLoading.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpLoading.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tlpLoading.Size = new System.Drawing.Size(59, 44);
+            this.tlpLoading.TabIndex = 38;
+            // 
+            // label1
+            // 
+            this.label1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(7, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(45, 13);
+            this.label1.TabIndex = 38;
+            this.label1.Text = "Loading";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.pictureBox1.Image = global::EduroamApp.Properties.Resources.ajax_loader;
+            this.pictureBox1.Location = new System.Drawing.Point(21, 20);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(16, 16);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox1.TabIndex = 39;
+            this.pictureBox1.TabStop = false;
+            // 
             // frm3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -102,16 +142,20 @@
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(378, 246);
+            this.Controls.Add(this.tlpLoading);
             this.Controls.Add(this.lblSelectProfile);
             this.Controls.Add(this.cboProfiles);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblInstitution);
+            this.Controls.Add(this.lblCountry);
             this.Controls.Add(this.cboInstitution);
             this.Controls.Add(this.cboCountry);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "frm3";
             this.Text = "frm3";
             this.Load += new System.EventHandler(this.frm3_Load);
+            this.tlpLoading.ResumeLayout(false);
+            this.tlpLoading.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -120,9 +164,12 @@
         #endregion
         private System.Windows.Forms.Label lblSelectProfile;
         private System.Windows.Forms.ComboBox cboProfiles;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblInstitution;
+        private System.Windows.Forms.Label lblCountry;
         private System.Windows.Forms.ComboBox cboInstitution;
         private System.Windows.Forms.ComboBox cboCountry;
+        private System.Windows.Forms.TableLayoutPanel tlpLoading;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }

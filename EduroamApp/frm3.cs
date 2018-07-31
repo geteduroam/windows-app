@@ -22,7 +22,7 @@ namespace EduroamApp
 {
     public partial class frm3 : Form
     {
-        frmParent frmParent;
+        frmParent frmParent; // makes parent form accessible from this class
         List<IdentityProvider> identityProviders; // list containing all identity providers        
         IdentityProviderProfile idProviderProfiles; // list containing all profiles of an identity provider        
         int idProviderId; // id of selected institution        
@@ -30,11 +30,38 @@ namespace EduroamApp
 
         public frm3(frmParent parentInstance)
         {
+            // gets parent form instance
             frmParent = parentInstance;
             InitializeComponent();
         }
 
-        private void frm3_Load(object sender, EventArgs e)
+        private async void frm3_Load(object sender, EventArgs e)
+        {
+            lblCountry.Visible = false;
+            lblInstitution.Visible = false;
+            lblSelectProfile.Visible = false;
+            cboCountry.Visible = false;
+            cboInstitution.Visible = false;
+            cboProfiles.Visible = false;
+            tlpLoading.Visible = true;
+
+            bool getInstSuccess = await Task.Run(() => GetAllInstitutions());
+
+            if (getInstSuccess && identityProviders.Count > 0)
+            {
+                lblCountry.Visible = true;
+                lblInstitution.Visible = true;
+                lblSelectProfile.Visible = true;
+                cboCountry.Visible = true;
+                cboInstitution.Visible = true;
+                cboProfiles.Visible = true;
+                tlpLoading.Visible = false;
+
+                PopulateCountries();
+            }
+        }
+
+        public bool GetAllInstitutions()
         {
             // url for json containing all identity providers / institutions
             const string allIdentityProvidersUrl = "https://cat.eduroam.org/user/API.php?action=listAllIdentityProviders&lang=en";
@@ -48,16 +75,22 @@ namespace EduroamApp
             catch (WebException ex)
             {
                 MessageBox.Show("Couldn't fetch identity provider list. \nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                return false;
             }
 
             // gets list of identity providers from json file
             identityProviders = JsonConvert.DeserializeObject<List<IdentityProvider>>(idProviderJson);
+
+            return true;
+        }
+
+        private void PopulateCountries()
+        {
             // adds countries to combobox
             cboCountry.Items.AddRange(identityProviders.OrderBy(provider => provider.Country)
-                                                       .Select(provider => provider.Country)
-                                                       .Distinct()
-                                                       .ToArray());
+                .Select(provider => provider.Country)
+                .Distinct()
+                .ToArray());
 
             // finds the country geographically closest to the user and selects it by default
             try
