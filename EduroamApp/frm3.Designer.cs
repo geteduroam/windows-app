@@ -37,6 +37,7 @@
             this.tlpLoading = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.lblError = new System.Windows.Forms.Label();
             this.tlpLoading.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -135,6 +136,16 @@
             this.pictureBox1.TabIndex = 39;
             this.pictureBox1.TabStop = false;
             // 
+            // lblError
+            // 
+            this.lblError.Location = new System.Drawing.Point(3, 3);
+            this.lblError.Name = "lblError";
+            this.lblError.Size = new System.Drawing.Size(329, 58);
+            this.lblError.TabIndex = 39;
+            this.lblError.Text = "Couldn\'t connect to the server.\r\n\r\nMake sure that you are connected to the intern" +
+    "et, then try again.";
+            this.lblError.Visible = false;
+            // 
             // frm3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -142,6 +153,7 @@
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(378, 246);
+            this.Controls.Add(this.lblError);
             this.Controls.Add(this.tlpLoading);
             this.Controls.Add(this.lblSelectProfile);
             this.Controls.Add(this.cboProfiles);
@@ -171,5 +183,6 @@
         private System.Windows.Forms.TableLayoutPanel tlpLoading;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label lblError;
     }
 }

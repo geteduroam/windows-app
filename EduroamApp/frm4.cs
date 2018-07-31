@@ -75,32 +75,47 @@ namespace EduroamApp
 
             if (string.IsNullOrEmpty(filePath))
             {
-                MessageBox.Show("Please select a file.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Please select a file.", 
+                                "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             else if (!File.Exists(filePath))
             {
-                MessageBox.Show("The specified file does not exist.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("The specified file does not exist.", 
+                                "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             else if (Path.GetExtension(filePath) != ".eap-config")
             {
-                MessageBox.Show("The file type you chose is not supported.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("The file type you chose is not supported.", 
+                                "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
             return true;
         }
 
-        public void ConnectWithFile()
+        public bool ConnectWithFile()
         {
             // validates the selected config file
             if (ValidateFileSelection())
             {
-                // gets content of config file
-                string eapString = File.ReadAllText(txtFilepath.Text);
-                // gets certificates and creates wireless profile
-                ConnectToEduroam.Setup(eapString);
+                try
+                {
+                    // gets content of config file
+                    string eapString = File.ReadAllText(txtFilepath.Text);
+                    // gets certificates and creates wireless profile
+                    ConnectToEduroam.Setup(eapString);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("The selected file is corrupted. Please select another file, or try another setup method.\n" +
+                                    "Exception: " + ex.Message, 
+                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
+
+            return false;
         }
     }
 }

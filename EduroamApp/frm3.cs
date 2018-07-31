@@ -37,6 +37,7 @@ namespace EduroamApp
 
         private async void frm3_Load(object sender, EventArgs e)
         {
+            // displays loading animation while fetching list of institutions
             lblCountry.Visible = false;
             lblInstitution.Visible = false;
             lblSelectProfile.Visible = false;
@@ -45,6 +46,7 @@ namespace EduroamApp
             cboProfiles.Visible = false;
             tlpLoading.Visible = true;
 
+            // async method to get list of institutions
             bool getInstSuccess = await Task.Run(() => GetAllInstitutions());
 
             if (getInstSuccess && identityProviders.Count > 0)
@@ -58,6 +60,11 @@ namespace EduroamApp
                 tlpLoading.Visible = false;
 
                 PopulateCountries();
+            }
+            else
+            {
+                tlpLoading.Visible = false;
+                lblError.Visible = true;
             }
         }
 
@@ -231,13 +238,14 @@ namespace EduroamApp
             return closestInst.Country;
         }
 
-        public void DownloadAndConnect()
+        public bool ConnectWithDownload()
         {
             // checks if user has selected an institution and/or profile
             if (string.IsNullOrEmpty(profileId))
             {
-                MessageBox.Show("Please select an institution and/or a profile.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return; // exits function if no institution/profile selected
+                MessageBox.Show("Please select an institution and/or a profile.", 
+                                "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false; // exits function if no institution/profile selected
             }
 
             // adds profile ID to url containing json file, which in turn contains url to EAP config file download
@@ -252,8 +260,9 @@ namespace EduroamApp
             }
             catch (WebException ex)
             {
-                MessageBox.Show("Couldn't fetch Eap Config generate.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                MessageBox.Show("Couldn't fetch Eap Config generate.\n" +
+                                "Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
 
             // converts json to GenerateEapConfig object
@@ -263,21 +272,31 @@ namespace EduroamApp
             string eapConfigUrl = $"https://cat.eduroam.org/user/{eapConfigInstance.Data.Link}";
 
             // eap config file
-            string eapConfigString = "";
+            string eapString = "";
             // gets eap config file as string
             try
             {
-                eapConfigString = UrlToJson(eapConfigUrl);
+                eapString = UrlToJson(eapConfigUrl);
             }
             catch (WebException ex)
             {
-                MessageBox.Show("Couldn't fetch Eap Config file.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
+                MessageBox.Show("Couldn't fetch Eap Config file.\n" +
+                                "Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
             }
 
-            MessageBox.Show("EAP config file ready.", "Eduroam installer", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //MessageBox.Show(eapConfigString);
-            /* Connect(eapConfigString); */
+            try
+            {
+                MessageBox.Show("EAP config file ready.", "Eduroam installer", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                ConnectToEduroam.Setup(eapString);
+                return true;
+            }
+            catch (Exception)
+            {
+                // ignore
+                return false;
+            }
         }
+        
     }
 }

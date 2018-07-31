@@ -77,12 +77,10 @@ namespace EduroamApp
                     frm2.GoToForm();
                     break;
                 case 3:
-                    frm3.DownloadAndConnect();
-                    LoadFrm5(true);
+                    if (frm3.ConnectWithDownload()) LoadFrm5(true);
                     break;
                 case 4:
-                    frm4.ConnectWithFile();
-                    LoadFrm5(true);
+                    if (frm4.ConnectWithFile()) LoadFrm5(true);
                     break;
                 case 5:
                     LoadFrm6();
