@@ -23,20 +23,16 @@ namespace EduroamApp
 	class ConnectToEduroam
 	{
 		static int clientCertFlag = 0;
+		// sets eduroam as chosen network
+		static EduroamNetwork eduroamInstance = new EduroamNetwork(); // creates new instance of eduroam network
+		static readonly string ssid = eduroamInstance.ssid; // gets SSID
+		static readonly Guid interfaceId = eduroamInstance.interfaceId; // gets interface ID
 
 		public static void Setup(string eapString)
 		{
-
-
-			// sets eduroam as chosen network
-			EduroamNetwork eduroamInstance = new EduroamNetwork(); // creates new instance of eduroam network
-			string ssid = eduroamInstance.ssid; // gets SSID
-			Guid interfaceId = eduroamInstance.interfaceId; // gets interface ID
-
 			// all CA thumbprints that will be added to Wireless Profile XML
 			List<string> thumbprints = new List<string>();
-			thumbprints.Add("8d043f808044894db8d8e06da2acf5f98fb4a610"); //thumbprint for login with username/password
-
+			//thumbprints.Add("8d043f808044894db8d8e06da2acf5f98fb4a610"); //thumbprint for login with username/password
 
 			// gets a list of all client certificates and a list of all CAs
 			var getAllCertificates = GetCertificates(eapString);
@@ -111,9 +107,9 @@ namespace EduroamApp
 			Debug.WriteLine(CreateNewProfile(interfaceId, profileXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
 		}
 
-		public static bool Connect()
+		public static Task<bool> Connect()
 		{
-			EduroamNetwork eduroamInstance = new EduroamNetwork(); // creates new instance of eduroam network
+			eduroamInstance = new EduroamNetwork(); // creates new instance of eduroam network
 			AvailableNetworkPack network = eduroamInstance.networkPack; // gets updated network pack object
 
 			// CONNECT WITH USERNAME+PASSWORD
@@ -132,11 +128,29 @@ namespace EduroamApp
 			}
 			else
 			{ */
-				// connects to eduroam
-				return Task.Run(() => ConnectAsync(network)).Result;
+			Task<bool> connectResult = Task.Run(() => ConnectAsync(network));
+
+			// connects to eduroam
+			return connectResult; //Task.Run(() => ConnectAsync(network)).Result;
 
 			//}
 
+		}
+
+		/// <summary>
+		/// Connects to the chosen wireless LAN.
+		/// </summary>
+		/// <returns>True if successfully connected. False if not.</returns>
+		private static async Task<bool> ConnectAsync(AvailableNetworkPack chosenWifi)
+		{
+			if (chosenWifi == null)
+				return false;
+
+			return await NativeWifi.ConnectNetworkAsync(
+				interfaceId: chosenWifi.Interface.Id,
+				profileName: chosenWifi.ProfileName,
+				bssType: chosenWifi.BssType,
+				timeout: TimeSpan.FromSeconds(6));
 		}
 
 		/// <summary>
@@ -158,6 +172,15 @@ namespace EduroamApp
 			bool overwrite = true;
 
 			return NativeWifi.SetProfile(networkId, newProfileType, profileXml, newSecurityType, overwrite);
+		}
+
+		/// <summary>
+		/// Deletes eduroam profile.
+		/// </summary>
+		/// <returns>True if delete succesful, false if not.</returns>
+		public static bool RemoveProfile()
+		{
+			return NativeWifi.DeleteProfile(interfaceId, ssid);
 		}
 
 		/// <summary>
@@ -257,20 +280,6 @@ namespace EduroamApp
 			store.Close();
 		}
 
-		/// <summary>
-		/// Connects to the chosen wireless LAN.
-		/// </summary>
-		/// <returns>True if successfully connected. False if not.</returns>
-		private static async Task<bool> ConnectAsync(AvailableNetworkPack chosenWifi)
-		{
-			if (chosenWifi == null)
-				return false;
 
-			return await NativeWifi.ConnectNetworkAsync(
-				interfaceId: chosenWifi.Interface.Id,
-				profileName: chosenWifi.ProfileName,
-				bssType: chosenWifi.BssType,
-				timeout: TimeSpan.FromSeconds(10));
-		}
 	}
 }

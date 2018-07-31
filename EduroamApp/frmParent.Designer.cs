@@ -34,14 +34,19 @@ namespace EduroamApp
 			this.btnBack = new System.Windows.Forms.Button();
 			this.btnNext = new System.Windows.Forms.Button();
 			this.pnlLeft = new System.Windows.Forms.Panel();
-			this.pnlContent = new System.Windows.Forms.Panel();
 			this.pictureBox2 = new System.Windows.Forms.PictureBox();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.panel1 = new System.Windows.Forms.Panel();
+			this.label2 = new System.Windows.Forms.Label();
+			this.pnlLeftMargin = new System.Windows.Forms.Panel();
+			this.pnlRightMargin = new System.Windows.Forms.Panel();
+			this.pnlContent = new System.Windows.Forms.Panel();
 			this.pnlNavigation.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.pnlLeft.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			//
 			// pnlNavigation
@@ -113,15 +118,6 @@ namespace EduroamApp
 			this.pnlLeft.Size = new System.Drawing.Size(160, 366);
 			this.pnlLeft.TabIndex = 2;
 			//
-			// pnlContent
-			//
-			this.pnlContent.BackColor = System.Drawing.SystemColors.Window;
-			this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.pnlContent.Location = new System.Drawing.Point(160, 0);
-			this.pnlContent.Name = "pnlContent";
-			this.pnlContent.Size = new System.Drawing.Size(448, 366);
-			this.pnlContent.TabIndex = 3;
-			//
 			// pictureBox2
 			//
 			this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Top;
@@ -144,12 +140,62 @@ namespace EduroamApp
 			this.pictureBox1.TabIndex = 0;
 			this.pictureBox1.TabStop = false;
 			//
+			// panel1
+			//
+			this.panel1.BackColor = System.Drawing.Color.White;
+			this.panel1.Controls.Add(this.label2);
+			this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+			this.panel1.Location = new System.Drawing.Point(160, 0);
+			this.panel1.Name = "panel1";
+			this.panel1.Size = new System.Drawing.Size(448, 120);
+			this.panel1.TabIndex = 4;
+			//
+			// label2
+			//
+			this.label2.AutoSize = true;
+			this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label2.Location = new System.Drawing.Point(35, 59);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(138, 20);
+			this.label2.TabIndex = 7;
+			this.label2.Text = "Connection status";
+			//
+			// pnlLeftMargin
+			//
+			this.pnlLeftMargin.BackColor = System.Drawing.Color.White;
+			this.pnlLeftMargin.Dock = System.Windows.Forms.DockStyle.Left;
+			this.pnlLeftMargin.Location = new System.Drawing.Point(160, 120);
+			this.pnlLeftMargin.Name = "pnlLeftMargin";
+			this.pnlLeftMargin.Size = new System.Drawing.Size(35, 246);
+			this.pnlLeftMargin.TabIndex = 5;
+			//
+			// pnlRightMargin
+			//
+			this.pnlRightMargin.BackColor = System.Drawing.Color.White;
+			this.pnlRightMargin.Dock = System.Windows.Forms.DockStyle.Right;
+			this.pnlRightMargin.Location = new System.Drawing.Point(573, 120);
+			this.pnlRightMargin.Name = "pnlRightMargin";
+			this.pnlRightMargin.Size = new System.Drawing.Size(35, 246);
+			this.pnlRightMargin.TabIndex = 6;
+			//
+			// pnlContent
+			//
+			this.pnlContent.BackColor = System.Drawing.Color.White;
+			this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.pnlContent.Location = new System.Drawing.Point(195, 120);
+			this.pnlContent.Name = "pnlContent";
+			this.pnlContent.Size = new System.Drawing.Size(378, 246);
+			this.pnlContent.TabIndex = 7;
+			//
 			// frmParent
 			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(608, 430);
 			this.Controls.Add(this.pnlContent);
+			this.Controls.Add(this.pnlRightMargin);
+			this.Controls.Add(this.pnlLeftMargin);
+			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.pnlLeft);
 			this.Controls.Add(this.pnlNavigation);
 			this.Name = "frmParent";
@@ -160,6 +206,8 @@ namespace EduroamApp
 			this.pnlLeft.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+			this.panel1.ResumeLayout(false);
+			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -168,12 +216,16 @@ namespace EduroamApp
 
 		private System.Windows.Forms.Panel pnlNavigation;
 		private System.Windows.Forms.Panel pnlLeft;
-		private System.Windows.Forms.Panel pnlContent;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.PictureBox pictureBox2;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.Button btnBack;
 		private System.Windows.Forms.Button btnNext;
 		private System.Windows.Forms.Button btnCancel;
+		private System.Windows.Forms.Panel panel1;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Panel pnlLeftMargin;
+		private System.Windows.Forms.Panel pnlRightMargin;
+		private System.Windows.Forms.Panel pnlContent;
 	}
 }

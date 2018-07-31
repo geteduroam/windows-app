@@ -27,6 +27,7 @@ namespace EduroamApp
 		frm3 frm3;
 		frm4 frm4;
 		frm5 frm5;
+		frm6 frm6;
 		readonly GeoCoordinateWatcher watcher; // gets coordinates of computer
 
 		public frmParent()
@@ -136,6 +137,7 @@ namespace EduroamApp
 			if (frm1 == null) frm1 = new frm1(this);
 			currentFormId = 1;
 			LoadNewForm(frm1);
+			label2.Text = "eduroam installer";
 			btnNext.Text = "Install";
 			btnBack.Visible = false;
 		}
@@ -148,6 +150,7 @@ namespace EduroamApp
 			if (frm2 == null) frm2 = new frm2(this);
 			currentFormId = 2;
 			LoadNewForm(frm2);
+			label2.Text = "Certificate installation";
 			btnNext.Text = "Next >";
 			btnBack.Visible = true;
 			btnBack.Enabled = false;
@@ -161,6 +164,7 @@ namespace EduroamApp
 			if (frm3 == null) frm3 = new frm3(this);
 			currentFormId = 3;
 			LoadNewForm(frm3);
+			label2.Text = "Select your institution";
 			btnNext.Text = "Connect";
 			btnBack.Enabled = true;
 		}
@@ -173,6 +177,7 @@ namespace EduroamApp
 			if (frm4 == null) frm4 = new frm4();
 			currentFormId = 4;
 			LoadNewForm(frm4);
+			label2.Text = "Select EAP-config file";
 			btnNext.Text = "Connect";
 			btnBack.Enabled = true;
 		}
@@ -182,11 +187,22 @@ namespace EduroamApp
 		/// </summary>
 		public void LoadFrm5()
 		{
-			if (frm5 == null) frm5 = new frm5();
+			if (frm5 == null) frm5 = new frm5(this);
 			currentFormId = 5;
 			LoadNewForm(frm5);
-			btnNext.Text = "Close";
+			label2.Text = "Connection status";
 			btnBack.Enabled = false;
+		}
+
+		/// <summary>
+		/// Loads form that lets user log in with username+password.
+		/// </summary>
+		public void LoadFrm6()
+		{
+			if (frm6 == null) frm6 = new frm6();
+			currentFormId = 6;
+			LoadNewForm(frm6);
+			label2.Text = "Log in";
 		}
 	}
 }
