@@ -12,12 +12,12 @@ namespace EduroamApp
 {
 	public partial class frm2 : Form
 	{
-		// makes the parent form accessible from this class
+		// makes parent form accessible from this class
 		readonly frmParent frmParent;
 
 		public frm2(frmParent parentInstance)
 		{
-			// gets the parent form instance
+			// gets parent form instance
 			frmParent = parentInstance;
 			InitializeComponent();
 		}

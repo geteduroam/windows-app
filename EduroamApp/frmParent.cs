@@ -22,6 +22,7 @@ namespace EduroamApp
 	public partial class frmParent : Form
 	{
 		int currentFormId;
+		int selectedMethodId;
 		frm1 frm1;
 		frm2 frm2;
 		frm3 frm3;
@@ -77,11 +78,16 @@ namespace EduroamApp
 					break;
 				case 3:
 					frm3.DownloadAndConnect();
-					LoadFrm5();
+					LoadFrm5(true);
 					break;
 				case 4:
 					frm4.ConnectWithFile();
-					LoadFrm5();
+					LoadFrm5(true);
+					break;
+				case 5:
+					LoadFrm6();
+					break;
+				case 6:
 					break;
 			}
 		}
@@ -99,6 +105,13 @@ namespace EduroamApp
 					break;
 				case 4:
 					LoadFrm2();
+					break;
+				case 5:
+					if (selectedMethodId == 3) LoadFrm3();
+					else LoadFrm4();
+					break;
+				case 6:
+					LoadFrm5(false);
 					break;
 			}
 		}
@@ -137,7 +150,7 @@ namespace EduroamApp
 			if (frm1 == null) frm1 = new frm1(this);
 			currentFormId = 1;
 			LoadNewForm(frm1);
-			label2.Text = "eduroam installer";
+			lblTitle.Text = "eduroam installer";
 			btnNext.Text = "Install";
 			btnBack.Visible = false;
 		}
@@ -150,7 +163,7 @@ namespace EduroamApp
 			if (frm2 == null) frm2 = new frm2(this);
 			currentFormId = 2;
 			LoadNewForm(frm2);
-			label2.Text = "Certificate installation";
+			lblTitle.Text = "Certificate installation";
 			btnNext.Text = "Next >";
 			btnBack.Visible = true;
 			btnBack.Enabled = false;
@@ -163,8 +176,9 @@ namespace EduroamApp
 		{
 			if (frm3 == null) frm3 = new frm3(this);
 			currentFormId = 3;
+			selectedMethodId = 3;
+			lblTitle.Text = "Select your institution";
 			LoadNewForm(frm3);
-			label2.Text = "Select your institution";
 			btnNext.Text = "Connect";
 			btnBack.Enabled = true;
 		}
@@ -176,8 +190,9 @@ namespace EduroamApp
 		{
 			if (frm4 == null) frm4 = new frm4();
 			currentFormId = 4;
+			selectedMethodId = 4;
 			LoadNewForm(frm4);
-			label2.Text = "Select EAP-config file";
+			lblTitle.Text = "Select EAP-config file";
 			btnNext.Text = "Connect";
 			btnBack.Enabled = true;
 		}
@@ -185,13 +200,13 @@ namespace EduroamApp
 		/// <summary>
 		/// Loads form that shows connection status.
 		/// </summary>
-		public void LoadFrm5()
+		public void LoadFrm5(bool reloadflag)
 		{
-			if (frm5 == null) frm5 = new frm5(this);
+			if (reloadflag == true) frm5 = new frm5(this);
 			currentFormId = 5;
 			LoadNewForm(frm5);
-			label2.Text = "Connection status";
-			btnBack.Enabled = false;
+			lblTitle.Text = "Connection status";
+			btnNext.Text = "Next >";
 		}
 
 		/// <summary>
@@ -199,10 +214,11 @@ namespace EduroamApp
 		/// </summary>
 		public void LoadFrm6()
 		{
-			if (frm6 == null) frm6 = new frm6();
+			frm6 = new frm6();
 			currentFormId = 6;
 			LoadNewForm(frm6);
-			label2.Text = "Log in";
+			lblTitle.Text = "Log in";
+			btnNext.Text = "Connect";
 		}
 	}
 }

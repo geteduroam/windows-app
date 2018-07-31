@@ -29,8 +29,8 @@ namespace EduroamApp
 		private void InitializeComponent()
 		{
 			this.label1 = new System.Windows.Forms.Label();
-			this.textBox1 = new System.Windows.Forms.TextBox();
-			this.textBox2 = new System.Windows.Forms.TextBox();
+			this.txtUsername = new System.Windows.Forms.TextBox();
+			this.txtPassword = new System.Windows.Forms.TextBox();
 			this.SuspendLayout();
 			//
 			// label1
@@ -42,23 +42,27 @@ namespace EduroamApp
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Enter your username and password";
 			//
-			// textBox1
+			// txtUsername
 			//
-			this.textBox1.ForeColor = System.Drawing.SystemColors.GrayText;
-			this.textBox1.Location = new System.Drawing.Point(6, 24);
-			this.textBox1.Name = "textBox1";
-			this.textBox1.Size = new System.Drawing.Size(206, 20);
-			this.textBox1.TabIndex = 1;
-			this.textBox1.Text = "Username";
+			this.txtUsername.ForeColor = System.Drawing.SystemColors.GrayText;
+			this.txtUsername.Location = new System.Drawing.Point(6, 24);
+			this.txtUsername.Name = "txtUsername";
+			this.txtUsername.Size = new System.Drawing.Size(206, 20);
+			this.txtUsername.TabIndex = 1;
+			this.txtUsername.Text = "Username";
+			this.txtUsername.Enter += new System.EventHandler(this.txtUsername_Enter);
+			this.txtUsername.Leave += new System.EventHandler(this.txtUsername_Leave);
 			//
-			// textBox2
+			// txtPassword
 			//
-			this.textBox2.ForeColor = System.Drawing.SystemColors.GrayText;
-			this.textBox2.Location = new System.Drawing.Point(6, 50);
-			this.textBox2.Name = "textBox2";
-			this.textBox2.Size = new System.Drawing.Size(206, 20);
-			this.textBox2.TabIndex = 2;
-			this.textBox2.Text = "Password";
+			this.txtPassword.ForeColor = System.Drawing.SystemColors.GrayText;
+			this.txtPassword.Location = new System.Drawing.Point(6, 50);
+			this.txtPassword.Name = "txtPassword";
+			this.txtPassword.Size = new System.Drawing.Size(206, 20);
+			this.txtPassword.TabIndex = 2;
+			this.txtPassword.Text = "Password";
+			this.txtPassword.Enter += new System.EventHandler(this.txtPassword_Enter);
+			this.txtPassword.Leave += new System.EventHandler(this.txtPassword_Leave);
 			//
 			// frm6
 			//
@@ -67,8 +71,8 @@ namespace EduroamApp
 			this.AutoScroll = true;
 			this.BackColor = System.Drawing.Color.White;
 			this.ClientSize = new System.Drawing.Size(378, 246);
-			this.Controls.Add(this.textBox2);
-			this.Controls.Add(this.textBox1);
+			this.Controls.Add(this.txtPassword);
+			this.Controls.Add(this.txtUsername);
 			this.Controls.Add(this.label1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Name = "frm6";
@@ -82,7 +86,7 @@ namespace EduroamApp
 		#endregion
 
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox textBox1;
-		private System.Windows.Forms.TextBox textBox2;
+		private System.Windows.Forms.TextBox txtUsername;
+		private System.Windows.Forms.TextBox txtPassword;
 	}
 }
