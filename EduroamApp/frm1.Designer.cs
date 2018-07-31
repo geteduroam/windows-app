@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
             this.btnAltSetup = new System.Windows.Forms.Button();
             this.pnlAltPopup = new System.Windows.Forms.Panel();
             this.pnlAltPopup.SuspendLayout();
@@ -39,21 +38,11 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(54, 131);
+            this.label1.Location = new System.Drawing.Point(3, 3);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(122, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Press Install to continue.";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(53, 50);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(119, 20);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "eduroam Setup";
             // 
             // btnAltSetup
             // 
@@ -73,7 +62,7 @@
             // 
             this.pnlAltPopup.BackColor = System.Drawing.Color.Transparent;
             this.pnlAltPopup.Controls.Add(this.btnAltSetup);
-            this.pnlAltPopup.Location = new System.Drawing.Point(321, 328);
+            this.pnlAltPopup.Location = new System.Drawing.Point(262, 219);
             this.pnlAltPopup.Name = "pnlAltPopup";
             this.pnlAltPopup.Size = new System.Drawing.Size(115, 26);
             this.pnlAltPopup.TabIndex = 5;
@@ -84,9 +73,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(448, 366);
+            this.ClientSize = new System.Drawing.Size(378, 246);
             this.Controls.Add(this.pnlAltPopup);
-            this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "frm1";
@@ -100,7 +88,6 @@
         #endregion
 
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button btnAltSetup;
         private System.Windows.Forms.Panel pnlAltPopup;
     }

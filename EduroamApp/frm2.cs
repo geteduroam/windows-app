@@ -43,5 +43,10 @@ namespace EduroamApp
         {
 
         }
+
+        private void frm2_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
