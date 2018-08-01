@@ -1,6 +1,6 @@
 ﻿namespace EduroamApp
 {
-    partial class frm3
+    partial class frmDownload
     {
         /// <summary>
         /// Required designer variable.
@@ -162,7 +162,7 @@
             this.Controls.Add(this.cboInstitution);
             this.Controls.Add(this.cboCountry);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "frm3";
+            this.Name = "frmDownload";
             this.Text = "frm3";
             this.Load += new System.EventHandler(this.frm3_Load);
             this.tlpLoading.ResumeLayout(false);

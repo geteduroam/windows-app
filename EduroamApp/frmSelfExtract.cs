@@ -20,12 +20,12 @@ using System.Device.Location;
 
 namespace EduroamApp
 {
-    public partial class frm1 : Form
+    public partial class frmSelfExtract : Form
     {
         // makes the parent form accessible from this class
         frmParent frmParent;
 
-        public frm1(frmParent parentInstance)
+        public frmSelfExtract(frmParent parentInstance)
         {
             // gets the parent form instance
             frmParent = parentInstance;

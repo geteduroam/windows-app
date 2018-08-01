@@ -1,6 +1,6 @@
 ﻿namespace EduroamApp
 {
-    partial class frm5
+    partial class frmConnect
     {
         /// <summary>
         /// Required designer variable.
@@ -30,8 +30,8 @@
         {
             this.lblStatus = new System.Windows.Forms.Label();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.lblConnectFailed = new System.Windows.Forms.Label();
             this.pboStatus = new System.Windows.Forms.PictureBox();
+            this.lblConnectFailed = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pboStatus)).BeginInit();
             this.SuspendLayout();
@@ -40,7 +40,7 @@
             // 
             this.lblStatus.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(3, 5);
+            this.lblStatus.Location = new System.Drawing.Point(3, 16);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(70, 13);
             this.lblStatus.TabIndex = 7;
@@ -57,8 +57,19 @@
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(247, 23);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(247, 45);
             this.tableLayoutPanel1.TabIndex = 9;
+            // 
+            // pboStatus
+            // 
+            this.pboStatus.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.pboStatus.Image = global::EduroamApp.Properties.Resources.ajax_loader;
+            this.pboStatus.Location = new System.Drawing.Point(79, 14);
+            this.pboStatus.Name = "pboStatus";
+            this.pboStatus.Size = new System.Drawing.Size(16, 16);
+            this.pboStatus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pboStatus.TabIndex = 8;
+            this.pboStatus.TabStop = false;
             // 
             // lblConnectFailed
             // 
@@ -71,18 +82,7 @@
     "an try to log in with your username \r\nand password by pressing Next.";
             this.lblConnectFailed.Visible = false;
             // 
-            // pboStatus
-            // 
-            this.pboStatus.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.pboStatus.Image = global::EduroamApp.Properties.Resources.ajax_loader;
-            this.pboStatus.Location = new System.Drawing.Point(79, 3);
-            this.pboStatus.Name = "pboStatus";
-            this.pboStatus.Size = new System.Drawing.Size(16, 16);
-            this.pboStatus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pboStatus.TabIndex = 8;
-            this.pboStatus.TabStop = false;
-            // 
-            // frm5
+            // frmConnect
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -92,7 +92,7 @@
             this.Controls.Add(this.lblConnectFailed);
             this.Controls.Add(this.tableLayoutPanel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "frm5";
+            this.Name = "frmConnect";
             this.Text = "frm5";
             this.Load += new System.EventHandler(this.frm5_Load);
             this.tableLayoutPanel1.ResumeLayout(false);

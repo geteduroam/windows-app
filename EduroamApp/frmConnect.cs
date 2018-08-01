@@ -10,10 +10,10 @@ using System.Windows.Forms;
 
 namespace EduroamApp
 {
-    public partial class frm5 : Form
+    public partial class frmConnect : Form
     {
         readonly frmParent frmParent;
-        public frm5(frmParent parentInstance)
+        public frmConnect(frmParent parentInstance)
         {
             frmParent = parentInstance;
             InitializeComponent();
@@ -39,14 +39,17 @@ namespace EduroamApp
             
             if (connectSuccess)
             {
-                lblStatus.Text = "You are now connected to eduroam.";
+                lblStatus.Text = "You are now connected to eduroam.\nPress Close to exit the wizard.";
                 pboStatus.Image = Properties.Resources.checkmark_16;
+                frmParent.BtnCancelText = "Close";
             }
             else
             {
                 lblStatus.Text = "Connection to eduroam failed.";
                 pboStatus.Image = Properties.Resources.x_mark_3_16;
                 lblConnectFailed.Visible = true;
+                frmParent.BtnNextEnabled = true;
+                frmParent.BtnBackEnabled = true;
                 ConnectToEduroam.RemoveProfile();
             }
         }

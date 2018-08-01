@@ -10,12 +10,12 @@ using System.Windows.Forms;
 
 namespace EduroamApp
 {
-    public partial class frm2 : Form
+    public partial class frmSelectMethod : Form
     {
         // makes parent form accessible from this class
         readonly frmParent frmParent;
         
-        public frm2(frmParent parentInstance)
+        public frmSelectMethod(frmParent parentInstance)
         {
             // gets parent form instance
             frmParent = parentInstance;
