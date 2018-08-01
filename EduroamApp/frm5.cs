@@ -24,8 +24,19 @@ namespace EduroamApp
             // displays loading information while attempt to connect
             lblStatus.Text = "Connecting...";
             pboStatus.Image = Properties.Resources.ajax_loader;
+
+            bool connectSuccess;
             // tries to connect
-            bool connectSuccess = await Task.Run(ConnectToEduroam.Connect);
+            try
+            {
+                connectSuccess = await Task.Run(ConnectToEduroam.Connect);
+            }
+            catch (Exception)
+            {
+                // if an exception is thrown, connection has not succeeded
+                connectSuccess = false;
+            }
+            
             if (connectSuccess)
             {
                 lblStatus.Text = "You are now connected to eduroam.";
@@ -35,9 +46,8 @@ namespace EduroamApp
             {
                 lblStatus.Text = "Connection to eduroam failed.";
                 pboStatus.Image = Properties.Resources.x_mark_3_16;
-                ConnectToEduroam.RemoveProfile();
                 lblConnectFailed.Visible = true;
-                
+                ConnectToEduroam.RemoveProfile();
             }
         }
         

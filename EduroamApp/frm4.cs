@@ -105,14 +105,16 @@ namespace EduroamApp
                     string eapString = File.ReadAllText(txtFilepath.Text);
                     // gets certificates and creates wireless profile
                     ConnectToEduroam.Setup(eapString);
-                    return true;
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    MessageBox.Show("The selected file is corrupted. Please select another file, or try another setup method.\n" +
-                                    "Exception: " + ex.Message, 
-                                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    /* MessageBox.Show(
+                        "The selected file is corrupted. Please select another file, or try another setup method.\n" +
+                        "Exception: " + ex.Message,
+                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error); */
                 }
+                // returns true even if file is corrupted, connection status form takes care of informing user
+                return true;
             }
 
             return false;
