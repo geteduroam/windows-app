@@ -1,6 +1,6 @@
 namespace EduroamApp
 {
-	partial class frm2
+	partial class frmSelectMethod
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -28,7 +28,7 @@ namespace EduroamApp
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frm2));
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSelectMethod));
 			this.rdbDownload = new System.Windows.Forms.RadioButton();
 			this.rdbLocal = new System.Windows.Forms.RadioButton();
 			this.label1 = new System.Windows.Forms.Label();
@@ -76,7 +76,7 @@ namespace EduroamApp
 			this.Controls.Add(this.rdbLocal);
 			this.Controls.Add(this.rdbDownload);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-			this.Name = "frm2";
+			this.Name = "frmSelectMethod";
 			this.Text = "frm2";
 			this.Load += new System.EventHandler(this.frm2_Load);
 			this.ResumeLayout(false);

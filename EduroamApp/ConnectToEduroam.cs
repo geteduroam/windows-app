@@ -22,7 +22,7 @@ namespace EduroamApp
 {
 	class ConnectToEduroam
 	{
-		static int clientCertFlag = 0;
+		static int clientCertFlag;
 		// sets eduroam as chosen network
 		static EduroamNetwork eduroamInstance = new EduroamNetwork(); // creates new instance of eduroam network
 		static readonly string ssid = eduroamInstance.ssid; // gets SSID

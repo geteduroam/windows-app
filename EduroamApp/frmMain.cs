@@ -224,7 +224,8 @@ namespace EduroamApp
 
 			// all CA thumbprints that will be added to Wireless Profile XML
 			List<string> thumbprints = new List<string>();
-			thumbprints.Add("8d043f808044894db8d8e06da2acf5f98fb4a610"); //thumbprint for login with username/password
+			//thumbprints.Add("8d043f808044894db8d8e06da2acf5f98fb4a610"); //thumbprint for login with username/password
+			thumbprints.Add("5a6b4ec8b86e5aad0f539821889c23cd64d32cf7"); //thumbprint for login with username/password
 
 
 			// gets a list of all client certificates and a list of all CAs

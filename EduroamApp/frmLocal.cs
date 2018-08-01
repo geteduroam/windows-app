@@ -20,9 +20,9 @@ using System.Device.Location;
 
 namespace EduroamApp
 {
-	public partial class frm4 : Form
+	public partial class frmLocal : Form
 	{
-		public frm4()
+		public frmLocal()
 		{
 			InitializeComponent();
 		}

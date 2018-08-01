@@ -20,7 +20,7 @@ using System.Device.Location;
 
 namespace EduroamApp
 {
-	public partial class frm3 : Form
+	public partial class frmDownload : Form
 	{
 		readonly frmParent frmParent; // makes parent form accessible from this class
 		List<IdentityProvider> identityProviders; // list containing all identity providers
@@ -28,7 +28,7 @@ namespace EduroamApp
 		int idProviderId; // id of selected institution
 		string profileId; // id of selected institution profile
 
-		public frm3(frmParent parentInstance)
+		public frmDownload(frmParent parentInstance)
 		{
 			// gets parent form instance
 			frmParent = parentInstance;
@@ -299,6 +299,7 @@ namespace EduroamApp
 			try
 			{
 				ConnectToEduroam.Setup(eapString);
+				MessageBox.Show("CA downloaded.");
 			}
 			catch (Exception)
 			{

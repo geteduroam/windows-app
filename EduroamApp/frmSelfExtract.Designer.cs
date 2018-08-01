@@ -1,6 +1,6 @@
 namespace EduroamApp
 {
-	partial class frm1
+	partial class frmSelfExtract
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -77,7 +77,7 @@ namespace EduroamApp
 			this.Controls.Add(this.pnlAltPopup);
 			this.Controls.Add(this.label1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-			this.Name = "frm1";
+			this.Name = "frmSelfExtract";
 			this.Text = "frm1";
 			this.pnlAltPopup.ResumeLayout(false);
 			this.ResumeLayout(false);

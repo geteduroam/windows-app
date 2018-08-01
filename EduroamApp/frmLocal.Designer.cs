@@ -1,6 +1,6 @@
 namespace EduroamApp
 {
-	partial class frm4
+	partial class frmLocal
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -70,7 +70,7 @@ namespace EduroamApp
 			this.Controls.Add(this.btnBrowse);
 			this.Controls.Add(this.label1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-			this.Name = "frm4";
+			this.Name = "frmLocal";
 			this.Text = "frm4";
 			this.ResumeLayout(false);
 			this.PerformLayout();

@@ -11,15 +11,16 @@ using Color = System.Drawing.Color;
 
 namespace EduroamApp
 {
-	public partial class frm6 : Form
+	public partial class frmLogin : Form
 	{
-		public frm6()
+		public frmLogin()
 		{
 			InitializeComponent();
 		}
 
 		private void frm6_Load(object sender, EventArgs e)
 		{
+			// shows helping text by default
 			txtUsername.Text = "Username";
 			txtUsername.ForeColor = SystemColors.GrayText;
 			txtPassword.Text = "Password";
@@ -27,6 +28,7 @@ namespace EduroamApp
 			txtPassword.UseSystemPasswordChar = false;
 		}
 
+		// removes helping text when field is in focus
 		private void txtUsername_Enter(object sender, EventArgs e)
 		{
 			if (txtUsername.Text == "Username")
@@ -36,6 +38,7 @@ namespace EduroamApp
 			}
 		}
 
+		// removes helping text when field is in focus
 		private void txtPassword_Enter(object sender, EventArgs e)
 		{
 			if (txtPassword.Text == "Password")
@@ -46,6 +49,7 @@ namespace EduroamApp
 			}
 		}
 
+		// shows helping text when field loses focus and is empty
 		private void txtUsername_Leave(object sender, EventArgs e)
 		{
 			if (txtUsername.Text == "")
@@ -55,6 +59,7 @@ namespace EduroamApp
 			}
 		}
 
+		// shows helping text when field loses focus and is empty
 		private void txtPassword_Leave(object sender, EventArgs e)
 		{
 			if (txtPassword.Text == "")
@@ -63,6 +68,11 @@ namespace EduroamApp
 				txtPassword.ForeColor = SystemColors.GrayText;
 				txtPassword.UseSystemPasswordChar = false;
 			}
+		}
+
+		public void ConnectWithLogin()
+		{
+
 		}
 	}
 }

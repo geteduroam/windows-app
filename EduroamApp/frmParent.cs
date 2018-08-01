@@ -32,12 +32,12 @@ namespace EduroamApp
 		int currentFormId;
 		int selectedMethodId;
 		bool reload = true;
-		frm1 frm1;
-		frm2 frm2;
-		frm3 frm3;
-		frm4 frm4;
-		frm5 frm5;
-		frm6 frm6;
+		frmSelfExtract frmSelfExtract;
+		frmSelectMethod frmSelectMethod;
+		frmDownload frmDownload;
+		frmLocal frmLocal;
+		frmConnect frmConnect;
+		frmLogin frmLogin;
 		readonly GeoCoordinateWatcher watcher; // gets coordinates of computer
 
 		public frmParent()
@@ -82,21 +82,22 @@ namespace EduroamApp
 			switch (currentFormId)
 			{
 				case 1:
-					frm1.InstallSelfExtract();
+					frmSelfExtract.InstallSelfExtract();
 					break;
 				case 2:
-					frm2.GoToForm();
+					frmSelectMethod.GoToForm();
 					break;
 				case 3:
-					if (frm3.ConnectWithDownload()) LoadFrm5();
+					if (frmDownload.ConnectWithDownload()) LoadFrm5();
 					break;
 				case 4:
-					if (frm4.ConnectWithFile()) LoadFrm5();
+					if (frmLocal.ConnectWithFile()) LoadFrm5();
 					break;
 				case 5:
 					LoadFrm6();
 					break;
 				case 6:
+
 					break;
 			}
 		}
@@ -152,14 +153,7 @@ namespace EduroamApp
 			return watcher;
 		}
 
-		public class BtnNext
-		{
-			public BtnNext(string text, bool enabled, bool visible)
-			{
-
-			}
-		}
-
+		// make button properties accessible from other forms
 		public string BtnNextText
 		{
 			get => btnNext.Text;
@@ -172,18 +166,30 @@ namespace EduroamApp
 			set => btnNext.Enabled = value;
 		}
 
+		public bool BtnBackEnabled
+		{
+			get => btnBack.Enabled;
+			set => btnBack.Enabled = value;
+		}
+
+		public string BtnCancelText
+		{
+			get => btnCancel.Text;
+			set => btnCancel.Text = value;
+		}
+
 		/// <summary>
 		/// Loads form with self extracted config file install.
 		/// </summary>
 		public void LoadFrm1()
 		{
 			// creates new instance of form1 if there is none, passes parent form instance as parameter
-			if (reload) frm1 = new frm1(this);
+			if (reload) frmSelfExtract = new frmSelfExtract(this);
 			currentFormId = 1;
 			lblTitle.Text = "eduroam installer";
 			btnNext.Text = "Install";
 			btnBack.Visible = false;
-			LoadNewForm(frm1);
+			LoadNewForm(frmSelfExtract);
 		}
 
 		/// <summary>
@@ -191,14 +197,14 @@ namespace EduroamApp
 		/// </summary>
 		public void LoadFrm2()
 		{
-			if (reload) frm2 = new frm2(this);
+			if (reload) frmSelectMethod = new frmSelectMethod(this);
 			currentFormId = 2;
 			lblTitle.Text = "Certificate installation";
 			btnNext.Text = "Next >";
 			btnNext.Enabled = true;
 			btnBack.Visible = true;
 			btnBack.Enabled = false;
-			LoadNewForm(frm2);
+			LoadNewForm(frmSelectMethod);
 		}
 
 		/// <summary>
@@ -206,14 +212,14 @@ namespace EduroamApp
 		/// </summary>
 		public void LoadFrm3()
 		{
-			/*if (reload)*/ frm3 = new frm3(this);
+			/*if (reload)*/ frmDownload = new frmDownload(this);
 			currentFormId = 3;
 			selectedMethodId = 3;
 			lblTitle.Text = "Select your institution";
 			btnNext.Text = "Connect";
 			btnNext.Enabled = false;
 			btnBack.Enabled = true;
-			LoadNewForm(frm3);
+			LoadNewForm(frmDownload);
 		}
 
 		/// <summary>
@@ -221,13 +227,13 @@ namespace EduroamApp
 		/// </summary>
 		public void LoadFrm4()
 		{
-			if (reload) frm4 = new frm4();
+			if (reload) frmLocal = new frmLocal();
 			currentFormId = 4;
 			selectedMethodId = 4;
 			lblTitle.Text = "Select EAP-config file";
 			btnNext.Text = "Connect";
 			btnBack.Enabled = true;
-			LoadNewForm(frm4);
+			LoadNewForm(frmLocal);
 		}
 
 		/// <summary>
@@ -235,11 +241,13 @@ namespace EduroamApp
 		/// </summary>
 		public void LoadFrm5()
 		{
-			if (reload) frm5 = new frm5(this);
+			if (reload) frmConnect = new frmConnect(this);
 			currentFormId = 5;
 			lblTitle.Text = "Connection status";
 			btnNext.Text = "Next >";
-			LoadNewForm(frm5);
+			btnNext.Enabled = false;
+			btnBack.Enabled = false;
+			LoadNewForm(frmConnect);
 		}
 
 		/// <summary>
@@ -247,11 +255,11 @@ namespace EduroamApp
 		/// </summary>
 		public void LoadFrm6()
 		{
-			if (reload) frm6 = new frm6();
+			if (reload) frmLogin = new frmLogin();
 			currentFormId = 6;
 			lblTitle.Text = "Log in";
 			btnNext.Text = "Connect";
-			LoadNewForm(frm6);
+			LoadNewForm(frmLogin);
 		}
 	}
 }
