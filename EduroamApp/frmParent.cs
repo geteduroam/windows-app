@@ -21,8 +21,17 @@ namespace EduroamApp
 {
 	public partial class frmParent : Form
 	{
+		enum FormSituation
+		{
+			SelfExtract,
+			SelectMethod,
+			DownloadConnect,
+			LocalConnect,
+			LoginConnect
+		}
 		int currentFormId;
 		int selectedMethodId;
+		bool reload = true;
 		frm1 frm1;
 		frm2 frm2;
 		frm3 frm3;
@@ -68,6 +77,8 @@ namespace EduroamApp
 
 		private void btnNext_Click(object sender, EventArgs e)
 		{
+			// creates new instances of forms when going forward
+			reload = true;
 			switch (currentFormId)
 			{
 				case 1:
@@ -77,10 +88,10 @@ namespace EduroamApp
 					frm2.GoToForm();
 					break;
 				case 3:
-					if (frm3.ConnectWithDownload()) LoadFrm5(true);
+					if (frm3.ConnectWithDownload()) LoadFrm5();
 					break;
 				case 4:
-					if (frm4.ConnectWithFile()) LoadFrm5(true);
+					if (frm4.ConnectWithFile()) LoadFrm5();
 					break;
 				case 5:
 					LoadFrm6();
@@ -92,6 +103,8 @@ namespace EduroamApp
 
 		private void btnBack_Click(object sender, EventArgs e)
 		{
+			// reuses existing instances of forms when going backwards
+			reload = false;
 			switch (currentFormId)
 			{
 				case 1:
@@ -109,7 +122,7 @@ namespace EduroamApp
 					else LoadFrm4();
 					break;
 				case 6:
-					LoadFrm5(false);
+					LoadFrm5();
 					break;
 			}
 		}
@@ -139,18 +152,38 @@ namespace EduroamApp
 			return watcher;
 		}
 
+		public class BtnNext
+		{
+			public BtnNext(string text, bool enabled, bool visible)
+			{
+
+			}
+		}
+
+		public string BtnNextText
+		{
+			get => btnNext.Text;
+			set => btnNext.Text = value;
+		}
+
+		public bool BtnNextEnabled
+		{
+			get => btnNext.Enabled;
+			set => btnNext.Enabled = value;
+		}
+
 		/// <summary>
 		/// Loads form with self extracted config file install.
 		/// </summary>
 		public void LoadFrm1()
 		{
 			// creates new instance of form1 if there is none, passes parent form instance as parameter
-			if (frm1 == null) frm1 = new frm1(this);
+			if (reload) frm1 = new frm1(this);
 			currentFormId = 1;
-			LoadNewForm(frm1);
 			lblTitle.Text = "eduroam installer";
 			btnNext.Text = "Install";
 			btnBack.Visible = false;
+			LoadNewForm(frm1);
 		}
 
 		/// <summary>
@@ -158,13 +191,14 @@ namespace EduroamApp
 		/// </summary>
 		public void LoadFrm2()
 		{
-			if (frm2 == null) frm2 = new frm2(this);
+			if (reload) frm2 = new frm2(this);
 			currentFormId = 2;
-			LoadNewForm(frm2);
 			lblTitle.Text = "Certificate installation";
 			btnNext.Text = "Next >";
+			btnNext.Enabled = true;
 			btnBack.Visible = true;
 			btnBack.Enabled = false;
+			LoadNewForm(frm2);
 		}
 
 		/// <summary>
@@ -172,13 +206,14 @@ namespace EduroamApp
 		/// </summary>
 		public void LoadFrm3()
 		{
-			if (frm3 == null) frm3 = new frm3(this);
+			/*if (reload)*/ frm3 = new frm3(this);
 			currentFormId = 3;
 			selectedMethodId = 3;
 			lblTitle.Text = "Select your institution";
-			LoadNewForm(frm3);
 			btnNext.Text = "Connect";
+			btnNext.Enabled = false;
 			btnBack.Enabled = true;
+			LoadNewForm(frm3);
 		}
 
 		/// <summary>
@@ -186,25 +221,25 @@ namespace EduroamApp
 		/// </summary>
 		public void LoadFrm4()
 		{
-			if (frm4 == null) frm4 = new frm4();
+			if (reload) frm4 = new frm4();
 			currentFormId = 4;
 			selectedMethodId = 4;
-			LoadNewForm(frm4);
 			lblTitle.Text = "Select EAP-config file";
 			btnNext.Text = "Connect";
 			btnBack.Enabled = true;
+			LoadNewForm(frm4);
 		}
 
 		/// <summary>
 		/// Loads form that shows connection status.
 		/// </summary>
-		public void LoadFrm5(bool reloadflag)
+		public void LoadFrm5()
 		{
-			if (reloadflag == true) frm5 = new frm5(this);
+			if (reload) frm5 = new frm5(this);
 			currentFormId = 5;
-			LoadNewForm(frm5);
 			lblTitle.Text = "Connection status";
 			btnNext.Text = "Next >";
+			LoadNewForm(frm5);
 		}
 
 		/// <summary>
@@ -212,11 +247,11 @@ namespace EduroamApp
 		/// </summary>
 		public void LoadFrm6()
 		{
-			frm6 = new frm6();
+			if (reload) frm6 = new frm6();
 			currentFormId = 6;
-			LoadNewForm(frm6);
 			lblTitle.Text = "Log in";
 			btnNext.Text = "Connect";
+			LoadNewForm(frm6);
 		}
 	}
 }

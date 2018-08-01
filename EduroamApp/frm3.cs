@@ -22,7 +22,7 @@ namespace EduroamApp
 {
 	public partial class frm3 : Form
 	{
-		frmParent frmParent; // makes parent form accessible from this class
+		readonly frmParent frmParent; // makes parent form accessible from this class
 		List<IdentityProvider> identityProviders; // list containing all identity providers
 		IdentityProviderProfile idProviderProfiles; // list containing all profiles of an identity provider
 		int idProviderId; // id of selected institution
@@ -60,6 +60,8 @@ namespace EduroamApp
 				tlpLoading.Visible = false;
 
 				PopulateCountries();
+
+				frmParent.BtnNextEnabled = true;
 			}
 			else
 			{
@@ -251,12 +253,15 @@ namespace EduroamApp
 			// adds profile ID to url containing json file, which in turn contains url to EAP config file download
 			string generateEapUrl = $"https://cat.eduroam.org/user/API.php?action=generateInstaller&id=eap-config&lang=en&profile={profileId}";
 
-			// json file
-			string generateEapJson;
-			// gets json as string
+			// contains json with eap config file download link
+			GenerateEapConfig eapConfigInstance;
+
 			try
 			{
-				generateEapJson = UrlToJson(generateEapUrl);
+				// downloads json as string
+				string generateEapJson = UrlToJson(generateEapUrl);
+				// converts json to GenerateEapConfig object
+				eapConfigInstance = JsonConvert.DeserializeObject<GenerateEapConfig>(generateEapJson);
 			}
 			catch (WebException ex)
 			{
@@ -264,15 +269,19 @@ namespace EduroamApp
 								"Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return false;
 			}
+			catch (JsonReaderException ex)
+			{
+				MessageBox.Show("No supported EAP types found for this profile.\n" +
+								"Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
+			}
 
-			// converts json to GenerateEapConfig object
-			GenerateEapConfig eapConfigInstance = JsonConvert.DeserializeObject<GenerateEapConfig>(generateEapJson);
 
 			// gets url to EAP config file download from GenerateEapConfig object
 			string eapConfigUrl = $"https://cat.eduroam.org/user/{eapConfigInstance.Data.Link}";
 
 			// eap config file
-			string eapString = "";
+			string eapString;
 			// gets eap config file as string
 			try
 			{
@@ -285,17 +294,18 @@ namespace EduroamApp
 				return false;
 			}
 
+			MessageBox.Show("EAP config file ready.", "Eduroam installer", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
 			try
 			{
-				MessageBox.Show("EAP config file ready.", "Eduroam installer", MessageBoxButtons.OK, MessageBoxIcon.Information);
 				ConnectToEduroam.Setup(eapString);
-				return true;
 			}
 			catch (Exception)
 			{
 				// ignore
-				return false;
 			}
+
+			return true;
 		}
 
 	}
