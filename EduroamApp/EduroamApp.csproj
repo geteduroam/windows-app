@@ -98,6 +98,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AuthenticationMethod.cs" />
     <Compile Include="ConnectToEduroam.cs" />
     <Compile Include="EduroamNetwork.cs" />
     <Compile Include="frmSelfExtract.cs">

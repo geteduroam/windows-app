@@ -88,7 +88,8 @@ namespace EduroamApp
                     frmSelectMethod.GoToForm();
                     break;
                 case 3:
-                    if (frmDownload.ConnectWithDownload()) LoadFrm5();
+                    if (frmDownload.ConnectWithDownload() != 13) LoadFrm6();
+                    else LoadFrm5();
                     break;
                 case 4:
                     if (frmLocal.ConnectWithFile()) LoadFrm5();

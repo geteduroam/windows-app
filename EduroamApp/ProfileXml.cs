@@ -9,12 +9,6 @@ namespace EduroamApp
 {
     class ProfileXml
     {        
-        // enumerator for EAP types
-        public enum EapType
-        {
-            TLS = 13,
-            PEAP_MSCHAPv2 = 25
-        }
                 
         // Namespaces
         private static readonly XNamespace nsWLAN = "http://www.microsoft.com/networking/WLAN/profile/v1";
@@ -31,18 +25,17 @@ namespace EduroamApp
         private static readonly XNamespace nsMPCPv3 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV3";
         private static readonly XNamespace nsMCCP = "http://www.microsoft.com/provisioning/MsChapV2ConnectionPropertiesV1";
 
-        
+
         /// <summary>
         /// Generates wireless profile xml. Content depends on the EAP type.
         /// </summary>
         /// <param name="ssid">Name of SSID associated with profile.</param>
         /// <param name="eapType">Type of EAP.</param>
+        /// <param name="serverName">Server name.</param>
         /// <param name="thumbprints">List of CA thumbprints.</param>
         /// <returns>Complete wireless profile xml as string.</returns>
-        public static string CreateProfileXml(string ssid, EapType eapType, List<string>  thumbprints)
+        public static string CreateProfileXml(string ssid, uint eapType, string serverName, List<string> thumbprints)
         {
-            uint eap = (uint)eapType; // converts to uint value
-
             // creates common xml elements
             XElement newProfile =
                 new XElement(nsWLAN + "WLANProfile",
@@ -50,10 +43,12 @@ namespace EduroamApp
                     new XElement(nsWLAN + "SSIDConfig",
                         new XElement(nsWLAN + "SSID",
                             new XElement(nsWLAN + "name", ssid)
-                        )
+                        ),
+                        new XElement(nsWLAN + "nonBroadcast", "false")
                     ),
                     new XElement(nsWLAN + "connectionType", "ESS"),
                     new XElement(nsWLAN + "connectionMode", "auto"),
+                    new XElement(nsWLAN + "autoSwitch", "false"),
                     new XElement(nsWLAN + "MSM",
                         new XElement(nsWLAN + "security",
                             new XElement(nsWLAN + "authEncryption",
@@ -70,26 +65,14 @@ namespace EduroamApp
                                 new XElement(nsOneX + "EAPConfig",
                                     new XElement(nsEHC + "EapHostConfig",
                                         new XElement(nsEHC + "EapMethod",
-                                            new XElement(nsEC + "Type", eap),
+                                            new XElement(nsEC + "Type", eapType),
                                             new XElement(nsEC + "VendorId", 0),
                                             new XElement(nsEC + "VendorType", 0),
-                                            new XElement(nsEC + "AuthorId", 0)),
+                                            new XElement(nsEC + "AuthorId", 0)
+                                        ),
                                         new XElement(nsEHC + "Config",
                                             new XElement(nsBECP + "Eap",
-                                                new XElement(nsBECP + "Type", eap),
-                                                new XElement(nsETCPv1 + "EapType",
-                                                    new XElement(nsETCPv1 + "CredentialsSource",
-                                                        new XElement(nsETCPv1 + "CertificateStore",
-                                                            new XElement(nsETCPv1 + "SimpleCertSelection", "true")
-                                                        )
-                                                    ),
-                                                    new XElement(nsETCPv1 + "ServerValidation",
-                                                        new XElement(nsETCPv1 + "DisableUserPromptForServerValidation", "false")
-                                                    ),
-                                                    new XElement(nsETCPv1 + "DifferentUsername", "false"),
-                                                    new XElement(nsETCPv2 + "PerformServerValidation", "true"),
-                                                    new XElement(nsETCPv2 + "AcceptServerName", "false")
-                                                )
+                                                new XElement(nsBECP + "Type", eapType)
                                             )
                                         )
                                     )
@@ -110,7 +93,7 @@ namespace EduroamApp
                                         .Element(nsEHC + "Config")
                                         .Element(nsBECP + "Eap");
 
-            if (eap == 13)
+            if (eapType == 13)
             {
                 // sets namespace
                 nsEapType = nsETCPv1;
@@ -124,7 +107,8 @@ namespace EduroamApp
                             )   
                         ),
                         new XElement(nsETCPv1 + "ServerValidation",
-                            new XElement(nsETCPv1 + "DisableUserPromptForServerValidation", "false")
+                            new XElement(nsETCPv1 + "DisableUserPromptForServerValidation", "false"),
+                            new XElement(nsETCPv1 + "ServerNames", serverName)
                         ),
                         new XElement(nsETCPv1 + "DifferentUsername", "false"),
                         new XElement(nsETCPv2 + "PerformServerValidation", "true"),
@@ -132,7 +116,7 @@ namespace EduroamApp
                     )
                 );
             }
-            else if (eap == 25)
+            else if (eapType == 25)
             {
                 // sets namespace
                 nsEapType = nsMPCPv1;
@@ -141,7 +125,8 @@ namespace EduroamApp
                 eapElement.Add(
                     new XElement(nsMPCPv1 + "EapType",
                         new XElement(nsMPCPv1 + "ServerValidation",
-                            new XElement(nsMPCPv1 + "DisableUserPromptForServerValidation", "false")
+                            new XElement(nsMPCPv1 + "DisableUserPromptForServerValidation", "false"),
+                            new XElement(nsMPCPv1 + "ServerNames", serverName)
                         ),
                         new XElement(nsMPCPv1 + "FastReconnect", "true"),
                         new XElement(nsMPCPv1 + "InnerEapOptional", "false"),
@@ -166,7 +151,7 @@ namespace EduroamApp
 
 
             // if any thumbprints exist, add them to the profile
-            if (thumbprints != null && thumbprints.Any())
+            if (thumbprints.Any())
             {
                 // gets element where thumbprint child elements are to be created
                 XElement serverValidationElement = eapElement.Element(nsEapType + "EapType")
@@ -180,10 +165,15 @@ namespace EduroamApp
             }
 
 
-            // newProfile.Save(@"C:\Users\lwerivel18\Desktop\testFileFromC#.xml");
+            newProfile.Save(@"C:\Users\lwerivel18\Desktop\testProfileFromC#.xml");
 
             // returns xml as string
             return newProfile.ToString();
+        }
+
+        private void GenerateXml13()
+        {
+
         }
         
 }
