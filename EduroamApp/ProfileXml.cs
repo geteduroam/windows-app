@@ -166,7 +166,7 @@ namespace EduroamApp
 
 
             // if any thumbprints exist, add them to the profile
-            if (thumbprints.Any())
+            if (thumbprints != null && thumbprints.Any())
             {
                 // gets element where thumbprint child elements are to be created
                 XElement serverValidationElement = eapElement.Element(nsEapType + "EapType")

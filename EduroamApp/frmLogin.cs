@@ -70,9 +70,10 @@ namespace EduroamApp
             }
         }
 
-        public void ConnectWithLogin()
+        public bool ConnectWithLogin()
         {
-
+            ConnectToEduroam.SetupLogin(txtUsername.Text, txtPassword.Text);
+            return true;
         }
     }
 }

@@ -22,7 +22,6 @@ namespace EduroamApp
 {
     class ConnectToEduroam
     {
-        static int clientCertFlag;
         // sets eduroam as chosen network
         static EduroamNetwork eduroamInstance = new EduroamNetwork(); // creates new instance of eduroam network
         static readonly string ssid = eduroamInstance.ssid; // gets SSID
@@ -54,8 +53,6 @@ namespace EduroamApp
                         InstallCertificate(clientCert, store);
                         // outputs result
                         Debug.WriteLine($"Certificate installed: {clientCert.FriendlyName}\n");
-                        // sets flag
-                        clientCertFlag = 1;
                     }
                     catch (CryptographicException ex)
                     {
@@ -63,12 +60,6 @@ namespace EduroamApp
                         Debug.WriteLine($"Certificate was not installed: {clientCert.FriendlyName}\nError: {ex.Message}");
                     }
                 }
-            }
-            else
-            {
-                // if no certs to install, flag set to 0
-                // user will have to authenticate with username and password instead
-                clientCertFlag = 0;
             }
 
             // checks if there are CAs to install
@@ -98,7 +89,7 @@ namespace EduroamApp
             }
 
             // sets chosen EAP-type based on wether certificate was successfully installed
-            ProfileXml.EapType eapType = clientCertFlag == 1 ? ProfileXml.EapType.TLS : ProfileXml.EapType.PEAP_MSCHAPv2;
+            ProfileXml.EapType eapType = ProfileXml.EapType.TLS;
 
             // generates new profile xml
             string profileXml = ProfileXml.CreateProfileXml(ssid, eapType, thumbprints);
@@ -107,34 +98,34 @@ namespace EduroamApp
             Debug.WriteLine(CreateNewProfile(interfaceId, profileXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
         }
 
+        public static void SetupLogin(string username, string password)
+        {
+            // sets chosen EAP-type based on wether certificate was successfully installed
+            ProfileXml.EapType eapType = ProfileXml.EapType.PEAP_MSCHAPv2;
+
+            // generates new profile xml
+            string profileXml = ProfileXml.CreateProfileXml(ssid, eapType, null);
+
+            // creates a new wireless profile
+            Debug.WriteLine(CreateNewProfile(interfaceId, profileXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
+            
+            // generates user data xml file
+            string userDataXml = UserDataXml.CreateUserDataXml(username, password);
+
+            // sets user data
+            SetUserData(interfaceId, ssid, userDataXml);
+        }
+
         public static Task<bool> Connect()
         {
-            eduroamInstance = new EduroamNetwork(); // creates new instance of eduroam network
-            AvailableNetworkPack network = eduroamInstance.networkPack; // gets updated network pack object
+            // creates new instance of eduroam network
+            eduroamInstance = new EduroamNetwork();
+            // gets updated network pack object
+            AvailableNetworkPack network = eduroamInstance.networkPack; 
 
-            // CONNECT WITH USERNAME+PASSWORD
-            /*if (clientCertFlag == 0)
-            {
-                // if no certificate gets installed, prompts for username and password
-                DialogResult loginWithCredentials = MessageBox.Show("A certificate could not be installed. \nDo you want to log in with your eduroam credentials instead?", "Certificate not installed", MessageBoxButtons.YesNo);
-                if (loginWithCredentials == DialogResult.Yes)
-                {
-                    frmLogon logonForm = new frmLogon();
-                    // passes the current network pack as a parameter
-                    logonForm.GetEduroamInstance(network);
-                    // shows the logon form as a dialog, so user can't interact with main form
-                    logonForm.ShowDialog();
-                }
-            }
-            else
-            { */
+            // connects to eduroam
             Task<bool> connectResult = Task.Run(() => ConnectAsync(network));
-
-            // connects to eduroam                
-            return connectResult; //Task.Run(() => ConnectAsync(network)).Result;
-
-            //}
-
+            return connectResult;
         }
 
         /// <summary>
@@ -181,6 +172,21 @@ namespace EduroamApp
         public static bool RemoveProfile()
         {
             return NativeWifi.DeleteProfile(interfaceId, ssid);
+        }
+
+        /// <summary>
+        /// Sets a profile's user data for login with username + password.
+        /// </summary>
+        /// <param name="networkId">Interface ID of selected network.</param>
+        /// <param name="profileName">Name of associated wireless profile.</param>
+        /// <param name="userDataXml">User data XML converted to string.</param>
+        /// <returns>True if succeeded, false if failed.</returns>
+        public static bool SetUserData(Guid networkId, string profileName, string userDataXml)
+        {
+            // sets the profile user type to "WLAN_SET_EAPHOST_DATA_ALL_USERS"
+            uint profileUserType = 0x00000001;
+
+            return NativeWifi.SetProfileUserData(networkId, profileName, profileUserType, userDataXml);
         }
 
         /// <summary>
