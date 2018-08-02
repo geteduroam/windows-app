@@ -97,7 +97,7 @@ namespace EduroamApp
 					LoadFrm6();
 					break;
 				case 6:
-
+					if (frmLogin.ConnectWithLogin()) LoadFrm5();
 					break;
 			}
 		}
