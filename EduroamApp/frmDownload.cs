@@ -240,14 +240,14 @@ namespace EduroamApp
 			return closestInst.Country;
 		}
 
-		public bool ConnectWithDownload()
+		public uint ConnectWithDownload()
 		{
 			// checks if user has selected an institution and/or profile
 			if (string.IsNullOrEmpty(profileId))
 			{
 				MessageBox.Show("Please select an institution and/or a profile.",
 								"Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return false; // exits function if no institution/profile selected
+				return 0; // exits function if no institution/profile selected
 			}
 
 			// adds profile ID to url containing json file, which in turn contains url to EAP config file download
@@ -267,13 +267,13 @@ namespace EduroamApp
 			{
 				MessageBox.Show("Couldn't fetch Eap Config generate.\n" +
 								"Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return false;
+				return 0;
 			}
 			catch (JsonReaderException ex)
 			{
 				MessageBox.Show("No supported EAP types found for this profile.\n" +
 								"Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return false;
+				return 0;
 			}
 
 
@@ -291,22 +291,23 @@ namespace EduroamApp
 			{
 				MessageBox.Show("Couldn't fetch Eap Config file.\n" +
 								"Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return false;
+				return 0;
 			}
 
 			MessageBox.Show("EAP config file ready.", "Eduroam installer", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-			try
-			{
-				ConnectToEduroam.Setup(eapString);
-				MessageBox.Show("CA downloaded.");
-			}
-			catch (Exception)
-			{
-				// ignore
-			}
+			uint eapType = 0;
 
-			return true;
+			// try
+			// {
+				eapType = ConnectToEduroam.Setup(eapString);
+			// }
+			// catch (Exception ex)
+			//{
+			//    MessageBox.Show("Something went wrong\nException: " + ex.Message);
+			//}
+
+			return eapType;
 		}
 
 	}

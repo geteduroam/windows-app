@@ -292,10 +292,10 @@ namespace EduroamApp
 			}
 
 			// sets chosen EAP-type based on wether certificate was successfully installed
-			ProfileXml.EapType eapType = clientCertFlag == 1 ? ProfileXml.EapType.TLS : ProfileXml.EapType.PEAP_MSCHAPv2;
+			uint eapType = 0;
 
 			// generates new profile xml
-			string profileXml = ProfileXml.CreateProfileXml(ssid, eapType, thumbprints);
+			string profileXml = ProfileXml.CreateProfileXml(ssid, eapType, "HI", thumbprints);
 
 			// creates a new wireless profile
 			txtOutput.Text += (CreateNewProfile(interfaceId, profileXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
