@@ -30,7 +30,7 @@ namespace EduroamApp
 			LoginConnect
 		}
 		int currentFormId;
-		int selectedMethodId;
+		List<int> formHistory = new List<int>();
 		bool reload = true;
 		frmSelfExtract frmSelfExtract;
 		frmSelectMethod frmSelectMethod;
@@ -51,6 +51,7 @@ namespace EduroamApp
 
 		private void LoadNewForm(Form nextForm)
 		{
+
 			nextForm.TopLevel = false;
 			nextForm.AutoScroll = true;
 			nextForm.Dock = DockStyle.Fill;
@@ -79,26 +80,31 @@ namespace EduroamApp
 		{
 			// creates new instances of forms when going forward
 			reload = true;
+			// adds current form to history for easy backtracking
+			formHistory.Add(currentFormId);
+
 			switch (currentFormId)
 			{
 				case 1:
 					frmSelfExtract.InstallSelfExtract();
 					break;
 				case 2:
-					frmSelectMethod.GoToForm();
+					if (frmSelectMethod.GoToForm() == 3) LoadFrm3();
+					else LoadFrm4();
 					break;
 				case 3:
-					if (frmDownload.ConnectWithDownload() != 13) LoadFrm6();
-					else LoadFrm5();
+					if (frmDownload.ConnectWithDownload() != 13) LoadFrm5();
+					else LoadFrm6();
 					break;
 				case 4:
-					if (frmLocal.ConnectWithFile()) LoadFrm5();
+					if (frmLocal.ConnectWithFile() != 13) LoadFrm5();
+					else LoadFrm6();
 					break;
 				case 5:
-					LoadFrm6();
+					if (frmLogin.ConnectWithLogin()) LoadFrm6();
 					break;
 				case 6:
-					if (frmLogin.ConnectWithLogin()) LoadFrm5();
+					//LoadFrm6();
 					break;
 			}
 		}
@@ -107,26 +113,29 @@ namespace EduroamApp
 		{
 			// reuses existing instances of forms when going backwards
 			reload = false;
-			switch (currentFormId)
+
+			switch (formHistory.Last())
 			{
 				case 1:
 					break;
 				case 2:
+					LoadFrm2();
 					break;
 				case 3:
-					LoadFrm2();
+					LoadFrm3();
 					break;
 				case 4:
-					LoadFrm2();
+					LoadFrm4();
 					break;
 				case 5:
-					if (selectedMethodId == 3) LoadFrm3();
-					else LoadFrm4();
-					break;
-				case 6:
 					LoadFrm5();
 					break;
+				case 6:
+					break;
 			}
+
+			// removes current form from history
+			formHistory.RemoveAt(formHistory.Count - 1);
 		}
 
 		private void btnCancel_Click(object sender, EventArgs e)
@@ -215,7 +224,6 @@ namespace EduroamApp
 		{
 			/*if (reload)*/ frmDownload = new frmDownload(this);
 			currentFormId = 3;
-			selectedMethodId = 3;
 			lblTitle.Text = "Select your institution";
 			btnNext.Text = "Connect";
 			btnNext.Enabled = false;
@@ -230,7 +238,6 @@ namespace EduroamApp
 		{
 			if (reload) frmLocal = new frmLocal();
 			currentFormId = 4;
-			selectedMethodId = 4;
 			lblTitle.Text = "Select EAP-config file";
 			btnNext.Text = "Connect";
 			btnBack.Enabled = true;
@@ -238,12 +245,24 @@ namespace EduroamApp
 		}
 
 		/// <summary>
-		/// Loads form that shows connection status.
+		/// Loads form that lets user log in with username+password.
 		/// </summary>
 		public void LoadFrm5()
 		{
-			if (reload) frmConnect = new frmConnect(this);
+			if (reload) frmLogin = new frmLogin();
 			currentFormId = 5;
+			lblTitle.Text = "Log in";
+			btnNext.Text = "Connect";
+			LoadNewForm(frmLogin);
+		}
+
+		/// <summary>
+		/// Loads form that shows connection status.
+		/// </summary>
+		public void LoadFrm6()
+		{
+			if (reload) frmConnect = new frmConnect(this);
+			currentFormId = 6;
 			lblTitle.Text = "Connection status";
 			btnNext.Text = "Next >";
 			btnNext.Enabled = false;
@@ -251,16 +270,6 @@ namespace EduroamApp
 			LoadNewForm(frmConnect);
 		}
 
-		/// <summary>
-		/// Loads form that lets user log in with username+password.
-		/// </summary>
-		public void LoadFrm6()
-		{
-			if (reload) frmLogin = new frmLogin();
-			currentFormId = 6;
-			lblTitle.Text = "Log in";
-			btnNext.Text = "Connect";
-			LoadNewForm(frmLogin);
-		}
+
 	}
 }
