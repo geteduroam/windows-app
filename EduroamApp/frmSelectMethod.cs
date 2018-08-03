@@ -25,18 +25,14 @@ namespace EduroamApp
         /// <summary>
         /// Checks which radio button is selected and loads corresponding form.
         /// </summary>
-        public void GoToForm()
+        public int GoToForm()
         {
             if (rdbDownload.Checked)
             {
-                // loads "Select insitute and download" form
-                frmParent.LoadFrm3();
+                return 3;
             }
-            else if (rdbLocal.Checked)
-            {
-                // loads "Select local config file" form
-                frmParent.LoadFrm4();
-            }
+
+            return 4;
         }
 
         private void rdbDownload_CheckedChanged(object sender, EventArgs e)

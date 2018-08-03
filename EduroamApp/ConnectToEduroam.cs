@@ -57,10 +57,12 @@ namespace EduroamApp
                     MessageBox.Show("You will now be prompted to install a Certificate Authority. " +
                                     "In order to connect to eduroam, you need to accept this by pressing \"Yes\" in the following dialog.",
                         "Accept Certificate Authority", MessageBoxButtons.OK);
+
+                    // adds CA to trusted root store
+                    rootStore.Add(caCert);
                 }
 
-                // adds CA to trusted root store
-                rootStore.Add(caCert);
+                
                 // gets CA thumbprint
                 thumbprints.Add(caCert.Thumbprint);
             }
@@ -91,8 +93,11 @@ namespace EduroamApp
                 personalStore.Close();
             }
 
-            // gets server name of authentication method
-            string serverName = authMethod.ServerName;
+            // gets server names of authentication method and joins them into one single string
+            string serverNames = string.Join(";", authMethod.ServerName) + ";Fyrkat eduroam";
+
+            thumbprints.Clear();
+            thumbprints.Add("1 b4 e1 3f d7 7a 5f 78 92 4a 86 a1 a3 4a 2a 36 4a 75 9 3a");
 
             // gets EAP type of authentication method
             uint eapType = authMethod.EapType;
@@ -158,7 +163,7 @@ namespace EduroamApp
             //ProfileXml.EapType eapType = ProfileXml.EapType.TLS;
 
             // generates new profile xml
-            string profileXml = ProfileXml.CreateProfileXml(ssid, eapType, serverName, thumbprints);
+            string profileXml = ProfileXml.CreateProfileXml(ssid, eapType, serverNames, thumbprints);
 
             // creates a new wireless profile
             Debug.WriteLine(CreateNewProfile(interfaceId, profileXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
@@ -169,7 +174,7 @@ namespace EduroamApp
         public static void SetupLogin(string username, string password)
         {
             // generates user data xml file
-            string userDataXml = UserDataXml.CreateUserDataXml(username, password);
+            string userDataXml = UserDataXml.CreateUserDataXmlTTLS(username, password);
 
             // sets user data
             SetUserData(interfaceId, ssid, userDataXml);
@@ -268,16 +273,25 @@ namespace EduroamApp
                 uint eapType = (uint)element.DescendantsAndSelf().Elements().First(x => x.Name.LocalName == "Type");
 
                 // gets list of CAs
-                List<string> certAuths = new List<string>();
                 List<XElement> caElements = element.DescendantsAndSelf().Elements().Where(x => x.Name.LocalName == "CA").ToList();
+
+                // gets string value of CAs and puts them in new list
+                List<string> certAuths = new List<string>();
                 foreach (XElement caElement in caElements)
                 {
                     certAuths.Add((string)caElement);
                 }
 
-                // gets server name
-                string serverName = (string)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "ServerID");
+                // gets list of server names
+                List<XElement> serverElements = element.DescendantsAndSelf().Elements().Where(x => x.Name.LocalName == "ServerID").ToList();
 
+                // gets string value of server elements and puts them in new list
+                List<string> serverNames = new List<string>();
+                foreach (XElement serverElement in serverElements)
+                {
+                    serverNames.Add((string)serverElement);
+                }
+                
                 // gets client certificate
                 string clientCert = (string)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "ClientCertificate");
 
@@ -285,7 +299,7 @@ namespace EduroamApp
                 string passphrase = (string)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Passphrase");
 
                 // creates new authentication method object and adds it to list
-                authMethodObjects.Add(new AuthenticationMethod(eapType, certAuths, serverName, clientCert, passphrase));
+                authMethodObjects.Add(new AuthenticationMethod(eapType, certAuths, serverNames, clientCert, passphrase));
             }
 
             return authMethodObjects;

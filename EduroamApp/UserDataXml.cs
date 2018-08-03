@@ -65,6 +65,43 @@ namespace EduroamApp
             return newUserData.ToString();
         }
 
+        public static string CreateUserDataXmlTTLS(string uname, string pword)
+        {
+            // creates xml content
+            XElement newUserData =
+                new XElement(nsEHUC + "EapHostUserCredentials",
+                new XAttribute(XNamespace.Xmlns + "eapCommon", nsEC),
+                new XAttribute(XNamespace.Xmlns + "baseEap", nsBEMUC),
+                    new XElement(nsEHUC + "EapMethod",
+                        new XElement(nsEC + "Type", "26"),
+                        new XElement(nsEC + "AuthorId", "0")
+                    ),
+                    new XElement(nsEHUC + "Credentials",
+                    new XAttribute(XNamespace.Xmlns + "eapuser", nsEUP),
+                    new XAttribute(XNamespace.Xmlns + "xsi", nsXSI),
+                    new XAttribute(XNamespace.Xmlns + "baseEap", nsBEUP),
+                    new XAttribute(XNamespace.Xmlns + "MsPeap", nsMPUP),
+                    new XAttribute(XNamespace.Xmlns + "MsChapV2", nsMCUP),
+                        new XElement(nsBEUP + "Eap",
+                            new XElement(nsBEUP + "Type", "26"),
+                            new XElement(nsMPUP + "EapType",
+                                new XElement(nsBEUP + "Type", "26"),
+                                new XElement(nsMCUP + "EapType",
+                                    new XElement(nsMCUP + "Username", uname),
+                                    new XElement(nsMCUP + "Password", pword),
+                                    new XElement(nsMCUP + "LogonDomain")
+                                )
+                            )
+                        )
+                    )
+                );
+
+            newUserData.Save(@"C:\Users\lwerivel18\Desktop\userDataFromC#.xml");
+
+            // returns xml as string
+            return newUserData.ToString();
+        }
+
 
     }
 }

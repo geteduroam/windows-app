@@ -294,13 +294,10 @@ namespace EduroamApp
                 return 0;
             }
 
-            MessageBox.Show("EAP config file ready.", "Eduroam installer", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-            uint eapType = 0;
-
-           // try
+            // try
            // {
-                eapType = ConnectToEduroam.Setup(eapString);
+           uint eapType = ConnectToEduroam.Setup(eapString);
            // }
            // catch (Exception ex)
             //{

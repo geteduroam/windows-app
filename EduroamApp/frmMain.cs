@@ -29,7 +29,7 @@ namespace EduroamApp
         // id of selected institution
         int idProviderId;
         // id of selected institution profile
-        string profileId;
+        string profileIdLOL;
         // network pack for eduroam network
         AvailableNetworkPack network;
         // flag indicates wether a client certificate is succesfully installed or not
@@ -87,7 +87,7 @@ namespace EduroamApp
             cboInstitution.Items.Clear();
             cboProfiles.Items.Clear();
             // clear selected profile
-            profileId = null;
+            profileIdLOL = null;
 
             // adds identity providers from selected country to combobox
             cboInstitution.Items.AddRange(identityProviders.Where(provider => provider.Country == cboCountry.Text).OrderBy(provider => provider.Title).Select(provider => provider.Title).ToArray());
@@ -98,7 +98,7 @@ namespace EduroamApp
             // clear combobox
             cboProfiles.Items.Clear();
             // clear selected profile
-            profileId = null;
+            profileIdLOL = null;
 
             // gets id of institution selected in combobox
             idProviderId = identityProviders.Where(x => x.Title == cboInstitution.Text).Select(x => x.Id).First();
@@ -133,7 +133,7 @@ namespace EduroamApp
             else
             {
                 // gets the only profile id
-                profileId = idProviderProfiles.Data.Single().Id;
+                profileIdLOL = idProviderProfiles.Data.Single().Id;
                 // disable combobox
                 cboProfiles.Enabled = false;
                 // disable label
@@ -146,7 +146,7 @@ namespace EduroamApp
             if (cboProfiles.Text != "")
             {
                 // gets profile id of profile selected in combobox
-                profileId = idProviderProfiles.Data.Where(profile => profile.Display == cboProfiles.Text).Select(x => x.Id).Single();
+                profileIdLOL = idProviderProfiles.Data.Where(profile => profile.Display == cboProfiles.Text).Select(x => x.Id).Single();
             }
         }
 
@@ -154,14 +154,14 @@ namespace EduroamApp
         private void btnDownloadEap_Click(object sender, EventArgs e)
         {
             // checks if user has selected an institution and/or profile
-            if (string.IsNullOrEmpty(profileId))
+            if (string.IsNullOrEmpty(profileIdLOL))
             {
                 txtOutput.Text += "No institution or profile selected.\n";
                 return; // exits function if no institution/profile selected
             }
 
             // adds profile ID to url containing json file, which in turn contains url to EAP config file download
-            string generateEapUrl = $"https://cat.eduroam.org/user/API.php?action=generateInstaller&id=eap-config&lang=en&profile={profileId}";
+            string generateEapUrl = $"https://cat.eduroam.org/user/API.php?action=generateInstaller&id=eap-config&lang=en&profile={profileIdLOL}";
 
             // json file
             string generateEapJson;
@@ -569,10 +569,155 @@ namespace EduroamApp
         // test functions
         private void btnTest_Click(object sender, EventArgs e)
         {
-            
-            
+            List<uint> eapTypes = new List<uint>();
+
+            // gets id of institution selected in combobox
+            IEnumerable<int> providerIds = identityProviders.Select(x => x.Id);
+
+            foreach (int providerId in providerIds)
+            {
+                // adds institution id to url
+                string profilesUrl = $"https://cat.eduroam.org/user/API.php?action=listProfiles&id={providerId}&lang=en";
+
+                // json file as string
+                try
+                {
+                    string profilesJson = UrlToJson(profilesUrl);
+                    idProviderProfiles = JsonConvert.DeserializeObject<IdentityProviderProfile>(profilesJson);
+                }
+                catch (Exception ex)
+                {
+                    txtOutput.Text += "Couldn't fetch identity provider profiles.\nException: " + ex.Message + "\n";
+                }
+
+                // gets profile id of profile selected in combobox
+                IEnumerable<string> profileIds = idProviderProfiles.Data.Where(profile => profile.Display == cboProfiles.Text).Select(x => x.Id);
+
+                //-------------------------------------------------
+
+                foreach (string profileId in profileIds)
+                {
+                    // adds profile ID to url containing json file, which in turn contains url to EAP config file download
+                    string generateEapUrl = $"https://cat.eduroam.org/user/API.php?action=generateInstaller&id=eap-config&lang=en&profile={profileId}";
+                    GenerateEapConfig eapConfigInstance = new GenerateEapConfig();
+
+                    // gets json as string
+                    try
+                    {
+                        string generateEapJson = UrlToJson(generateEapUrl);
+                        // converts json to GenerateEapConfig object
+                        eapConfigInstance = JsonConvert.DeserializeObject<GenerateEapConfig>(generateEapJson);
+                    }
+                    catch (Exception ex)
+                    {
+                        txtOutput.Text += "Couldn't fetch Eap Config generate.\nException: " + ex.Message + "\n";
+                    }
+
+                    
+                    // gets url to EAP config file download from GenerateEapConfig object
+                    string eapConfigUrl = $"https://cat.eduroam.org/user/{eapConfigInstance.Data.Link}";
+
+                    // eap config file
+                    string eapConfigString = "";
+                    // gets eap config file as string
+                    try
+                    {
+                        eapConfigString = UrlToJson(eapConfigUrl);
+                    }
+                    catch (Exception ex)
+                    {
+                        txtOutput.Text += "Couldn't fetch Eap Config file.\nException: " + ex.Message + "\n";
+                    }
+
+                    foreach (uint eapType in GetEapType(eapConfigString))
+                    {
+                        eapTypes.Add(eapType);
+                    }
+                }
+            }
+
+            List<uint> distinctEapTypes = eapTypes.Distinct().ToList();
+
+            txtOutput.Text += "DISTINCT EAP TYPES:\n";
+
+            foreach (uint distinctEapType in distinctEapTypes)
+            {
+                txtOutput.Text += distinctEapType + "\n";
+            }
         }
 
-        
+        /// <summary>
+        /// Gets all eap types from EAP config file.
+        /// </summary>
+        /// <param name="eapFile">EAP config file as string.</param>
+        /// <returns>List of eap types</returns>
+        public List<uint> GetEapType(string eapFile)
+        {
+            // loads the XML file from its file path
+            XElement doc = XElement.Parse(eapFile);
+
+            // gets all AuthenticationMethods elements
+            IEnumerable<XElement> authMethodElements = doc.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "AuthenticationMethod");
+            List<uint> eapTypes = new List<uint>();
+
+            foreach (XElement element in authMethodElements)
+            {
+                // gets EAP method type
+                uint eapType = (uint)element.DescendantsAndSelf().Elements().First(x => x.Name.LocalName == "Type");
+                eapTypes.Add(eapType);
+            }
+
+            return eapTypes;
+        }
+
+        private void btnTest2_Click(object sender, EventArgs e)
+        {
+            // checks if user has selected an institution and/or profile
+            if (string.IsNullOrEmpty(profileIdLOL))
+            {
+                txtOutput.Text += "No institution or profile selected.\n";
+                return; // exits function if no institution/profile selected
+            }
+
+            // adds profile ID to url containing json file, which in turn contains url to EAP config file download
+            string generateEapUrl = $"https://cat.eduroam.org/user/API.php?action=generateInstaller&id=eap-config&lang=en&profile={profileIdLOL}";
+
+            // json file
+            string generateEapJson;
+            // gets json as string
+            try
+            {
+                generateEapJson = UrlToJson(generateEapUrl);
+            }
+            catch (WebException ex)
+            {
+                MessageBox.Show("Couldn't fetch Eap Config generate.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            // converts json to GenerateEapConfig object
+            GenerateEapConfig eapConfigInstance = JsonConvert.DeserializeObject<GenerateEapConfig>(generateEapJson);
+
+            // gets url to EAP config file download from GenerateEapConfig object
+            string eapConfigUrl = $"https://cat.eduroam.org/user/{eapConfigInstance.Data.Link}";
+
+            // eap config file
+            string eapConfigString = "";
+            // gets eap config file as string
+            try
+            {
+                eapConfigString = UrlToJson(eapConfigUrl);
+            }
+            catch (WebException ex)
+            {
+                MessageBox.Show("Couldn't fetch Eap Config file.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            foreach (uint eapType in GetEapType(eapConfigString))
+            {
+                txtOutput.Text += eapType + "\n";
+            }
+        }
     }
 }

@@ -94,30 +94,27 @@ namespace EduroamApp
             return true;
         }
 
-        public bool ConnectWithFile()
+        public uint ConnectWithFile()
         {
             // validates the selected config file
-            if (ValidateFileSelection())
+            if (!ValidateFileSelection()) return 0;
+            try
             {
-                try
-                {
-                    // gets content of config file
-                    string eapString = File.ReadAllText(txtFilepath.Text);
-                    // gets certificates and creates wireless profile
-                    ConnectToEduroam.Setup(eapString);
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(
-                        "The selected file is corrupted. Please select another file, or try another setup method.\n" +
-                        "Exception: " + ex.Message,
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                // returns true even if file is corrupted, connection status form takes care of informing user
-                return true;
+                // gets content of config file
+                string eapString = File.ReadAllText(txtFilepath.Text);
+                // gets certificates and creates wireless profile
+                return ConnectToEduroam.Setup(eapString);
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    "The selected file is corrupted. Please select another file, or try another setup method.\n" +
+                    "Exception: " + ex.Message,
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            // returns true even if file is corrupted, connection status form takes care of informing user
+            return 0;
 
-            return false;
         }
     }
 }
