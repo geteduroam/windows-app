@@ -93,12 +93,13 @@ namespace EduroamApp
 					else LoadFrm4();
 					break;
 				case 3:
-					if (frmDownload.ConnectWithDownload() != 13) LoadFrm5();
-					else LoadFrm6();
+					if (frmDownload.ConnectWithDownload() == 13) LoadFrm6();
+					else LoadFrm5();
 					break;
 				case 4:
-					if (frmLocal.ConnectWithFile() != 13) LoadFrm5();
-					else LoadFrm6();
+					uint eapType = frmLocal.ConnectWithFile();
+					if (eapType == 13) LoadFrm6();
+					else if (eapType != 0) LoadFrm5();
 					break;
 				case 5:
 					if (frmLogin.ConnectWithLogin()) LoadFrm6();

@@ -175,7 +175,7 @@ namespace EduroamApp
 							new XElement(nsTTLS + "ServerNames", serverNames),
 							new XElement(nsTTLS + "DisablePrompt", "false")
 						),
-						new XElement(nsTTLS + "Phase2Authentication",
+						new XElement(nsTTLS + "Phase2Authentication"/*,
 							new XElement(nsEHC + "EapHostConfig",
 								new XElement(nsEHC + "EapMethod",
 									new XElement(nsEC + "Type", 26),
@@ -192,10 +192,10 @@ namespace EduroamApp
 									)
 								)
 							)
-						),
+						*/),
 						new XElement(nsTTLS + "Phase1Identity",
 							new XElement(nsTTLS + "IdentityPrivacy", "true"),
-							new XElement(nsTTLS + "AnonymousIdentity", "anon")
+							new XElement(nsTTLS + "AnonymousIdentity", "user")
 						)
 					)
 				);
