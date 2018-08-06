@@ -18,6 +18,8 @@ namespace EduroamApp
         private static readonly XNamespace nsBEUP = "http://www.microsoft.com/provisioning/BaseEapUserPropertiesV1";
         private static readonly XNamespace nsMPUP = "http://www.microsoft.com/provisioning/MsPeapUserPropertiesV1";
         private static readonly XNamespace nsMCUP = "http://www.microsoft.com/provisioning/MsChapV2UserPropertiesV1";
+            // TTLS specific
+        static readonly XNamespace nsETUP = "http://www.microsoft.com/provisioning/EapTtlsUserPropertiesV1";
 
         /// <summary>
         /// Generates user data xml.
@@ -73,24 +75,18 @@ namespace EduroamApp
                 new XAttribute(XNamespace.Xmlns + "eapCommon", nsEC),
                 new XAttribute(XNamespace.Xmlns + "baseEap", nsBEMUC),
                     new XElement(nsEHUC + "EapMethod",
-                        new XElement(nsEC + "Type", "26"),
-                        new XElement(nsEC + "AuthorId", "0")
+                        new XElement(nsEC + "Type", "21"),
+                        new XElement(nsEC + "AuthorId", "311")
                     ),
                     new XElement(nsEHUC + "Credentials",
                     new XAttribute(XNamespace.Xmlns + "eapuser", nsEUP),
                     new XAttribute(XNamespace.Xmlns + "xsi", nsXSI),
                     new XAttribute(XNamespace.Xmlns + "baseEap", nsBEUP),
-                    new XAttribute(XNamespace.Xmlns + "MsPeap", nsMPUP),
-                    new XAttribute(XNamespace.Xmlns + "MsChapV2", nsMCUP),
-                        new XElement(nsBEUP + "Eap",
-                            new XElement(nsBEUP + "Type", "26"),
-                            new XElement(nsMPUP + "EapType",
-                                new XElement(nsBEUP + "Type", "26"),
-                                new XElement(nsMCUP + "EapType",
-                                    new XElement(nsMCUP + "Username", uname),
-                                    new XElement(nsMCUP + "Password", pword),
-                                    new XElement(nsMCUP + "LogonDomain")
-                                )
+                    new XAttribute(XNamespace.Xmlns + "eapTtls", nsETUP),
+                        new XElement(nsETUP + "EapTtls",
+                            new XElement(nsETUP + "TtlsCred",
+                                    new XElement(nsETUP + "Username", uname),
+                                    new XElement(nsETUP + "Password", pword)
                             )
                         )
                     )

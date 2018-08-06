@@ -54,14 +54,42 @@ namespace EduroamApp
                 var certExists = rootStore.Certificates.Find(X509FindType.FindByThumbprint, caCert.Thumbprint, true);
                 if (certExists.Count < 1)
                 {
-                    MessageBox.Show("You will now be prompted to install a Certificate Authority. " +
+                    MessageBox.Show("You will now be prompted to install a Certificate Authority. \n" +
                                     "In order to connect to eduroam, you need to accept this by pressing \"Yes\" in the following dialog.",
                         "Accept Certificate Authority", MessageBoxButtons.OK);
 
-                    // adds CA to trusted root store
-                    rootStore.Add(caCert);
+                    // if CA not installed succesfully, ask user to retry
+                    bool addCaSuccess = false;
+                    while (!addCaSuccess)
+                    {
+                        try
+                        {
+                            // adds CA to trusted root store
+                            rootStore.Add(caCert);
+                            // if CA added succesfully, stop looping
+                            addCaSuccess = true;
+                        }
+                        catch (CryptographicException ex)
+                        {
+                            // if user selects No when prompted to install CA, show error and ask to retry or cancel
+                            if ((uint)ex.HResult == 0x800704C7)
+                            {
+                                DialogResult retryCa = MessageBox.Show("CA not installed. \nIn order to connect to eduroam, you must press \"Yes\" when prompted to install the Certificate Authority.",
+                                                                       "Accept Certificate Authority", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+                                // if user selects cancel, stop looping
+                                if (retryCa == DialogResult.Cancel)
+                                {
+                                    addCaSuccess = true;
+                                }
+                            }
+                            else
+                            // if different error message, stop looping
+                            {
+                                addCaSuccess = true;
+                            }
+                        }
+                    }
                 }
-
                 
                 // gets CA thumbprint
                 thumbprints.Add(caCert.Thumbprint);
@@ -96,8 +124,11 @@ namespace EduroamApp
             // gets server names of authentication method and joins them into one single string
             string serverNames = string.Join(";", authMethod.ServerName) + ";Fyrkat eduroam";
 
+            /*
             thumbprints.Clear();
-            thumbprints.Add("1 b4 e1 3f d7 7a 5f 78 92 4a 86 a1 a3 4a 2a 36 4a 75 9 3a");
+            thumbprints.Add("5 63 b8 63 d 62 d7 5a bb c8 ab 1e 4b df b5 a8 99 b2 4d 43");
+            thumbprints.Add("77 b9 9b b2 bd 75 22 e1 7e c0 99 ea 71 77 51 6f 27 78 7c ad");
+            */
 
             // gets EAP type of authentication method
             uint eapType = authMethod.EapType;
@@ -174,7 +205,7 @@ namespace EduroamApp
         public static void SetupLogin(string username, string password)
         {
             // generates user data xml file
-            string userDataXml = UserDataXml.CreateUserDataXmlTTLS(username, password);
+            string userDataXml = UserDataXml.CreateUserDataXml(username, password);
 
             // sets user data
             SetUserData(interfaceId, ssid, userDataXml);
