@@ -76,17 +76,18 @@ namespace EduroamApp
 				new XAttribute(XNamespace.Xmlns + "baseEap", nsBEMUC),
 					new XElement(nsEHUC + "EapMethod",
 						new XElement(nsEC + "Type", "21"),
-						new XElement(nsEC + "AuthorId", "311")
+						new XElement(nsEC + "AuthorId", "67532")
 					),
 					new XElement(nsEHUC + "Credentials",
 					new XAttribute(XNamespace.Xmlns + "eapuser", nsEUP),
 					new XAttribute(XNamespace.Xmlns + "xsi", nsXSI),
 					new XAttribute(XNamespace.Xmlns + "baseEap", nsBEUP),
 					new XAttribute(XNamespace.Xmlns + "eapTtls", nsETUP),
-						new XElement(nsETUP + "EapTtls",
-							new XElement(nsETUP + "TtlsCred",
-									new XElement(nsETUP + "Username", uname),
-									new XElement(nsETUP + "Password", pword)
+						new XElement(nsETUP + "eapTtls",
+							new XElement(nsETUP + "Username", uname),
+							new XElement(nsETUP + "Password", pword),
+							new XElement(nsBEUP + "Eap",
+								new XElement(nsBEUP + "Type", 21)
 							)
 						)
 					)

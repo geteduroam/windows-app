@@ -107,9 +107,9 @@ namespace EduroamApp
 				string closestCountry = GetClosestInstitution(identityProviders);
 				cboCountry.SelectedIndex = cboCountry.FindStringExact(closestCountry);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				// ignore
+				MessageBox.Show("Couldn't get country \nException: " + ex.Message);
 			}
 		}
 
@@ -240,15 +240,10 @@ namespace EduroamApp
 			return closestInst.Country;
 		}
 
-		public uint ConnectWithDownload()
+		public string GetEapConfigString()
 		{
-			// checks if user has selected an institution and/or profile
-			if (string.IsNullOrEmpty(profileId))
-			{
-				MessageBox.Show("Please select an institution and/or a profile.",
-								"Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return 0; // exits function if no institution/profile selected
-			}
+			// eap config file
+			string eapString = "";
 
 			// adds profile ID to url containing json file, which in turn contains url to EAP config file download
 			string generateEapUrl = $"https://cat.eduroam.org/user/API.php?action=generateInstaller&id=eap-config&lang=en&profile={profileId}";
@@ -267,21 +262,18 @@ namespace EduroamApp
 			{
 				MessageBox.Show("Couldn't fetch Eap Config generate.\n" +
 								"Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return 0;
+				return eapString;
 			}
 			catch (JsonReaderException ex)
 			{
 				MessageBox.Show("No supported EAP types found for this profile.\n" +
 								"Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return 0;
+				return eapString;
 			}
-
 
 			// gets url to EAP config file download from GenerateEapConfig object
 			string eapConfigUrl = $"https://cat.eduroam.org/user/{eapConfigInstance.Data.Link}";
 
-			// eap config file
-			string eapString;
 			// gets eap config file as string
 			try
 			{
@@ -291,18 +283,39 @@ namespace EduroamApp
 			{
 				MessageBox.Show("Couldn't fetch Eap Config file.\n" +
 								"Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return 0;
 			}
 
+			return eapString;
+		}
 
-			// try
-			// {
-			uint eapType = ConnectToEduroam.Setup(eapString);
-			// }
-			// catch (Exception ex)
-			//{
-			//    MessageBox.Show("Something went wrong\nException: " + ex.Message);
-			//}
+		public uint ConnectWithDownload()
+		{
+			// checks if user has selected an institution and/or profile
+			if (string.IsNullOrEmpty(profileId))
+			{
+				MessageBox.Show("Please select an institution and/or a profile.",
+					"Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return 0; // exits function if no institution/profile selected
+			}
+
+			string eapString = GetEapConfigString();
+			uint eapType = 0;
+			string instId = null;
+
+			try
+			{
+				eapType = ConnectToEduroam.Setup(eapString);
+				instId = ConnectToEduroam.GetInstId(eapString);
+			}
+			catch (ArgumentException argEx)
+			{
+				if (argEx.Message == "interfaceId")
+				{
+					MessageBox.Show("Could not establish a connection through your computer's wireless network interface. \n" +
+									"Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.",
+									"Network interface error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			}
 
 			return eapType;
 		}

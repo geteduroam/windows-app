@@ -31,6 +31,7 @@ namespace EduroamApp
 			this.label1 = new System.Windows.Forms.Label();
 			this.txtUsername = new System.Windows.Forms.TextBox();
 			this.txtPassword = new System.Windows.Forms.TextBox();
+			this.lblInst = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			//
 			// label1
@@ -61,10 +62,21 @@ namespace EduroamApp
 			this.txtPassword.Size = new System.Drawing.Size(206, 20);
 			this.txtPassword.TabIndex = 2;
 			this.txtPassword.Text = "Password";
+			this.txtPassword.TextChanged += new System.EventHandler(this.txtPassword_TextChanged);
 			this.txtPassword.Enter += new System.EventHandler(this.txtPassword_Enter);
 			this.txtPassword.Leave += new System.EventHandler(this.txtPassword_Leave);
 			//
-			// frm6
+			// lblInst
+			//
+			this.lblInst.AutoSize = true;
+			this.lblInst.Location = new System.Drawing.Point(211, 27);
+			this.lblInst.Name = "lblInst";
+			this.lblInst.Size = new System.Drawing.Size(85, 13);
+			this.lblInst.TabIndex = 0;
+			this.lblInst.Text = "@institution.com";
+			this.lblInst.Visible = false;
+			//
+			// frmLogin
 			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -73,6 +85,7 @@ namespace EduroamApp
 			this.ClientSize = new System.Drawing.Size(378, 246);
 			this.Controls.Add(this.txtPassword);
 			this.Controls.Add(this.txtUsername);
+			this.Controls.Add(this.lblInst);
 			this.Controls.Add(this.label1);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Name = "frmLogin";
@@ -88,5 +101,6 @@ namespace EduroamApp
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TextBox txtUsername;
 		private System.Windows.Forms.TextBox txtPassword;
+		private System.Windows.Forms.Label lblInst;
 	}
 }

@@ -72,8 +72,22 @@ namespace EduroamApp
 
 		public bool ConnectWithLogin()
 		{
-			ConnectToEduroam.SetupLogin(txtUsername.Text, txtPassword.Text);
+			string username = txtUsername.Text;
+			if (!username.Contains("@"))
+			{
+
+			}
+			else
+			{
+				ConnectToEduroam.SetupLogin(username, txtPassword.Text);
+			}
+
 			return true;
+		}
+
+		private void txtPassword_TextChanged(object sender, EventArgs e)
+		{
+
 		}
 	}
 }
