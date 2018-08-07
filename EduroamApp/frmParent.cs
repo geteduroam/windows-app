@@ -21,24 +21,18 @@ namespace EduroamApp
 {
     public partial class frmParent : Form
     {
-        enum FormSituation
-        {
-            SelfExtract,
-            SelectMethod,
-            DownloadConnect,
-            LocalConnect,
-            LoginConnect
-        }
-        int currentFormId;
-        List<int> formHistory = new List<int>();
-        bool reload = true;
+        int currentFormId; // Id of currently selected form
+        readonly List<int> formHistory = new List<int>(); // keeps history of previously diplayed forms, in order to backtrack correctly
+        bool reload = true; // sepcifies wether a form is to be re-instantiated when loaded
+        readonly GeoCoordinateWatcher watcher; // gets coordinates of computer
+
+        // makes forms globally  accessible in parent form
         frmSelfExtract frmSelfExtract;
         frmSelectMethod frmSelectMethod;
         frmDownload frmDownload;
         frmLocal frmLocal;
         frmConnect frmConnect;
         frmLogin frmLogin;
-        readonly GeoCoordinateWatcher watcher; // gets coordinates of computer
 
         public frmParent()
         {
@@ -82,6 +76,8 @@ namespace EduroamApp
             reload = true;
             // adds current form to history for easy backtracking
             formHistory.Add(currentFormId);
+            // EAP type of selected network config, determines which forms to load
+            uint eapType = 0;
 
             switch (currentFormId)
             {                
@@ -93,11 +89,12 @@ namespace EduroamApp
                     else LoadFrm4();
                     break;
                 case 3:
-                    if (frmDownload.ConnectWithDownload() == 13) LoadFrm6();
-                    else LoadFrm5();
+                    eapType = frmDownload.ConnectWithDownload();
+                    if (eapType == 13) LoadFrm6();
+                    else if (eapType != 0) LoadFrm5();
                     break;
                 case 4:
-                    uint eapType = frmLocal.ConnectWithFile();
+                    eapType = frmLocal.ConnectWithFile();
                     if (eapType == 13) LoadFrm6();
                     else if (eapType != 0) LoadFrm5();
                     break;
@@ -108,6 +105,9 @@ namespace EduroamApp
                     //LoadFrm6();
                     break;
             }
+
+            // removes current form from history if it gets added twice
+            if (formHistory.LastOrDefault() == currentFormId) formHistory.RemoveAt(formHistory.Count - 1);
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -117,7 +117,8 @@ namespace EduroamApp
             
             switch (formHistory.Last())
             {
-                case 1:                    
+                case 1:
+                    LoadFrm1();
                     break;
                 case 2:
                     LoadFrm2();

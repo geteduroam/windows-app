@@ -122,7 +122,7 @@ namespace EduroamApp
             }
 
             // gets server names of authentication method and joins them into one single string
-            string serverNames = string.Join(";", authMethod.ServerName) + ";Fyrkat eduroam";
+            string serverNames = string.Join(";", authMethod.ServerName);
 
             /*
             thumbprints.Clear();
@@ -434,6 +434,14 @@ namespace EduroamApp
             store.Close();
         }
 
-        
+        public static string GetInstId(string eapString)
+        {
+            // loads XML file from string
+            XElement doc = XElement.Parse(eapString);
+            // gets institution Id
+            string instId = (string)doc.Descendants().ElementAtOrDefault(0).Attribute("ID");
+
+            return instId;
+        }
     }
 }

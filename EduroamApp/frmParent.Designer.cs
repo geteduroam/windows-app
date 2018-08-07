@@ -41,6 +41,7 @@
             this.pnlLeftMargin = new System.Windows.Forms.Panel();
             this.pnlRightMargin = new System.Windows.Forms.Panel();
             this.pnlContent = new System.Windows.Forms.Panel();
+            this.lblInst = new System.Windows.Forms.Label();
             this.pnlNavigation.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.pnlLeft.SuspendLayout();
@@ -143,6 +144,7 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.Controls.Add(this.lblInst);
             this.panel1.Controls.Add(this.lblTitle);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(160, 0);
@@ -187,6 +189,16 @@
             this.pnlContent.Size = new System.Drawing.Size(378, 246);
             this.pnlContent.TabIndex = 7;
             // 
+            // lblInst
+            // 
+            this.lblInst.AutoSize = true;
+            this.lblInst.Location = new System.Drawing.Point(351, 9);
+            this.lblInst.Name = "lblInst";
+            this.lblInst.Size = new System.Drawing.Size(94, 13);
+            this.lblInst.TabIndex = 8;
+            this.lblInst.Text = "INVISIBLE LABEL";
+            this.lblInst.Visible = false;
+            // 
             // frmParent
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -227,5 +239,6 @@
         private System.Windows.Forms.Panel pnlLeftMargin;
         private System.Windows.Forms.Panel pnlRightMargin;
         private System.Windows.Forms.Panel pnlContent;
+        private System.Windows.Forms.Label lblInst;
     }
 }

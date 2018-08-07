@@ -25,16 +25,18 @@ namespace EduroamApp
             lblStatus.Text = "Connecting...";
             pboStatus.Image = Properties.Resources.ajax_loader;
 
-            bool connectSuccess;
+            bool connectSuccess = false;
             // tries to connect
             try
             {
                 connectSuccess = await Task.Run(ConnectToEduroam.Connect);
             }
-            catch (Exception)
+            
+            catch (Exception ex)
             {
                 // if an exception is thrown, connection has not succeeded
                 connectSuccess = false;
+                MessageBox.Show("Could not connect. \nException: " + ex.Message);
             }
             
             if (connectSuccess)
@@ -50,7 +52,7 @@ namespace EduroamApp
                 lblConnectFailed.Visible = true;
                 frmParent.BtnNextEnabled = true;
                 frmParent.BtnBackEnabled = true;
-                ConnectToEduroam.RemoveProfile();
+                //ConnectToEduroam.RemoveProfile();
             }
         }
         
