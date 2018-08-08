@@ -17,6 +17,7 @@ using System.Security;
 using System.Xml.Linq;
 using Newtonsoft.Json;
 using System.Device.Location;
+using System.Globalization;
 
 namespace EduroamApp
 {
@@ -24,6 +25,7 @@ namespace EduroamApp
 	{
 		readonly frmParent frmParent; // makes parent form accessible from this class
 		List<IdentityProvider> identityProviders; // list containing all identity providers
+		List<Country> countries;
 		IdentityProviderProfile idProviderProfiles; // list containing all profiles of an identity provider
 		int idProviderId; // id of selected institution
 		string profileId; // id of selected institution profile
@@ -95,16 +97,34 @@ namespace EduroamApp
 
 		private void PopulateCountries()
 		{
+			List<string> distinctCountryCodes = identityProviders.OrderBy(provider => provider.Country)
+																 .Select(provider => provider.Country)
+																 .Distinct().ToList();
+
+			foreach (string countryCode in distinctCountryCodes)
+			{
+				string countryName;
+				try
+				{
+					RegionInfo countryInfo = new RegionInfo(countryCode);
+					countryName = countryInfo.DisplayName;
+				}
+				catch (ArgumentException argEx)
+				{
+					countryName = countryCode;
+				}
+
+				countries.Add(new Country(countryCode, countryName));
+			}
+
 			// adds countries to combobox
-			cboCountry.Items.AddRange(identityProviders.OrderBy(provider => provider.Country)
-				.Select(provider => provider.Country)
-				.Distinct()
-				.ToArray());
+			cboCountry.Items.AddRange(countries.Select(c => c.CountryName).ToArray());
 
 			// finds the country geographically closest to the user and selects it by default
 			try
 			{
-				string closestCountry = GetClosestInstitution(identityProviders);
+				string closestCountryCode = GetClosestInstitution(identityProviders);
+				string closestCountry = countries.Where(c => c.CountryCode == closestCountryCode).Select(c => c.CountryName).FirstOrDefault();
 				cboCountry.SelectedIndex = cboCountry.FindStringExact(closestCountry);
 			}
 			catch (Exception ex)

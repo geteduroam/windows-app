@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace EduroamApp
 {
-	internal class ProfileXml
+	class ProfileXml
 	{
 
 		// Namespaces
