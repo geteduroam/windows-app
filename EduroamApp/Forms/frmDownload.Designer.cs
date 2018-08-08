@@ -36,8 +36,8 @@
             this.cboCountry = new System.Windows.Forms.ComboBox();
             this.tlpLoading = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new System.Windows.Forms.Label();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.lblError = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.tlpLoading.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -97,7 +97,7 @@
             this.cboCountry.FormattingEnabled = true;
             this.cboCountry.Location = new System.Drawing.Point(6, 19);
             this.cboCountry.Name = "cboCountry";
-            this.cboCountry.Size = new System.Drawing.Size(140, 21);
+            this.cboCountry.Size = new System.Drawing.Size(202, 21);
             this.cboCountry.TabIndex = 31;
             this.cboCountry.SelectedIndexChanged += new System.EventHandler(this.cboCountry_SelectedIndexChanged);
             // 
@@ -125,6 +125,16 @@
             this.label1.TabIndex = 38;
             this.label1.Text = "Loading";
             // 
+            // lblError
+            // 
+            this.lblError.Location = new System.Drawing.Point(3, 3);
+            this.lblError.Name = "lblError";
+            this.lblError.Size = new System.Drawing.Size(329, 58);
+            this.lblError.TabIndex = 39;
+            this.lblError.Text = "Couldn\'t connect to the server.\r\n\r\nMake sure that you are connected to the intern" +
+    "et, then try again.";
+            this.lblError.Visible = false;
+            // 
             // pictureBox1
             // 
             this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
@@ -136,24 +146,13 @@
             this.pictureBox1.TabIndex = 39;
             this.pictureBox1.TabStop = false;
             // 
-            // lblError
-            // 
-            this.lblError.Location = new System.Drawing.Point(3, 3);
-            this.lblError.Name = "lblError";
-            this.lblError.Size = new System.Drawing.Size(329, 58);
-            this.lblError.TabIndex = 39;
-            this.lblError.Text = "Couldn\'t connect to the server.\r\n\r\nMake sure that you are connected to the intern" +
-    "et, then try again.";
-            this.lblError.Visible = false;
-            // 
-            // frm3
+            // frmDownload
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(378, 246);
-            this.Controls.Add(this.lblError);
             this.Controls.Add(this.tlpLoading);
             this.Controls.Add(this.lblSelectProfile);
             this.Controls.Add(this.cboProfiles);
@@ -161,6 +160,7 @@
             this.Controls.Add(this.lblCountry);
             this.Controls.Add(this.cboInstitution);
             this.Controls.Add(this.cboCountry);
+            this.Controls.Add(this.lblError);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "frmDownload";
             this.Text = "frm3";
