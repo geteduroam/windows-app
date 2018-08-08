@@ -13,8 +13,12 @@ namespace EduroamApp
 {
 	public partial class frmLogin : Form
 	{
-		public frmLogin()
+		readonly frmParent frmParent;
+		bool usernameFieldLeave = false;
+
+		public frmLogin(frmParent parentInstance)
 		{
+			frmParent = parentInstance;
 			InitializeComponent();
 		}
 
@@ -26,6 +30,16 @@ namespace EduroamApp
 			txtPassword.Text = "Password";
 			txtPassword.ForeColor = SystemColors.GrayText;
 			txtPassword.UseSystemPasswordChar = false;
+
+			if (!string.IsNullOrEmpty(frmParent.LblInstText))
+			{
+				lblInst.Text = "@" + frmParent.LblInstText;
+			}
+			else
+			{
+				lblInst.Text = "";
+			}
+
 		}
 
 		// removes helping text when field is in focus
@@ -57,6 +71,16 @@ namespace EduroamApp
 				txtUsername.Text = "Username";
 				txtUsername.ForeColor = SystemColors.GrayText;
 			}
+			else if (!txtUsername.Text.Contains("@"))
+			{
+				lblInst.Visible = true;
+				usernameFieldLeave = true;
+			}
+			else
+			{
+				lblInst.Visible = false;
+				usernameFieldLeave = true;
+			}
 		}
 
 		// shows helping text when field loses focus and is empty
@@ -73,14 +97,12 @@ namespace EduroamApp
 		public bool ConnectWithLogin()
 		{
 			string username = txtUsername.Text;
-			if (!username.Contains("@"))
+			if (lblInst.Visible)
 			{
+				username += lblInst.Text;
+			}
 
-			}
-			else
-			{
-				ConnectToEduroam.SetupLogin(username, txtPassword.Text);
-			}
+			ConnectToEduroam.SetupLogin(username, txtPassword.Text);
 
 			return true;
 		}
@@ -88,6 +110,15 @@ namespace EduroamApp
 		private void txtPassword_TextChanged(object sender, EventArgs e)
 		{
 
+		}
+
+		private void txtUsername_TextChanged(object sender, EventArgs e)
+		{
+			if (!usernameFieldLeave) return;
+			if (txtUsername.Text != "" || txtUsername.Text != "Username")
+			{
+				lblInst.Visible = !txtUsername.Text.Contains("@");
+			}
 		}
 	}
 }

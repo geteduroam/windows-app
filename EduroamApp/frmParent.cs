@@ -91,7 +91,9 @@ namespace EduroamApp
 				case 3:
 					eapType = frmDownload.ConnectWithDownload();
 					if (eapType == 13) LoadFrm6();
-					else if (eapType != 0) LoadFrm5();
+					else if (eapType == 25 || eapType == 21) LoadFrm5();
+					else if (eapType == 52) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
+															"Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					break;
 				case 4:
 					eapType = frmLocal.ConnectWithFile();
@@ -190,6 +192,12 @@ namespace EduroamApp
 			set => btnCancel.Text = value;
 		}
 
+		public string LblInstText
+		{
+			get => lblInst.Text;
+			set => lblInst.Text = value;
+		}
+
 		/// <summary>
 		/// Loads form with self extracted config file install.
 		/// </summary>
@@ -238,7 +246,7 @@ namespace EduroamApp
 		/// </summary>
 		public void LoadFrm4()
 		{
-			if (reload) frmLocal = new frmLocal();
+			if (reload) frmLocal = new frmLocal(this);
 			currentFormId = 4;
 			lblTitle.Text = "Select EAP-config file";
 			btnNext.Text = "Connect";
@@ -251,7 +259,7 @@ namespace EduroamApp
 		/// </summary>
 		public void LoadFrm5()
 		{
-			if (reload) frmLogin = new frmLogin();
+			if (reload) frmLogin = new frmLogin(this);
 			currentFormId = 5;
 			lblTitle.Text = "Log in";
 			btnNext.Text = "Connect";

@@ -22,8 +22,11 @@ namespace EduroamApp
 {
 	public partial class frmLocal : Form
 	{
-		public frmLocal()
+		readonly frmParent frmParent;
+
+		public frmLocal(frmParent parentInstance)
 		{
+			frmParent = parentInstance;
 			InitializeComponent();
 		}
 
@@ -96,15 +99,20 @@ namespace EduroamApp
 
 		public uint ConnectWithFile()
 		{
+			uint eapType = 0;
+			string instId = null;
+
 			// validates the selected config file
 			if (ValidateFileSelection())
 			{
+				// gets content of config file
+				string eapString = File.ReadAllText(txtFilepath.Text);
+
 				try
 				{
-					// gets content of config file
-					string eapString = File.ReadAllText(txtFilepath.Text);
 					// gets certificates and creates wireless profile
-					return ConnectToEduroam.Setup(eapString);
+					eapType  = ConnectToEduroam.Setup(eapString);
+					instId = ConnectToEduroam.GetInstId(eapString);
 				}
 				catch (Exception ex)
 				{
@@ -114,7 +122,10 @@ namespace EduroamApp
 						"Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
-			return 0;
+
+			// makes the institution Id accessible from parent form
+			frmParent.LblInstText = instId;
+			return eapType;
 
 		}
 	}
