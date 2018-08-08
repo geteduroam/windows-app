@@ -37,11 +37,11 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lblInst = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
             this.pnlLeftMargin = new System.Windows.Forms.Panel();
             this.pnlRightMargin = new System.Windows.Forms.Panel();
             this.pnlContent = new System.Windows.Forms.Panel();
-            this.lblInst = new System.Windows.Forms.Label();
             this.pnlNavigation.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.pnlLeft.SuspendLayout();
@@ -152,6 +152,16 @@
             this.panel1.Size = new System.Drawing.Size(448, 120);
             this.panel1.TabIndex = 4;
             // 
+            // lblInst
+            // 
+            this.lblInst.AutoSize = true;
+            this.lblInst.Location = new System.Drawing.Point(351, 9);
+            this.lblInst.Name = "lblInst";
+            this.lblInst.Size = new System.Drawing.Size(94, 13);
+            this.lblInst.TabIndex = 8;
+            this.lblInst.Text = "INVISIBLE LABEL";
+            this.lblInst.Visible = false;
+            // 
             // lblTitle
             // 
             this.lblTitle.AutoSize = true;
@@ -188,16 +198,6 @@
             this.pnlContent.Name = "pnlContent";
             this.pnlContent.Size = new System.Drawing.Size(378, 246);
             this.pnlContent.TabIndex = 7;
-            // 
-            // lblInst
-            // 
-            this.lblInst.AutoSize = true;
-            this.lblInst.Location = new System.Drawing.Point(351, 9);
-            this.lblInst.Name = "lblInst";
-            this.lblInst.Size = new System.Drawing.Size(94, 13);
-            this.lblInst.TabIndex = 8;
-            this.lblInst.Text = "INVISIBLE LABEL";
-            this.lblInst.Visible = false;
             // 
             // frmParent
             // 

@@ -80,6 +80,7 @@ namespace EduroamApp
                                 if (retryCa == DialogResult.Cancel)
                                 {
                                     addCaSuccess = true;
+                                    return 0;
                                 }
                             }
                             else
@@ -132,66 +133,9 @@ namespace EduroamApp
 
             // gets EAP type of authentication method
             uint eapType = authMethod.EapType;
-
             
-            
-            //// gets a list of all client certificates and a list of all CAs
-            //var getAllCertificates = GetCertificates(eapString);
-            //// opens trusted root certificate authority store
-            //X509Store store;
-
-            //// checks if there are any certificates to install
-            //if (getAllCertificates.Item1.Any())
-            //{
-            //    // sets store to personal certificate store
-            //    store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-
-            //    // loops through list and attempts to install client certs
-            //    foreach (X509Certificate2 clientCert in getAllCertificates.Item1)
-            //    {
-            //        try
-            //        {
-            //            // installs client certificate
-            //            InstallCertificate(clientCert, store);
-            //            // outputs result
-            //            Debug.WriteLine($"Certificate installed: {clientCert.FriendlyName}\n");
-            //        }
-            //        catch (CryptographicException ex)
-            //        {
-            //            // outputs error message if a certificate installation fails
-            //            Debug.WriteLine($"Certificate was not installed: {clientCert.FriendlyName}\nError: {ex.Message}");
-            //        }
-            //    }
-            //}
-
-            //// checks if there are CAs to install
-            //if (getAllCertificates.Item2.Any())
-            //{
-            //    // sets store to trusted root certificate store
-            //    store = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
-
-            //    // loops through list and attempts to install CAs
-            //    foreach (X509Certificate2 certAuth in getAllCertificates.Item2)
-            //    {
-            //        try
-            //        {
-            //            // installs client certificate
-            //            InstallCertificate(certAuth, store);
-            //            // outputs result
-            //            Debug.WriteLine($"CA installed: {certAuth.FriendlyName}\n");
-            //            // adds thumbprint to list
-            //            thumbprints.Add(certAuth.Thumbprint);
-            //        }
-            //        catch (CryptographicException ex)
-            //        {
-            //            // outputs error message if a certificate installation fails
-            //            Debug.WriteLine($"CA was not installed: {certAuth.FriendlyName}\nError: {ex.Message}");
-            //        }
-            //    }
-            //}
-
-            //// sets chosen EAP-type based on wether certificate was successfully installed
-            //ProfileXml.EapType eapType = ProfileXml.EapType.TLS;
+            // if EAP type is 52, cancel setup
+            if (eapType == 52) return eapType;
 
             // generates new profile xml
             string profileXml = ProfileXml.CreateProfileXml(ssid, eapType, serverNames, thumbprints);

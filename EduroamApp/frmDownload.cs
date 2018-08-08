@@ -317,6 +317,8 @@ namespace EduroamApp
                 }
             }
             
+            // makes the institution Id accessible from parent form
+            frmParent.LblInstText = instId;
             return eapType;
         }
         

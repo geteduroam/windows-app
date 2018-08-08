@@ -48,9 +48,10 @@
             this.txtUsername.ForeColor = System.Drawing.SystemColors.GrayText;
             this.txtUsername.Location = new System.Drawing.Point(6, 24);
             this.txtUsername.Name = "txtUsername";
-            this.txtUsername.Size = new System.Drawing.Size(206, 20);
+            this.txtUsername.Size = new System.Drawing.Size(180, 20);
             this.txtUsername.TabIndex = 1;
             this.txtUsername.Text = "Username";
+            this.txtUsername.TextChanged += new System.EventHandler(this.txtUsername_TextChanged);
             this.txtUsername.Enter += new System.EventHandler(this.txtUsername_Enter);
             this.txtUsername.Leave += new System.EventHandler(this.txtUsername_Leave);
             // 
@@ -59,7 +60,7 @@
             this.txtPassword.ForeColor = System.Drawing.SystemColors.GrayText;
             this.txtPassword.Location = new System.Drawing.Point(6, 50);
             this.txtPassword.Name = "txtPassword";
-            this.txtPassword.Size = new System.Drawing.Size(206, 20);
+            this.txtPassword.Size = new System.Drawing.Size(180, 20);
             this.txtPassword.TabIndex = 2;
             this.txtPassword.Text = "Password";
             this.txtPassword.TextChanged += new System.EventHandler(this.txtPassword_TextChanged);
@@ -69,7 +70,7 @@
             // lblInst
             // 
             this.lblInst.AutoSize = true;
-            this.lblInst.Location = new System.Drawing.Point(211, 27);
+            this.lblInst.Location = new System.Drawing.Point(188, 27);
             this.lblInst.Name = "lblInst";
             this.lblInst.Size = new System.Drawing.Size(85, 13);
             this.lblInst.TabIndex = 0;
