@@ -360,10 +360,10 @@ namespace EduroamApp
 			// loops through all institutions' coordinates and compares them with current shortest distance
 			foreach (IdentityProvider inst in instList)
 			{
-				if (inst.MyGeo == null) continue;
+				if (inst.Geo == null) continue;
 				// gets lat and long
-				instCoord.Latitude = inst.MyGeo.First().Lat;
-				instCoord.Longitude = inst.MyGeo.First().Lon;
+				instCoord.Latitude = (double) inst.Geo.First().Lat;
+				instCoord.Longitude = (double) inst.Geo.First().Lon;
 				// gets distance
 				double currentDistance = myCoord.GetDistanceTo(instCoord);
 				// compares with current shortest distance

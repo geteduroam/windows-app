@@ -24,8 +24,8 @@ namespace EduroamApp
 	public partial class frmDownload : Form
 	{
 		readonly frmParent frmParent; // makes parent form accessible from this class
-		List<IdentityProvider> identityProviders; // list containing all identity providers
-		List<Country> countries;
+		List<IdentityProvider> identityProviders = new List<IdentityProvider>(); // list containing all identity providers
+		List<Country> countries = new List<Country>();
 		IdentityProviderProfile idProviderProfiles; // list containing all profiles of an identity provider
 		int idProviderId; // id of selected institution
 		string profileId; // id of selected institution profile
@@ -97,8 +97,7 @@ namespace EduroamApp
 
 		private void PopulateCountries()
 		{
-			List<string> distinctCountryCodes = identityProviders.OrderBy(provider => provider.Country)
-																 .Select(provider => provider.Country)
+			List<string> distinctCountryCodes = identityProviders.Select(provider => provider.Country)
 																 .Distinct().ToList();
 
 			foreach (string countryCode in distinctCountryCodes)
@@ -109,7 +108,8 @@ namespace EduroamApp
 					RegionInfo countryInfo = new RegionInfo(countryCode);
 					countryName = countryInfo.DisplayName;
 				}
-				catch (ArgumentException argEx)
+				// if "country" from json file does not have associated RegionInfo, set country code as country name
+				catch (ArgumentException)
 				{
 					countryName = countryCode;
 				}
@@ -118,19 +118,25 @@ namespace EduroamApp
 			}
 
 			// adds countries to combobox
-			cboCountry.Items.AddRange(countries.Select(c => c.CountryName).ToArray());
+			cboCountry.Items.AddRange(countries.OrderBy(c => c.CountryName).Select(c => c.CountryName).ToArray());
 
-			// finds the country geographically closest to the user and selects it by default
-			try
+
+			// gets GeoCoordinateWatcher from parent form
+			GeoCoordinateWatcher watcher = frmParent.GetWatcher();
+			// user's coordinates
+			GeoCoordinate myCoord = watcher.Position.Location;
+
+			// validates if coordinates are received
+			if (myCoord.IsUnknown != true)
 			{
-				string closestCountryCode = GetClosestInstitution(identityProviders);
+				// finds the country geographically closest to the user and selects it by default
+				string closestCountryCode = GetClosestInstitution(identityProviders, myCoord);
+				// gets country from country code
 				string closestCountry = countries.Where(c => c.CountryCode == closestCountryCode).Select(c => c.CountryName).FirstOrDefault();
+				// sets country as selected item in combobox
 				cboCountry.SelectedIndex = cboCountry.FindStringExact(closestCountry);
 			}
-			catch (Exception ex)
-			{
-				MessageBox.Show("Couldn't get country \nException: " + ex.Message);
-			}
+
 		}
 
 		private void cboCountry_SelectedIndexChanged(object sender, EventArgs e)
@@ -141,8 +147,11 @@ namespace EduroamApp
 			// clear selected profile
 			profileId = null;
 
+			// gets country code of selected country
+			string selectedCountryCode = countries.Where(c => c.CountryName == cboCountry.Text).Select(c => c.CountryCode).FirstOrDefault();
+
 			// adds identity providers from selected country to combobox
-			cboInstitution.Items.AddRange(identityProviders.Where(provider => provider.Country == cboCountry.Text)
+			cboInstitution.Items.AddRange(identityProviders.Where(provider => provider.Country == selectedCountryCode)
 											.OrderBy(provider => provider.Title).Select(provider => provider.Title).ToArray());
 		}
 
@@ -223,12 +232,8 @@ namespace EduroamApp
 		/// </summary>
 		/// <param name="instList">List of all institutions.</param>
 		/// <returns>Country of closest institution.</returns>
-		public string GetClosestInstitution(List<IdentityProvider> instList)
+		public string GetClosestInstitution(List<IdentityProvider> instList, GeoCoordinate userCoord)
 		{
-			// gets GeoCoordinateWatcher from parent form
-			GeoCoordinateWatcher watcher = frmParent.GetWatcher();
-			// user's coordinates
-			GeoCoordinate myCoord = watcher.Position.Location;
 			// institution's coordinates
 			GeoCoordinate instCoord = new GeoCoordinate();
 			// closest institution
@@ -239,13 +244,13 @@ namespace EduroamApp
 			// loops through all institutions' coordinates and compares them with current shortest distance
 			foreach (IdentityProvider inst in instList)
 			{
-				if (inst.MyGeo != null) // excludes if geo property not set
+				if (inst.Geo != null) // excludes if geo property not set
 				{
 					// gets lat and long
-					instCoord.Latitude = inst.MyGeo.First().Lat;
-					instCoord.Longitude = inst.MyGeo.First().Lon;
+					instCoord.Latitude = inst.Geo.First().Lat;
+					instCoord.Longitude = inst.Geo.First().Lon;
 					// gets current distance
-					double currentDistance = myCoord.GetDistanceTo(instCoord);
+					double currentDistance = userCoord.GetDistanceTo(instCoord);
 					// compares with shortest distance
 					if (currentDistance < shortestDistance)
 					{
