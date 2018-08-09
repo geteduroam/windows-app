@@ -36,8 +36,8 @@ namespace EduroamApp
 			this.cboCountry = new System.Windows.Forms.ComboBox();
 			this.tlpLoading = new System.Windows.Forms.TableLayoutPanel();
 			this.label1 = new System.Windows.Forms.Label();
-			this.lblError = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.lblError = new System.Windows.Forms.Label();
 			this.tlpLoading.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
@@ -45,22 +45,22 @@ namespace EduroamApp
 			// lblSelectProfile
 			//
 			this.lblSelectProfile.AutoSize = true;
-			this.lblSelectProfile.Enabled = false;
 			this.lblSelectProfile.Location = new System.Drawing.Point(3, 107);
 			this.lblSelectProfile.Name = "lblSelectProfile";
 			this.lblSelectProfile.Size = new System.Drawing.Size(71, 13);
 			this.lblSelectProfile.TabIndex = 36;
 			this.lblSelectProfile.Text = "Select profile:";
+			this.lblSelectProfile.Visible = false;
 			//
 			// cboProfiles
 			//
 			this.cboProfiles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboProfiles.Enabled = false;
 			this.cboProfiles.FormattingEnabled = true;
 			this.cboProfiles.Location = new System.Drawing.Point(6, 123);
 			this.cboProfiles.Name = "cboProfiles";
 			this.cboProfiles.Size = new System.Drawing.Size(202, 21);
 			this.cboProfiles.TabIndex = 35;
+			this.cboProfiles.Visible = false;
 			this.cboProfiles.SelectedIndexChanged += new System.EventHandler(this.cboProfiles_SelectedIndexChanged);
 			//
 			// lblInstitution
@@ -125,16 +125,6 @@ namespace EduroamApp
 			this.label1.TabIndex = 38;
 			this.label1.Text = "Loading";
 			//
-			// lblError
-			//
-			this.lblError.Location = new System.Drawing.Point(3, 3);
-			this.lblError.Name = "lblError";
-			this.lblError.Size = new System.Drawing.Size(329, 58);
-			this.lblError.TabIndex = 39;
-			this.lblError.Text = "Couldn\'t connect to the server.\r\n\r\nMake sure that you are connected to the intern" +
-	"et, then try again.";
-			this.lblError.Visible = false;
-			//
 			// pictureBox1
 			//
 			this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
@@ -145,6 +135,16 @@ namespace EduroamApp
 			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
 			this.pictureBox1.TabIndex = 39;
 			this.pictureBox1.TabStop = false;
+			//
+			// lblError
+			//
+			this.lblError.Location = new System.Drawing.Point(3, 3);
+			this.lblError.Name = "lblError";
+			this.lblError.Size = new System.Drawing.Size(329, 58);
+			this.lblError.TabIndex = 39;
+			this.lblError.Text = "Couldn\'t connect to the server.\r\n\r\nMake sure that you are connected to the intern" +
+	"et, then try again.";
+			this.lblError.Visible = false;
 			//
 			// frmDownload
 			//

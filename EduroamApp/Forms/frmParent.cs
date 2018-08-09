@@ -21,10 +21,12 @@ namespace EduroamApp
 {
 	public partial class frmParent : Form
 	{
-		int currentFormId; // Id of currently selected form
-		readonly List<int> formHistory = new List<int>(); // keeps history of previously diplayed forms, in order to backtrack correctly
-		bool reload = true; // sepcifies wether a form is to be re-instantiated when loaded
-		readonly GeoCoordinateWatcher watcher; // gets coordinates of computer
+		int currentFormId;                                  // Id of currently selected form
+		readonly List<int> formHistory = new List<int>();   // keeps history of previously diplayed forms, in order to backtrack correctly
+		bool reload = true;                                 // sepcifies wether a form is to be re-instantiated when loaded
+		readonly GeoCoordinateWatcher watcher;              // gets coordinates of computer
+		uint eapType = 0;                                   // EAP type of selected network config, determines which forms to load
+
 
 		// makes forms globally  accessible in parent form
 		frmSelfExtract frmSelfExtract;
@@ -76,8 +78,7 @@ namespace EduroamApp
 			reload = true;
 			// adds current form to history for easy backtracking
 			formHistory.Add(currentFormId);
-			// EAP type of selected network config, determines which forms to load
-			uint eapType = 0;
+
 
 			switch (currentFormId)
 			{
@@ -98,13 +99,18 @@ namespace EduroamApp
 				case 4:
 					eapType = frmLocal.ConnectWithFile();
 					if (eapType == 13) LoadFrm6();
-					else if (eapType != 0) LoadFrm5();
+					else if (eapType == 25 || eapType == 21) LoadFrm5();
+					else if (eapType == 52) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
+															"Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					break;
 				case 5:
-					if (frmLogin.ConnectWithLogin()) LoadFrm6();
+					if (eapType != 21) {
+						frmLogin.ConnectWithLogin(eapType);
+						LoadFrm6();
+					}
+					else MessageBox.Show("Support for TTLS configuration not ready yet.", "TTLS not ready", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					break;
 				case 6:
-					//LoadFrm6();
 					break;
 			}
 
@@ -235,7 +241,7 @@ namespace EduroamApp
 			/*if (reload)*/ frmDownload = new frmDownload(this);
 			currentFormId = 3;
 			lblTitle.Text = "Select your institution";
-			btnNext.Text = "Connect";
+			btnNext.Text = "Next >";
 			btnNext.Enabled = false;
 			btnBack.Enabled = true;
 			LoadNewForm(frmDownload);
@@ -249,7 +255,7 @@ namespace EduroamApp
 			if (reload) frmLocal = new frmLocal(this);
 			currentFormId = 4;
 			lblTitle.Text = "Select EAP-config file";
-			btnNext.Text = "Connect";
+			btnNext.Text = "Next >";
 			btnBack.Enabled = true;
 			LoadNewForm(frmLocal);
 		}
@@ -259,10 +265,12 @@ namespace EduroamApp
 		/// </summary>
 		public void LoadFrm5()
 		{
-			if (reload) frmLogin = new frmLogin(this);
+			/*if (reload)*/ frmLogin = new frmLogin(this);
 			currentFormId = 5;
 			lblTitle.Text = "Log in";
 			btnNext.Text = "Connect";
+			btnNext.Enabled = true;
+			btnBack.Enabled = true;
 			LoadNewForm(frmLogin);
 		}
 
@@ -279,7 +287,6 @@ namespace EduroamApp
 			btnBack.Enabled = false;
 			LoadNewForm(frmConnect);
 		}
-
 
 	}
 }

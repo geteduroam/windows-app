@@ -17,6 +17,7 @@ using System.Security;
 using System.Xml.Linq;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 
 namespace EduroamApp
 {
@@ -93,7 +94,8 @@ namespace EduroamApp
 				}
 
 				// gets CA thumbprint
-				thumbprints.Add(caCert.Thumbprint);
+				string formattedThumbprint = Regex.Replace(caCert.Thumbprint, ".{2}", "$0 ");
+				thumbprints.Add(formattedThumbprint);
 			}
 
 			// closes trusted root store
@@ -146,10 +148,10 @@ namespace EduroamApp
 			return eapType;
 		}
 
-		public static void SetupLogin(string username, string password)
+		public static void SetupLogin(string username, string password, uint eapType)
 		{
 			// generates user data xml file
-			string userDataXml = UserDataXml.CreateUserDataXml(username, password);
+			string userDataXml = UserDataXml.CreateUserDataXml(username, password, eapType);
 
 			// sets user data
 			SetUserData(interfaceId, ssid, userDataXml);

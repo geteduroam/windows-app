@@ -29,6 +29,7 @@ namespace EduroamApp
 		private void InitializeComponent()
 		{
 			this.pnlNavigation = new System.Windows.Forms.Panel();
+			this.pnlNavTop = new System.Windows.Forms.Panel();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.btnBack = new System.Windows.Forms.Button();
@@ -42,6 +43,8 @@ namespace EduroamApp
 			this.pnlLeftMargin = new System.Windows.Forms.Panel();
 			this.pnlRightMargin = new System.Windows.Forms.Panel();
 			this.pnlContent = new System.Windows.Forms.Panel();
+			this.pnlNavBot = new System.Windows.Forms.Panel();
+			this.panel2 = new System.Windows.Forms.Panel();
 			this.pnlNavigation.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.pnlLeft.SuspendLayout();
@@ -53,11 +56,22 @@ namespace EduroamApp
 			// pnlNavigation
 			//
 			this.pnlNavigation.Controls.Add(this.tableLayoutPanel1);
+			this.pnlNavigation.Controls.Add(this.panel2);
+			this.pnlNavigation.Controls.Add(this.pnlNavBot);
+			this.pnlNavigation.Controls.Add(this.pnlNavTop);
 			this.pnlNavigation.Dock = System.Windows.Forms.DockStyle.Bottom;
 			this.pnlNavigation.Location = new System.Drawing.Point(0, 366);
 			this.pnlNavigation.Name = "pnlNavigation";
-			this.pnlNavigation.Size = new System.Drawing.Size(608, 64);
+			this.pnlNavigation.Size = new System.Drawing.Size(608, 42);
 			this.pnlNavigation.TabIndex = 0;
+			//
+			// pnlNavTop
+			//
+			this.pnlNavTop.Dock = System.Windows.Forms.DockStyle.Top;
+			this.pnlNavTop.Location = new System.Drawing.Point(0, 0);
+			this.pnlNavTop.Name = "pnlNavTop";
+			this.pnlNavTop.Size = new System.Drawing.Size(608, 6);
+			this.pnlNavTop.TabIndex = 1;
 			//
 			// tableLayoutPanel1
 			//
@@ -68,19 +82,20 @@ namespace EduroamApp
 			this.tableLayoutPanel1.Controls.Add(this.btnCancel, 2, 0);
 			this.tableLayoutPanel1.Controls.Add(this.btnBack, 0, 0);
 			this.tableLayoutPanel1.Controls.Add(this.btnNext, 1, 0);
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(348, 12);
+			this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Right;
+			this.tableLayoutPanel1.Location = new System.Drawing.Point(370, 6);
 			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
 			this.tableLayoutPanel1.RowCount = 1;
 			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(248, 40);
+			this.tableLayoutPanel1.Size = new System.Drawing.Size(232, 30);
 			this.tableLayoutPanel1.TabIndex = 0;
 			//
 			// btnCancel
 			//
 			this.btnCancel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.btnCancel.Location = new System.Drawing.Point(167, 3);
+			this.btnCancel.Location = new System.Drawing.Point(157, 3);
 			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.Size = new System.Drawing.Size(78, 34);
+			this.btnCancel.Size = new System.Drawing.Size(72, 24);
 			this.btnCancel.TabIndex = 1;
 			this.btnCancel.Text = "Cancel";
 			this.btnCancel.UseVisualStyleBackColor = true;
@@ -91,7 +106,7 @@ namespace EduroamApp
 			this.btnBack.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.btnBack.Location = new System.Drawing.Point(3, 3);
 			this.btnBack.Name = "btnBack";
-			this.btnBack.Size = new System.Drawing.Size(76, 34);
+			this.btnBack.Size = new System.Drawing.Size(71, 24);
 			this.btnBack.TabIndex = 0;
 			this.btnBack.Text = "< Back";
 			this.btnBack.UseVisualStyleBackColor = true;
@@ -101,9 +116,9 @@ namespace EduroamApp
 			// btnNext
 			//
 			this.btnNext.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.btnNext.Location = new System.Drawing.Point(85, 3);
+			this.btnNext.Location = new System.Drawing.Point(80, 3);
 			this.btnNext.Name = "btnNext";
-			this.btnNext.Size = new System.Drawing.Size(76, 34);
+			this.btnNext.Size = new System.Drawing.Size(71, 24);
 			this.btnNext.TabIndex = 0;
 			this.btnNext.Text = "Install";
 			this.btnNext.UseVisualStyleBackColor = true;
@@ -192,6 +207,7 @@ namespace EduroamApp
 			//
 			// pnlContent
 			//
+			this.pnlContent.AutoSize = true;
 			this.pnlContent.BackColor = System.Drawing.Color.White;
 			this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.pnlContent.Location = new System.Drawing.Point(195, 120);
@@ -199,18 +215,38 @@ namespace EduroamApp
 			this.pnlContent.Size = new System.Drawing.Size(378, 246);
 			this.pnlContent.TabIndex = 7;
 			//
+			// pnlNavBot
+			//
+			this.pnlNavBot.Dock = System.Windows.Forms.DockStyle.Bottom;
+			this.pnlNavBot.Location = new System.Drawing.Point(0, 36);
+			this.pnlNavBot.Name = "pnlNavBot";
+			this.pnlNavBot.Size = new System.Drawing.Size(608, 6);
+			this.pnlNavBot.TabIndex = 2;
+			//
+			// panel2
+			//
+			this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
+			this.panel2.Location = new System.Drawing.Point(602, 6);
+			this.panel2.Name = "panel2";
+			this.panel2.Size = new System.Drawing.Size(6, 30);
+			this.panel2.TabIndex = 4;
+			//
 			// frmParent
 			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(608, 430);
+			this.ClientSize = new System.Drawing.Size(608, 408);
 			this.Controls.Add(this.pnlContent);
 			this.Controls.Add(this.pnlRightMargin);
 			this.Controls.Add(this.pnlLeftMargin);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.pnlLeft);
 			this.Controls.Add(this.pnlNavigation);
+			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "frmParent";
+			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.Text = "Eduroam installer";
 			this.Load += new System.EventHandler(this.frmParent_Load);
 			this.pnlNavigation.ResumeLayout(false);
@@ -221,6 +257,7 @@ namespace EduroamApp
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
+			this.PerformLayout();
 
 		}
 
@@ -240,5 +277,8 @@ namespace EduroamApp
 		private System.Windows.Forms.Panel pnlRightMargin;
 		private System.Windows.Forms.Panel pnlContent;
 		private System.Windows.Forms.Label lblInst;
+		private System.Windows.Forms.Panel pnlNavTop;
+		private System.Windows.Forms.Panel pnlNavBot;
+		private System.Windows.Forms.Panel panel2;
 	}
 }

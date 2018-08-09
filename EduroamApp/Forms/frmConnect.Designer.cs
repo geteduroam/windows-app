@@ -76,10 +76,9 @@ namespace EduroamApp
 			this.lblConnectFailed.AutoSize = true;
 			this.lblConnectFailed.Location = new System.Drawing.Point(3, 46);
 			this.lblConnectFailed.Name = "lblConnectFailed";
-			this.lblConnectFailed.Size = new System.Drawing.Size(266, 52);
+			this.lblConnectFailed.Size = new System.Drawing.Size(325, 13);
 			this.lblConnectFailed.TabIndex = 10;
-			this.lblConnectFailed.Text = "Press Back if you want to choose a different config file.\r\n\r\nAlternatively, you c" +
-	"an try to log in with your username \r\nand password by pressing Next.";
+			this.lblConnectFailed.Text = "Press Back if you want to choose a different institution or config file.";
 			this.lblConnectFailed.Visible = false;
 			//
 			// frmConnect
