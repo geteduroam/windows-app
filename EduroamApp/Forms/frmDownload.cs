@@ -55,10 +55,8 @@ namespace EduroamApp
             {
                 lblCountry.Visible = true;
                 lblInstitution.Visible = true;
-                lblSelectProfile.Visible = true;
                 cboCountry.Visible = true;
                 cboInstitution.Visible = true;
-                cboProfiles.Visible = true;
                 tlpLoading.Visible = false;
 
                 PopulateCountries();
@@ -186,9 +184,9 @@ namespace EduroamApp
             if (idProviderProfiles.Data.Count > 1)
             {
                 // enable combobox
-                cboProfiles.Enabled = true;
+                cboProfiles.Visible = true;
                 // enable label
-                lblSelectProfile.Enabled = true;
+                lblSelectProfile.Visible = true;
                 // add profiles to combobox
                 cboProfiles.Items.AddRange(idProviderProfiles.Data.Select(profile => profile.Display).ToArray());
             }
@@ -197,9 +195,9 @@ namespace EduroamApp
                 // gets the only profile id
                 profileId = idProviderProfiles.Data.Single().Id;
                 // disable combobox
-                cboProfiles.Enabled = false;
+                cboProfiles.Visible = false;
                 // disable label
-                lblSelectProfile.Enabled = false;
+                lblSelectProfile.Visible = false;
             }
         }
 

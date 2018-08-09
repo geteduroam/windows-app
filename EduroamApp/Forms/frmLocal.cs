@@ -114,12 +114,22 @@ namespace EduroamApp
                     eapType  = ConnectToEduroam.Setup(eapString);
                     instId = ConnectToEduroam.GetInstId(eapString);
                 }
-                catch (Exception ex)
+                catch (ArgumentException argEx)
                 {
-                    MessageBox.Show(
-                        "The selected file is corrupted. Please select another file, or try another setup method.\n" +
-                        "Exception: " + ex.Message,
-                        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (argEx.Message == "interfaceId")
+                    {
+                        MessageBox.Show("Could not establish a connection through your computer's wireless network interface. \n" +
+                                        "Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.",
+                            "Network interface error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+
+                    //catch (Exception ex)
+                    //{
+                    //    MessageBox.Show(
+                    //        "The selected file is corrupted. Please select another file, or try another setup method.\n" +
+                    //        "Exception: " + ex.Message,
+                    //        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //}
                 }
             }
 

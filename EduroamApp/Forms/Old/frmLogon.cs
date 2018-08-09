@@ -44,7 +44,7 @@ namespace EduroamApp
             Guid interfaceId = network.Interface.Id;
 
             // generates user data xml file
-            string userDataXml = UserDataXml.CreateUserDataXml(username, password);
+            string userDataXml = UserDataXml.CreateUserDataXml(username, password, 0);
 
             // sets user data
             SetUserData(interfaceId, ssid, userDataXml);
