@@ -16,6 +16,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Security;
 using System.Xml.Linq;
 using System.Device.Location;
+using System.Windows.Controls;
 
 namespace EduroamApp
 {
@@ -59,6 +60,7 @@ namespace EduroamApp
         
         private void frmParent_Load(object sender, EventArgs e)
         {
+            
             // checks if file came with self extract
             if (ExistSelfExtract())
             {
@@ -287,6 +289,16 @@ namespace EduroamApp
             btnBack.Enabled = false;
             LoadNewForm(frmConnect);
         }
-        
+
+        private void pnlNavigation_Paint(object sender, PaintEventArgs e)
+        {
+            Pen grayPen = new Pen(Color.Gray);
+
+            Point point1 = new Point(0, 0);
+            Point point2 = new Point(366, 0);
+
+            // Draw line to screen.
+            e.Graphics.DrawLine(grayPen, point1, point2);
+        }
     }
 }

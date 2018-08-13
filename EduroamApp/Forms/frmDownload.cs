@@ -18,6 +18,8 @@ using System.Xml.Linq;
 using Newtonsoft.Json;
 using System.Device.Location;
 using System.Globalization;
+using eduOAuth;
+// ReSharper disable All
 
 namespace EduroamApp
 {
@@ -344,6 +346,60 @@ namespace EduroamApp
             frmParent.LblInstText = instId;
             return eapType;
         }
+
         
+
+        private void btnTest_Click(object sender, EventArgs e)
+        {
+            string url = @"https://demo.eduroam.no/cat.php#letswifi";
+            string letsWifiHtml;
+            // downloads html file from url as string
+            using (WebClient client = new WebClient())
+            {
+                letsWifiHtml = client.DownloadString(url);
+            }
+
+            MessageBox.Show(GetBase64AndDecode(letsWifiHtml));
+            //TestWeb(null);
+        }
+
+        /// <summary>
+        /// Gets json and decodes it from base64.
+        /// </summary>
+        /// <param name="html"></param>
+        /// <returns></returns>
+        public string GetBase64AndDecode(string html)
+        {
+            const string beginString = "-----BEGIN LETSWIFI BLOCK-----";
+            const string endString = "-----END LETSWIFI BLOCK-----";
+            int indexOfBegin = html.IndexOf(beginString) + beginString.Length;
+            int indexOfEnd = html.LastIndexOf(endString);
+
+            string substring = html.Substring(indexOfBegin, indexOfEnd - indexOfBegin);
+
+            byte[] data = Convert.FromBase64String(substring);
+            string decodedString = Encoding.UTF8.GetString(data).Replace(@"\", "");
+
+            return decodedString;
+        }
+
+        public static string SendResponse(HttpListenerRequest request)
+        {
+            return $"<HTML><BODY>My web page.<br>{DateTime.Now}</BODY></HTML>";
+        }
+
+        public WebServer ws = new WebServer(SendResponse, "http://localhost:8080/test/");
+
+        private void TestWeb(string[] args)
+        {
+            ws.Run();
+            MessageBox.Show("A simple webserver. Press button to quit.");
+        }
+
+        private void btnCloseWS_Click(object sender, EventArgs e)
+        {
+            ws.Stop();
+            MessageBox.Show("Webserver closed.");
+        }
     }
 }

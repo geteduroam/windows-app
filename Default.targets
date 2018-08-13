@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    eduOAuth - OAuth 2.0 Library for eduVPN (and beyond)
+
+    Copyright: 2017, The Commons Conservancy eduVPN Programme
+    SPDX-License-Identifier: GPL-3.0+
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup Condition="'$(ManifestCertificateThumbprint)' != '' AND '$(Configuration)'=='Release'">
+    <BuildDependsOn>$(BuildDependsOn);Sign</BuildDependsOn>
+  </PropertyGroup>
+
+  <Target Name="Sign" Inputs="$(OutDir)$(TargetName)$(TargetExt)" Outputs="$(OutDir)$(TargetName).sign">
+    <Exec Command="signtool.exe sign /sha1 &quot;%ManifestCertificateThumbprint%&quot; /fd sha256 /as /tr &quot;%ManifestTimestampRFC3161Url%&quot; /q &quot;$(TargetPath)&quot;" />
+    <Touch Files="$(OutDir)$(TargetName).sign" AlwaysCreate="true" />
+  </Target>
+
+  <!--
+      Fixes "ALINK : warning AL1073: Referenced assembly 'mscorlib.dll' targets a different processor" warning.
+      https://stackoverflow.com/a/41945190/2071884
+  -->
+  <PropertyGroup Condition="'$(Platform)' == 'x64'">
+    <TargetFrameworkSDKToolsDirectory>$(TargetFrameworkSDKToolsDirectory)$(PlatformTarget)\</TargetFrameworkSDKToolsDirectory>
+  </PropertyGroup>
+
+</Project>

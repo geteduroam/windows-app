@@ -29,11 +29,13 @@
         private void InitializeComponent()
         {
             this.pnlNavigation = new System.Windows.Forms.Panel();
-            this.pnlNavTop = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnBack = new System.Windows.Forms.Button();
             this.btnNext = new System.Windows.Forms.Button();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.pnlNavBot = new System.Windows.Forms.Panel();
+            this.pnlNavTop = new System.Windows.Forms.Panel();
             this.pnlLeft = new System.Windows.Forms.Panel();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -43,8 +45,6 @@
             this.pnlLeftMargin = new System.Windows.Forms.Panel();
             this.pnlRightMargin = new System.Windows.Forms.Panel();
             this.pnlContent = new System.Windows.Forms.Panel();
-            this.pnlNavBot = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
             this.pnlNavigation.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.pnlLeft.SuspendLayout();
@@ -64,14 +64,7 @@
             this.pnlNavigation.Name = "pnlNavigation";
             this.pnlNavigation.Size = new System.Drawing.Size(608, 42);
             this.pnlNavigation.TabIndex = 0;
-            // 
-            // pnlNavTop
-            // 
-            this.pnlNavTop.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlNavTop.Location = new System.Drawing.Point(0, 0);
-            this.pnlNavTop.Name = "pnlNavTop";
-            this.pnlNavTop.Size = new System.Drawing.Size(608, 6);
-            this.pnlNavTop.TabIndex = 1;
+            this.pnlNavigation.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlNavigation_Paint);
             // 
             // tableLayoutPanel1
             // 
@@ -123,6 +116,30 @@
             this.btnNext.Text = "Install";
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
+            // 
+            // panel2
+            // 
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panel2.Location = new System.Drawing.Point(602, 6);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(6, 30);
+            this.panel2.TabIndex = 4;
+            // 
+            // pnlNavBot
+            // 
+            this.pnlNavBot.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlNavBot.Location = new System.Drawing.Point(0, 36);
+            this.pnlNavBot.Name = "pnlNavBot";
+            this.pnlNavBot.Size = new System.Drawing.Size(608, 6);
+            this.pnlNavBot.TabIndex = 2;
+            // 
+            // pnlNavTop
+            // 
+            this.pnlNavTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlNavTop.Location = new System.Drawing.Point(0, 0);
+            this.pnlNavTop.Name = "pnlNavTop";
+            this.pnlNavTop.Size = new System.Drawing.Size(608, 6);
+            this.pnlNavTop.TabIndex = 1;
             // 
             // pnlLeft
             // 
@@ -214,22 +231,6 @@
             this.pnlContent.Name = "pnlContent";
             this.pnlContent.Size = new System.Drawing.Size(378, 246);
             this.pnlContent.TabIndex = 7;
-            // 
-            // pnlNavBot
-            // 
-            this.pnlNavBot.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.pnlNavBot.Location = new System.Drawing.Point(0, 36);
-            this.pnlNavBot.Name = "pnlNavBot";
-            this.pnlNavBot.Size = new System.Drawing.Size(608, 6);
-            this.pnlNavBot.TabIndex = 2;
-            // 
-            // panel2
-            // 
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel2.Location = new System.Drawing.Point(602, 6);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(6, 30);
-            this.panel2.TabIndex = 4;
             // 
             // frmParent
             // 
