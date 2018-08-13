@@ -38,6 +38,8 @@ namespace EduroamApp
 			this.label1 = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.lblError = new System.Windows.Forms.Label();
+			this.btnTest = new System.Windows.Forms.Button();
+			this.btnCloseWS = new System.Windows.Forms.Button();
 			this.tlpLoading.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
@@ -146,6 +148,26 @@ namespace EduroamApp
 	"et, then try again.";
 			this.lblError.Visible = false;
 			//
+			// btnTest
+			//
+			this.btnTest.Location = new System.Drawing.Point(291, 211);
+			this.btnTest.Name = "btnTest";
+			this.btnTest.Size = new System.Drawing.Size(75, 23);
+			this.btnTest.TabIndex = 40;
+			this.btnTest.Text = "test";
+			this.btnTest.UseVisualStyleBackColor = true;
+			this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
+			//
+			// btnCloseWS
+			//
+			this.btnCloseWS.Location = new System.Drawing.Point(213, 200);
+			this.btnCloseWS.Name = "btnCloseWS";
+			this.btnCloseWS.Size = new System.Drawing.Size(72, 34);
+			this.btnCloseWS.TabIndex = 41;
+			this.btnCloseWS.Text = "close webserver";
+			this.btnCloseWS.UseVisualStyleBackColor = true;
+			this.btnCloseWS.Click += new System.EventHandler(this.btnCloseWS_Click);
+			//
 			// frmDownload
 			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -153,6 +175,8 @@ namespace EduroamApp
 			this.AutoScroll = true;
 			this.BackColor = System.Drawing.Color.White;
 			this.ClientSize = new System.Drawing.Size(378, 246);
+			this.Controls.Add(this.btnCloseWS);
+			this.Controls.Add(this.btnTest);
 			this.Controls.Add(this.tlpLoading);
 			this.Controls.Add(this.lblSelectProfile);
 			this.Controls.Add(this.cboProfiles);
@@ -184,5 +208,7 @@ namespace EduroamApp
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Label lblError;
+		private System.Windows.Forms.Button btnTest;
+		private System.Windows.Forms.Button btnCloseWS;
 	}
 }
