@@ -95,15 +95,15 @@ namespace EduroamApp
 					eapType = frmDownload.ConnectWithDownload();
 					if (eapType == 13) LoadFrm6();
 					else if (eapType == 25 || eapType == 21) LoadFrm5();
-					else if (eapType == 52) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
-															"Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					else MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
+										 "Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					break;
 				case 4:
 					eapType = frmLocal.ConnectWithFile();
 					if (eapType == 13) LoadFrm6();
 					else if (eapType == 25 || eapType == 21) LoadFrm5();
-					else if (eapType == 52) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
-															"Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					else MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
+										 "Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					break;
 				case 5:
 					if (eapType != 21) {
@@ -290,12 +290,26 @@ namespace EduroamApp
 			LoadNewForm(frmConnect);
 		}
 
-		private void pnlNavigation_Paint(object sender, PaintEventArgs e)
+		private void pnlNavTop_Paint(object sender, PaintEventArgs e)
 		{
-			Pen grayPen = new Pen(Color.Gray);
+			Pen grayPen = new Pen(Color.LightGray);
+			int width = pnlNavTop.Width;
 
 			Point point1 = new Point(0, 0);
-			Point point2 = new Point(366, 0);
+			Point point2 = new Point(width, 0);
+
+			// Draw line to screen.
+			e.Graphics.DrawLine(grayPen, point1, point2);
+		}
+
+		private void pnlLogoRight_Paint(object sender, PaintEventArgs e)
+		{
+			Pen grayPen = new Pen(Color.LightGray);
+			int width = pnlLogoRight.Width;
+			int height = pnlLogoRight.Height;
+
+			Point point1 = new Point(width-1, 0);
+			Point point2 = new Point(width-1, height);
 
 			// Draw line to screen.
 			e.Graphics.DrawLine(grayPen, point1, point2);
