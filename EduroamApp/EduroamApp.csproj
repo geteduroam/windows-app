@@ -111,6 +111,7 @@
     <Compile Include="Classes\ConnectToEduroam.cs" />
     <Compile Include="Classes\Country.cs" />
     <Compile Include="Classes\EduroamNetwork.cs" />
+    <Compile Include="Classes\OAuth.cs" />
     <Compile Include="Classes\WebServer.cs" />
     <Compile Include="Forms\frmSelfExtract.cs">
       <SubType>Form</SubType>

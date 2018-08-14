@@ -8,6 +8,7 @@ namespace EduroamApp.Classes
 {
 	class AuthorizationUri
 	{
+		/*
 		// Properties
 		public string MainUri { get; set; }
 		public string ResponseType { get; set; }
@@ -29,19 +30,20 @@ namespace EduroamApp.Classes
 			RedirectUri = redirectUri;
 			ClientId = clientId;
 			State = state;
-		}
+		} */
 
-		public string CreateUri()
+		/*
+		public static string CreateUri(string mainUri, string responseType, string codeChallengeMethod, string scope, string codeChallenge, string redirectUri, string clientId, string state)
 		{
 			return
-				MainUri + "?"
-						+ "response_type=" + ResponseType
-						+ "&code_challenge_method=" + CodeChallengeMethod
-						+ "&scope=" + Scope
-						+ "&code_challenge=" + CodeChallenge
-						+ "&redirect_uri=" + RedirectUri
-						+ "&client_id=" + ClientId
-						+ "&state=" + State;
-		}
+				mainUri + "?"
+						+ "response_type=" + responseType
+						+ "&code_challenge_method=" + codeChallengeMethod
+						+ "&scope=" + scope
+						+ "&code_challenge=" + codeChallenge
+						+ "&redirect_uri=" + redirectUri
+						+ "&client_id=" + clientId
+						+ "&state=" + state;
+		} */
 	}
 }
