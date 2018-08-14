@@ -29,7 +29,7 @@ namespace EduroamApp
             public string Id { get; set; }
             public string Display { get; set; }
             public int Status { get; set; }
-            public int Redirect { get; set; }
+            public string Redirect { get; set; }
             public int EapCustomtext { get; set; }
             public int DeviceCustomtext { get; set; }
             public object Message { get; set; }

@@ -268,6 +268,39 @@ namespace EduroamApp
             return closestInst.Country;
         }
 
+        public bool GetProfileAttributes()
+        {
+            // adds profile id to url
+            string profileAttributeUrl = $"https://cat.eduroam.org/user/API.php?action=profileAttributes&id={profileId}&lang=en";
+
+            // json file as string
+            string profileAttributeJson;
+            try
+            {
+                profileAttributeJson = UrlToJson(profileAttributeUrl);
+            }
+            catch (WebException ex)
+            {
+                MessageBox.Show("Couldn't fetch profile attributes.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            // gets profile attributes from json
+            var profileAttributes = JsonConvert.DeserializeObject<IdProviderProfileAttributes>(profileAttributeJson);
+
+            bool oAuthFlag = false;
+
+            foreach (var attribute in profileAttributes.Data.Devices)
+            {
+                if (attribute.Redirect.Contains("#letswifi"))
+                {
+                    oAuthFlag = true;
+                }
+            }
+
+            return oAuthFlag;
+        }
+
         public string GetEapConfigString()
         {
             // eap config file
@@ -326,6 +359,12 @@ namespace EduroamApp
                 return 0; // exits function if no institution/profile selected
             }
 
+            if (GetProfileAttributes())
+            {
+                OAuth.GetAuthorizationUri();
+                return 0;
+            }
+
             string eapString = GetEapConfigString();
             uint eapType = 0;
             string instId = null;
@@ -356,81 +395,9 @@ namespace EduroamApp
 
         private void btnTest_Click(object sender, EventArgs e)
         {
-
-            string url = @"https://demo.eduroam.no/cat.php#letswifi";
-            string letsWifiHtml;
-            // downloads html file from url as string
-            using (WebClient client = new WebClient())
-            {
-                letsWifiHtml = client.DownloadString(url);
-            }
-            // gets the base64 encoded json containing the authorization endpoint from html
-            string jsonString = GetBase64AndDecode(letsWifiHtml);
-            // if no json found in html, stop execution
-            if (string.IsNullOrEmpty(jsonString))
-            { 
-                MessageBox.Show("HTML doesn't contain authorization endpoint json.");
-                return;
-            }
-
-            // gets a decoded json file with authorization endpoint
-            var authEndpointJson = JObject.Parse(jsonString);
-            string authEndpoint = authEndpointJson["authorization_endpoint"].ToString();
-
-            // sets authorization uri parameters
-            string responseType = "code";
-            string codeChallengeMethod = "S256";
-            string scope = "eap-metadata";
-            string codeChallenge = "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM";
-            string redirectUri = "http://localhost:8080/";
-            string clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a";
-            string state = Convert.ToBase64String(Guid.NewGuid().ToByteArray()).Substring(0, 20); // random alphanumeric string
-
-            AuthorizationUri authorizationUri = new AuthorizationUri(authEndpoint, responseType, codeChallengeMethod, scope, codeChallenge, redirectUri, clientId, state);
-            MessageBox.Show(authorizationUri.CreateUri());
-
-            
-            // local web server
-            ws = new WebServer(SendResponse, redirectUri);
-            ws.Run();
-            MessageBox.Show("A simple webserver. Press button to quit.");
-            //ws.Stop();
-            //MessageBox.Show("Webserver closed.");
-            
+            OAuth.GetAuthorizationUri();
         }
-
-        public static string SendResponse(HttpListenerRequest request)
-        {
-            return $"<HTML><BODY>My web page.<br>{DateTime.Now}</BODY></HTML>";
-        }
-
         
-        private void btnCloseWS_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-        /// <summary>
-        /// Gets json and decodes it from base64.
-        /// </summary>
-        /// <param name="html"></param>
-        /// <returns></returns>
-        public string GetBase64AndDecode(string html)
-        {
-            const string beginString = "-----BEGIN LETSWIFI BLOCK-----";
-            const string endString = "-----END LETSWIFI BLOCK-----";
-            int indexOfBegin = html.IndexOf(beginString) + beginString.Length;
-            int indexOfEnd = html.LastIndexOf(endString);
-
-            if (indexOfBegin > 0 && indexOfEnd > 0)
-            {
-                string substring = html.Substring(indexOfBegin, indexOfEnd - indexOfBegin);
-                byte[] data = Convert.FromBase64String(substring);
-                string decodedString = Encoding.UTF8.GetString(data).Replace(@"\", "");
-                return decodedString;
-            }
-            else return "";
-        }
 
         
     }
