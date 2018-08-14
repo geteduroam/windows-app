@@ -105,7 +105,9 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\AuthEndpoint.cs" />
     <Compile Include="Classes\AuthenticationMethod.cs" />
+    <Compile Include="Classes\AuthorizationUri.cs" />
     <Compile Include="Classes\ConnectToEduroam.cs" />
     <Compile Include="Classes\Country.cs" />
     <Compile Include="Classes\EduroamNetwork.cs" />

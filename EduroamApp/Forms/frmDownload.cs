@@ -19,6 +19,9 @@ using Newtonsoft.Json;
 using System.Device.Location;
 using System.Globalization;
 using eduOAuth;
+using EduroamApp.Classes;
+using Newtonsoft.Json.Linq;
+
 // ReSharper disable All
 
 namespace EduroamApp
@@ -347,10 +350,13 @@ namespace EduroamApp
             return eapType;
         }
 
-        
+        // -----------------------------------------------------------------------------------------
+
+        public WebServer ws;
 
         private void btnTest_Click(object sender, EventArgs e)
         {
+
             string url = @"https://demo.eduroam.no/cat.php#letswifi";
             string letsWifiHtml;
             // downloads html file from url as string
@@ -358,9 +364,50 @@ namespace EduroamApp
             {
                 letsWifiHtml = client.DownloadString(url);
             }
+            // gets the base64 encoded json containing the authorization endpoint from html
+            string jsonString = GetBase64AndDecode(letsWifiHtml);
+            // if no json found in html, stop execution
+            if (string.IsNullOrEmpty(jsonString))
+            { 
+                MessageBox.Show("HTML doesn't contain authorization endpoint json.");
+                return;
+            }
 
-            MessageBox.Show(GetBase64AndDecode(letsWifiHtml));
-            //TestWeb(null);
+            // gets a decoded json file with authorization endpoint
+            var authEndpointJson = JObject.Parse(jsonString);
+            string authEndpoint = authEndpointJson["authorization_endpoint"].ToString();
+
+            // sets authorization uri parameters
+            string responseType = "code";
+            string codeChallengeMethod = "S256";
+            string scope = "eap-metadata";
+            string codeChallenge = "E9Melhoa2OwvFrEMTJguCHaoeK1t8URWbuGJSstw-cM";
+            string redirectUri = "http://localhost:8080/";
+            string clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a";
+            string state = Convert.ToBase64String(Guid.NewGuid().ToByteArray()).Substring(0, 20); // random alphanumeric string
+
+            AuthorizationUri authorizationUri = new AuthorizationUri(authEndpoint, responseType, codeChallengeMethod, scope, codeChallenge, redirectUri, clientId, state);
+            MessageBox.Show(authorizationUri.CreateUri());
+
+            
+            // local web server
+            ws = new WebServer(SendResponse, redirectUri);
+            ws.Run();
+            MessageBox.Show("A simple webserver. Press button to quit.");
+            //ws.Stop();
+            //MessageBox.Show("Webserver closed.");
+            
+        }
+
+        public static string SendResponse(HttpListenerRequest request)
+        {
+            return $"<HTML><BODY>My web page.<br>{DateTime.Now}</BODY></HTML>";
+        }
+
+        
+        private void btnCloseWS_Click(object sender, EventArgs e)
+        {
+            
         }
 
         /// <summary>
@@ -375,31 +422,16 @@ namespace EduroamApp
             int indexOfBegin = html.IndexOf(beginString) + beginString.Length;
             int indexOfEnd = html.LastIndexOf(endString);
 
-            string substring = html.Substring(indexOfBegin, indexOfEnd - indexOfBegin);
-
-            byte[] data = Convert.FromBase64String(substring);
-            string decodedString = Encoding.UTF8.GetString(data).Replace(@"\", "");
-
-            return decodedString;
+            if (indexOfBegin > 0 && indexOfEnd > 0)
+            {
+                string substring = html.Substring(indexOfBegin, indexOfEnd - indexOfBegin);
+                byte[] data = Convert.FromBase64String(substring);
+                string decodedString = Encoding.UTF8.GetString(data).Replace(@"\", "");
+                return decodedString;
+            }
+            else return "";
         }
 
-        public static string SendResponse(HttpListenerRequest request)
-        {
-            return $"<HTML><BODY>My web page.<br>{DateTime.Now}</BODY></HTML>";
-        }
-
-        public WebServer ws = new WebServer(SendResponse, "http://localhost:8080/test/");
-
-        private void TestWeb(string[] args)
-        {
-            ws.Run();
-            MessageBox.Show("A simple webserver. Press button to quit.");
-        }
-
-        private void btnCloseWS_Click(object sender, EventArgs e)
-        {
-            ws.Stop();
-            MessageBox.Show("Webserver closed.");
-        }
+        
     }
 }

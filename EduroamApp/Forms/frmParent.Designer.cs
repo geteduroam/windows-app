@@ -37,8 +37,13 @@
             this.pnlNavBot = new System.Windows.Forms.Panel();
             this.pnlNavTop = new System.Windows.Forms.Panel();
             this.pnlLeft = new System.Windows.Forms.Panel();
+            this.pnlLogoMid = new System.Windows.Forms.Panel();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pnlLogoBot = new System.Windows.Forms.Panel();
+            this.pnlLogoTop = new System.Windows.Forms.Panel();
+            this.pnlLogoLeft = new System.Windows.Forms.Panel();
+            this.pnlLogoRight = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblInst = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
@@ -48,6 +53,7 @@
             this.pnlNavigation.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.pnlLeft.SuspendLayout();
+            this.pnlLogoMid.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel1.SuspendLayout();
@@ -64,7 +70,6 @@
             this.pnlNavigation.Name = "pnlNavigation";
             this.pnlNavigation.Size = new System.Drawing.Size(608, 42);
             this.pnlNavigation.TabIndex = 0;
-            this.pnlNavigation.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlNavigation_Paint);
             // 
             // tableLayoutPanel1
             // 
@@ -140,24 +145,38 @@
             this.pnlNavTop.Name = "pnlNavTop";
             this.pnlNavTop.Size = new System.Drawing.Size(608, 6);
             this.pnlNavTop.TabIndex = 1;
+            this.pnlNavTop.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlNavTop_Paint);
             // 
             // pnlLeft
             // 
-            this.pnlLeft.Controls.Add(this.pictureBox2);
-            this.pnlLeft.Controls.Add(this.pictureBox1);
+            this.pnlLeft.Controls.Add(this.pnlLogoMid);
+            this.pnlLeft.Controls.Add(this.pnlLogoBot);
+            this.pnlLeft.Controls.Add(this.pnlLogoTop);
+            this.pnlLeft.Controls.Add(this.pnlLogoLeft);
+            this.pnlLeft.Controls.Add(this.pnlLogoRight);
             this.pnlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlLeft.Location = new System.Drawing.Point(0, 0);
             this.pnlLeft.Name = "pnlLeft";
             this.pnlLeft.Size = new System.Drawing.Size(160, 366);
             this.pnlLeft.TabIndex = 2;
             // 
+            // pnlLogoMid
+            // 
+            this.pnlLogoMid.Controls.Add(this.pictureBox2);
+            this.pnlLogoMid.Controls.Add(this.pictureBox1);
+            this.pnlLogoMid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlLogoMid.Location = new System.Drawing.Point(8, 59);
+            this.pnlLogoMid.Name = "pnlLogoMid";
+            this.pnlLogoMid.Size = new System.Drawing.Size(144, 241);
+            this.pnlLogoMid.TabIndex = 7;
+            // 
             // pictureBox2
             // 
             this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Top;
             this.pictureBox2.Image = global::EduroamApp.Properties.Resources._1280px_Uninett_logo_svg;
-            this.pictureBox2.Location = new System.Drawing.Point(0, 103);
+            this.pictureBox2.Location = new System.Drawing.Point(0, 65);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(160, 77);
+            this.pictureBox2.Size = new System.Drawing.Size(144, 76);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 1;
             this.pictureBox2.TabStop = false;
@@ -168,10 +187,43 @@
             this.pictureBox1.Image = global::EduroamApp.Properties.Resources.eduroam_logo_400px;
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(160, 103);
+            this.pictureBox1.Size = new System.Drawing.Size(144, 65);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
+            // 
+            // pnlLogoBot
+            // 
+            this.pnlLogoBot.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.pnlLogoBot.Location = new System.Drawing.Point(8, 300);
+            this.pnlLogoBot.Name = "pnlLogoBot";
+            this.pnlLogoBot.Size = new System.Drawing.Size(144, 66);
+            this.pnlLogoBot.TabIndex = 6;
+            // 
+            // pnlLogoTop
+            // 
+            this.pnlLogoTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlLogoTop.Location = new System.Drawing.Point(8, 0);
+            this.pnlLogoTop.Name = "pnlLogoTop";
+            this.pnlLogoTop.Size = new System.Drawing.Size(144, 59);
+            this.pnlLogoTop.TabIndex = 5;
+            // 
+            // pnlLogoLeft
+            // 
+            this.pnlLogoLeft.Dock = System.Windows.Forms.DockStyle.Left;
+            this.pnlLogoLeft.Location = new System.Drawing.Point(0, 0);
+            this.pnlLogoLeft.Name = "pnlLogoLeft";
+            this.pnlLogoLeft.Size = new System.Drawing.Size(8, 366);
+            this.pnlLogoLeft.TabIndex = 3;
+            // 
+            // pnlLogoRight
+            // 
+            this.pnlLogoRight.Dock = System.Windows.Forms.DockStyle.Right;
+            this.pnlLogoRight.Location = new System.Drawing.Point(152, 0);
+            this.pnlLogoRight.Name = "pnlLogoRight";
+            this.pnlLogoRight.Size = new System.Drawing.Size(8, 366);
+            this.pnlLogoRight.TabIndex = 2;
+            this.pnlLogoRight.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlLogoRight_Paint);
             // 
             // panel1
             // 
@@ -253,6 +305,7 @@
             this.pnlNavigation.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.pnlLeft.ResumeLayout(false);
+            this.pnlLogoMid.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel1.ResumeLayout(false);
@@ -281,5 +334,10 @@
         private System.Windows.Forms.Panel pnlNavTop;
         private System.Windows.Forms.Panel pnlNavBot;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel pnlLogoLeft;
+        private System.Windows.Forms.Panel pnlLogoRight;
+        private System.Windows.Forms.Panel pnlLogoMid;
+        private System.Windows.Forms.Panel pnlLogoBot;
+        private System.Windows.Forms.Panel pnlLogoTop;
     }
 }

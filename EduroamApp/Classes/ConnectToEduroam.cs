@@ -33,6 +33,12 @@ namespace EduroamApp
             // gets the first/default authentication method of an EAP config file
             AuthenticationMethod authMethod = GetAuthMethods(eapString).First();
 
+            // gets EAP type of authentication method
+            uint eapType = authMethod.EapType;
+
+            // if EAP type is not supported, cancel setup
+            if (eapType != 13 || eapType != 25 || eapType != 21) return eapType;
+
             // opens the trusted root CA store
             X509Store rootStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
             rootStore.Open(OpenFlags.ReadWrite);
@@ -93,8 +99,9 @@ namespace EduroamApp
                     }
                 }
 
-                // gets CA thumbprint
+                // gets CA thumbprint and formats it
                 string formattedThumbprint = Regex.Replace(caCert.Thumbprint, ".{2}", "$0 ");
+                // adds thumbprint to list
                 thumbprints.Add(formattedThumbprint);
             }
 
@@ -126,19 +133,7 @@ namespace EduroamApp
 
             // gets server names of authentication method and joins them into one single string
             string serverNames = string.Join(";", authMethod.ServerName);
-
-            /*
-            thumbprints.Clear();
-            thumbprints.Add("5 63 b8 63 d 62 d7 5a bb c8 ab 1e 4b df b5 a8 99 b2 4d 43");
-            thumbprints.Add("77 b9 9b b2 bd 75 22 e1 7e c0 99 ea 71 77 51 6f 27 78 7c ad");
-            */
-
-            // gets EAP type of authentication method
-            uint eapType = authMethod.EapType;
             
-            // if EAP type is 52, cancel setup
-            if (eapType == 52) return eapType;
-
             // generates new profile xml
             string profileXml = ProfileXml.CreateProfileXml(ssid, eapType, serverNames, thumbprints);
 
