@@ -105,12 +105,16 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\AuthEndpoint.cs" />
     <Compile Include="Classes\AuthenticationMethod.cs" />
-    <Compile Include="Classes\AuthorizationUri.cs" />
     <Compile Include="Classes\ConnectToEduroam.cs" />
     <Compile Include="Classes\Country.cs" />
     <Compile Include="Classes\EduroamNetwork.cs" />
+    <Compile Include="Forms\frmWaitForAuthenticate.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmWaitForAuthenticate.Designer.cs">
+      <DependentUpon>frmWaitForAuthenticate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Classes\OAuth.cs" />
     <Compile Include="Classes\WebServer.cs" />
     <Compile Include="Forms\frmSelfExtract.cs">
@@ -175,6 +179,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classes\ProfileXml.cs" />
     <Compile Include="Classes\UserDataXml.cs" />
+    <EmbeddedResource Include="Forms\frmWaitForAuthenticate.resx">
+      <DependentUpon>frmWaitForAuthenticate.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmSelfExtract.resx">
       <DependentUpon>frmSelfExtract.cs</DependentUpon>
     </EmbeddedResource>
