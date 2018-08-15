@@ -21,6 +21,7 @@ using System.Globalization;
 using eduOAuth;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.Web;
 
 namespace EduroamApp
 {
@@ -30,7 +31,7 @@ namespace EduroamApp
         {
             string letsWifiHtml;
             // downloads html file from url as string
-            using (WebClient client = new WebClient())
+            using (var client = new WebClient())
             {
                 letsWifiHtml = client.DownloadString(baseUrl);
             }
@@ -43,9 +44,11 @@ namespace EduroamApp
                 return;
             }
 
-            // gets a decoded json file with authorization endpoint
-            var authEndpointJson = JObject.Parse(jsonString);
-            string authEndpoint = authEndpointJson["authorization_endpoint"].ToString();
+            // gets a decoded json file with authorization and token endpoint
+            var endpointJson = JObject.Parse(jsonString);
+            string authEndpoint = endpointJson["authorization_endpoint"].ToString();
+            string tokenEndpoint = endpointJson["token_endpoint"].ToString();
+            string generatorEndpoint = endpointJson["generator_endpoint"].ToString();
 
             // sets authorization uri parameters
             string responseType = "code";
@@ -57,22 +60,59 @@ namespace EduroamApp
             string clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a";
             string state = Convert.ToBase64String(Guid.NewGuid().ToByteArray()).Substring(0, 20); // random alphanumeric string
 
-            string authUri = CreateUri(authEndpoint, responseType, codeChallengeMethod, scope, codeChallenge, redirectUri, clientId, state);
+            string authUri = CreateAuthEndpointUri(authEndpoint, responseType, codeChallengeMethod, scope, codeChallenge, redirectUri, clientId, state);
             
             string responseUrl = WebServer.NonblockingListener(redirectUri, authUri);
 
+            // checks if returned url is not empty
             if (!string.IsNullOrEmpty(responseUrl))
             {
-                MessageBox.Show("Nice \n\n" + responseUrl);
+                var responseUri = new Uri(responseUrl);
+                string newState = HttpUtility.ParseQueryString(responseUri.Query).Get("state");
+                // checks if state has remained, if not cancel operation
+                if (newState == state)
+                {
+                    string grantType = "authorization_code";
+                    string code = HttpUtility.ParseQueryString(responseUri.Query).Get("code");
+                    string tokenUri = CreateTokenEndpointUri(tokenEndpoint, grantType, code, redirectUri, clientId, codeVerifier);
+
+                    string tokenJson;
+
+                    try
+                    {
+                        // downloads json file from url as string
+                        using (var client = new WebClient())
+                        {
+                            //client.Headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
+                            tokenJson = client.DownloadString(tokenUri);
+                            MessageBox.Show("No error: \n" + tokenJson);
+                        }
+                    }
+                    catch (WebException ex)
+                    {
+                        using (Stream stream = ex.Response.GetResponseStream())
+                        {
+                            StreamReader reader = new StreamReader(stream, Encoding.UTF8);
+                            tokenJson = reader.ReadToEnd();
+                            //MessageBox.Show("Exception, but got the json: \n" + tokenJson);
+                        }
+                    }
+
+
+                    
+
+                    //MessageBox.Show(tokenJson);
+                }
+
             }
         }
 
 
         /// <summary>
-        /// Gets json and decodes it from base64.
+        /// Extracts base64 string from html and decodes it to get json with authorization endpoints.
         /// </summary>
-        /// <param name="html"></param>
-        /// <returns></returns>
+        /// <param name="html">HTML containing authorization endpoints.</param>
+        /// <returns>Json with authorization endpoints.</returns>
         private static string GetBase64AndDecode(string html)
         {
             const string beginString = "-----BEGIN LETSWIFI BLOCK-----";
@@ -90,6 +130,10 @@ namespace EduroamApp
             return "";
         }
 
+        /// <summary>
+        /// Generates a random code challenge base to use for the code challenge.
+        /// </summary>
+        /// <returns>Code challenge base.</returns>
         private static byte[] GenerateCodeChallengeBase()
         {
             var salt = new byte[32];
@@ -100,6 +144,11 @@ namespace EduroamApp
             return salt;
         }
 
+        /// <summary>
+        /// Converts a byte array to a base64url string.
+        /// </summary>
+        /// <param name="arg">Byte array.</param>
+        /// <returns>Base64url string.</returns>
         private static string Base64UrlEncode(byte[] arg)
         {
             string s = Convert.ToBase64String(arg); // Regular base64 encoder
@@ -109,6 +158,11 @@ namespace EduroamApp
             return s;
         }
 
+        /// <summary>
+        /// Hashes a string using SHA256.
+        /// </summary>
+        /// <param name="dataString">String.</param>
+        /// <returns>Hashed byte array.</returns>
         private static byte[] HashWithSHA256(string dataString)
         {
             // Create a SHA256   
@@ -119,17 +173,50 @@ namespace EduroamApp
             }
         }
 
-        private static string CreateUri(string mainUri, string responseType, string codeChallengeMethod, string scope, string codeChallenge, string redirectUri, string clientId, string state)
+        /// <summary>
+        /// Concatenates parameters to create an Authorization Endpoint URI.
+        /// </summary>
+        /// <param name="authEndpoint">Authorization endpoint.</param>
+        /// <param name="responseType">Response type.</param>
+        /// <param name="codeChallengeMethod">Code challenge method.</param>
+        /// <param name="scope">Scope.</param>
+        /// <param name="codeChallenge">Code challenge.</param>
+        /// <param name="redirectUri">Redirect URI.</param>
+        /// <param name="clientId">Client ID.</param>
+        /// <param name="state">State.</param>
+        /// <returns>Authorization endpoint URI.</returns>
+        private static string CreateAuthEndpointUri(string authEndpoint, string responseType, string codeChallengeMethod, string scope, string codeChallenge, string redirectUri, string clientId, string state)
         {
             return
-                mainUri + "?"
-                        + "response_type=" + responseType
-                        + "&code_challenge_method=" + codeChallengeMethod
-                        + "&scope=" + scope
-                        + "&code_challenge=" + codeChallenge
-                        + "&redirect_uri=" + redirectUri
-                        + "&client_id=" + clientId
-                        + "&state=" + state;
+                authEndpoint
+                + "?response_type=" + responseType
+                + "&code_challenge_method=" + codeChallengeMethod
+                + "&scope=" + scope
+                + "&code_challenge=" + codeChallenge
+                + "&redirect_uri=" + redirectUri
+                + "&client_id=" + clientId
+                + "&state=" + state;
+        }
+
+        /// <summary>
+        /// Concatenates parameters to create an Token Endpoint URI.
+        /// </summary>
+        /// <param name="tokenEndpoint">Token endpoint.</param>
+        /// <param name="grantType">Grant type.</param>
+        /// <param name="code">Code.</param>
+        /// <param name="redirectUri">Redirect URI.</param>
+        /// <param name="clientId">Client ID.</param>
+        /// <param name="codeVerifier">Code verifier.</param>
+        /// <returns></returns>
+        private static string CreateTokenEndpointUri(string tokenEndpoint, string grantType, string code, string redirectUri, string clientId, string codeVerifier)
+        {
+            return
+                tokenEndpoint
+                + "?grant_type=" + grantType
+                + "&code=" + code
+                + "&redirect_uri=" + redirectUri
+                + "&client_id=" + clientId
+                + "&code_verifier=" + codeVerifier;
         }
     }
 }

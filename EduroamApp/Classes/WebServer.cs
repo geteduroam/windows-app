@@ -14,7 +14,7 @@ namespace EduroamApp
     public class WebServer
     {
         private static string responseUrl = "";
-        private static frmWaitForAuthenticate waitingDialog = new frmWaitForAuthenticate();
+        //private static frmWaitForAuthenticate waitingDialog = new frmWaitForAuthenticate();
 
         public static string NonblockingListener(string prefix, string oAuthUri)
         {
@@ -30,17 +30,17 @@ namespace EduroamApp
 
             Process.Start(oAuthUri);
 
-            //MessageBox.Show("Waiting for request to be processed asyncronously.", "Waiting");
+            MessageBox.Show("Waiting for request to be processed asyncronously.", "Waiting");
             
-            var waitingResult = waitingDialog.ShowDialog();
+            /*var waitingResult = waitingDialog.ShowDialog();
             if (waitingResult == DialogResult.Cancel)
             {
                 listener.Close();
                 return responseUrl;
-            }
+            }*/
             result.AsyncWaitHandle.WaitOne();
-            waitingDialog.Close();
-            waitingDialog.Dispose();
+            /*waitingDialog.Close();
+            waitingDialog.Dispose();*/
             MessageBox.Show("Request processed asyncronously.");
             listener.Close();
             return responseUrl;
