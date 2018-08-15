@@ -19,7 +19,6 @@ using Newtonsoft.Json;
 using System.Device.Location;
 using System.Globalization;
 using eduOAuth;
-using EduroamApp.Classes;
 using Newtonsoft.Json.Linq;
 
 // ReSharper disable All
@@ -268,8 +267,10 @@ namespace EduroamApp
             return closestInst.Country;
         }
 
-        public bool GetProfileAttributes()
+        public string GetProfileAttributes()
         {
+            string oAuthUri = "";
+
             // adds profile id to url
             string profileAttributeUrl = $"https://cat.eduroam.org/user/API.php?action=profileAttributes&id={profileId}&lang=en";
 
@@ -281,24 +282,29 @@ namespace EduroamApp
             }
             catch (WebException ex)
             {
-                MessageBox.Show("Couldn't fetch profile attributes.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
+                MessageBox.Show("Couldn't fetch profile attributes from WebClient.\n" +
+                                "Exception: " + ex.Message, "WebClient profile attributes", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return oAuthUri;
+            }
+            catch (JsonReaderException ex)
+            {
+                MessageBox.Show("Couldn't read profile attributes from JSON file.\n" +
+                                "Exception: " + ex.Message, "JSON profile attributes", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return oAuthUri;
             }
 
             // gets profile attributes from json
             var profileAttributes = JsonConvert.DeserializeObject<IdProviderProfileAttributes>(profileAttributeJson);
-
-            bool oAuthFlag = false;
-
+            
             foreach (var attribute in profileAttributes.Data.Devices)
             {
                 if (attribute.Redirect.Contains("#letswifi"))
                 {
-                    oAuthFlag = true;
+                    oAuthUri = attribute.Redirect;
                 }
             }
 
-            return oAuthFlag;
+            return oAuthUri;
         }
 
         public string GetEapConfigString()
@@ -359,10 +365,12 @@ namespace EduroamApp
                 return 0; // exits function if no institution/profile selected
             }
 
-            if (GetProfileAttributes())
+            string oAuthUrl = GetProfileAttributes();
+
+            if (!string.IsNullOrEmpty(oAuthUrl))
             {
-                OAuth.GetAuthorizationUri();
-                return 0;
+                OAuth.BrowserAuthenticate(oAuthUrl);
+                return 2;
             }
 
             string eapString = GetEapConfigString();
@@ -391,11 +399,10 @@ namespace EduroamApp
 
         // -----------------------------------------------------------------------------------------
 
-        public WebServer ws;
-
+        
         private void btnTest_Click(object sender, EventArgs e)
         {
-            OAuth.GetAuthorizationUri();
+            
         }
         
 

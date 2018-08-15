@@ -1,100 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
+using System.Windows.Forms;
+using MessageBox = System.Windows.MessageBox;
 
 namespace EduroamApp
 {
     public class WebServer
+    {
+        private static string responseUrl = "";
+        private static frmWaitForAuthenticate waitingDialog = new frmWaitForAuthenticate();
+
+        public static string NonblockingListener(string prefix, string oAuthUri)
         {
-            private readonly HttpListener _listener = new HttpListener();
-            private readonly Func<HttpListenerRequest, string> _responderMethod;
+            HttpListener listener = new HttpListener();
+            listener.Prefixes.Add(prefix);
+            
+            listener.Start();
+            IAsyncResult result = listener.BeginGetContext(new AsyncCallback(ListenerCallback), listener);
+            // Applications can do some work here while waiting for the 
+            // request. If no work can be done until you have processed a request,
+            // use a wait handle to prevent this thread from terminating
+            // while the asynchronous operation completes.
 
-            public WebServer(IReadOnlyCollection<string> prefixes, Func<HttpListenerRequest, string> method)
+            Process.Start(oAuthUri);
+
+            //MessageBox.Show("Waiting for request to be processed asyncronously.", "Waiting");
+            
+            var waitingResult = waitingDialog.ShowDialog();
+            if (waitingResult == DialogResult.Cancel)
             {
-                if (!HttpListener.IsSupported)
-                {
-                    throw new NotSupportedException("Needs Windows XP SP2, Server 2003 or later.");
-                }
-
-                // URI prefixes are required eg: "http://localhost:8080/test/"
-                if (prefixes == null || prefixes.Count == 0)
-                {
-                    throw new ArgumentException("URI prefixes are required");
-                }
-
-                if (method == null)
-                {
-                    throw new ArgumentException("responder method required");
-                }
-
-                foreach (var s in prefixes)
-                {
-                    _listener.Prefixes.Add(s);
-                }
-
-                _responderMethod = method;
-                _listener.Start();
+                listener.Close();
+                return responseUrl;
             }
-
-            public WebServer(Func<HttpListenerRequest, string> method, params string[] prefixes)
-               : this(prefixes, method)
-            {
-            }
-
-            public void Run()
-            {
-                ThreadPool.QueueUserWorkItem(o =>
-                {
-                    Console.WriteLine("Webserver running...");
-                    try
-                    {
-                        while (_listener.IsListening)
-                        {
-                            ThreadPool.QueueUserWorkItem(c =>
-                            {
-                                var ctx = c as HttpListenerContext;
-                                try
-                                {
-                                    if (ctx == null)
-                                    {
-                                        return;
-                                    }
-
-                                    var rstr = _responderMethod(ctx.Request);
-                                    var buf = Encoding.UTF8.GetBytes(rstr);
-                                    ctx.Response.ContentLength64 = buf.Length;
-                                    ctx.Response.OutputStream.Write(buf, 0, buf.Length);
-                                }
-                                catch
-                                {
-                                    // ignored
-                                }
-                                finally
-                                {
-                                    // always close the stream
-                                    if (ctx != null)
-                                    {
-                                        ctx.Response.OutputStream.Close();
-                                    }
-                                }
-                            }, _listener.GetContext());
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        // ignored
-                    }
-                });
-            }
-
-            public void Stop()
-            {
-                _listener.Stop();
-                _listener.Close();
-            }
+            result.AsyncWaitHandle.WaitOne();
+            waitingDialog.Close();
+            waitingDialog.Dispose();
+            MessageBox.Show("Request processed asyncronously.");
+            listener.Close();
+            return responseUrl;
         }
+
+        private static void ListenerCallback(IAsyncResult result)
+        {
+            HttpListener listener = (HttpListener)result.AsyncState;
+            // Call EndGetContext to complete the asynchronous operation.
+            HttpListenerContext context = listener.EndGetContext(result);
+            HttpListenerRequest request = context.Request;
+            responseUrl = request.Url.OriginalString;
+            // Obtain a response object.
+            HttpListenerResponse response = context.Response;
+            // Construct a response.
+            string responseString = "<HTML><BODY> Hello world!</BODY></HTML>";
+            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
+            // Get a response stream and write the response to it.
+            response.ContentLength64 = buffer.Length;
+            System.IO.Stream output = response.OutputStream;
+            output.Write(buffer, 0, buffer.Length);
+            // You must close the output stream.
+            output.Close();
+        }
+        
+    }
 }

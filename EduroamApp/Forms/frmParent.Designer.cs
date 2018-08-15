@@ -295,7 +295,7 @@
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.pnlLeft);
             this.Controls.Add(this.pnlNavigation);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmParent";

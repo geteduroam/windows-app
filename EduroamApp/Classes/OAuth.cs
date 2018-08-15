@@ -19,7 +19,6 @@ using Newtonsoft.Json;
 using System.Device.Location;
 using System.Globalization;
 using eduOAuth;
-using EduroamApp.Classes;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 
@@ -27,14 +26,13 @@ namespace EduroamApp
 {
     class OAuth
     {
-        public static void GetAuthorizationUri()
+        public static void BrowserAuthenticate(string baseUrl)
         {
-            const string url = "https://demo.eduroam.no/cat.php#letswifi";
             string letsWifiHtml;
             // downloads html file from url as string
             using (WebClient client = new WebClient())
             {
-                letsWifiHtml = client.DownloadString(url);
+                letsWifiHtml = client.DownloadString(baseUrl);
             }
             // gets the base64 encoded json containing the authorization endpoint from html
             string jsonString = GetBase64AndDecode(letsWifiHtml);
@@ -60,24 +58,15 @@ namespace EduroamApp
             string state = Convert.ToBase64String(Guid.NewGuid().ToByteArray()).Substring(0, 20); // random alphanumeric string
 
             string authUri = CreateUri(authEndpoint, responseType, codeChallengeMethod, scope, codeChallenge, redirectUri, clientId, state);
-             
-            //MessageBox.Show(authorizationUri.CreateUri());
             
-            // local web server
-            WebServer ws = new WebServer(SendResponse, redirectUri);
-            ws.Run();
+            string responseUrl = WebServer.NonblockingListener(redirectUri, authUri);
 
-            //MessageBox.Show("A simple webserver. Press button to quit.");
-            //ws.Stop();
-            //MessageBox.Show("Webserver closed.");
-
-            Process.Start(authUri);
+            if (!string.IsNullOrEmpty(responseUrl))
+            {
+                MessageBox.Show("Nice \n\n" + responseUrl);
+            }
         }
 
-        public static string SendResponse(HttpListenerRequest request)
-        {
-            return $"<HTML><BODY>My web page.<br>{DateTime.Now}</BODY></HTML>";
-        }
 
         /// <summary>
         /// Gets json and decodes it from base64.
