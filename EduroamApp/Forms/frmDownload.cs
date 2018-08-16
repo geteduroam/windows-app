@@ -402,7 +402,11 @@ namespace EduroamApp
 
 		private void btnTest_Click(object sender, EventArgs e)
 		{
-
+			using (var client = new WebClient())
+			{
+				client.Headers.Add("Authorize", "this is a header");
+				client.DownloadString("http://localhost:12345/");
+			}
 		}
 
 

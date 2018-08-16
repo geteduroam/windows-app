@@ -14,11 +14,11 @@ namespace EduroamApp
 	public class WebServer
 	{
 		private static string responseUrl = "";
-		//private static frmWaitForAuthenticate waitingDialog = new frmWaitForAuthenticate();
+		private static readonly HttpListener listener = new HttpListener();
+		private static readonly frmWaitForAuthenticate waitingDialog = new frmWaitForAuthenticate();
 
 		public static string NonblockingListener(string prefix, string oAuthUri)
 		{
-			HttpListener listener = new HttpListener();
 			listener.Prefixes.Add(prefix);
 
 			listener.Start();
@@ -29,28 +29,21 @@ namespace EduroamApp
 			// while the asynchronous operation completes.
 
 			Process.Start(oAuthUri);
+			waitingDialog.Show();
 
-			MessageBox.Show("Waiting for request to be processed asyncronously.", "Waiting");
-
-			/*var waitingResult = waitingDialog.ShowDialog();
-			if (waitingResult == DialogResult.Cancel)
-			{
-				listener.Close();
-				return responseUrl;
-			}*/
 			result.AsyncWaitHandle.WaitOne();
-			/*waitingDialog.Close();
-			waitingDialog.Dispose();*/
-			MessageBox.Show("Request processed asyncronously.");
+
+			waitingDialog.Close();
+			//MessageBox.Show("Request processed asyncronously.");
 			listener.Close();
 			return responseUrl;
 		}
 
 		private static void ListenerCallback(IAsyncResult result)
 		{
-			HttpListener listener = (HttpListener)result.AsyncState;
+			HttpListener callbackListener = (HttpListener)result.AsyncState;
 			// Call EndGetContext to complete the asynchronous operation.
-			HttpListenerContext context = listener.EndGetContext(result);
+			HttpListenerContext context = callbackListener.EndGetContext(result);
 			HttpListenerRequest request = context.Request;
 			responseUrl = request.Url.OriginalString;
 			// Obtain a response object.
@@ -64,6 +57,12 @@ namespace EduroamApp
 			output.Write(buffer, 0, buffer.Length);
 			// You must close the output stream.
 			output.Close();
+		}
+
+		public static void CancelListener()
+		{
+			waitingDialog.Close();
+			listener.Close();
 		}
 
 	}

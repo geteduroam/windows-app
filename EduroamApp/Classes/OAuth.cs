@@ -63,6 +63,7 @@ namespace EduroamApp
 			string authUri = CreateAuthEndpointUri(authEndpoint, responseType, codeChallengeMethod, scope, codeChallenge, redirectUri, clientId, state);
 
 			string responseUrl = WebServer.NonblockingListener(redirectUri, authUri);
+			string tokenJsonString = "";
 
 			// checks if returned url is not empty
 			if (!string.IsNullOrEmpty(responseUrl))
@@ -76,35 +77,41 @@ namespace EduroamApp
 					string code = HttpUtility.ParseQueryString(responseUri.Query).Get("code");
 					string tokenUri = CreateTokenEndpointUri(tokenEndpoint, grantType, code, redirectUri, clientId, codeVerifier);
 
-					string tokenJson;
-
 					try
 					{
 						// downloads json file from url as string
 						using (var client = new WebClient())
 						{
-							//client.Headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36";
-							tokenJson = client.DownloadString(tokenUri);
-							MessageBox.Show("No error: \n" + tokenJson);
+							tokenJsonString = client.DownloadString(tokenUri);
 						}
+
+
 					}
 					catch (WebException ex)
 					{
-						using (Stream stream = ex.Response.GetResponseStream())
-						{
-							StreamReader reader = new StreamReader(stream, Encoding.UTF8);
-							tokenJson = reader.ReadToEnd();
-							//MessageBox.Show("Exception, but got the json: \n" + tokenJson);
-						}
+						MessageBox.Show("Exception: " + ex.Message + "\nCouldn't fetch token json.");
 					}
 
-
-
-
-					//MessageBox.Show(tokenJson);
 				}
-
+				else
+				{
+					MessageBox.Show("State from request and response do not match. Aborting operation.");
+				}
 			}
+
+			// gets a decoded json file with authorization and token endpoint
+			var tokenJson = JObject.Parse(tokenJsonString);
+			string token = tokenJson["access_token"].ToString();
+			string tokenType = tokenJson["token_type"].ToString();
+
+			string finalHtml = "";
+			using (var client = new WebClient())
+			{
+				client.Headers.Add("Authorization", tokenType + " " + token);
+				finalHtml = client.DownloadString(generatorEndpoint + "?format=eap-metadata"); // should be POST request
+			}
+
+			MessageBox.Show(finalHtml);
 		}
 
 
@@ -218,5 +225,8 @@ namespace EduroamApp
 				+ "&client_id=" + clientId
 				+ "&code_verifier=" + codeVerifier;
 		}
+
 	}
+
+
 }
