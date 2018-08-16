@@ -39,7 +39,6 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.lblError = new System.Windows.Forms.Label();
             this.btnTest = new System.Windows.Forms.Button();
-            this.btnTest2 = new System.Windows.Forms.Button();
             this.tlpLoading.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
@@ -156,16 +155,8 @@
             this.btnTest.TabIndex = 40;
             this.btnTest.Text = "test";
             this.btnTest.UseVisualStyleBackColor = true;
+            this.btnTest.Visible = false;
             this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
-            // 
-            // btnTest2
-            // 
-            this.btnTest2.Location = new System.Drawing.Point(210, 211);
-            this.btnTest2.Name = "btnTest2";
-            this.btnTest2.Size = new System.Drawing.Size(75, 23);
-            this.btnTest2.TabIndex = 41;
-            this.btnTest2.Text = "Test 2";
-            this.btnTest2.UseVisualStyleBackColor = true;
             // 
             // frmDownload
             // 
@@ -174,7 +165,6 @@
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(378, 246);
-            this.Controls.Add(this.btnTest2);
             this.Controls.Add(this.btnTest);
             this.Controls.Add(this.tlpLoading);
             this.Controls.Add(this.lblSelectProfile);
@@ -208,6 +198,5 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label lblError;
         private System.Windows.Forms.Button btnTest;
-        private System.Windows.Forms.Button btnTest2;
     }
 }
