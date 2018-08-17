@@ -18,7 +18,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json;
 using System.Device.Location;
 using System.Globalization;
-using eduOAuth;
 using Newtonsoft.Json.Linq;
 
 // ReSharper disable All
@@ -365,21 +364,25 @@ namespace EduroamApp
 				return 0; // exits function if no institution/profile selected
 			}
 
-			string oAuthUrl = GetProfileAttributes();
+			string oAuthUri = GetProfileAttributes();
+			string eapString = "";
 
-			if (!string.IsNullOrEmpty(oAuthUrl))
+			if (!string.IsNullOrEmpty(oAuthUri))
 			{
-				OAuth.BrowserAuthenticate(oAuthUrl);
-				return 2;
+				eapString = OAuth.BrowserAuthenticate(oAuthUri);
+			}
+			else
+			{
+				eapString = GetEapConfigString();
 			}
 
-			string eapString = GetEapConfigString();
 			uint eapType = 0;
 			string instId = null;
 
 			try
 			{
 				eapType = ConnectToEduroam.Setup(eapString);
+				//ConnectToEduroam.SetupLogin("","",0);
 				instId = ConnectToEduroam.GetInstId(eapString);
 			}
 			catch (ArgumentException argEx)
@@ -399,17 +402,24 @@ namespace EduroamApp
 
 		// -----------------------------------------------------------------------------------------
 
+		static frmWaitForAuthenticate waitingDialog = new frmWaitForAuthenticate();
 
 		private void btnTest_Click(object sender, EventArgs e)
 		{
-			using (var client = new WebClient())
-			{
-				client.Headers.Add("Authorize", "this is a header");
-				client.DownloadString("http://localhost:12345/");
-			}
+
+			waitingDialog.Show();
+			waitingDialog.BtnCancel.Click += new System.EventHandler((sender2, args) => CancelListener());
 		}
 
+		public static bool CancelListener()
+		{
+			waitingDialog.Close();
+			return true;
+		}
 
+		private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+		{
 
+		}
 	}
 }

@@ -75,6 +75,7 @@ namespace EduroamApp
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.Name = "frmWaitForAuthenticate";
 			this.Text = "Continue in your browser...";
+			this.Load += new System.EventHandler(this.frmWaitForAuthenticate_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
