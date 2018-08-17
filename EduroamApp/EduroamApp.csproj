@@ -241,10 +241,6 @@
       <Project>{ebff4686-23e6-42bf-97ca-cf82641bcfa7}</Project>
       <Name>ManagedNativeWifi</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\eduVPN\eduOAuth\eduOAuth\eduOAuth.csproj">
-      <Project>{44ea054c-0c39-4aac-9e40-253e919c1e2f}</Project>
-      <Name>eduOAuth</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\eduroam_logo.png" />

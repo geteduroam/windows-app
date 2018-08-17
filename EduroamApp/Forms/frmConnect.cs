@@ -51,7 +51,7 @@ namespace EduroamApp
                 pboStatus.Image = Properties.Resources.x_mark_3_16;
                 lblConnectFailed.Visible = true;
                 frmParent.BtnBackEnabled = true;
-                ConnectToEduroam.RemoveProfile();
+                //ConnectToEduroam.RemoveProfile();
             }
         }
         

@@ -37,7 +37,7 @@ namespace EduroamApp
             uint eapType = authMethod.EapType;
 
             // if EAP type is not supported, cancel setup
-            if (eapType != 13 || eapType != 25 || eapType != 21) return eapType;
+            if (eapType != 13 && eapType != 25 && eapType != 21) return eapType;
 
             // opens the trusted root CA store
             X509Store rootStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
@@ -147,7 +147,7 @@ namespace EduroamApp
         {
             // generates user data xml file
             string userDataXml = UserDataXml.CreateUserDataXml(username, password, eapType);
-
+            //string userDataXml = File.ReadAllText(@"C:\Users\lwerivel18\Documents\Wireless_profiles\UserData\ericv_tls2.xml");
             // sets user data
             SetUserData(interfaceId, ssid, userDataXml);
         }

@@ -230,7 +230,7 @@ namespace EduroamApp
             }
 
 
-            // newProfile.Save(@"C:\Users\lwerivel18\Desktop\testProfileFromC#.xml");
+            newProfile.Save(@"C:\Users\lwerivel18\Desktop\testProfileFromC#.xml");
 
             // returns xml as string
             return newProfile.ToString();

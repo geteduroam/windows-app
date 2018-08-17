@@ -18,7 +18,6 @@ using System.Xml.Linq;
 using Newtonsoft.Json;
 using System.Device.Location;
 using System.Globalization;
-using eduOAuth;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.Web;
@@ -27,7 +26,7 @@ namespace EduroamApp
 {
     class OAuth
     {
-        public static void BrowserAuthenticate(string baseUrl)
+        public static string BrowserAuthenticate(string baseUrl)
         {
             string letsWifiHtml;
             // downloads html file from url as string
@@ -41,7 +40,7 @@ namespace EduroamApp
             if (string.IsNullOrEmpty(jsonString))
             {
                 MessageBox.Show("HTML doesn't contain authorization endpoint json.");
-                return;
+                return "";
             }
 
             // gets a decoded json file with authorization and token endpoint
@@ -58,7 +57,7 @@ namespace EduroamApp
             string codeChallenge = Base64UrlEncode(HashWithSHA256(codeVerifier));
             string redirectUri = "http://localhost:8080/";
             string clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a";
-            string state = Convert.ToBase64String(Guid.NewGuid().ToByteArray()).Substring(0, 20); // random alphanumeric string
+            string state = Base64UrlEncode(Guid.NewGuid().ToByteArray()); // random alphanumeric string
 
             string authUri = CreateAuthEndpointUri(authEndpoint, responseType, codeChallengeMethod, scope, codeChallenge, redirectUri, clientId, state);
             
@@ -95,7 +94,9 @@ namespace EduroamApp
                 }
                 else
                 {
-                    MessageBox.Show("State from request and response do not match. Aborting operation.");
+                    MessageBox.Show("State from request and response do not match. Aborting operation.\n" +
+                                    "Old state: " + state + "\nNew state: " + newState);
+                    return "";
                 }
             }
 
@@ -104,14 +105,14 @@ namespace EduroamApp
             string token = tokenJson["access_token"].ToString();
             string tokenType = tokenJson["token_type"].ToString();
 
-            string finalHtml = "";
+            string eapConfigString = "";
             using (var client = new WebClient())
             {
                 client.Headers.Add("Authorization", tokenType + " " + token);
-                finalHtml = client.DownloadString(generatorEndpoint + "?format=eap-metadata"); // should be POST request
+                eapConfigString = client.DownloadString(generatorEndpoint + "?format=eap-metadata"); // should be POST request
             }
 
-            MessageBox.Show(finalHtml);
+            return eapConfigString;
         }
 
 
