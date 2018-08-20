@@ -91,7 +91,7 @@ namespace EduroamApp
                     );
             }
             
-             newUserData?.Save(@"C:\Users\lwerivel18\Desktop\userDataFromC#.xml");
+             //newUserData?.Save(@"C:\Users\lwerivel18\Desktop\userDataFromC#.xml");
 
             // returns xml as string if not null
             return newUserData.ToString();

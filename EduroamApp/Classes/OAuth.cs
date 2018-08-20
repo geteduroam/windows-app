@@ -28,12 +28,19 @@ namespace EduroamApp
     {
         public static string BrowserAuthenticate(string baseUrl)
         {
-            string letsWifiHtml;
             // downloads html file from url as string
-            using (var client = new WebClient())
+            string letsWifiHtml;
+            try
             {
-                letsWifiHtml = client.DownloadString(baseUrl);
+                letsWifiHtml = GetStringFromUrl(baseUrl);
             }
+            catch (WebException ex)
+            {
+                MessageBox.Show("Couldn't fetch content from webpage. \nException: " + ex.Message, 
+                                "Eduroam - Web exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return "";
+            }
+            
             // gets the base64 encoded json containing the authorization endpoint from html
             string jsonString = GetBase64AndDecode(letsWifiHtml);
             // if no json found in html, stop execution
@@ -43,78 +50,152 @@ namespace EduroamApp
                 return "";
             }
 
-            // gets a decoded json file with authorization and token endpoint
-            var endpointJson = JObject.Parse(jsonString);
-            string authEndpoint = endpointJson["authorization_endpoint"].ToString();
-            string tokenEndpoint = endpointJson["token_endpoint"].ToString();
-            string generatorEndpoint = endpointJson["generator_endpoint"].ToString();
+            // authorization endpoint
+            string authEndpoint;
+            // token endpoint
+            string tokenEndpoint;
+            // eap config generator endpoint
+            string generatorEndpoint;
 
+            // gets JObject containing OAuth endpoints from json string
+            try
+            {
+                JObject endpointJson = JObject.Parse(jsonString);
+                // gets individual endpoints
+                authEndpoint = endpointJson["authorization_endpoint"].ToString();
+                tokenEndpoint = endpointJson["token_endpoint"].ToString();
+                generatorEndpoint = endpointJson["generator_endpoint"].ToString();
+            }
+            catch (JsonReaderException ex)
+            {
+                MessageBox.Show("Couldn't read endpoints from JSON file.\n" +
+                                "Exception: " + ex.Message, "JSON endpoints", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return "";
+            }
+            
             // sets authorization uri parameters
-            string responseType = "code";
-            string codeChallengeMethod = "S256";
-            string scope = "eap-metadata";
-            string codeVerifier = Base64UrlEncode(GenerateCodeChallengeBase());
-            string codeChallenge = Base64UrlEncode(HashWithSHA256(codeVerifier));
-            string redirectUri = "http://localhost:8080/";
-            string clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a";
+            var responseType = "code";
+            var codeChallengeMethod = "S256";
+            var scope = "eap-metadata";
+            string codeVerifier = Base64UrlEncode(GenerateCodeChallengeBase()); // generate random byte array, convert to base64url
+            string codeChallenge = Base64UrlEncode(HashWithSHA256(codeVerifier)); // hash code verifier with SHA256, convert to base64url
+            var redirectUri = "http://localhost:8080/";
+            var clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a";
             string state = Base64UrlEncode(Guid.NewGuid().ToByteArray()); // random alphanumeric string
 
+            // concatenates parameters into authorization endpoint URI
             string authUri = CreateAuthEndpointUri(authEndpoint, responseType, codeChallengeMethod, scope, codeChallenge, redirectUri, clientId, state);
             
+            // opens web browser for user authentication through feide
             string responseUrl = WebServer.NonblockingListener(redirectUri, authUri);
-            string tokenJsonString = "";
+            string tokenJsonString;
 
             // checks if returned url is not empty
-            if (!string.IsNullOrEmpty(responseUrl))
+            if (string.IsNullOrEmpty(responseUrl))
             {
-                var responseUri = new Uri(responseUrl);
-                string newState = HttpUtility.ParseQueryString(responseUri.Query).Get("state");
-                // checks if state has remained, if not cancel operation
-                if (newState == state)
-                {
-                    string grantType = "authorization_code";
-                    string code = HttpUtility.ParseQueryString(responseUri.Query).Get("code");
-                    string tokenUri = CreateTokenEndpointUri(tokenEndpoint, grantType, code, redirectUri, clientId, codeVerifier);
-
-                    try
-                    {
-                        // downloads json file from url as string
-                        using (var client = new WebClient())
-                        {
-                            tokenJsonString = client.DownloadString(tokenUri);
-                        }
-
-                        
-                    }
-                    catch (WebException ex)
-                    {
-                        MessageBox.Show("Exception: " + ex.Message + "\nCouldn't fetch token json.");
-                    }
-                    
-                }
-                else
-                {
-                    MessageBox.Show("State from request and response do not match. Aborting operation.\n" +
-                                    "Old state: " + state + "\nNew state: " + newState);
-                    return "";
-                }
+                MessageBox.Show("HTTP request returned nothing.");
+                return "";
             }
 
-            // gets a decoded json file with authorization and token endpoint
-            var tokenJson = JObject.Parse(tokenJsonString);
-            string token = tokenJson["access_token"].ToString();
-            string tokenType = tokenJson["token_type"].ToString();
+            // checks if user chose to reject authorization
+            if (responseUrl.Contains("access_denied"))
+            {
+                MessageBox.Show("Authorization rejected. Please try again.");
+                return "";
+            }
 
-            string eapConfigString = "";
+            // convert response url string to URI object
+            var responseUri = new Uri(responseUrl);
+
+            // gets state from response url and compares it to original state
+            string newState = HttpUtility.ParseQueryString(responseUri.Query).Get("state");
+            // checks if state has remained, if not cancel operation
+            if (newState != state)
+            {
+                MessageBox.Show("State from request and response do not match. Aborting operation.\n", 
+                    "Eduroam - State exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return "";
+            }
+
+            // gets code from response url
+            string code = HttpUtility.ParseQueryString(responseUri.Query).Get("code");
+            // checks if code is not empty
+            if (string.IsNullOrEmpty(code))
+            {
+                MessageBox.Show("Response string doesn't contain code. Aborting operation.\n",
+                    "Eduroam - Code exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return "";
+            }
+
+            var grantType = "authorization_code";
+                
+            // concatenates parameters into token endpoint URI
+            string tokenUri = CreateTokenEndpointUri(tokenEndpoint, grantType, code, redirectUri, clientId, codeVerifier);
+
+            // downloads json file from url as string
+            try
+            {
+                tokenJsonString = GetStringFromUrl(tokenUri);
+            }
+            catch (WebException ex)
+            {
+                MessageBox.Show("Couldn't fetch token json. \nException: " + ex.Message,
+                    "Eduroam - Web exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return "";
+            }
+
+            // token for authorizing Oauth request
+            string token;
+            // token type
+            string tokenType;
+
+            // gets JObject containing token information from json string
+            try
+            {
+                JObject tokenJson = JObject.Parse(tokenJsonString);
+                // gets token and type strings
+                token = tokenJson["access_token"].ToString();
+                tokenType = tokenJson["token_type"].ToString();
+            }
+            catch (JsonReaderException ex)
+            {
+                MessageBox.Show("Couldn't read token from JSON file.\n" +
+                                "Exception: " + ex.Message, "JSON token", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return "";
+            }
+
+            // gets and returns EAP config file as a string
+            try
+            {
+                using (var client = new WebClient())
+                {
+                    // adds new header containing authorization token
+                    client.Headers.Add("Authorization", tokenType + " " + token);
+                    // downloads file
+                    string eapConfigString = client.DownloadString(generatorEndpoint + "?format=eap-metadata");
+                    return eapConfigString;
+                }
+            }
+            catch (WebException ex)
+            {
+                MessageBox.Show("Couldn't fetch EAP config file. \nException: " + ex.Message,
+                    "Eduroam - Web exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return "";
+            }
+        }
+        
+        /// <summary>
+        /// Downloads web page content as a string.
+        /// </summary>
+        /// <param name="url">Url to download from.</param>
+        /// <returns>Web page content.</returns>
+        public static string GetStringFromUrl(string url)
+        {
             using (var client = new WebClient())
             {
-                client.Headers.Add("Authorization", tokenType + " " + token);
-                eapConfigString = client.DownloadString(generatorEndpoint + "?format=eap-metadata"); // should be POST request
+                return client.DownloadString(url);
             }
-
-            return eapConfigString;
         }
-
 
         /// <summary>
         /// Extracts base64 string from html and decodes it to get json with authorization endpoints.

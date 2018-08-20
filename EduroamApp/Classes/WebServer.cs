@@ -64,7 +64,8 @@ namespace EduroamApp
         private static void ListenerCallback(IAsyncResult result)
         {
             HttpListener callbackListener = (HttpListener)result.AsyncState;
-            
+            // ignores exceptions that occur when writing to server
+            callbackListener.IgnoreWriteExceptions = true;
             
             // Call EndGetContext to complete the asynchronous operation.
             HttpListenerContext context = callbackListener.EndGetContext(result);
@@ -76,7 +77,10 @@ namespace EduroamApp
             using (HttpListenerResponse response = context.Response)
             {
                 // Construct a response.
-                string responseString = "<HTML><BODY>Feide has been authorized. <br />You can now close this tab.</BODY></HTML>";
+                string responseString = responseUrl.Contains("access_denied") ? 
+                    "<HTML><BODY>You rejected the authorization. Please go back to the Eduroam app. <br />You can now close this tab.</BODY></HTML>" 
+                    : "<HTML><BODY>Feide has been authorized. <br />You can now close this tab.</BODY></HTML>";
+                
                 byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
                 response.ContentLength64 = buffer.LongLength;
                 response.OutputStream.Write(buffer, 0, buffer.Length);
