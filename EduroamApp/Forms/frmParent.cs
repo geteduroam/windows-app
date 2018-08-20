@@ -95,7 +95,6 @@ namespace EduroamApp
 					eapType = frmDownload.ConnectWithDownload();
 					if (eapType == 13) LoadFrm6();
 					else if (eapType == 25 || eapType == 21) LoadFrm5();
-					else if (eapType == 2) ;
 					else MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
 										 "Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					break;

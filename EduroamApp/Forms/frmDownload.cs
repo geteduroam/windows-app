@@ -275,9 +275,15 @@ namespace EduroamApp
 
 			// json file as string
 			string profileAttributeJson;
+			//deserialized json as Profile attributes objects
+			IdProviderProfileAttributes profileAttributes;
+
 			try
 			{
+				// gets json from url
 				profileAttributeJson = UrlToJson(profileAttributeUrl);
+				// gets profile attributes from json
+				profileAttributes = JsonConvert.DeserializeObject<IdProviderProfileAttributes>(profileAttributeJson);
 			}
 			catch (WebException ex)
 			{
@@ -291,9 +297,6 @@ namespace EduroamApp
 								"Exception: " + ex.Message, "JSON profile attributes", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return oAuthUri;
 			}
-
-			// gets profile attributes from json
-			var profileAttributes = JsonConvert.DeserializeObject<IdProviderProfileAttributes>(profileAttributeJson);
 
 			foreach (var attribute in profileAttributes.Data.Devices)
 			{
