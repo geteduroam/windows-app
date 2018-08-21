@@ -378,7 +378,9 @@ namespace EduroamApp
             {
                 eapString = GetEapConfigString();
             }
-            
+
+            if (string.IsNullOrEmpty(eapString)) return 0;
+
             uint eapType = 0;
             string instId = null;
 
@@ -392,10 +394,16 @@ namespace EduroamApp
             {
                 if (argEx.Message == "interfaceId")
                 {
-                    MessageBox.Show("Could not establish a connection through your computer's wireless network interface. \n" +
-                                    "Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.",
-                                    "Network interface error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(
+                        "Could not establish a connection through your computer's wireless network interface. \n" +
+                        "Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.",
+                        "Network interface error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Something went wrong...\nException: " + 
+                                ex.Message, "Eduroam - exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             
             // makes the institution Id accessible from parent form
