@@ -88,6 +88,9 @@ namespace EduroamApp
 
 			// opens web browser for user authentication through feide
 			string responseUrl = WebServer.NonblockingListener(redirectUri, authUri);
+
+			if (responseUrl == "CANCEL") return "CANCEL";
+
 			string tokenJsonString;
 
 			// checks if returned url is not empty

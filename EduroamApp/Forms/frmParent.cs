@@ -95,18 +95,19 @@ namespace EduroamApp
 					eapType = frmDownload.ConnectWithDownload();
 					if (eapType == 13) LoadFrm6();
 					else if (eapType == 25 || eapType == 21) LoadFrm5();
-					else MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
-										 "Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					else if (eapType != 0) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
+															"Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					break;
 				case 4:
 					eapType = frmLocal.ConnectWithFile();
 					if (eapType == 13) LoadFrm6();
 					else if (eapType == 25 || eapType == 21) LoadFrm5();
-					else MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
-										 "Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					else if (eapType != 0) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
+															"Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					break;
 				case 5:
-					if (eapType != 21) {
+					if (eapType != 21)
+					{
 						frmLogin.ConnectWithLogin(eapType);
 						LoadFrm6();
 					}

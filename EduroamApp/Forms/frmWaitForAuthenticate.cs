@@ -19,7 +19,7 @@ namespace EduroamApp
 
 		private void btnCancel_Click(object sender, EventArgs e)
 		{
-			// WebServer.CancelListener();
+			WebServer.CancelListener();
 		}
 
 		public System.Windows.Forms.Button BtnCancel => btnCancel;

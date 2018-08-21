@@ -156,6 +156,7 @@ namespace EduroamApp
 			this.btnTest.TabIndex = 40;
 			this.btnTest.Text = "test";
 			this.btnTest.UseVisualStyleBackColor = true;
+			this.btnTest.Visible = false;
 			this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
 			//
 			// backgroundWorker1
