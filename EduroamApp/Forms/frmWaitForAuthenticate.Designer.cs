@@ -1,4 +1,6 @@
-﻿namespace EduroamApp
+﻿using System.Windows.Forms;
+
+namespace EduroamApp
 {
     partial class frmWaitForAuthenticate
     {
@@ -74,6 +76,7 @@
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "frmWaitForAuthenticate";
+            this.ShowInTaskbar = false;
             this.Text = "Continue in your browser...";
             this.Load += new System.EventHandler(this.frmWaitForAuthenticate_Load);
             this.ResumeLayout(false);

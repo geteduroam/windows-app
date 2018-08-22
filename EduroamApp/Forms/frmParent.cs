@@ -176,7 +176,9 @@ namespace EduroamApp
             return watcher;
         }
 
-        // make button properties accessible from other forms
+        // make form properties accessible from other forms
+        public Form FrmParent => this;
+
         public string BtnNextText
         {
             get => btnNext.Text;

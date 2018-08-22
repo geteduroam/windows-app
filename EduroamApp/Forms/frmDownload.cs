@@ -404,6 +404,7 @@ namespace EduroamApp
             {
                 MessageBox.Show("Something went wrong...\nException: " + 
                                 ex.Message, "Eduroam - exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw;
             }
             
             // makes the institution Id accessible from parent form
@@ -418,19 +419,7 @@ namespace EduroamApp
         private void btnTest_Click(object sender, EventArgs e)
         {
             
-            waitingDialog.Show();
-            waitingDialog.BtnCancel.Click += new System.EventHandler((sender2, args) => CancelListener());
         }
-
-        public static bool CancelListener()
-        {
-            waitingDialog.Close();
-            return true;
-        }
-
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
-        {
-
-        }
+        
     }
 }
