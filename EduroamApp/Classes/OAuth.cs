@@ -26,7 +26,7 @@ namespace EduroamApp
 {
     class OAuth
     {
-        public static string BrowserAuthenticate(string baseUrl)
+        public static string BrowserAuthenticate(string baseUrl, Point parentLocation)
         {
             // downloads html file from url as string
             string letsWifiHtml;
@@ -85,11 +85,24 @@ namespace EduroamApp
 
             // concatenates parameters into authorization endpoint URI
             string authUri = CreateAuthEndpointUri(authEndpoint, responseType, codeChallengeMethod, scope, codeChallenge, redirectUri, clientId, state);
-            
-            // opens web browser for user authentication through feide
-            string responseUrl = WebServer.NonblockingListener(redirectUri, authUri);
 
-            if (responseUrl == "CANCEL") return "";
+            // opens web browser for user authentication through feide
+            string responseUrl; //= WebServer.NonblockingListener(redirectUri, authUri, parentLocation);
+            using (var waitForm = new frmWaitForAuthenticate(redirectUri, authUri, parentLocation))
+            {
+                var result = waitForm.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    responseUrl = waitForm.responseUrl;
+                }
+                else
+                {
+                    return "";
+                }
+            }
+            
+
+            //if (responseUrl == "CANCEL") return "";
 
             string tokenJsonString;
 

@@ -372,7 +372,10 @@ namespace EduroamApp
 
             if (!string.IsNullOrEmpty(oAuthUri))
             {
-                eapString = OAuth.BrowserAuthenticate(oAuthUri);
+                Point parentLocation = frmParent.Location;
+                parentLocation.X += frmParent.Width / 2;
+                parentLocation.Y += frmParent.Height / 2;
+                eapString = OAuth.BrowserAuthenticate(oAuthUri, parentLocation);
             }
             else
             {
@@ -414,8 +417,6 @@ namespace EduroamApp
 
         // -----------------------------------------------------------------------------------------
 
-        static frmWaitForAuthenticate waitingDialog = new frmWaitForAuthenticate();
-        
         private void btnTest_Click(object sender, EventArgs e)
         {
             
