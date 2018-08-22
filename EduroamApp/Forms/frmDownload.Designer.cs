@@ -39,7 +39,6 @@ namespace EduroamApp
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.lblError = new System.Windows.Forms.Label();
 			this.btnTest = new System.Windows.Forms.Button();
-			this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
 			this.tlpLoading.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
@@ -159,10 +158,6 @@ namespace EduroamApp
 			this.btnTest.Visible = false;
 			this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
 			//
-			// backgroundWorker1
-			//
-			this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-			//
 			// frmDownload
 			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -203,6 +198,5 @@ namespace EduroamApp
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Label lblError;
 		private System.Windows.Forms.Button btnTest;
-		private System.ComponentModel.BackgroundWorker backgroundWorker1;
 	}
 }

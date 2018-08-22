@@ -14,66 +14,95 @@ namespace EduroamApp
 {
 	public class WebServer
 	{
+		// return value
 		private static string responseUrl = "";
-		private static HttpListener listener;
-		private static frmWaitForAuthenticate waitingDialog;
-		private static bool isCanceled;
+		// main thread event
 		private static readonly ManualResetEvent mainThread = new ManualResetEvent(false);
-		private static readonly ManualResetEvent cancelThread = new ManualResetEvent(false);
-		private static  CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-		private static CancellationToken cancellationToken = cancellationTokenSource.Token;
+		// cancel thread event
+		private static ManualResetEvent cancelThread;
+		// cancellation token source
+		private static  CancellationTokenSource cancelSource;
+		// cancellation token
+		private static CancellationToken cancelToken;
 
+		/// <summary>
+		/// Listens for incoming HTTP requests.
+		/// </summary>
+		/// <param name="prefix">Localhost address, for example "http://localhost:8080/".</param>
+		/// <param name="oAuthUri">URI to open in browser for authentication.</param>
+		/// <returns>URL of request after authorization.</returns>
 		public static string NonblockingListener(string prefix, string oAuthUri)
 		{
-			waitingDialog = new frmWaitForAuthenticate();
-			Thread dialogThread = new Thread(() => waitingDialog.ShowDialog());
+			// instantiates waiting dialog form
+			var waitingDialog = new frmWaitForAuthenticate();
 
+			//waitingDialog.StartPosition = FormStartPosition.CenterParent;
+			// creates new thread for opening waiting dialog form
+			// necessary to avoid UI blocking when waiting for incoming HTTP request
+			var dialogThread = new Thread(() => waitingDialog.ShowDialog());
+			// creates cancellation token, used when cancelling BeginGetContext method
+			cancelSource = new CancellationTokenSource();
+			cancelToken = cancelSource.Token;
+			// instantiates wait for cancellation event
+			cancelThread = new ManualResetEvent(false);
 
-			listener = new HttpListener();
+			// creates a listener
+			var listener = new HttpListener();
+			// add prefix to listener
 			listener.Prefixes.Add(prefix);
-
+			// starts listener
 			listener.Start();
+
+			// creates BeginGetContext task for retrieving HTTP request
 			IAsyncResult result = listener.BeginGetContext(ListenerCallback, listener);
+			// opens authentication URI in default browser
 			Process.Start(oAuthUri);
+			// starts the waiting dialog thread
 			dialogThread.Start();
 
+			// creates WaitHandle array with two tasks: BeginGetContext and wait for cancel
 			WaitHandle[] handles = { result.AsyncWaitHandle, cancelThread };
+			// waits for both tasks to complete, gets array index of the first one to complete
 			int handleResult = WaitHandle.WaitAny(handles);
 
+			// if BeginGetContext completes first
 			if (handleResult == 0)
 			{
+				// freezes main thread so ListenerCallback function can finish
 				mainThread.WaitOne();
+				// closes waiting dialog
 				waitingDialog.Invoke((MethodInvoker)delegate { waitingDialog.Close(); });
 			}
+			// if cancelled first
 			else
 			{
-				cancellationTokenSource.Cancel();
+				// sets cancellation token to cancel
+				cancelSource.Cancel();
+				// needs to call ListenerCallback once to cancel it
 				ListenerCallback(null);
+				// sets response url string
 				responseUrl = "CANCEL";
 			}
 
-			//result.AsyncWaitHandle;
-
-			//result.AsyncWaitHandle.WaitOne();
-
-			//if (!isCanceled)
-			//{
-
-			//MessageBox.Show("Request processed asyncronously.");
-			//}
-
-			//result.AsyncWaitHandle.Close();
+			// closes HTTP listener
 			listener.Close();
+			// returns response url
 			return responseUrl;
 		}
 
+		/// <summary>
+		/// Callback function for incoming HTTP requests.
+		/// </summary>
+		/// <param name="result">Result of BeginGetContext task.</param>
 		private static void ListenerCallback(IAsyncResult result)
 		{
-			if (cancellationToken.IsCancellationRequested) return;
+			// cancels and returns if cancellation is requested
+			if (cancelToken.IsCancellationRequested) return;
 
+			// sets the callback listener equals to the http listener
 			HttpListener callbackListener = (HttpListener)result.AsyncState;
 
-			// Call EndGetContext to complete the asynchronous operation.
+			// calls EndGetContext to complete the asynchronous operation
 			HttpListenerContext context = callbackListener.EndGetContext(result);
 			HttpListenerRequest request = context.Request;
 
@@ -84,11 +113,12 @@ namespace EduroamApp
 			{
 				using (HttpListenerResponse response = context.Response)
 				{
-					// Construct a response.
+					// constructs a response
 					string responseString = responseUrl.Contains("access_denied")
 						? "<HTML><BODY>You rejected the authorization. Please go back to the Eduroam app. <br />You can now close this tab.</BODY></HTML>"
 						: "<HTML><BODY>Feide has been authorized. <br />You can now close this tab.</BODY></HTML>";
 
+					// outputs response to web server
 					byte[] buffer = Encoding.UTF8.GetBytes(responseString);
 					response.ContentLength64 = buffer.Length;
 					Stream output = response.OutputStream;
@@ -100,13 +130,16 @@ namespace EduroamApp
 				MessageBox.Show("Could not write to server. \nException: " + ex.Message);
 			}
 
+			// resumes main thread
 			mainThread.Set();
 		}
 
-
+		/// <summary>
+		/// Gets called when btnCancel on frmWaitForAuthenticate is clicked.
+		/// </summary>
 		public static void CancelListener()
 		{
-			isCanceled = true;
+			// resumes cancel thread
 			cancelThread.Set();
 		}
 
