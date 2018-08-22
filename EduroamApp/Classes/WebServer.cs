@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -30,13 +31,13 @@ namespace EduroamApp
 		/// </summary>
 		/// <param name="prefix">Localhost address, for example "http://localhost:8080/".</param>
 		/// <param name="oAuthUri">URI to open in browser for authentication.</param>
+		/// <param name="parentLocation">On-screen location of parent form.</param>
 		/// <returns>URL of request after authorization.</returns>
-		public static string NonblockingListener(string prefix, string oAuthUri)
+		public static string NonblockingListener(string prefix, string oAuthUri, Point parentLocation)
 		{
 			// instantiates waiting dialog form
-			var waitingDialog = new frmWaitForAuthenticate();
+			var waitingDialog = new frmWaitForAuthenticate("", "", parentLocation);
 
-			//waitingDialog.StartPosition = FormStartPosition.CenterParent;
 			// creates new thread for opening waiting dialog form
 			// necessary to avoid UI blocking when waiting for incoming HTTP request
 			var dialogThread = new Thread(() => waitingDialog.ShowDialog());
