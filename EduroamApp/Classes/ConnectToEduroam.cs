@@ -25,8 +25,8 @@ namespace EduroamApp
 	{
 		// sets eduroam as chosen network
 		static EduroamNetwork eduroamInstance = new EduroamNetwork(); // creates new instance of eduroam network
-		static readonly string ssid = eduroamInstance.ssid; // gets SSID
-		static readonly Guid interfaceId = eduroamInstance.interfaceId; // gets interface ID
+		static readonly string ssid = eduroamInstance.Ssid; // gets SSID
+		static readonly Guid interfaceId = eduroamInstance.InterfaceId; // gets interface ID
 
 		public static uint Setup(string eapString)
 		{
@@ -98,15 +98,14 @@ namespace EduroamApp
 						}
 					}
 				}
-
 				// gets CA thumbprint and formats it
 				string formattedThumbprint = Regex.Replace(caCert.Thumbprint, ".{2}", "$0 ");
 				// adds thumbprint to list
 				thumbprints.Add(formattedThumbprint);
 			}
 
-			// closes trusted root store
-			rootStore.Close();
+			// name of the certificate issuer
+			string certIssuer = null;
 
 			// checks if Athentication method contains a client certificate
 			if (!string.IsNullOrEmpty(authMethod.ClientCertificate))
@@ -129,7 +128,26 @@ namespace EduroamApp
 
 				// closes personal store
 				personalStore.Close();
+
+				// gets the CA that issued the certificate
+				certIssuer = clientCert.IssuerName.Name;
 			}
+
+			if (certIssuer != null)
+			{
+				var existingCa = rootStore.Certificates.Find(X509FindType.FindByIssuerDistinguishedName, certIssuer, true);
+
+				foreach (X509Certificate2 ca in existingCa)
+				{
+					// gets CA thumbprint and formats it
+					string formattedThumbprint = Regex.Replace(ca.Thumbprint, ".{2}", "$0 ");
+					// adds thumbprint to list
+					thumbprints.Add(formattedThumbprint);
+				}
+			}
+
+			// closes trusted root store
+			rootStore.Close();
 
 			// gets server names of authentication method and joins them into one single string
 			string serverNames = string.Join(";", authMethod.ServerName);
@@ -153,10 +171,8 @@ namespace EduroamApp
 
 		public static Task<bool> Connect()
 		{
-			// creates new instance of eduroam network
-			eduroamInstance = new EduroamNetwork();
-			// gets updated network pack object
-			AvailableNetworkPack network = eduroamInstance.networkPack;
+			// gets eduroam network pack
+			AvailableNetworkPack network = EduroamNetwork.GetEduroam();
 
 			// connects to eduroam
 			Task<bool> connectResult = Task.Run(() => ConnectAsync(network));
