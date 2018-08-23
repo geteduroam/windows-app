@@ -127,16 +127,25 @@ namespace EduroamApp
 			// user's coordinates
 			GeoCoordinate myCoord = watcher.Position.Location;
 
-			// validates if coordinates are received
-			if (myCoord.IsUnknown != true)
+
+			string closestCountry;
+
+			// checks if coordinates are received
+			if (!myCoord.IsUnknown)
 			{
 				// finds the country geographically closest to the user and selects it by default
 				string closestCountryCode = GetClosestInstitution(identityProviders, myCoord);
 				// gets country from country code
-				string closestCountry = countries.Where(c => c.CountryCode == closestCountryCode).Select(c => c.CountryName).FirstOrDefault();
-				// sets country as selected item in combobox
-				cboCountry.SelectedIndex = cboCountry.FindStringExact(closestCountry);
+				closestCountry = countries.Where(c => c.CountryCode == closestCountryCode).Select(c => c.CountryName).FirstOrDefault();
 			}
+			// if no coordinates
+			else
+			{
+				// gets country as set in Settings
+				closestCountry = RegionInfo.CurrentRegion.EnglishName;
+			}
+			// sets country as selected item in combobox
+			cboCountry.SelectedIndex = cboCountry.FindStringExact(closestCountry);
 
 		}
 
@@ -145,6 +154,9 @@ namespace EduroamApp
 			// clear combobox
 			cboInstitution.Items.Clear();
 			cboProfiles.Items.Clear();
+			// hide profile combobox
+			lblSelectProfile.Visible = false;
+			cboProfiles.Visible = false;
 			// clear selected profile
 			profileId = null;
 
@@ -232,6 +244,7 @@ namespace EduroamApp
 		/// Compares institution coordinates with user's coordinates and gets the closest institution.
 		/// </summary>
 		/// <param name="instList">List of all institutions.</param>
+		/// <param name="userCoord">User's coordinates.</param>
 		/// <returns>Country of closest institution.</returns>
 		public string GetClosestInstitution(List<IdentityProvider> instList, GeoCoordinate userCoord)
 		{
@@ -261,7 +274,6 @@ namespace EduroamApp
 					}
 				}
 			}
-
 			// returns country of institution closest to user
 			return closestInst.Country;
 		}
