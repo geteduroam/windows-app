@@ -118,7 +118,6 @@
       <DependentUpon>frmWaitForAuthenticate.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\OAuth.cs" />
-    <Compile Include="Classes\WebServer.cs" />
     <Compile Include="Forms\frmSelfExtract.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -237,12 +236,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Desktop\ManagedNativeWifi-master\ManagedNativeWifi\ManagedNativeWifi.csproj">
-      <Project>{ebff4686-23e6-42bf-97ca-cf82641bcfa7}</Project>
-      <Name>ManagedNativeWifi</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\eduroam_logo.png" />
   </ItemGroup>
   <ItemGroup>
@@ -274,6 +267,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\x-mark-3-16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ManagedNativeWifi\ManagedNativeWifi.csproj">
+      <Project>{ebff4686-23e6-42bf-97ca-cf82641bcfa7}</Project>
+      <Name>ManagedNativeWifi</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

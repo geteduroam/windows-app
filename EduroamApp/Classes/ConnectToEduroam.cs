@@ -136,6 +136,7 @@ namespace EduroamApp
 
 			// generates new profile xml
 			string profileXml = ProfileXml.CreateProfileXml(ssid, eapType, serverNames, thumbprints);
+			//profileXml = File.ReadAllText(@"C:\Users\lwerivel18\Desktop\Wi-Fi-eduroam.xml");
 
 			// creates a new wireless profile
 			Debug.WriteLine(CreateNewProfile(interfaceId, profileXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");

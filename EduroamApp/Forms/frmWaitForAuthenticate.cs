@@ -18,8 +18,9 @@ namespace EduroamApp
 {
 	public partial class frmWaitForAuthenticate : Form
 	{
-		private readonly Point parentLocation;
-		private  readonly string prefix;
+		// localhost address, for example "http://localhost:8080/"
+		private readonly string prefix;
+		// URI to open in browser for authentication
 		private readonly string oAuthUri;
 
 		// return value
@@ -31,48 +32,43 @@ namespace EduroamApp
 		//
 		private Thread listenerThread;
 		// cancellation token source
-		private static CancellationTokenSource cancelSource;
+		private static CancellationTokenSource cancelTokenSource;
 		// cancellation token
 		private static CancellationToken cancelToken;
 
-		public frmWaitForAuthenticate(string inPrefix, string inOAuthUri, Point inLocation)
+		public frmWaitForAuthenticate(string inPrefix, string inOAuthUri)
 		{
-			// Localhost address, for example "http://localhost:8080/".
+			// sets parameters
 			prefix = inPrefix;
-			// URI to open in browser for authentication.
 			oAuthUri = inOAuthUri;
-			// On-screen location of parent form.
-			parentLocation = inLocation;
 
 			InitializeComponent();
 		}
 
-		private void btnCancel_Click(object sender, EventArgs e)
-		{
-			cancelSource.Cancel();
-			cancelThread.Set();
-		}
 
 		private void frmWaitForAuthenticate_Load(object sender, EventArgs e)
 		{
-			// centers the form
-			int x = parentLocation.X - Width / 2;
-			int y = parentLocation.Y - Height / 2;
-			Location = new Point(x, y);
-
+			// starts HTTP listener in new thread so UI stays responsive
 			listenerThread = new Thread(NonblockingListener);
 			listenerThread.Start();
-			// instantiates wait for cancellation event
+			// cancellation thread
 			cancelThread = new ManualResetEvent(false);
 			// creates cancellation token, used when cancelling BeginGetContext method
-			cancelSource = new CancellationTokenSource();
-			cancelToken = cancelSource.Token;
+			cancelTokenSource = new CancellationTokenSource();
+			cancelToken = cancelTokenSource.Token;
+		}
+
+		private void btnCancel_Click(object sender, EventArgs e)
+		{
+			// sets cancellation token to cancel
+			cancelTokenSource.Cancel();
+			// resumes cancel thread
+			cancelThread.Set();
 		}
 
 		/// <summary>
 		/// Listens for incoming HTTP requests.
 		/// </summary>
-		/// <returns>URL of request after authorization.</returns>
 		public void NonblockingListener()
 		{
 			// creates a listener
@@ -88,7 +84,7 @@ namespace EduroamApp
 			Process.Start(oAuthUri);
 
 			//result.AsyncWaitHandle.WaitOne();
-			// creates WaitHandle array with two tasks: BeginGetContext and wait for cancel
+			// creates WaitHandle array with two tasks: BeginGetContext and cancel thread
 			WaitHandle[] handles = { result.AsyncWaitHandle, cancelThread };
 			// waits for both tasks to complete, gets array index of the first one to complete
 			int handleResult = WaitHandle.WaitAny(handles);
@@ -103,12 +99,11 @@ namespace EduroamApp
 			// if cancelled first
 			else
 			{
-				// sets cancellation token to cancel
-				cancelSource.Cancel();
 				// needs to call ListenerCallback once to cancel it
 				ListenerCallback(null);
 			}
 
+			// closes HTTP listener
 			listener.Close();
 		}
 

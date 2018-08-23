@@ -261,6 +261,7 @@ namespace EduroamApp
 			currentFormId = 4;
 			lblTitle.Text = "Select EAP-config file";
 			btnNext.Text = "Next >";
+			btnNext.Enabled = true;
 			btnBack.Enabled = true;
 			LoadNewForm(frmLocal);
 		}
