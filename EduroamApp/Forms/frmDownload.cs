@@ -372,10 +372,7 @@ namespace EduroamApp
 
             if (!string.IsNullOrEmpty(oAuthUri))
             {
-                Point parentLocation = frmParent.Location;
-                parentLocation.X += frmParent.Width / 2;
-                parentLocation.Y += frmParent.Height / 2;
-                eapString = OAuth.BrowserAuthenticate(oAuthUri, parentLocation);
+                eapString = OAuth.BrowserAuthenticate(oAuthUri);
             }
             else
             {
@@ -387,10 +384,11 @@ namespace EduroamApp
             uint eapType = 0;
             string instId = null;
 
+            System.IO.File.WriteAllText(@"C:\Users\lwerivel18\Desktop\eapString.xml", eapString);
+
             try
             {
                 eapType = ConnectToEduroam.Setup(eapString);
-                //ConnectToEduroam.SetupLogin("","",0);
                 instId = ConnectToEduroam.GetInstId(eapString);
             }
             catch (ArgumentException argEx)

@@ -26,7 +26,7 @@ namespace EduroamApp
 {
     class OAuth
     {
-        public static string BrowserAuthenticate(string baseUrl, Point parentLocation)
+        public static string BrowserAuthenticate(string baseUrl)
         {
             // downloads html file from url as string
             string letsWifiHtml;
@@ -88,7 +88,7 @@ namespace EduroamApp
 
             // opens web browser for user authentication through feide
             string responseUrl; //= WebServer.NonblockingListener(redirectUri, authUri, parentLocation);
-            using (var waitForm = new frmWaitForAuthenticate(redirectUri, authUri, parentLocation))
+            using (var waitForm = new frmWaitForAuthenticate(redirectUri, authUri))
             {
                 var result = waitForm.ShowDialog();
                 if (result == DialogResult.OK)

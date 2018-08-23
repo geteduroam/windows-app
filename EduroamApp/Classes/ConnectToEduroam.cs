@@ -133,9 +133,10 @@ namespace EduroamApp
 
             // gets server names of authentication method and joins them into one single string
             string serverNames = string.Join(";", authMethod.ServerName);
-            
+
             // generates new profile xml
             string profileXml = ProfileXml.CreateProfileXml(ssid, eapType, serverNames, thumbprints);
+            //profileXml = File.ReadAllText(@"C:\Users\lwerivel18\Desktop\Wi-Fi-eduroam.xml");
 
             // creates a new wireless profile
             Debug.WriteLine(CreateNewProfile(interfaceId, profileXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");

@@ -112,6 +112,7 @@ namespace EduroamApp
                 {
                     // gets certificates and creates wireless profile
                     eapType  = ConnectToEduroam.Setup(eapString);
+                    ConnectToEduroam.SetupLogin("", "", 13);
                     instId = ConnectToEduroam.GetInstId(eapString);
                 }
                 catch (ArgumentException argEx)
