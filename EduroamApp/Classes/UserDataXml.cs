@@ -93,7 +93,7 @@ namespace EduroamApp
 						)
 					);
 			}
-			else if (eapType == 13)
+			/*else if (eapType == 13)
 			{
 				newUserData =
 					new XElement(nsEHUC + "EapHostUserCredentials",
@@ -117,12 +117,10 @@ namespace EduroamApp
 							)
 						)
 					);
-			}
-
-			newUserData?.Save(@"C:\Users\lwerivel18\Desktop\userDataFromC#.xml");
+			}*/
 
 			// returns xml as string if not null
-			return newUserData.ToString();
+			return newUserData != null ? newUserData.ToString() : "";
 		}
 
 	}
