@@ -19,8 +19,8 @@ namespace EduroamApp
         static readonly XNamespace nsBECP = "http://www.microsoft.com/provisioning/BaseEapConnectionPropertiesV1";
             // TLS specific
         static readonly XNamespace nsETCPv1 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV1";
-
         static readonly XNamespace nsETCPv2 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV2";
+        static readonly XNamespace nsETCPv3 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV3";
             // MSCHAPv2 specific
         static readonly XNamespace nsMPCPv1 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV1";
         static readonly XNamespace nsMPCPv2 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV2";
@@ -120,7 +120,12 @@ namespace EduroamApp
                             ),
                             new XElement(nsETCPv1 + "DifferentUsername", "false"),
                             new XElement(nsETCPv2 + "PerformServerValidation", "true"),
-                            new XElement(nsETCPv2 + "AcceptServerName", "false")
+                            new XElement(nsETCPv2 + "AcceptServerName", "false"),
+                            new XElement(nsETCPv2 + "TLSExtensions", 
+                                new XElement(nsETCPv3 + "FilteringInfo", 
+                                    new XElement(nsETCPv3 + "CAHashList", new XAttribute("Enabled", "true"))
+                                )
+                            )
                         )
                     )
                 );
@@ -227,11 +232,24 @@ namespace EduroamApp
                 {
                     serverValidationElement.Add(new XElement(nsEapType + thumbprintNode, thumb));
                 }
+
+                if (eapType == 13)
+                {
+                    XElement caHashListElement = configElement.Element(nsBECP + "Eap")
+                                                              .Element(nsEapType + "EapType")
+                                                              .Element(nsETCPv2 + "TLSExtensions")
+                                                              .Element(nsETCPv3 + "FilteringInfo")
+                                                              .Element(nsETCPv3 + "CAHashList");
+
+                    // creates IssuerHash child elements and assigns thumbprint as value
+                    foreach (string thumb in thumbprints)
+                    {
+                        caHashListElement.Add(new XElement(nsETCPv3 + "IssuerHash", thumb));
+                    }
+                }
             }
 
-
-            newProfile.Save(@"C:\Users\lwerivel18\Desktop\testProfileFromC#.xml");
-
+            
             // returns xml as string
             return newProfile.ToString();
         }

@@ -383,9 +383,7 @@ namespace EduroamApp
 
             uint eapType = 0;
             string instId = null;
-
-            System.IO.File.WriteAllText(@"C:\Users\lwerivel18\Desktop\eapString.xml", eapString);
-
+            
             try
             {
                 eapType = ConnectToEduroam.Setup(eapString);

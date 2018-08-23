@@ -52,7 +52,7 @@ namespace EduroamApp
             OpenFileDialog fileDialog = new OpenFileDialog
             {
                 // sets the initial directory of the open file dialog
-                InitialDirectory = @"C:\Users\lwerivel18\source\repos\EduroamApp\EduroamApp\ConfigFiles",
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                 // sets filter for file types that appear in open file dialog
                 Filter = "EAP-CONFIG files (*.eap-config)|*.eap-config|All files (*.*)|*.*",
                 FilterIndex = 0,
@@ -112,7 +112,6 @@ namespace EduroamApp
                 {
                     // gets certificates and creates wireless profile
                     eapType  = ConnectToEduroam.Setup(eapString);
-                    ConnectToEduroam.SetupLogin("", "", 13);
                     instId = ConnectToEduroam.GetInstId(eapString);
                 }
                 catch (ArgumentException argEx)

@@ -154,18 +154,6 @@
     <Compile Include="Forms\frmLogin.Designer.cs">
       <DependentUpon>frmLogin.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\Old\frmLogon.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Old\frmLogon.Designer.cs">
-      <DependentUpon>frmLogon.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\Old\frmMain.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\Old\frmMain.Designer.cs">
-      <DependentUpon>frmMain.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\frmParent.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -200,12 +188,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmLogin.resx">
       <DependentUpon>frmLogin.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Old\frmLogon.resx">
-      <DependentUpon>frmLogon.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\Old\frmMain.resx">
-      <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmParent.resx">
       <DependentUpon>frmParent.cs</DependentUpon>

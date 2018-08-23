@@ -136,7 +136,6 @@ namespace EduroamApp
 
             // generates new profile xml
             string profileXml = ProfileXml.CreateProfileXml(ssid, eapType, serverNames, thumbprints);
-            //profileXml = File.ReadAllText(@"C:\Users\lwerivel18\Desktop\Wi-Fi-eduroam.xml");
 
             // creates a new wireless profile
             Debug.WriteLine(CreateNewProfile(interfaceId, profileXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
@@ -148,7 +147,6 @@ namespace EduroamApp
         {
             // generates user data xml file
             string userDataXml = UserDataXml.CreateUserDataXml(username, password, eapType);
-            //string userDataXml = File.ReadAllText(@"C:\Users\lwerivel18\Documents\Wireless_profiles\UserData\ericv_tls2.xml");
             // sets user data
             SetUserData(interfaceId, ssid, userDataXml);
         }
