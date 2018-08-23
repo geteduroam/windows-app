@@ -385,6 +385,7 @@ namespace EduroamApp
             if (!string.IsNullOrEmpty(oAuthUri))
             {
                 eapString = OAuth.BrowserAuthenticate(oAuthUri);
+                frmParent.Activate();
             }
             else
             {
