@@ -42,7 +42,7 @@ namespace EduroamApp
 			// starts GeoCoordinateWatcher when app starts
 			watcher = new GeoCoordinateWatcher();
 			watcher.TryStart(false, TimeSpan.FromMilliseconds(3000));
-
+			FormClosed += frmParent_FormClosed;
 			InitializeComponent();
 		}
 
@@ -65,12 +65,12 @@ namespace EduroamApp
 			if (ExistSelfExtract())
 			{
 				// goes to form for installation through self extract config file
-				LoadFrm1();
+				LoadFrmSelfExtract();
 			}
 			else
 			{
 				// goes to form for selecting install method
-				LoadFrm2();
+				LoadFrmSelectMethod();
 			}
 		}
 
@@ -88,20 +88,29 @@ namespace EduroamApp
 					frmSelfExtract.InstallSelfExtract();
 					break;
 				case 2:
-					if (frmSelectMethod.GoToForm() == 3) LoadFrm3();
-					else LoadFrm4();
+					if (frmSelectMethod.GoToForm() == 3) LoadFrmDownload();
+					else
+					{
+						lblLocalFileType.Text = "EAPCONFIG";
+						LoadFrmLocal();
+					}
 					break;
 				case 3:
 					eapType = frmDownload.ConnectWithDownload();
-					if (eapType == 13) LoadFrm6();
-					else if (eapType == 25 || eapType == 21) LoadFrm5();
+					if (eapType == 13) LoadFrmConnect();
+					else if (eapType == 25 || eapType == 21) LoadFrmLogin();
+					else if (eapType == 500)
+					{
+						lblLocalFileType.Text = "CERT";
+						LoadFrmLocalCert();
+					}
 					else if (eapType != 0) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
 															"Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					break;
 				case 4:
 					eapType = frmLocal.ConnectWithFile();
-					if (eapType == 13) LoadFrm6();
-					else if (eapType == 25 || eapType == 21) LoadFrm5();
+					if (eapType == 13) LoadFrmConnect();
+					else if (eapType == 25 || eapType == 21) LoadFrmLogin();
 					else if (eapType != 0) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
 															"Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					break;
@@ -109,11 +118,14 @@ namespace EduroamApp
 					if (eapType != 21)
 					{
 						frmLogin.ConnectWithLogin(eapType);
-						LoadFrm6();
+						LoadFrmConnect();
 					}
 					else MessageBox.Show("Support for TTLS configuration not ready yet.", "TTLS not ready", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					break;
 				case 6:
+					break;
+				case 7:
+					if (frmLocal.InstallCertFile()) LoadFrmConnect();
 					break;
 			}
 
@@ -129,21 +141,24 @@ namespace EduroamApp
 			switch (formHistory.Last())
 			{
 				case 1:
-					LoadFrm1();
+					LoadFrmSelfExtract();
 					break;
 				case 2:
-					LoadFrm2();
+					LoadFrmSelectMethod();
 					break;
 				case 3:
-					LoadFrm3();
+					LoadFrmDownload();
 					break;
 				case 4:
-					LoadFrm4();
+					LoadFrmLocal();
 					break;
 				case 5:
-					LoadFrm5();
+					LoadFrmLogin();
 					break;
 				case 6:
+					break;
+				case 7:
+					LoadFrmLocalCert();
 					break;
 			}
 
@@ -177,7 +192,6 @@ namespace EduroamApp
 		}
 
 		// make form properties accessible from other forms
-		public Form FrmParent => this;
 
 		public string BtnNextText
 		{
@@ -209,10 +223,22 @@ namespace EduroamApp
 			set => lblInst.Text = value;
 		}
 
+		public string LblProfileCondition
+		{
+			get => lblProfileCondition.Text;
+			set => lblProfileCondition.Text = value;
+		}
+
+		public string LblLocalFileType
+		{
+			get => lblLocalFileType.Text;
+			set => lblLocalFileType.Text = value;
+		}
+
 		/// <summary>
 		/// Loads form with self extracted config file install.
 		/// </summary>
-		public void LoadFrm1()
+		public void LoadFrmSelfExtract()
 		{
 			// creates new instance of form1 if there is none, passes parent form instance as parameter
 			if (reload) frmSelfExtract = new frmSelfExtract(this);
@@ -226,7 +252,7 @@ namespace EduroamApp
 		/// <summary>
 		/// Loads form that lets user choose how they want to get config file.
 		/// </summary>
-		public void LoadFrm2()
+		public void LoadFrmSelectMethod()
 		{
 			if (reload) frmSelectMethod = new frmSelectMethod(this);
 			currentFormId = 2;
@@ -241,7 +267,7 @@ namespace EduroamApp
 		/// <summary>
 		/// Loads form that lets user select institution and download config file.
 		/// </summary>
-		public void LoadFrm3()
+		public void LoadFrmDownload()
 		{
 			/*if (reload)*/ frmDownload = new frmDownload(this);
 			currentFormId = 3;
@@ -255,7 +281,7 @@ namespace EduroamApp
 		/// <summary>
 		/// Loads form that lets user select config file from computer.
 		/// </summary>
-		public void LoadFrm4()
+		public void LoadFrmLocal()
 		{
 			if (reload) frmLocal = new frmLocal(this);
 			currentFormId = 4;
@@ -269,9 +295,9 @@ namespace EduroamApp
 		/// <summary>
 		/// Loads form that lets user log in with username+password.
 		/// </summary>
-		public void LoadFrm5()
+		public void LoadFrmLogin()
 		{
-			/*if (reload)*/ frmLogin = new frmLogin(this);
+			frmLogin = new frmLogin(this);
 			currentFormId = 5;
 			lblTitle.Text = "Log in";
 			btnNext.Text = "Connect";
@@ -283,15 +309,29 @@ namespace EduroamApp
 		/// <summary>
 		/// Loads form that shows connection status.
 		/// </summary>
-		public void LoadFrm6()
+		public void LoadFrmConnect()
 		{
-			if (reload) frmConnect = new frmConnect(this);
+			frmConnect = new frmConnect(this);
 			currentFormId = 6;
 			lblTitle.Text = "Connection status";
 			btnNext.Text = "Next >";
 			btnNext.Enabled = false;
 			btnBack.Enabled = false;
 			LoadNewForm(frmConnect);
+		}
+
+		/// <summary>
+		/// Loads form that shows connection status.
+		/// </summary>
+		public void LoadFrmLocalCert()
+		{
+			if (reload) frmLocal = new frmLocal(this);
+			currentFormId = 7;
+			lblTitle.Text = "Select client certificate file";
+			btnNext.Text = "Next >";
+			btnNext.Enabled = true;
+			btnBack.Enabled = true;
+			LoadNewForm(frmLocal);
 		}
 
 		private void pnlNavTop_Paint(object sender, PaintEventArgs e)
@@ -317,6 +357,15 @@ namespace EduroamApp
 
 			// Draw line to screen.
 			e.Graphics.DrawLine(grayPen, point1, point2);
+		}
+
+		private void frmParent_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			// deletes bad profile on application exit if connection was unsuccessful
+			if (lblProfileCondition.Text == "BADPROFILE")
+			{
+				ConnectToEduroam.RemoveProfile();
+			}
 		}
 	}
 }

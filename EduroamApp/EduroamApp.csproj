@@ -111,6 +111,7 @@
     <Compile Include="Classes\ConnectToEduroam.cs" />
     <Compile Include="Classes\Country.cs" />
     <Compile Include="Classes\EduroamNetwork.cs" />
+    <Compile Include="Classes\FileDialog.cs" />
     <Compile Include="Forms\frmWaitForAuthenticate.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -32,69 +32,25 @@ namespace EduroamApp
 
 		private void btnBrowse_Click(object sender, EventArgs e)
 		{
-			// opens dialog to select EAP Config file
-			string eapConfigPath = GetFileFromDialog("Select EAP Config file");
+			string dialogTitle = "";
+			string dialogFilter = "";
+			switch (frmParent.LblLocalFileType)
+			{
+				case "EAPCONFIG":
+					dialogTitle = "Select EAP Config file";
+					dialogFilter = "EAP-CONFIG files (*.eap-config)|*.eap-config|All files (*.*)|*.*";
+					break;
+				case "CERT":
+					dialogTitle = "Select client certificate";
+					dialogFilter = "Certificate files (*.PFX, *.P12)|*.pfx;*.p12|All files (*.*)|*.*";
+					break;
+			}
+			// opens dialog to select file
+			string selectedFilePath = FileDialog.GetFileFromDialog(dialogTitle, dialogFilter);
 			// prints out filepath
-			txtFilepath.Text = eapConfigPath;
+			txtFilepath.Text = selectedFilePath;
 
-			//string eapConfigString = File.ReadAllText(eapConfigPath);
-		}
 
-		/// <summary>
-		/// Lets user select a file through an OpenFileDialog.
-		/// </summary>
-		/// <param name="dialogTitle">Title of the OpenFileDialog.</param>
-		/// <returns>Path of selected file.</returns>
-		public string GetFileFromDialog(string dialogTitle)
-		{
-			string filePath = null;
-
-			OpenFileDialog fileDialog = new OpenFileDialog
-			{
-				// sets the initial directory of the open file dialog
-				InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-				// sets filter for file types that appear in open file dialog
-				Filter = "EAP-CONFIG files (*.eap-config)|*.eap-config|All files (*.*)|*.*",
-				FilterIndex = 0,
-				RestoreDirectory = true,
-				Title = dialogTitle
-			};
-
-			if (fileDialog.ShowDialog() == DialogResult.OK)
-			{
-				filePath = fileDialog.FileName;
-			}
-
-			return filePath;
-		}
-
-		/// <summary>
-		/// Checks if a config file has been selected, and if the filepath and type is valid.
-		/// </summary>
-		/// <returns>True if valid file, false if not.</returns>
-		public bool ValidateFileSelection()
-		{
-			string filePath = txtFilepath.Text;
-
-			if (string.IsNullOrEmpty(filePath))
-			{
-				MessageBox.Show("Please select a file.",
-								"Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return false;
-			}
-			else if (!File.Exists(filePath))
-			{
-				MessageBox.Show("The specified file does not exist.",
-								"Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return false;
-			}
-			else if (Path.GetExtension(filePath) != ".eap-config")
-			{
-				MessageBox.Show("The file type you chose is not supported.",
-								"Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return false;
-			}
-			return true;
 		}
 
 		public uint ConnectWithFile()
@@ -103,7 +59,7 @@ namespace EduroamApp
 			string instId = null;
 
 			// validates the selected config file
-			if (ValidateFileSelection())
+			if (FileDialog.ValidateFileSelection(txtFilepath.Text, "EAP"))
 			{
 				// gets content of config file
 				string eapString = File.ReadAllText(txtFilepath.Text);
@@ -132,11 +88,71 @@ namespace EduroamApp
 					//}
 				}
 			}
-
 			// makes the institution Id accessible from parent form
 			frmParent.LblInstText = instId;
 			return eapType;
 
+		}
+
+		public bool InstallCertFile()
+		{
+			if (!FileDialog.ValidateFileSelection(txtFilepath.Text, "CERT")) return false;
+
+			try
+			{
+				var certificate = new X509Certificate2(txtFilepath.Text, txtCertPassword.Text);
+				return true;
+			}
+			catch (CryptographicException ex)
+			{
+				if ((ex.HResult & 0xFFFF) == 0x56)
+				{
+					MessageBox.Show("The password you entered is incorrect.", "Certificate install",
+									MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+				else
+				{
+					MessageBox.Show("Could not install certificate.\nException: " + ex.Message, "Certificate install",
+									 MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+
+				return false;
+			}
+		}
+
+		// checks wether certificate requires password or not
+		private void txtFilepath_TextChanged(object sender, EventArgs e)
+		{
+			if (frmParent.LblLocalFileType == "EAPCONFIG") return;
+
+			var passwordRequired = false;
+			try
+			{
+				var certificate = new X509Certificate2(txtFilepath.Text, "");
+			}
+			catch (CryptographicException ex)
+			{
+				if ((ex.HResult & 0xFFFF) == 0x56)
+				{
+					passwordRequired = true;
+				}
+			}
+			catch (Exception)
+			{
+				// ignored
+			}
+
+			if (passwordRequired)
+			{
+				lblCertPassword.Visible = true;
+				txtCertPassword.Visible = true;
+			}
+			else
+			{
+				lblCertPassword.Visible = false;
+				txtCertPassword.Visible = false;
+				txtCertPassword.Text = "";
+			}
 		}
 	}
 }

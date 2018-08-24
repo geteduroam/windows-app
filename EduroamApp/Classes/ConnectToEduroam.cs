@@ -39,8 +39,37 @@ namespace EduroamApp
 			// if EAP type is not supported, cancel setup
 			if (eapType != 13 && eapType != 25 && eapType != 21) return eapType;
 
+			// name of the certificate issuer
+			string certIssuer = null;
+
+			// checks if Athentication method contains a client certificate
+			if (!string.IsNullOrEmpty(authMethod.ClientCertificate))
+			{
+				// gets passphrase element
+				string clientPwd = authMethod.ClientPassphrase;
+				// converts from base64
+				var clientBytes = Convert.FromBase64String(authMethod.ClientCertificate);
+				// creates certificate object
+				var clientCert = new X509Certificate2(clientBytes, clientPwd, X509KeyStorageFlags.PersistKeySet);
+				// sets friendly name of certificate
+				clientCert.FriendlyName = clientCert.GetNameInfo(X509NameType.SimpleName, false);
+
+				// opens the personal certificate store
+				var personalStore = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+				personalStore.Open(OpenFlags.ReadWrite);
+
+				// adds client cert to personal store
+				personalStore.Add(clientCert);
+
+				// closes personal store
+				personalStore.Close();
+
+				// gets the CA that issued the certificate
+				certIssuer = clientCert.IssuerName.Name;
+			}
+
 			// opens the trusted root CA store
-			X509Store rootStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
+			var rootStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
 			rootStore.Open(OpenFlags.ReadWrite);
 
 			// all CA thumbprints that will be added to Wireless Profile XML
@@ -53,12 +82,12 @@ namespace EduroamApp
 				var caBytes = Convert.FromBase64String(ca);
 
 				// creates certificate object
-				X509Certificate2 caCert = new X509Certificate2(caBytes);
+				var caCert = new X509Certificate2(caBytes);
 				// sets friendly name of CA
 				caCert.FriendlyName = caCert.GetNameInfo(X509NameType.SimpleName, false);
 
 				// show messagebox to let users know about the CA installation warning if CA not already installed
-				var certExists = rootStore.Certificates.Find(X509FindType.FindByThumbprint, caCert.Thumbprint, true);
+				X509Certificate2Collection certExists = rootStore.Certificates.Find(X509FindType.FindByThumbprint, caCert.Thumbprint, true);
 				if (certExists.Count < 1)
 				{
 					MessageBox.Show("You will now be prompted to install a Certificate Authority. \n" +
@@ -104,38 +133,9 @@ namespace EduroamApp
 				thumbprints.Add(formattedThumbprint);
 			}
 
-			// name of the certificate issuer
-			string certIssuer = null;
-
-			// checks if Athentication method contains a client certificate
-			if (!string.IsNullOrEmpty(authMethod.ClientCertificate))
-			{
-				// gets passphrase element
-				string clientPwd = authMethod.ClientPassphrase;
-				// converts from base64
-				var clientBytes = Convert.FromBase64String(authMethod.ClientCertificate);
-				// creates certificate object
-				X509Certificate2 clientCert = new X509Certificate2(clientBytes, clientPwd, X509KeyStorageFlags.PersistKeySet);
-				// sets friendly name of certificate
-				clientCert.FriendlyName = clientCert.GetNameInfo(X509NameType.SimpleName, false);
-
-				// opens the personal certificate store
-				X509Store personalStore = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-				personalStore.Open(OpenFlags.ReadWrite);
-
-				// adds client cert to personal store
-				personalStore.Add(clientCert);
-
-				// closes personal store
-				personalStore.Close();
-
-				// gets the CA that issued the certificate
-				certIssuer = clientCert.IssuerName.Name;
-			}
-
 			if (certIssuer != null)
 			{
-				var existingCa = rootStore.Certificates.Find(X509FindType.FindByIssuerDistinguishedName, certIssuer, true);
+				X509Certificate2Collection existingCa = rootStore.Certificates.Find(X509FindType.FindByIssuerDistinguishedName, certIssuer, true);
 
 				foreach (X509Certificate2 ca in existingCa)
 				{
@@ -157,6 +157,20 @@ namespace EduroamApp
 
 			// creates a new wireless profile
 			Debug.WriteLine(CreateNewProfile(interfaceId, profileXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
+
+			// checks if EAP type is TLS and there is no client certificate
+			if (eapType == 13 && string.IsNullOrEmpty(authMethod.ClientCertificate))
+			{
+				DialogResult dialogResult = MessageBox.Show(
+					"The selected profile requires a separate client certificate. Do you want to browse your local files for one?",
+					"Client certificate required", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+				if (dialogResult == DialogResult.Yes)
+				{
+					return eapType = 500;
+				}
+
+				return 0;
+			}
 
 			return eapType;
 		}
@@ -293,103 +307,10 @@ namespace EduroamApp
 		}
 
 		/// <summary>
-		/// Gets all client certificates and CAs from EAP config file.
+		/// Get the institution id/name from an EAP config file.
 		/// </summary>
-		/// <returns>List of client certificates and list of CAs.</returns>
-		private static Tuple<List<X509Certificate2>, List<X509Certificate2>> GetCertificates(string fileString)
-		{
-			// loads the XML file from its file path
-			XElement doc = XElement.Parse(fileString);
-
-
-			// certificate lists to be populated
-			List<X509Certificate2> clientCertificates = new List<X509Certificate2>();
-			List<X509Certificate2> certAuthorities = new List<X509Certificate2>();
-
-			// gets all ClientSideCredential elements
-			IEnumerable<XElement> clientCredElements = doc.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "ClientSideCredential");
-
-			// gets client certificates and adds them to client certificate list
-			foreach (XElement el in clientCredElements)
-			{
-				// list of ClientCertificate elements
-				var certElements = el.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "ClientCertificate").ToList();
-				// checks every ClientSideCredential element for ClientCertificate elements
-				if (certElements.Any())
-				{
-					// there should only be one ClientCertificate in a ClientSideCredential element, so gets the first one
-					string base64Client = certElements.First().Value; // Client cert encoded to base64
-					if (base64Client != "") // checks that the certificate value is not empty
-					{
-						// gets passphrase element
-						string clientPwd = (string) el.DescendantsAndSelf().Elements().FirstOrDefault(pw => pw.Name.LocalName == "Passphrase"); // Client cert password
-						// converts from base64
-						var clientBytes = Convert.FromBase64String(base64Client);
-
-						// creates certificate object
-						X509Certificate2 clientCert = new X509Certificate2(clientBytes, clientPwd, X509KeyStorageFlags.PersistKeySet);
-						// sets friendly name of certificate
-						clientCert.FriendlyName = clientCert.GetNameInfo(X509NameType.SimpleName, false);
-						// adds certificate object to list
-						clientCertificates.Add(clientCert);
-					}
-				}
-			}
-
-			// gets CAs and adds them to CA list
-			IEnumerable<XElement> caElements = doc.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "CA");
-			foreach (XElement ca in caElements)
-			{
-				// CA encoded to base64
-				string base64Ca = ca.Value;
-				// checks that the CA value is not empty
-				if (base64Ca != "")
-				{
-					// converts from base64
-					var caBytes = Convert.FromBase64String(base64Ca); // CA decoded from base64
-					// creates certificate object
-					X509Certificate2 caCert = new X509Certificate2(caBytes); // CA object
-					// sets friendly name of certificate
-					caCert.FriendlyName = caCert.GetNameInfo(X509NameType.SimpleName, false);
-					// adds certificate object to list
-					certAuthorities.Add(caCert);
-				}
-			}
-
-			// returns lists of certificates
-			return Tuple.Create(clientCertificates, certAuthorities);
-		}
-
-		/// <summary>
-		/// Installs a certificate object in the specified certificate store.
-		/// </summary>
-		/// <param name="cert">Certificate object.</param>
-		/// <param name="store">Certificate store (personal or root)</param>
-		private static void InstallCertificate(X509Certificate2 cert, X509Store store)
-		{
-			// opens certificate store
-			store.Open(OpenFlags.ReadWrite);
-
-			// check if CA already exists in store
-			if (store.Name == "Root")
-			{
-				// show messagebox to let users know about the CA installation warning
-				var certExists = store.Certificates.Find(X509FindType.FindByThumbprint, cert.Thumbprint, true);
-				if (certExists.Count < 1)
-				{
-					MessageBox.Show("You will now be prompted to install a Certificate Authority. " +
-									"In order to connect to eduroam, you need to accept this by pressing \"Yes\" in the following dialog.",
-						"Accept Certificate Authority", MessageBoxButtons.OK);
-				}
-			}
-
-			// adds certificate to store
-			store.Add(cert);
-
-			// closes certificate store
-			store.Close();
-		}
-
+		/// <param name="eapString">EAP config file as string.</param>
+		/// <returns>Institution id/name.</returns>
 		public static string GetInstId(string eapString)
 		{
 			// loads XML file from string
