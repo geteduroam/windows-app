@@ -35,7 +35,7 @@ namespace EduroamApp
         private void btnAltSetup_Click(object sender, EventArgs e)
         {
             // loads form with alternate setup methods 
-            frmParent.LoadFrm2();
+            frmParent.LoadFrmSelectMethod();
         }
 
         public void InstallSelfExtract()

@@ -25,7 +25,7 @@ namespace EduroamApp
             lblStatus.Text = "Connecting...";
             pboStatus.Image = Properties.Resources.ajax_loader;
 
-            bool connectSuccess = false;
+            bool connectSuccess;
             // tries to connect
             try
             {
@@ -44,6 +44,7 @@ namespace EduroamApp
                 lblStatus.Text = "You are now connected to eduroam.\nPress Close to exit the wizard.";
                 pboStatus.Image = Properties.Resources.checkmark_16;
                 frmParent.BtnCancelText = "Close";
+                frmParent.LblProfileCondition = "GOODPROFILE";
             }
             else
             {
@@ -51,7 +52,7 @@ namespace EduroamApp
                 pboStatus.Image = Properties.Resources.x_mark_3_16;
                 lblConnectFailed.Visible = true;
                 frmParent.BtnBackEnabled = true;
-                //ConnectToEduroam.RemoveProfile();
+                frmParent.LblProfileCondition = "BADPROFILE";
             }
         }
         

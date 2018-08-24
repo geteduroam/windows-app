@@ -45,11 +45,13 @@
             this.pnlLogoLeft = new System.Windows.Forms.Panel();
             this.pnlLogoRight = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lblProfileCondition = new System.Windows.Forms.Label();
             this.lblInst = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
             this.pnlLeftMargin = new System.Windows.Forms.Panel();
             this.pnlRightMargin = new System.Windows.Forms.Panel();
             this.pnlContent = new System.Windows.Forms.Panel();
+            this.lblLocalFileType = new System.Windows.Forms.Label();
             this.pnlNavigation.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.pnlLeft.SuspendLayout();
@@ -228,6 +230,8 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.White;
+            this.panel1.Controls.Add(this.lblLocalFileType);
+            this.panel1.Controls.Add(this.lblProfileCondition);
             this.panel1.Controls.Add(this.lblInst);
             this.panel1.Controls.Add(this.lblTitle);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -236,14 +240,24 @@
             this.panel1.Size = new System.Drawing.Size(448, 120);
             this.panel1.TabIndex = 4;
             // 
+            // lblProfileCondition
+            // 
+            this.lblProfileCondition.AutoSize = true;
+            this.lblProfileCondition.Location = new System.Drawing.Point(330, 24);
+            this.lblProfileCondition.Name = "lblProfileCondition";
+            this.lblProfileCondition.Size = new System.Drawing.Size(112, 13);
+            this.lblProfileCondition.TabIndex = 9;
+            this.lblProfileCondition.Text = "PROFILECONDITION";
+            this.lblProfileCondition.Visible = false;
+            // 
             // lblInst
             // 
             this.lblInst.AutoSize = true;
-            this.lblInst.Location = new System.Drawing.Point(351, 9);
+            this.lblInst.Location = new System.Drawing.Point(332, 9);
             this.lblInst.Name = "lblInst";
-            this.lblInst.Size = new System.Drawing.Size(94, 13);
+            this.lblInst.Size = new System.Drawing.Size(110, 13);
             this.lblInst.TabIndex = 8;
-            this.lblInst.Text = "INVISIBLE LABEL";
+            this.lblInst.Text = "INSTITUTION NAME";
             this.lblInst.Visible = false;
             // 
             // lblTitle
@@ -283,6 +297,16 @@
             this.pnlContent.Name = "pnlContent";
             this.pnlContent.Size = new System.Drawing.Size(378, 246);
             this.pnlContent.TabIndex = 7;
+            // 
+            // lblLocalFileType
+            // 
+            this.lblLocalFileType.AutoSize = true;
+            this.lblLocalFileType.Location = new System.Drawing.Point(330, 40);
+            this.lblLocalFileType.Name = "lblLocalFileType";
+            this.lblLocalFileType.Size = new System.Drawing.Size(91, 13);
+            this.lblLocalFileType.TabIndex = 10;
+            this.lblLocalFileType.Text = "LOCALFILETYPE";
+            this.lblLocalFileType.Visible = false;
             // 
             // frmParent
             // 
@@ -340,5 +364,7 @@
         private System.Windows.Forms.Panel pnlLogoMid;
         private System.Windows.Forms.Panel pnlLogoBot;
         private System.Windows.Forms.Panel pnlLogoTop;
+        private System.Windows.Forms.Label lblProfileCondition;
+        private System.Windows.Forms.Label lblLocalFileType;
     }
 }
