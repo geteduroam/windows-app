@@ -4,30 +4,21 @@ This application helps set up eduroam on end-users' computers by automatically f
 
 ## Getting started
 
-
-
 ### Prerequisites
- * Visual Studio 2017 (Community edition is a free download)
+
+ * Visual Studio 2017 (https://visualstudio.microsoft.com/downloads/)
  * .NET Framework 4.7.1
+ 
+### Running the app
 
-```
-Give examples
-```
+ * Compile the project to create EduroamApp.exe (in EduroamApp\EduroamApp\bin\Debug). 
+	* This executable can be run independently from the rest of the solution, so you can move it to any desired directory.
 
-### Installing
+## Dependencies
 
-A step by step series of examples that tell you how to get a development env running
+ * ManagedNativeWifi by emoacht (https://github.com/emoacht/ManagedNativeWifi)
+ * Newtonsoft.Json by JamesNK (https://github.com/JamesNK/Newtonsoft.Json)
+ * Fody (https://github.com/Fody/Fody)
+	* Costura (https://github.com/Fody/Costura)
 
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
+## License
