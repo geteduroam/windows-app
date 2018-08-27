@@ -280,8 +280,6 @@ namespace EduroamApp
 
         public string GetProfileAttributes()
         {
-            string oAuthUri = "";
-
             // adds profile id to url
             string profileAttributeUrl = $"https://cat.eduroam.org/user/API.php?action=profileAttributes&id={profileId}&lang=en";
 
@@ -301,24 +299,25 @@ namespace EduroamApp
             {
                 MessageBox.Show("Couldn't fetch profile attributes from WebClient.\n" +
                                 "Exception: " + ex.Message, "WebClient profile attributes", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return oAuthUri;
+                return "";
             }
             catch (JsonReaderException ex)
             {
                 MessageBox.Show("Couldn't read profile attributes from JSON file.\n" +
                                 "Exception: " + ex.Message, "JSON profile attributes", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return oAuthUri;
+                return "";
             }
-            
+
+            string redirect = "";
             foreach (var attribute in profileAttributes.Data.Devices)
             {
-                if (attribute.Redirect.Contains("#letswifi"))
+                if (attribute.Redirect != "0")
                 {
-                    oAuthUri = attribute.Redirect;
+                    redirect = attribute.Redirect;
                 }
             }
 
-            return oAuthUri;
+            return redirect;
         }
 
         public string GetEapConfigString()
@@ -379,19 +378,24 @@ namespace EduroamApp
                 return 0; // exits function if no institution/profile selected
             }
 
-            string oAuthUri = GetProfileAttributes();
+            string redirect = GetProfileAttributes();
             string eapString = "";
 
-            if (!string.IsNullOrEmpty(oAuthUri))
+            if (redirect == "0")
             {
-                eapString = OAuth.BrowserAuthenticate(oAuthUri);
+                eapString = GetEapConfigString();
+            }
+            else if (redirect.Contains("#letswifi"))
+            {
+                eapString = OAuth.BrowserAuthenticate(redirect);
                 frmParent.Activate();
             }
             else
             {
-                eapString = GetEapConfigString();
+                frmParent.LblRedirect = redirect;
+                return 200;
             }
-
+            
             if (string.IsNullOrEmpty(eapString)) return 0;
 
             uint eapType = 0;
@@ -412,12 +416,12 @@ namespace EduroamApp
                         "Network interface error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Something went wrong...\nException: " + 
-                                ex.Message, "Eduroam - exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                throw;
-            }
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("Something went wrong...\nException: " + 
+            //                    ex.Message, "Eduroam - exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    throw;
+            //}
             
             // makes the institution Id accessible from parent form
             frmParent.LblInstText = instId;

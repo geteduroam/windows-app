@@ -78,14 +78,6 @@ namespace EduroamApp
                                         "Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.",
                             "Network interface error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-
-                    //catch (Exception ex)
-                    //{
-                    //    MessageBox.Show(
-                    //        "The selected file is corrupted. Please select another file, or try another setup method.\n" +
-                    //        "Exception: " + ex.Message,
-                    //        "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    //}
                 }
             }
             // makes the institution Id accessible from parent form
@@ -146,13 +138,23 @@ namespace EduroamApp
             {
                 lblCertPassword.Visible = true;
                 txtCertPassword.Visible = true;
+                cboShowPassword.Visible = true;
             }
             else
             {
                 lblCertPassword.Visible = false;
                 txtCertPassword.Visible = false;
                 txtCertPassword.Text = "";
+                cboShowPassword.Visible = false;
+                cboShowPassword.Checked = false;
+                txtCertPassword.UseSystemPasswordChar = true;
             }
+        }
+
+        // unmasks password characters on screen
+        private void cboShowPassword_CheckedChanged(object sender, EventArgs e)
+        {
+            txtCertPassword.UseSystemPasswordChar = !cboShowPassword.Checked;
         }
     }
 }

@@ -36,6 +36,7 @@ namespace EduroamApp
         frmLocal frmLocal;
         frmConnect frmConnect;
         frmLogin frmLogin;
+        private frmRedirect frmRedirect;
 
         public frmParent()
         {
@@ -99,6 +100,10 @@ namespace EduroamApp
                     eapType = frmDownload.ConnectWithDownload();
                     if (eapType == 13) LoadFrmConnect();
                     else if (eapType == 25 || eapType == 21) LoadFrmLogin();
+                    else if (eapType == 200)
+                    {
+                        LoadFrmRedirect();
+                    }
                     else if (eapType == 500)
                     {
                         lblLocalFileType.Text = "CERT";
@@ -124,7 +129,7 @@ namespace EduroamApp
                     break;
                 case 6:
                     break;
-                case 7:
+                case 8:
                     if (frmLocal.InstallCertFile()) LoadFrmConnect();
                     break;
             }
@@ -157,7 +162,7 @@ namespace EduroamApp
                     break;
                 case 6:
                     break;
-                case 7:
+                case 8:
                     LoadFrmLocalCert();
                     break;
             }
@@ -233,6 +238,12 @@ namespace EduroamApp
         {
             get => lblLocalFileType.Text;
             set => lblLocalFileType.Text = value;
+        }
+
+        public string LblRedirect
+        {
+            get => lblRedirect.Text;
+            set => lblRedirect.Text = value;
         }
 
         /// <summary>
@@ -321,12 +332,25 @@ namespace EduroamApp
         }
 
         /// <summary>
-        /// Loads form that shows connection status.
+        /// Loads form that shows redirect link.
+        /// </summary>
+        public void LoadFrmRedirect()
+        {
+            frmRedirect = new frmRedirect(this);
+            currentFormId = 7;
+            lblTitle.Text = "You are being redirected";
+            btnNext.Enabled = false;
+            btnBack.Enabled = true;
+            LoadNewForm(frmRedirect);
+        }
+
+        /// <summary>
+        /// Loads form that lets you select a local client certificate file.
         /// </summary>
         public void LoadFrmLocalCert()
         {
             if (reload) frmLocal = new frmLocal(this);
-            currentFormId = 7;
+            currentFormId = 8;
             lblTitle.Text = "Select client certificate file";
             btnNext.Text = "Next >";
             btnNext.Enabled = true;
