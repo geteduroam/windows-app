@@ -33,6 +33,7 @@ namespace EduroamApp
 			this.txtFilepath = new System.Windows.Forms.TextBox();
 			this.txtCertPassword = new System.Windows.Forms.TextBox();
 			this.lblCertPassword = new System.Windows.Forms.Label();
+			this.cboShowPassword = new System.Windows.Forms.CheckBox();
 			this.SuspendLayout();
 			//
 			// btnBrowse
@@ -66,7 +67,7 @@ namespace EduroamApp
 			//
 			this.txtCertPassword.Location = new System.Drawing.Point(6, 86);
 			this.txtCertPassword.Name = "txtCertPassword";
-			this.txtCertPassword.Size = new System.Drawing.Size(182, 20);
+			this.txtCertPassword.Size = new System.Drawing.Size(172, 20);
 			this.txtCertPassword.TabIndex = 6;
 			this.txtCertPassword.UseSystemPasswordChar = true;
 			this.txtCertPassword.Visible = false;
@@ -81,6 +82,18 @@ namespace EduroamApp
 			this.lblCertPassword.Text = "Certificate password:";
 			this.lblCertPassword.Visible = false;
 			//
+			// cboShowPassword
+			//
+			this.cboShowPassword.AutoSize = true;
+			this.cboShowPassword.Location = new System.Drawing.Point(184, 88);
+			this.cboShowPassword.Name = "cboShowPassword";
+			this.cboShowPassword.Size = new System.Drawing.Size(108, 17);
+			this.cboShowPassword.TabIndex = 7;
+			this.cboShowPassword.Text = "Display password";
+			this.cboShowPassword.UseVisualStyleBackColor = true;
+			this.cboShowPassword.Visible = false;
+			this.cboShowPassword.CheckedChanged += new System.EventHandler(this.cboShowPassword_CheckedChanged);
+			//
 			// frmLocal
 			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -88,6 +101,7 @@ namespace EduroamApp
 			this.AutoScroll = true;
 			this.BackColor = System.Drawing.Color.White;
 			this.ClientSize = new System.Drawing.Size(378, 246);
+			this.Controls.Add(this.cboShowPassword);
 			this.Controls.Add(this.txtCertPassword);
 			this.Controls.Add(this.lblCertPassword);
 			this.Controls.Add(this.txtFilepath);
@@ -108,5 +122,6 @@ namespace EduroamApp
 		private System.Windows.Forms.TextBox txtFilepath;
 		private System.Windows.Forms.TextBox txtCertPassword;
 		private System.Windows.Forms.Label lblCertPassword;
+		private System.Windows.Forms.CheckBox cboShowPassword;
 	}
 }

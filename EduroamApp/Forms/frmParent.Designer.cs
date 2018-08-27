@@ -38,26 +38,27 @@ namespace EduroamApp
 			this.pnlNavTop = new System.Windows.Forms.Panel();
 			this.pnlLeft = new System.Windows.Forms.Panel();
 			this.pnlLogoMid = new System.Windows.Forms.Panel();
-			this.pictureBox2 = new System.Windows.Forms.PictureBox();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
+			this.pictureBox2 = new System.Windows.Forms.PictureBox();
 			this.pnlLogoBot = new System.Windows.Forms.Panel();
 			this.pnlLogoTop = new System.Windows.Forms.Panel();
 			this.pnlLogoLeft = new System.Windows.Forms.Panel();
 			this.pnlLogoRight = new System.Windows.Forms.Panel();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.lblRedirect = new System.Windows.Forms.Label();
+			this.lblLocalFileType = new System.Windows.Forms.Label();
 			this.lblProfileCondition = new System.Windows.Forms.Label();
 			this.lblInst = new System.Windows.Forms.Label();
 			this.lblTitle = new System.Windows.Forms.Label();
 			this.pnlLeftMargin = new System.Windows.Forms.Panel();
 			this.pnlRightMargin = new System.Windows.Forms.Panel();
 			this.pnlContent = new System.Windows.Forms.Panel();
-			this.lblLocalFileType = new System.Windows.Forms.Label();
 			this.pnlNavigation.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.pnlLeft.SuspendLayout();
 			this.pnlLogoMid.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			//
@@ -164,35 +165,35 @@ namespace EduroamApp
 			//
 			// pnlLogoMid
 			//
-			this.pnlLogoMid.Controls.Add(this.pictureBox2);
 			this.pnlLogoMid.Controls.Add(this.pictureBox1);
+			this.pnlLogoMid.Controls.Add(this.pictureBox2);
 			this.pnlLogoMid.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.pnlLogoMid.Location = new System.Drawing.Point(8, 59);
 			this.pnlLogoMid.Name = "pnlLogoMid";
 			this.pnlLogoMid.Size = new System.Drawing.Size(144, 241);
 			this.pnlLogoMid.TabIndex = 7;
 			//
+			// pictureBox1
+			//
+			this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Top;
+			this.pictureBox1.Image = global::EduroamApp.Properties.Resources.eduroam_logo_400px;
+			this.pictureBox1.Location = new System.Drawing.Point(0, 76);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(144, 65);
+			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.pictureBox1.TabIndex = 2;
+			this.pictureBox1.TabStop = false;
+			//
 			// pictureBox2
 			//
 			this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Top;
 			this.pictureBox2.Image = global::EduroamApp.Properties.Resources._1280px_Uninett_logo_svg;
-			this.pictureBox2.Location = new System.Drawing.Point(0, 65);
+			this.pictureBox2.Location = new System.Drawing.Point(0, 0);
 			this.pictureBox2.Name = "pictureBox2";
 			this.pictureBox2.Size = new System.Drawing.Size(144, 76);
 			this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
 			this.pictureBox2.TabIndex = 1;
 			this.pictureBox2.TabStop = false;
-			//
-			// pictureBox1
-			//
-			this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.pictureBox1.Image = global::EduroamApp.Properties.Resources.eduroam_logo_400px;
-			this.pictureBox1.Location = new System.Drawing.Point(0, 0);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(144, 65);
-			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-			this.pictureBox1.TabIndex = 0;
-			this.pictureBox1.TabStop = false;
 			//
 			// pnlLogoBot
 			//
@@ -230,6 +231,7 @@ namespace EduroamApp
 			// panel1
 			//
 			this.panel1.BackColor = System.Drawing.Color.White;
+			this.panel1.Controls.Add(this.lblRedirect);
 			this.panel1.Controls.Add(this.lblLocalFileType);
 			this.panel1.Controls.Add(this.lblProfileCondition);
 			this.panel1.Controls.Add(this.lblInst);
@@ -240,24 +242,44 @@ namespace EduroamApp
 			this.panel1.Size = new System.Drawing.Size(448, 120);
 			this.panel1.TabIndex = 4;
 			//
+			// lblRedirect
+			//
+			this.lblRedirect.AutoSize = true;
+			this.lblRedirect.Location = new System.Drawing.Point(330, 53);
+			this.lblRedirect.Name = "lblRedirect";
+			this.lblRedirect.Size = new System.Drawing.Size(84, 13);
+			this.lblRedirect.TabIndex = 11;
+			this.lblRedirect.Text = "label: redirect url";
+			this.lblRedirect.Visible = false;
+			//
+			// lblLocalFileType
+			//
+			this.lblLocalFileType.AutoSize = true;
+			this.lblLocalFileType.Location = new System.Drawing.Point(330, 40);
+			this.lblLocalFileType.Name = "lblLocalFileType";
+			this.lblLocalFileType.Size = new System.Drawing.Size(96, 13);
+			this.lblLocalFileType.TabIndex = 10;
+			this.lblLocalFileType.Text = "label: local file type";
+			this.lblLocalFileType.Visible = false;
+			//
 			// lblProfileCondition
 			//
 			this.lblProfileCondition.AutoSize = true;
-			this.lblProfileCondition.Location = new System.Drawing.Point(330, 24);
+			this.lblProfileCondition.Location = new System.Drawing.Point(330, 27);
 			this.lblProfileCondition.Name = "lblProfileCondition";
-			this.lblProfileCondition.Size = new System.Drawing.Size(112, 13);
+			this.lblProfileCondition.Size = new System.Drawing.Size(109, 13);
 			this.lblProfileCondition.TabIndex = 9;
-			this.lblProfileCondition.Text = "PROFILECONDITION";
+			this.lblProfileCondition.Text = "label: profile condition";
 			this.lblProfileCondition.Visible = false;
 			//
 			// lblInst
 			//
 			this.lblInst.AutoSize = true;
-			this.lblInst.Location = new System.Drawing.Point(332, 9);
+			this.lblInst.Location = new System.Drawing.Point(330, 14);
 			this.lblInst.Name = "lblInst";
-			this.lblInst.Size = new System.Drawing.Size(110, 13);
+			this.lblInst.Size = new System.Drawing.Size(108, 13);
 			this.lblInst.TabIndex = 8;
-			this.lblInst.Text = "INSTITUTION NAME";
+			this.lblInst.Text = "label: institution name";
 			this.lblInst.Visible = false;
 			//
 			// lblTitle
@@ -298,16 +320,6 @@ namespace EduroamApp
 			this.pnlContent.Size = new System.Drawing.Size(378, 246);
 			this.pnlContent.TabIndex = 7;
 			//
-			// lblLocalFileType
-			//
-			this.lblLocalFileType.AutoSize = true;
-			this.lblLocalFileType.Location = new System.Drawing.Point(330, 40);
-			this.lblLocalFileType.Name = "lblLocalFileType";
-			this.lblLocalFileType.Size = new System.Drawing.Size(91, 13);
-			this.lblLocalFileType.TabIndex = 10;
-			this.lblLocalFileType.Text = "LOCALFILETYPE";
-			this.lblLocalFileType.Visible = false;
-			//
 			// frmParent
 			//
 			this.AcceptButton = this.btnNext;
@@ -331,8 +343,8 @@ namespace EduroamApp
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.pnlLeft.ResumeLayout(false);
 			this.pnlLogoMid.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
 			this.ResumeLayout(false);
@@ -344,8 +356,6 @@ namespace EduroamApp
 
 		private System.Windows.Forms.Panel pnlNavigation;
 		private System.Windows.Forms.Panel pnlLeft;
-		private System.Windows.Forms.PictureBox pictureBox1;
-		private System.Windows.Forms.PictureBox pictureBox2;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.Button btnBack;
 		private System.Windows.Forms.Button btnNext;
@@ -366,5 +376,8 @@ namespace EduroamApp
 		private System.Windows.Forms.Panel pnlLogoTop;
 		private System.Windows.Forms.Label lblProfileCondition;
 		private System.Windows.Forms.Label lblLocalFileType;
+		private System.Windows.Forms.Label lblRedirect;
+		private System.Windows.Forms.PictureBox pictureBox2;
+		private System.Windows.Forms.PictureBox pictureBox1;
 	}
 }
