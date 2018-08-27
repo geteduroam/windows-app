@@ -82,11 +82,14 @@ namespace EduroamApp
 			// adds current form to history for easy backtracking
 			formHistory.Add(currentFormId);
 
-
 			switch (currentFormId)
 			{
 				case 1:
-					frmSelfExtract.InstallSelfExtract();
+					eapType = frmSelfExtract.InstallSelfExtract();
+					if (eapType == 13) LoadFrmConnect();
+					else if (eapType == 25 || eapType == 21) LoadFrmLogin();
+					else if (eapType != 0) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
+						"Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					break;
 				case 2:
 					if (frmSelectMethod.GoToForm() == 3) LoadFrmDownload();

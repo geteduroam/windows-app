@@ -23,7 +23,7 @@ namespace EduroamApp
 	public partial class frmSelfExtract : Form
 	{
 		// makes the parent form accessible from this class
-		frmParent frmParent;
+		private readonly frmParent frmParent;
 
 		public frmSelfExtract(frmParent parentInstance)
 		{
@@ -38,10 +38,9 @@ namespace EduroamApp
 			frmParent.LoadFrmSelectMethod();
 		}
 
-		public void InstallSelfExtract()
+		public uint InstallSelfExtract()
 		{
-			bool installFlag = false;
-			string errorMessage = "";
+			string errorMessage;
 			string exeLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			string[] files = Directory.GetFiles(exeLocation, "*.eap-config");
 
@@ -51,13 +50,13 @@ namespace EduroamApp
 				string configString = File.ReadAllText(configPath);
 				try
 				{
-					// ConnectToEduroam(configString)
-					installFlag = true;
+					uint eapType = ConnectToEduroam.Setup(configString);
+					return eapType;
 				}
 				catch (Exception ex)
 				{
 					errorMessage = "Something went wrong.\n" +
-									"Please try connecting through alternate setup.\n\n" +
+									"Please try connecting through an alterate method.\n\n" +
 									"Exception: " + ex.Message;
 				}
 			}
@@ -67,14 +66,12 @@ namespace EduroamApp
 								"Please try connecting through alternate setup.";
 			}
 
-			if (installFlag == false)
-			{
-				MessageBox.Show(errorMessage, "eduroam Setup failed",
-									MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				pnlAltPopup.BackColor = Color.Red;
-				pnlAltPopup.BorderStyle = BorderStyle.FixedSingle;
-			}
+			MessageBox.Show(errorMessage, "eduroam Setup failed",
+				MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+			pnlAltPopup.BackColor = Color.Red;
+			pnlAltPopup.BorderStyle = BorderStyle.FixedSingle;
 
+			return 0;
 		}
 	}
 }
