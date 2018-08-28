@@ -381,7 +381,7 @@ namespace EduroamApp
             string redirect = GetProfileAttributes();
             string eapString = "";
 
-            if (redirect == "0")
+            if (redirect == "0" || string.IsNullOrEmpty(redirect))
             {
                 eapString = GetEapConfigString();
             }
@@ -397,14 +397,17 @@ namespace EduroamApp
             }
             
             if (string.IsNullOrEmpty(eapString)) return 0;
-
+            
             uint eapType = 0;
-            string instId = null;
             
             try
             {
-                eapType = ConnectToEduroam.Setup(eapString);
-                instId = ConnectToEduroam.GetInstId(eapString);
+                // creates EapConfig object from Eap string
+                EapConfig eapConfig = ConnectToEduroam.GetEapConfig(eapString);
+                // creates profile from EapConfig object
+                eapType = ConnectToEduroam.Setup(eapConfig);
+                // makes the institution Id accessible from parent form
+                frmParent.LblInstText = eapConfig.InstitutionInfo.InstId;
             }
             catch (ArgumentException argEx)
             {
@@ -416,15 +419,6 @@ namespace EduroamApp
                         "Network interface error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("Something went wrong...\nException: " + 
-            //                    ex.Message, "Eduroam - exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    throw;
-            //}
-            
-            // makes the institution Id accessible from parent form
-            frmParent.LblInstText = instId;
             return eapType;
         }
 

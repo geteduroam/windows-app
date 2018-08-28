@@ -55,35 +55,32 @@ namespace EduroamApp
         
         public uint ConnectWithFile()
         {
-            uint eapType = 0;
-            string instId = null;
-
             // validates the selected config file
-            if (FileDialog.ValidateFileSelection(txtFilepath.Text, "EAP"))
+            if (!FileDialog.ValidateFileSelection(txtFilepath.Text, "EAP")) return 0;
+
+            // gets content of config file
+            string eapString = File.ReadAllText(txtFilepath.Text);
+            uint eapType = 0;
+
+            try
             {
-                // gets content of config file
-                string eapString = File.ReadAllText(txtFilepath.Text);
-                
-                try
+                // creates EapConfig object from Eap string
+                EapConfig eapConfig = ConnectToEduroam.GetEapConfig(eapString);
+                // creates profile from EapConfig object
+                eapType = ConnectToEduroam.Setup(eapConfig);
+                // makes the institution Id accessible from parent form
+                frmParent.LblInstText = eapConfig.InstitutionInfo.InstId;
+            }
+            catch (ArgumentException argEx)
+            {
+                if (argEx.Message == "interfaceId")
                 {
-                    // gets certificates and creates wireless profile
-                    eapType  = ConnectToEduroam.Setup(eapString);
-                    instId = ConnectToEduroam.GetInstId(eapString);
-                }
-                catch (ArgumentException argEx)
-                {
-                    if (argEx.Message == "interfaceId")
-                    {
-                        MessageBox.Show("Could not establish a connection through your computer's wireless network interface. \n" +
-                                        "Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.",
-                            "Network interface error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    MessageBox.Show("Could not establish a connection through your computer's wireless network interface. \n" +
+                                    "Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.",
+                        "Network interface error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            // makes the institution Id accessible from parent form
-            frmParent.LblInstText = instId;
             return eapType;
-
         }
         
         public bool InstallCertFile()

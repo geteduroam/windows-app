@@ -24,6 +24,7 @@ namespace EduroamApp
     {
         // makes the parent form accessible from this class
         private readonly frmParent frmParent;
+        private EapConfig eapConfig;
 
         public frmSelfExtract(frmParent parentInstance)
         {
@@ -32,38 +33,58 @@ namespace EduroamApp
             InitializeComponent();            
         }
 
-        private void btnAltSetup_Click(object sender, EventArgs e)
+        private void frmSelfExtract_Load(object sender, EventArgs e)
         {
-            // loads form with alternate setup methods 
-            frmParent.LoadFrmSelectMethod();
+            string exeLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            string[] files = Directory.GetFiles(exeLocation, "*.eap-config");
+            if (files.Length > 0)
+            {
+                string eapPath = files.First();
+                string eapString = File.ReadAllText(eapPath);
+                try
+                {
+                    eapConfig = ConnectToEduroam.GetEapConfig(eapString);
+                }
+                catch (Exception)
+                {
+                    // loads form with alternate setup methods 
+                    frmParent.LoadFrmSelectMethod();
+                    return;
+                }
+
+                lblInstName.Text = "Your institution is " + eapConfig.InstitutionInfo.DisplayName + ".";
+                lblWeb.Text = eapConfig.InstitutionInfo.WebAddress;
+                lblEmail.Text = eapConfig.InstitutionInfo.EmailAddress;
+                lblPhone.Text = eapConfig.InstitutionInfo.Phone;
+
+                foreach (Control cntrl in tblContactInfo.Controls)
+                {
+                    if (string.IsNullOrEmpty(cntrl.Text))
+                    {
+                        cntrl.Text = "-";
+                    }
+                }
+            }
+            else
+            {
+
+            }
+
         }
 
         public uint InstallSelfExtract()
         {
             string errorMessage;
-            string exeLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string[] files = Directory.GetFiles(exeLocation, "*.eap-config");
-
-            if (files.Length > 0)
+            try
             {
-                string configPath = files.First();
-                string configString = File.ReadAllText(configPath);
-                try
-                {
-                    uint eapType = ConnectToEduroam.Setup(configString);
-                    return eapType;
-                }
-                catch (Exception ex)
-                {
-                    errorMessage = "Something went wrong.\n" +
-                                    "Please try connecting through an alterate method.\n\n" +
-                                    "Exception: " + ex.Message;
-                }
+                uint eapType = ConnectToEduroam.Setup(eapConfig);
+                return eapType;
             }
-            else
+            catch (Exception ex)
             {
-                errorMessage = "Error: Cannot find configuration file.\n" +
-                                "Please try connecting through alternate setup.";
+                errorMessage = "Something went wrong.\n" +
+                                "Please try connecting through an alterate method.\n\n" +
+                                "Exception: " + ex.Message;
             }
 
             MessageBox.Show(errorMessage, "eduroam Setup failed",
@@ -73,5 +94,13 @@ namespace EduroamApp
 
             return 0;
         }
+
+        private void btnAltSetup_Click(object sender, EventArgs e)
+        {
+            // loads form with alternate setup methods 
+            frmParent.LoadFrmSelectMethod();
+        }
+
+
     }
 }
