@@ -368,14 +368,14 @@ namespace EduroamApp
             return eapString;
         }
 
-        public uint ConnectWithDownload()
+        public EapConfig ConnectWithDownload()
         {
             // checks if user has selected an institution and/or profile
             if (string.IsNullOrEmpty(profileId))
             {
                 MessageBox.Show("Please select an institution and/or a profile.",
                     "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return 0; // exits function if no institution/profile selected
+                return null; // exits function if no institution/profile selected
             }
 
             string redirect = GetProfileAttributes();
@@ -393,21 +393,19 @@ namespace EduroamApp
             else
             {
                 frmParent.LblRedirect = redirect;
-                return 200;
+                return null; //return 200;
             }
             
-            if (string.IsNullOrEmpty(eapString)) return 0;
-            
-            uint eapType = 0;
+            if (string.IsNullOrEmpty(eapString)) return null;
             
             try
             {
                 // creates EapConfig object from Eap string
-                EapConfig eapConfig = ConnectToEduroam.GetEapConfig(eapString);
+                return ConnectToEduroam.GetEapConfig(eapString);
                 // creates profile from EapConfig object
-                eapType = ConnectToEduroam.Setup(eapConfig);
+                //eapType = ConnectToEduroam.Setup(eapConfig);
                 // makes the institution Id accessible from parent form
-                frmParent.LblInstText = eapConfig.InstitutionInfo.InstId;
+                //frmParent.LblInstText = eapConfig.InstitutionInfo.InstId;
             }
             catch (ArgumentException argEx)
             {
@@ -419,7 +417,8 @@ namespace EduroamApp
                         "Network interface error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-            return eapType;
+
+            return null;
         }
 
         // -----------------------------------------------------------------------------------------

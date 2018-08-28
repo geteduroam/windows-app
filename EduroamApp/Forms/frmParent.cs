@@ -23,20 +23,21 @@ namespace EduroamApp
 {
     public partial class frmParent : Form
     {
-        int currentFormId;                                  // Id of currently selected form
-        readonly List<int> formHistory = new List<int>();   // keeps history of previously diplayed forms, in order to backtrack correctly
-        bool reload = true;                                 // sepcifies wether a form is to be re-instantiated when loaded
-        readonly GeoCoordinateWatcher watcher;              // gets coordinates of computer
-        uint eapType = 0;                                   // EAP type of selected network config, determines which forms to load
+        private int currentFormId;                                  // Id of currently selected form
+        private readonly List<int> formHistory = new List<int>();   // keeps history of previously diplayed forms, in order to backtrack correctly
+        private bool reload = true;                                 // sepcifies wether a form is to be re-instantiated when loaded
+        private readonly GeoCoordinateWatcher watcher;              // gets coordinates of computer
+        private EapConfig eapConfig = new EapConfig();
+        private uint eapType;                                   // EAP type of selected network config, determines which forms to load
 
 
         // makes forms globally  accessible in parent form
-        frmSelfExtract frmSelfExtract;
-        frmSelectMethod frmSelectMethod;
-        frmDownload frmDownload;
-        frmLocal frmLocal;
-        frmConnect frmConnect;
-        frmLogin frmLogin;
+        private frmSummary frmSummary;
+        private frmSelectMethod frmSelectMethod;
+        private frmDownload frmDownload;
+        private frmLocal frmLocal;
+        private frmConnect frmConnect;
+        private frmLogin frmLogin;
         private frmRedirect frmRedirect;
 
         public frmParent()
@@ -50,7 +51,6 @@ namespace EduroamApp
 
         private void LoadNewForm(Form nextForm)
         {
-            
             nextForm.TopLevel = false;
             nextForm.AutoScroll = true;
             nextForm.Dock = DockStyle.Fill;
@@ -62,9 +62,9 @@ namespace EduroamApp
         
         private void frmParent_Load(object sender, EventArgs e)
         {
-            
+            eapConfig = GetSelfExtractingEap();
             // checks if file came with self extract
-            if (ExistSelfExtract())
+            if (eapConfig != null)
             {
                 // goes to form for installation through self extract config file
                 LoadFrmSelfExtract();
@@ -86,7 +86,7 @@ namespace EduroamApp
             switch (currentFormId)
             {
                 case 1:
-                    eapType = frmSelfExtract.InstallSelfExtract();
+                    eapType = frmSummary.InstallSelfExtract();
                     if (eapType == 13) LoadFrmConnect();
                     else if (eapType == 25 || eapType == 21) LoadFrmLogin();
                     else if (eapType != 0) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
@@ -101,7 +101,15 @@ namespace EduroamApp
                     }
                     break;
                 case 3:
-                    eapType = frmDownload.ConnectWithDownload();
+                    eapConfig = frmDownload.ConnectWithDownload();
+                    if (eapConfig != null) LoadFrmSummary();
+                    break;
+                case 4:
+                    eapConfig = frmLocal.ConnectWithFile();
+                    if (eapConfig != null) LoadFrmSummary();
+                    break;
+                case 5:
+                    eapType = frmSummary.InstallSelfExtract();
                     if (eapType == 13) LoadFrmConnect();
                     else if (eapType == 25 || eapType == 21) LoadFrmLogin();
                     else if (eapType == 200)
@@ -114,16 +122,9 @@ namespace EduroamApp
                         LoadFrmLocalCert();
                     }
                     else if (eapType != 0) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
-                                                           "Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        "Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     break;
-                case 4:
-                    eapType = frmLocal.ConnectWithFile();
-                    if (eapType == 13) LoadFrmConnect();
-                    else if (eapType == 25 || eapType == 21) LoadFrmLogin();
-                    else if (eapType != 0) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
-                                                           "Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    break;
-                case 5:
+                case 6:
                     if (eapType != 21)
                     {
                         frmLogin.ConnectWithLogin(eapType);
@@ -131,9 +132,9 @@ namespace EduroamApp
                     }
                     else MessageBox.Show("Support for TTLS configuration not ready yet.", "TTLS not ready", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     break;
-                case 6:
+                case 7:
                     break;
-                case 8:
+                case 9:
                     if (frmLocal.InstallCertFile()) LoadFrmConnect();
                     break;
             }
@@ -161,12 +162,12 @@ namespace EduroamApp
                 case 4:
                     LoadFrmLocal();
                     break;
-                case 5:
+                case 6:
                     LoadFrmLogin();
                     break;
-                case 6:
+                case 7:
                     break;
-                case 8:
+                case 9:
                     LoadFrmLocalCert();
                     break;
             }
@@ -184,11 +185,27 @@ namespace EduroamApp
         /// Checks if an EAP-config file exists in the same folder as the executable
         /// </summary>
         /// <returns>True if file exists, false if not.</returns>
-        public bool ExistSelfExtract()
+        public EapConfig GetSelfExtractingEap()
         {
+            // checks again if eap config file exists in directory
             string exeLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
             string[] files = Directory.GetFiles(exeLocation, "*.eap-config");
-            return files.Length > 0;
+            if (files.Length <= 0)
+            {
+                return null;
+            }
+
+            try
+            {
+                string eapPath = files.First();
+                string eapString = File.ReadAllText(eapPath);
+                eapConfig = ConnectToEduroam.GetEapConfig(eapString);
+                return eapConfig;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         /// <summary>
@@ -261,13 +278,12 @@ namespace EduroamApp
         /// </summary>
         public void LoadFrmSelfExtract()
         {
-            // creates new instance of form1 if there is none, passes parent form instance as parameter
-            if (reload) frmSelfExtract = new frmSelfExtract(this);
+            frmSummary = new frmSummary(this, eapConfig);
             currentFormId = 1;
             lblTitle.Text = "eduroam Setup";
-            btnNext.Text = "Install";
+            btnNext.Text = "Next >";
             btnBack.Visible = false;
-            LoadNewForm(frmSelfExtract);
+            LoadNewForm(frmSummary);
         }
 
         /// <summary>
@@ -314,12 +330,24 @@ namespace EduroamApp
         }
 
         /// <summary>
+        /// Loads form that show a summary of selected profile.
+        /// </summary>
+        public void LoadFrmSummary()
+        {
+            frmSummary = new frmSummary(this, eapConfig);
+            currentFormId = 5;
+            lblTitle.Text = "Summary";
+            btnNext.Text = "Next >";
+            LoadNewForm(frmSummary);
+        }
+
+        /// <summary>
         /// Loads form that lets user log in with username+password.
         /// </summary>
         public void LoadFrmLogin()
         {
             frmLogin = new frmLogin(this);
-            currentFormId = 5;
+            currentFormId = 6;
             lblTitle.Text = "Log in";
             btnNext.Text = "Connect";
             btnNext.Enabled = true;
@@ -333,7 +361,7 @@ namespace EduroamApp
         public void LoadFrmConnect()
         {
             frmConnect = new frmConnect(this);
-            currentFormId = 6;
+            currentFormId = 7;
             lblTitle.Text = "Connection status";
             btnNext.Text = "Next >";
             btnNext.Enabled = false;
@@ -347,7 +375,7 @@ namespace EduroamApp
         public void LoadFrmRedirect()
         {
             frmRedirect = new frmRedirect(this);
-            currentFormId = 7;
+            currentFormId = 8;
             lblTitle.Text = "You are being redirected";
             btnNext.Enabled = false;
             btnBack.Enabled = true;
@@ -360,7 +388,7 @@ namespace EduroamApp
         public void LoadFrmLocalCert()
         {
             if (reload) frmLocal = new frmLocal(this);
-            currentFormId = 8;
+            currentFormId = 9;
             lblTitle.Text = "Select client certificate file";
             btnNext.Text = "Next >";
             btnNext.Enabled = true;

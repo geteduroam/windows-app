@@ -1,6 +1,6 @@
 ﻿namespace EduroamApp
 {
-    partial class frmSelfExtract
+    partial class frmSummary
     {
         /// <summary>
         /// Required designer variable.
@@ -304,9 +304,9 @@
             this.Controls.Add(this.pnlContactInfo);
             this.Controls.Add(this.pnlTop);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "frmSelfExtract";
+            this.Name = "frmSummary";
             this.Text = "frm1";
-            this.Load += new System.EventHandler(this.frmSelfExtract_Load);
+            this.Load += new System.EventHandler(this.frmSummary_Load);
             this.tblContactInfo.ResumeLayout(false);
             this.tblContactInfo.PerformLayout();
             this.gboContactInfo.ResumeLayout(false);
