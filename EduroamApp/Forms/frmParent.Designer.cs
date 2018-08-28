@@ -337,7 +337,7 @@ namespace EduroamApp
 			this.MinimizeBox = false;
 			this.Name = "frmParent";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-			this.Text = "Eduroam installer";
+			this.Text = "eduroam installer";
 			this.Load += new System.EventHandler(this.frmParent_Load);
 			this.pnlNavigation.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);

@@ -28,10 +28,10 @@ namespace EduroamApp
 		static readonly string ssid = eduroamInstance.Ssid; // gets SSID
 		static readonly Guid interfaceId = eduroamInstance.InterfaceId; // gets interface ID
 
-		public static uint Setup(string eapString)
+		public static uint Setup(EapConfig eapConfig)
 		{
 			// gets the first/default authentication method of an EAP config file
-			AuthenticationMethod authMethod = GetAuthMethods(eapString).First();
+			EapConfig.AuthenticationMethod authMethod = eapConfig.AuthenticationMethods.First();
 
 			// gets EAP type of authentication method
 			uint eapType = authMethod.EapType;
@@ -95,7 +95,7 @@ namespace EduroamApp
 						"Accept Certificate Authority", MessageBoxButtons.OK);
 
 					// if CA not installed succesfully, ask user to retry
-					bool addCaSuccess = false;
+					var addCaSuccess = false;
 					while (!addCaSuccess)
 					{
 						try
@@ -115,7 +115,6 @@ namespace EduroamApp
 								// if user selects cancel, stop looping
 								if (retryCa == DialogResult.Cancel)
 								{
-									addCaSuccess = true;
 									return 0;
 								}
 							}
@@ -219,13 +218,13 @@ namespace EduroamApp
 		{
 			// sets the profile type to be All-user (value = 0)
 			// if set to Per User, the security type parameter is not required
-			ProfileType newProfileType = ProfileType.AllUser;
+			const ProfileType newProfileType = ProfileType.AllUser;
 
 			// security type not required
-			string newSecurityType = null;
+			const string newSecurityType = null;
 
 			// overwrites if profile already exists
-			bool overwrite = true;
+			const bool overwrite = true;
 
 			return NativeWifi.SetProfile(networkId, newProfileType, profileXml, newSecurityType, overwrite);
 		}
@@ -254,24 +253,28 @@ namespace EduroamApp
 			return NativeWifi.SetProfileUserData(networkId, profileName, profileUserType, userDataXml);
 		}
 
+
 		/// <summary>
-		/// Gets all authentication methods from EAP config file.
+		/// Reads from an EAP config file and creates an EapConfig object.
 		/// </summary>
 		/// <param name="eapFile">EAP config file as string.</param>
-		/// <returns>List of Authentication Method objects</returns>
-		public static List<AuthenticationMethod> GetAuthMethods(string eapFile)
+		/// <returns>EapConfig object.</returns>
+		public static EapConfig GetEapConfig(string eapFile)
 		{
 			// loads the XML file from its file path
 			XElement doc = XElement.Parse(eapFile);
 
+			// instantiates new EapConfig object
+			var eapConfig = new EapConfig();
+			// creates new list of authentication methods
+			List<EapConfig.AuthenticationMethod> authMethods = new List<EapConfig.AuthenticationMethod>();
+
 			// gets all AuthenticationMethods elements
 			IEnumerable<XElement> authMethodElements = doc.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "AuthenticationMethod");
-			List<AuthenticationMethod> authMethodObjects = new List<AuthenticationMethod>();
-
 			foreach (XElement element in authMethodElements)
 			{
 				// gets EAP method type
-				uint eapType = (uint)element.DescendantsAndSelf().Elements().First(x => x.Name.LocalName == "Type");
+				var eapType = (uint)element.DescendantsAndSelf().Elements().First(x => x.Name.LocalName == "Type");
 
 				// gets list of CAs
 				List<XElement> caElements = element.DescendantsAndSelf().Elements().Where(x => x.Name.LocalName == "CA").ToList();
@@ -294,31 +297,35 @@ namespace EduroamApp
 				}
 
 				// gets client certificate
-				string clientCert = (string)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "ClientCertificate");
+				var clientCert = (string)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "ClientCertificate");
 
 				// gets client cert passphrase
-				string passphrase = (string)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Passphrase");
+				var passphrase = (string)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Passphrase");
 
 				// creates new authentication method object and adds it to list
-				authMethodObjects.Add(new AuthenticationMethod(eapType, certAuths, serverNames, clientCert, passphrase));
+				authMethods.Add(new EapConfig.AuthenticationMethod(eapType, certAuths, serverNames, clientCert, passphrase));
 			}
+			// adds the authentication method objects to the EapConfig object
+			eapConfig.AuthenticationMethods = authMethods;
 
-			return authMethodObjects;
-		}
-
-		/// <summary>
-		/// Get the institution id/name from an EAP config file.
-		/// </summary>
-		/// <param name="eapString">EAP config file as string.</param>
-		/// <returns>Institution id/name.</returns>
-		public static string GetInstId(string eapString)
-		{
-			// loads XML file from string
-			XElement doc = XElement.Parse(eapString);
+			// gets provider's  display name
+			var displayName = (string)doc.DescendantsAndSelf().Elements().First(x => x.Name.LocalName == "DisplayName");
+			// gets provider's logo as base64 encoded string
+			var logo = (string)doc.DescendantsAndSelf().Elements().First(x => x.Name.LocalName == "ProviderLogo");
+			// gets provider's email address
+			var emailAddress = (string)doc.DescendantsAndSelf().Elements().First(x => x.Name.LocalName == "EmailAddress");
+			// gets provider's web address
+			var webAddress = (string)doc.DescendantsAndSelf().Elements().First(x => x.Name.LocalName == "WebAddress");
+			// gets provider's phone number
+			var phone = (string)doc.DescendantsAndSelf().Elements().First(x => x.Name.LocalName == "Phone");
 			// gets institution Id
-			string instId = (string)doc.Descendants().ElementAtOrDefault(0).Attribute("ID");
+			var instId = (string)doc.Descendants().ElementAtOrDefault(0).Attribute("ID");
 
-			return instId;
+			// adds the provider info to the EapConfig object
+			eapConfig.InstitutionInfo = new EapConfig.ProviderInfo(displayName, logo, emailAddress, webAddress, phone, instId);
+
+			// returns the EapConfig object
+			return eapConfig;
 		}
 	}
 }
