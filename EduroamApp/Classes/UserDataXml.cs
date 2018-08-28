@@ -93,32 +93,7 @@ namespace EduroamApp
                         )
                     );
             }
-            /*else if (eapType == 13)
-            {
-                newUserData =
-                    new XElement(nsEHUC + "EapHostUserCredentials",
-                        new XAttribute(XNamespace.Xmlns + "eapCommon", nsEC),
-                        new XAttribute(XNamespace.Xmlns + "baseEap", nsBEMUC),
-                        new XElement(nsEHUC + "EapMethod",
-                            new XElement(nsEC + "Type", "13"),
-                            new XElement(nsEC + "AuthorId", "0")
-                        ),
-                        new XElement(nsEHUC + "Credentials",
-                            new XAttribute(XNamespace.Xmlns + "eapuser", nsEUP),
-                            new XAttribute(XNamespace.Xmlns + "xsi", nsXSI),
-                            new XAttribute(XNamespace.Xmlns + "baseEap", nsBEUP),
-                            new XAttribute(XNamespace.Xmlns + "eapTls", nsTLS),
-                            new XElement(nsBEUP + "Eap",
-                                new XElement(nsBEUP + "Type", "13"),
-                                new XElement(nsTLS + "EapType",
-                                    new XElement(nsTLS + "Username", ""),
-                                    new XElement(nsTLS + "UserCert", "64 2a 67 25 ba 87 81 dd db 49 74 a3 ea 83 35 cf f4 5c 23 cf ")
-                                )
-                            )
-                        )
-                    );
-            }*/
-            
+
             // returns xml as string if not null
             return newUserData != null ? newUserData.ToString() : "";
         }

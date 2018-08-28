@@ -132,6 +132,7 @@ namespace EduroamApp
                 thumbprints.Add(formattedThumbprint);
             }
 
+            // also gets thumbprints of already installed CAs that match client certificate issuer 
             if (certIssuer != null)
             {
                 X509Certificate2Collection existingCa = rootStore.Certificates.Find(X509FindType.FindByIssuerDistinguishedName, certIssuer, true);
@@ -163,12 +164,7 @@ namespace EduroamApp
                 DialogResult dialogResult = MessageBox.Show(
                     "The selected profile requires a separate client certificate. Do you want to browse your local files for one?",
                     "Client certificate required", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    return eapType = 500;
-                }
-
-                return 0;
+                return (uint) (dialogResult == DialogResult.Yes ? 500 : 0);
             }
 
             return eapType;
@@ -248,14 +244,14 @@ namespace EduroamApp
         public static bool SetUserData(Guid networkId, string profileName, string userDataXml)
         {
             // sets the profile user type to "WLAN_SET_EAPHOST_DATA_ALL_USERS"
-            uint profileUserType = 0x00000001;
+            const uint profileUserType = 0x00000001;
 
             return NativeWifi.SetProfileUserData(networkId, profileName, profileUserType, userDataXml);
         }
 
 
         /// <summary>
-        /// Reads from an EAP config file and creates an EapConfig object.
+        /// Creates EapConfig object from EAP config file.
         /// </summary>
         /// <param name="eapFile">EAP config file as string.</param>
         /// <returns>EapConfig object.</returns>
@@ -309,23 +305,42 @@ namespace EduroamApp
             eapConfig.AuthenticationMethods = authMethods;
 
             // gets provider's  display name
-            var displayName = (string)doc.DescendantsAndSelf().Elements().First(x => x.Name.LocalName == "DisplayName");
+            var displayName = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "DisplayName");
             // gets provider's logo as base64 encoded string
-            var logo = (string)doc.DescendantsAndSelf().Elements().First(x => x.Name.LocalName == "ProviderLogo");
+            var logo = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "ProviderLogo");
             // gets provider's email address
-            var emailAddress = (string)doc.DescendantsAndSelf().Elements().First(x => x.Name.LocalName == "EmailAddress");
+            var emailAddress = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "EmailAddress");
             // gets provider's web address
-            var webAddress = (string)doc.DescendantsAndSelf().Elements().First(x => x.Name.LocalName == "WebAddress");
+            var webAddress = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "WebAddress");
             // gets provider's phone number
-            var phone = (string)doc.DescendantsAndSelf().Elements().First(x => x.Name.LocalName == "Phone");
+            var phone = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Phone");
+            // gets provider's phone number
+            var termsOfUse = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "TermsOfUse");
             // gets institution Id
             var instId = (string)doc.Descendants().ElementAtOrDefault(0).Attribute("ID");
 
             // adds the provider info to the EapConfig object
-            eapConfig.InstitutionInfo = new EapConfig.ProviderInfo(displayName, logo, emailAddress, webAddress, phone, instId);
+            eapConfig.InstitutionInfo = new EapConfig.ProviderInfo(displayName, logo, emailAddress, webAddress, phone, instId, termsOfUse);
 
             // returns the EapConfig object
             return eapConfig;
+        }
+
+        /// <summary>
+        /// Converts base64 string to image.
+        /// </summary>
+        /// <param name="base64String">Base64 string.</param>
+        /// <returns>Image.</returns>
+        public static Image Base64ToImage(string base64String)
+        {
+            // convert base 64 string to byte[]
+            byte[] imageBytes = Convert.FromBase64String(base64String);
+            // Convert byte[] to Image
+            using (var ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
+            {
+                Image image = Image.FromStream(ms, true);
+                return image;
+            }
         }
     }
 }

@@ -16,11 +16,24 @@ namespace EduroamApp
 
         private void frmRedirect_Load(object sender, EventArgs e)
         {
+            // gets redirect link from parent form label, converts to lower case
+            string redirectString = parentForm.LblRedirect.ToLower();
             // sets text of label
-            lblRedirectLink.Text = parentForm.LblRedirect;
-            // sets linkdata
-            var redirectLink = new LinkLabel.Link {LinkData = lblRedirectLink.Text};
-            lblRedirectLink.Links.Add(redirectLink);
+            lblRedirectLink.Text = redirectString;
+            // checks if link starts with an accepted prefix
+            if (redirectString.StartsWith("http://") || redirectString.StartsWith("https://") ||
+                redirectString.StartsWith("www."))
+            {
+                // sets linkdata
+                var redirectLink = new LinkLabel.Link { LinkData = lblRedirectLink.Text };
+                lblRedirectLink.Links.Add(redirectLink);
+            }
+            // disables link, but still displays it
+            else
+            {
+                lblRedirectLink.Enabled = false;
+            }
+            
         }
 
         private void lblRedirectLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

@@ -17,6 +17,7 @@ using System.Security;
 using System.Xml.Linq;
 using System.Device.Location;
 using System.Windows.Controls;
+using Image = System.Drawing.Image;
 
 namespace EduroamApp
 {
@@ -201,6 +202,12 @@ namespace EduroamApp
 
         // make form properties accessible from other forms
 
+        public Image PbxLogo
+        {
+            get => pbxLogo.Image;
+            set => pbxLogo.Image = value;
+        }
+
         public string BtnNextText
         {
             get => btnNext.Text;
@@ -257,7 +264,7 @@ namespace EduroamApp
             // creates new instance of form1 if there is none, passes parent form instance as parameter
             if (reload) frmSelfExtract = new frmSelfExtract(this);
             currentFormId = 1;
-            lblTitle.Text = "eduroam installer";
+            lblTitle.Text = "eduroam Setup";
             btnNext.Text = "Install";
             btnBack.Visible = false;
             LoadNewForm(frmSelfExtract);

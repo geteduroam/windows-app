@@ -37,9 +37,6 @@
             this.pnlNavBot = new System.Windows.Forms.Panel();
             this.pnlNavTop = new System.Windows.Forms.Panel();
             this.pnlLeft = new System.Windows.Forms.Panel();
-            this.pnlLogoMid = new System.Windows.Forms.Panel();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pnlLogoBot = new System.Windows.Forms.Panel();
             this.pnlLogoTop = new System.Windows.Forms.Panel();
             this.pnlLogoLeft = new System.Windows.Forms.Panel();
@@ -53,13 +50,15 @@
             this.pnlLeftMargin = new System.Windows.Forms.Panel();
             this.pnlRightMargin = new System.Windows.Forms.Panel();
             this.pnlContent = new System.Windows.Forms.Panel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.pbxLogo = new System.Windows.Forms.PictureBox();
             this.pnlNavigation.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.pnlLeft.SuspendLayout();
-            this.pnlLogoMid.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).BeginInit();
             this.SuspendLayout();
             // 
             // pnlNavigation
@@ -152,7 +151,9 @@
             // 
             // pnlLeft
             // 
-            this.pnlLeft.Controls.Add(this.pnlLogoMid);
+            this.pnlLeft.Controls.Add(this.pbxLogo);
+            this.pnlLeft.Controls.Add(this.panel3);
+            this.pnlLeft.Controls.Add(this.pictureBox1);
             this.pnlLeft.Controls.Add(this.pnlLogoBot);
             this.pnlLeft.Controls.Add(this.pnlLogoTop);
             this.pnlLeft.Controls.Add(this.pnlLogoLeft);
@@ -162,38 +163,6 @@
             this.pnlLeft.Name = "pnlLeft";
             this.pnlLeft.Size = new System.Drawing.Size(160, 366);
             this.pnlLeft.TabIndex = 2;
-            // 
-            // pnlLogoMid
-            // 
-            this.pnlLogoMid.Controls.Add(this.pictureBox1);
-            this.pnlLogoMid.Controls.Add(this.pictureBox2);
-            this.pnlLogoMid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlLogoMid.Location = new System.Drawing.Point(8, 59);
-            this.pnlLogoMid.Name = "pnlLogoMid";
-            this.pnlLogoMid.Size = new System.Drawing.Size(144, 241);
-            this.pnlLogoMid.TabIndex = 7;
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pictureBox1.Image = global::EduroamApp.Properties.Resources.eduroam_logo_400px;
-            this.pictureBox1.Location = new System.Drawing.Point(0, 76);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(144, 65);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox1.TabIndex = 2;
-            this.pictureBox1.TabStop = false;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pictureBox2.Image = global::EduroamApp.Properties.Resources._1280px_Uninett_logo_svg;
-            this.pictureBox2.Location = new System.Drawing.Point(0, 0);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(144, 76);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pictureBox2.TabIndex = 1;
-            this.pictureBox2.TabStop = false;
             // 
             // pnlLogoBot
             // 
@@ -208,7 +177,7 @@
             this.pnlLogoTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlLogoTop.Location = new System.Drawing.Point(8, 0);
             this.pnlLogoTop.Name = "pnlLogoTop";
-            this.pnlLogoTop.Size = new System.Drawing.Size(144, 59);
+            this.pnlLogoTop.Size = new System.Drawing.Size(144, 27);
             this.pnlLogoTop.TabIndex = 5;
             // 
             // pnlLogoLeft
@@ -320,6 +289,35 @@
             this.pnlContent.Size = new System.Drawing.Size(378, 246);
             this.pnlContent.TabIndex = 7;
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pictureBox1.Image = global::EduroamApp.Properties.Resources.eduroam_logo_400px;
+            this.pictureBox1.Location = new System.Drawing.Point(8, 27);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(144, 65);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pictureBox1.TabIndex = 7;
+            this.pictureBox1.TabStop = false;
+            // 
+            // panel3
+            // 
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel3.Location = new System.Drawing.Point(8, 92);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(144, 27);
+            this.panel3.TabIndex = 8;
+            // 
+            // pbxLogo
+            // 
+            this.pbxLogo.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pbxLogo.Location = new System.Drawing.Point(8, 119);
+            this.pbxLogo.Name = "pbxLogo";
+            this.pbxLogo.Size = new System.Drawing.Size(144, 109);
+            this.pbxLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.pbxLogo.TabIndex = 9;
+            this.pbxLogo.TabStop = false;
+            // 
             // frmParent
             // 
             this.AcceptButton = this.btnNext;
@@ -342,11 +340,10 @@
             this.pnlNavigation.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.pnlLeft.ResumeLayout(false);
-            this.pnlLogoMid.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -371,13 +368,13 @@
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel pnlLogoLeft;
         private System.Windows.Forms.Panel pnlLogoRight;
-        private System.Windows.Forms.Panel pnlLogoMid;
         private System.Windows.Forms.Panel pnlLogoBot;
         private System.Windows.Forms.Panel pnlLogoTop;
         private System.Windows.Forms.Label lblProfileCondition;
         private System.Windows.Forms.Label lblLocalFileType;
         private System.Windows.Forms.Label lblRedirect;
-        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.PictureBox pbxLogo;
+        private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
