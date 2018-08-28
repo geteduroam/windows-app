@@ -125,11 +125,11 @@
       <DependentUpon>frmWaitForAuthenticate.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\OAuth.cs" />
-    <Compile Include="Forms\frmSelfExtract.cs">
+    <Compile Include="Forms\frmSummary.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmSelfExtract.Designer.cs">
-      <DependentUpon>frmSelfExtract.cs</DependentUpon>
+    <Compile Include="Forms\frmSummary.Designer.cs">
+      <DependentUpon>frmSummary.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\frmSelectMethod.cs">
       <SubType>Form</SubType>
@@ -181,8 +181,8 @@
     <EmbeddedResource Include="Forms\frmWaitForAuthenticate.resx">
       <DependentUpon>frmWaitForAuthenticate.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmSelfExtract.resx">
-      <DependentUpon>frmSelfExtract.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\frmSummary.resx">
+      <DependentUpon>frmSummary.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmSelectMethod.resx">
       <DependentUpon>frmSelectMethod.cs</DependentUpon>

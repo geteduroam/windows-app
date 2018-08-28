@@ -53,10 +53,10 @@ namespace EduroamApp
 
 		}
 
-		public uint ConnectWithFile()
+		public EapConfig ConnectWithFile()
 		{
 			// validates the selected config file
-			if (!FileDialog.ValidateFileSelection(txtFilepath.Text, "EAP")) return 0;
+			if (!FileDialog.ValidateFileSelection(txtFilepath.Text, "EAP")) return null;
 
 			// gets content of config file
 			string eapString = File.ReadAllText(txtFilepath.Text);
@@ -65,11 +65,7 @@ namespace EduroamApp
 			try
 			{
 				// creates EapConfig object from Eap string
-				EapConfig eapConfig = ConnectToEduroam.GetEapConfig(eapString);
-				// creates profile from EapConfig object
-				eapType = ConnectToEduroam.Setup(eapConfig);
-				// makes the institution Id accessible from parent form
-				frmParent.LblInstText = eapConfig.InstitutionInfo.InstId;
+				return ConnectToEduroam.GetEapConfig(eapString);
 			}
 			catch (ArgumentException argEx)
 			{
@@ -80,7 +76,7 @@ namespace EduroamApp
 						"Network interface error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
-			return eapType;
+			return null;
 		}
 
 		public bool InstallCertFile()

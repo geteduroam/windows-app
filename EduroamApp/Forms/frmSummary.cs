@@ -21,44 +21,24 @@ using System.Diagnostics;
 
 namespace EduroamApp
 {
-	public partial class frmSelfExtract : Form
+	public partial class frmSummary : Form
 	{
 		// makes the parent form accessible from this class
 		private readonly frmParent frmParent;
 		private EapConfig eapConfig;
 
-		public frmSelfExtract(frmParent parentInstance)
+		public frmSummary(frmParent parentInstance, EapConfig configInstance)
 		{
 			// gets the parent form instance
 			frmParent = parentInstance;
+			// gets the Eap config instance
+			eapConfig = configInstance;
+
 			InitializeComponent();
 		}
 
-		private void frmSelfExtract_Load(object sender, EventArgs e)
+		private void frmSummary_Load(object sender, EventArgs e)
 		{
-			// checks again if eap config file exists in directory
-			string exeLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-			string[] files = Directory.GetFiles(exeLocation, "*.eap-config");
-			if (files.Length <= 0)
-			{
-				// loads form to let user select another Eap config file
-				frmParent.LoadFrmSelectMethod();
-				return;
-			}
-
-			string eapPath = files.First();
-			string eapString = File.ReadAllText(eapPath);
-			try
-			{
-				eapConfig = ConnectToEduroam.GetEapConfig(eapString);
-			}
-			catch (Exception)
-			{
-				// loads form with alternate setup methods
-				frmParent.LoadFrmSelectMethod();
-				return;
-			}
-
 			string instName = eapConfig.InstitutionInfo.DisplayName;
 			string tou = eapConfig.InstitutionInfo.TermsOfUse;
 			string webAddress = eapConfig.InstitutionInfo.WebAddress.ToLower();
@@ -67,7 +47,7 @@ namespace EduroamApp
 			lblInstName.Text = "You will now be connecting to " + instName + ".";
 			if (string.IsNullOrEmpty(tou))
 			{
-				lblToU.Text = "Press Install to continue.";
+				lblToU.Text = "Press Next to continue.";
 				chkAgree.Checked = true;
 			}
 			else
