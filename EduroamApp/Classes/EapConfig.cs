@@ -39,8 +39,9 @@ namespace EduroamApp
 			public string WebAddress { get; set; }
 			public string Phone { get; set; }
 			public string InstId { get; set; }
+			public string TermsOfUse { get; set; }
 
-			public ProviderInfo(string displayName, string logo, string emailAddress, string webAddress, string phone, string instId)
+			public ProviderInfo(string displayName, string logo, string emailAddress, string webAddress, string phone, string instId, string termsOfUse)
 			{
 				DisplayName = displayName;
 				Logo = logo;
@@ -48,6 +49,7 @@ namespace EduroamApp
 				WebAddress = webAddress;
 				Phone = phone;
 				InstId = instId;
+				TermsOfUse = termsOfUse;
 			}
 		}
 

@@ -17,6 +17,7 @@ using System.Security;
 using System.Xml.Linq;
 using Newtonsoft.Json;
 using System.Device.Location;
+using System.Diagnostics;
 
 namespace EduroamApp
 {
@@ -35,41 +36,95 @@ namespace EduroamApp
 
 		private void frmSelfExtract_Load(object sender, EventArgs e)
 		{
+			// checks again if eap config file exists in directory
 			string exeLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			string[] files = Directory.GetFiles(exeLocation, "*.eap-config");
-			if (files.Length > 0)
+			if (files.Length <= 0)
 			{
-				string eapPath = files.First();
-				string eapString = File.ReadAllText(eapPath);
-				try
-				{
-					eapConfig = ConnectToEduroam.GetEapConfig(eapString);
-				}
-				catch (Exception)
-				{
-					// loads form with alternate setup methods
-					frmParent.LoadFrmSelectMethod();
-					return;
-				}
+				// loads form to let user select another Eap config file
+				frmParent.LoadFrmSelectMethod();
+				return;
+			}
 
-				lblInstName.Text = "Your institution is " + eapConfig.InstitutionInfo.DisplayName + ".";
-				lblWeb.Text = eapConfig.InstitutionInfo.WebAddress;
-				lblEmail.Text = eapConfig.InstitutionInfo.EmailAddress;
-				lblPhone.Text = eapConfig.InstitutionInfo.Phone;
+			string eapPath = files.First();
+			string eapString = File.ReadAllText(eapPath);
+			try
+			{
+				eapConfig = ConnectToEduroam.GetEapConfig(eapString);
+			}
+			catch (Exception)
+			{
+				// loads form with alternate setup methods
+				frmParent.LoadFrmSelectMethod();
+				return;
+			}
 
-				foreach (Control cntrl in tblContactInfo.Controls)
-				{
-					if (string.IsNullOrEmpty(cntrl.Text))
-					{
-						cntrl.Text = "-";
-					}
-				}
+			string instName = eapConfig.InstitutionInfo.DisplayName;
+			string tou = eapConfig.InstitutionInfo.TermsOfUse;
+			string webAddress = eapConfig.InstitutionInfo.WebAddress.ToLower();
+			string emailAddress = eapConfig.InstitutionInfo.EmailAddress.ToLower();
+
+			lblInstName.Text = "You will now be connecting to " + instName + ".";
+			if (string.IsNullOrEmpty(tou))
+			{
+				lblToU.Text = "Press Install to continue.";
+				chkAgree.Checked = true;
 			}
 			else
 			{
+				lblToU.Text = "Agree to the Terms of Use and press Install to continue.";
+				chkAgree.Visible = true;
+				chkAgree.Checked = false;
+			}
+			lblWeb.Text = webAddress;
+			lblEmail.Text = emailAddress;
+			lblPhone.Text = eapConfig.InstitutionInfo.Phone;
 
+			// checks if link starts with an accepted prefix
+			if (webAddress.StartsWith("http://") || webAddress.StartsWith("https://") ||
+				webAddress.StartsWith("www."))
+			{
+				// sets linkdata
+				var redirectLink = new LinkLabel.Link {LinkData = lblWeb.Text};
+				lblWeb.Links.Add(redirectLink);
+			}
+			// disables link, but still displays it
+			else
+			{
+				lblWeb.Enabled = false;
 			}
 
+			foreach (Control cntrl in tblContactInfo.Controls)
+			{
+				if (string.IsNullOrEmpty(cntrl.Text))
+				{
+					cntrl.Text = "-";
+					cntrl.Enabled = false;
+				}
+			}
+
+			lblAlternate.Text = "Not connecting to " + eapConfig.InstitutionInfo.DisplayName + "?";
+
+			// gets institution logo encoded to base64
+			string logoBase64 = eapConfig.InstitutionInfo.Logo;
+			// adds logo to form if exists
+			if (string.IsNullOrEmpty(logoBase64))
+			{
+				frmParent.PbxLogo = ConnectToEduroam.Base64ToImage(logoBase64);
+			}
+
+		}
+
+		private void lblWeb_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			// opens website in default browser
+			Process.Start(e.Link.LinkData as string);
+		}
+
+		private void lblEmail_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+		{
+			// opens default email software
+			Process.Start("mailto:" + e.Link.LinkData);
 		}
 
 		public uint InstallSelfExtract()
@@ -78,6 +133,7 @@ namespace EduroamApp
 			try
 			{
 				uint eapType = ConnectToEduroam.Setup(eapConfig);
+				frmParent.LblInstText = eapConfig.InstitutionInfo.InstId;
 				return eapType;
 			}
 			catch (Exception ex)
@@ -89,18 +145,23 @@ namespace EduroamApp
 
 			MessageBox.Show(errorMessage, "eduroam Setup failed",
 				MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-			pnlAltPopup.BackColor = Color.Red;
-			pnlAltPopup.BorderStyle = BorderStyle.FixedSingle;
 
 			return 0;
 		}
 
-		private void btnAltSetup_Click(object sender, EventArgs e)
+		private void btnSelectInst_Click(object sender, EventArgs e)
 		{
-			// loads form with alternate setup methods
 			frmParent.LoadFrmSelectMethod();
 		}
 
+		private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+		{
 
+		}
+
+		private void chkAgree_CheckedChanged(object sender, EventArgs e)
+		{
+			frmParent.BtnNextEnabled = chkAgree.Checked;
+		}
 	}
 }

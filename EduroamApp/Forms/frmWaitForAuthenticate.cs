@@ -79,7 +79,7 @@ namespace EduroamApp
 			listener.Start();
 
 			// creates BeginGetContext task for retrieving HTTP request
-			IAsyncResult result = listener.BeginGetContext(ListenerCallback, listener);
+			IAsyncResult result = listener.BeginGetContext(new AsyncCallback(ListenerCallback), listener);
 			// opens authentication URI in default browser
 			Process.Start(oAuthUri);
 
