@@ -24,11 +24,14 @@ namespace EduroamApp
 	public partial class frmParent : Form
 	{
 		private int currentFormId;                                  // Id of currently selected form
-		private readonly List<int> formHistory = new List<int>();   // keeps history of previously diplayed forms, in order to backtrack correctly
+		public readonly List<int> FormHistory = new List<int>();   // keeps history of previously diplayed forms, in order to backtrack correctly
 		private bool reload = true;                                 // sepcifies wether a form is to be re-instantiated when loaded
 		private readonly GeoCoordinateWatcher watcher;              // gets coordinates of computer
 		private EapConfig eapConfig = new EapConfig();
 		private uint eapType;                                   // EAP type of selected network config, determines which forms to load
+		public bool ComesFromSelfExtract;
+		public bool SelfExtractFlag;
+		public bool SelectAlternative;
 
 		// makes forms globally  accessible in parent form
 		private frmSummary frmSummary;
@@ -54,7 +57,8 @@ namespace EduroamApp
 			// checks if file came with self extract
 			if (eapConfig != null)
 			{
-				lblSummary.Text = "SELFEXTRACT";
+				ComesFromSelfExtract = true;
+				SelfExtractFlag = true;
 				// goes to form for installation through self extract config file
 				LoadFrmSummary();
 			}
@@ -65,16 +69,22 @@ namespace EduroamApp
 			}
 		}
 
-		private void btnNext_Click(object sender, EventArgs e)
+		public void btnNext_Click(object sender, EventArgs e)
 		{
 			// creates new instances of forms when going forward
 			reload = true;
 			// adds current form to history for easy backtracking
-			formHistory.Add(currentFormId);
+			FormHistory.Add(currentFormId);
 
 			switch (currentFormId)
 			{
 				case 1:
+					if (SelectAlternative)
+					{
+						pbxLogo.Image = null;
+						LoadFrmSelectMethod();
+						break;
+					}
 					eapType = frmSummary.InstallEapConfig();
 					if (eapType == 13) LoadFrmConnect();
 					else if (eapType == 25 || eapType == 21) LoadFrmLogin();
@@ -87,6 +97,7 @@ namespace EduroamApp
 						"Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 					break;
 				case 2:
+					SelfExtractFlag = false;
 					if (frmSelectMethod.GoToForm() == 3) LoadFrmDownload();
 					else
 					{
@@ -99,7 +110,7 @@ namespace EduroamApp
 					if (eapConfig != null)
 					{
 						LoadFrmSummary();
-					} else if (string.IsNullOrEmpty(lblRedirect.Text))
+					} else if (!string.IsNullOrEmpty(lblRedirect.Text))
 					{
 						LoadFrmRedirect();
 					}
@@ -124,7 +135,7 @@ namespace EduroamApp
 			}
 
 			// removes current form from history if it gets added twice
-			if (formHistory.LastOrDefault() == currentFormId) formHistory.RemoveAt(formHistory.Count - 1);
+			if (FormHistory.LastOrDefault() == currentFormId) FormHistory.RemoveAt(FormHistory.Count - 1);
 		}
 
 		private void btnBack_Click(object sender, EventArgs e)
@@ -134,12 +145,17 @@ namespace EduroamApp
 			// clears logo if going back from summary page
 			if (currentFormId == 1) pbxLogo.Image = null;
 
-			switch (formHistory.Last())
+			switch (FormHistory.Last())
 			{
 				case 1:
+					if (SelfExtractFlag)
+					{
+						eapConfig = GetSelfExtractingEap();
+					}
 					LoadFrmSummary();
 					break;
 				case 2:
+					if (ComesFromSelfExtract) SelfExtractFlag = true;
 					LoadFrmSelectMethod();
 					break;
 				case 3:
@@ -159,7 +175,7 @@ namespace EduroamApp
 			}
 
 			// removes current form from history
-			formHistory.RemoveAt(formHistory.Count - 1);
+			FormHistory.RemoveAt(FormHistory.Count - 1);
 		}
 
 		/// <summary>
@@ -278,7 +294,7 @@ namespace EduroamApp
 			frmSummary = new frmSummary(this, eapConfig);
 			currentFormId = 1;
 			// changes controls depending on where the summary form is called from
-			if (lblSummary.Text == "SELFEXTRACT")
+			if (SelfExtractFlag)
 			{
 				lblTitle.Text = "eduroam Setup";
 				btnBack.Visible = false;
@@ -302,17 +318,7 @@ namespace EduroamApp
 			btnNext.Text = "Next >";
 			btnNext.Enabled = true;
 			// if config file exists in self extract but user wants to choose another institution
-			if (lblSummary.Text == "SELFEXTRACT")
-			{
-				// shows back button
-				btnBack.Visible = true;
-				// adds current form to history for easy backtracking
-				formHistory.Add(1);
-			}
-			else
-			{
-				btnBack.Visible = false;
-			}
+			btnBack.Visible = ComesFromSelfExtract;
 			LoadNewForm(frmSelectMethod);
 		}
 

@@ -78,7 +78,7 @@ namespace EduroamApp
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Name = "frmSelectMethod";
 			this.Text = "frm2";
-			this.Load += new System.EventHandler(this.frm2_Load);
+			this.Load += new System.EventHandler(this.frmSelectMethod_Load);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
