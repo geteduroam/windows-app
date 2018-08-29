@@ -37,6 +37,9 @@ namespace EduroamApp
 			this.pnlNavBot = new System.Windows.Forms.Panel();
 			this.pnlNavTop = new System.Windows.Forms.Panel();
 			this.pnlLeft = new System.Windows.Forms.Panel();
+			this.pbxLogo = new System.Windows.Forms.PictureBox();
+			this.panel3 = new System.Windows.Forms.Panel();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.pnlLogoBot = new System.Windows.Forms.Panel();
 			this.pnlLogoTop = new System.Windows.Forms.Panel();
 			this.pnlLogoLeft = new System.Windows.Forms.Panel();
@@ -50,15 +53,13 @@ namespace EduroamApp
 			this.pnlLeftMargin = new System.Windows.Forms.Panel();
 			this.pnlRightMargin = new System.Windows.Forms.Panel();
 			this.pnlContent = new System.Windows.Forms.Panel();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.panel3 = new System.Windows.Forms.Panel();
-			this.pbxLogo = new System.Windows.Forms.PictureBox();
+			this.lblSummary = new System.Windows.Forms.Label();
 			this.pnlNavigation.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.pnlLeft.SuspendLayout();
-			this.panel1.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+			this.panel1.SuspendLayout();
 			this.SuspendLayout();
 			//
 			// pnlNavigation
@@ -164,6 +165,35 @@ namespace EduroamApp
 			this.pnlLeft.Size = new System.Drawing.Size(160, 366);
 			this.pnlLeft.TabIndex = 2;
 			//
+			// pbxLogo
+			//
+			this.pbxLogo.Dock = System.Windows.Forms.DockStyle.Top;
+			this.pbxLogo.Location = new System.Drawing.Point(8, 119);
+			this.pbxLogo.Name = "pbxLogo";
+			this.pbxLogo.Size = new System.Drawing.Size(144, 109);
+			this.pbxLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.pbxLogo.TabIndex = 9;
+			this.pbxLogo.TabStop = false;
+			//
+			// panel3
+			//
+			this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
+			this.panel3.Location = new System.Drawing.Point(8, 92);
+			this.panel3.Name = "panel3";
+			this.panel3.Size = new System.Drawing.Size(144, 27);
+			this.panel3.TabIndex = 8;
+			//
+			// pictureBox1
+			//
+			this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Top;
+			this.pictureBox1.Image = global::EduroamApp.Properties.Resources.eduroam_logo_400px;
+			this.pictureBox1.Location = new System.Drawing.Point(8, 27);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(144, 65);
+			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.pictureBox1.TabIndex = 7;
+			this.pictureBox1.TabStop = false;
+			//
 			// pnlLogoBot
 			//
 			this.pnlLogoBot.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -200,6 +230,7 @@ namespace EduroamApp
 			// panel1
 			//
 			this.panel1.BackColor = System.Drawing.Color.White;
+			this.panel1.Controls.Add(this.lblSummary);
 			this.panel1.Controls.Add(this.lblRedirect);
 			this.panel1.Controls.Add(this.lblLocalFileType);
 			this.panel1.Controls.Add(this.lblProfileCondition);
@@ -214,7 +245,7 @@ namespace EduroamApp
 			// lblRedirect
 			//
 			this.lblRedirect.AutoSize = true;
-			this.lblRedirect.Location = new System.Drawing.Point(330, 53);
+			this.lblRedirect.Location = new System.Drawing.Point(330, 69);
 			this.lblRedirect.Name = "lblRedirect";
 			this.lblRedirect.Size = new System.Drawing.Size(84, 13);
 			this.lblRedirect.TabIndex = 11;
@@ -224,7 +255,7 @@ namespace EduroamApp
 			// lblLocalFileType
 			//
 			this.lblLocalFileType.AutoSize = true;
-			this.lblLocalFileType.Location = new System.Drawing.Point(330, 40);
+			this.lblLocalFileType.Location = new System.Drawing.Point(330, 56);
 			this.lblLocalFileType.Name = "lblLocalFileType";
 			this.lblLocalFileType.Size = new System.Drawing.Size(96, 13);
 			this.lblLocalFileType.TabIndex = 10;
@@ -234,7 +265,7 @@ namespace EduroamApp
 			// lblProfileCondition
 			//
 			this.lblProfileCondition.AutoSize = true;
-			this.lblProfileCondition.Location = new System.Drawing.Point(330, 27);
+			this.lblProfileCondition.Location = new System.Drawing.Point(330, 43);
 			this.lblProfileCondition.Name = "lblProfileCondition";
 			this.lblProfileCondition.Size = new System.Drawing.Size(109, 13);
 			this.lblProfileCondition.TabIndex = 9;
@@ -244,7 +275,7 @@ namespace EduroamApp
 			// lblInst
 			//
 			this.lblInst.AutoSize = true;
-			this.lblInst.Location = new System.Drawing.Point(330, 14);
+			this.lblInst.Location = new System.Drawing.Point(330, 30);
 			this.lblInst.Name = "lblInst";
 			this.lblInst.Size = new System.Drawing.Size(108, 13);
 			this.lblInst.TabIndex = 8;
@@ -289,34 +320,15 @@ namespace EduroamApp
 			this.pnlContent.Size = new System.Drawing.Size(378, 246);
 			this.pnlContent.TabIndex = 7;
 			//
-			// pictureBox1
+			// lblSummary
 			//
-			this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.pictureBox1.Image = global::EduroamApp.Properties.Resources.eduroam_logo_400px;
-			this.pictureBox1.Location = new System.Drawing.Point(8, 27);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(144, 65);
-			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-			this.pictureBox1.TabIndex = 7;
-			this.pictureBox1.TabStop = false;
-			//
-			// panel3
-			//
-			this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel3.Location = new System.Drawing.Point(8, 92);
-			this.panel3.Name = "panel3";
-			this.panel3.Size = new System.Drawing.Size(144, 27);
-			this.panel3.TabIndex = 8;
-			//
-			// pbxLogo
-			//
-			this.pbxLogo.Dock = System.Windows.Forms.DockStyle.Top;
-			this.pbxLogo.Location = new System.Drawing.Point(8, 119);
-			this.pbxLogo.Name = "pbxLogo";
-			this.pbxLogo.Size = new System.Drawing.Size(144, 109);
-			this.pbxLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-			this.pbxLogo.TabIndex = 9;
-			this.pbxLogo.TabStop = false;
+			this.lblSummary.AutoSize = true;
+			this.lblSummary.Location = new System.Drawing.Point(330, 17);
+			this.lblSummary.Name = "lblSummary";
+			this.lblSummary.Size = new System.Drawing.Size(99, 13);
+			this.lblSummary.TabIndex = 12;
+			this.lblSummary.Text = "label: summary type";
+			this.lblSummary.Visible = false;
 			//
 			// frmParent
 			//
@@ -340,10 +352,10 @@ namespace EduroamApp
 			this.pnlNavigation.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.pnlLeft.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -376,5 +388,6 @@ namespace EduroamApp
 		private System.Windows.Forms.PictureBox pbxLogo;
 		private System.Windows.Forms.Panel panel3;
 		private System.Windows.Forms.PictureBox pictureBox1;
+		private System.Windows.Forms.Label lblSummary;
 	}
 }

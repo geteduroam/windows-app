@@ -13,8 +13,10 @@ namespace EduroamApp
 {
 	public partial class frmLogin : Form
 	{
-		readonly frmParent frmParent;
-		bool usernameFieldLeave = false;
+		private readonly frmParent frmParent;
+		private bool usernameFieldLeave;
+		private bool usernameSet;
+		private bool passwordSet;
 
 		public frmLogin(frmParent parentInstance)
 		{
@@ -70,16 +72,19 @@ namespace EduroamApp
 			{
 				txtUsername.Text = "Username";
 				txtUsername.ForeColor = SystemColors.GrayText;
+				usernameSet = false;
 			}
 			else if (!txtUsername.Text.Contains("@"))
 			{
 				lblInst.Visible = true;
 				usernameFieldLeave = true;
+				usernameSet = true;
 			}
 			else
 			{
 				lblInst.Visible = false;
 				usernameFieldLeave = true;
+				usernameSet = true;
 			}
 		}
 
@@ -91,19 +96,34 @@ namespace EduroamApp
 				txtPassword.Text = "Password";
 				txtPassword.ForeColor = SystemColors.GrayText;
 				txtPassword.UseSystemPasswordChar = false;
+				passwordSet = false;
+			}
+			else
+			{
+				passwordSet = true;
 			}
 		}
 
 		public void ConnectWithLogin(uint eapType)
 		{
-			string username = txtUsername.Text;
-			if (lblInst.Visible)
+			string username = "";
+			string password = "";
+
+			if (usernameSet)
 			{
-				username += lblInst.Text;
+				username = txtUsername.Text;
+				if (lblInst.Visible)
+				{
+					username += lblInst.Text;
+				}
 			}
 
-			ConnectToEduroam.SetupLogin(username, txtPassword.Text, eapType);
+			if (passwordSet)
+			{
+				password = txtPassword.Text;
+			}
 
+			ConnectToEduroam.SetupLogin(username, password, eapType);
 		}
 
 		private void txtPassword_TextChanged(object sender, EventArgs e)

@@ -50,6 +50,7 @@ namespace EduroamApp
 			cboInstitution.Visible = false;
 			cboProfiles.Visible = false;
 			tlpLoading.Visible = true;
+			frmParent.LblRedirect = "";
 
 			// async method to get list of institutions
 			bool getInstSuccess = await Task.Run(() => GetAllInstitutions());
@@ -235,6 +236,7 @@ namespace EduroamApp
 			// downloads json file from url as string
 			using (WebClient client = new WebClient())
 			{
+				client.Encoding = Encoding.UTF8;
 				string jsonString = client.DownloadString(url);
 				return jsonString;
 			}
@@ -322,9 +324,6 @@ namespace EduroamApp
 
 		public string GetEapConfigString()
 		{
-			// eap config file
-			string eapString = "";
-
 			// adds profile ID to url containing json file, which in turn contains url to EAP config file download
 			string generateEapUrl = $"https://cat.eduroam.org/user/API.php?action=generateInstaller&id=eap-config&lang=en&profile={profileId}";
 
@@ -342,30 +341,29 @@ namespace EduroamApp
 			{
 				MessageBox.Show("Couldn't fetch Eap Config generate.\n" +
 								"Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return eapString;
+				return "";
 			}
 			catch (JsonReaderException ex)
 			{
 				MessageBox.Show("No supported EAP types found for this profile.\n" +
 								"Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return eapString;
+				return "";
 			}
 
 			// gets url to EAP config file download from GenerateEapConfig object
 			string eapConfigUrl = $"https://cat.eduroam.org/user/{eapConfigInstance.Data.Link}";
 
-			// gets eap config file as string
 			try
 			{
-				eapString = UrlToJson(eapConfigUrl);
+				// downloads and returns eap config file as string
+				return UrlToJson(eapConfigUrl);
 			}
 			catch (WebException ex)
 			{
 				MessageBox.Show("Couldn't fetch Eap Config file.\n" +
 								"Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return "";
 			}
-
-			return eapString;
 		}
 
 		public EapConfig ConnectWithDownload()
@@ -393,7 +391,7 @@ namespace EduroamApp
 			else
 			{
 				frmParent.LblRedirect = redirect;
-				return null; //return 200;
+				return null;
 			}
 
 			if (string.IsNullOrEmpty(eapString)) return null;
@@ -402,10 +400,6 @@ namespace EduroamApp
 			{
 				// creates EapConfig object from Eap string
 				return ConnectToEduroam.GetEapConfig(eapString);
-				// creates profile from EapConfig object
-				//eapType = ConnectToEduroam.Setup(eapConfig);
-				// makes the institution Id accessible from parent form
-				//frmParent.LblInstText = eapConfig.InstitutionInfo.InstId;
 			}
 			catch (ArgumentException argEx)
 			{
