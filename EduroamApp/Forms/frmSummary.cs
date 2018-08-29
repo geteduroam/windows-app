@@ -25,7 +25,7 @@ namespace EduroamApp
     {
         // makes the parent form accessible from this class
         private readonly frmParent frmParent;
-        private EapConfig eapConfig;
+        private readonly EapConfig eapConfig;
 
         public frmSummary(frmParent parentInstance, EapConfig configInstance)
         {
@@ -74,25 +74,46 @@ namespace EduroamApp
                 lblWeb.Enabled = false;
             }
 
+            // checks if email address is valid
+            if (!emailAddress.Contains("@"))
+            {
+                // disables link, but still displays it
+                lblEmail.Enabled = false;
+            }
+
+            // checks if phone number has numbers, disables label if not
+            if (!lblPhone.Text.Any(char.IsDigit)) lblPhone.Enabled = false;
+
+            // replaces empty fields with a dash
             foreach (Control cntrl in tblContactInfo.Controls)
             {
                 if (string.IsNullOrEmpty(cntrl.Text))
                 {
                     cntrl.Text = "-";
-                    cntrl.Enabled = false;
                 }
             }
 
-            lblAlternate.Text = "Not connecting to " + eapConfig.InstitutionInfo.DisplayName + "?";
+            // adds option to choose another institution if using file from self extract
+            if (frmParent.LblSummary == "SELFEXTRACT")
+            {
+                lblAlternate.Visible = true;
+                btnSelectInst.Visible = true;
+                lblAlternate.Text = "Not connecting to " + eapConfig.InstitutionInfo.DisplayName + "?";
+            }
+            else
+            {
+                lblAlternate.Visible = false;
+                btnSelectInst.Visible = false;
+            }
 
             // gets institution logo encoded to base64
             string logoBase64 = eapConfig.InstitutionInfo.Logo;
+            string logoFormat = eapConfig.InstitutionInfo.LogoFormat;
             // adds logo to form if exists
-            if (string.IsNullOrEmpty(logoBase64))
+            if (!string.IsNullOrEmpty(logoBase64) && logoFormat != "image/svg+xml")
             {
                 frmParent.PbxLogo = ConnectToEduroam.Base64ToImage(logoBase64);
             }
-            
         }
 
         private void lblWeb_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -107,9 +128,8 @@ namespace EduroamApp
             Process.Start("mailto:" + e.Link.LinkData);
         }
 
-        public uint InstallSelfExtract()
+        public uint InstallEapConfig()
         {
-            string errorMessage;
             try
             {
                 uint eapType = ConnectToEduroam.Setup(eapConfig);
@@ -118,30 +138,21 @@ namespace EduroamApp
             }
             catch (Exception ex)
             {
-                errorMessage = "Something went wrong.\n" +
-                                "Please try connecting through an alterate method.\n\n" +
-                                "Exception: " + ex.Message;
+                MessageBox.Show("Something went wrong.\n" + "Please try connecting through an alterate method.\n\n" 
+                                + "Exception: " + ex.Message, "eduroam Setup failed",
+                                MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return 0;
             }
-
-            MessageBox.Show(errorMessage, "eduroam Setup failed",
-                MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-            return 0;
+        }
+        
+        private void chkAgree_CheckedChanged(object sender, EventArgs e)
+        {
+            frmParent.BtnNextEnabled = chkAgree.Checked;
         }
 
         private void btnSelectInst_Click(object sender, EventArgs e)
         {
             frmParent.LoadFrmSelectMethod();
-        }
-
-        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void chkAgree_CheckedChanged(object sender, EventArgs e)
-        {
-            frmParent.BtnNextEnabled = chkAgree.Checked;
         }
     }
 }

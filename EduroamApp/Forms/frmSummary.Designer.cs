@@ -39,23 +39,23 @@
             this.gboContactInfo = new System.Windows.Forms.GroupBox();
             this.lblAlternate = new System.Windows.Forms.Label();
             this.pnlTop = new System.Windows.Forms.Panel();
-            this.pnlContactInfo = new System.Windows.Forms.Panel();
-            this.tblSelectInst = new System.Windows.Forms.TableLayoutPanel();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.btnSelectInst = new System.Windows.Forms.Button();
-            this.lblToU = new System.Windows.Forms.Label();
-            this.pnlInstName = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.chkAgree = new System.Windows.Forms.CheckBox();
+            this.lblToU = new System.Windows.Forms.Label();
+            this.pnlInstName = new System.Windows.Forms.Panel();
+            this.pnlContactInfo = new System.Windows.Forms.Panel();
+            this.tblSelectInst = new System.Windows.Forms.TableLayoutPanel();
+            this.btnSelectInst = new System.Windows.Forms.Button();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.panel4 = new System.Windows.Forms.Panel();
             this.tblContactInfo.SuspendLayout();
             this.gboContactInfo.SuspendLayout();
             this.pnlTop.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.pnlInstName.SuspendLayout();
             this.pnlContactInfo.SuspendLayout();
             this.tblSelectInst.SuspendLayout();
             this.panel4.SuspendLayout();
-            this.pnlInstName.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // label3
@@ -175,11 +175,12 @@
             // lblAlternate
             // 
             this.lblAlternate.AutoSize = true;
-            this.lblAlternate.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblAlternate.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lblAlternate.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
             this.lblAlternate.Location = new System.Drawing.Point(3, 0);
             this.lblAlternate.MaximumSize = new System.Drawing.Size(240, 0);
             this.lblAlternate.Name = "lblAlternate";
-            this.lblAlternate.Size = new System.Drawing.Size(145, 13);
+            this.lblAlternate.Size = new System.Drawing.Size(145, 30);
             this.lblAlternate.TabIndex = 12;
             this.lblAlternate.Text = "Not connecting to institution?";
             // 
@@ -192,81 +193,6 @@
             this.pnlTop.Name = "pnlTop";
             this.pnlTop.Size = new System.Drawing.Size(378, 87);
             this.pnlTop.TabIndex = 13;
-            // 
-            // pnlContactInfo
-            // 
-            this.pnlContactInfo.Controls.Add(this.gboContactInfo);
-            this.pnlContactInfo.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlContactInfo.Location = new System.Drawing.Point(0, 87);
-            this.pnlContactInfo.Name = "pnlContactInfo";
-            this.pnlContactInfo.Size = new System.Drawing.Size(378, 85);
-            this.pnlContactInfo.TabIndex = 14;
-            // 
-            // tblSelectInst
-            // 
-            this.tblSelectInst.AutoSize = true;
-            this.tblSelectInst.ColumnCount = 2;
-            this.tblSelectInst.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tblSelectInst.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 203F));
-            this.tblSelectInst.Controls.Add(this.lblAlternate, 0, 0);
-            this.tblSelectInst.Controls.Add(this.btnSelectInst, 1, 0);
-            this.tblSelectInst.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tblSelectInst.Location = new System.Drawing.Point(0, 0);
-            this.tblSelectInst.Name = "tblSelectInst";
-            this.tblSelectInst.RowCount = 1;
-            this.tblSelectInst.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tblSelectInst.Size = new System.Drawing.Size(378, 29);
-            this.tblSelectInst.TabIndex = 16;
-            this.tblSelectInst.Paint += new System.Windows.Forms.PaintEventHandler(this.tableLayoutPanel1_Paint);
-            // 
-            // panel3
-            // 
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel3.Location = new System.Drawing.Point(0, 224);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(378, 22);
-            this.panel3.TabIndex = 17;
-            // 
-            // panel4
-            // 
-            this.panel4.AutoSize = true;
-            this.panel4.Controls.Add(this.tblSelectInst);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(0, 195);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(378, 29);
-            this.panel4.TabIndex = 18;
-            // 
-            // btnSelectInst
-            // 
-            this.btnSelectInst.AutoSize = true;
-            this.btnSelectInst.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnSelectInst.Location = new System.Drawing.Point(154, 3);
-            this.btnSelectInst.Name = "btnSelectInst";
-            this.btnSelectInst.Size = new System.Drawing.Size(133, 23);
-            this.btnSelectInst.TabIndex = 17;
-            this.btnSelectInst.Text = "Select another institution";
-            this.btnSelectInst.UseVisualStyleBackColor = true;
-            // 
-            // lblToU
-            // 
-            this.lblToU.AutoSize = true;
-            this.lblToU.Location = new System.Drawing.Point(3, 16);
-            this.lblToU.MaximumSize = new System.Drawing.Size(375, 0);
-            this.lblToU.Name = "lblToU";
-            this.lblToU.Size = new System.Drawing.Size(269, 13);
-            this.lblToU.TabIndex = 7;
-            this.lblToU.Text = "Agree to the Terms of Use and press Install to continue.";
-            // 
-            // pnlInstName
-            // 
-            this.pnlInstName.AutoSize = true;
-            this.pnlInstName.Controls.Add(this.lblInstName);
-            this.pnlInstName.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlInstName.Location = new System.Drawing.Point(0, 0);
-            this.pnlInstName.Name = "pnlInstName";
-            this.pnlInstName.Size = new System.Drawing.Size(378, 16);
-            this.pnlInstName.TabIndex = 8;
             // 
             // panel1
             // 
@@ -292,7 +218,84 @@
             this.chkAgree.Visible = false;
             this.chkAgree.CheckedChanged += new System.EventHandler(this.chkAgree_CheckedChanged);
             // 
-            // frmSelfExtract
+            // lblToU
+            // 
+            this.lblToU.AutoSize = true;
+            this.lblToU.Location = new System.Drawing.Point(3, 16);
+            this.lblToU.MaximumSize = new System.Drawing.Size(375, 0);
+            this.lblToU.Name = "lblToU";
+            this.lblToU.Size = new System.Drawing.Size(269, 13);
+            this.lblToU.TabIndex = 7;
+            this.lblToU.Text = "Agree to the Terms of Use and press Install to continue.";
+            // 
+            // pnlInstName
+            // 
+            this.pnlInstName.AutoSize = true;
+            this.pnlInstName.Controls.Add(this.lblInstName);
+            this.pnlInstName.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlInstName.Location = new System.Drawing.Point(0, 0);
+            this.pnlInstName.Name = "pnlInstName";
+            this.pnlInstName.Size = new System.Drawing.Size(378, 16);
+            this.pnlInstName.TabIndex = 8;
+            // 
+            // pnlContactInfo
+            // 
+            this.pnlContactInfo.Controls.Add(this.gboContactInfo);
+            this.pnlContactInfo.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlContactInfo.Location = new System.Drawing.Point(0, 87);
+            this.pnlContactInfo.Name = "pnlContactInfo";
+            this.pnlContactInfo.Size = new System.Drawing.Size(378, 85);
+            this.pnlContactInfo.TabIndex = 14;
+            // 
+            // tblSelectInst
+            // 
+            this.tblSelectInst.AutoSize = true;
+            this.tblSelectInst.ColumnCount = 2;
+            this.tblSelectInst.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tblSelectInst.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 227F));
+            this.tblSelectInst.Controls.Add(this.lblAlternate, 0, 0);
+            this.tblSelectInst.Controls.Add(this.btnSelectInst, 1, 0);
+            this.tblSelectInst.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tblSelectInst.Location = new System.Drawing.Point(0, 0);
+            this.tblSelectInst.Name = "tblSelectInst";
+            this.tblSelectInst.RowCount = 1;
+            this.tblSelectInst.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tblSelectInst.Size = new System.Drawing.Size(378, 30);
+            this.tblSelectInst.TabIndex = 16;
+            // 
+            // btnSelectInst
+            // 
+            this.btnSelectInst.AutoSize = true;
+            this.btnSelectInst.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnSelectInst.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnSelectInst.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnSelectInst.Location = new System.Drawing.Point(154, 3);
+            this.btnSelectInst.Name = "btnSelectInst";
+            this.btnSelectInst.Size = new System.Drawing.Size(133, 24);
+            this.btnSelectInst.TabIndex = 17;
+            this.btnSelectInst.Text = "Select another institution";
+            this.btnSelectInst.UseVisualStyleBackColor = false;
+            this.btnSelectInst.Click += new System.EventHandler(this.btnSelectInst_Click);
+            // 
+            // panel3
+            // 
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel3.Location = new System.Drawing.Point(0, 224);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(378, 22);
+            this.panel3.TabIndex = 17;
+            // 
+            // panel4
+            // 
+            this.panel4.AutoSize = true;
+            this.panel4.Controls.Add(this.tblSelectInst);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel4.Location = new System.Drawing.Point(0, 194);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(378, 30);
+            this.panel4.TabIndex = 18;
+            // 
+            // frmSummary
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -313,16 +316,16 @@
             this.gboContactInfo.PerformLayout();
             this.pnlTop.ResumeLayout(false);
             this.pnlTop.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.pnlInstName.ResumeLayout(false);
+            this.pnlInstName.PerformLayout();
             this.pnlContactInfo.ResumeLayout(false);
             this.pnlContactInfo.PerformLayout();
             this.tblSelectInst.ResumeLayout(false);
             this.tblSelectInst.PerformLayout();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
-            this.pnlInstName.ResumeLayout(false);
-            this.pnlInstName.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -34,20 +34,23 @@ namespace EduroamApp
         public class ProviderInfo
         {
             public string DisplayName { get; set; }
-            public string Logo { get; set; } = null;
+            public string Logo { get; set; }
+            public string LogoFormat { get; set; }
             public string EmailAddress { get; set; }
             public string WebAddress { get; set; }
             public string Phone { get; set; }
             public string InstId { get; set; }
             public string TermsOfUse { get; set; }
 
-            public ProviderInfo(string displayName, string logo, string emailAddress, string webAddress, string phone, string instId, string termsOfUse)
+            // Constructor
+            public ProviderInfo(string displayName, string logo, string logoFormat, string emailAddress, string webAddress, string phone, string instId, string termsOfUse)
             {
-                DisplayName = displayName;
+                DisplayName = displayName ?? string.Empty; // if value is null, make it ""
                 Logo = logo;
-                EmailAddress = emailAddress;
-                WebAddress = webAddress;
-                Phone = phone;
+                LogoFormat = logoFormat;
+                EmailAddress = emailAddress ?? string.Empty; // if value is null, make it ""
+                WebAddress = webAddress ?? string.Empty; // if value is null, make it ""
+                Phone = phone ?? string.Empty; // if value is null, make it ""
                 InstId = instId;
                 TermsOfUse = termsOfUse;
             }

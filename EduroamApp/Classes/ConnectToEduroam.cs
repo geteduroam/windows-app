@@ -24,9 +24,9 @@ namespace EduroamApp
     class ConnectToEduroam
     {
         // sets eduroam as chosen network
-        static EduroamNetwork eduroamInstance = new EduroamNetwork(); // creates new instance of eduroam network
-        static readonly string ssid = eduroamInstance.Ssid; // gets SSID
-        static readonly Guid interfaceId = eduroamInstance.InterfaceId; // gets interface ID
+        private static readonly EduroamNetwork eduroamInstance = new EduroamNetwork(); // creates new instance of eduroam network
+        private static readonly string ssid = eduroamInstance.Ssid; // gets SSID
+        private static readonly Guid interfaceId = eduroamInstance.InterfaceId; // gets interface ID
 
         public static uint Setup(EapConfig eapConfig)
         {
@@ -201,7 +201,7 @@ namespace EduroamApp
                 interfaceId: chosenWifi.Interface.Id,
                 profileName: chosenWifi.ProfileName,
                 bssType: chosenWifi.BssType,
-                timeout: TimeSpan.FromSeconds(6));
+                timeout: TimeSpan.FromSeconds(5));
         }
 
         /// <summary>
@@ -259,7 +259,7 @@ namespace EduroamApp
         {
             // loads the XML file from its file path
             XElement doc = XElement.Parse(eapFile);
-
+            
             // instantiates new EapConfig object
             var eapConfig = new EapConfig();
             // creates new list of authentication methods
@@ -306,8 +306,12 @@ namespace EduroamApp
 
             // gets provider's  display name
             var displayName = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "DisplayName");
-            // gets provider's logo as base64 encoded string
-            var logo = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "ProviderLogo");
+            // gets logo element
+            XElement logoElement = doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "ProviderLogo");
+            // gets provider's logo as base64 encoded string from logo element
+            var logo = (string) logoElement;
+            // gets the file format of the logo
+            var logoFormat = (string) logoElement?.Attribute("mime");
             // gets provider's email address
             var emailAddress = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "EmailAddress");
             // gets provider's web address
@@ -316,11 +320,13 @@ namespace EduroamApp
             var phone = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Phone");
             // gets provider's phone number
             var termsOfUse = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "TermsOfUse");
-            // gets institution Id
-            var instId = (string)doc.Descendants().ElementAtOrDefault(0).Attribute("ID");
+            // gets identity element
+            XElement eapIdentityElement = doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "EAPIdentityProvider");
+            // gets institution ID from identity element
+            var instId = (string)eapIdentityElement?.Attribute("ID");
 
             // adds the provider info to the EapConfig object
-            eapConfig.InstitutionInfo = new EapConfig.ProviderInfo(displayName, logo, emailAddress, webAddress, phone, instId, termsOfUse);
+            eapConfig.InstitutionInfo = new EapConfig.ProviderInfo(displayName, logo, logoFormat, emailAddress, webAddress, phone, instId, termsOfUse);
 
             // returns the EapConfig object
             return eapConfig;
