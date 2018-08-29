@@ -33,7 +33,7 @@
             this.txtFilepath = new System.Windows.Forms.TextBox();
             this.txtCertPassword = new System.Windows.Forms.TextBox();
             this.lblCertPassword = new System.Windows.Forms.Label();
-            this.cboShowPassword = new System.Windows.Forms.CheckBox();
+            this.chkShowPassword = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // btnBrowse
@@ -84,15 +84,15 @@
             // 
             // cboShowPassword
             // 
-            this.cboShowPassword.AutoSize = true;
-            this.cboShowPassword.Location = new System.Drawing.Point(184, 88);
-            this.cboShowPassword.Name = "cboShowPassword";
-            this.cboShowPassword.Size = new System.Drawing.Size(108, 17);
-            this.cboShowPassword.TabIndex = 7;
-            this.cboShowPassword.Text = "Display password";
-            this.cboShowPassword.UseVisualStyleBackColor = true;
-            this.cboShowPassword.Visible = false;
-            this.cboShowPassword.CheckedChanged += new System.EventHandler(this.cboShowPassword_CheckedChanged);
+            this.chkShowPassword.AutoSize = true;
+            this.chkShowPassword.Location = new System.Drawing.Point(184, 88);
+            this.chkShowPassword.Name = "chkShowPassword";
+            this.chkShowPassword.Size = new System.Drawing.Size(108, 17);
+            this.chkShowPassword.TabIndex = 7;
+            this.chkShowPassword.Text = "Display password";
+            this.chkShowPassword.UseVisualStyleBackColor = true;
+            this.chkShowPassword.Visible = false;
+            this.chkShowPassword.CheckedChanged += new System.EventHandler(this.cboShowPassword_CheckedChanged);
             // 
             // frmLocal
             // 
@@ -101,7 +101,7 @@
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(378, 246);
-            this.Controls.Add(this.cboShowPassword);
+            this.Controls.Add(this.chkShowPassword);
             this.Controls.Add(this.txtCertPassword);
             this.Controls.Add(this.lblCertPassword);
             this.Controls.Add(this.txtFilepath);
@@ -122,6 +122,6 @@
         private System.Windows.Forms.TextBox txtFilepath;
         private System.Windows.Forms.TextBox txtCertPassword;
         private System.Windows.Forms.Label lblCertPassword;
-        private System.Windows.Forms.CheckBox cboShowPassword;
+        private System.Windows.Forms.CheckBox chkShowPassword;
     }
 }

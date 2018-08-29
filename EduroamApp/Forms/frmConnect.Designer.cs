@@ -40,7 +40,7 @@
             // 
             this.lblStatus.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblStatus.AutoSize = true;
-            this.lblStatus.Location = new System.Drawing.Point(3, 16);
+            this.lblStatus.Location = new System.Drawing.Point(3, 4);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(70, 13);
             this.lblStatus.TabIndex = 7;
@@ -48,23 +48,24 @@
             // 
             // tableLayoutPanel1
             // 
+            this.tableLayoutPanel1.AutoSize = true;
+            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 171F));
             this.tableLayoutPanel1.Controls.Add(this.lblStatus, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.pboStatus, 1, 0);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, -2);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 12);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 1;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(247, 45);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(247, 22);
             this.tableLayoutPanel1.TabIndex = 9;
             // 
             // pboStatus
             // 
-            this.pboStatus.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.pboStatus.Image = global::EduroamApp.Properties.Resources.ajax_loader;
-            this.pboStatus.Location = new System.Drawing.Point(79, 14);
+            this.pboStatus.Location = new System.Drawing.Point(79, 3);
             this.pboStatus.Name = "pboStatus";
             this.pboStatus.Size = new System.Drawing.Size(16, 16);
             this.pboStatus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -74,7 +75,7 @@
             // lblConnectFailed
             // 
             this.lblConnectFailed.AutoSize = true;
-            this.lblConnectFailed.Location = new System.Drawing.Point(3, 46);
+            this.lblConnectFailed.Location = new System.Drawing.Point(2, 62);
             this.lblConnectFailed.Name = "lblConnectFailed";
             this.lblConnectFailed.Size = new System.Drawing.Size(325, 13);
             this.lblConnectFailed.TabIndex = 10;
