@@ -165,6 +165,7 @@ namespace EduroamApp
 					LoadFrmLocal();
 					break;
 				case 5:
+					if (lblProfileCondition.Text == "BADPROFILE") ConnectToEduroam.CreateNewProfile();
 					LoadFrmLogin();
 					break;
 				case 7:
@@ -361,7 +362,7 @@ namespace EduroamApp
 			currentFormId = 5;
 			lblTitle.Text = "Log in";
 			btnNext.Text = "Connect";
-			btnNext.Enabled = true;
+			btnNext.Enabled = false;
 			btnBack.Enabled = true;
 			btnBack.Visible = true;
 			LoadNewForm(frmLogin);

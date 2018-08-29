@@ -41,7 +41,7 @@ namespace EduroamApp
 
 			if (connectSuccess)
 			{
-				lblStatus.Text = "You are now connected to eduroam.\nPress Close to exit the wizard.";
+				lblStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
 				pboStatus.Image = Properties.Resources.checkmark_16;
 				frmParent.BtnCancelText = "Close";
 				frmParent.LblProfileCondition = "GOODPROFILE";
@@ -53,6 +53,7 @@ namespace EduroamApp
 				lblConnectFailed.Visible = true;
 				frmParent.BtnBackEnabled = true;
 				frmParent.LblProfileCondition = "BADPROFILE";
+				ConnectToEduroam.RemoveProfile();
 			}
 		}
 

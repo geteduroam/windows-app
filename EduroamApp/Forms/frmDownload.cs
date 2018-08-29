@@ -396,23 +396,8 @@ namespace EduroamApp
 
 			if (string.IsNullOrEmpty(eapString)) return null;
 
-			try
-			{
-				// creates EapConfig object from Eap string
-				return ConnectToEduroam.GetEapConfig(eapString);
-			}
-			catch (ArgumentException argEx)
-			{
-				if (argEx.Message == "interfaceId")
-				{
-					MessageBox.Show(
-						"Could not establish a connection through your computer's wireless network interface. \n" +
-						"Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.",
-						"Network interface error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
-			}
-
-			return null;
+			// creates EapConfig object from Eap string
+			return ConnectToEduroam.GetEapConfig(eapString);
 		}
 
 		// -----------------------------------------------------------------------------------------

@@ -138,13 +138,24 @@ namespace EduroamApp
 				frmParent.LblInstText = eapConfig.InstitutionInfo.InstId;
 				return eapType;
 			}
+			catch (ArgumentException argEx)
+			{
+				if (argEx.Message == "interfaceId")
+				{
+					MessageBox.Show(
+						"Could not establish a connection through your computer's wireless network interface. \n" +
+						"Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.",
+						"eduroam", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				}
+			}
 			catch (Exception ex)
 			{
-				MessageBox.Show("Something went wrong.\n" + "Please try connecting through an alterate method.\n\n"
+				MessageBox.Show("Something went wrong.\n" + "Please try connecting with another institution.\n\n"
 								+ "Exception: " + ex.Message, "eduroam Setup failed",
 								MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-				return 0;
 			}
+
+			return 0;
 		}
 
 		private void chkAgree_CheckedChanged(object sender, EventArgs e)

@@ -23,13 +23,22 @@ namespace EduroamApp
 {
 	class ConnectToEduroam
 	{
-		// sets eduroam as chosen network
-		private static readonly EduroamNetwork eduroamInstance = new EduroamNetwork(); // creates new instance of eduroam network
-		private static readonly string ssid = eduroamInstance.Ssid; // gets SSID
-		private static readonly Guid interfaceId = eduroamInstance.InterfaceId; // gets interface ID
+		// SSID of eduroam network
+		private static string ssid;
+		// Id of wireless network interface
+		private static Guid interfaceId;
+		// xml file for building wireless profile
+		private static string profileXml;
 
 		public static uint Setup(EapConfig eapConfig)
 		{
+			// creates new instance of eduroam network
+			var eduroamInstance = new EduroamNetwork();
+			// gets SSID
+			ssid = eduroamInstance.Ssid;
+			// gets interface ID
+			interfaceId = eduroamInstance.InterfaceId;
+
 			// gets the first/default authentication method of an EAP config file
 			EapConfig.AuthenticationMethod authMethod = eapConfig.AuthenticationMethods.First();
 
@@ -153,10 +162,10 @@ namespace EduroamApp
 			string serverNames = string.Join(";", authMethod.ServerName);
 
 			// generates new profile xml
-			string profileXml = ProfileXml.CreateProfileXml(ssid, eapType, serverNames, thumbprints);
+			profileXml = EduroamApp.ProfileXml.CreateProfileXml(ssid, eapType, serverNames, thumbprints);
 
 			// creates a new wireless profile
-			Debug.WriteLine(CreateNewProfile(interfaceId, profileXml) ? "New profile successfully created.\n" : "Creation of new profile failed.\n");
+			CreateNewProfile();
 
 			// checks if EAP type is TLS and there is no client certificate
 			if (eapType == 13 && string.IsNullOrEmpty(authMethod.ClientCertificate))
@@ -181,7 +190,7 @@ namespace EduroamApp
 		public static Task<bool> Connect()
 		{
 			// gets eduroam network pack
-			AvailableNetworkPack network = EduroamNetwork.GetEduroam();
+			AvailableNetworkPack network = EduroamNetwork.GetEduroamPack();
 
 			// connects to eduroam
 			Task<bool> connectResult = Task.Run(() => ConnectAsync(network));
@@ -207,22 +216,20 @@ namespace EduroamApp
 		/// <summary>
 		/// Creates new network profile according to selected network and profile XML.
 		/// </summary>
-		/// <param name="networkId">Interface ID of selected network.</param>
-		/// <param name="profileXml">Wireless profile XML converted to string.</param>
 		/// <returns>True if succeeded, false if failed.</returns>
-		private static bool CreateNewProfile(Guid networkId, string profileXml)
+		public static void CreateNewProfile()
 		{
 			// sets the profile type to be All-user (value = 0)
 			// if set to Per User, the security type parameter is not required
-			const ProfileType newProfileType = ProfileType.AllUser;
+			const ProfileType profileType = ProfileType.AllUser;
 
 			// security type not required
-			const string newSecurityType = null;
+			const string securityType = null;
 
 			// overwrites if profile already exists
 			const bool overwrite = true;
 
-			return NativeWifi.SetProfile(networkId, newProfileType, profileXml, newSecurityType, overwrite);
+			NativeWifi.SetProfile(interfaceId, profileType, profileXml, securityType, overwrite);
 		}
 
 		/// <summary>
@@ -270,7 +277,7 @@ namespace EduroamApp
 			foreach (XElement element in authMethodElements)
 			{
 				// gets EAP method type
-				var eapType = (uint)element.DescendantsAndSelf().Elements().First(x => x.Name.LocalName == "Type");
+				var eapType = (uint)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Type");
 
 				// gets list of CAs
 				List<XElement> caElements = element.DescendantsAndSelf().Elements().Where(x => x.Name.LocalName == "CA").ToList();

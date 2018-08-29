@@ -9,19 +9,15 @@ namespace EduroamApp
 {
 	class EduroamNetwork
 	{
-		/// <summary>
-		///Properties
-		/// </summary>
-		public AvailableNetworkPack NetworkPack { get; } = null;
-		public string Ssid { get; } = null;
+		// Properties
+		public AvailableNetworkPack NetworkPack { get; }
+		public string Ssid { get; }
 		public Guid InterfaceId { get; } = Guid.Empty;
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
+		// Constructor
 		public EduroamNetwork()
 		{
-			NetworkPack = GetEduroam();
+			NetworkPack = GetEduroamPack();
 			if (NetworkPack != null) // only assigns value to properties if network pack exists
 			{
 				Ssid = NetworkPack.Ssid.ToString();
@@ -33,7 +29,7 @@ namespace EduroamApp
 		/// Gets a network pack containing information about an eduroam network, if available.
 		/// </summary>
 		/// <returns>Network pack.</returns>
-		public static AvailableNetworkPack GetEduroam()
+		public static AvailableNetworkPack GetEduroamPack()
 		{
 			// gets all available networks and stores them in a list
 			List<AvailableNetworkPack> networks = NativeWifi.EnumerateAvailableNetworks().ToList();

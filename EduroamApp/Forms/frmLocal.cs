@@ -60,23 +60,8 @@ namespace EduroamApp
 
 			// gets content of config file
 			string eapString = File.ReadAllText(txtFilepath.Text);
-			uint eapType = 0;
-
-			try
-			{
-				// creates EapConfig object from Eap string
-				return ConnectToEduroam.GetEapConfig(eapString);
-			}
-			catch (ArgumentException argEx)
-			{
-				if (argEx.Message == "interfaceId")
-				{
-					MessageBox.Show("Could not establish a connection through your computer's wireless network interface. \n" +
-									"Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.",
-						"Network interface error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				}
-			}
-			return null;
+			// creates and returns EapConfig object
+			return ConnectToEduroam.GetEapConfig(eapString);
 		}
 
 		public bool InstallCertFile()
@@ -113,7 +98,7 @@ namespace EduroamApp
 			var passwordRequired = false;
 			try
 			{
-				var certificate = new X509Certificate2(txtFilepath.Text, "");
+				var testCertificate = new X509Certificate2(txtFilepath.Text, "");
 			}
 			catch (CryptographicException ex)
 			{
@@ -131,15 +116,15 @@ namespace EduroamApp
 			{
 				lblCertPassword.Visible = true;
 				txtCertPassword.Visible = true;
-				cboShowPassword.Visible = true;
+				chkShowPassword.Visible = true;
 			}
 			else
 			{
 				lblCertPassword.Visible = false;
 				txtCertPassword.Visible = false;
 				txtCertPassword.Text = "";
-				cboShowPassword.Visible = false;
-				cboShowPassword.Checked = false;
+				chkShowPassword.Visible = false;
+				chkShowPassword.Checked = false;
 				txtCertPassword.UseSystemPasswordChar = true;
 			}
 		}
@@ -147,7 +132,7 @@ namespace EduroamApp
 		// unmasks password characters on screen
 		private void cboShowPassword_CheckedChanged(object sender, EventArgs e)
 		{
-			txtCertPassword.UseSystemPasswordChar = !cboShowPassword.Checked;
+			txtCertPassword.UseSystemPasswordChar = !chkShowPassword.Checked;
 		}
 	}
 }
