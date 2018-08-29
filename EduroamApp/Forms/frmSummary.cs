@@ -44,7 +44,7 @@ namespace EduroamApp
             string webAddress = eapConfig.InstitutionInfo.WebAddress.ToLower();
             string emailAddress = eapConfig.InstitutionInfo.EmailAddress.ToLower();
 
-            lblInstName.Text = "You will now be connecting to " + instName + ".";
+            lblInstName.Text =  instName;
             if (string.IsNullOrEmpty(tou))
             {
                 lblToU.Text = "Press Next to continue.";
@@ -52,7 +52,7 @@ namespace EduroamApp
             }
             else
             {
-                lblToU.Text = "Agree to the Terms of Use and press Install to continue.";
+                lblToU.Text = "Agree to the Terms of Use and press Next to continue.";
                 chkAgree.Visible = true;
                 chkAgree.Checked = false;
             }
@@ -94,7 +94,7 @@ namespace EduroamApp
             }
 
             // adds option to choose another institution if using file from self extract
-            if (frmParent.LblSummary == "SELFEXTRACT")
+            if (frmParent.SelfExtractFlag)
             {
                 lblAlternate.Visible = true;
                 btnSelectInst.Visible = true;
@@ -114,6 +114,8 @@ namespace EduroamApp
             {
                 frmParent.PbxLogo = ConnectToEduroam.Base64ToImage(logoBase64);
             }
+
+            frmParent.SelectAlternative = false;
         }
 
         private void lblWeb_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -152,7 +154,8 @@ namespace EduroamApp
 
         private void btnSelectInst_Click(object sender, EventArgs e)
         {
-            frmParent.LoadFrmSelectMethod();
+            frmParent.SelectAlternative = true;
+            frmParent.btnNext_Click(sender, e);
         }
     }
 }

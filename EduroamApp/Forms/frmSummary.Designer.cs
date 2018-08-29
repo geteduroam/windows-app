@@ -45,9 +45,10 @@
             this.pnlInstName = new System.Windows.Forms.Panel();
             this.pnlContactInfo = new System.Windows.Forms.Panel();
             this.tblSelectInst = new System.Windows.Forms.TableLayoutPanel();
-            this.btnSelectInst = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
+            this.btnSelectInst = new System.Windows.Forms.Button();
             this.tblContactInfo.SuspendLayout();
             this.gboContactInfo.SuspendLayout();
             this.pnlTop.SuspendLayout();
@@ -92,12 +93,13 @@
             // lblInstName
             // 
             this.lblInstName.AutoSize = true;
-            this.lblInstName.Location = new System.Drawing.Point(3, 3);
+            this.lblInstName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblInstName.Location = new System.Drawing.Point(3, 18);
             this.lblInstName.MaximumSize = new System.Drawing.Size(375, 0);
             this.lblInstName.Name = "lblInstName";
-            this.lblInstName.Size = new System.Drawing.Size(80, 13);
+            this.lblInstName.Size = new System.Drawing.Size(97, 13);
             this.lblInstName.TabIndex = 6;
-            this.lblInstName.Text = "institution name";
+            this.lblInstName.Text = "Institution name";
             // 
             // lblPhone
             // 
@@ -167,7 +169,7 @@
             this.gboContactInfo.Dock = System.Windows.Forms.DockStyle.Left;
             this.gboContactInfo.Location = new System.Drawing.Point(0, 0);
             this.gboContactInfo.Name = "gboContactInfo";
-            this.gboContactInfo.Size = new System.Drawing.Size(273, 85);
+            this.gboContactInfo.Size = new System.Drawing.Size(273, 88);
             this.gboContactInfo.TabIndex = 11;
             this.gboContactInfo.TabStop = false;
             this.gboContactInfo.Text = "Contact info";
@@ -191,17 +193,18 @@
             this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlTop.Location = new System.Drawing.Point(0, 0);
             this.pnlTop.Name = "pnlTop";
-            this.pnlTop.Size = new System.Drawing.Size(378, 87);
+            this.pnlTop.Size = new System.Drawing.Size(378, 94);
             this.pnlTop.TabIndex = 13;
             // 
             // panel1
             // 
+            this.panel1.AutoSize = true;
             this.panel1.Controls.Add(this.chkAgree);
             this.panel1.Controls.Add(this.lblToU);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 16);
+            this.panel1.Location = new System.Drawing.Point(0, 38);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(378, 65);
+            this.panel1.Size = new System.Drawing.Size(378, 39);
             this.panel1.TabIndex = 9;
             // 
             // chkAgree
@@ -209,7 +212,7 @@
             this.chkAgree.AutoSize = true;
             this.chkAgree.Checked = true;
             this.chkAgree.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAgree.Location = new System.Drawing.Point(5, 33);
+            this.chkAgree.Location = new System.Drawing.Point(14, 19);
             this.chkAgree.Name = "chkAgree";
             this.chkAgree.Size = new System.Drawing.Size(353, 17);
             this.chkAgree.TabIndex = 8;
@@ -221,30 +224,30 @@
             // lblToU
             // 
             this.lblToU.AutoSize = true;
-            this.lblToU.Location = new System.Drawing.Point(3, 16);
+            this.lblToU.Location = new System.Drawing.Point(3, 2);
             this.lblToU.MaximumSize = new System.Drawing.Size(375, 0);
             this.lblToU.Name = "lblToU";
-            this.lblToU.Size = new System.Drawing.Size(269, 13);
+            this.lblToU.Size = new System.Drawing.Size(264, 13);
             this.lblToU.TabIndex = 7;
-            this.lblToU.Text = "Agree to the Terms of Use and press Install to continue.";
+            this.lblToU.Text = "Agree to the Terms of Use and press Next to continue.";
             // 
             // pnlInstName
             // 
-            this.pnlInstName.AutoSize = true;
+            this.pnlInstName.Controls.Add(this.label1);
             this.pnlInstName.Controls.Add(this.lblInstName);
             this.pnlInstName.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlInstName.Location = new System.Drawing.Point(0, 0);
             this.pnlInstName.Name = "pnlInstName";
-            this.pnlInstName.Size = new System.Drawing.Size(378, 16);
+            this.pnlInstName.Size = new System.Drawing.Size(378, 38);
             this.pnlInstName.TabIndex = 8;
             // 
             // pnlContactInfo
             // 
             this.pnlContactInfo.Controls.Add(this.gboContactInfo);
             this.pnlContactInfo.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pnlContactInfo.Location = new System.Drawing.Point(0, 87);
+            this.pnlContactInfo.Location = new System.Drawing.Point(0, 94);
             this.pnlContactInfo.Name = "pnlContactInfo";
-            this.pnlContactInfo.Size = new System.Drawing.Size(378, 85);
+            this.pnlContactInfo.Size = new System.Drawing.Size(378, 88);
             this.pnlContactInfo.TabIndex = 14;
             // 
             // tblSelectInst
@@ -263,20 +266,6 @@
             this.tblSelectInst.Size = new System.Drawing.Size(378, 30);
             this.tblSelectInst.TabIndex = 16;
             // 
-            // btnSelectInst
-            // 
-            this.btnSelectInst.AutoSize = true;
-            this.btnSelectInst.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.btnSelectInst.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnSelectInst.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnSelectInst.Location = new System.Drawing.Point(154, 3);
-            this.btnSelectInst.Name = "btnSelectInst";
-            this.btnSelectInst.Size = new System.Drawing.Size(133, 24);
-            this.btnSelectInst.TabIndex = 17;
-            this.btnSelectInst.Text = "Select another institution";
-            this.btnSelectInst.UseVisualStyleBackColor = false;
-            this.btnSelectInst.Click += new System.EventHandler(this.btnSelectInst_Click);
-            // 
             // panel3
             // 
             this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -294,6 +283,30 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(378, 30);
             this.panel4.TabIndex = 18;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 3);
+            this.label1.MaximumSize = new System.Drawing.Size(375, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(152, 13);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "You will now be connecting to:";
+            // 
+            // btnSelectInst
+            // 
+            this.btnSelectInst.AutoSize = true;
+            this.btnSelectInst.BackColor = System.Drawing.Color.WhiteSmoke;
+            this.btnSelectInst.Dock = System.Windows.Forms.DockStyle.Left;
+            this.btnSelectInst.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.btnSelectInst.Location = new System.Drawing.Point(154, 3);
+            this.btnSelectInst.Name = "btnSelectInst";
+            this.btnSelectInst.Size = new System.Drawing.Size(133, 24);
+            this.btnSelectInst.TabIndex = 17;
+            this.btnSelectInst.Text = "Select another institution";
+            this.btnSelectInst.UseVisualStyleBackColor = false;
+            this.btnSelectInst.Click += new System.EventHandler(this.btnSelectInst_Click);
             // 
             // frmSummary
             // 
@@ -347,10 +360,11 @@
         private System.Windows.Forms.TableLayoutPanel tblSelectInst;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Panel panel4;
-        private System.Windows.Forms.Button btnSelectInst;
         private System.Windows.Forms.Label lblToU;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel pnlInstName;
         private System.Windows.Forms.CheckBox chkAgree;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btnSelectInst;
     }
 }

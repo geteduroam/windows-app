@@ -40,9 +40,9 @@ namespace EduroamApp
 
         }
 
-        private void frm2_Load(object sender, EventArgs e)
+        private void frmSelectMethod_Load(object sender, EventArgs e)
         {
-
+            
         }
     }
 }
