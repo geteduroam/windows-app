@@ -106,7 +106,7 @@ namespace EduroamApp
                     }
                     break;
                 case 3:
-                    eapConfig = frmDownload.ConnectWithDownload();
+                    eapConfig = frmDownload.DownloadEapConfig();
                     if (eapConfig != null)
                     {
                         LoadFrmSummary();

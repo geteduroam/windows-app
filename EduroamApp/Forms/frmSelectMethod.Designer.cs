@@ -45,7 +45,6 @@
             this.rdbDownload.TabStop = true;
             this.rdbDownload.Text = "Automatic download (recommended)";
             this.rdbDownload.UseVisualStyleBackColor = true;
-            this.rdbDownload.CheckedChanged += new System.EventHandler(this.rdbDownload_CheckedChanged);
             // 
             // rdbLocal
             // 
@@ -78,7 +77,6 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "frmSelectMethod";
             this.Text = "frm2";
-            this.Load += new System.EventHandler(this.frmSelectMethod_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

@@ -20,29 +20,38 @@ using System.Device.Location;
 using System.Globalization;
 using Newtonsoft.Json.Linq;
 
-// ReSharper disable All
-
 namespace EduroamApp
 {
+    /// <summary>
+    /// This form lets the user select a country, institution and optionally a profile, and downloads an appropriate EAP-config file.
+    /// Depending on the selected institution/profile, the user will be given one of the following options:
+    /// - Connect directly to eduroam
+    /// - Provide credentials before connecting
+    /// - Authenticate through Feide in a web browser to download the config file
+    /// - Provide a separate, locally stored client certificate
+    /// - Get redirected to a web page
+    /// </summary>
     public partial class frmDownload : Form
     {
-        readonly frmParent frmParent; // makes parent form accessible from this class
-        List<IdentityProvider> identityProviders = new List<IdentityProvider>(); // list containing all identity providers     
-        List<Country> countries = new List<Country>();
-        IdentityProviderProfile idProviderProfiles; // list containing all profiles of an identity provider        
-        int idProviderId; // id of selected institution        
-        string profileId; // id of selected institution profile
+        private readonly frmParent frmParent; // makes parent form accessible from this class
+        private List<IdentityProvider> identityProviders = new List<IdentityProvider>(); // list containing all identity providers     
+        private readonly List<Country> countries = new List<Country>();
+        private IdentityProviderProfile idProviderProfiles; // list containing all profiles of an identity provider        
+        private int idProviderId; // id of selected institution        
+        private string profileId; // id of selected institution profile
 
         public frmDownload(frmParent parentInstance)
         {
             // gets parent form instance
             frmParent = parentInstance;
+
             InitializeComponent();
         }
 
-        private async void frm3_Load(object sender, EventArgs e)
+        private async void frmDownload_Load(object sender, EventArgs e)
         {
             // displays loading animation while fetching list of institutions
+            // disables certain controls while loading
             lblCountry.Visible = false;
             lblInstitution.Visible = false;
             lblSelectProfile.Visible = false;
@@ -55,59 +64,75 @@ namespace EduroamApp
             // async method to get list of institutions
             bool getInstSuccess = await Task.Run(() => GetAllInstitutions());
 
+            // checks if institutions succesfully retrieved
             if (getInstSuccess && identityProviders.Count > 0)
             {
+                // enables controls
                 lblCountry.Visible = true;
                 lblInstitution.Visible = true;
                 cboCountry.Visible = true;
                 cboInstitution.Visible = true;
                 tlpLoading.Visible = false;
-
-                PopulateCountries();
-
                 frmParent.BtnNextEnabled = true;
+                // populates countries combobox
+                PopulateCountries();
             }
             else
             {
                 tlpLoading.Visible = false;
+                lblError.Text = "Couldn't connect to the server.\n\n" 
+                                + "Make sure that you are connected to the internet, then try again.";
                 lblError.Visible = true;
             }
         }
 
+        /// <summary>
+        /// Fetches a list of all eduroam institutions from https://cat.eduroam.org.
+        /// </summary>
+        /// <returns>True if fetch success, false if not.</returns>
         public bool GetAllInstitutions()
         {
-            // url for json containing all identity providers / institutions
+            // url for json containing all identity providers/institutions
             const string allIdentityProvidersUrl = "https://cat.eduroam.org/user/API.php?action=listAllIdentityProviders&lang=en";
 
-            // json file as string
-            string idProviderJson;
             try
             {
-                idProviderJson = UrlToJson(allIdentityProvidersUrl);
+                // downloads json file as string
+                string idProviderJson = GetStringFromUrl(allIdentityProvidersUrl);
+                // gets list of identity providers from json file
+                identityProviders = JsonConvert.DeserializeObject<List<IdentityProvider>>(idProviderJson);
             }
             catch (WebException ex)
             {
-                MessageBox.Show("Couldn't fetch identity provider list. \nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ex.Data.Add("UserMessage", "Couldn't fetch identity provider list.");
+                ErrorHandler(ex);
                 return false;
             }
-
-            // gets list of identity providers from json file
-            identityProviders = JsonConvert.DeserializeObject<List<IdentityProvider>>(idProviderJson);
-
+            catch (JsonReaderException ex)
+            {
+                ex.Data.Add("UserMessage", "Couldn't get identity providers from JSON file.");
+                ErrorHandler(ex);
+                return false;
+            }
             return true;
         }
 
+        /// <summary>
+        /// Converts country codes from identity provider json to country names, and loads them into combo box.
+        /// Next, gets user's location and chooses closest country by default.
+        /// </summary>
         private void PopulateCountries()
         {
+            // gets all unique country codes
             List<string> distinctCountryCodes = identityProviders.Select(provider => provider.Country)
                                                                  .Distinct().ToList();
-            
+            // converts all country codes to country names and puts them in a list
             foreach (string countryCode in distinctCountryCodes)
             {
                 string countryName;
                 try
                 {
-                    RegionInfo countryInfo = new RegionInfo(countryCode);
+                    var countryInfo = new RegionInfo(countryCode);
                     countryName = countryInfo.DisplayName;
                 }
                 // if "country" from json file does not have associated RegionInfo, set country code as country name
@@ -121,14 +146,12 @@ namespace EduroamApp
 
             // adds countries to combobox
             cboCountry.Items.AddRange(countries.OrderBy(c => c.CountryName).Select(c => c.CountryName).ToArray());
-
             
             // gets GeoCoordinateWatcher from parent form
             GeoCoordinateWatcher watcher = frmParent.GetWatcher();
             // user's coordinates
             GeoCoordinate myCoord = watcher.Position.Location;
-
-
+            // country closest to user
             string closestCountry;
 
             // checks if coordinates are received
@@ -147,9 +170,9 @@ namespace EduroamApp
             }
             // sets country as selected item in combobox 
             cboCountry.SelectedIndex = cboCountry.FindStringExact(closestCountry);
-
         }
 
+        // populates identity provider combo box
         private void cboCountry_SelectedIndexChanged(object sender, EventArgs e)
         {
             // clear combobox
@@ -169,6 +192,7 @@ namespace EduroamApp
                                             .OrderBy(provider => provider.Title).Select(provider => provider.Title).ToArray());
         }
 
+        // gets identity provider profiles, and populates profile combo box if more than one
         private void cboInstitution_SelectedIndexChanged(object sender, EventArgs e)
         {
             // clear combobox
@@ -181,21 +205,26 @@ namespace EduroamApp
             // adds institution id to url
             string profilesUrl = $"https://cat.eduroam.org/user/API.php?action=listProfiles&id={idProviderId}&lang=en";
 
-            // json file as string
-            string profilesJson;
             try
             {
-                profilesJson = UrlToJson(profilesUrl);
+                // downloads json file as string
+                string profilesJson = GetStringFromUrl(profilesUrl);
+                // gets identity provider profile from json
+                idProviderProfiles = JsonConvert.DeserializeObject<IdentityProviderProfile>(profilesJson);
             }
             catch (WebException ex)
             {
-                MessageBox.Show("Couldn't fetch identity provider profiles.\nException: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ex.Data.Add("UserMessage", "Couldn't fetch identity provider profiles.");
+                ErrorHandler(ex);
                 return;
             }
-
-            // gets identity provider profile from json
-            idProviderProfiles = JsonConvert.DeserializeObject<IdentityProviderProfile>(profilesJson);
-
+            catch (JsonReaderException ex)
+            {
+                ex.Data.Add("UserMessage", "Couldn't read identity provider profiles from JSON file.");
+                ErrorHandler(ex);
+                return;
+            }
+            
             // if an identity provider has more than one profile, add to combobox
             if (idProviderProfiles.Data.Count > 1)
             {
@@ -217,6 +246,7 @@ namespace EduroamApp
             }
         }
 
+        // gets profile id of selected profile
         private void cboProfiles_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cboProfiles.Text != "")
@@ -231,10 +261,10 @@ namespace EduroamApp
         /// </summary>
         /// <param name="url">Url containing json file.</param>
         /// <returns>Json string.</returns>
-        public string UrlToJson(string url)
+        public string GetStringFromUrl(string url)
         {
             // downloads json file from url as string
-            using (WebClient client = new WebClient())
+            using (var client = new WebClient())
             {
                 client.Encoding = Encoding.UTF8;
                 string jsonString = client.DownloadString(url);
@@ -251,9 +281,9 @@ namespace EduroamApp
         public string GetClosestInstitution(List<IdentityProvider> instList, GeoCoordinate userCoord)
         {            
             // institution's coordinates
-            GeoCoordinate instCoord = new GeoCoordinate();
+            var instCoord = new GeoCoordinate();
             // closest institution
-            IdentityProvider closestInst = new IdentityProvider();
+            var closestInst = new IdentityProvider();
             // shortest distance
             double shortestDistance = double.MaxValue;
             
@@ -280,37 +310,41 @@ namespace EduroamApp
             return closestInst.Country;
         }
 
+        /// <summary>
+        /// Gets a profile's attributes from json.
+        /// </summary>
+        /// <returns>Redirect link, if exists.</returns>
         public string GetProfileAttributes()
         {
             // adds profile id to url
             string profileAttributeUrl = $"https://cat.eduroam.org/user/API.php?action=profileAttributes&id={profileId}&lang=en";
 
             // json file as string
-            string profileAttributeJson;
             //deserialized json as Profile attributes objects
             IdProviderProfileAttributes profileAttributes;
 
             try
             {
-                // gets json from url
-                profileAttributeJson = UrlToJson(profileAttributeUrl);
+                // downloads json from url
+                string profileAttributeJson = GetStringFromUrl(profileAttributeUrl);
                 // gets profile attributes from json
                 profileAttributes = JsonConvert.DeserializeObject<IdProviderProfileAttributes>(profileAttributeJson);
             }
             catch (WebException ex)
             {
-                MessageBox.Show("Couldn't fetch profile attributes from WebClient.\n" +
-                                "Exception: " + ex.Message, "WebClient profile attributes", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ex.Data.Add("UserMessage", "Couldn't fetch profile attributes from WebClient.");
+                ErrorHandler(ex);
                 return "";
             }
             catch (JsonReaderException ex)
             {
-                MessageBox.Show("Couldn't read profile attributes from JSON file.\n" +
-                                "Exception: " + ex.Message, "JSON profile attributes", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ex.Data.Add("UserMessage", "Couldn't read profile attributes from JSON file.");
+                ErrorHandler(ex);
                 return "";
             }
 
-            string redirect = "";
+            // checks profile attributes for a redirect link
+            var redirect = "";
             foreach (var attribute in profileAttributes.Data.Devices)
             {
                 if (attribute.Redirect != "0")
@@ -318,10 +352,13 @@ namespace EduroamApp
                     redirect = attribute.Redirect;
                 }
             }
-
             return redirect;
         }
 
+        /// <summary>
+        /// Gets download link for EAP config from json and downloads it.
+        /// </summary>
+        /// <returns></returns>
         public string GetEapConfigString()
         {
             // adds profile ID to url containing json file, which in turn contains url to EAP config file download
@@ -329,44 +366,48 @@ namespace EduroamApp
 
             // contains json with eap config file download link
             GenerateEapConfig eapConfigInstance;
-
             try
             {
                 // downloads json as string
-                string generateEapJson = UrlToJson(generateEapUrl);
+                string generateEapJson = GetStringFromUrl(generateEapUrl);
                 // converts json to GenerateEapConfig object
                 eapConfigInstance = JsonConvert.DeserializeObject<GenerateEapConfig>(generateEapJson);
             }
             catch (WebException ex)
             {
-                MessageBox.Show("Couldn't fetch Eap Config generate.\n" +
-                                "Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ex.Data.Add("UserMessage", "Couldn't fetch EAP config download link.");
+                ErrorHandler(ex);
                 return "";
             }
             catch (JsonReaderException ex)
             {
-                MessageBox.Show("No supported EAP types found for this profile.\n" +
-                                "Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ex.Data.Add("UserMessage", "No supported EAP types found for this profile.");
+                ErrorHandler(ex);
                 return "";
             }
             
             // gets url to EAP config file download from GenerateEapConfig object
             string eapConfigUrl = $"https://cat.eduroam.org/user/{eapConfigInstance.Data.Link}";
-            
+
+            // downloads and returns eap config file as string
             try
             {
-                // downloads and returns eap config file as string
-                return UrlToJson(eapConfigUrl);
+                return GetStringFromUrl(eapConfigUrl);
             }
             catch (WebException ex)
             {
-                MessageBox.Show("Couldn't fetch Eap Config file.\n" +
-                                "Exception: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ex.Data.Add("UserMessage", "Couldn't fetch Eap Config file.");
+                ErrorHandler(ex);
                 return "";
             }
         }
 
-        public EapConfig ConnectWithDownload()
+        /// <summary>
+        /// Gets EAP-config file, either directly or after browser authentication.
+        /// Prepares for redirect if no EAP-config.
+        /// </summary>
+        /// <returns>EapConfig object.</returns>
+        public EapConfig DownloadEapConfig()
         {
             // checks if user has selected an institution and/or profile
             if (string.IsNullOrEmpty(profileId))
@@ -376,37 +417,53 @@ namespace EduroamApp
                 return null; // exits function if no institution/profile selected
             }
 
+            // checks for redirect link in profile attributes
             string redirect = GetProfileAttributes();
-            string eapString = "";
+            // eap config file as string
+            string eapString;
 
-            if (redirect == "0" || string.IsNullOrEmpty(redirect))
+            // if no redirect link
+            if (string.IsNullOrEmpty(redirect))
             {
+                // gets eap config file directly
                 eapString = GetEapConfigString();
             }
+            // if Let's Wifi redirect
             else if (redirect.Contains("#letswifi"))
             {
+                // get eap config file from browser authenticate
                 eapString = OAuth.BrowserAuthenticate(redirect);
+                // return focus to application
                 frmParent.Activate();
             }
+            // if other redirect
             else
             {
+                // makes redirect link accessible in parent form
                 frmParent.LblRedirect = redirect;
                 return null;
             }
-            
-            if (string.IsNullOrEmpty(eapString)) return null;
 
-            // creates EapConfig object from Eap string
-            return ConnectToEduroam.GetEapConfig(eapString);
+            // if not empty, creates and returns EapConfig object from Eap string
+            return string.IsNullOrEmpty(eapString) ? 
+                null : ConnectToEduroam.GetEapConfig(eapString);
         }
 
-        // -----------------------------------------------------------------------------------------
-
-        private void btnTest_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Displays exceptions in a messagebox, with optional user friendly message.
+        /// </summary>
+        /// <param name="ex">Exception.</param>
+        private static void ErrorHandler(Exception ex)
         {
-            
-
+            // gets friendly message if exists
+            var friendlyMessage = "";
+            if (ex.Data.Contains("UserMessage"))
+            {
+                friendlyMessage += ex.Data["UserMessage"] + "\n";
+            }
+            // shows messagebox with friendly message and normal message
+            MessageBox.Show(friendlyMessage + ex.Message, "eduroam - Exception", 
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-        
     }
 }
