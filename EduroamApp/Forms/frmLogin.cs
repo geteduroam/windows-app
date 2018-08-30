@@ -107,7 +107,7 @@ namespace EduroamApp
 			}
 		}
 
-		public void ConnectWithLogin(uint eapType)
+		public void ConnectWithLogin()
 		{
 			string username = txtUsername.Text;
 			if (lblInst.Visible)
@@ -116,7 +116,7 @@ namespace EduroamApp
 			}
 			string password = txtPassword.Text;
 
-			ConnectToEduroam.SetupLogin(username, password, eapType);
+			ConnectToEduroam.SetupLogin(username, password);
 		}
 
 		private void txtUsername_TextChanged(object sender, EventArgs e)

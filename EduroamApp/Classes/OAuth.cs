@@ -24,8 +24,16 @@ using System.Web;
 
 namespace EduroamApp
 {
+	/// <summary>
+	/// Performs necessary steps in order to let the user authenticate through Feide.
+	/// </summary>
 	class OAuth
 	{
+		/// <summary>
+		/// Gets authorization endpoints and calls method for browser authentication to get an EAP-config file.
+		/// </summary>
+		/// <param name="baseUrl">URL containing an encoded json string with endpoints.</param>
+		/// <returns>EAP-config file as string.</returns>
 		public static string BrowserAuthenticate(string baseUrl)
 		{
 			// downloads html file from url as string
@@ -37,7 +45,7 @@ namespace EduroamApp
 			catch (WebException ex)
 			{
 				MessageBox.Show("Couldn't fetch content from webpage. \nException: " + ex.Message,
-								"Eduroam - Web exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+								"eduroam - Web exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return "";
 			}
 
@@ -74,14 +82,15 @@ namespace EduroamApp
 			}
 
 			// sets authorization uri parameters
-			var responseType = "code";
-			var codeChallengeMethod = "S256";
-			var scope = "eap-metadata";
+			const string responseType = "code";
+			const string codeChallengeMethod = "S256";
+			const string scope = "eap-metadata";
 			string codeVerifier = Base64UrlEncode(GenerateCodeChallengeBase()); // generate random byte array, convert to base64url
 			string codeChallenge = Base64UrlEncode(HashWithSHA256(codeVerifier)); // hash code verifier with SHA256, convert to base64url
-			var redirectUri = "http://localhost:8080/";
-			var clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a";
+			const string redirectUri = "http://localhost:8080/";
+			const string clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a";
 			string state = Base64UrlEncode(Guid.NewGuid().ToByteArray()); // random alphanumeric string
+			const string grantType = "authorization_code";
 
 			// concatenates parameters into authorization endpoint URI
 			string authUri = CreateAuthEndpointUri(authEndpoint, responseType, codeChallengeMethod, scope, codeChallenge, redirectUri, clientId, state);
@@ -90,7 +99,7 @@ namespace EduroamApp
 			string responseUrl; //= WebServer.NonblockingListener(redirectUri, authUri, parentLocation);
 			using (var waitForm = new frmWaitForAuthenticate(redirectUri, authUri))
 			{
-				var result = waitForm.ShowDialog();
+				DialogResult result = waitForm.ShowDialog();
 				if (result == DialogResult.OK)
 				{
 					responseUrl = waitForm.responseUrl;
@@ -100,11 +109,6 @@ namespace EduroamApp
 					return "";
 				}
 			}
-
-
-			//if (responseUrl == "CANCEL") return "";
-
-			string tokenJsonString;
 
 			// checks if returned url is not empty
 			if (string.IsNullOrEmpty(responseUrl))
@@ -143,11 +147,12 @@ namespace EduroamApp
 				return "";
 			}
 
-			var grantType = "authorization_code";
+
 
 			// concatenates parameters into token endpoint URI
 			string tokenUri = CreateTokenEndpointUri(tokenEndpoint, grantType, code, redirectUri, clientId, codeVerifier);
 
+			string tokenJsonString;
 			// downloads json file from url as string
 			try
 			{
@@ -256,8 +261,8 @@ namespace EduroamApp
 		/// <returns>Base64url string.</returns>
 		private static string Base64UrlEncode(byte[] arg)
 		{
-			string s = Convert.ToBase64String(arg); // Regular base64 encoder
-			s = s.Split('=')[0]; // Remove any trailing '='s
+			string s = Convert.ToBase64String(arg); // regular base64 encoder
+			s = s.Split('=')[0]; // remove any trailing '='s
 			s = s.Replace('+', '-'); // 62nd char of encoding
 			s = s.Replace('/', '_'); // 63rd char of encoding
 			return s;
@@ -270,7 +275,7 @@ namespace EduroamApp
 		/// <returns>Hashed byte array.</returns>
 		private static byte[] HashWithSHA256(string dataString)
 		{
-			// Create a SHA256
+			// creates a SHA256
 			using (SHA256 sha256Hash = SHA256.Create())
 			{
 				// ComputeHash - returns byte array
@@ -323,8 +328,5 @@ namespace EduroamApp
 				+ "&client_id=" + clientId
 				+ "&code_verifier=" + codeVerifier;
 		}
-
 	}
-
-
 }

@@ -6,12 +6,19 @@ using System.Threading.Tasks;
 
 namespace EduroamApp
 {
+	/// <summary>
+	/// Stores information found in json for an IdentityProvider's profile attributes.
+	/// </summary>
 	public class IdProviderProfileAttributes
 	{
+		// Properties
 		public int Status { get; set; }
 		public Datum Data { get; set; }
 		public string Tou { get; set; }
 
+		/// <summary>
+		/// Contains options.
+		/// </summary>
 		public class Options
 		{
 			public int Sign { get; set; }
@@ -24,6 +31,9 @@ namespace EduroamApp
 			public int? NoCache { get; set; }
 		}
 
+		/// <summary>
+		/// Contains device information.
+		/// </summary>
 		public class Device
 		{
 			public string Id { get; set; }
@@ -36,6 +46,9 @@ namespace EduroamApp
 			public Options Options { get; set; }
 		}
 
+		/// <summary>
+		/// Contains data.
+		/// </summary>
 		public class Datum
 		{
 			public string LocalEmail { get; set; }

@@ -6,12 +6,17 @@ using System.Threading.Tasks;
 
 namespace EduroamApp
 {
+	/// <summary>
+	/// Stores geographical coordinates.
+	/// </summary>
 	public class Geo
 	{
+		// Properties
 		public double Lon { get; set; }
 		public double Lat { get; set; }
 	}
 
+	// Stores information found in IdentityProvider json.
 	public class IdentityProvider
 	{
 		public int EntityID { get; set; }

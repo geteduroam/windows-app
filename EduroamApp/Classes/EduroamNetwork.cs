@@ -7,6 +7,9 @@ using ManagedNativeWifi;
 
 namespace EduroamApp
 {
+	/// <summary>
+	/// Connects to an Eduroam network if available and stores information about it.
+	/// </summary>
 	class EduroamNetwork
 	{
 		// Properties

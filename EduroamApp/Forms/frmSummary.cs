@@ -136,6 +136,7 @@ namespace EduroamApp
 			{
 				uint eapType = ConnectToEduroam.Setup(eapConfig);
 				frmParent.LblInstText = eapConfig.InstitutionInfo.InstId;
+				frmParent.LblProfileCondition = "BADPROFILE";
 				return eapType;
 			}
 			catch (ArgumentException argEx)
