@@ -17,7 +17,7 @@ namespace EduroamApp
         private void frmRedirect_Load(object sender, EventArgs e)
         {
             // gets redirect link from parent form label, converts to lower case
-            string redirectString = parentForm.LblRedirect.ToLower();
+            string redirectString = parentForm.RedirectUrl.ToLower();
             // sets text of label
             lblRedirectLink.Text = redirectString;
             // checks if link starts with an accepted prefix

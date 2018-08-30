@@ -1,24 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ManagedNativeWifi;
 using System.Net;
-using System.IO;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Security;
-using System.Xml.Linq;
 using Newtonsoft.Json;
 using System.Device.Location;
 using System.Globalization;
-using Newtonsoft.Json.Linq;
 
 namespace EduroamApp
 {
@@ -44,7 +33,6 @@ namespace EduroamApp
         {
             // gets parent form instance
             frmParent = parentInstance;
-
             InitializeComponent();
         }
 
@@ -59,7 +47,7 @@ namespace EduroamApp
             cboInstitution.Visible = false;
             cboProfiles.Visible = false;
             tlpLoading.Visible = true;
-            frmParent.LblRedirect = "";
+            frmParent.RedirectUrl = "";
 
             // async method to get list of institutions
             bool getInstSuccess = await Task.Run(() => GetAllInstitutions());
@@ -440,7 +428,7 @@ namespace EduroamApp
             else
             {
                 // makes redirect link accessible in parent form
-                frmParent.LblRedirect = redirect;
+                frmParent.RedirectUrl = redirect;
                 return null;
             }
 

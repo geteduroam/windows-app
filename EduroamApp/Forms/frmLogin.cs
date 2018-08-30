@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Color = System.Drawing.Color;
 
 namespace EduroamApp
 {
@@ -35,9 +28,9 @@ namespace EduroamApp
             txtPassword.ForeColor = SystemColors.GrayText;
             txtPassword.UseSystemPasswordChar = false;
 
-            if (!string.IsNullOrEmpty(frmParent.LblInstText))
+            if (!string.IsNullOrEmpty(frmParent.InstId))
             {
-                lblInst.Text = "@" + frmParent.LblInstText;
+                lblInst.Text = "@" + frmParent.InstId;
             }
             else
             {

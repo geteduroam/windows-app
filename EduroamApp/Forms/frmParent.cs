@@ -1,39 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using ManagedNativeWifi;
-using System.Net;
 using System.IO;
 using System.Reflection;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Security;
-using System.Xml.Linq;
 using System.Device.Location;
-using System.Windows.Controls;
 using Image = System.Drawing.Image;
 
 namespace EduroamApp
 {
+    /// <summary>
+    /// Main form.
+    /// All other forms are loaded into a panel in this form.
+    /// </summary>
     public partial class frmParent : Form
     {
-        private int currentFormId;                                  // Id of currently selected form
-        public readonly List<int> FormHistory = new List<int>();   // keeps history of previously diplayed forms, in order to backtrack correctly
-        private bool reload = true;                                 // sepcifies wether a form is to be re-instantiated when loaded
-        private readonly GeoCoordinateWatcher watcher;              // gets coordinates of computer
-        private EapConfig eapConfig = new EapConfig();
-        private uint eapType;                                   // EAP type of selected network config, determines which forms to load
-        public bool ComesFromSelfExtract;
-        public bool SelfExtractFlag;
-        public bool SelectAlternative;
+        // private variables to be used in this form
+        private int currentFormId;                                 // Id of currently selected form
+        private readonly List<int> formHistory = new List<int>();  // Keeps history of previously diplayed forms, in order to backtrack correctly
+        private bool reload = true;                                // Specifies wether a form is to be re-instantiated when loaded
+        private readonly GeoCoordinateWatcher watcher;             // Gets coordinates of computer
+        private EapConfig eapConfig = new EapConfig();             // Selected EAP configuration
+        private uint eapType;                                      // EAP type of selected EAP config
         
-        // makes forms globally  accessible in parent form
+        // makes forms globally accessible in parent form
         private frmSummary frmSummary;
         private frmSelectMethod frmSelectMethod;
         private frmDownload frmDownload;
@@ -42,24 +33,35 @@ namespace EduroamApp
         private frmLogin frmLogin;
         private frmRedirect frmRedirect;
 
+        // public variables to be used across forms
+        public string InstId;
+        public string ProfileCondition;
+        public string LocalFileType;
+        public string RedirectUrl;
+        public bool ComesFromSelfExtract;
+        public bool SelfExtractFlag;
+        public bool SelectAlternative;
+
         public frmParent()
         {
             // starts GeoCoordinateWatcher when app starts
             watcher = new GeoCoordinateWatcher();
             watcher.TryStart(false, TimeSpan.FromMilliseconds(3000));
+            // adds formClosed listener
             FormClosed += frmParent_FormClosed;
             InitializeComponent();
         }
         
         private void frmParent_Load(object sender, EventArgs e)
         {
-            eapConfig = GetSelfExtractingEap();
             // checks if file came with self extract
+            eapConfig = GetSelfExtractingEap();
             if (eapConfig != null)
             {
+                // sets flags
                 ComesFromSelfExtract = true;
                 SelfExtractFlag = true;
-                // goes to form for installation through self extract config file
+                // loads summary form so user can confirm installation
                 LoadFrmSummary();
             }
             else
@@ -74,12 +76,13 @@ namespace EduroamApp
             // creates new instances of forms when going forward
             reload = true;
             // adds current form to history for easy backtracking
-            FormHistory.Add(currentFormId);
+            formHistory.Add(currentFormId);
             
             switch (currentFormId)
             {
+                // next form depends on EAP type of selected config 
                 case 1:
-                    if (SelectAlternative)
+                    if (SelectAlternative) // if user has config from self extract but wants to select another inst
                     {
                         pbxLogo.Image = null;
                         LoadFrmSelectMethod();
@@ -90,35 +93,43 @@ namespace EduroamApp
                     else if (eapType == 25 || eapType == 21) LoadFrmLogin();
                     else if (eapType == 500)
                     {
-                        lblLocalFileType.Text = "CERT";
+                        LocalFileType = "CERT";
                         LoadFrmLocalCert();
                     }
                     else if (eapType != 0) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
                         "Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     break;
+
+                // next form depends on radio button selection
                 case 2:
                     SelfExtractFlag = false;
                     if (frmSelectMethod.GoToForm() == 3) LoadFrmDownload();
                     else
                     {
-                        lblLocalFileType.Text = "EAPCONFIG";
+                        LocalFileType = "EAPCONFIG";
                         LoadFrmLocal();
                     }
                     break;
+
+                // next form depends on if downloaded config contains redirect url or not
                 case 3:
                     eapConfig = frmDownload.DownloadEapConfig();
                     if (eapConfig != null)
                     {
                         LoadFrmSummary();
-                    } else if (!string.IsNullOrEmpty(lblRedirect.Text))
+                    } else if (!string.IsNullOrEmpty(RedirectUrl))
                     {
                         LoadFrmRedirect();
                     }
                     break;
+
+                // opens summary form if config is not null
                 case 4:
-                    eapConfig = frmLocal.ConnectWithFile();
+                    eapConfig = frmLocal.LocalEapConfig();
                     if (eapConfig != null) LoadFrmSummary();
                     break;
+
+                // lets user log in and opens connection form
                 case 5:
                     if (eapType != 21)
                     {
@@ -127,15 +138,15 @@ namespace EduroamApp
                     }
                     else MessageBox.Show("Support for TTLS configuration not ready yet.", "TTLS not ready", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     break;
-                case 6:
-                    break;
+
+                // lets user select client cert and opens connection form
                 case 8:
                     if (frmLocal.InstallCertFile()) LoadFrmConnect();
                     break;
             }
             
             // removes current form from history if it gets added twice
-            if (FormHistory.LastOrDefault() == currentFormId) FormHistory.RemoveAt(FormHistory.Count - 1);
+            if (formHistory.LastOrDefault() == currentFormId) formHistory.RemoveAt(formHistory.Count - 1);
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -145,17 +156,17 @@ namespace EduroamApp
             // clears logo if going back from summary page
             if (currentFormId == 1) pbxLogo.Image = null;
 
-            switch (FormHistory.Last())
+            switch (formHistory.Last())
             {
                 case 1:
-                    if (SelfExtractFlag)
+                    if (SelfExtractFlag) // reloads the included config file if exists
                     {
                         eapConfig = GetSelfExtractingEap();
                     }
                     LoadFrmSummary();
                     break;
                 case 2:
-                    if (ComesFromSelfExtract) SelfExtractFlag = true;
+                    if (ComesFromSelfExtract) SelfExtractFlag = true; // enables back button if config file included in self extract
                     LoadFrmSelectMethod();
                     break;
                 case 3:
@@ -165,10 +176,7 @@ namespace EduroamApp
                     LoadFrmLocal();
                     break;
                 case 5:
-                    if (lblProfileCondition.Text == "BADPROFILE") ConnectToEduroam.CreateNewProfile();
                     LoadFrmLogin();
-                    break;
-                case 7:
                     break;
                 case 8:
                     LoadFrmLocalCert();
@@ -176,7 +184,7 @@ namespace EduroamApp
             }
             
             // removes current form from history
-            FormHistory.RemoveAt(FormHistory.Count - 1);
+            formHistory.RemoveAt(formHistory.Count - 1);
         }
 
         /// <summary>
@@ -215,18 +223,8 @@ namespace EduroamApp
                 return null;
             }
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public GeoCoordinateWatcher GetWatcher()
-        {
-            return watcher;
-        }
-
+        
         // make form properties accessible from other forms
-
         public Image PbxLogo
         {
             get => pbxLogo.Image;
@@ -257,34 +255,9 @@ namespace EduroamApp
             set => btnCancel.Text = value;
         }
 
-        public string LblSummary
+        public GeoCoordinateWatcher GetWatcher()
         {
-            get => lblSummary.Text;
-            set => lblSummary.Text = value;
-        }
-
-        public string LblInstText
-        {
-            get => lblInst.Text;
-            set => lblInst.Text = value;
-        }
-
-        public string LblProfileCondition
-        {
-            get => lblProfileCondition.Text;
-            set => lblProfileCondition.Text = value;
-        }
-
-        public string LblLocalFileType
-        {
-            get => lblLocalFileType.Text;
-            set => lblLocalFileType.Text = value;
-        }
-
-        public string LblRedirect
-        {
-            get => lblRedirect.Text;
-            set => lblRedirect.Text = value;
+            return watcher;
         }
 
         /// <summary>
@@ -305,6 +278,7 @@ namespace EduroamApp
                 lblTitle.Text = "Summary";
             }
             btnNext.Text = "Next >";
+            btnNext.Enabled = true;
             LoadNewForm(frmSummary);
         }
 
@@ -424,7 +398,6 @@ namespace EduroamApp
             // Draw line to screen.
             e.Graphics.DrawLine(grayPen, point1, point2);
         }
-        
         private void pnlLogoRight_Paint(object sender, PaintEventArgs e)
         {
             Pen grayPen = new Pen(Color.LightGray);
@@ -448,7 +421,7 @@ namespace EduroamApp
         private void frmParent_FormClosed(object sender, FormClosedEventArgs e)
         {
             // deletes bad profile on application exit if connection was unsuccessful
-            if (lblProfileCondition.Text == "BADPROFILE")
+            if (ProfileCondition == "BADPROFILE")
             {
                 ConnectToEduroam.RemoveProfile();
             }

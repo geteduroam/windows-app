@@ -45,15 +45,10 @@
             this.pnlLogoLeft = new System.Windows.Forms.Panel();
             this.pnlLogoRight = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.lblRedirect = new System.Windows.Forms.Label();
-            this.lblLocalFileType = new System.Windows.Forms.Label();
-            this.lblProfileCondition = new System.Windows.Forms.Label();
-            this.lblInst = new System.Windows.Forms.Label();
             this.lblTitle = new System.Windows.Forms.Label();
             this.pnlLeftMargin = new System.Windows.Forms.Panel();
             this.pnlRightMargin = new System.Windows.Forms.Panel();
             this.pnlContent = new System.Windows.Forms.Panel();
-            this.lblSummary = new System.Windows.Forms.Label();
             this.pnlNavigation.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.pnlLeft.SuspendLayout();
@@ -230,57 +225,12 @@
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.White;
-            this.panel1.Controls.Add(this.lblSummary);
-            this.panel1.Controls.Add(this.lblRedirect);
-            this.panel1.Controls.Add(this.lblLocalFileType);
-            this.panel1.Controls.Add(this.lblProfileCondition);
-            this.panel1.Controls.Add(this.lblInst);
             this.panel1.Controls.Add(this.lblTitle);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(160, 0);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(448, 120);
             this.panel1.TabIndex = 4;
-            // 
-            // lblRedirect
-            // 
-            this.lblRedirect.AutoSize = true;
-            this.lblRedirect.Location = new System.Drawing.Point(330, 69);
-            this.lblRedirect.Name = "lblRedirect";
-            this.lblRedirect.Size = new System.Drawing.Size(84, 13);
-            this.lblRedirect.TabIndex = 11;
-            this.lblRedirect.Text = "label: redirect url";
-            this.lblRedirect.Visible = false;
-            // 
-            // lblLocalFileType
-            // 
-            this.lblLocalFileType.AutoSize = true;
-            this.lblLocalFileType.Location = new System.Drawing.Point(330, 56);
-            this.lblLocalFileType.Name = "lblLocalFileType";
-            this.lblLocalFileType.Size = new System.Drawing.Size(96, 13);
-            this.lblLocalFileType.TabIndex = 10;
-            this.lblLocalFileType.Text = "label: local file type";
-            this.lblLocalFileType.Visible = false;
-            // 
-            // lblProfileCondition
-            // 
-            this.lblProfileCondition.AutoSize = true;
-            this.lblProfileCondition.Location = new System.Drawing.Point(330, 43);
-            this.lblProfileCondition.Name = "lblProfileCondition";
-            this.lblProfileCondition.Size = new System.Drawing.Size(109, 13);
-            this.lblProfileCondition.TabIndex = 9;
-            this.lblProfileCondition.Text = "label: profile condition";
-            this.lblProfileCondition.Visible = false;
-            // 
-            // lblInst
-            // 
-            this.lblInst.AutoSize = true;
-            this.lblInst.Location = new System.Drawing.Point(330, 30);
-            this.lblInst.Name = "lblInst";
-            this.lblInst.Size = new System.Drawing.Size(108, 13);
-            this.lblInst.TabIndex = 8;
-            this.lblInst.Text = "label: institution name";
-            this.lblInst.Visible = false;
             // 
             // lblTitle
             // 
@@ -319,16 +269,6 @@
             this.pnlContent.Name = "pnlContent";
             this.pnlContent.Size = new System.Drawing.Size(378, 246);
             this.pnlContent.TabIndex = 7;
-            // 
-            // lblSummary
-            // 
-            this.lblSummary.AutoSize = true;
-            this.lblSummary.Location = new System.Drawing.Point(330, 17);
-            this.lblSummary.Name = "lblSummary";
-            this.lblSummary.Size = new System.Drawing.Size(99, 13);
-            this.lblSummary.TabIndex = 12;
-            this.lblSummary.Text = "label: summary type";
-            this.lblSummary.Visible = false;
             // 
             // frmParent
             // 
@@ -374,7 +314,6 @@
         private System.Windows.Forms.Panel pnlLeftMargin;
         private System.Windows.Forms.Panel pnlRightMargin;
         private System.Windows.Forms.Panel pnlContent;
-        private System.Windows.Forms.Label lblInst;
         private System.Windows.Forms.Panel pnlNavTop;
         private System.Windows.Forms.Panel pnlNavBot;
         private System.Windows.Forms.Panel panel2;
@@ -382,12 +321,8 @@
         private System.Windows.Forms.Panel pnlLogoRight;
         private System.Windows.Forms.Panel pnlLogoBot;
         private System.Windows.Forms.Panel pnlLogoTop;
-        private System.Windows.Forms.Label lblProfileCondition;
-        private System.Windows.Forms.Label lblLocalFileType;
-        private System.Windows.Forms.Label lblRedirect;
         private System.Windows.Forms.PictureBox pbxLogo;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Label lblSummary;
     }
 }
