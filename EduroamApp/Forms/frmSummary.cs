@@ -1,26 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using ManagedNativeWifi;
-using System.Net;
-using System.IO;
-using System.Reflection;
-using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
-using System.Security;
-using System.Xml.Linq;
-using Newtonsoft.Json;
-using System.Device.Location;
 using System.Diagnostics;
 
 namespace EduroamApp
 {
+	/// <summary>
+	/// Displays a summary of EAP config that user is connecting with.
+	/// </summary>
 	public partial class frmSummary : Form
 	{
 		// makes the parent form accessible from this class
@@ -39,12 +26,15 @@ namespace EduroamApp
 
 		private void frmSummary_Load(object sender, EventArgs e)
 		{
+			// gets institution information from EapConfig object
 			string instName = eapConfig.InstitutionInfo.DisplayName;
 			string tou = eapConfig.InstitutionInfo.TermsOfUse;
 			string webAddress = eapConfig.InstitutionInfo.WebAddress.ToLower();
 			string emailAddress = eapConfig.InstitutionInfo.EmailAddress.ToLower();
 
+			// displays institution name
 			lblInstName.Text =  instName;
+			// displays prompt to accept Terms of use if they exist
 			if (string.IsNullOrEmpty(tou))
 			{
 				lblToU.Text = "Press Next to continue.";
@@ -56,6 +46,7 @@ namespace EduroamApp
 				chkAgree.Visible = true;
 				chkAgree.Checked = false;
 			}
+			// displays website, email and phone number
 			lblWeb.Text = webAddress;
 			lblEmail.Text = emailAddress;
 			lblPhone.Text = eapConfig.InstitutionInfo.Phone;
@@ -93,7 +84,7 @@ namespace EduroamApp
 				}
 			}
 
-			// adds option to choose another institution if using file from self extract
+			// displays option to choose another institution if using file from self extract
 			if (frmParent.SelfExtractFlag)
 			{
 				lblAlternate.Visible = true;
@@ -130,13 +121,17 @@ namespace EduroamApp
 			Process.Start("mailto:" + e.Link.LinkData);
 		}
 
+		/// <summary>
+		/// Installs certificates from EapConfig and creates wireless profile.
+		/// </summary>
+		/// <returns>EAP type of installed EapConfig.</returns>
 		public uint InstallEapConfig()
 		{
 			try
 			{
 				uint eapType = ConnectToEduroam.Setup(eapConfig);
-				frmParent.LblInstText = eapConfig.InstitutionInfo.InstId;
-				frmParent.LblProfileCondition = "BADPROFILE";
+				frmParent.InstId = eapConfig.InstitutionInfo.InstId;
+				frmParent.ProfileCondition = "BADPROFILE";
 				return eapType;
 			}
 			catch (ArgumentException argEx)
@@ -155,10 +150,10 @@ namespace EduroamApp
 								+ "Exception: " + ex.Message, "eduroam Setup failed",
 								MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
-
 			return 0;
 		}
 
+		// enables Next button if user agrees to Terms of Use
 		private void chkAgree_CheckedChanged(object sender, EventArgs e)
 		{
 			frmParent.BtnNextEnabled = chkAgree.Checked;
@@ -166,7 +161,9 @@ namespace EduroamApp
 
 		private void btnSelectInst_Click(object sender, EventArgs e)
 		{
+			// sets variable to signal that user wants to select another method
 			frmParent.SelectAlternative = true;
+			// calls button listener in parent form
 			frmParent.btnNext_Click(sender, e);
 		}
 	}

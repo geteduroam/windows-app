@@ -1,40 +1,33 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using ManagedNativeWifi;
-using System.Net;
 using System.IO;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Security;
-using System.Xml.Linq;
-using Newtonsoft.Json;
-using System.Device.Location;
 
 namespace EduroamApp
 {
+	/// <summary>
+	/// Lets user select a local EAP-config file, or a local client certificate if required by EAP setup.
+	/// </summary>
 	public partial class frmLocal : Form
 	{
-		readonly frmParent frmParent;
+		// makes parent form accessible from this class
+		private readonly frmParent frmParent;
 
 		public frmLocal(frmParent parentInstance)
 		{
+			// gets parent form instance
 			frmParent = parentInstance;
 			InitializeComponent();
 		}
 
+		// lets user browse their PC for a file
 		private void btnBrowse_Click(object sender, EventArgs e)
 		{
-			string dialogTitle = "";
-			string dialogFilter = "";
-			switch (frmParent.LblLocalFileType)
+			var dialogTitle = "";
+			var dialogFilter = "";
+			// expected filetype depends on label in parent form
+			switch (frmParent.LocalFileType)
 			{
 				case "EAPCONFIG":
 					dialogTitle = "Select EAP Config file";
@@ -49,11 +42,13 @@ namespace EduroamApp
 			string selectedFilePath = FileDialog.GetFileFromDialog(dialogTitle, dialogFilter);
 			// prints out filepath
 			txtFilepath.Text = selectedFilePath;
-
-
 		}
 
-		public EapConfig ConnectWithFile()
+		/// <summary>
+		/// Gets EAP file and creates an EapConfig object from it.
+		/// </summary>
+		/// <returns>EapConfig object.</returns>
+		public EapConfig LocalEapConfig()
 		{
 			// validates the selected config file
 			if (!FileDialog.ValidateFileSelection(txtFilepath.Text, "EAP")) return null;
@@ -64,8 +59,13 @@ namespace EduroamApp
 			return ConnectToEduroam.GetEapConfig(eapString);
 		}
 
+		/// <summary>
+		/// Installs a client certificate from file.
+		/// </summary>
+		/// <returns>True if cert installation success, false if not.</returns>
 		public bool InstallCertFile()
 		{
+			// validates file selection
 			if (!FileDialog.ValidateFileSelection(txtFilepath.Text, "CERT")) return false;
 
 			try
@@ -73,6 +73,7 @@ namespace EduroamApp
 				var certificate = new X509Certificate2(txtFilepath.Text, txtCertPassword.Text);
 				return true;
 			}
+			// checks if correct password by trying to install certificate
 			catch (CryptographicException ex)
 			{
 				if ((ex.HResult & 0xFFFF) == 0x56)
@@ -90,11 +91,12 @@ namespace EduroamApp
 			}
 		}
 
-		// checks wether certificate requires password or not
 		private void txtFilepath_TextChanged(object sender, EventArgs e)
 		{
-			if (frmParent.LblLocalFileType == "EAPCONFIG") return;
+			// stops checking if expected file type is not client certificate
+			if (frmParent.LocalFileType == "EAPCONFIG") return;
 
+			// checks if password required by trying to install certificate
 			var passwordRequired = false;
 			try
 			{
@@ -112,6 +114,7 @@ namespace EduroamApp
 				// ignored
 			}
 
+			// shows/hides password related controls
 			if (passwordRequired)
 			{
 				lblCertPassword.Visible = true;

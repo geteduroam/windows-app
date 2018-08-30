@@ -1,10 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -47,7 +41,7 @@ namespace EduroamApp
 				lblStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
 				pboStatus.Image = Properties.Resources.checkmark_16;
 				frmParent.BtnCancelText = "Close";
-				frmParent.LblProfileCondition = "GOODPROFILE";
+				frmParent.ProfileCondition = "GOODPROFILE";
 			}
 			else
 			{
@@ -55,8 +49,7 @@ namespace EduroamApp
 				pboStatus.Image = Properties.Resources.x_mark_3_16;
 				lblConnectFailed.Visible = true;
 				frmParent.BtnBackEnabled = true;
-				frmParent.LblProfileCondition = "BADPROFILE";
-				ConnectToEduroam.RemoveProfile();
+				frmParent.ProfileCondition = "BADPROFILE";
 			}
 		}
 
