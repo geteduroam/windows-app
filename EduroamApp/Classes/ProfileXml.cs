@@ -7,9 +7,15 @@ using System.Xml.Linq;
 
 namespace EduroamApp
 {
+    /// <summary>
+    /// Wireless profile XML generator.
+    /// Can construct wireless profiles for the following EAP types:
+    /// - TLS (13)
+    /// - PEAP-MSCHAPv2 (25/26)
+    /// - TTLS (21) [NOT YET FUNCTIONAL]
+    /// </summary>
     class ProfileXml
     {        
-                
         // Namespaces
         static readonly XNamespace nsWLAN = "http://www.microsoft.com/networking/WLAN/profile/v1";
         static readonly XNamespace nsOneX = "http://www.microsoft.com/networking/OneX/v1";
@@ -167,6 +173,7 @@ namespace EduroamApp
                     )
                 );
             }
+            // WORK IN PROGRESS - Dependent on setting correct user data for TTLS
             else if (eapType == 21)
             {
                 // sets namespace
@@ -174,7 +181,7 @@ namespace EduroamApp
                 // sets name of thumbprint node
                 thumbprintNode = "TrustedRootCAHash";
 
-                configElement.Add(
+                configElement?.Add(
                     new XElement(nsTTLS + "EapTtls",
                         new XElement(nsTTLS + "ServerValidation",
                             new XElement(nsTTLS + "ServerNames", serverNames),
@@ -205,7 +212,6 @@ namespace EduroamApp
                     )
                 );
             }
-
 
             // if any thumbprints exist, add them to the profile
             if (thumbprints.Any())
@@ -248,13 +254,10 @@ namespace EduroamApp
                     }
                 }
             }
-
             
             // returns xml as string
             return newProfile.ToString();
         }
-        
-
     }
 
 }

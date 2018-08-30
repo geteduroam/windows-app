@@ -122,7 +122,7 @@ namespace EduroamApp
                 case 5:
                     if (eapType != 21)
                     {
-                        frmLogin.ConnectWithLogin(eapType);
+                        frmLogin.ConnectWithLogin();
                         LoadFrmConnect();
                     }
                     else MessageBox.Show("Support for TTLS configuration not ready yet.", "TTLS not ready", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);

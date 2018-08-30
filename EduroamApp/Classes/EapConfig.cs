@@ -6,11 +6,18 @@ using System.Threading.Tasks;
 
 namespace EduroamApp
 {
+    /// <summary>
+    /// Stores information found in an EAP-config file.
+    /// </summary>
     public class EapConfig
     {
+        // Properties
         public List<AuthenticationMethod> AuthenticationMethods { get; set; }
         public ProviderInfo InstitutionInfo { get; set; }
 
+        /// <summary>
+        /// AuthenticationMethod contains information about client certificates and CAs.
+        /// </summary>
         public class AuthenticationMethod
         {
             // Properties
@@ -31,8 +38,12 @@ namespace EduroamApp
             }
         }
 
+        /// <summary>
+        /// ProviderInfo contains information about the config file's provider.
+        /// </summary>
         public class ProviderInfo
         {
+            // Properties
             public string DisplayName { get; set; }
             public string Logo { get; set; }
             public string LogoFormat { get; set; }

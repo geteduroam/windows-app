@@ -8,6 +8,9 @@ using System.Windows.Forms;
 
 namespace EduroamApp
 {
+    /// <summary>
+    /// Contains functions for selecting files through an OpenFileDialog
+    /// </summary>
     class FileDialog
     {
         /// <summary>
@@ -45,6 +48,7 @@ namespace EduroamApp
         /// <returns>True if valid file, false if not.</returns>
         public static bool ValidateFileSelection(string filePath, string fileType)
         {
+            // checks if filepath is empty
             if (string.IsNullOrEmpty(filePath))
             {
                 MessageBox.Show("Please select a file.",
@@ -52,6 +56,7 @@ namespace EduroamApp
                 return false;
             }
 
+            // checks if filepath is valid
             if (!File.Exists(filePath))
             {
                 MessageBox.Show("The specified file does not exist.",
@@ -59,12 +64,24 @@ namespace EduroamApp
                 return false;
             }
 
-            if (!(fileType == "EAP" && Path.GetExtension(filePath) == ".eap-config" || fileType == "CERT" && (Path.GetExtension(filePath) == ".pfx" || Path.GetExtension(filePath) == ".p12")))
+            // checks if file extension is valid
+            var extensionSupported = false;
+            switch (fileType)
+            {
+                case "EAP":
+                    extensionSupported = Path.GetExtension(filePath) == ".eap-config";
+                    break;
+                case "CERT":
+                    extensionSupported = (Path.GetExtension(filePath) == ".pfx" || Path.GetExtension(filePath) == ".p12");
+                    break;
+            }
+            if (!extensionSupported)
             {
                 MessageBox.Show("The file type you chose is not supported.",
                     "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
+
             return true;
         }
     }

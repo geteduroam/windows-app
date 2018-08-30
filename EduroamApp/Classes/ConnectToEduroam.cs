@@ -21,6 +21,13 @@ using System.Text.RegularExpressions;
 
 namespace EduroamApp
 {
+    /// <summary>
+    /// Contains various functions for:
+    /// - installing certificates
+    /// - creating a wireless profile
+    /// - setting user data
+    /// - connecting to a network
+    /// </summary>
     class ConnectToEduroam
     {
         // SSID of eduroam network
@@ -29,7 +36,14 @@ namespace EduroamApp
         private static Guid interfaceId;
         // xml file for building wireless profile
         private static string profileXml;
+        // EAP type of selected configuration
+        private static uint eapType;
 
+        /// <summary>
+        /// Installs certificates and creates a wireless profile using an EapConfig object. 
+        /// </summary>
+        /// <param name="eapConfig">EapConfig object.</param>
+        /// <returns>Eap type (13, 25, etc.)</returns>
         public static uint Setup(EapConfig eapConfig)
         {
             // creates new instance of eduroam network
@@ -39,16 +53,16 @@ namespace EduroamApp
             // gets interface ID
             interfaceId = eduroamInstance.InterfaceId;
 
-            // gets the first/default authentication method of an EAP config file
+            // gets the first/default authentication method of EapConfig object
             EapConfig.AuthenticationMethod authMethod = eapConfig.AuthenticationMethods.First();
 
             // gets EAP type of authentication method
-            uint eapType = authMethod.EapType;
+            eapType = authMethod.EapType;
 
             // if EAP type is not supported, cancel setup
             if (eapType != 13 && eapType != 25 && eapType != 21) return eapType;
             
-            // name of the certificate issuer
+            // name of client certificate issuer
             string certIssuer = null;
 
             // checks if Athentication method contains a client certificate
@@ -73,7 +87,7 @@ namespace EduroamApp
                 // closes personal store
                 personalStore.Close();
 
-                // gets the CA that issued the certificate
+                // gets name of CA that issued the certificate
                 certIssuer = clientCert.IssuerName.Name;
             }
 
@@ -101,7 +115,7 @@ namespace EduroamApp
                 {
                     MessageBox.Show("You will now be prompted to install a Certificate Authority. \n" +
                                     "In order to connect to eduroam, you need to accept this by pressing \"Yes\" in the following dialog.",
-                        "Accept Certificate Authority", MessageBoxButtons.OK);
+                                    "Accept Certificate Authority", MessageBoxButtons.OK);
 
                     // if CA not installed succesfully, ask user to retry
                     var addCaSuccess = false;
@@ -116,7 +130,7 @@ namespace EduroamApp
                         }
                         catch (CryptographicException ex)
                         {
-                            // if user selects No when prompted to install CA, show error and ask to retry or cancel
+                            // if user selects No when prompted to install CA, show messagebox and ask to retry or cancel
                             if ((uint)ex.HResult == 0x800704C7)
                             {
                                 DialogResult retryCa = MessageBox.Show("CA not installed. \nIn order to connect to eduroam, you must press \"Yes\" when prompted to install the Certificate Authority.",
@@ -127,10 +141,10 @@ namespace EduroamApp
                                     return 0;
                                 }
                             }
-                            else
                             // if different error message, stop looping
+                            else
                             {
-                                addCaSuccess = true;
+                                throw;
                             }
                         }
                     }
@@ -141,9 +155,10 @@ namespace EduroamApp
                 thumbprints.Add(formattedThumbprint);
             }
 
-            // also gets thumbprints of already installed CAs that match client certificate issuer 
+            // gets thumbprints of already installed CAs that match client certificate issuer
             if (certIssuer != null)
             {
+                // gets CAs by client certificate issuer name
                 X509Certificate2Collection existingCa = rootStore.Certificates.Find(X509FindType.FindByIssuerDistinguishedName, certIssuer, true);
 
                 foreach (X509Certificate2 ca in existingCa)
@@ -162,7 +177,7 @@ namespace EduroamApp
             string serverNames = string.Join(";", authMethod.ServerName);
             
             // generates new profile xml
-            profileXml = EduroamApp.ProfileXml.CreateProfileXml(ssid, eapType, serverNames, thumbprints);
+            profileXml = ProfileXml.CreateProfileXml(ssid, eapType, serverNames, thumbprints);
 
             // creates a new wireless profile
             CreateNewProfile();
@@ -170,16 +185,50 @@ namespace EduroamApp
             // checks if EAP type is TLS and there is no client certificate
             if (eapType == 13 && string.IsNullOrEmpty(authMethod.ClientCertificate))
             {
+                // prompts the user for a locally stored client certificate file
                 DialogResult dialogResult = MessageBox.Show(
                     "The selected profile requires a separate client certificate. Do you want to browse your local files for one?",
                     "Client certificate required", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                 return (uint) (dialogResult == DialogResult.Yes ? 500 : 0);
             }
 
+            // returns EAP type of installed authentication method
             return eapType;
         }
 
-        public static void SetupLogin(string username, string password, uint eapType)
+        /// <summary>
+        /// Creates new network profile according to selected network and profile XML.
+        /// </summary>
+        /// <returns>True if profile create success, false if not.</returns>
+        public static bool CreateNewProfile()
+        {
+            // sets the profile type to be All-user (value = 0)
+            const ProfileType profileType = ProfileType.AllUser;
+
+            // security type not required
+            const string securityType = null;
+
+            // overwrites if profile already exists
+            const bool overwrite = true;
+
+            return NativeWifi.SetProfile(interfaceId, profileType, profileXml, securityType, overwrite);
+        }
+
+        /// <summary>
+        /// Deletes eduroam profile.
+        /// </summary>
+        /// <returns>True if profile delete succesful, false if not.</returns>
+        public static bool RemoveProfile()
+        {
+            return NativeWifi.DeleteProfile(interfaceId, ssid);
+        }
+
+        /// <summary>
+        /// Creates user data xml for connecting using credentials.
+        /// </summary>
+        /// <param name="username">User's username.</param>
+        /// <param name="password">User's password.</param>
+        public static void SetupLogin(string username, string password)
         {
             // generates user data xml file
             string userDataXml = UserDataXml.CreateUserDataXml(username, password, eapType);
@@ -187,62 +236,8 @@ namespace EduroamApp
             SetUserData(interfaceId, ssid, userDataXml);
         }
 
-        public static Task<bool> Connect()
-        {
-            // gets eduroam network pack
-            AvailableNetworkPack network = EduroamNetwork.GetEduroamPack(); 
-
-            // connects to eduroam
-            Task<bool> connectResult = Task.Run(() => ConnectAsync(network));
-            return connectResult;
-        }
-
         /// <summary>
-        /// Connects to the chosen wireless LAN.
-        /// </summary>
-        /// <returns>True if successfully connected. False if not.</returns>
-        private static async Task<bool> ConnectAsync(AvailableNetworkPack chosenWifi)
-        {
-            if (chosenWifi == null)
-                return false;
-
-            return await NativeWifi.ConnectNetworkAsync(
-                interfaceId: chosenWifi.Interface.Id,
-                profileName: chosenWifi.ProfileName,
-                bssType: chosenWifi.BssType,
-                timeout: TimeSpan.FromSeconds(5));
-        }
-
-        /// <summary>
-        /// Creates new network profile according to selected network and profile XML.
-        /// </summary>
-        /// <returns>True if succeeded, false if failed.</returns>
-        public static void CreateNewProfile()
-        {
-            // sets the profile type to be All-user (value = 0)
-            // if set to Per User, the security type parameter is not required
-            const ProfileType profileType = ProfileType.AllUser;
-            
-            // security type not required
-            const string securityType = null;
-
-            // overwrites if profile already exists
-            const bool overwrite = true;
-
-            NativeWifi.SetProfile(interfaceId, profileType, profileXml, securityType, overwrite);
-        }
-
-        /// <summary>
-        /// Deletes eduroam profile.
-        /// </summary>
-        /// <returns>True if delete succesful, false if not.</returns>
-        public static bool RemoveProfile()
-        {
-            return NativeWifi.DeleteProfile(interfaceId, ssid);
-        }
-
-        /// <summary>
-        /// Sets a profile's user data for login with username + password.
+        /// Sets user data for a wireless profile.
         /// </summary>
         /// <param name="networkId">Interface ID of selected network.</param>
         /// <param name="profileName">Name of associated wireless profile.</param>
@@ -256,6 +251,35 @@ namespace EduroamApp
             return NativeWifi.SetProfileUserData(networkId, profileName, profileUserType, userDataXml);
         }
 
+        /// <summary>
+        /// Waits for async connection to complete.
+        /// </summary>
+        /// <returns>Connection result.</returns>
+        public static Task<bool> WaitForConnect()
+        {
+            // runs async method
+            Task<bool> connectResult = Task.Run(ConnectAsync);
+            return connectResult;
+        }
+
+        /// <summary>
+        /// Connects to the chosen wireless LAN.
+        /// </summary>
+        /// <returns>True if successfully connected. False if not.</returns>
+        private static async Task<bool> ConnectAsync()
+        {
+            // gets updated eduroam network pack
+            AvailableNetworkPack network = EduroamNetwork.GetEduroamPack();
+
+            if (network == null)
+                return false;
+
+            return await NativeWifi.ConnectNetworkAsync(
+                interfaceId: network.Interface.Id,
+                profileName: network.ProfileName,
+                bssType: network.BssType,
+                timeout: TimeSpan.FromSeconds(5));
+        }
 
         /// <summary>
         /// Creates EapConfig object from EAP config file.
@@ -267,17 +291,17 @@ namespace EduroamApp
             // loads the XML file from its file path
             XElement doc = XElement.Parse(eapFile);
             
-            // instantiates new EapConfig object
+            // creates new EapConfig object
             var eapConfig = new EapConfig();
             // creates new list of authentication methods
             List<EapConfig.AuthenticationMethod> authMethods = new List<EapConfig.AuthenticationMethod>();
 
-            // gets all AuthenticationMethods elements
+            // gets all AuthenticationMethods elements from xml
             IEnumerable<XElement> authMethodElements = doc.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "AuthenticationMethod");
             foreach (XElement element in authMethodElements)
             {
                 // gets EAP method type
-                var eapType = (uint)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Type");
+                var eapTypeEl = (uint)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Type");
 
                 // gets list of CAs
                 List<XElement> caElements = element.DescendantsAndSelf().Elements().Where(x => x.Name.LocalName == "CA").ToList();
@@ -306,7 +330,7 @@ namespace EduroamApp
                 var passphrase = (string)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Passphrase");
 
                 // creates new authentication method object and adds it to list
-                authMethods.Add(new EapConfig.AuthenticationMethod(eapType, certAuths, serverNames, clientCert, passphrase));
+                authMethods.Add(new EapConfig.AuthenticationMethod(eapTypeEl, certAuths, serverNames, clientCert, passphrase));
             }
             // adds the authentication method objects to the EapConfig object
             eapConfig.AuthenticationMethods = authMethods;
@@ -325,7 +349,7 @@ namespace EduroamApp
             var webAddress = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "WebAddress");
             // gets provider's phone number
             var phone = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Phone");
-            // gets provider's phone number
+            // gets terms of use
             var termsOfUse = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "TermsOfUse");
             // gets identity element
             XElement eapIdentityElement = doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "EAPIdentityProvider");
@@ -346,9 +370,9 @@ namespace EduroamApp
         /// <returns>Image.</returns>
         public static Image Base64ToImage(string base64String)
         {
-            // convert base 64 string to byte[]
+            // converts base64 string to byte[]
             byte[] imageBytes = Convert.FromBase64String(base64String);
-            // Convert byte[] to Image
+            // converts byte[] to Image
             using (var ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
             {
                 Image image = Image.FromStream(ms, true);

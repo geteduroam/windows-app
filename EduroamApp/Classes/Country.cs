@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace EduroamApp
 {
+    /// <summary>
+    /// Stores information about a country.
+    /// Used for populating list of countries when selecting institution.
+    /// </summary>
     class Country
     {
         // Properties

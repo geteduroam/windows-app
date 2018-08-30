@@ -7,6 +7,12 @@ using System.Xml.Linq;
 
 namespace EduroamApp
 {
+    /// <summary>
+    /// User data XML generator.
+    /// Generates user data for the following EAP types:
+    /// - PEAP-MSCHAPv2 (25/26)
+    /// - TTLS (21) [NOT YET FUNCTIONAL]
+    /// </summary>
     class UserDataXml
     {
         // Namespaces
@@ -68,6 +74,7 @@ namespace EduroamApp
                         )
                     );
             }
+            // WORK IN PROGRESS - Dependent on creating a correct profile XML for TTLS
             else if (eapType == 21)
             {
                 newUserData =

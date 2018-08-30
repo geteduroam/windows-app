@@ -29,7 +29,7 @@ namespace EduroamApp
             // tries to connect
             try
             {
-                connectSuccess = await Task.Run(ConnectToEduroam.Connect);
+                connectSuccess = await Task.Run(ConnectToEduroam.WaitForConnect);
             }
             
             catch (Exception ex)
