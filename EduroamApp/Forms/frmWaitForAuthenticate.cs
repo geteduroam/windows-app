@@ -19,7 +19,7 @@ namespace EduroamApp
         // return value
         public string responseUrl = "";
         // main thread event
-        private static readonly ManualResetEvent mainThread = new ManualResetEvent(false);
+        private static ManualResetEvent mainThread;
         // cancel thread event
         private static ManualResetEvent cancelThread;
         //
@@ -72,7 +72,7 @@ namespace EduroamApp
             listener.Start();
 
             // creates BeginGetContext task for retrieving HTTP request
-            IAsyncResult result = listener.BeginGetContext(new AsyncCallback(ListenerCallback), listener);
+            IAsyncResult result = listener.BeginGetContext(ListenerCallback, listener);
             // opens authentication URI in default browser
             Process.Start(oAuthUri);
 
@@ -86,6 +86,7 @@ namespace EduroamApp
             if (handleResult == 0)
             {
                 // freezes main thread so ListenerCallback function can finish
+                mainThread = new ManualResetEvent(false);
                 mainThread.WaitOne();
                 DialogResult = DialogResult.OK;
             }
