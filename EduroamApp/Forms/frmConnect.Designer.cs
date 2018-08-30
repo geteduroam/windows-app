@@ -94,7 +94,7 @@ namespace EduroamApp
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Name = "frmConnect";
 			this.Text = "frm5";
-			this.Load += new System.EventHandler(this.frm5_Load);
+			this.Load += new System.EventHandler(this.frmConnect_Load);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.tableLayoutPanel1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pboStatus)).EndInit();

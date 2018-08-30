@@ -38,7 +38,6 @@ namespace EduroamApp
 			this.label1 = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.lblError = new System.Windows.Forms.Label();
-			this.btnTest = new System.Windows.Forms.Button();
 			this.tlpLoading.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
@@ -46,7 +45,7 @@ namespace EduroamApp
 			// lblSelectProfile
 			//
 			this.lblSelectProfile.AutoSize = true;
-			this.lblSelectProfile.Location = new System.Drawing.Point(3, 107);
+			this.lblSelectProfile.Location = new System.Drawing.Point(2, 107);
 			this.lblSelectProfile.Name = "lblSelectProfile";
 			this.lblSelectProfile.Size = new System.Drawing.Size(71, 13);
 			this.lblSelectProfile.TabIndex = 36;
@@ -57,7 +56,7 @@ namespace EduroamApp
 			//
 			this.cboProfiles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboProfiles.FormattingEnabled = true;
-			this.cboProfiles.Location = new System.Drawing.Point(6, 123);
+			this.cboProfiles.Location = new System.Drawing.Point(5, 123);
 			this.cboProfiles.Name = "cboProfiles";
 			this.cboProfiles.Size = new System.Drawing.Size(202, 21);
 			this.cboProfiles.TabIndex = 35;
@@ -67,7 +66,7 @@ namespace EduroamApp
 			// lblInstitution
 			//
 			this.lblInstitution.AutoSize = true;
-			this.lblInstitution.Location = new System.Drawing.Point(3, 53);
+			this.lblInstitution.Location = new System.Drawing.Point(2, 53);
 			this.lblInstitution.Name = "lblInstitution";
 			this.lblInstitution.Size = new System.Drawing.Size(87, 13);
 			this.lblInstitution.TabIndex = 34;
@@ -76,7 +75,7 @@ namespace EduroamApp
 			// lblCountry
 			//
 			this.lblCountry.AutoSize = true;
-			this.lblCountry.Location = new System.Drawing.Point(3, 3);
+			this.lblCountry.Location = new System.Drawing.Point(2, 3);
 			this.lblCountry.Name = "lblCountry";
 			this.lblCountry.Size = new System.Drawing.Size(78, 13);
 			this.lblCountry.TabIndex = 33;
@@ -86,7 +85,7 @@ namespace EduroamApp
 			//
 			this.cboInstitution.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboInstitution.FormattingEnabled = true;
-			this.cboInstitution.Location = new System.Drawing.Point(6, 69);
+			this.cboInstitution.Location = new System.Drawing.Point(5, 69);
 			this.cboInstitution.Name = "cboInstitution";
 			this.cboInstitution.Size = new System.Drawing.Size(286, 21);
 			this.cboInstitution.TabIndex = 32;
@@ -96,7 +95,7 @@ namespace EduroamApp
 			//
 			this.cboCountry.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.cboCountry.FormattingEnabled = true;
-			this.cboCountry.Location = new System.Drawing.Point(6, 19);
+			this.cboCountry.Location = new System.Drawing.Point(5, 19);
 			this.cboCountry.Name = "cboCountry";
 			this.cboCountry.Size = new System.Drawing.Size(202, 21);
 			this.cboCountry.TabIndex = 31;
@@ -139,24 +138,13 @@ namespace EduroamApp
 			//
 			// lblError
 			//
-			this.lblError.Location = new System.Drawing.Point(3, 3);
+			this.lblError.Location = new System.Drawing.Point(2, 2);
 			this.lblError.Name = "lblError";
 			this.lblError.Size = new System.Drawing.Size(329, 58);
 			this.lblError.TabIndex = 39;
 			this.lblError.Text = "Couldn\'t connect to the server.\r\n\r\nMake sure that you are connected to the intern" +
 	"et, then try again.";
 			this.lblError.Visible = false;
-			//
-			// btnTest
-			//
-			this.btnTest.Location = new System.Drawing.Point(291, 211);
-			this.btnTest.Name = "btnTest";
-			this.btnTest.Size = new System.Drawing.Size(75, 23);
-			this.btnTest.TabIndex = 40;
-			this.btnTest.Text = "test";
-			this.btnTest.UseVisualStyleBackColor = true;
-			this.btnTest.Visible = false;
-			this.btnTest.Click += new System.EventHandler(this.btnTest_Click);
 			//
 			// frmDownload
 			//
@@ -165,7 +153,6 @@ namespace EduroamApp
 			this.AutoScroll = true;
 			this.BackColor = System.Drawing.Color.White;
 			this.ClientSize = new System.Drawing.Size(378, 246);
-			this.Controls.Add(this.btnTest);
 			this.Controls.Add(this.tlpLoading);
 			this.Controls.Add(this.lblSelectProfile);
 			this.Controls.Add(this.cboProfiles);
@@ -177,7 +164,7 @@ namespace EduroamApp
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Name = "frmDownload";
 			this.Text = "frm3";
-			this.Load += new System.EventHandler(this.frm3_Load);
+			this.Load += new System.EventHandler(this.frmDownload_Load);
 			this.tlpLoading.ResumeLayout(false);
 			this.tlpLoading.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
@@ -197,6 +184,5 @@ namespace EduroamApp
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.Label lblError;
-		private System.Windows.Forms.Button btnTest;
 	}
 }

@@ -10,6 +10,12 @@ using System.Windows.Forms;
 
 namespace EduroamApp
 {
+	/// <summary>
+	/// This form lets the user select how they want to obtain an EAP-config file through a pair of radio buttons.
+	/// Their options are as follows:
+	/// - Select an institution and download config.
+	/// - Browse local files for config.
+	/// </summary>
 	public partial class frmSelectMethod : Form
 	{
 		// makes parent form accessible from this class
@@ -19,6 +25,7 @@ namespace EduroamApp
 		{
 			// gets parent form instance
 			frmParent = parentInstance;
+
 			InitializeComponent();
 		}
 
@@ -27,22 +34,7 @@ namespace EduroamApp
 		/// </summary>
 		public int GoToForm()
 		{
-			if (rdbDownload.Checked)
-			{
-				return 3;
-			}
-
-			return 4;
-		}
-
-		private void rdbDownload_CheckedChanged(object sender, EventArgs e)
-		{
-
-		}
-
-		private void frmSelectMethod_Load(object sender, EventArgs e)
-		{
-
+			return rdbDownload.Checked ? 3 : 4;
 		}
 	}
 }

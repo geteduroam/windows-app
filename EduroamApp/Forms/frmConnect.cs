@@ -10,6 +10,9 @@ using System.Windows.Forms;
 
 namespace EduroamApp
 {
+	/// <summary>
+	/// This
+	/// </summary>
 	public partial class frmConnect : Form
 	{
 		readonly frmParent frmParent;
@@ -19,7 +22,7 @@ namespace EduroamApp
 			InitializeComponent();
 		}
 
-		private async void frm5_Load(object sender, EventArgs e)
+		private async void frmConnect_Load(object sender, EventArgs e)
 		{
 			// displays loading information while attempt to connect
 			lblStatus.Text = "Connecting...";
