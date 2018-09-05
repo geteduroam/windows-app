@@ -118,11 +118,11 @@
     <Compile Include="Forms\frmRedirect.Designer.cs">
       <DependentUpon>frmRedirect.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmWaitForAuthenticate.cs">
+    <Compile Include="Forms\frmWaitDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Forms\frmWaitForAuthenticate.Designer.cs">
-      <DependentUpon>frmWaitForAuthenticate.cs</DependentUpon>
+    <Compile Include="Forms\frmWaitDialog.Designer.cs">
+      <DependentUpon>frmWaitDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\OAuth.cs" />
     <Compile Include="Forms\frmSummary.cs">
@@ -178,8 +178,8 @@
     <EmbeddedResource Include="Forms\frmRedirect.resx">
       <DependentUpon>frmRedirect.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmWaitForAuthenticate.resx">
-      <DependentUpon>frmWaitForAuthenticate.cs</DependentUpon>
+    <EmbeddedResource Include="Forms\frmWaitDialog.resx">
+      <DependentUpon>frmWaitDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmSummary.resx">
       <DependentUpon>frmSummary.cs</DependentUpon>

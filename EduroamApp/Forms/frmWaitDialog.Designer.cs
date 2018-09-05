@@ -2,7 +2,7 @@
 
 namespace EduroamApp
 {
-    partial class frmWaitForAuthenticate
+    partial class frmWaitDialog
     {
         /// <summary>
         /// Required designer variable.
@@ -65,7 +65,7 @@ namespace EduroamApp
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // frmWaitForAuthenticate
+            // frmWaitDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -75,7 +75,7 @@ namespace EduroamApp
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Name = "frmWaitForAuthenticate";
+            this.Name = "frmWaitDialog";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Continue in your browser...";
             this.Load += new System.EventHandler(this.frmWaitForAuthenticate_Load);

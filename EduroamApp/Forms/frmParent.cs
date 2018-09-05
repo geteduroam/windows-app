@@ -41,6 +41,7 @@ namespace EduroamApp
         public bool ComesFromSelfExtract;
         public bool SelfExtractFlag;
         public bool SelectAlternative;
+        public bool EduroamAvailable;
 
         public frmParent()
         {
@@ -96,6 +97,7 @@ namespace EduroamApp
                         LocalFileType = "CERT";
                         LoadFrmLocalCert();
                     }
+                    else if (eapType == 600) LoadFrmSaveAndQuit();
                     else if (eapType != 0) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
                         "Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     break;
@@ -142,6 +144,12 @@ namespace EduroamApp
                 // lets user select client cert and opens connection form
                 case 8:
                     if (frmLocal.InstallCertFile()) LoadFrmConnect();
+                    break;
+                case 9:
+                    ProfileCondition = "GOODPROFILE";
+                    MessageBox.Show("Configuration saved. The application will now close.", "eduroam", 
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Close();
                     break;
             }
             
@@ -384,6 +392,21 @@ namespace EduroamApp
             btnBack.Enabled = true;
             btnBack.Visible = true;
             LoadNewForm(frmLocal);
+        }
+
+        /// <summary>
+        /// Loads form that lets user save configuration and quit.
+        /// </summary>
+        public void LoadFrmSaveAndQuit()
+        {
+            frmConnect = new frmConnect(this);
+            currentFormId = 9;
+            lblTitle.Text = "eduroam not available";
+            btnNext.Text = "Save";
+            btnNext.Enabled = true;
+            btnBack.Enabled = false;
+            btnBack.Visible = true;
+            LoadNewForm(frmConnect);
         }
 
         // adds lines to panels on parent form

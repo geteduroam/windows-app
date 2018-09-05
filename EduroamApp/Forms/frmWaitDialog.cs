@@ -9,7 +9,7 @@ using MessageBox = System.Windows.MessageBox;
 
 namespace EduroamApp
 {
-    public partial class frmWaitForAuthenticate : Form
+    public partial class frmWaitDialog : Form
     {
         // localhost address, for example "http://localhost:8080/"
         private readonly string prefix;
@@ -29,7 +29,7 @@ namespace EduroamApp
         // cancellation token
         private static CancellationToken cancelToken;
 
-        public frmWaitForAuthenticate(string inPrefix, string inOAuthUri)
+        public frmWaitDialog(string inPrefix, string inOAuthUri)
         {
             // sets parameters
             prefix = inPrefix;
