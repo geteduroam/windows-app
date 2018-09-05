@@ -22,3 +22,5 @@ This application helps set up eduroam on end-users' computers by automatically f
 	* Costura (https://github.com/Fody/Costura)
 
 ## License
+
+This project is licensed under the BSD 3-Clause License - see the [LICENSE.md](LICENSE.md) file for details.
