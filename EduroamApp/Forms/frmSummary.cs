@@ -127,6 +127,10 @@ namespace EduroamApp
         /// <returns>EAP type of installed EapConfig.</returns>
         public uint InstallEapConfig()
         {
+            /*if (EduroamNetwork.GetEduroamPack() == null)
+            {
+
+            }*/
             try
             {
                 uint eapType = ConnectToEduroam.Setup(eapConfig);
@@ -140,7 +144,7 @@ namespace EduroamApp
                 {
                     MessageBox.Show(
                         "Could not establish a connection through your computer's wireless network interface. \n" +
-                        "Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.",
+                        "Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.\nException: " + argEx.Message,
                         "eduroam", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
