@@ -43,12 +43,12 @@ namespace EduroamApp
 			this.chkAgree = new System.Windows.Forms.CheckBox();
 			this.lblToU = new System.Windows.Forms.Label();
 			this.pnlInstName = new System.Windows.Forms.Panel();
+			this.label1 = new System.Windows.Forms.Label();
 			this.pnlContactInfo = new System.Windows.Forms.Panel();
 			this.tblSelectInst = new System.Windows.Forms.TableLayoutPanel();
+			this.btnSelectInst = new System.Windows.Forms.Button();
 			this.panel3 = new System.Windows.Forms.Panel();
 			this.panel4 = new System.Windows.Forms.Panel();
-			this.label1 = new System.Windows.Forms.Label();
-			this.btnSelectInst = new System.Windows.Forms.Button();
 			this.tblContactInfo.SuspendLayout();
 			this.gboContactInfo.SuspendLayout();
 			this.pnlTop.SuspendLayout();
@@ -241,6 +241,16 @@ namespace EduroamApp
 			this.pnlInstName.Size = new System.Drawing.Size(378, 38);
 			this.pnlInstName.TabIndex = 8;
 			//
+			// label1
+			//
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(3, 3);
+			this.label1.MaximumSize = new System.Drawing.Size(375, 0);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(89, 13);
+			this.label1.TabIndex = 7;
+			this.label1.Text = "Your institution is:";
+			//
 			// pnlContactInfo
 			//
 			this.pnlContactInfo.Controls.Add(this.gboContactInfo);
@@ -266,6 +276,20 @@ namespace EduroamApp
 			this.tblSelectInst.Size = new System.Drawing.Size(378, 30);
 			this.tblSelectInst.TabIndex = 16;
 			//
+			// btnSelectInst
+			//
+			this.btnSelectInst.AutoSize = true;
+			this.btnSelectInst.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.btnSelectInst.Dock = System.Windows.Forms.DockStyle.Left;
+			this.btnSelectInst.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.btnSelectInst.Location = new System.Drawing.Point(154, 3);
+			this.btnSelectInst.Name = "btnSelectInst";
+			this.btnSelectInst.Size = new System.Drawing.Size(133, 24);
+			this.btnSelectInst.TabIndex = 17;
+			this.btnSelectInst.Text = "Select another institution";
+			this.btnSelectInst.UseVisualStyleBackColor = false;
+			this.btnSelectInst.Click += new System.EventHandler(this.btnSelectInst_Click);
+			//
 			// panel3
 			//
 			this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -283,30 +307,6 @@ namespace EduroamApp
 			this.panel4.Name = "panel4";
 			this.panel4.Size = new System.Drawing.Size(378, 30);
 			this.panel4.TabIndex = 18;
-			//
-			// label1
-			//
-			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(3, 3);
-			this.label1.MaximumSize = new System.Drawing.Size(375, 0);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(152, 13);
-			this.label1.TabIndex = 7;
-			this.label1.Text = "You will now be connecting to:";
-			//
-			// btnSelectInst
-			//
-			this.btnSelectInst.AutoSize = true;
-			this.btnSelectInst.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.btnSelectInst.Dock = System.Windows.Forms.DockStyle.Left;
-			this.btnSelectInst.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.btnSelectInst.Location = new System.Drawing.Point(154, 3);
-			this.btnSelectInst.Name = "btnSelectInst";
-			this.btnSelectInst.Size = new System.Drawing.Size(133, 24);
-			this.btnSelectInst.TabIndex = 17;
-			this.btnSelectInst.Text = "Select another institution";
-			this.btnSelectInst.UseVisualStyleBackColor = false;
-			this.btnSelectInst.Click += new System.EventHandler(this.btnSelectInst_Click);
 			//
 			// frmSummary
 			//

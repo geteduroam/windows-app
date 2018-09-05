@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.Drawing;
 
 namespace EduroamApp
 {
@@ -37,6 +38,7 @@ namespace EduroamApp
 			// displays prompt to accept Terms of use if they exist
 			if (string.IsNullOrEmpty(tou))
 			{
+				lblToU.Location = new Point(3, 19);
 				lblToU.Text = "Press Next to continue.";
 				chkAgree.Checked = true;
 			}
@@ -89,7 +91,7 @@ namespace EduroamApp
 			{
 				lblAlternate.Visible = true;
 				btnSelectInst.Visible = true;
-				lblAlternate.Text = "Not connecting to " + eapConfig.InstitutionInfo.DisplayName + "?";
+				lblAlternate.Text = "Not affiliated with " + eapConfig.InstitutionInfo.DisplayName + "?";
 			}
 			else
 			{
@@ -135,6 +137,12 @@ namespace EduroamApp
 			{
 				uint eapType = ConnectToEduroam.Setup(eapConfig);
 				frmParent.InstId = eapConfig.InstitutionInfo.InstId;
+				if (EduroamNetwork.GetEduroamPack() == null)
+				{
+					eapType = 600;
+					frmParent.EduroamAvailable = false;
+				}
+				else frmParent.EduroamAvailable = true;
 				frmParent.ProfileCondition = "BADPROFILE";
 				return eapType;
 			}

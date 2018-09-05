@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using ManagedNativeWifi;
 
 namespace EduroamApp
@@ -13,16 +14,23 @@ namespace EduroamApp
 		// Properties
 		public AvailableNetworkPack NetworkPack { get; }
 		public string Ssid { get; }
-		public Guid InterfaceId { get; } = Guid.Empty;
+		public Guid InterfaceId { get; }
 
 		// Constructor
 		public EduroamNetwork()
 		{
 			NetworkPack = GetEduroamPack();
-			if (NetworkPack != null) // only assigns value to properties if network pack exists
+			// if eduroam network available, get ssid and interface id from network pack
+			if (NetworkPack != null)
 			{
 				Ssid = NetworkPack.Ssid.ToString();
 				InterfaceId = NetworkPack.Interface.Id;
+			}
+			// if eduroam network not available, hardcode ssid and get interface id so profile creation still possible
+			else
+			{
+				Ssid = "eduroam";
+				InterfaceId = GetInterfaceId();
 			}
 		}
 
@@ -53,6 +61,24 @@ namespace EduroamApp
 			}
 			// if no networks called "eduroam" are found, return nothing
 			return null;
+		}
+
+		/// <summary>
+		/// Gets the computer's wireless network interface Id, if it exists.
+		/// </summary>
+		/// <returns>Wireless interface id.</returns>
+		public static Guid GetInterfaceId()
+		{
+			var interfaces = NetworkInterface.GetAllNetworkInterfaces();
+			foreach (NetworkInterface nic in interfaces)
+			{
+				// searches for wireless network interface
+				if (nic.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 && nic.Speed != -1)
+				{
+					return new Guid(nic.Id);
+				}
+			}
+			return Guid.Empty;
 		}
 	}
 }

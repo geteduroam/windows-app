@@ -82,7 +82,7 @@ namespace EduroamApp
 
 			// opens web browser for user authentication through feide
 			string responseUrl; //= WebServer.NonblockingListener(redirectUri, authUri, parentLocation);
-			using (var waitForm = new frmWaitForAuthenticate(redirectUri, authUri))
+			using (var waitForm = new frmWaitDialog(redirectUri, authUri))
 			{
 				DialogResult result = waitForm.ShowDialog();
 				if (result == DialogResult.OK)
