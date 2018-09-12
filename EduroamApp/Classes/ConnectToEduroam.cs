@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -8,6 +9,7 @@ using ManagedNativeWifi;
 using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
 
@@ -359,15 +361,16 @@ namespace EduroamApp
 		/// Converts base64 string to image.
 		/// </summary>
 		/// <param name="base64String">Base64 string.</param>
+		/// <param name="format">Image format.</param>
 		/// <returns>Image.</returns>
-		public static Image Base64ToImage(string base64String)
+		public static Image Base64ToImage(string base64String, string format)
 		{
 			// converts base64 string to byte[]
 			byte[] imageBytes = Convert.FromBase64String(base64String);
 			// converts byte[] to Image
-			using (var ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
+			using (var stream = new MemoryStream(imageBytes))
 			{
-				Image image = Image.FromStream(ms, true);
+				Image image = Image.FromStream(stream, true);
 				return image;
 			}
 		}
