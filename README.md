@@ -22,7 +22,7 @@ This application helps set up eduroam on end-users' computers by automatically f
 	* [LICENSE](Licenses/Newtonsoft.Json_LICENSE.md)
  * Fody (https://github.com/Fody/Fody)
 	* [LICENSE](Licenses/Fody_LICENSE.md)
-* Costura (https://github.com/Fody/Costura)
+ * Costura (https://github.com/Fody/Costura)
 	* [LICENSE](Licenses/Costura_LICENSE.md)
 
 ## License
