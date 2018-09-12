@@ -3,6 +3,8 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 namespace EduroamApp
 {
@@ -103,10 +105,53 @@ namespace EduroamApp
             string logoBase64 = eapConfig.InstitutionInfo.Logo;
             string logoFormat = eapConfig.InstitutionInfo.LogoFormat;
             // adds logo to form if exists
-            if (!string.IsNullOrEmpty(logoBase64) && logoFormat != "image/svg+xml")
+            if (!string.IsNullOrEmpty(logoBase64))
             {
-                frmParent.PbxLogo = ConnectToEduroam.Base64ToImage(logoBase64);
+                int cWidth = frmParent.PbxLogo.Width;
+                int cHeight = frmParent.PbxLogo.Height;
+
+                if (logoFormat == "image/svg+xml")
+                {
+                    frmParent.WebLogo.Visible = true;
+                    frmParent.WebLogo.DocumentText =
+                        "<!DOCTYPE html>" +
+                        "<html>" +
+                        "<head>" +
+                            "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" +
+                        "<style>" +
+                            "img {" +
+                                "position: absolute;" +
+                                "top: 0;" +
+                                "left: 0;" +
+                                "display: block;" +
+                                "max-width:" + cWidth + "px;" +
+                                "max-height:" + cHeight + "px;" +
+                                "width: auto;" +
+                                "height: auto;" +
+                            "}" +
+                        "</style>" +
+                        "</head>" +
+                        "<body>" +
+                        "<img src=\'data:image/svg+xml;base64," + logoBase64 + "\'>" +
+                        "</body>" +
+                        "</html>";
+                }
+                else
+                {
+
+                    Image logo = ConnectToEduroam.Base64ToImage(logoBase64, logoFormat);
+                    decimal hScale = decimal.Divide(cWidth, logo.Width);
+                    decimal vScale = decimal.Divide(cHeight, logo.Height);
+                    decimal pScale = vScale < hScale ? vScale : hScale;
+                    Bitmap resizedLogo = ResizeImage(logo, (int) (logo.Width * pScale), (int) (logo.Height * pScale));
+                    
+                    frmParent.PbxLogo.Image = resizedLogo;
+                    int lPad = cWidth - frmParent.PbxLogo.Image.Width;
+                    frmParent.PbxLogo.Padding = new Padding(lPad/2, 0, 0, 0);
+                    frmParent.PbxLogo.Visible = true;
+                }
             }
+            
 
             frmParent.SelectAlternative = false;
         }
@@ -177,6 +222,39 @@ namespace EduroamApp
             frmParent.SelectAlternative = true;
             // calls button listener in parent form
             frmParent.btnNext_Click(sender, e);
+        }
+
+
+        /// <summary>
+        /// Resize the image to the specified width and height.
+        /// </summary>
+        /// <param name="image">The image to resize.</param>
+        /// <param name="width">The width to resize to.</param>
+        /// <param name="height">The height to resize to.</param>
+        /// <returns>The resized image.</returns>
+        public static Bitmap ResizeImage(Image image, int width, int height)
+        {
+            var destRect = new Rectangle(0, 0, width, height);
+            var destImage = new Bitmap(width, height);
+
+            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+            using (var graphics = Graphics.FromImage(destImage))
+            {
+                graphics.CompositingMode = CompositingMode.SourceCopy;
+                graphics.CompositingQuality = CompositingQuality.HighQuality;
+                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                graphics.SmoothingMode = SmoothingMode.HighQuality;
+                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                using (var wrapMode = new ImageAttributes())
+                {
+                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
+                }
+            }
+
+            return destImage;
         }
     }
 }

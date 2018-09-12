@@ -37,13 +37,14 @@
             this.pnlNavBot = new System.Windows.Forms.Panel();
             this.pnlNavTop = new System.Windows.Forms.Panel();
             this.pnlLeft = new System.Windows.Forms.Panel();
-            this.pbxLogo = new System.Windows.Forms.PictureBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pnlLogoBot = new System.Windows.Forms.Panel();
             this.pnlLogoTop = new System.Windows.Forms.Panel();
             this.pnlLogoLeft = new System.Windows.Forms.Panel();
             this.pnlLogoRight = new System.Windows.Forms.Panel();
+            this.webLogo = new System.Windows.Forms.WebBrowser();
+            this.pbxLogo = new System.Windows.Forms.PictureBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblTitle = new System.Windows.Forms.Label();
             this.pnlLeftMargin = new System.Windows.Forms.Panel();
@@ -52,8 +53,8 @@
             this.pnlNavigation.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.pnlLeft.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).BeginInit();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -147,35 +148,27 @@
             // 
             // pnlLeft
             // 
-            this.pnlLeft.Controls.Add(this.pbxLogo);
+            this.pnlLeft.BackColor = System.Drawing.Color.White;
             this.pnlLeft.Controls.Add(this.panel3);
             this.pnlLeft.Controls.Add(this.pictureBox1);
             this.pnlLeft.Controls.Add(this.pnlLogoBot);
             this.pnlLeft.Controls.Add(this.pnlLogoTop);
             this.pnlLeft.Controls.Add(this.pnlLogoLeft);
             this.pnlLeft.Controls.Add(this.pnlLogoRight);
+            this.pnlLeft.Controls.Add(this.webLogo);
+            this.pnlLeft.Controls.Add(this.pbxLogo);
             this.pnlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlLeft.Location = new System.Drawing.Point(0, 0);
             this.pnlLeft.Name = "pnlLeft";
             this.pnlLeft.Size = new System.Drawing.Size(160, 366);
             this.pnlLeft.TabIndex = 2;
             // 
-            // pbxLogo
-            // 
-            this.pbxLogo.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pbxLogo.Location = new System.Drawing.Point(8, 119);
-            this.pbxLogo.Name = "pbxLogo";
-            this.pbxLogo.Size = new System.Drawing.Size(144, 109);
-            this.pbxLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.pbxLogo.TabIndex = 9;
-            this.pbxLogo.TabStop = false;
-            // 
             // panel3
             // 
             this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel3.Location = new System.Drawing.Point(8, 92);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(144, 27);
+            this.panel3.Size = new System.Drawing.Size(144, 28);
             this.panel3.TabIndex = 8;
             // 
             // pictureBox1
@@ -221,6 +214,28 @@
             this.pnlLogoRight.Size = new System.Drawing.Size(8, 366);
             this.pnlLogoRight.TabIndex = 2;
             this.pnlLogoRight.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlLogoRight_Paint);
+            // 
+            // webLogo
+            // 
+            this.webLogo.AllowWebBrowserDrop = false;
+            this.webLogo.Location = new System.Drawing.Point(8, 120);
+            this.webLogo.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webLogo.Name = "webLogo";
+            this.webLogo.ScrollBarsEnabled = false;
+            this.webLogo.Size = new System.Drawing.Size(144, 140);
+            this.webLogo.TabIndex = 10;
+            this.webLogo.Url = new System.Uri("", System.UriKind.Relative);
+            this.webLogo.Visible = false;
+            this.webLogo.WebBrowserShortcutsEnabled = false;
+            // 
+            // pbxLogo
+            // 
+            this.pbxLogo.Location = new System.Drawing.Point(8, 120);
+            this.pbxLogo.Name = "pbxLogo";
+            this.pbxLogo.Size = new System.Drawing.Size(144, 140);
+            this.pbxLogo.TabIndex = 9;
+            this.pbxLogo.TabStop = false;
+            this.pbxLogo.Visible = false;
             // 
             // panel1
             // 
@@ -292,8 +307,8 @@
             this.pnlNavigation.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.pnlLeft.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
@@ -324,5 +339,6 @@
         private System.Windows.Forms.PictureBox pbxLogo;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.WebBrowser webLogo;
     }
 }

@@ -62,6 +62,8 @@ namespace EduroamApp
                 // sets flags
                 ComesFromSelfExtract = true;
                 SelfExtractFlag = true;
+                // reset web logo or else it won't load
+                ResetLogo();
                 // loads summary form so user can confirm installation
                 LoadFrmSummary();
             }
@@ -85,7 +87,7 @@ namespace EduroamApp
                 case 1:
                     if (SelectAlternative) // if user has config from self extract but wants to select another inst
                     {
-                        pbxLogo.Image = null;
+                        ResetLogo();
                         LoadFrmSelectMethod();
                         break;
                     }
@@ -119,7 +121,8 @@ namespace EduroamApp
                     if (eapConfig != null)
                     {
                         LoadFrmSummary();
-                    } else if (!string.IsNullOrEmpty(RedirectUrl))
+                    }
+                    else if (!string.IsNullOrEmpty(RedirectUrl))
                     {
                         LoadFrmRedirect();
                     }
@@ -162,7 +165,7 @@ namespace EduroamApp
             // reuses existing instances of forms when going backwards
             reload = false;
             // clears logo if going back from summary page
-            if (currentFormId == 1) pbxLogo.Image = null;
+            if (currentFormId == 1) ResetLogo();
 
             switch (formHistory.Last())
             {
@@ -232,13 +235,9 @@ namespace EduroamApp
             }
         }
         
-        // make form properties accessible from other forms
-        public Image PbxLogo
-        {
-            get => pbxLogo.Image;
-            set => pbxLogo.Image = value;
-        }
-
+        public PictureBox PbxLogo => pbxLogo;
+        public WebBrowser WebLogo => webLogo;
+        
         public string BtnNextText
         {
             get => btnNext.Text;
@@ -432,6 +431,24 @@ namespace EduroamApp
 
             // Draw line to screen.
             e.Graphics.DrawLine(grayPen, point1, point2);
+        }
+
+        /// <summary>
+        /// Empties both logo controls and makes them invisible.
+        /// </summary>
+        public void ResetLogo()
+        {
+            // reset pbxLogo
+            pbxLogo.Image = null;
+            pbxLogo.Visible = false;
+
+            // reset webLogo
+            webLogo.Navigate("about:blank");
+            if (webLogo.Document != null)
+            {
+                webLogo.Document.Write(string.Empty);
+            }
+            webLogo.Visible = false;
         }
 
         // closes form
