@@ -16,7 +16,7 @@ This application helps set up eduroam on end-users' computers by automatically f
 
 ## Dependencies
 
- * ManagedNativeWifi by emoacht (https://github.com/emoacht/ManagedNativeWifi)
+ * ManagedNativeWifi by emoacht (https://github.com/emoacht/ManagedNativeWifi [LICENSE](Licenses/ManagedNativeWifi_LICENSE.md))
  * Newtonsoft.Json by JamesNK (https://github.com/JamesNK/Newtonsoft.Json)
  * Fody (https://github.com/Fody/Fody)
 	* Costura (https://github.com/Fody/Costura)
