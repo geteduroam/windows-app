@@ -155,8 +155,8 @@ namespace EduroamApp
 			this.pnlLeft.Controls.Add(this.pnlLogoTop);
 			this.pnlLeft.Controls.Add(this.pnlLogoLeft);
 			this.pnlLeft.Controls.Add(this.pnlLogoRight);
-			this.pnlLeft.Controls.Add(this.webLogo);
 			this.pnlLeft.Controls.Add(this.pbxLogo);
+			this.pnlLeft.Controls.Add(this.webLogo);
 			this.pnlLeft.Dock = System.Windows.Forms.DockStyle.Left;
 			this.pnlLeft.Location = new System.Drawing.Point(0, 0);
 			this.pnlLeft.Name = "pnlLeft";
@@ -222,7 +222,7 @@ namespace EduroamApp
 			this.webLogo.MinimumSize = new System.Drawing.Size(20, 20);
 			this.webLogo.Name = "webLogo";
 			this.webLogo.ScrollBarsEnabled = false;
-			this.webLogo.Size = new System.Drawing.Size(144, 140);
+			this.webLogo.Size = new System.Drawing.Size(144, 115);
 			this.webLogo.TabIndex = 10;
 			this.webLogo.Url = new System.Uri("", System.UriKind.Relative);
 			this.webLogo.Visible = false;
@@ -232,7 +232,7 @@ namespace EduroamApp
 			//
 			this.pbxLogo.Location = new System.Drawing.Point(8, 120);
 			this.pbxLogo.Name = "pbxLogo";
-			this.pbxLogo.Size = new System.Drawing.Size(144, 140);
+			this.pbxLogo.Size = new System.Drawing.Size(144, 115);
 			this.pbxLogo.TabIndex = 9;
 			this.pbxLogo.TabStop = false;
 			this.pbxLogo.Visible = false;

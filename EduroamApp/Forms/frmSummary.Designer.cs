@@ -110,7 +110,7 @@ namespace EduroamApp
 			this.lblPhone.Name = "lblPhone";
 			this.lblPhone.Size = new System.Drawing.Size(79, 16);
 			this.lblPhone.TabIndex = 9;
-			this.lblPhone.Text = "003245678743";
+			this.lblPhone.Text = "001234567890";
 			//
 			// tblContactInfo
 			//
@@ -150,12 +150,13 @@ namespace EduroamApp
 			//
 			// lblEmail
 			//
-			this.lblEmail.AutoSize = true;
+			this.lblEmail.AutoEllipsis = true;
 			this.lblEmail.Location = new System.Drawing.Point(54, 22);
 			this.lblEmail.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
+			this.lblEmail.MaximumSize = new System.Drawing.Size(230, 0);
 			this.lblEmail.MinimumSize = new System.Drawing.Size(0, 16);
 			this.lblEmail.Name = "lblEmail";
-			this.lblEmail.Size = new System.Drawing.Size(109, 16);
+			this.lblEmail.Size = new System.Drawing.Size(203, 16);
 			this.lblEmail.TabIndex = 12;
 			this.lblEmail.TabStop = true;
 			this.lblEmail.Text = "email@institution.com";

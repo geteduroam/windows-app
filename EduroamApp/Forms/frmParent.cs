@@ -309,11 +309,11 @@ namespace EduroamApp
 		/// </summary>
 		public void LoadFrmDownload()
 		{
-			frmDownload = new frmDownload(this);
+			if (reload) frmDownload = new frmDownload(this);
 			currentFormId = 3;
 			lblTitle.Text = "Select your institution";
 			btnNext.Text = "Next >";
-			btnNext.Enabled = false;
+			btnNext.Enabled = !reload;
 			btnBack.Enabled = true;
 			btnBack.Visible = true;
 			LoadNewForm(frmDownload);

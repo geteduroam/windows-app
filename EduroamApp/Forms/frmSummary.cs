@@ -70,7 +70,7 @@ namespace EduroamApp
 			}
 
 			// checks if email address is valid
-			if (!emailAddress.Contains("@"))
+			if (emailAddress.Contains(" ") || !emailAddress.Contains("@"))
 			{
 				// disables link, but still displays it
 				lblEmail.Enabled = false;
