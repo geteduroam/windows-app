@@ -38,22 +38,17 @@ namespace EduroamApp
 
         private async void frmDownload_Load(object sender, EventArgs e)
         {
+            // hides certain controls while loading
+            HideControls();
             // displays loading animation while fetching list of institutions
-            // disables certain controls while loading
-            lblCountry.Visible = false;
-            lblInstitution.Visible = false;
-            lblSelectProfile.Visible = false;
-            cboCountry.Visible = false;
-            cboInstitution.Visible = false;
-            cboProfiles.Visible = false;
             tlpLoading.Visible = true;
+            // resets redirect url
             frmParent.RedirectUrl = "";
 
             // async method to get list of institutions
             bool getInstSuccess = await Task.Run(() => GetAllInstitutions());
 
-            // checks if institutions succesfully retrieved
-            if (getInstSuccess && identityProviders.Count > 0)
+            if (getInstSuccess)
             {
                 // enables controls
                 lblCountry.Visible = true;
@@ -68,8 +63,6 @@ namespace EduroamApp
             else
             {
                 tlpLoading.Visible = false;
-                lblError.Text = "Couldn't connect to the server.\n\n" 
-                                + "Make sure that you are connected to the internet, then try again.";
                 lblError.Visible = true;
             }
         }
@@ -77,7 +70,6 @@ namespace EduroamApp
         /// <summary>
         /// Fetches a list of all eduroam institutions from https://cat.eduroam.org.
         /// </summary>
-        /// <returns>True if fetch success, false if not.</returns>
         public bool GetAllInstitutions()
         {
             // url for json containing all identity providers/institutions
@@ -89,20 +81,24 @@ namespace EduroamApp
                 string idProviderJson = GetStringFromUrl(allIdentityProvidersUrl);
                 // gets list of identity providers from json file
                 identityProviders = JsonConvert.DeserializeObject<List<IdentityProvider>>(idProviderJson);
+                // checks if json actually contains any identity providers, throws exception if not
+                if (identityProviders.Count <= 0)
+                {
+                    throw new JsonReaderException("Institutions couldn't be read from JSON file.");
+                }
+                return true;
             }
-            catch (WebException ex)
+            catch (WebException)
             {
-                ex.Data.Add("UserMessage", "Couldn't fetch identity provider list.");
-                //ErrorHandler(ex);
-                return false;
+                lblError.Text = "Couldn't connect to the server.\n\n"
+                                + "Make sure that you are connected to the internet, then try again.";
             }
-            catch (JsonReaderException ex)
+            catch (JsonReaderException)
             {
-                ex.Data.Add("UserMessage", "Couldn't get identity providers from JSON file.");
-                //ErrorHandler(ex);
-                return false;
+                lblError.Text = "Selecting an institution is not possible at the moment.\n\n" +
+                                "Please try again later.";
             }
-            return true;
+            return false;
         }
 
         /// <summary>
@@ -202,14 +198,12 @@ namespace EduroamApp
             }
             catch (WebException ex)
             {
-                ex.Data.Add("UserMessage", "Couldn't fetch identity provider profiles.");
-                ErrorHandler(ex);
+                WebExceptionHandler(ex);
                 return;
             }
             catch (JsonReaderException ex)
             {
-                ex.Data.Add("UserMessage", "Couldn't read identity provider profiles from JSON file.");
-                ErrorHandler(ex);
+                JsonExceptionHandler(ex);
                 return;
             }
             
@@ -320,14 +314,12 @@ namespace EduroamApp
             }
             catch (WebException ex)
             {
-                ex.Data.Add("UserMessage", "Couldn't fetch profile attributes from WebClient.");
-                ErrorHandler(ex);
+                WebExceptionHandler(ex);
                 return "";
             }
             catch (JsonReaderException ex)
             {
-                ex.Data.Add("UserMessage", "Couldn't read profile attributes from JSON file.");
-                ErrorHandler(ex);
+                JsonExceptionHandler(ex);
                 return "";
             }
 
@@ -363,14 +355,12 @@ namespace EduroamApp
             }
             catch (WebException ex)
             {
-                ex.Data.Add("UserMessage", "Couldn't fetch EAP config download link.");
-                ErrorHandler(ex);
+                WebExceptionHandler(ex);
                 return "";
             }
             catch (JsonReaderException ex)
             {
-                ex.Data.Add("UserMessage", "No supported EAP types found for this profile.");
-                ErrorHandler(ex);
+                JsonExceptionHandler(ex);
                 return "";
             }
             
@@ -384,8 +374,7 @@ namespace EduroamApp
             }
             catch (WebException ex)
             {
-                ex.Data.Add("UserMessage", "Couldn't fetch Eap Config file.");
-                ErrorHandler(ex);
+                WebExceptionHandler(ex);
                 return "";
             }
         }
@@ -438,20 +427,45 @@ namespace EduroamApp
         }
 
         /// <summary>
-        /// Displays exceptions in a messagebox, with optional user friendly message.
+        /// Handles web exceptions that occur if user loses an existing connection.
         /// </summary>
-        /// <param name="ex">Exception.</param>
-        private static void ErrorHandler(Exception ex)
+        /// <param name="ex">WebException.</param>
+        private void WebExceptionHandler(WebException ex)
         {
-            // gets friendly message if exists
-            var friendlyMessage = "";
-            if (ex.Data.Contains("UserMessage"))
-            {
-                friendlyMessage += ex.Data["UserMessage"] + "\n";
-            }
-            // shows messagebox with friendly message and normal message
-            MessageBox.Show(friendlyMessage + ex.Message, "eduroam - Exception", 
+            HideControls();
+            lblError.Text = "Couldn't connect to the server.\n\n"
+                            + "Make sure that you are connected to the internet, then try again.";
+            lblError.Visible = true;
+            MessageBox.Show("It seems like you have lost your internet connection. Reconnect and try again.\n"
+                            + "Exception: " + ex.Message, "eduroam - Exception", 
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        /// <summary>
+        /// Handles JSON reader exceptions.
+        /// </summary>
+        /// <param name="ex">JsonReaderException.</param>
+        private void JsonExceptionHandler(JsonReaderException ex)
+        {
+            MessageBox.Show("The selected institution or profile is not supported. " +
+                            "Please select a different institution or profile.\n"
+                            + "Exception: " + ex.Message, "eduroam - Exception",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        /// <summary>
+        /// Hides all controls on form.
+        /// </summary>
+        private void HideControls()
+        {
+            lblError.Visible = false;
+            lblCountry.Visible = false;
+            lblInstitution.Visible = false;
+            lblSelectProfile.Visible = false;
+            cboCountry.Visible = false;
+            cboInstitution.Visible = false;
+            cboProfiles.Visible = false;
+            frmParent.BtnNextEnabled = false;
         }
     }
 }
