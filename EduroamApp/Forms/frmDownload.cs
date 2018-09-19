@@ -93,13 +93,13 @@ namespace EduroamApp
 			catch (WebException ex)
 			{
 				ex.Data.Add("UserMessage", "Couldn't fetch identity provider list.");
-				ErrorHandler(ex);
+				//ErrorHandler(ex);
 				return false;
 			}
 			catch (JsonReaderException ex)
 			{
 				ex.Data.Add("UserMessage", "Couldn't get identity providers from JSON file.");
-				ErrorHandler(ex);
+				//ErrorHandler(ex);
 				return false;
 			}
 			return true;
