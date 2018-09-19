@@ -10,6 +10,8 @@ namespace EduroamApp
     public partial class frmConnect : Form
     {
         readonly frmParent frmParent;
+        private int attemptCounter;
+
         public frmConnect(frmParent parentInstance)
         {
             frmParent = parentInstance;
@@ -42,7 +44,6 @@ namespace EduroamApp
             {
                 connectSuccess = await Task.Run(ConnectToEduroam.WaitForConnect);
             }
-
             catch (Exception ex)
             {
                 // if an exception is thrown, connection has not succeeded
