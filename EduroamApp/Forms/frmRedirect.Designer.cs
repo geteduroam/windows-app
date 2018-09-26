@@ -46,6 +46,7 @@
             // 
             this.lblRedirectLink.AutoSize = true;
             this.lblRedirectLink.Location = new System.Drawing.Point(3, 16);
+            this.lblRedirectLink.MaximumSize = new System.Drawing.Size(375, 0);
             this.lblRedirectLink.Name = "lblRedirectLink";
             this.lblRedirectLink.Size = new System.Drawing.Size(64, 13);
             this.lblRedirectLink.TabIndex = 1;

@@ -59,7 +59,7 @@ namespace EduroamApp
                 WebAddress = webAddress ?? string.Empty; // if value is null, make it ""
                 Phone = phone ?? string.Empty; // if value is null, make it ""
                 InstId = instId;
-                TermsOfUse = termsOfUse;
+                TermsOfUse = termsOfUse.Replace("\r\n", "");
             }
         }
 

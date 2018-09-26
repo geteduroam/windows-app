@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using EduroamApp.Forms;
 
 namespace EduroamApp
 {
@@ -16,6 +17,7 @@ namespace EduroamApp
         // makes the parent form accessible from this class
         private readonly frmParent frmParent;
         private readonly EapConfig eapConfig;
+        private string termsOfUse;
 
         public frmSummary(frmParent parentInstance, EapConfig configInstance)
         {
@@ -47,7 +49,11 @@ namespace EduroamApp
             else
             {
                 lblToU.Text = "Agree to the Terms of Use and press Next to continue.";
+                chkAgree.Text = "I agree to the";
+                lnkToU.Text = "Terms of Use";
+                termsOfUse = tou;
                 chkAgree.Visible = true;
+                lnkToU.Visible = true;
                 chkAgree.Checked = false;
             }
             // displays website, email and phone number
@@ -60,7 +66,7 @@ namespace EduroamApp
                 webAddress.StartsWith("www."))
             {
                 // sets linkdata
-                var redirectLink = new LinkLabel.Link {LinkData = lblWeb.Text};
+                var redirectLink = new LinkLabel.Link {LinkData = webAddress};
                 lblWeb.Links.Add(redirectLink);
             }
             // disables link, but still displays it
@@ -74,6 +80,11 @@ namespace EduroamApp
             {
                 // disables link, but still displays it
                 lblEmail.Enabled = false;
+
+                if (emailAddress.Contains("******"))
+                {
+                    lblEmail.Text = "-";
+                }
             }
 
             // checks if phone number has numbers, disables label if not
@@ -156,6 +167,13 @@ namespace EduroamApp
             frmParent.SelectAlternative = false;
         }
 
+        private void lnkToU_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            // displays terms of use in dialog form
+            frmTermsOfUse termsDialog = new frmTermsOfUse(termsOfUse);
+            termsDialog.ShowDialog();
+        }
+
         private void lblWeb_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             // opens website in default browser
@@ -174,10 +192,6 @@ namespace EduroamApp
         /// <returns>EAP type of installed EapConfig.</returns>
         public uint InstallEapConfig()
         {
-            /*if (EduroamNetwork.GetEduroamPack() == null)
-            {
-
-            }*/
             try
             {
                 uint eapType = ConnectToEduroam.Setup(eapConfig);
