@@ -7,11 +7,12 @@ using ManagedNativeWifi;
 namespace EduroamApp
 {
     /// <summary>
-    /// This
+    /// Shows status for connection to eduroam.
+    /// Lets user save configuration for later.
     /// </summary>
     public partial class frmConnect : Form
     {
-        readonly frmParent frmParent;
+        private readonly frmParent frmParent;
 
         public frmConnect(frmParent parentInstance)
         {
@@ -23,10 +24,12 @@ namespace EduroamApp
         {
             if (frmParent.EduroamAvailable)
             {
+                // connect if eduroam is available
                 Connect();
             }
             else
             {
+                // prompt user to save config if not
                 SaveAndQuit();
             }
         }
