@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ManagedNativeWifi;
 
 namespace EduroamApp
 {
@@ -50,7 +52,21 @@ namespace EduroamApp
 				MessageBox.Show("Could not connect. \nException: " + ex.Message);
 			}
 
+			// double check to validate wether eduroam really is an active connection
+			var eduConnected = false;
 			if (connectSuccess)
+			{
+				var checkConnected = NativeWifi.EnumerateConnectedNetworkSsids();
+				foreach (NetworkIdentifier network in checkConnected)
+				{
+					if (network.ToString() == "eduroam")
+					{
+						eduConnected = true;
+					}
+				}
+			}
+
+			if (eduConnected)
 			{
 				lblStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
 				pbxStatus.Image = Properties.Resources.green_checkmark;
@@ -67,6 +83,7 @@ namespace EduroamApp
 			}
 		}
 
+		// gives user choice of wether they want to save the configuration before quitting
 		private void SaveAndQuit()
 		{
 			pnlEduNotAvail.Visible = true;
