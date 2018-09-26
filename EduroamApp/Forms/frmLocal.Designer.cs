@@ -57,11 +57,14 @@
             // 
             // txtFilepath
             // 
+            this.txtFilepath.ForeColor = System.Drawing.SystemColors.GrayText;
             this.txtFilepath.Location = new System.Drawing.Point(6, 19);
             this.txtFilepath.Name = "txtFilepath";
             this.txtFilepath.Size = new System.Drawing.Size(251, 20);
             this.txtFilepath.TabIndex = 4;
             this.txtFilepath.TextChanged += new System.EventHandler(this.txtFilepath_TextChanged);
+            this.txtFilepath.Enter += new System.EventHandler(this.txtFilepath_Enter);
+            this.txtFilepath.Leave += new System.EventHandler(this.txtFilepath_Leave);
             // 
             // txtCertPassword
             // 
@@ -82,7 +85,7 @@
             this.lblCertPassword.Text = "Certificate password:";
             this.lblCertPassword.Visible = false;
             // 
-            // cboShowPassword
+            // chkShowPassword
             // 
             this.chkShowPassword.AutoSize = true;
             this.chkShowPassword.Location = new System.Drawing.Point(184, 88);
