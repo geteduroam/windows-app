@@ -10,7 +10,6 @@ namespace EduroamApp
     public partial class frmConnect : Form
     {
         readonly frmParent frmParent;
-        private int attemptCounter;
 
         public frmConnect(frmParent parentInstance)
         {
@@ -32,9 +31,9 @@ namespace EduroamApp
 
         private async void Connect()
         {
-            // displays loading information while attempt to connect
+            // displays loading animation while attempt to connect
             lblStatus.Text = "Connecting...";
-            pbxStatus.Image = Properties.Resources.ajax_loader;
+            pbxStatus.Image = Properties.Resources.loading_gif;
             lblStatus.Visible = true;
             pbxStatus.Visible = true;
 
@@ -54,14 +53,14 @@ namespace EduroamApp
             if (connectSuccess)
             {
                 lblStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
-                pbxStatus.Image = Properties.Resources.checkmark_16;
+                pbxStatus.Image = Properties.Resources.green_checkmark;
                 frmParent.BtnCancelText = "Close";
                 frmParent.ProfileCondition = "GOODPROFILE";
             }
             else
             {
                 lblStatus.Text = "Connection to eduroam failed.";
-                pbxStatus.Image = Properties.Resources.x_mark_3_16;
+                pbxStatus.Image = Properties.Resources.red_x;
                 lblConnectFailed.Visible = true;
                 frmParent.BtnBackEnabled = true;
                 frmParent.ProfileCondition = "BADPROFILE";

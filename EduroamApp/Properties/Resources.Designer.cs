@@ -63,36 +63,6 @@ namespace EduroamApp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap _1280px_Uninett_logo_svg {
-            get {
-                object obj = ResourceManager.GetObject("1280px-Uninett_logo.svg", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap ajax_loader {
-            get {
-                object obj = ResourceManager.GetObject("ajax-loader", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap checkmark_16 {
-            get {
-                object obj = ResourceManager.GetObject("checkmark-16", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap eduroam_logo {
             get {
                 object obj = ResourceManager.GetObject("eduroam_logo", resourceCulture);
@@ -103,9 +73,9 @@ namespace EduroamApp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap eduroam_logo_400px {
+        internal static System.Drawing.Bitmap green_checkmark {
             get {
-                object obj = ResourceManager.GetObject("eduroam_logo 400px", resourceCulture);
+                object obj = ResourceManager.GetObject("green_checkmark", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +83,9 @@ namespace EduroamApp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap ok_16 {
+        internal static System.Drawing.Bitmap loading_gif {
             get {
-                object obj = ResourceManager.GetObject("ok-16", resourceCulture);
+                object obj = ResourceManager.GetObject("loading_gif", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,9 +93,9 @@ namespace EduroamApp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap x_mark_3_16 {
+        internal static System.Drawing.Bitmap red_x {
             get {
-                object obj = ResourceManager.GetObject("x-mark-3-16", resourceCulture);
+                object obj = ResourceManager.GetObject("red_x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

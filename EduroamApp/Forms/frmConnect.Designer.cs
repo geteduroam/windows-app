@@ -72,7 +72,7 @@
             // 
             // pbxStatus
             // 
-            this.pbxStatus.Image = global::EduroamApp.Properties.Resources.ajax_loader;
+            this.pbxStatus.Image = global::EduroamApp.Properties.Resources.loading_gif;
             this.pbxStatus.Location = new System.Drawing.Point(79, 3);
             this.pbxStatus.Name = "pbxStatus";
             this.pbxStatus.Size = new System.Drawing.Size(16, 16);
