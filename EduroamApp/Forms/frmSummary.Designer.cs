@@ -40,6 +40,7 @@ namespace EduroamApp
 			this.lblAlternate = new System.Windows.Forms.Label();
 			this.pnlTop = new System.Windows.Forms.Panel();
 			this.panel1 = new System.Windows.Forms.Panel();
+			this.lnkToU = new System.Windows.Forms.LinkLabel();
 			this.chkAgree = new System.Windows.Forms.CheckBox();
 			this.lblToU = new System.Windows.Forms.Label();
 			this.pnlInstName = new System.Windows.Forms.Panel();
@@ -92,6 +93,7 @@ namespace EduroamApp
 			//
 			// lblInstName
 			//
+			this.lblInstName.AutoEllipsis = true;
 			this.lblInstName.AutoSize = true;
 			this.lblInstName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lblInstName.Location = new System.Drawing.Point(3, 18);
@@ -200,24 +202,37 @@ namespace EduroamApp
 			// panel1
 			//
 			this.panel1.AutoSize = true;
-			this.panel1.Controls.Add(this.chkAgree);
+			this.panel1.Controls.Add(this.lnkToU);
 			this.panel1.Controls.Add(this.lblToU);
+			this.panel1.Controls.Add(this.chkAgree);
 			this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.panel1.Location = new System.Drawing.Point(0, 38);
+			this.panel1.Location = new System.Drawing.Point(0, 31);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(378, 39);
+			this.panel1.Size = new System.Drawing.Size(378, 47);
 			this.panel1.TabIndex = 9;
+			//
+			// lnkToU
+			//
+			this.lnkToU.AutoSize = true;
+			this.lnkToU.Location = new System.Drawing.Point(95, 28);
+			this.lnkToU.Name = "lnkToU";
+			this.lnkToU.Size = new System.Drawing.Size(70, 13);
+			this.lnkToU.TabIndex = 9;
+			this.lnkToU.TabStop = true;
+			this.lnkToU.Text = "Terms of Use";
+			this.lnkToU.Visible = false;
+			this.lnkToU.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkToU_LinkClicked);
 			//
 			// chkAgree
 			//
 			this.chkAgree.AutoSize = true;
 			this.chkAgree.Checked = true;
 			this.chkAgree.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkAgree.Location = new System.Drawing.Point(14, 19);
+			this.chkAgree.Location = new System.Drawing.Point(14, 27);
 			this.chkAgree.Name = "chkAgree";
-			this.chkAgree.Size = new System.Drawing.Size(353, 17);
+			this.chkAgree.Size = new System.Drawing.Size(89, 17);
 			this.chkAgree.TabIndex = 8;
-			this.chkAgree.Text = "I agree to the Terms of Use (See www.eduroam.no for Terms of Use.)";
+			this.chkAgree.Text = "I agree to the";
 			this.chkAgree.UseVisualStyleBackColor = true;
 			this.chkAgree.Visible = false;
 			this.chkAgree.CheckedChanged += new System.EventHandler(this.chkAgree_CheckedChanged);
@@ -225,7 +240,7 @@ namespace EduroamApp
 			// lblToU
 			//
 			this.lblToU.AutoSize = true;
-			this.lblToU.Location = new System.Drawing.Point(3, 2);
+			this.lblToU.Location = new System.Drawing.Point(3, 10);
 			this.lblToU.MaximumSize = new System.Drawing.Size(375, 0);
 			this.lblToU.Name = "lblToU";
 			this.lblToU.Size = new System.Drawing.Size(264, 13);
@@ -234,12 +249,13 @@ namespace EduroamApp
 			//
 			// pnlInstName
 			//
+			this.pnlInstName.AutoSize = true;
 			this.pnlInstName.Controls.Add(this.label1);
 			this.pnlInstName.Controls.Add(this.lblInstName);
 			this.pnlInstName.Dock = System.Windows.Forms.DockStyle.Top;
 			this.pnlInstName.Location = new System.Drawing.Point(0, 0);
 			this.pnlInstName.Name = "pnlInstName";
-			this.pnlInstName.Size = new System.Drawing.Size(378, 38);
+			this.pnlInstName.Size = new System.Drawing.Size(378, 31);
 			this.pnlInstName.TabIndex = 8;
 			//
 			// label1
@@ -367,5 +383,6 @@ namespace EduroamApp
 		private System.Windows.Forms.CheckBox chkAgree;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Button btnSelectInst;
+		private System.Windows.Forms.LinkLabel lnkToU;
 	}
 }

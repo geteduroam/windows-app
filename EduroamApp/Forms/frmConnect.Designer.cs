@@ -83,12 +83,12 @@ namespace EduroamApp
 			//
 			// lblConnectFailed
 			//
-			this.lblConnectFailed.AutoSize = true;
 			this.lblConnectFailed.Location = new System.Drawing.Point(2, 62);
 			this.lblConnectFailed.Name = "lblConnectFailed";
-			this.lblConnectFailed.Size = new System.Drawing.Size(325, 13);
+			this.lblConnectFailed.Size = new System.Drawing.Size(349, 40);
 			this.lblConnectFailed.TabIndex = 10;
-			this.lblConnectFailed.Text = "Press Back if you want to choose a different institution or config file.";
+			this.lblConnectFailed.Text = "Press Back if you want to try again, connect to a different institution or select" +
+	" a different config file.";
 			this.lblConnectFailed.Visible = false;
 			//
 			// pnlEduNotAvail
@@ -156,9 +156,9 @@ namespace EduroamApp
 			this.AutoScroll = true;
 			this.BackColor = System.Drawing.Color.White;
 			this.ClientSize = new System.Drawing.Size(378, 246);
-			this.Controls.Add(this.pnlEduNotAvail);
 			this.Controls.Add(this.lblConnectFailed);
 			this.Controls.Add(this.tblConnectStatus);
+			this.Controls.Add(this.pnlEduNotAvail);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Name = "frmConnect";
 			this.Text = "frm5";

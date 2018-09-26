@@ -156,15 +156,5 @@ namespace EduroamApp
 		{
 			txtCertPassword.UseSystemPasswordChar = !chkShowPassword.Checked;
 		}
-
-		private void txtFilepath_Enter(object sender, EventArgs e)
-		{
-			txtFilepath.ForeColor = SystemColors.ControlText;
-		}
-
-		private void txtFilepath_Leave(object sender, EventArgs e)
-		{
-			txtFilepath.ForeColor = SystemColors.GrayText;
-		}
 	}
 }

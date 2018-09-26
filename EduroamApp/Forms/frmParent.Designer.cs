@@ -43,8 +43,8 @@ namespace EduroamApp
 			this.pnlLogoTop = new System.Windows.Forms.Panel();
 			this.pnlLogoLeft = new System.Windows.Forms.Panel();
 			this.pnlLogoRight = new System.Windows.Forms.Panel();
-			this.webLogo = new System.Windows.Forms.WebBrowser();
 			this.pbxLogo = new System.Windows.Forms.PictureBox();
+			this.webLogo = new System.Windows.Forms.WebBrowser();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.lblTitle = new System.Windows.Forms.Label();
 			this.pnlLeftMargin = new System.Windows.Forms.Panel();
@@ -215,6 +215,15 @@ namespace EduroamApp
 			this.pnlLogoRight.TabIndex = 2;
 			this.pnlLogoRight.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlLogoRight_Paint);
 			//
+			// pbxLogo
+			//
+			this.pbxLogo.Location = new System.Drawing.Point(8, 120);
+			this.pbxLogo.Name = "pbxLogo";
+			this.pbxLogo.Size = new System.Drawing.Size(144, 115);
+			this.pbxLogo.TabIndex = 9;
+			this.pbxLogo.TabStop = false;
+			this.pbxLogo.Visible = false;
+			//
 			// webLogo
 			//
 			this.webLogo.AllowWebBrowserDrop = false;
@@ -227,15 +236,6 @@ namespace EduroamApp
 			this.webLogo.Url = new System.Uri("", System.UriKind.Relative);
 			this.webLogo.Visible = false;
 			this.webLogo.WebBrowserShortcutsEnabled = false;
-			//
-			// pbxLogo
-			//
-			this.pbxLogo.Location = new System.Drawing.Point(8, 120);
-			this.pbxLogo.Name = "pbxLogo";
-			this.pbxLogo.Size = new System.Drawing.Size(144, 115);
-			this.pbxLogo.TabIndex = 9;
-			this.pbxLogo.TabStop = false;
-			this.pbxLogo.Visible = false;
 			//
 			// panel1
 			//
@@ -302,7 +302,7 @@ namespace EduroamApp
 			this.MinimizeBox = false;
 			this.Name = "frmParent";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-			this.Text = "eduroam installer";
+			this.Text = "eduroam Installer";
 			this.Load += new System.EventHandler(this.frmParent_Load);
 			this.pnlNavigation.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);
