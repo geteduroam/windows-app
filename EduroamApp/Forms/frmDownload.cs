@@ -8,6 +8,7 @@ using System.Net;
 using Newtonsoft.Json;
 using System.Device.Location;
 using System.Globalization;
+using System.Xml;
 
 namespace EduroamApp
 {
@@ -156,6 +157,44 @@ namespace EduroamApp
 			cboCountry.SelectedIndex = cboCountry.FindStringExact(closestCountry);
 		}
 
+		/// <summary>
+		/// Compares institution coordinates with user's coordinates and gets the closest institution.
+		/// </summary>
+		/// <param name="instList">List of all institutions.</param>
+		/// <param name="userCoord">User's coordinates.</param>
+		/// <returns>Country of closest institution.</returns>
+		public string GetClosestInstitution(List<IdentityProvider> instList, GeoCoordinate userCoord)
+		{
+			// institution's coordinates
+			var instCoord = new GeoCoordinate();
+			// closest institution
+			var closestInst = new IdentityProvider();
+			// shortest distance
+			double shortestDistance = double.MaxValue;
+
+			// loops through all institutions' coordinates and compares them with current shortest distance
+			foreach (IdentityProvider inst in instList)
+			{
+				if (inst.Geo != null) // excludes if geo property not set
+				{
+					// gets lat and long
+					instCoord.Latitude = inst.Geo.First().Lat;
+					instCoord.Longitude = inst.Geo.First().Lon;
+					// gets current distance
+					double currentDistance = userCoord.GetDistanceTo(instCoord);
+					// compares with shortest distance
+					if (currentDistance < shortestDistance)
+					{
+						// sets the current distance as the shortest dstance
+						shortestDistance = currentDistance;
+						closestInst = inst;
+					}
+				}
+			}
+			// returns country of institution closest to user
+			return closestInst.Country;
+		}
+
 		// populates identity provider combo box
 		private void cboCountry_SelectedIndexChanged(object sender, EventArgs e)
 		{
@@ -203,16 +242,16 @@ namespace EduroamApp
 			}
 			catch (JsonReaderException ex)
 			{
-				JsonExceptionHandler(ex);
+				EapExceptionHandler(ex);
 				return;
 			}
 
 			// if an identity provider has more than one profile, add to combobox
 			if (idProviderProfiles.Data.Count > 1)
 			{
-				// enable combobox
+				// show combobox
 				cboProfiles.Visible = true;
-				// enable label
+				// show label
 				lblSelectProfile.Visible = true;
 				// add profiles to combobox
 				cboProfiles.Items.AddRange(idProviderProfiles.Data.Select(profile => profile.Display).ToArray());
@@ -221,9 +260,9 @@ namespace EduroamApp
 			{
 				// gets the only profile id
 				profileId = idProviderProfiles.Data.Single().Id;
-				// disable combobox
+				// hide combobox
 				cboProfiles.Visible = false;
-				// disable label
+				// hide label
 				lblSelectProfile.Visible = false;
 			}
 		}
@@ -255,44 +294,6 @@ namespace EduroamApp
 		}
 
 		/// <summary>
-		/// Compares institution coordinates with user's coordinates and gets the closest institution.
-		/// </summary>
-		/// <param name="instList">List of all institutions.</param>
-		/// <param name="userCoord">User's coordinates.</param>
-		/// <returns>Country of closest institution.</returns>
-		public string GetClosestInstitution(List<IdentityProvider> instList, GeoCoordinate userCoord)
-		{
-			// institution's coordinates
-			var instCoord = new GeoCoordinate();
-			// closest institution
-			var closestInst = new IdentityProvider();
-			// shortest distance
-			double shortestDistance = double.MaxValue;
-
-			// loops through all institutions' coordinates and compares them with current shortest distance
-			foreach (IdentityProvider inst in instList)
-			{
-				if (inst.Geo != null) // excludes if geo property not set
-				{
-					// gets lat and long
-					instCoord.Latitude = inst.Geo.First().Lat;
-					instCoord.Longitude = inst.Geo.First().Lon;
-					// gets current distance
-					double currentDistance = userCoord.GetDistanceTo(instCoord);
-					// compares with shortest distance
-					if (currentDistance < shortestDistance)
-					{
-						// sets the current distance as the shortest dstance
-						shortestDistance = currentDistance;
-						closestInst = inst;
-					}
-				}
-			}
-			// returns country of institution closest to user
-			return closestInst.Country;
-		}
-
-		/// <summary>
 		/// Gets a profile's attributes from json.
 		/// </summary>
 		/// <returns>Redirect link, if exists.</returns>
@@ -319,7 +320,7 @@ namespace EduroamApp
 			}
 			catch (JsonReaderException ex)
 			{
-				JsonExceptionHandler(ex);
+				EapExceptionHandler(ex);
 				return "";
 			}
 
@@ -360,7 +361,7 @@ namespace EduroamApp
 			}
 			catch (JsonReaderException ex)
 			{
-				JsonExceptionHandler(ex);
+				EapExceptionHandler(ex);
 				return "";
 			}
 
@@ -422,8 +423,21 @@ namespace EduroamApp
 			}
 
 			// if not empty, creates and returns EapConfig object from Eap string
-			return string.IsNullOrEmpty(eapString) ?
-				null : ConnectToEduroam.GetEapConfig(eapString);
+			if (string.IsNullOrEmpty(eapString))
+			{
+				return null;
+			}
+
+			try
+			{
+				// if not empty, creates and returns EapConfig object from Eap string
+				return ConnectToEduroam.GetEapConfig(eapString);
+			}
+			catch (XmlException ex)
+			{
+				EapExceptionHandler(ex);
+				return null;
+			}
 		}
 
 		/// <summary>
@@ -442,10 +456,10 @@ namespace EduroamApp
 		}
 
 		/// <summary>
-		/// Handles JSON reader exceptions.
+		/// Handles exceptions related to deserializing JSON files and corrupted XML files.
 		/// </summary>
-		/// <param name="ex">JsonReaderException.</param>
-		private void JsonExceptionHandler(JsonReaderException ex)
+		/// <param name="ex">Exception.</param>
+		private void EapExceptionHandler(Exception ex)
 		{
 			MessageBox.Show("The selected institution or profile is not supported. " +
 							"Please select a different institution or profile.\n"

@@ -1,8 +1,10 @@
 using System;
+using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Xml;
 
 namespace EduroamApp
 {
@@ -53,10 +55,27 @@ namespace EduroamApp
 			// validates the selected config file
 			if (!FileDialog.ValidateFileSelection(txtFilepath.Text, "EAP")) return null;
 
-			// gets content of config file
-			string eapString = File.ReadAllText(txtFilepath.Text);
-			// creates and returns EapConfig object
-			return ConnectToEduroam.GetEapConfig(eapString);
+			try
+			{
+				// gets content of config file
+				string eapString = File.ReadAllText(txtFilepath.Text);
+				// creates and returns EapConfig object
+				return ConnectToEduroam.GetEapConfig(eapString);
+			}
+			catch (XmlException xmlEx)
+			{
+				MessageBox.Show("The selected EAP config file is corrupted. Please choose another file.\n"
+								+ "Exception: " + xmlEx.Message, "eduroam - Exception",
+								MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return null;
+			}
+			catch (ArgumentException argEx)
+			{
+				MessageBox.Show("Could not read from file. Make sure to select a valid EAP config file.\n"
+								+ "Exception: " + argEx.Message, "eduroam - Exception",
+								MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return null;
+			}
 		}
 
 		/// <summary>
@@ -136,6 +155,16 @@ namespace EduroamApp
 		private void cboShowPassword_CheckedChanged(object sender, EventArgs e)
 		{
 			txtCertPassword.UseSystemPasswordChar = !chkShowPassword.Checked;
+		}
+
+		private void txtFilepath_Enter(object sender, EventArgs e)
+		{
+			txtFilepath.ForeColor = SystemColors.ControlText;
+		}
+
+		private void txtFilepath_Leave(object sender, EventArgs e)
+		{
+			txtFilepath.ForeColor = SystemColors.GrayText;
 		}
 	}
 }
