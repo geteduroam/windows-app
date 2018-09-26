@@ -5,12 +5,14 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.Runtime.ExceptionServices;
+using System.Security.Cryptography;
 using EduroamApp.Forms;
 
 namespace EduroamApp
 {
 	/// <summary>
-	/// Displays a summary of EAP config that user is connecting with.
+	/// Displays a summary of the EAP config that the user is connecting with.
 	/// </summary>
 	public partial class frmSummary : Form
 	{
@@ -202,6 +204,7 @@ namespace EduroamApp
 					frmParent.EduroamAvailable = false;
 				}
 				else frmParent.EduroamAvailable = true;
+
 				frmParent.ProfileCondition = "BADPROFILE";
 				return eapType;
 			}
@@ -211,14 +214,21 @@ namespace EduroamApp
 				{
 					MessageBox.Show(
 						"Could not establish a connection through your computer's wireless network interface. \n" +
-						"Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.\nException: " + argEx.Message,
+						"Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.\nException: " +
+						argEx.Message,
 						"eduroam", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
+			}
+			catch (CryptographicException cryptEx)
+			{
+				MessageBox.Show("One or more certificates are corrupt. Please select another file, or try again later.\n"
+								+ "Exception: " + cryptEx.Message, "eduroam - Exception",
+								MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
 			catch (Exception ex)
 			{
 				MessageBox.Show("Something went wrong.\n" + "Please try connecting with another institution.\n\n"
-								+ "Exception: " + ex.Message, "eduroam Setup failed",
+								+ "Exception: " + ex.Message, "eduroam - Exception",
 								MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
 			return 0;

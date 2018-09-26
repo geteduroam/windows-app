@@ -13,13 +13,7 @@ using System.Xml;
 namespace EduroamApp
 {
 	/// <summary>
-	/// This form lets the user select a country, institution and optionally a profile, and downloads an appropriate EAP-config file.
-	/// Depending on the selected institution/profile, the user will be given one of the following options:
-	/// - Connect directly to eduroam
-	/// - Provide credentials before connecting
-	/// - Authenticate through Feide in a web browser to download the config file
-	/// - Provide a separate, locally stored client certificate
-	/// - Get redirected to a web page
+	/// Lets the user select a country, institution and optionally a profile, and downloads an appropriate EAP-config file.
 	/// </summary>
 	public partial class frmDownload : Form
 	{
