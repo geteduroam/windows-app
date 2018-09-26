@@ -174,7 +174,7 @@ namespace EduroamApp
 			// pictureBox1
 			//
 			this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.pictureBox1.Image = global::EduroamApp.Properties.Resources.eduroam_logo_400px;
+			this.pictureBox1.Image = global::EduroamApp.Properties.Resources.eduroam_logo;
 			this.pictureBox1.Location = new System.Drawing.Point(8, 27);
 			this.pictureBox1.Name = "pictureBox1";
 			this.pictureBox1.Size = new System.Drawing.Size(144, 65);
