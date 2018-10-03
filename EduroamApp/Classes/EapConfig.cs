@@ -52,16 +52,15 @@ namespace EduroamApp
 			// Constructor
 			public ProviderInfo(string displayName, string logo, string logoFormat, string emailAddress, string webAddress, string phone, string instId, string termsOfUse)
 			{
-				DisplayName = displayName ?? string.Empty; // if value is null, make it ""
+				DisplayName = displayName;
 				Logo = logo;
 				LogoFormat = logoFormat;
-				EmailAddress = emailAddress ?? string.Empty; // if value is null, make it ""
-				WebAddress = webAddress ?? string.Empty; // if value is null, make it ""
-				Phone = phone ?? string.Empty; // if value is null, make it ""
+				EmailAddress = emailAddress;
+				WebAddress = webAddress;
+				Phone = phone;
 				InstId = instId;
 				TermsOfUse = termsOfUse.Replace("\r\n", "");
 			}
 		}
-
 	}
 }
