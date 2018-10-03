@@ -117,7 +117,7 @@
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(71, 24);
             this.btnNext.TabIndex = 0;
-            this.btnNext.Text = "Install";
+            this.btnNext.Text = "Next >";
             this.btnNext.UseVisualStyleBackColor = true;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);
             // 
