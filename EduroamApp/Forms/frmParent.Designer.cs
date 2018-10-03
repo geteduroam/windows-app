@@ -155,8 +155,8 @@
             this.pnlLeft.Controls.Add(this.pnlLogoTop);
             this.pnlLeft.Controls.Add(this.pnlLogoLeft);
             this.pnlLeft.Controls.Add(this.pnlLogoRight);
-            this.pnlLeft.Controls.Add(this.pbxLogo);
             this.pnlLeft.Controls.Add(this.webLogo);
+            this.pnlLeft.Controls.Add(this.pbxLogo);
             this.pnlLeft.Dock = System.Windows.Forms.DockStyle.Left;
             this.pnlLeft.Location = new System.Drawing.Point(0, 0);
             this.pnlLeft.Name = "pnlLeft";
@@ -227,6 +227,7 @@
             // webLogo
             // 
             this.webLogo.AllowWebBrowserDrop = false;
+            this.webLogo.IsWebBrowserContextMenuEnabled = false;
             this.webLogo.Location = new System.Drawing.Point(8, 120);
             this.webLogo.MinimumSize = new System.Drawing.Size(20, 20);
             this.webLogo.Name = "webLogo";

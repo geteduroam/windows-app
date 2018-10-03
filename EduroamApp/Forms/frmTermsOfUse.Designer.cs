@@ -1,4 +1,4 @@
-﻿namespace EduroamApp.Forms
+﻿namespace EduroamApp
 {
     partial class frmTermsOfUse
     {
@@ -44,10 +44,12 @@
             // 
             // txtToU
             // 
+            this.txtToU.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtToU.Location = new System.Drawing.Point(12, 12);
             this.txtToU.Name = "txtToU";
             this.txtToU.ReadOnly = true;
             this.txtToU.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.txtToU.ShortcutsEnabled = false;
             this.txtToU.Size = new System.Drawing.Size(400, 220);
             this.txtToU.TabIndex = 2;
             this.txtToU.Text = "";

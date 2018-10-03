@@ -116,6 +116,7 @@
     <Compile Include="Classes\Country.cs" />
     <Compile Include="Classes\EduroamNetwork.cs" />
     <Compile Include="Classes\FileDialog.cs" />
+    <Compile Include="Classes\ImageFunctions.cs" />
     <Compile Include="Forms\frmRedirect.cs">
       <SubType>Form</SubType>
     </Compile>

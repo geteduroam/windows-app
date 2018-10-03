@@ -3,11 +3,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Runtime.ExceptionServices;
 using System.Security.Cryptography;
-using EduroamApp.Forms;
 
 namespace EduroamApp
 {
@@ -63,9 +59,12 @@ namespace EduroamApp
             lblEmail.Text = emailAddress;
             lblPhone.Text = eapConfig.InstitutionInfo.Phone;
 
-            // checks if link starts with an accepted prefix
-            if (webAddress.StartsWith("http://") || webAddress.StartsWith("https://") ||
-                webAddress.StartsWith("www."))
+
+
+            // checks if website url is valid
+            bool isValidUrl = Uri.TryCreate(webAddress, UriKind.Absolute, out Uri uriResult)
+                                  && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+            if (isValidUrl)
             {
                 // sets linkdata
                 var redirectLink = new LinkLabel.Link {LinkData = webAddress};
@@ -114,59 +113,48 @@ namespace EduroamApp
                 btnSelectInst.Visible = false;
             }
 
+            // sets flag
+            frmParent.SelectAlternative = false;
+
             // gets institution logo encoded to base64
             string logoBase64 = eapConfig.InstitutionInfo.Logo;
             string logoFormat = eapConfig.InstitutionInfo.LogoFormat;
             // adds logo to form if exists
             if (!string.IsNullOrEmpty(logoBase64))
             {
+                // gets size of container
                 int cWidth = frmParent.PbxLogo.Width;
                 int cHeight = frmParent.PbxLogo.Height;
 
                 if (logoFormat == "image/svg+xml")
                 {
                     frmParent.WebLogo.Visible = true;
-                    frmParent.WebLogo.DocumentText =
-                        "<!DOCTYPE html>" +
-                        "<html>" +
-                        "<head>" +
-                            "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" +
-                        "<style>" +
-                            "img {" +
-                                "position: absolute;" +
-                                "top: 0;" +
-                                "left: 0;" +
-                                "display: block;" +
-                                "max-width:" + cWidth + "px;" +
-                                "max-height:" + cHeight + "px;" +
-                                "width: auto;" +
-                                "height: auto;" +
-                            "}" +
-                        "</style>" +
-                        "</head>" +
-                        "<body>" +
-                        "<img src=\'data:image/svg+xml;base64," + logoBase64 + "\'>" +
-                        "</body>" +
-                        "</html>";
+                    frmParent.WebLogo.DocumentText = ImageFunctions.GenerateLogoHtml(logoBase64, cWidth, cHeight);
                 }
-                else
+                else // other filetypes (jpg, png etc.)
                 {
-
-                    Image logo = ConnectToEduroam.Base64ToImage(logoBase64, logoFormat);
-                    decimal hScale = decimal.Divide(cWidth, logo.Width);
-                    decimal vScale = decimal.Divide(cHeight, logo.Height);
-                    decimal pScale = vScale < hScale ? vScale : hScale;
-                    Bitmap resizedLogo = ResizeImage(logo, (int) (logo.Width * pScale), (int) (logo.Height * pScale));
-                    
-                    frmParent.PbxLogo.Image = resizedLogo;
-                    int lPad = cWidth - frmParent.PbxLogo.Image.Width;
-                    frmParent.PbxLogo.Padding = new Padding(lPad/2, 0, 0, 0);
-                    frmParent.PbxLogo.Visible = true;
+                    try
+                    {
+                        // converts from base64 to image
+                        Image logo = ImageFunctions.Base64ToImage(logoBase64);
+                        decimal hScale = decimal.Divide(cWidth, logo.Width);
+                        decimal vScale = decimal.Divide(cHeight, logo.Height);
+                        decimal pScale = vScale < hScale ? vScale : hScale;
+                        // resizes image to fit container
+                        Bitmap resizedLogo = ImageFunctions.ResizeImage(logo, (int)(logo.Width * pScale), (int)(logo.Height * pScale));
+                        frmParent.PbxLogo.Image = resizedLogo;
+                        // centers image in container
+                        int lPad = cWidth - frmParent.PbxLogo.Image.Width;
+                        frmParent.PbxLogo.Padding = new Padding(lPad / 2, 0, 0, 0);
+                        frmParent.PbxLogo.Visible = true;
+                    }
+                    catch (System.FormatException)
+                    {
+                        // ignore
+                    }
                 }
             }
-            
 
-            frmParent.SelectAlternative = false;
         }
 
         private void lnkToU_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -227,7 +215,7 @@ namespace EduroamApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Something went wrong.\n" + "Please try connecting with another institution.\n\n" 
+                MessageBox.Show("Something went wrong.\n" + "Please try connecting with another institution, or try again later.\n\n" 
                                 + "Exception: " + ex.Message, "eduroam - Exception",
                                 MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
@@ -247,38 +235,6 @@ namespace EduroamApp
             // calls button listener in parent form
             frmParent.btnNext_Click(sender, e);
         }
-
-
-        /// <summary>
-        /// Resize the image to the specified width and height.
-        /// </summary>
-        /// <param name="image">The image to resize.</param>
-        /// <param name="width">The width to resize to.</param>
-        /// <param name="height">The height to resize to.</param>
-        /// <returns>The resized image.</returns>
-        public static Bitmap ResizeImage(Image image, int width, int height)
-        {
-            var destRect = new Rectangle(0, 0, width, height);
-            var destImage = new Bitmap(width, height);
-
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-            using (var graphics = Graphics.FromImage(destImage))
-            {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using (var wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-            }
-
-            return destImage;
-        }
+        
     }
 }
