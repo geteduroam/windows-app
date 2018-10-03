@@ -284,7 +284,6 @@ namespace EduroamApp
 			{
 				lblTitle.Text = "Summary";
 			}
-			btnNext.Text = "Next >";
 			btnNext.Enabled = true;
 			LoadNewForm(frmSummary);
 		}
@@ -296,8 +295,7 @@ namespace EduroamApp
 		{
 			frmSelectMethod = new frmSelectMethod(this);
 			currentFormId = 2;
-			lblTitle.Text = "Certificate installation";
-			btnNext.Text = "Next >";
+			lblTitle.Text = "Select configuration source";
 			btnNext.Enabled = true;
 			// if config file exists in self extract but user wants to choose another institution
 			btnBack.Visible = ComesFromSelfExtract;
@@ -312,7 +310,6 @@ namespace EduroamApp
 			if (reload) frmDownload = new frmDownload(this);
 			currentFormId = 3;
 			lblTitle.Text = "Select your institution";
-			btnNext.Text = "Next >";
 			btnNext.Enabled = !reload;
 			btnBack.Enabled = true;
 			btnBack.Visible = true;
@@ -327,7 +324,6 @@ namespace EduroamApp
 			if (reload) frmLocal = new frmLocal(this);
 			currentFormId = 4;
 			lblTitle.Text = "Select EAP-config file";
-			btnNext.Text = "Next >";
 			btnNext.Enabled = true;
 			btnBack.Enabled = true;
 			btnBack.Visible = true;
@@ -342,7 +338,6 @@ namespace EduroamApp
 			frmLogin = new frmLogin(this);
 			currentFormId = 5;
 			lblTitle.Text = "Log in";
-			btnNext.Text = "Connect";
 			btnNext.Enabled = false;
 			btnBack.Enabled = true;
 			btnBack.Visible = true;
@@ -357,7 +352,6 @@ namespace EduroamApp
 			frmConnect = new frmConnect(this);
 			currentFormId = 6;
 			lblTitle.Text = "Connection status";
-			btnNext.Text = "Next >";
 			btnNext.Enabled = false;
 			btnBack.Enabled = false;
 			btnBack.Visible = true;
@@ -386,7 +380,6 @@ namespace EduroamApp
 			if (reload) frmLocal = new frmLocal(this);
 			currentFormId = 8;
 			lblTitle.Text = "Select client certificate file";
-			btnNext.Text = "Next >";
 			btnNext.Enabled = true;
 			btnBack.Enabled = true;
 			btnBack.Visible = true;

@@ -51,9 +51,9 @@ namespace EduroamApp
 			this.rdbLocal.AutoSize = true;
 			this.rdbLocal.Location = new System.Drawing.Point(4, 101);
 			this.rdbLocal.Name = "rdbLocal";
-			this.rdbLocal.Size = new System.Drawing.Size(128, 17);
+			this.rdbLocal.Size = new System.Drawing.Size(131, 17);
 			this.rdbLocal.TabIndex = 1;
-			this.rdbLocal.Text = "Select local config file";
+			this.rdbLocal.Text = "Local configuration file";
 			this.rdbLocal.UseVisualStyleBackColor = true;
 			//
 			// label1
@@ -64,7 +64,7 @@ namespace EduroamApp
 			this.label1.TabIndex = 2;
 			this.label1.Text = resources.GetString("label1.Text");
 			//
-			// frm2
+			// frmSelectMethod
 			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
