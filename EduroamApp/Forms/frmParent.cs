@@ -20,7 +20,6 @@ namespace EduroamApp
         private int currentFormId;                                 // Id of currently selected form
         private readonly List<int> formHistory = new List<int>();  // Keeps history of previously diplayed forms, in order to backtrack correctly
         private bool reload = true;                                // Specifies wether a form is to be re-instantiated when loaded
-        private readonly GeoCoordinateWatcher watcher;             // Gets coordinates of computer
         private EapConfig eapConfig = new EapConfig();             // Selected EAP configuration
         private uint eapType;                                      // EAP type of selected EAP config
         
@@ -34,20 +33,22 @@ namespace EduroamApp
         private frmRedirect frmRedirect;
 
         // public variables to be used across forms
-        public string InstId;
-        public string ProfileCondition;
-        public string LocalFileType;
-        public string RedirectUrl;
-        public bool ComesFromSelfExtract;
-        public bool SelfExtractFlag;
-        public bool SelectAlternative;
-        public bool EduroamAvailable;
+        public GeoCoordinateWatcher GeoWatcher { get; set; }
+        public string InstId { get; set; }
+        public string ProfileCondition { get; set; }
+        public string LocalFileType { get; set; }
+        public string RedirectUrl { get; set; }
+        public bool ComesFromSelfExtract { get; set; }
+        public bool SelfExtractFlag { get; set; }
+        public bool SelectAlternative { get; set; }
+        public bool EduroamAvailable { get; set; }
+        public DateTime CertValidFrom { get; set; }
 
         public frmParent()
         {
             // starts GeoCoordinateWatcher when app starts
-            watcher = new GeoCoordinateWatcher();
-            watcher.TryStart(false, TimeSpan.FromMilliseconds(3000));
+            GeoWatcher = new GeoCoordinateWatcher();
+            GeoWatcher.TryStart(false, TimeSpan.FromMilliseconds(3000));
             // adds formClosed listener
             FormClosed += frmParent_FormClosed;
             InitializeComponent();
@@ -241,12 +242,6 @@ namespace EduroamApp
         public PictureBox PbxLogo => pbxLogo;
         public WebBrowser WebLogo => webLogo;
         
-        public string BtnNextText
-        {
-            get => btnNext.Text;
-            set => btnNext.Text = value;
-        }
-
         public bool BtnNextEnabled
         {
             get => btnNext.Enabled;
@@ -264,12 +259,7 @@ namespace EduroamApp
             get => btnCancel.Text;
             set => btnCancel.Text = value;
         }
-
-        public GeoCoordinateWatcher GetWatcher()
-        {
-            return watcher;
-        }
-
+        
         /// <summary>
         /// Loads form that shows summary of selected EAP configuration.
         /// </summary>

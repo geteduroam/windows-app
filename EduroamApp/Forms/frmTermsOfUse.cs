@@ -14,11 +14,13 @@ namespace EduroamApp
             InitializeComponent();
         }
 
+        // shows terms of use in text box
         private void frmTermsOfUse_Load(object sender, EventArgs e)
         {
             txtToU.Text = tou;
         }
 
+        // makes links in terms of use clickable
         private void txtToU_LinkClicked(object sender, LinkClickedEventArgs e)
         {
             Process.Start(e.LinkText);

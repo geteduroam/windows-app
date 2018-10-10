@@ -27,13 +27,15 @@ namespace EduroamApp
     class ConnectToEduroam
     {
         // SSID of eduroam network
-        private static string ssid;
+        private static string Ssid { get; set; }
         // Id of wireless network interface
-        private static Guid interfaceId;
+        private static Guid InterfaceId { get; set; }
         // xml file for building wireless profile
-        private static string profileXml;
+        private static string ProfileXml { get; set; }
         // EAP type of selected configuration
-        private static uint eapType;
+        private static uint EapType { get; set; }
+        // client certificate valid from
+        private static DateTime CertValidFrom { get; set; }
 
         /// <summary>
         /// Installs certificates and creates a wireless profile using an EapConfig object. 
@@ -45,18 +47,18 @@ namespace EduroamApp
             // creates new instance of eduroam network
             var eduroamInstance = new EduroamNetwork();
             // gets SSID
-            ssid = eduroamInstance.Ssid;
+            Ssid = eduroamInstance.Ssid;
             // gets interface ID
-            interfaceId = eduroamInstance.InterfaceId;
+            InterfaceId = eduroamInstance.InterfaceId;
 
             // gets the first/default authentication method of EapConfig object
             EapConfig.AuthenticationMethod authMethod = eapConfig.AuthenticationMethods.First();
 
             // gets EAP type of authentication method
-            eapType = authMethod.EapType;
+            EapType = authMethod.EapType;
 
             // if EAP type is not supported, cancel setup
-            if (eapType != 13 && eapType != 25 && eapType != 21) return eapType;
+            if (EapType != 13 && EapType != 25 && EapType != 21) return EapType;
             
             // name of client certificate issuer
             string certIssuer = null;
@@ -72,6 +74,8 @@ namespace EduroamApp
                 var clientCert = new X509Certificate2(clientBytes, clientPwd, X509KeyStorageFlags.PersistKeySet);
                 // sets friendly name of certificate
                 clientCert.FriendlyName = clientCert.GetNameInfo(X509NameType.SimpleName, false);
+                // gets valid from time of certificate
+                CertValidFrom = clientCert.NotBefore;
 
                 // opens the personal certificate store
                 var personalStore = new X509Store(StoreName.My, StoreLocation.CurrentUser);
@@ -173,13 +177,13 @@ namespace EduroamApp
             string serverNames = string.Join(";", authMethod.ServerName);
             
             // generates new profile xml
-            profileXml = ProfileXml.CreateProfileXml(ssid, eapType, serverNames, thumbprints);
+            ProfileXml = EduroamApp.ProfileXml.CreateProfileXml(Ssid, EapType, serverNames, thumbprints);
 
             // creates a new wireless profile
             CreateNewProfile();
 
             // checks if EAP type is TLS and there is no client certificate
-            if (eapType == 13 && string.IsNullOrEmpty(authMethod.ClientCertificate))
+            if (EapType == 13 && string.IsNullOrEmpty(authMethod.ClientCertificate))
             {
                 // prompts the user for a locally stored client certificate file
                 DialogResult dialogResult = MessageBox.Show(
@@ -188,8 +192,10 @@ namespace EduroamApp
                 return (uint) (dialogResult == DialogResult.Yes ? 500 : 0);
             }
 
+            MessageBox.Show("Cert valid from: " + CertValidFrom);
+
             // returns EAP type of installed authentication method
-            return eapType;
+            return EapType;
         }
 
         /// <summary>
@@ -207,7 +213,7 @@ namespace EduroamApp
             // overwrites if profile already exists
             const bool overwrite = true;
 
-            return NativeWifi.SetProfile(interfaceId, profileType, profileXml, securityType, overwrite);
+            return NativeWifi.SetProfile(InterfaceId, profileType, ProfileXml, securityType, overwrite);
         }
 
         /// <summary>
@@ -216,7 +222,7 @@ namespace EduroamApp
         /// <returns>True if profile delete succesful, false if not.</returns>
         public static bool RemoveProfile()
         {
-            return NativeWifi.DeleteProfile(interfaceId, ssid);
+            return NativeWifi.DeleteProfile(InterfaceId, Ssid);
         }
 
         /// <summary>
@@ -227,9 +233,9 @@ namespace EduroamApp
         public static void SetupLogin(string username, string password)
         {
             // generates user data xml file
-            string userDataXml = UserDataXml.CreateUserDataXml(username, password, eapType);
+            string userDataXml = UserDataXml.CreateUserDataXml(username, password, EapType);
             // sets user data
-            SetUserData(interfaceId, ssid, userDataXml);
+            SetUserData(InterfaceId, Ssid, userDataXml);
         }
 
         /// <summary>
