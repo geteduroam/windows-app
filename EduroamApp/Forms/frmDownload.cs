@@ -234,11 +234,11 @@ namespace EduroamApp
 				WebExceptionHandler(ex);
 				return;
 			}
-			catch (JsonReaderException ex)
+			/*catch (JsonReaderException ex)
 			{
 				EapExceptionHandler(ex);
 				return;
-			}
+			}*/
 
 			// if an identity provider has more than one profile, add to combobox
 			if (idProviderProfiles.Data.Count > 1)

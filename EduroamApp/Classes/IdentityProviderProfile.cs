@@ -19,7 +19,7 @@ namespace EduroamApp
 			public string Id { get; set; }
 			public string Display { get; set; }
 			public string IdpName { get; set; }
-			public int Logo { get; set; }
+			public bool Logo { get; set; }
 		}
 	}
 }

@@ -53,6 +53,7 @@ namespace EduroamApp
 			this.txtToU.Size = new System.Drawing.Size(400, 220);
 			this.txtToU.TabIndex = 2;
 			this.txtToU.Text = "";
+			this.txtToU.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.txtToU_LinkClicked);
 			//
 			// frmTermsOfUse
 			//

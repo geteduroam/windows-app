@@ -55,6 +55,9 @@ namespace EduroamApp
 
 		private void frmParent_Load(object sender, EventArgs e)
 		{
+			// sets eduroam logo
+			webEduroamLogo.DocumentText = ImageFunctions.GenerateLogoHtml(ImageFunctions.EduroamLogo, webEduroamLogo.Width, webEduroamLogo.Height);
+
 			// checks if file came with self extract
 			eapConfig = GetSelfExtractingEap();
 			if (eapConfig != null)

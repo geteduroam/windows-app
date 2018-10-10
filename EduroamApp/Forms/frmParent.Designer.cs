@@ -38,22 +38,21 @@ namespace EduroamApp
 			this.pnlNavTop = new System.Windows.Forms.Panel();
 			this.pnlLeft = new System.Windows.Forms.Panel();
 			this.panel3 = new System.Windows.Forms.Panel();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.pnlLogoBot = new System.Windows.Forms.Panel();
 			this.pnlLogoTop = new System.Windows.Forms.Panel();
 			this.pnlLogoLeft = new System.Windows.Forms.Panel();
 			this.pnlLogoRight = new System.Windows.Forms.Panel();
-			this.pbxLogo = new System.Windows.Forms.PictureBox();
 			this.webLogo = new System.Windows.Forms.WebBrowser();
+			this.pbxLogo = new System.Windows.Forms.PictureBox();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.lblTitle = new System.Windows.Forms.Label();
 			this.pnlLeftMargin = new System.Windows.Forms.Panel();
 			this.pnlRightMargin = new System.Windows.Forms.Panel();
 			this.pnlContent = new System.Windows.Forms.Panel();
+			this.webEduroamLogo = new System.Windows.Forms.WebBrowser();
 			this.pnlNavigation.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.pnlLeft.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).BeginInit();
 			this.panel1.SuspendLayout();
 			this.SuspendLayout();
@@ -149,8 +148,8 @@ namespace EduroamApp
 			// pnlLeft
 			//
 			this.pnlLeft.BackColor = System.Drawing.Color.White;
+			this.pnlLeft.Controls.Add(this.webEduroamLogo);
 			this.pnlLeft.Controls.Add(this.panel3);
-			this.pnlLeft.Controls.Add(this.pictureBox1);
 			this.pnlLeft.Controls.Add(this.pnlLogoBot);
 			this.pnlLeft.Controls.Add(this.pnlLogoTop);
 			this.pnlLeft.Controls.Add(this.pnlLogoLeft);
@@ -165,22 +164,10 @@ namespace EduroamApp
 			//
 			// panel3
 			//
-			this.panel3.Dock = System.Windows.Forms.DockStyle.Top;
 			this.panel3.Location = new System.Drawing.Point(8, 92);
 			this.panel3.Name = "panel3";
 			this.panel3.Size = new System.Drawing.Size(144, 28);
 			this.panel3.TabIndex = 8;
-			//
-			// pictureBox1
-			//
-			this.pictureBox1.Dock = System.Windows.Forms.DockStyle.Top;
-			this.pictureBox1.Image = global::EduroamApp.Properties.Resources.eduroam_logo;
-			this.pictureBox1.Location = new System.Drawing.Point(8, 27);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(144, 65);
-			this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-			this.pictureBox1.TabIndex = 7;
-			this.pictureBox1.TabStop = false;
 			//
 			// pnlLogoBot
 			//
@@ -215,6 +202,21 @@ namespace EduroamApp
 			this.pnlLogoRight.TabIndex = 2;
 			this.pnlLogoRight.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlLogoRight_Paint);
 			//
+			// webLogo
+			//
+			this.webLogo.AllowWebBrowserDrop = false;
+			this.webLogo.IsWebBrowserContextMenuEnabled = false;
+			this.webLogo.Location = new System.Drawing.Point(8, 120);
+			this.webLogo.MinimumSize = new System.Drawing.Size(20, 20);
+			this.webLogo.Name = "webLogo";
+			this.webLogo.ScriptErrorsSuppressed = true;
+			this.webLogo.ScrollBarsEnabled = false;
+			this.webLogo.Size = new System.Drawing.Size(144, 115);
+			this.webLogo.TabIndex = 10;
+			this.webLogo.Url = new System.Uri("", System.UriKind.Relative);
+			this.webLogo.Visible = false;
+			this.webLogo.WebBrowserShortcutsEnabled = false;
+			//
 			// pbxLogo
 			//
 			this.pbxLogo.Location = new System.Drawing.Point(8, 120);
@@ -223,20 +225,6 @@ namespace EduroamApp
 			this.pbxLogo.TabIndex = 9;
 			this.pbxLogo.TabStop = false;
 			this.pbxLogo.Visible = false;
-			//
-			// webLogo
-			//
-			this.webLogo.AllowWebBrowserDrop = false;
-			this.webLogo.IsWebBrowserContextMenuEnabled = false;
-			this.webLogo.Location = new System.Drawing.Point(8, 120);
-			this.webLogo.MinimumSize = new System.Drawing.Size(20, 20);
-			this.webLogo.Name = "webLogo";
-			this.webLogo.ScrollBarsEnabled = false;
-			this.webLogo.Size = new System.Drawing.Size(144, 115);
-			this.webLogo.TabIndex = 10;
-			this.webLogo.Url = new System.Uri("", System.UriKind.Relative);
-			this.webLogo.Visible = false;
-			this.webLogo.WebBrowserShortcutsEnabled = false;
 			//
 			// panel1
 			//
@@ -286,6 +274,20 @@ namespace EduroamApp
 			this.pnlContent.Size = new System.Drawing.Size(378, 246);
 			this.pnlContent.TabIndex = 7;
 			//
+			// webEduroamLogo
+			//
+			this.webEduroamLogo.AllowWebBrowserDrop = false;
+			this.webEduroamLogo.Dock = System.Windows.Forms.DockStyle.Top;
+			this.webEduroamLogo.IsWebBrowserContextMenuEnabled = false;
+			this.webEduroamLogo.Location = new System.Drawing.Point(8, 27);
+			this.webEduroamLogo.MinimumSize = new System.Drawing.Size(20, 20);
+			this.webEduroamLogo.Name = "webEduroamLogo";
+			this.webEduroamLogo.ScriptErrorsSuppressed = true;
+			this.webEduroamLogo.ScrollBarsEnabled = false;
+			this.webEduroamLogo.Size = new System.Drawing.Size(144, 65);
+			this.webEduroamLogo.TabIndex = 11;
+			this.webEduroamLogo.WebBrowserShortcutsEnabled = false;
+			//
 			// frmParent
 			//
 			this.AcceptButton = this.btnNext;
@@ -308,7 +310,6 @@ namespace EduroamApp
 			this.pnlNavigation.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.pnlLeft.ResumeLayout(false);
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).EndInit();
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
@@ -339,7 +340,7 @@ namespace EduroamApp
 		private System.Windows.Forms.Panel pnlLogoTop;
 		private System.Windows.Forms.PictureBox pbxLogo;
 		private System.Windows.Forms.Panel panel3;
-		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.WebBrowser webLogo;
+		private System.Windows.Forms.WebBrowser webEduroamLogo;
 	}
 }

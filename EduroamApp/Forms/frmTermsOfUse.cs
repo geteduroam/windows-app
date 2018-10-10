@@ -1,5 +1,6 @@
 using System;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace EduroamApp
 {
@@ -9,13 +10,18 @@ namespace EduroamApp
 
 		public frmTermsOfUse(string termsOfUse)
 		{
-			tou = termsOfUse;
+			tou = termsOfUse.Trim();
 			InitializeComponent();
 		}
 
 		private void frmTermsOfUse_Load(object sender, EventArgs e)
 		{
 			txtToU.Text = tou;
+		}
+
+		private void txtToU_LinkClicked(object sender, LinkClickedEventArgs e)
+		{
+			Process.Start(e.LinkText);
 		}
 	}
 }
