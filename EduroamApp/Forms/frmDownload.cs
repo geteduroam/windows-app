@@ -127,9 +127,7 @@ namespace EduroamApp
 			cboCountry.Items.AddRange(countries.OrderBy(c => c.CountryName).Select(c => c.CountryName).ToArray());
 
 			// gets GeoCoordinateWatcher from parent form
-			GeoCoordinateWatcher watcher = frmParent.GetWatcher();
-			// user's coordinates
-			GeoCoordinate myCoord = watcher.Position.Location;
+			GeoCoordinate myCoord = frmParent.GeoWatcher.Position.Location;
 			// country closest to user
 			string closestCountry;
 
