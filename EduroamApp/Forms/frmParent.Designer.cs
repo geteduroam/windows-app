@@ -28,6 +28,7 @@ namespace EduroamApp
 		/// </summary>
 		private void InitializeComponent()
 		{
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmParent));
 			this.pnlNavigation = new System.Windows.Forms.Panel();
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.btnCancel = new System.Windows.Forms.Button();
@@ -301,11 +302,12 @@ namespace EduroamApp
 			this.Controls.Add(this.pnlLeft);
 			this.Controls.Add(this.pnlNavigation);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "frmParent";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-			this.Text = "eduroam Installer";
+			this.Text = "GetEduroam";
 			this.Load += new System.EventHandler(this.frmParent_Load);
 			this.pnlNavigation.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);
