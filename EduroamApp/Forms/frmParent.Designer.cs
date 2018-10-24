@@ -38,6 +38,7 @@
             this.pnlNavBot = new System.Windows.Forms.Panel();
             this.pnlNavTop = new System.Windows.Forms.Panel();
             this.pnlLeft = new System.Windows.Forms.Panel();
+            this.webEduroamLogo = new System.Windows.Forms.WebBrowser();
             this.panel3 = new System.Windows.Forms.Panel();
             this.pnlLogoBot = new System.Windows.Forms.Panel();
             this.pnlLogoTop = new System.Windows.Forms.Panel();
@@ -50,7 +51,6 @@
             this.pnlLeftMargin = new System.Windows.Forms.Panel();
             this.pnlRightMargin = new System.Windows.Forms.Panel();
             this.pnlContent = new System.Windows.Forms.Panel();
-            this.webEduroamLogo = new System.Windows.Forms.WebBrowser();
             this.pnlNavigation.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.pnlLeft.SuspendLayout();
@@ -163,6 +163,20 @@
             this.pnlLeft.Size = new System.Drawing.Size(160, 366);
             this.pnlLeft.TabIndex = 2;
             // 
+            // webEduroamLogo
+            // 
+            this.webEduroamLogo.AllowWebBrowserDrop = false;
+            this.webEduroamLogo.Dock = System.Windows.Forms.DockStyle.Top;
+            this.webEduroamLogo.IsWebBrowserContextMenuEnabled = false;
+            this.webEduroamLogo.Location = new System.Drawing.Point(8, 27);
+            this.webEduroamLogo.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webEduroamLogo.Name = "webEduroamLogo";
+            this.webEduroamLogo.ScriptErrorsSuppressed = true;
+            this.webEduroamLogo.ScrollBarsEnabled = false;
+            this.webEduroamLogo.Size = new System.Drawing.Size(144, 65);
+            this.webEduroamLogo.TabIndex = 11;
+            this.webEduroamLogo.WebBrowserShortcutsEnabled = false;
+            // 
             // panel3
             // 
             this.panel3.Location = new System.Drawing.Point(8, 92);
@@ -274,20 +288,6 @@
             this.pnlContent.Name = "pnlContent";
             this.pnlContent.Size = new System.Drawing.Size(378, 246);
             this.pnlContent.TabIndex = 7;
-            // 
-            // webEduroamLogo
-            // 
-            this.webEduroamLogo.AllowWebBrowserDrop = false;
-            this.webEduroamLogo.Dock = System.Windows.Forms.DockStyle.Top;
-            this.webEduroamLogo.IsWebBrowserContextMenuEnabled = false;
-            this.webEduroamLogo.Location = new System.Drawing.Point(8, 27);
-            this.webEduroamLogo.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webEduroamLogo.Name = "webEduroamLogo";
-            this.webEduroamLogo.ScriptErrorsSuppressed = true;
-            this.webEduroamLogo.ScrollBarsEnabled = false;
-            this.webEduroamLogo.Size = new System.Drawing.Size(144, 65);
-            this.webEduroamLogo.TabIndex = 11;
-            this.webEduroamLogo.WebBrowserShortcutsEnabled = false;
             // 
             // frmParent
             // 
