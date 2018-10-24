@@ -21,7 +21,7 @@ namespace EduroamApp
         private readonly List<int> formHistory = new List<int>();  // Keeps history of previously diplayed forms, in order to backtrack correctly
         private bool reload = true;                                // Specifies wether a form is to be re-instantiated when loaded
         private EapConfig eapConfig = new EapConfig();             // Selected EAP configuration
-        private uint eapType;                                      // EAP type of selected EAP config
+                                              // EAP type of selected EAP config
         
         // makes forms globally accessible in parent form
         private frmSummary frmSummary;
@@ -34,6 +34,7 @@ namespace EduroamApp
 
         // public variables to be used across forms
         public GeoCoordinateWatcher GeoWatcher { get; set; }
+        public uint EapType { get; set; }
         public string InstId { get; set; }
         public string ProfileCondition { get; set; }
         public string LocalFileType { get; set; }
@@ -95,16 +96,16 @@ namespace EduroamApp
                         LoadFrmSelectMethod();
                         break;
                     }
-                    eapType = frmSummary.InstallEapConfig();
-                    if (eapType == 13) LoadFrmConnect();
-                    else if (eapType == 25 || eapType == 21) LoadFrmLogin();
-                    else if (eapType == 500)
+                    EapType = frmSummary.InstallEapConfig();
+                    if (EapType == 13) LoadFrmConnect();
+                    else if (EapType == 25 || EapType == 21) LoadFrmLogin();
+                    else if (EapType == 500)
                     {
                         LocalFileType = "CERT";
                         LoadFrmLocalCert();
                     }
-                    else if (eapType == 600) LoadFrmSaveAndQuit();
-                    else if (eapType != 0) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
+                    else if (EapType == 600) LoadFrmSaveAndQuit();
+                    else if (EapType != 0) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
                         "Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     break;
 
@@ -140,7 +141,7 @@ namespace EduroamApp
 
                 // lets user log in and opens connection form
                 case 5:
-                    if (eapType != 21)
+                    if (EapType != 21)
                     {
                         frmLogin.ConnectWithLogin();
                         LoadFrmConnect();

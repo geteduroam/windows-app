@@ -85,7 +85,7 @@
             // 
             this.lblConnectFailed.Location = new System.Drawing.Point(2, 62);
             this.lblConnectFailed.Name = "lblConnectFailed";
-            this.lblConnectFailed.Size = new System.Drawing.Size(349, 40);
+            this.lblConnectFailed.Size = new System.Drawing.Size(349, 74);
             this.lblConnectFailed.TabIndex = 10;
             this.lblConnectFailed.Text = "Press Back if you want to try again, connect to a different institution or select" +
     " a different config file.";

@@ -123,6 +123,12 @@
     <Compile Include="Forms\frmRedirect.Designer.cs">
       <DependentUpon>frmRedirect.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\frmSetTime.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmSetTime.Designer.cs">
+      <DependentUpon>frmSetTime.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmTermsOfUse.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -188,6 +194,9 @@
     <Compile Include="Classes\UserDataXml.cs" />
     <EmbeddedResource Include="Forms\frmRedirect.resx">
       <DependentUpon>frmRedirect.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmSetTime.resx">
+      <DependentUpon>frmSetTime.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmTermsOfUse.resx">
       <DependentUpon>frmTermsOfUse.cs</DependentUpon>
