@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Windows.Forms;
 
 namespace EduroamApp
@@ -16,12 +17,13 @@ namespace EduroamApp
         private void frmSetTime_Load(object sender, EventArgs e)
         {
             tmrCheckTime.Start();
-            lblCertDate.Text = certDateTime.ToString();
+            lblCurrentDate.Text = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+            lblCertDate.Text = certDateTime.ToString(CultureInfo.InvariantCulture);
         }
 
         private void tmrCheckTime_Tick(object sender, EventArgs e)
         {
-            lblCurrentDate.Text = DateTime.Now.ToString();
+            lblCurrentDate.Text = DateTime.Now.ToString(CultureInfo.InvariantCulture);
 
             if (DateTime.Now > certDateTime)
             {

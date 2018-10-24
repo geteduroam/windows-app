@@ -47,28 +47,29 @@ namespace EduroamApp
                 DateTime validFrom = ConnectToEduroam.CertValidFrom;
                 DateTime now = DateTime.Now;
                 TimeSpan difference = validFrom - now;
-                
+
+                // if certificate valid from time has passed, do nothing
                 if (DateTime.Compare(validFrom, now) > 0)
                 {
-                    if (difference.TotalSeconds < 6)
+                    if (difference.TotalSeconds < 8)
                     {
-                        // waits at connecting screen for number of seconds late
-                        await PutTaskDelay(difference.Milliseconds);
-                        /*MessageBox.Show("Cert valid from: " + validFrom + "\n" +
-                                        "Current time: " + now + "\n" +
-                                        "Current time is running " + difference.TotalSeconds + " seconds late.");*/
+                        await PutTaskDelay(difference.Milliseconds + 1000);
                     }
+                    // displays dialog that lets user know how long they must wait, or to change their clock manually
                     else
                     {
+                        // opens form as dialog
                         using (frmSetTime setTimeDialog = new frmSetTime(validFrom))
                         {
                             var dialogResult = setTimeDialog.ShowDialog();
+                            // cancels connection if time not set and dialog cancelled
                             if (dialogResult == DialogResult.Cancel)
                             {
                                 lblStatus.Text = "Couldn't connect to eduroam.";
                                 pbxStatus.Image = Properties.Resources.red_x;
-                                lblConnectFailed.Text = "Please ensure that the date time and time zone on your computer are set correctly.\n\n" + 
-                                                        lblConnectFailed.Text;
+                                lblConnectFailed.Text =
+                                    "Please ensure that the date time and time zone on your computer are set correctly.\n\n" +
+                                    lblConnectFailed.Text;
                                 lblConnectFailed.Visible = true;
                                 frmParent.BtnBackEnabled = true;
                                 frmParent.ProfileCondition = "BADPROFILE";
@@ -77,6 +78,8 @@ namespace EduroamApp
                         }
                     }
                 }
+
+                // waits at connecting screen if under 9 seconds difference
             }
 
             bool connectSuccess;
