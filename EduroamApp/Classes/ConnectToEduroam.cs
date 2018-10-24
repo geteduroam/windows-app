@@ -35,7 +35,89 @@ namespace EduroamApp
 		// EAP type of selected configuration
 		private static uint EapType { get; set; }
 		// client certificate valid from
-		private static DateTime CertValidFrom { get; set; }
+		public static DateTime CertValidFrom { get; set; }
+
+		/// <summary>
+		/// Creates EapConfig object from EAP config file.
+		/// </summary>
+		/// <param name="eapFile">EAP config file as string.</param>
+		/// <returns>EapConfig object.</returns>
+		public static EapConfig GetEapConfig(string eapFile)
+		{
+			// loads the XML file from its file path
+			XElement doc = XElement.Parse(eapFile);
+
+			// creates new EapConfig object
+			var eapConfig = new EapConfig();
+			// creates new list of authentication methods
+			List<EapConfig.AuthenticationMethod> authMethods = new List<EapConfig.AuthenticationMethod>();
+
+			// gets all AuthenticationMethods elements from xml
+			IEnumerable<XElement> authMethodElements = doc.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "AuthenticationMethod");
+			foreach (XElement element in authMethodElements)
+			{
+				// gets EAP method type
+				var eapTypeEl = (uint)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Type");
+
+				// gets list of CAs
+				List<XElement> caElements = element.DescendantsAndSelf().Elements().Where(x => x.Name.LocalName == "CA").ToList();
+
+				// gets string value of CAs and puts them in new list
+				List<string> certAuths = new List<string>();
+				foreach (XElement caElement in caElements)
+				{
+					certAuths.Add((string)caElement);
+				}
+
+				// gets list of server names
+				List<XElement> serverElements = element.DescendantsAndSelf().Elements().Where(x => x.Name.LocalName == "ServerID").ToList();
+
+				// gets string value of server elements and puts them in new list
+				List<string> serverNames = new List<string>();
+				foreach (XElement serverElement in serverElements)
+				{
+					serverNames.Add((string)serverElement);
+				}
+
+				// gets client certificate
+				var clientCert = (string)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "ClientCertificate");
+
+				// gets client cert passphrase
+				var passphrase = (string)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Passphrase");
+
+				// creates new authentication method object and adds it to list
+				authMethods.Add(new EapConfig.AuthenticationMethod(eapTypeEl, certAuths, serverNames, clientCert, passphrase));
+			}
+			// adds the authentication method objects to the EapConfig object
+			eapConfig.AuthenticationMethods = authMethods;
+
+			// gets provider's  display name
+			var displayName = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "DisplayName");
+			// gets logo element
+			XElement logoElement = doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "ProviderLogo");
+			// gets provider's logo as base64 encoded string from logo element
+			var logo = (string)logoElement;
+			// gets the file format of the logo
+			var logoFormat = (string)logoElement?.Attribute("mime");
+			// gets provider's email address
+			var emailAddress = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "EmailAddress");
+			// gets provider's web address
+			var webAddress = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "WebAddress");
+			// gets provider's phone number
+			var phone = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Phone");
+			// gets terms of use
+			var termsOfUse = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "TermsOfUse");
+			// gets identity element
+			XElement eapIdentityElement = doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "EAPIdentityProvider");
+			// gets institution ID from identity element
+			var instId = (string)eapIdentityElement?.Attribute("ID");
+
+			// adds the provider info to the EapConfig object
+			eapConfig.InstitutionInfo = new EapConfig.ProviderInfo(displayName ?? string.Empty, logo ?? string.Empty, logoFormat ?? string.Empty, emailAddress ?? string.Empty, webAddress ?? string.Empty, phone ?? string.Empty, instId ?? string.Empty, termsOfUse ?? string.Empty);
+
+			// returns the EapConfig object
+			return eapConfig;
+		}
 
 		/// <summary>
 		/// Installs certificates and creates a wireless profile using an EapConfig object.
@@ -74,8 +156,6 @@ namespace EduroamApp
 				var clientCert = new X509Certificate2(clientBytes, clientPwd, X509KeyStorageFlags.PersistKeySet);
 				// sets friendly name of certificate
 				clientCert.FriendlyName = clientCert.GetNameInfo(X509NameType.SimpleName, false);
-				// gets valid from time of certificate
-				CertValidFrom = clientCert.NotBefore;
 
 				// opens the personal certificate store
 				var personalStore = new X509Store(StoreName.My, StoreLocation.CurrentUser);
@@ -89,6 +169,8 @@ namespace EduroamApp
 
 				// gets name of CA that issued the certificate
 				certIssuer = clientCert.IssuerName.Name;
+				// gets valid from time of certificate
+				CertValidFrom = clientCert.NotBefore;
 			}
 
 			// opens the trusted root CA store
@@ -192,8 +274,6 @@ namespace EduroamApp
 				return (uint) (dialogResult == DialogResult.Yes ? 500 : 0);
 			}
 
-			MessageBox.Show("Cert valid from: " + CertValidFrom);
-
 			// returns EAP type of installed authentication method
 			return EapType;
 		}
@@ -282,89 +362,5 @@ namespace EduroamApp
 				bssType: network.BssType,
 				timeout: TimeSpan.FromSeconds(5));
 		}
-
-		/// <summary>
-		/// Creates EapConfig object from EAP config file.
-		/// </summary>
-		/// <param name="eapFile">EAP config file as string.</param>
-		/// <returns>EapConfig object.</returns>
-		public static EapConfig GetEapConfig(string eapFile)
-		{
-			// loads the XML file from its file path
-			XElement doc = XElement.Parse(eapFile);
-
-			// creates new EapConfig object
-			var eapConfig = new EapConfig();
-			// creates new list of authentication methods
-			List<EapConfig.AuthenticationMethod> authMethods = new List<EapConfig.AuthenticationMethod>();
-
-			// gets all AuthenticationMethods elements from xml
-			IEnumerable<XElement> authMethodElements = doc.DescendantsAndSelf().Elements().Where(cl => cl.Name.LocalName == "AuthenticationMethod");
-			foreach (XElement element in authMethodElements)
-			{
-				// gets EAP method type
-				var eapTypeEl = (uint)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Type");
-
-				// gets list of CAs
-				List<XElement> caElements = element.DescendantsAndSelf().Elements().Where(x => x.Name.LocalName == "CA").ToList();
-
-				// gets string value of CAs and puts them in new list
-				List<string> certAuths = new List<string>();
-				foreach (XElement caElement in caElements)
-				{
-					certAuths.Add((string)caElement);
-				}
-
-				// gets list of server names
-				List<XElement> serverElements = element.DescendantsAndSelf().Elements().Where(x => x.Name.LocalName == "ServerID").ToList();
-
-				// gets string value of server elements and puts them in new list
-				List<string> serverNames = new List<string>();
-				foreach (XElement serverElement in serverElements)
-				{
-					serverNames.Add((string)serverElement);
-				}
-
-				// gets client certificate
-				var clientCert = (string)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "ClientCertificate");
-
-				// gets client cert passphrase
-				var passphrase = (string)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Passphrase");
-
-				// creates new authentication method object and adds it to list
-				authMethods.Add(new EapConfig.AuthenticationMethod(eapTypeEl, certAuths, serverNames, clientCert, passphrase));
-			}
-			// adds the authentication method objects to the EapConfig object
-			eapConfig.AuthenticationMethods = authMethods;
-
-			// gets provider's  display name
-			var displayName = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "DisplayName");
-			// gets logo element
-			XElement logoElement = doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "ProviderLogo");
-			// gets provider's logo as base64 encoded string from logo element
-			var logo = (string) logoElement;
-			// gets the file format of the logo
-			var logoFormat = (string) logoElement?.Attribute("mime");
-			// gets provider's email address
-			var emailAddress = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "EmailAddress");
-			// gets provider's web address
-			var webAddress = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "WebAddress");
-			// gets provider's phone number
-			var phone = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Phone");
-			// gets terms of use
-			var termsOfUse = (string)doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "TermsOfUse");
-			// gets identity element
-			XElement eapIdentityElement = doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "EAPIdentityProvider");
-			// gets institution ID from identity element
-			var instId = (string)eapIdentityElement?.Attribute("ID");
-
-			// adds the provider info to the EapConfig object
-			eapConfig.InstitutionInfo = new EapConfig.ProviderInfo(displayName ?? string.Empty, logo ?? string.Empty, logoFormat ?? string.Empty, emailAddress ?? string.Empty, webAddress ?? string.Empty, phone ?? string.Empty, instId ?? string.Empty, termsOfUse ?? string.Empty);
-
-			// returns the EapConfig object
-			return eapConfig;
-		}
-
-
 	}
 }

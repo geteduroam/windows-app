@@ -42,6 +42,43 @@ namespace EduroamApp
 			lblStatus.Visible = true;
 			pbxStatus.Visible = true;
 
+			if (frmParent.EapType == 13)
+			{
+				DateTime validFrom = ConnectToEduroam.CertValidFrom;
+				DateTime now = DateTime.Now;
+				TimeSpan difference = validFrom - now;
+
+				if (DateTime.Compare(validFrom, now) > 0)
+				{
+					if (difference.TotalSeconds < 6)
+					{
+						// waits at connecting screen for number of seconds late
+						await PutTaskDelay(difference.Milliseconds);
+						/*MessageBox.Show("Cert valid from: " + validFrom + "\n" +
+										"Current time: " + now + "\n" +
+										"Current time is running " + difference.TotalSeconds + " seconds late.");*/
+					}
+					else
+					{
+						using (frmSetTime setTimeDialog = new frmSetTime(validFrom))
+						{
+							var dialogResult = setTimeDialog.ShowDialog();
+							if (dialogResult == DialogResult.Cancel)
+							{
+								lblStatus.Text = "Couldn't connect to eduroam.";
+								pbxStatus.Image = Properties.Resources.red_x;
+								lblConnectFailed.Text = "Please ensure that the date time and time zone on your computer are set correctly.\n\n" +
+														lblConnectFailed.Text;
+								lblConnectFailed.Visible = true;
+								frmParent.BtnBackEnabled = true;
+								frmParent.ProfileCondition = "BADPROFILE";
+								return;
+							}
+						}
+					}
+				}
+			}
+
 			bool connectSuccess;
 			// tries to connect
 			try
@@ -84,6 +121,11 @@ namespace EduroamApp
 				frmParent.BtnBackEnabled = true;
 				frmParent.ProfileCondition = "BADPROFILE";
 			}
+		}
+
+		async Task PutTaskDelay(int milliseconds)
+		{
+			await Task.Delay(milliseconds);
 		}
 
 		// gives user choice of wether they want to save the configuration before quitting

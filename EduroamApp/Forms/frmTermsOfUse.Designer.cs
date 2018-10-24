@@ -60,13 +60,15 @@ namespace EduroamApp
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(424, 270);
+			this.ControlBox = false;
 			this.Controls.Add(this.txtToU);
 			this.Controls.Add(this.btnOk);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
 			this.MaximizeBox = false;
 			this.Name = "frmTermsOfUse";
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-			this.Text = "eduroam - Terms of Use";
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+			this.Text = "GetEduroam - Terms of Use";
 			this.Load += new System.EventHandler(this.frmTermsOfUse_Load);
 			this.ResumeLayout(false);
 
