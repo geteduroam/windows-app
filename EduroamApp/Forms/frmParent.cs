@@ -146,17 +146,21 @@ namespace EduroamApp
 						frmLogin.ConnectWithLogin();
 						LoadFrmConnect();
 					}
-					else MessageBox.Show("Support for TTLS configuration not ready yet.", "TTLS not ready", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					else MessageBox.Show("Support for TTLS configuration is not yet ready.", "TTLS not ready", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					break;
+
+				// closes application after successful connect
+				case 6:
+					Close();
 					break;
 
 				// lets user select client cert and opens connection form
 				case 8:
 					if (frmLocal.InstallCertFile()) LoadFrmConnect();
 					break;
+
+				// closes application after saving setup
 				case 9:
-					ProfileCondition = "GOODPROFILE";
-					MessageBox.Show("Configuration saved. The application will now close.", "eduroam",
-									MessageBoxButtons.OK, MessageBoxIcon.Information);
 					Close();
 					break;
 			}
@@ -249,24 +253,37 @@ namespace EduroamApp
 			set => btnNext.Enabled = value;
 		}
 
+		public string BtnNextText
+		{
+			get => btnNext.Text;
+			set => btnNext.Text = value;
+		}
+
 		public bool BtnBackEnabled
 		{
 			get => btnBack.Enabled;
 			set => btnBack.Enabled = value;
 		}
 
-		public string BtnCancelText
+		public bool BtnBackVisible
 		{
-			get => btnCancel.Text;
-			set => btnCancel.Text = value;
+			get => btnBack.Visible;
+			set => btnBack.Visible = value;
 		}
+
+		public bool BtnCancelEnabled
+		{
+			get => btnCancel.Enabled;
+			set => btnCancel.Enabled = value;
+		}
+
 
 		/// <summary>
 		/// Loads form that shows summary of selected EAP configuration.
 		/// </summary>
 		public void LoadFrmSummary()
 		{
-			frmSummary = new frmSummary(this, eapConfig);
+			if (reload) frmSummary = new frmSummary(this, eapConfig);
 			currentFormId = 1;
 			// changes controls depending on where the summary form is called from
 			if (SelfExtractFlag)
@@ -278,7 +295,8 @@ namespace EduroamApp
 			{
 				lblTitle.Text = "Summary";
 			}
-			btnNext.Enabled = true;
+			if (!reload) btnNext.Enabled = true;
+			btnNext.Text = eapConfig.AuthenticationMethods.First().EapType == 13 ? "Connect" : "Next >";
 			LoadNewForm(frmSummary);
 		}
 
@@ -305,6 +323,7 @@ namespace EduroamApp
 			currentFormId = 3;
 			lblTitle.Text = "Select your institution";
 			btnNext.Enabled = !reload;
+			btnNext.Text = "Next >";
 			btnBack.Enabled = true;
 			btnBack.Visible = true;
 			LoadNewForm(frmDownload);
@@ -319,6 +338,7 @@ namespace EduroamApp
 			currentFormId = 4;
 			lblTitle.Text = "Select EAP-config file";
 			btnNext.Enabled = true;
+			btnNext.Text = "Next >";
 			btnBack.Enabled = true;
 			btnBack.Visible = true;
 			LoadNewForm(frmLocal);
@@ -333,6 +353,7 @@ namespace EduroamApp
 			currentFormId = 5;
 			lblTitle.Text = "Log in";
 			btnNext.Enabled = false;
+			btnNext.Text = "Connect";
 			btnBack.Enabled = true;
 			btnBack.Visible = true;
 			LoadNewForm(frmLogin);
@@ -361,6 +382,7 @@ namespace EduroamApp
 			currentFormId = 7;
 			lblTitle.Text = "You are being redirected";
 			btnNext.Enabled = false;
+			btnNext.Text = "Next >";
 			btnBack.Enabled = true;
 			btnBack.Visible = true;
 			LoadNewForm(frmRedirect);
@@ -375,6 +397,7 @@ namespace EduroamApp
 			currentFormId = 8;
 			lblTitle.Text = "Select client certificate file";
 			btnNext.Enabled = true;
+			btnNext.Text = "Connect";
 			btnBack.Enabled = true;
 			btnBack.Visible = true;
 			LoadNewForm(frmLocal);

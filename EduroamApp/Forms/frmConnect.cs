@@ -110,7 +110,10 @@ namespace EduroamApp
 			{
 				lblStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
 				pbxStatus.Image = Properties.Resources.green_checkmark;
-				frmParent.BtnCancelText = "Close";
+				frmParent.BtnNextText = "Close";
+				frmParent.BtnNextEnabled = true;
+				frmParent.BtnCancelEnabled = false;
+				frmParent.BtnBackVisible = false;
 				frmParent.ProfileCondition = "GOODPROFILE";
 			}
 			else
@@ -131,6 +134,7 @@ namespace EduroamApp
 		// gives user choice of wether they want to save the configuration before quitting
 		private void SaveAndQuit()
 		{
+			frmParent.ProfileCondition = "GOODPROFILE";
 			pnlEduNotAvail.Visible = true;
 		}
 
