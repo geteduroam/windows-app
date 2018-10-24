@@ -94,6 +94,7 @@ namespace EduroamApp
 			// lblCurrentDate
 			//
 			this.lblCurrentDate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lblCurrentDate.ForeColor = System.Drawing.Color.Red;
 			this.lblCurrentDate.Location = new System.Drawing.Point(12, 39);
 			this.lblCurrentDate.Name = "lblCurrentDate";
 			this.lblCurrentDate.Size = new System.Drawing.Size(228, 24);

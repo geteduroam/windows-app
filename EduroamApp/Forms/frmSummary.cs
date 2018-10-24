@@ -34,6 +34,7 @@ namespace EduroamApp
 			string tou = eapConfig.InstitutionInfo.TermsOfUse;
 			string webAddress = eapConfig.InstitutionInfo.WebAddress.ToLower();
 			string emailAddress = eapConfig.InstitutionInfo.EmailAddress.ToLower();
+			string nextOrConnect = eapConfig.AuthenticationMethods.First().EapType == 13 ? "Connect" : "Next";
 
 			// displays institution name
 			lblInstName.Text =  instName;
@@ -41,12 +42,12 @@ namespace EduroamApp
 			if (string.IsNullOrEmpty(tou))
 			{
 				lblToU.Location = new Point(3, 19);
-				lblToU.Text = "Press Next to continue.";
+				lblToU.Text = "Press " + nextOrConnect + " to continue.";
 				chkAgree.Checked = true;
 			}
 			else
 			{
-				lblToU.Text = "Agree to the Terms of Use and press Next to continue.";
+				lblToU.Text = "Agree to the Terms of Use and press " + nextOrConnect + " to continue.";
 				chkAgree.Text = "I agree to the";
 				lnkToU.Text = "Terms of Use";
 				termsOfUse = tou;
