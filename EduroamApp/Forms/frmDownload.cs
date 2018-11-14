@@ -143,7 +143,13 @@ namespace EduroamApp
 			else
 			{
 				// gets country as set in Settings
-				closestCountry = RegionInfo.CurrentRegion.EnglishName;
+				// https://stackoverflow.com/questions/8879259/get-current-location-as-specified-in-region-and-language-in-c-sharp
+				var regKeyGeoId = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Control Panel\International\Geo");
+				var geoID = (string)regKeyGeoId.GetValue("Nation");
+				var allRegions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.ToString()));
+				var regionInfo = allRegions.FirstOrDefault(r => r.GeoId == Int32.Parse(geoID));
+
+				closestCountry = regionInfo.EnglishName;
 			}
 			// sets country as selected item in combobox
 			cboCountry.SelectedIndex = cboCountry.FindStringExact(closestCountry);
