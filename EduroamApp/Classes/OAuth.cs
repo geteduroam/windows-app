@@ -6,6 +6,8 @@ using System.Security.Cryptography;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Web;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace EduroamApp
 {
@@ -78,7 +80,15 @@ namespace EduroamApp
             const string grantType = "authorization_code";
 
             // concatenates parameters into authorization endpoint URI
-            string authUri = CreateAuthEndpointUri(authEndpoint, responseType, codeChallengeMethod, scope, codeChallenge, redirectUri, clientId, state);
+            string authUri = string.Concat(authEndpoint, "?", ConstructQueryString(new NameValueCollection() {
+                { "response_type", responseType },
+                { "code_challenge_method", codeChallengeMethod },
+                { "scope", scope },
+                { "code_challenge", codeChallenge },
+                { "redirect_uri", redirectUri },
+                { "client_id", clientId },
+                { "state", state }
+            }));
 
             // opens web browser for user authentication through feide
             string responseUrl; //= WebServer.NonblockingListener(redirectUri, authUri, parentLocation);
@@ -135,13 +145,20 @@ namespace EduroamApp
             
                 
             // concatenates parameters into token endpoint URI
-            string tokenUri = CreateTokenEndpointUri(tokenEndpoint, grantType, code, redirectUri, clientId, codeVerifier);
-            
+            NameValueCollection tokenPostData = new NameValueCollection() {
+                { "grant_type", grantType },
+                { "code", code },
+                { "redirect_uri", redirectUri },
+                { "client_id", clientId },
+                { "code_verifier", codeVerifier }
+            };
+
+
             string tokenJsonString;
             // downloads json file from url as string
             try
             {
-                tokenJsonString = GetStringFromUrl(tokenUri);
+                tokenJsonString = PostFormToUrl(tokenEndpoint, tokenPostData);
             }
             catch (WebException ex)
             {
@@ -200,6 +217,20 @@ namespace EduroamApp
             using (var client = new WebClient())
             {
                 return client.DownloadString(url);
+            }
+        }
+
+        /// <summary>
+        /// Upload form and return data as a string.
+        /// </summary>
+        /// <param name="url">Url to upload to.</param>
+        /// <param name="data">Data to post.</param>
+        /// <returns>Web page content.</returns>
+        public static string PostFormToUrl(string url, NameValueCollection data)
+        {
+            using (var client = new WebClient())
+            {
+                return Encoding.UTF8.GetString(client.UploadValues(url, "POST", data));
             }
         }
 
@@ -269,49 +300,18 @@ namespace EduroamApp
         }
 
         /// <summary>
-        /// Concatenates parameters to create an Authorization Endpoint URI.
+        /// Constructs a QueryString (string).
+        /// Consider this method to be the opposite of "System.Web.HttpUtility.ParseQueryString"
         /// </summary>
-        /// <param name="authEndpoint">Authorization endpoint.</param>
-        /// <param name="responseType">Response type.</param>
-        /// <param name="codeChallengeMethod">Code challenge method.</param>
-        /// <param name="scope">Scope.</param>
-        /// <param name="codeChallenge">Code challenge.</param>
-        /// <param name="redirectUri">Redirect URI.</param>
-        /// <param name="clientId">Client ID.</param>
-        /// <param name="state">State.</param>
-        /// <returns>Authorization endpoint URI.</returns>
-        private static string CreateAuthEndpointUri(string authEndpoint, string responseType, string codeChallengeMethod, string scope, string codeChallenge, string redirectUri, string clientId, string state)
+        public static string ConstructQueryString(NameValueCollection parameters)
         {
-            return
-                authEndpoint
-                + "?response_type=" + responseType
-                + "&code_challenge_method=" + codeChallengeMethod
-                + "&scope=" + scope
-                + "&code_challenge=" + codeChallenge
-                + "&redirect_uri=" + redirectUri
-                + "&client_id=" + clientId
-                + "&state=" + state;
-        }
+            // https://leekelleher.com/2008/06/06/how-to-convert-namevaluecollection-to-a-query-string/
+            List<string> items = new List<string>();
 
-        /// <summary>
-        /// Concatenates parameters to create an Token Endpoint URI.
-        /// </summary>
-        /// <param name="tokenEndpoint">Token endpoint.</param>
-        /// <param name="grantType">Grant type.</param>
-        /// <param name="code">Code.</param>
-        /// <param name="redirectUri">Redirect URI.</param>
-        /// <param name="clientId">Client ID.</param>
-        /// <param name="codeVerifier">Code verifier.</param>
-        /// <returns></returns>
-        private static string CreateTokenEndpointUri(string tokenEndpoint, string grantType, string code, string redirectUri, string clientId, string codeVerifier)
-        {
-            return
-                tokenEndpoint
-                + "?grant_type=" + grantType
-                + "&code=" + code
-                + "&redirect_uri=" + redirectUri
-                + "&client_id=" + clientId
-                + "&code_verifier=" + codeVerifier;
+            foreach (string name in parameters)
+                items.Add(string.Concat(System.Web.HttpUtility.UrlEncode(name), "=", System.Web.HttpUtility.UrlEncode(parameters[name])));
+
+            return string.Join("&", items.ToArray());
         }
     }
 }
