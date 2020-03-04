@@ -1,19 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ManagedNativeWifi;
-using System.IO;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Xml.Linq;
 using System.Text.RegularExpressions;
-using System.Xml;
 
 namespace EduroamApp
 {
@@ -96,7 +90,7 @@ namespace EduroamApp
             // gets logo element
             XElement logoElement = doc.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "ProviderLogo");
             // gets provider's logo as base64 encoded string from logo element
-            var logo = (string)logoElement;
+            var logo = Convert.FromBase64String((string)logoElement ?? "");
             // gets the file format of the logo
             var logoFormat = (string)logoElement?.Attribute("mime");
             // gets provider's email address
@@ -113,7 +107,7 @@ namespace EduroamApp
             var instId = (string)eapIdentityElement?.Attribute("ID");
 
             // adds the provider info to the EapConfig object
-            eapConfig.InstitutionInfo = new EapConfig.ProviderInfo(displayName ?? string.Empty, logo ?? string.Empty, logoFormat ?? string.Empty, emailAddress ?? string.Empty, webAddress ?? string.Empty, phone ?? string.Empty, instId ?? string.Empty, termsOfUse ?? string.Empty);
+            eapConfig.InstitutionInfo = new EapConfig.ProviderInfo(displayName ?? string.Empty, logo, logoFormat ?? string.Empty, emailAddress ?? string.Empty, webAddress ?? string.Empty, phone ?? string.Empty, instId ?? string.Empty, termsOfUse ?? string.Empty);
 
             // returns the EapConfig object
             return eapConfig;
