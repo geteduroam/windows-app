@@ -81,7 +81,7 @@
     <OutputPath>bin\Debug\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>geteduroam.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\geteduroam.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Costura, Version=3.1.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
@@ -282,10 +282,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\geteduroam.png" />
+    <None Include="Resources\geteduroam.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="geteduroam.ico" />
+    <None Include="Resources\eduroam_logo.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

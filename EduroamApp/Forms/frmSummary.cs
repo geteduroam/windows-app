@@ -118,10 +118,10 @@ namespace EduroamApp
 			frmParent.SelectAlternative = false;
 
 			// gets institution logo encoded to base64
-			string logoBase64 = eapConfig.InstitutionInfo.Logo;
+			byte[] logoBytes = eapConfig.InstitutionInfo.Logo;
 			string logoFormat = eapConfig.InstitutionInfo.LogoFormat;
 			// adds logo to form if exists
-			if (!string.IsNullOrEmpty(logoBase64))
+			if (logoBytes.Length > 0)
 			{
 				// gets size of container
 				int cWidth = frmParent.PbxLogo.Width;
@@ -130,14 +130,14 @@ namespace EduroamApp
 				if (logoFormat == "image/svg+xml")
 				{
 					frmParent.WebLogo.Visible = true;
-					frmParent.WebLogo.DocumentText = ImageFunctions.GenerateLogoHtml(logoBase64, cWidth, cHeight);
+					frmParent.WebLogo.DocumentText = ImageFunctions.GenerateLogoHtml(logoBytes, cWidth, cHeight);
 				}
 				else // other filetypes (jpg, png etc.)
 				{
 					try
 					{
 						// converts from base64 to image
-						Image logo = ImageFunctions.Base64ToImage(logoBase64);
+						Image logo = ImageFunctions.BytesToImage(logoBytes);
 						decimal hScale = decimal.Divide(cWidth, logo.Width);
 						decimal vScale = decimal.Divide(cHeight, logo.Height);
 						decimal pScale = vScale < hScale ? vScale : hScale;

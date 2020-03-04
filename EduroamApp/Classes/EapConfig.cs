@@ -41,7 +41,7 @@ namespace EduroamApp
 		{
 			// Properties
 			public string DisplayName { get; set; }
-			public string Logo { get; set; }
+			public byte[] Logo { get; set; }
 			public string LogoFormat { get; set; }
 			public string EmailAddress { get; set; }
 			public string WebAddress { get; set; }
@@ -50,7 +50,7 @@ namespace EduroamApp
 			public string TermsOfUse { get; set; }
 
 			// Constructor
-			public ProviderInfo(string displayName, string logo, string logoFormat, string emailAddress, string webAddress, string phone, string instId, string termsOfUse)
+			public ProviderInfo(string displayName, byte[] logo, string logoFormat, string emailAddress, string webAddress, string phone, string instId, string termsOfUse)
 			{
 				DisplayName = displayName;
 				Logo = logo;
