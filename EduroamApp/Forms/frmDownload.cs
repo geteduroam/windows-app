@@ -149,7 +149,7 @@ namespace EduroamApp
 				var allRegions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.ToString()));
 				var regionInfo = allRegions.FirstOrDefault(r => r.GeoId == Int32.Parse(geoID));
 
-				closestCountry = regionInfo.EnglishName;
+				closestCountry = regionInfo.DisplayName;
 			}
 			// sets country as selected item in combobox
 			cboCountry.SelectedIndex = cboCountry.FindStringExact(closestCountry);
