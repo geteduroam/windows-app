@@ -58,7 +58,7 @@ namespace EduroamApp
 		private void frmParent_Load(object sender, EventArgs e)
 		{
 			// sets eduroam logo
-			webEduroamLogo.DocumentText = ImageFunctions.GenerateLogoHtml(Properties.Resources.eduroam_logo, webEduroamLogo.Width, webEduroamLogo.Height);
+			webEduroamLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(Properties.Resources.eduroam_logo, webEduroamLogo.Width, webEduroamLogo.Height);
 			Icon = Properties.Resources.geteduroam;
 
 			// checks if file came with self extract

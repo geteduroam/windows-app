@@ -15,7 +15,7 @@ namespace EduroamApp
 		/// <summary>
 		/// Converts base64 string to image.
 		/// </summary>
-		/// <param name="base64String">Base64 string.</param>
+		/// <param name="imageBytes">Image bytes.</param>
 		/// <returns>Image.</returns>
 		public static Image BytesToImage(byte[] imageBytes)
 		{
@@ -62,11 +62,11 @@ namespace EduroamApp
 		/// <summary>
 		/// Generates HTML code for displaying logos in SVG format.
 		/// </summary>
-		/// <param name="logo">Base64 encoded logo.</param>
+		/// <param name="logo">SVG logo.</param>
 		/// <param name="maxWidth">Width of the logo container.</param>
 		/// <param name="maxHeight">Height of the logo container.</param>
 		/// <returns>Html code.</returns>
-		public static string GenerateLogoHtml(byte[] logo, int maxWidth, int maxHeight)
+		public static string GenerateSvgLogoHtml(byte[] logo, int maxWidth, int maxHeight)
 		{
 			string base64 = System.Convert.ToBase64String(logo);
 			return
