@@ -130,7 +130,7 @@ namespace EduroamApp
                 if (logoFormat == "image/svg+xml")
                 {
                     frmParent.WebLogo.Visible = true;
-                    frmParent.WebLogo.DocumentText = ImageFunctions.GenerateLogoHtml(logoBytes, cWidth, cHeight);
+                    frmParent.WebLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight);
                 }
                 else // other filetypes (jpg, png etc.)
                 {
