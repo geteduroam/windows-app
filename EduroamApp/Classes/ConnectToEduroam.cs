@@ -128,14 +128,31 @@ namespace EduroamApp
 			InterfaceId = eduroamInstance.InterfaceId;
 
 			// gets the first/default authentication method of EapConfig object
-			EapConfig.AuthenticationMethod authMethod = eapConfig.AuthenticationMethods.First();
+			EapConfig.AuthenticationMethod firstAuthMethod = eapConfig.AuthenticationMethods.First();
 
 			// gets EAP type of authentication method
-			EapType = authMethod.EapType;
+			uint firstEapType = firstAuthMethod.EapType;
+			uint eapType = 0;
 
-			// if EAP type is not supported, cancel setup
-			if (EapType != 13 && EapType != 25 && EapType != 21) return EapType;
+			foreach (EapConfig.AuthenticationMethod authMethod in eapConfig.AuthenticationMethods)
+			{
+				// if EAP type is not supported, cancel setup
+				if (authMethod.EapType != 13 && authMethod.EapType != 25 && authMethod.EapType != 21) continue;
+				// We do not support TTLS yet
+				if (authMethod.EapType == 21)
+				{
+					// Since this profile supports TTLS, be sure that any error returned is about TTLS not being supported
+					firstEapType = 21;
+					continue;
+				}
+				eapType = SetupAuthentication(authMethod);
+				if (eapType > 0) return EapType = eapType;
+			}
+			return EapType = firstEapType;
+		}
 
+		private static uint SetupAuthentication(EapConfig.AuthenticationMethod authMethod)
+		{
 			// name of client certificate issuer
 			string certIssuer = null;
 
@@ -253,23 +270,23 @@ namespace EduroamApp
 			string serverNames = string.Join(";", authMethod.ServerName);
 
 			// generates new profile xml
-			ProfileXml = EduroamApp.ProfileXml.CreateProfileXml(Ssid, EapType, serverNames, thumbprints);
+			ProfileXml = EduroamApp.ProfileXml.CreateProfileXml(Ssid, authMethod.EapType, serverNames, thumbprints);
 
 			// creates a new wireless profile
 			CreateNewProfile();
 
 			// checks if EAP type is TLS and there is no client certificate
-			if (EapType == 13 && string.IsNullOrEmpty(authMethod.ClientCertificate))
+			if (authMethod.EapType == 13 && string.IsNullOrEmpty(authMethod.ClientCertificate))
 			{
 				// prompts the user for a locally stored client certificate file
 				DialogResult dialogResult = MessageBox.Show(
 					"The selected profile requires a separate client certificate. Do you want to browse your local files for one?",
 					"Client certificate required", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-				return (uint) (dialogResult == DialogResult.Yes ? 500 : 0);
+				return (uint)(dialogResult == DialogResult.Yes ? 500 : 0);
 			}
 
 			// returns EAP type of installed authentication method
-			return EapType;
+			return authMethod.EapType;
 		}
 
 		/// <summary>
