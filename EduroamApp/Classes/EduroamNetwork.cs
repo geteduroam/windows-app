@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using ManagedNativeWifi;
 
 namespace EduroamApp
@@ -35,11 +37,39 @@ namespace EduroamApp
         }
 
         /// <summary>
+        /// Tries to access the wireless interfaces and reports wether the service is available or not
+        /// </summary>
+        /// <returns>True if wireless service is available</returns>
+        public static bool IsServiceAvailable()
+        {
+            try
+            {
+                NativeWifi.EnumerateInterfaces().ToList();
+            }
+            catch (TargetInvocationException ex)
+            {
+                if (ex.GetBaseException().GetType().Name == "Win32Exception")
+                    if (ex.GetBaseException().Message == "MethodName: WlanOpenHandle, ErrorCode: 1062, ErrorMessage: The service has not been started.\r\n")
+                        return false;
+                throw ex;
+            }
+            catch (Win32Exception ex)
+            {
+                if (ex.NativeErrorCode == 1062) // ERROR_SERVICE_NOT_ACTIVE
+                    return false;
+                throw ex;
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Gets a network pack containing information about an eduroam network, if available.
         /// </summary>
         /// <returns>Network pack.</returns>
         public static AvailableNetworkPack GetEduroamPack()
         {
+            if (!IsServiceAvailable()) return null;
+
             // gets all available networks and stores them in a list
             List<AvailableNetworkPack> networks = NativeWifi.EnumerateAvailableNetworks().ToList();
 
