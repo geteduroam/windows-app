@@ -10,6 +10,8 @@ namespace EduroamConfigure
     {
         static void Main(string[] args)
         {
+            Console.WriteLine("Hallo, Verden!");
+            System.Threading.Thread.Sleep(1000);
         }
     }
 }
