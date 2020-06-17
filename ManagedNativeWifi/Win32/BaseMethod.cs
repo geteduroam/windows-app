@@ -12,9 +12,11 @@ namespace ManagedNativeWifi.Win32
 {
 	internal static class BaseMethod
 	{
+		#region Client
+
 		public class WlanClient : IDisposable
 		{
-			private SafeClientHandle _clientHandle = null;
+			private readonly SafeClientHandle _clientHandle = null;
 
 			public SafeClientHandle Handle => _clientHandle;
 
@@ -23,7 +25,7 @@ namespace ManagedNativeWifi.Win32
 				var result = WlanOpenHandle(
 					2, // Client version for Windows Vista and Windows Server 2008
 					IntPtr.Zero,
-					out uint negotiatedVersion,
+					out _,
 					out _clientHandle);
 
 				CheckResult(nameof(WlanOpenHandle), result, true);
@@ -133,6 +135,8 @@ namespace ManagedNativeWifi.Win32
 			#endregion
 		}
 
+		#endregion
+
 		public static IEnumerable<WLAN_INTERFACE_INFO> GetInterfaceInfoList(SafeClientHandle clientHandle)
 		{
 			var interfaceList = IntPtr.Zero;
@@ -217,6 +221,38 @@ namespace ManagedNativeWifi.Win32
 			}
 		}
 
+		public static WLAN_BSS_ENTRY[] GetNetworkBssEntryList(SafeClientHandle clientHandle, Guid interfaceId, DOT11_SSID ssid, DOT11_BSS_TYPE bssType, bool isSecurityEnabled)
+		{
+			var queryData = IntPtr.Zero;
+			var wlanBssList = IntPtr.Zero;
+			try
+			{
+				queryData = Marshal.AllocHGlobal(Marshal.SizeOf(ssid));
+				Marshal.StructureToPtr(ssid, queryData, false);
+
+				var result = WlanGetNetworkBssList(
+					clientHandle,
+					interfaceId,
+					queryData,
+					bssType,
+					isSecurityEnabled,
+					IntPtr.Zero,
+					out wlanBssList);
+
+				// ERROR_NDIS_DOT11_POWER_STATE_INVALID will be returned if the interface is turned off.
+				return CheckResult(nameof(WlanGetNetworkBssList), result, false)
+					? new WLAN_BSS_LIST(wlanBssList).wlanBssEntries
+					: new WLAN_BSS_ENTRY[0];
+			}
+			finally
+			{
+				Marshal.FreeHGlobal(queryData);
+
+				if (wlanBssList != IntPtr.Zero)
+					WlanFreeMemory(wlanBssList);
+			}
+		}
+
 		public static WLAN_CONNECTION_ATTRIBUTES GetConnectionAttributes(SafeClientHandle clientHandle, Guid interfaceId)
 		{
 			var queryData = IntPtr.Zero;
@@ -227,14 +263,14 @@ namespace ManagedNativeWifi.Win32
 					interfaceId,
 					WLAN_INTF_OPCODE.wlan_intf_opcode_current_connection,
 					IntPtr.Zero,
-					out uint dataSize,
-					ref queryData,
+					out _,
+					out queryData,
 					IntPtr.Zero);
 
 				// ERROR_INVALID_STATE will be returned if the client is not connected to a network.
 				return CheckResult(nameof(WlanQueryInterface), result, false)
 					? Marshal.PtrToStructure<WLAN_CONNECTION_ATTRIBUTES>(queryData)
-					: default(WLAN_CONNECTION_ATTRIBUTES);
+					: default;
 			}
 			finally
 			{
@@ -275,7 +311,7 @@ namespace ManagedNativeWifi.Win32
 				IntPtr.Zero,
 				out string profileXml,
 				ref flags,
-				out uint grantedAccess);
+				out _);
 
 			profileTypeFlag = flags;
 
@@ -299,26 +335,9 @@ namespace ManagedNativeWifi.Win32
 
 			// ERROR_INVALID_PARAMETER will be returned if the interface is removed.
 			// ERROR_ALREADY_EXISTS will be returned if the profile already exists.
-			// ERROR_BAD_PROFILE will be returned if the profile xml is not valid.
+			// ERROR_BAD_PROFILE will be returned if the profile XML is not valid.
 			// ERROR_NO_MATCH will be returned if the capability specified in the profile is not supported.
 			return CheckResult(nameof(WlanSetProfile), result, false, pdwReasonCode);
-		}
-
-		public static bool SetProfileUserData(SafeClientHandle clientHandle, Guid interfaceId, string profileName, uint profileUserFlag, string userDataXml)
-		{
-			var result = WlanSetProfileEapXmlUserData(
-				clientHandle,
-				interfaceId,
-				profileName,
-				profileUserFlag,
-				userDataXml,
-				IntPtr.Zero);
-
-			// ERROR_INVALID_PARAMETER will be returned if the interface is removed.
-			// ERROR_ALREADY_EXISTS will be returned if the profile already exists.
-			// ERROR_BAD_PROFILE will be returned if the profile xml is not valid.
-			// ERROR_NO_MATCH will be returned if the capability specified in the profile is not supported.
-			return CheckResult(nameof(WlanSetProfileEapXmlUserData), result, false);
 		}
 
 		public static bool SetProfilePosition(SafeClientHandle clientHandle, Guid interfaceId, string profileName, uint position)
@@ -406,7 +425,7 @@ namespace ManagedNativeWifi.Win32
 
 				return CheckResult(nameof(WlanGetInterfaceCapability), result, false)
 					? Marshal.PtrToStructure<WLAN_INTERFACE_CAPABILITY>(capability)
-					: default(WLAN_INTERFACE_CAPABILITY);
+					: default;
 			}
 			finally
 			{
@@ -425,8 +444,8 @@ namespace ManagedNativeWifi.Win32
 					interfaceId,
 					WLAN_INTF_OPCODE.wlan_intf_opcode_radio_state,
 					IntPtr.Zero,
-					out uint dataSize,
-					ref queryData,
+					out _,
+					out queryData,
 					IntPtr.Zero);
 
 				return CheckResult(nameof(WlanQueryInterface), result, false)
@@ -443,8 +462,7 @@ namespace ManagedNativeWifi.Win32
 		public static bool SetPhyRadioState(SafeClientHandle clientHandle, Guid interfaceId, WLAN_PHY_RADIO_STATE state)
 		{
 			var size = Marshal.SizeOf(state);
-
-			IntPtr setData = IntPtr.Zero;
+			var setData = IntPtr.Zero;
 			try
 			{
 				setData = Marshal.AllocHGlobal(size);
@@ -462,6 +480,65 @@ namespace ManagedNativeWifi.Win32
 				// By default, only a user who is logged on as a member of the Administrators group or
 				// the Network Configuration Operators group can set the operation mode of the interface.
 				// ERROR_GEN_FAILURE will be thrown if the OpCode is not supported by the driver or NIC.
+				return CheckResult(nameof(WlanSetInterface), result, false);
+			}
+			finally
+			{
+				Marshal.FreeHGlobal(setData);
+			}
+		}
+
+		public static bool? GetAutoConfig(SafeClientHandle clientHandle, Guid interfaceId)
+		{
+			var value = GetInterfaceInt(clientHandle, interfaceId, WLAN_INTF_OPCODE.wlan_intf_opcode_autoconf_enabled);
+
+			return value.HasValue
+				? (value.Value != 0) // True = other than 0. False = 0.
+				: (bool?)null;
+		}
+
+		private static int? GetInterfaceInt(SafeClientHandle clientHandle, Guid interfaceId, WLAN_INTF_OPCODE wlanIntfOpcode)
+		{
+			var queryData = IntPtr.Zero;
+			try
+			{
+				var result = WlanQueryInterface(
+					clientHandle,
+					interfaceId,
+					wlanIntfOpcode,
+					IntPtr.Zero,
+					out _,
+					out queryData,
+					IntPtr.Zero);
+
+				return CheckResult(nameof(WlanQueryInterface), result, false)
+					? Marshal.ReadInt32(queryData)
+					: (int?)null;
+			}
+			finally
+			{
+				if (queryData != IntPtr.Zero)
+					WlanFreeMemory(queryData);
+			}
+		}
+
+		private static bool SetInterfaceInt(SafeClientHandle clientHandle, Guid interfaceId, WLAN_INTF_OPCODE wlanIntfOpcode, int value)
+		{
+			var size = Marshal.SizeOf(value);
+			var setData = IntPtr.Zero;
+			try
+			{
+				setData = Marshal.AllocHGlobal(size);
+				Marshal.WriteInt32(setData, value);
+
+				var result = WlanSetInterface(
+					clientHandle,
+					interfaceId,
+					wlanIntfOpcode,
+					(uint)size,
+					setData,
+					IntPtr.Zero);
+
 				return CheckResult(nameof(WlanSetInterface), result, false);
 			}
 			finally
@@ -512,34 +589,34 @@ namespace ManagedNativeWifi.Win32
 		{
 			var message = new StringBuilder($"MethodName: {methodName}, ErrorCode: {errorCode}");
 
-			var buff = new StringBuilder(512); // This 512 capacity is arbitrary.
+			var buffer = new StringBuilder(512); // This 512 capacity is arbitrary.
 
 			var messageLength = FormatMessage(
-			  FORMAT_MESSAGE_FROM_SYSTEM,
-			  IntPtr.Zero,
-			  errorCode,
-			  0x0409, // US (English)
-			  buff,
-			  buff.Capacity,
-			  IntPtr.Zero);
+				FORMAT_MESSAGE_FROM_SYSTEM,
+				IntPtr.Zero,
+				errorCode,
+				0x0409, // US (English)
+				buffer,
+				buffer.Capacity,
+				IntPtr.Zero);
 
 			if (0 < messageLength)
-				message.Append($", ErrorMessage: {buff}");
+				message.Append($", ErrorMessage: {buffer}");
 
 			if (0 < reasonCode)
 			{
 				message.Append($", ReasonCode: {reasonCode}");
 
-				buff.Clear();
+				buffer.Clear();
 
 				var result = WlanReasonCodeToString(
 					reasonCode,
-					buff.Capacity,
-					buff,
+					buffer.Capacity,
+					buffer,
 					IntPtr.Zero);
 
 				if (result == ERROR_SUCCESS)
-					message.Append($", ReasonMessage: {buff}");
+					message.Append($", ReasonMessage: {buffer}");
 			}
 
 			return message.ToString();

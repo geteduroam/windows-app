@@ -11,6 +11,12 @@ namespace ManagedNativeWifi
 	/// <summary>
 	/// BSS network type
 	/// </summary>
+	/// <remarks>
+	/// Partly equivalent to DOT11_BSS_TYPE:
+	/// https://docs.microsoft.com/en-us/windows/win32/nativewifi/dot11-bss-type
+	/// Also equivalent to connectionType element in profile XML:
+	/// https://docs.microsoft.com/en-us/windows/win32/nativewifi/wlan-profileschema-connectiontype-wlanprofile-element
+	/// </remarks>
 	public enum BssType
 	{
 		/// <summary>
@@ -31,6 +37,12 @@ namespace ManagedNativeWifi
 
 	internal static class BssTypeConverter
 	{
+		/// <summary>
+		/// Converts from DOT11_BSS_TYPE value.
+		/// </summary>
+		/// <param name="source">DOT11_BSS_TYPE value</param>
+		/// <param name="bssType">BssType value</param>
+		/// <returns>True if successfully converts</returns>
 		public static bool TryConvert(DOT11_BSS_TYPE source, out BssType bssType)
 		{
 			switch (source)
@@ -42,23 +54,7 @@ namespace ManagedNativeWifi
 					bssType = BssType.Independent;
 					return true;
 			}
-			bssType = default(BssType);
-			return false;
-		}
-
-		public static bool TryParse(string source, out BssType bssType)
-		{
-			if (string.Equals("ESS", source, StringComparison.OrdinalIgnoreCase))
-			{
-				bssType = BssType.Infrastructure;
-				return true;
-			}
-			if (string.Equals("IBSS", source, StringComparison.OrdinalIgnoreCase))
-			{
-				bssType = BssType.Independent;
-				return true;
-			}
-			bssType = default(BssType);
+			bssType = default;
 			return false;
 		}
 
@@ -72,6 +68,28 @@ namespace ManagedNativeWifi
 					return DOT11_BSS_TYPE.dot11_BSS_type_independent;
 			}
 			throw new ArgumentException(nameof(source));
+		}
+
+		/// <summary>
+		/// Converts from connectionType element in profile XML.
+		/// </summary>
+		/// <param name="source">connectionType element</param>
+		/// <param name="bssType">BssType value</param>
+		/// <returns>True if successfully converts</returns>
+		public static bool TryParse(string source, out BssType bssType)
+		{
+			if (string.Equals("ESS", source, StringComparison.OrdinalIgnoreCase))
+			{
+				bssType = BssType.Infrastructure;
+				return true;
+			}
+			if (string.Equals("IBSS", source, StringComparison.OrdinalIgnoreCase))
+			{
+				bssType = BssType.Independent;
+				return true;
+			}
+			bssType = default;
+			return false;
 		}
 	}
 }
