@@ -9,6 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ManagedNativeWifi</RootNamespace>
     <AssemblyName>ManagedNativeWifi</AssemblyName>
+	<LangVersion>8.0</LangVersion>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,7 +22,6 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\ManagedNativeWifi.xml</DocumentationFile>
-    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -35,9 +35,6 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Security" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -47,21 +44,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\DisposableContainer.cs" />
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Win32\BaseMethod.cs" />
     <Compile Include="Win32\NativeMethod.cs" />
     <Compile Include="Win32\SafeClientHandle.cs" />
+    <Compile Include="AuthenticationAlgorithm.cs" />
     <Compile Include="AuthenticationMethod.cs" />
     <Compile Include="AvailableNetworkPack.cs" />
     <Compile Include="BssNetworkPack.cs" />
     <Compile Include="BssType.cs" />
+    <Compile Include="CipherAlgorithm.cs" />
+    <Compile Include="ConnectionMode.cs" />
     <Compile Include="EncryptionType.cs" />
     <Compile Include="InterfaceInfo.cs" />
-    <Compile Include="InterfaceRadio.cs" />
     <Compile Include="InterfaceState.cs" />
     <Compile Include="NativeWifi.cs" />
     <Compile Include="NativeWifiPlayer.cs" />
@@ -70,14 +64,9 @@
     <Compile Include="ProfileDocument.cs" />
     <Compile Include="ProfilePack.cs" />
     <Compile Include="ProfileType.cs" />
+    <Compile Include="RadioInfo.cs" />
     <Compile Include="RadioSet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

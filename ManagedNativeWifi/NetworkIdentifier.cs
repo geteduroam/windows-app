@@ -4,12 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using static ManagedNativeWifi.Win32.NativeMethod;
+
 namespace ManagedNativeWifi
 {
 	/// <summary>
 	/// Identifier of wireless LAN
 	/// </summary>
-	/// <remarks>This class is immutable.</remarks>
+	/// <remarks>This class is designed as immutable.</remarks>
 	public class NetworkIdentifier
 	{
 		private readonly byte[] _rawBytes;
@@ -23,6 +25,12 @@ namespace ManagedNativeWifi
 			this._rawBytes = rawBytes;
 			this._rawString = rawString;
 		}
+
+		internal NetworkIdentifier(DOT11_SSID ssid) : this(ssid.ToBytes(), ssid.ToString())
+		{ }
+
+		internal NetworkIdentifier(DOT11_MAC_ADDRESS bssid) : this(bssid.ToBytes(), bssid.ToString())
+		{ }
 
 		/// <summary>
 		/// Returns the identifier in byte array.
