@@ -32,11 +32,11 @@ namespace EduroamApp
         /// <param name="pword">Password.</param>
         /// <param name="eapType">EAP type</param>
         /// <returns>Complete user data xml as string.</returns>
-        public static string CreateUserDataXml(string uname, string pword, uint eapType)
+        public static string CreateUserDataXml(string uname, string pword, EapType eapType)
         {
             XElement newUserData = null;
 
-            if (eapType == 25)
+            if (eapType == EapType.PEAP)
             {
                 newUserData =
                     new XElement(nsEHUC + "EapHostUserCredentials",
@@ -70,7 +70,7 @@ namespace EduroamApp
                     );
             }
             // WORK IN PROGRESS - Dependent on creating a correct profile XML for TTLS
-            else if (eapType == 21)
+            else if (eapType == EapType.TTLS)
             {
                 newUserData =
                     new XElement(nsEHUC + "EapHostUserCredentials",
@@ -95,6 +95,7 @@ namespace EduroamApp
                         )
                     );
             }
+            // TODO: handle the missing EapType cases in a different way?
 
             // returns xml as string if not null
             return newUserData != null ? newUserData.ToString() : "";

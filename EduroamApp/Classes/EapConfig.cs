@@ -17,14 +17,14 @@ namespace EduroamApp
         public class AuthenticationMethod
         {
             // Properties
-            public uint EapType { get; set; }
+            public EapType EapType { get; set; }
             public List<string> CertificateAuthorities { get; set; }
             public List<string> ServerName { get; set; }
             public string ClientCertificate { get; set; }
             public string ClientPassphrase { get; set; }
 
             // Constructor
-            public AuthenticationMethod(uint eapType, List<string> certificateAuthorities, List<string> serverName, string clientCertificate = null, string clientPassphrase = null)
+            public AuthenticationMethod(EapType eapType, List<string> certificateAuthorities, List<string> serverName, string clientCertificate = null, string clientPassphrase = null)
             {
                 EapType = eapType;
                 CertificateAuthorities = certificateAuthorities;
@@ -63,4 +63,12 @@ namespace EduroamApp
             }
         }
     }
+
+    public enum EapType : uint
+    {
+        TLS = 13,
+        PEAP = 25, // also covers MSCHAPv2 (26)
+        TTLS = 21,
+    }
+
 }
