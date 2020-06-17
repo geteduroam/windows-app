@@ -519,6 +519,33 @@ namespace ManagedNativeWifi
 		}
 
 		/// <summary>
+		/// Sets the Extensible Authentication Protocol (EAP) user credentials as specified by an XML string.
+		/// </summary>
+		/// <param name="interfaceId">Interface ID</param>
+		/// <param name="profileName">Profile name</param>
+		/// <param name="profileUserType">Profile user type</param>
+		/// <param name="userDataXml">User data XML</param>
+		/// <returns></returns>
+		public static bool SetProfileUserData(Guid interfaceId, string profileName, uint profileUserType, string userDataXml)
+		{
+			return SetProfileUserData(null, interfaceId, profileName, profileUserType, userDataXml);
+		}
+
+		internal static bool SetProfileUserData(Base.WlanClient client, Guid interfaceId, string profileName, uint profileUserType, string userDataXml)
+		{
+			if (interfaceId == Guid.Empty)
+				throw new ArgumentException(nameof(interfaceId));
+
+			if (string.IsNullOrWhiteSpace(userDataXml))
+				throw new ArgumentNullException(nameof(userDataXml));
+
+			using (var container = new DisposableContainer<Base.WlanClient>(client))
+			{
+				return Base.SetProfileUserData(container.Content.Handle, interfaceId, profileName, profileUserType, userDataXml);
+			}
+		}
+
+		/// <summary>
 		/// Sets the position of a specified wireless profile in preference order.
 		/// </summary>
 		/// <param name="interfaceId">Interface ID</param>

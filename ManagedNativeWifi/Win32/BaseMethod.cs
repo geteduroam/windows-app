@@ -340,6 +340,23 @@ namespace ManagedNativeWifi.Win32
 			return CheckResult(nameof(WlanSetProfile), result, false, pdwReasonCode);
 		}
 
+		public static bool SetProfileUserData(SafeClientHandle clientHandle, Guid interfaceId, string profileName, uint profileUserFlag, string userDataXml)
+		{
+			var result = WlanSetProfileEapXmlUserData(
+				clientHandle,
+				interfaceId,
+				profileName,
+				profileUserFlag,
+				userDataXml,
+				IntPtr.Zero);
+
+			// ERROR_INVALID_PARAMETER will be returned if the interface is removed.
+			// ERROR_ALREADY_EXISTS will be returned if the profile already exists.
+			// ERROR_BAD_PROFILE will be returned if the profile xml is not valid.
+			// ERROR_NO_MATCH will be returned if the capability specified in the profile is not supported.
+			return CheckResult(nameof(WlanSetProfileEapXmlUserData), result, false);
+		}
+
 		public static bool SetProfilePosition(SafeClientHandle clientHandle, Guid interfaceId, string profileName, uint position)
 		{
 			var result = WlanSetProfilePosition(
