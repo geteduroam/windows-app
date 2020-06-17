@@ -121,6 +121,7 @@
     <Compile Include="Classes\ConnectToEduroam.cs" />
     <Compile Include="Classes\Country.cs" />
     <Compile Include="Classes\EduroamNetwork.cs" />
+    <Compile Include="Classes\Exceptions.cs" />
     <Compile Include="Classes\FileDialog.cs" />
     <Compile Include="Classes\ImageFunctions.cs" />
     <Compile Include="Forms\frmRedirect.cs">
