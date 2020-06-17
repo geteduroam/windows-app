@@ -42,10 +42,10 @@ namespace EduroamApp
 		/// <param name="serverNames">Server names.</param>
 		/// <param name="thumbprints">List of CA thumbprints.</param>
 		/// <returns>Complete wireless profile xml as string.</returns>
-		public static string CreateProfileXml(string ssid, uint eapType, string serverNames, List<string> thumbprints)
+		public static string CreateProfileXml(string ssid, EapType eapType, string serverNames, List<string> thumbprints)
 		{
 			// sets AuthorId to 311 if using eap type TTLS
-			int authId = eapType == 21 ? 311 : 0;
+			int authId = eapType == EapType.TTLS ? 311 : 0;
 
 			// creates common xml elements
 			XElement newProfile =
@@ -76,7 +76,7 @@ namespace EduroamApp
 								new XElement(nsOneX + "EAPConfig",
 									new XElement(nsEHC + "EapHostConfig",
 										new XElement(nsEHC + "EapMethod",
-											new XElement(nsEC + "Type", eapType),
+											new XElement(nsEC + "Type", (uint)eapType),
 											new XElement(nsEC + "VendorId", 0),
 											new XElement(nsEC + "VendorType", 0),
 											new XElement(nsEC + "AuthorId", authId)
@@ -100,7 +100,7 @@ namespace EduroamApp
 										.Element(nsEHC + "EapHostConfig")
 										.Element(nsEHC + "Config");
 
-			if (eapType == 13)
+			if (eapType == EapType.TLS)
 			{
 				// sets namespace
 				nsEapType = nsETCPv1;
@@ -133,7 +133,7 @@ namespace EduroamApp
 					)
 				);
 			}
-			else if (eapType == 25)
+			else if (eapType == EapType.PEAP)
 			{
 				// sets namespace
 				nsEapType = nsMPCPv1;
@@ -171,7 +171,7 @@ namespace EduroamApp
 				);
 			}
 			// WORK IN PROGRESS - Dependent on setting correct user data for TTLS
-			else if (eapType == 21)
+			else if (eapType == EapType.TTLS)
 			{
 				// sets namespace
 				nsEapType = nsTTLS;
@@ -219,7 +219,7 @@ namespace EduroamApp
 				// sets different nodepaths depending on EAP type
 				switch (eapType)
 				{
-					case 21:
+					case EapType.TTLS:
 						serverValidationElement = configElement.Element(nsTTLS + "EapTtls")
 																.Element(nsTTLS + "ServerValidation");
 						break;
@@ -236,7 +236,7 @@ namespace EduroamApp
 					serverValidationElement.Add(new XElement(nsEapType + thumbprintNode, thumb));
 				}
 
-				if (eapType == 13)
+				if (eapType == EapType.TLS)
 				{
 					XElement caHashListElement = configElement.Element(nsBECP + "Eap")
 															  .Element(nsEapType + "EapType")

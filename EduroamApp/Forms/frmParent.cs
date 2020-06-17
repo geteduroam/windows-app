@@ -97,7 +97,7 @@ namespace EduroamApp
 						LoadFrmSelectMethod();
 						break;
 					}
-					EapType = frmSummary.InstallEapConfig();
+					EapType = (uint)frmSummary.InstallEapConfig();
 					if (EapType == 13) LoadFrmConnect();
 					else if (EapType == 25 || EapType == 21) LoadFrmLogin();
 					else if (EapType == 500)
@@ -297,7 +297,7 @@ namespace EduroamApp
 				lblTitle.Text = "Summary";
 			}
 			if (!reload) btnNext.Enabled = true;
-			btnNext.Text = eapConfig.AuthenticationMethods.First().EapType == 13 ? "Connect" : "Next >";
+			btnNext.Text = eapConfig.AuthenticationMethods.First().EapType == EduroamApp.EapType.TLS ? "Connect" : "Next >";
 			LoadNewForm(frmSummary);
 		}
 
