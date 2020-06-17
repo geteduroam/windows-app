@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduroamApp", "EduroamApp\EduroamApp.csproj", "{346E5FA8-397C-4917-A32A-27BC66C2151F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedNativeWifi", "ManagedNativeWifi\ManagedNativeWifi.csproj", "{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduroamConfigure", "EduroamConfigure\EduroamConfigure.csproj", "{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,18 @@ Global
 		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Release|x64.Build.0 = Release|Any CPU
 		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Release|x86.ActiveCfg = Release|Any CPU
 		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Release|x86.Build.0 = Release|Any CPU
+		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Debug|x64.Build.0 = Debug|Any CPU
+		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Debug|x86.Build.0 = Debug|Any CPU
+		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Release|x64.ActiveCfg = Release|Any CPU
+		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Release|x64.Build.0 = Release|Any CPU
+		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Release|x86.ActiveCfg = Release|Any CPU
+		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
