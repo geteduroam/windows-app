@@ -27,19 +27,22 @@ namespace EduroamApp
 		// xml file for building wireless profile
 		private static string ProfileXml { get; set; }
 		// EAP type of selected configuration
-		private static uint EapType { get; set; }
+		private static EapType EapType { get; set; }
 		// client certificate valid from
 		public static DateTime CertValidFrom { get; set; }
 
 		/// <summary>
-		/// Creates EapConfig object from EAP config file.
+		/// Creates EapConfig object from EAP config xml data
 		/// </summary>
-		/// <param name="eapFile">EAP config file as string.</param>
-		/// <returns>EapConfig object.</returns>
-		public static EapConfig GetEapConfig(string eapFile)
+		/// <param name="eapXmlData">EAP config XML as string</param>
+		/// <returns>EapConfig object</returns>
+		public static EapConfig GetEapConfig(string eapXmlData)
 		{
+			// TODO: Hotspot 2.0
+			// TODO: TTLS
+
 			// loads the XML file from its file path
-			XElement doc = XElement.Parse(eapFile);
+			XElement doc = XElement.Parse(eapXmlData);
 
 			// creates new EapConfig object
 			var eapConfig = new EapConfig();
@@ -51,7 +54,7 @@ namespace EduroamApp
 			foreach (XElement element in authMethodElements)
 			{
 				// gets EAP method type
-				var eapTypeEl = (uint)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Type");
+				var eapTypeEl = (EapType)(uint)element.DescendantsAndSelf().Elements().FirstOrDefault(x => x.Name.LocalName == "Type");
 
 				// gets list of CAs
 				List<XElement> caElements = element.DescendantsAndSelf().Elements().Where(x => x.Name.LocalName == "CA").ToList();
@@ -118,7 +121,7 @@ namespace EduroamApp
 		/// </summary>
 		/// <param name="eapConfig">EapConfig object.</param>
 		/// <returns>Eap type (13, 25, etc.)</returns>
-		public static uint Setup(EapConfig eapConfig)
+		public static uint Setup(EapConfig eapConfig) // todo: remove
 		{
 			// creates new instance of eduroam network
 			var eduroamInstance = new EduroamNetwork();
@@ -131,27 +134,35 @@ namespace EduroamApp
 			EapConfig.AuthenticationMethod firstAuthMethod = eapConfig.AuthenticationMethods.First();
 
 			// gets EAP type of authentication method
-			uint firstEapType = firstAuthMethod.EapType;
-			uint eapType = 0;
+			EduroamApp.EapType firstEapType = firstAuthMethod.EapType;
 
 			foreach (EapConfig.AuthenticationMethod authMethod in eapConfig.AuthenticationMethods)
 			{
-				// if EAP type is not supported, cancel setup
-				if (authMethod.EapType != 13 && authMethod.EapType != 25 && authMethod.EapType != 21) continue;
-				// We do not support TTLS yet
-				if (authMethod.EapType == 21)
+				switch (authMethod.EapType)
 				{
-					// Since this profile supports TTLS, be sure that any error returned is about TTLS not being supported
-					firstEapType = 21;
-					continue;
+					case EduroamApp.EapType.TLS:
+					case EduroamApp.EapType.PEAP:
+						break;
+					case EduroamApp.EapType.TTLS: // We do not support TTLS yet
+						// Since this profile supports TTLS, be sure that any error returned is about TTLS not being supported
+						firstEapType = EduroamApp.EapType.TTLS;
+						goto default;
+					default:
+						// if EAP type is not supported, skip
+						continue;
 				}
-				eapType = SetupAuthentication(authMethod);
-				if (eapType > 0) return EapType = eapType;
+				EduroamApp.EapType thisEapType = SetupAuthentication(authMethod);
+				if (thisEapType > 0)
+				{
+					EapType = thisEapType;
+					return (uint)EapType;
+				}
 			}
-			return EapType = firstEapType;
+			EapType = firstEapType;
+			return (uint)EapType;
 		}
 
-		private static uint SetupAuthentication(EapConfig.AuthenticationMethod authMethod)
+		private static EapType SetupAuthentication(EapConfig.AuthenticationMethod authMethod)
 		{
 			// name of client certificate issuer
 			string certIssuer = null;
@@ -276,13 +287,13 @@ namespace EduroamApp
 			CreateNewProfile();
 
 			// checks if EAP type is TLS and there is no client certificate
-			if (authMethod.EapType == 13 && string.IsNullOrEmpty(authMethod.ClientCertificate))
+			if (authMethod.EapType == EapType.TLS && string.IsNullOrEmpty(authMethod.ClientCertificate))
 			{
 				// prompts the user for a locally stored client certificate file
 				DialogResult dialogResult = MessageBox.Show(
 					"The selected profile requires a separate client certificate. Do you want to browse your local files for one?",
 					"Client certificate required", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-				return (uint)(dialogResult == DialogResult.Yes ? 500 : 0);
+				return (EapType)(dialogResult == DialogResult.Yes ? 500 : 0);
 			}
 
 			// returns EAP type of installed authentication method
