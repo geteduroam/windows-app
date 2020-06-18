@@ -36,8 +36,6 @@ namespace EduroamApp
             frmParent.RedirectUrl = "";
 
             // async method to get list of institutions
-            //bool getInstSuccess = await Task.Run(() => GetAllInstitutions());
-            IdProviderDownloader downloader = new IdProviderDownloader();
             bool getInstSuccess = await Task.Run(() => GetAllInstitutions());
 
             if (getInstSuccess)
@@ -49,6 +47,7 @@ namespace EduroamApp
                 cboInstitution.Visible = true;
                 tlpLoading.Visible = false;
                 frmParent.BtnNextEnabled = true;
+
                 // populates countries combobox
                 PopulateCountries();
             }
@@ -66,7 +65,7 @@ namespace EduroamApp
         {
             try
             {
-                identityProviders = IdProviderDownloader.GetAllIdProviders();
+                identityProviders = IdentityProviderDownloader.GetAllIdProviders();
                 return true;
             }
             catch (EduroamAppUserError ex)
@@ -83,13 +82,13 @@ namespace EduroamApp
         private void PopulateCountries()
         {
             // get all countries
-            countries = IdProviderParser.GetCountries(identityProviders);
+            countries = IdentityProviderParser.GetCountries(identityProviders);
 
             // adds countries to combobox
             cboCountry.Items.AddRange(countries.OrderBy(c => c.CountryName).Select(c => c.CountryName).ToArray());
 
             //Find the country code for the country closest to this machine
-            string closestCountryCode = IdProviderParser.GetClosestCountryCode(identityProviders, frmParent.GeoWatcher.Position.Location);
+            string closestCountryCode = IdentityProviderParser.GetClosestCountryCode(identityProviders, frmParent.GeoWatcher.Position.Location);
 
             // search countries for match on closestCountryCode
             string closestCountry = countries.Where(c => c.CountryCode == closestCountryCode).Select(c => c.CountryName).FirstOrDefault();
@@ -122,7 +121,7 @@ namespace EduroamApp
             try
             {
                 // find closest insitute in the country
-                IdentityProvider closestInstitute = IdProviderParser.GetClosestIdProvider(providersInCountry, frmParent.GeoWatcher.Position.Location);
+                IdentityProvider closestInstitute = IdentityProviderParser.GetClosestIdProvider(providersInCountry, frmParent.GeoWatcher.Position.Location);
                 // select closest institute to be default select
                 cboInstitution.SelectedIndex = cboInstitution.FindStringExact(closestInstitute.Title);
             } catch (EduroamAppUserError ex) 
@@ -146,7 +145,7 @@ namespace EduroamApp
             // get IdentityProviderProfile object for provider, containing all profiles
             try
             {
-                idProviderProfiles = IdProviderDownloader.GetIdentityProviderProfiles(idProviderId);
+                idProviderProfiles = IdentityProviderDownloader.GetIdentityProviderProfiles(idProviderId);
             }
             catch (EduroamAppUserError ex)
             {
@@ -202,8 +201,8 @@ namespace EduroamApp
             }
 
             // checks for redirect link in profile attributes
-            IdProviderProfileAttributes attributes = IdProviderDownloader.GetProfileAttributes(profileId);
-            string redirect = IdProviderParser.getRedirect(attributes);
+            IdProviderProfileAttributes attributes = IdentityProviderDownloader.GetProfileAttributes(profileId);
+            string redirect = IdentityProviderParser.getRedirect(attributes);
             // eap config file as string
             string eapString;
 
@@ -211,13 +210,21 @@ namespace EduroamApp
             if (string.IsNullOrEmpty(redirect))
             {
                 // gets eap config file directly
-                eapString = IdProviderDownloader.GetEapConfigString(profileId);
+                eapString = IdentityProviderDownloader.GetEapConfigString(profileId);
             }
             // if Let's Wifi redirect
             else if (redirect.Contains("#letswifi"))
             {
                 // get eap config file from browser authenticate
-                eapString = OAuth.BrowserAuthenticate(redirect);
+                try
+                {
+                    eapString = OAuth.BrowserAuthenticate(redirect);
+                }
+                catch (EduroamAppUserError ex)
+                {
+                    EduroamAppExceptionHandler(ex);
+                    eapString = "";
+                }
                 // return focus to application
                 frmParent.Activate();
             }
@@ -254,11 +261,10 @@ namespace EduroamApp
         /// <param name="ex">WebException.</param>
         private void EduroamAppExceptionHandler(EduroamAppUserError ex)
         {
-            HideControls();
-            lblError.Text = ex.UserFacingMessage;
-            lblError.Visible = true;
-            MessageBox.Show(ex.UserFacingMessage, "eduroam - Exception",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //HideControls();
+            //lblError.Text = ex.UserFacingMessage;
+            //lblError.Visible = true;
+            MessageBox.Show(ex.UserFacingMessage, "eduroam - Web exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
 
@@ -271,8 +277,7 @@ namespace EduroamApp
         {
             MessageBox.Show("The selected institution or profile is not supported. " +
                             "Please select a different institution or profile.\n"
-                            + "Exception: " + ex.Message, "eduroam - Exception",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            + "Exception: " + ex.Message);
         }
 
         /// <summary>
