@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 
 namespace EduroamApp
 {
@@ -22,6 +24,19 @@ namespace EduroamApp
             public List<string> ServerName { get; set; }
             public string ClientCertificate { get; set; }
             public string ClientPassphrase { get; set; }
+
+            /// <summary>
+            /// TODO
+            /// </summary>
+            /// <returns></returns>
+            public IEnumerable<X509Certificate2> CertificateAuthoritiesAsX509Certificate2() {
+                foreach (var ca in CertificateAuthorities)
+                { 
+                    var cert = new X509Certificate2(Convert.FromBase64String(ca));
+                    cert.FriendlyName = cert.GetNameInfo(X509NameType.SimpleName, false);
+                    yield return cert;
+                }
+            }
 
             // Constructor
             public AuthenticationMethod(EapType eapType, List<string> certificateAuthorities, List<string> serverName, string clientCertificate = null, string clientPassphrase = null)
