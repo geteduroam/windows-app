@@ -146,7 +146,7 @@ namespace EduroamApp
                     case EduroamApp.EapType.TTLS: // We do not support TTLS yet
                         // Since this profile supports TTLS, be sure that any error returned is about TTLS not being supported
                         firstEapType = EduroamApp.EapType.TTLS;
-                        break;
+                        goto default;
                     default:
                         // if EAP type is not supported, skip
                         continue;
