@@ -10,7 +10,7 @@ namespace EduroamApp
     {
         public string UserFacingMessage { get; }
 
-        public EduroamAppUserError(string message, string userFacingMessage) : base(message)
+        public EduroamAppUserError(string message, string userFacingMessage = "NO REASON PROVIDED") : base(message)
         {
             UserFacingMessage = userFacingMessage;
         }
