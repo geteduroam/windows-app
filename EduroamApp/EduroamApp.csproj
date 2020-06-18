@@ -116,7 +116,8 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\DownloadIdProvider.cs" />
+    <Compile Include="Classes\IdProviderParser.cs" />
+    <Compile Include="Classes\IdProviderDownloader.cs" />
     <Compile Include="Classes\EapConfig.cs" />
     <Compile Include="Classes\ConnectToEduroam.cs" />
     <Compile Include="Classes\Country.cs" />
