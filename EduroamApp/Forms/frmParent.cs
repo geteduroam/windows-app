@@ -100,7 +100,7 @@ namespace EduroamApp
 					EapType = (uint)frmSummary.InstallEapConfig();
 					if (EapType == 13) LoadFrmConnect();
 					else if (EapType == 25 || EapType == 21) LoadFrmLogin();
-					else if (EapType == 500)
+					else if (EapType == 500) // User needs to find user certificate
 					{
 						LocalFileType = "CERT";
 						LoadFrmLocalCert();

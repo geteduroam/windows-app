@@ -180,16 +180,57 @@ namespace EduroamApp
 		/// <summary>
 		/// Installs certificates from EapConfig and creates wireless profile.
 		/// </summary>
-		/// <returns>EAP type of installed EapConfig.</returns>
+		/// <returns>
+		/// EAP type (EapType) of installed EapConfig as a uint,
+		/// or 500 if user needs to install a client certificate,
+		/// or 600 if there is no connectivity,
+		/// or 0 if some other error happened
+		/// </returns>
 		public uint InstallEapConfig()
 		{
 			try
 			{
-				uint eapType = ConnectToEduroam.Setup(eapConfig);
+				uint eapType = 0;
+				foreach (var authMethodInstaller in ConnectToEduroam.InstallEapConfig(eapConfig))
+				{
+					// warn user if we need to install CAs
+					if (authMethodInstaller.NeedToInstallCAs())
+						MessageBox.Show(
+							"You will now be prompted to install a Certificate Authority. \n" +
+							"In order to connect to eduroam, you need to accept this by pressing \"Yes\" in the following dialog.",
+							"Accept Certificate Authority", MessageBoxButtons.OK);
+					while (!authMethodInstaller.InstallCertificates())
+					{
+						// Ask user if he wan'ts to retry
+						DialogResult retryCa = MessageBox.Show(
+							"CA not installed. \n" +
+							"In order to connect to eduroam, you must press \"Yes\" when prompted to install the Certificate Authority.",
+							"Accept Certificate Authority", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+						if (retryCa == DialogResult.Cancel)
+							break;
+					}
+					if (authMethodInstaller.NeedToInstallCAs()) // if user refused to install CA
+						break;
+					if (!authMethodInstaller.InstallProfile())
+					{
+						DialogResult dialogResult = MessageBox.Show(
+							"The selected profile requires a separate client certificate. Do you want to browse your local files for one?",
+							"Client certificate required", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+						eapType = 500; // TODO: ew
+						break;
+					}
+					else
+					{
+						eapType = (uint)authMethodInstaller.EapType;
+						break;
+					}
+				}
+
 				frmParent.InstId = eapConfig.InstitutionInfo.InstId;
+
 				if (EduroamNetwork.GetEduroamPack() == null)
 				{
-					eapType = 600;
+					eapType = 600; // TODO: ew
 					frmParent.EduroamAvailable = false;
 				}
 				else frmParent.EduroamAvailable = true;
@@ -197,28 +238,35 @@ namespace EduroamApp
 				frmParent.ProfileCondition = "BADPROFILE";
 				return eapType;
 			}
-			catch (ArgumentException argEx)
+			catch (ArgumentException argEx) // TODO, handle in ConnectToEuroam or EduroamNetwork
 			{
 				if (argEx.Message == "interfaceId")
 				{
 					MessageBox.Show(
-						"Could not establish a connection through your computer's wireless network interface. \n" +
-						"Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.\nException: " +
+						"Could not establish a connection through your computer's wireless network interface.\n" +
+						"Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.\n" +
+						"\n" +
+						"Exception: " +
 						argEx.Message,
 						"eduroam", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
 			}
-			catch (CryptographicException cryptEx)
+			catch (CryptographicException cryptEx) // TODO, handle in ConnectToEuroam or EduroamNetwork
 			{
-				MessageBox.Show("One or more certificates are corrupt. Please select another file, or try again later.\n"
-								+ "Exception: " + cryptEx.Message, "eduroam - Exception",
-								MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				MessageBox.Show(
+					"One or more certificates are corrupt. Please select another file, or try again later.\n" +
+					"\n" +
+					"Exception: " + cryptEx.Message, "eduroam - Exception",
+					MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
-			catch (Exception ex)
+			catch (Exception ex) // TODO, handle in ConnectToEuroam or EduroamNetwork
 			{
-				MessageBox.Show("Something went wrong.\n" + "Please try connecting with another institution, or try again later.\n\n"
-								+ "Exception: " + ex.Message, "eduroam - Exception",
-								MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				MessageBox.Show(
+					"Something went wrong.\n" +
+					"Please try connecting with another institution, or try again later.\n" +
+					"\n" +
+					"Exception: " + ex.Message, "eduroam - Exception",
+					MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
 			return 0;
 		}
