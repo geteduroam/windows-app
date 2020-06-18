@@ -6,7 +6,7 @@ using System.Globalization;
 
 namespace EduroamApp
 {
-    class IdProviderParser
+    class IdentityProviderParser
     {
         /// <summary>
         /// Finds the identity provider that is closest to the given coordinates
@@ -108,12 +108,13 @@ namespace EduroamApp
             }
             return countries;
         }
-        
+
+
 
         /// <summary>
         /// Gets redirect link from profile's attributes
         /// </summary>
-        /// <returns>Redirect link, if exists.</returns>
+        /// <returns>Redirect link, if it exists.</returns>
         public static string getRedirect(IdProviderProfileAttributes attributes)
         {
             // checks profile attributes for a redirect link

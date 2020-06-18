@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 
 namespace EduroamApp
 {
-    class IdProviderDownloader
+    class IdentityProviderDownloader
     {
         /// <summary>
         /// Fetches a list of all eduroam institutions from https://cat.eduroam.org.
