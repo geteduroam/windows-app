@@ -31,9 +31,9 @@ namespace EduroamApp
 			}
 			catch (WebException ex)
 			{
-				MessageBox.Show("Couldn't fetch content from webpage. \nException: " + ex.Message,
-								"eduroam - Web exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return "";
+				string error = "Couldn't fetch content from webpage. \nException: " + ex.Message;
+				throw new EduroamAppUserError("", error);
+
 			}
 
 			// gets the base64 encoded json containing the authorization endpoint from html
@@ -41,8 +41,8 @@ namespace EduroamApp
 			// if no json found in html, stop execution
 			if (string.IsNullOrEmpty(jsonString))
 			{
-				MessageBox.Show("HTML doesn't contain authorization endpoint json.");
-				return "";
+				string error = "HTML doesn't contain authorization endpoint json.";
+				throw new EduroamAppUserError("", error);
 			}
 
 			// authorization endpoint
@@ -63,9 +63,9 @@ namespace EduroamApp
 			}
 			catch (JsonReaderException ex)
 			{
-				MessageBox.Show("Couldn't read endpoints from JSON file.\n" +
-								"Exception: " + ex.Message, "JSON endpoints", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return "";
+				string error = "Couldn't read endpoints from JSON file.\n" +
+								"Exception: " + ex.Message;
+				throw new EduroamAppUserError("", error);
 			}
 
 			// sets authorization uri parameters
@@ -108,15 +108,15 @@ namespace EduroamApp
 			// checks if returned url is not empty
 			if (string.IsNullOrEmpty(responseUrl))
 			{
-				MessageBox.Show("HTTP request returned nothing.");
-				return "";
+				string error = "HTTP request returned nothing.";
+				throw new EduroamAppUserError("", error);
 			}
 
 			// checks if user chose to reject authorization
 			if (responseUrl.Contains("access_denied"))
 			{
-				MessageBox.Show("Authorization rejected. Please try again.");
-				return "";
+				string error = "Authorization rejected. Please try again.";
+				throw new EduroamAppUserError("", error);
 			}
 
 			// convert response url string to URI object
@@ -127,9 +127,9 @@ namespace EduroamApp
 			// checks if state has remained, if not cancel operation
 			if (newState != state)
 			{
-				MessageBox.Show("State from request and response do not match. Aborting operation.\n",
-					"Eduroam - State exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return "";
+				string error = "State from request and response do not match. Aborting operation.";
+				throw new EduroamAppUserError("", error);
+
 			}
 
 			// gets code from response url
@@ -137,9 +137,8 @@ namespace EduroamApp
 			// checks if code is not empty
 			if (string.IsNullOrEmpty(code))
 			{
-				MessageBox.Show("Response string doesn't contain code. Aborting operation.\n",
-					"Eduroam - Code exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return "";
+				string error = "Response string doesn't contain code. Aborting operation.";
+				throw new EduroamAppUserError("", error);
 			}
 
 
@@ -162,9 +161,8 @@ namespace EduroamApp
 			}
 			catch (WebException ex)
 			{
-				MessageBox.Show("Couldn't fetch token json. \nException: " + ex.Message,
-					"Eduroam - Web exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return "";
+				string error = "Couldn't fetch token json. \nException: " + ex.Message;
+				throw new EduroamAppUserError("", error);
 			}
 
 			// token for authorizing Oauth request
@@ -182,9 +180,8 @@ namespace EduroamApp
 			}
 			catch (JsonReaderException ex)
 			{
-				MessageBox.Show("Couldn't read token from JSON file.\n" +
-								"Exception: " + ex.Message, "JSON token", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return "";
+				string error = "Couldn't read token from JSON file.\n" +"Exception: " + ex.Message;
+				throw new EduroamAppUserError("", error);
 			}
 
 			// gets and returns EAP config file as a string
@@ -201,9 +198,8 @@ namespace EduroamApp
 			}
 			catch (WebException ex)
 			{
-				MessageBox.Show("Couldn't fetch EAP config file. \nException: " + ex.Message,
-					"Eduroam - Web exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return "";
+				string error = "Couldn't fetch EAP config file. \nException: " + ex.Message;
+				throw new EduroamAppUserError("", error);
 			}
 		}
 
