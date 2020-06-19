@@ -23,8 +23,6 @@ namespace EduroamApp
         private static string Ssid { get; set; }
         // Id of wireless network interface
         private static Guid InterfaceId { get; set; }
-        // xml file for building wireless profile
-        private static string ProfileXml { get; set; }
         // EAP type of selected configuration
         private static EapType EapType { get; set; }
         // client certificate valid from
@@ -238,10 +236,14 @@ namespace EduroamApp
                 string serverNames = string.Join(";", AuthMethod.ServerName);
 
                 // generate new profile xml
-                ProfileXml = EduroamApp.ProfileXml.CreateProfileXml(Ssid, AuthMethod.EapType, serverNames, CertificateThumbprints);
+                var profileXml = EduroamApp.ProfileXml.CreateProfileXml(
+                    EduroamInstance.Ssid,
+                    AuthMethod.EapType,
+                    serverNames,
+                    CertificateThumbprints);
 
                 // create a new wireless profile
-                CreateNewProfile(InterfaceId, ProfileXml); // TODO: static variables
+                CreateNewProfile(InterfaceId, profileXml); // TODO: static variables
 
                 // check if EAP type is TLS and there is no client certificate
                 if (AuthMethod.EapType == EapType.TLS && string.IsNullOrEmpty(AuthMethod.ClientCertificate))
