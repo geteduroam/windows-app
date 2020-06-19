@@ -11,10 +11,10 @@ namespace EduroamApp
     public partial class frmDownload : Form
     {
         private readonly frmParent frmParent; // makes parent form accessible from this class
-        private List<IdentityProvider> identityProviders = new List<IdentityProvider>(); // list containing all identity providers     
+        private List<IdentityProvider> identityProviders = new List<IdentityProvider>(); // list containing all identity providers
         private List<Country> countries = new List<Country>();
-        private IdentityProviderProfile idProviderProfiles; // list containing all profiles of an identity provider        
-        private int idProviderId; // id of selected institution        
+        private IdentityProviderProfile idProviderProfiles; // list containing all profiles of an identity provider
+        private int idProviderId; // id of selected institution
         public string profileId { get; set; } // id of selected institution profile
 
         public frmDownload(frmParent parentInstance)
@@ -122,9 +122,9 @@ namespace EduroamApp
                 IdentityProvider closestInstitute = IdentityProviderParser.GetClosestIdProvider(providersInCountry, frmParent.GeoWatcher.Position.Location);
                 // select closest institute to be default select
                 cboInstitution.SelectedIndex = cboInstitution.FindStringExact(closestInstitute.Title);
-            } catch (EduroamAppUserError ex) 
+            } catch (EduroamAppUserError ex)
             {
-                
+
             }
 
         }
@@ -150,7 +150,7 @@ namespace EduroamApp
                 EduroamAppExceptionHandler(ex);
                 return;
             }
-            
+
             // if an identity provider has more than one profile, add to combobox
             if (idProviderProfiles.Data.Count > 1)
             {
@@ -182,6 +182,7 @@ namespace EduroamApp
             }
         }
       
+
         /// <summary>
         /// Handles EduroamApp exxceptions.
         /// </summary>
