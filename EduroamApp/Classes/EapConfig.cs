@@ -26,9 +26,8 @@ namespace EduroamApp
             public string ClientPassphrase { get; set; }
 
             /// <summary>
-            /// TODO
+            /// Enumerates CertificateAuthorities as X509Certificate2 objects
             /// </summary>
-            /// <returns></returns>
             public IEnumerable<X509Certificate2> CertificateAuthoritiesAsX509Certificate2() {
                 foreach (var ca in CertificateAuthorities)
                 { 

@@ -148,6 +148,10 @@ namespace EduroamApp
             }
         }
 
+        /// <summary>
+        /// A class which helps you install one of the authMethods
+        /// in a EapConfig, designed to be interactive wiht the user.
+        /// </summary>
         public class EapAuthMethodInstaller
         {
             // all CA thumbprints that will be added to Wireless Profile XML
