@@ -51,6 +51,7 @@ namespace EduroamApp
                 // if certificate valid from time has passed, do nothing
                 if (DateTime.Compare(validFrom, now) > 0)
                 {
+                    // waits at connecting screen if under 9 seconds difference
                     if (difference.TotalSeconds < 8)
                     {
                         await PutTaskDelay(difference.Milliseconds + 1000);
@@ -78,8 +79,6 @@ namespace EduroamApp
                         }
                     }
                 }
-
-                // waits at connecting screen if under 9 seconds difference
             }
 
             bool connectSuccess;

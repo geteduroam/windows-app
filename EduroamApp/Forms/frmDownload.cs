@@ -14,7 +14,7 @@ namespace EduroamApp
         private readonly frmParent frmParent; // makes parent form accessible from this class
         private List<IdentityProvider> identityProviders = new List<IdentityProvider>(); // list containing all identity providers
         private List<Country> countries = new List<Country>();
-        private IdentityProviderProfile idProviderProfiles; // list containing all profiles of an identity provider
+        private List<IdentityProviderProfile> idProviderProfiles; // list containing all profiles of an identity provider
         private int idProviderId; // id of selected institution
         public string profileId { get; set; } // id of selected institution profile
 
@@ -113,16 +113,16 @@ namespace EduroamApp
 
             // get all institues in selected country
             List<IdentityProvider> providersInCountry = identityProviders.Where(provider => provider.Country == selectedCountryCode)
-                                            .OrderBy(provider => provider.Title).ToList();
+                                            .OrderBy(provider => provider.Name).ToList();
             // adds identity providers from selected country to combobox
-            cboInstitution.Items.AddRange(providersInCountry.Select(provider => provider.Title).ToArray());
+            cboInstitution.Items.AddRange(providersInCountry.Select(provider => provider.Name).ToArray());
 
             try
             {
                 // find closest insitute in the country
                 IdentityProvider closestInstitute = IdentityProviderParser.GetClosestIdProvider(providersInCountry, frmParent.GeoWatcher.Position.Location);
                 // select closest institute to be default select
-                cboInstitution.SelectedIndex = cboInstitution.FindStringExact(closestInstitute.Title);
+                cboInstitution.SelectedIndex = cboInstitution.FindStringExact(closestInstitute.Name);
             } catch (EduroamAppUserError ex)
             {
 
@@ -139,7 +139,7 @@ namespace EduroamApp
             profileId = null;
 
             // gets id of institution selected in combobox
-            idProviderId = identityProviders.Where(x => x.Title == cboInstitution.Text).Select(x => x.Id).First();
+            idProviderId = identityProviders.Where(x => x.Name == cboInstitution.Text).Select(x => x.cat_idp).First();
 
             // get IdentityProviderProfile object for provider, containing all profiles
             try
@@ -153,19 +153,19 @@ namespace EduroamApp
             }
 
             // if an identity provider has more than one profile, add to combobox
-            if (idProviderProfiles.Data.Count > 1)
+            if (idProviderProfiles.Count > 1)
             {
                 // show combobox
                 cboProfiles.Visible = true;
                 // show label
                 lblSelectProfile.Visible = true;
                 // add profiles to combobox
-                cboProfiles.Items.AddRange(idProviderProfiles.Data.Select(profile => profile.Display).ToArray());
+                cboProfiles.Items.AddRange(idProviderProfiles.Select(profile => profile.Name).ToArray());
             }
             else
             {
                 // gets the only profile id
-                profileId = idProviderProfiles.Data.Single().Id;
+                profileId = idProviderProfiles.Single().Id;
                 // hide combobox
                 cboProfiles.Visible = false;
                 // hide label
@@ -179,7 +179,7 @@ namespace EduroamApp
             if (cboProfiles.Text != "")
             {
                 // gets profile id of profile selected in combobox
-                profileId = idProviderProfiles.Data.Where(profile => profile.Display == cboProfiles.Text).Select(x => x.Id).Single();
+                profileId = idProviderProfiles.Where(profile => profile.Name == cboProfiles.Text).Select(x => x.Id).Single();
             }
         }
       

@@ -5,7 +5,7 @@ namespace EduroamApp
     /// <summary>
     /// Stores information found in json for an IdentityProvider profile.
     /// </summary>
-    public class IdentityProviderProfile
+    public class IdentityProviderProfil // TODO remove this
     {
         // Properties
         public int Status { get; set; }

@@ -276,27 +276,28 @@ namespace EduroamApp
                     "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null; // exits function if no institution/profile selected
             };
-            string redirect = IdentityProviderDownloader.GetRedirect(profileId);
+            IdentityProviderProfile profile = IdentityProviderDownloader.GetProfileFromId(profileId);
+            string redirect = profile.authorization_endpoint;
             // eap config file as string
             string eapString;
 
             // if no redirect link
-            if (string.IsNullOrEmpty(redirect))
+            if (!profile.oauth)
             {
                 // gets eap config file directly
                 eapString = IdentityProviderDownloader.GetEapConfigString(profileId);
             }
             // if Let's Wifi redirect
-            else if (redirect.Contains("#letswifi"))
+            else if (profile.oauth)
             {
                 // get eap config file from browser authenticate
                 try
                 {
-                    OAuth oauth = new OAuth();
+                    OAuth oauth = new OAuth(profile.authorization_endpoint, profile.token_endpoint, profile.eapconfig_endpoint);
                     // generate authURI based on redirect
-                    string authUri = oauth.GetAuthUri(redirect);
+                    string authUri = oauth.GetAuthUri();
                     // browser authenticate
-                    string responseUrl = GetResponseUrl(redirect, authUri);
+                    string responseUrl = GetResponseUrl(profile.authorization_endpoint, authUri);
                     // get eap-config string if available
                     eapString = oauth.GetEapConfigString(responseUrl);
                 }

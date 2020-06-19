@@ -117,6 +117,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\DiscoveryApi.cs" />
     <Compile Include="Classes\IdentityProviderParser.cs" />
     <Compile Include="Classes\IdentityProviderDownloader.cs" />
     <Compile Include="Classes\EapConfig.cs" />
