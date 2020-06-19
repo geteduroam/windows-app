@@ -301,16 +301,16 @@ namespace EduroamApp
 		/// <summary>
 		/// Sets user data for a wireless profile.
 		/// </summary>
-		/// <param name="networkId">Interface ID of selected network.</param>
+		/// <param name="interfaceId">Interface ID of selected network.</param>
 		/// <param name="profileName">Name of associated wireless profile.</param>
 		/// <param name="userDataXml">User data XML converted to string.</param>
 		/// <returns>True if succeeded, false if failed.</returns>
-		public static bool SetUserData(Guid networkId, string profileName, string userDataXml)
+		public static bool SetUserData(Guid interfaceId, string profileName, string userDataXml)
 		{
 			// sets the profile user type to "WLAN_SET_EAPHOST_DATA_ALL_USERS"
 			const uint profileUserType = 0x00000001;
 
-			return NativeWifi.SetProfileUserData(networkId, profileName, profileUserType, userDataXml);
+			return NativeWifi.SetProfileUserData(interfaceId, profileName, profileUserType, userDataXml);
 		}
 
 		/// <summary>
