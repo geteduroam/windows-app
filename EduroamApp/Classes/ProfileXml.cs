@@ -213,22 +213,16 @@ namespace EduroamApp
             // if any thumbprints exist, add them to the profile
             if (thumbprints.Any())
             {
-                // element where thumbprint child elements are to be created
-                XElement serverValidationElement;
-
-                // sets different nodepaths depending on EAP type
-                switch (eapType)
+                XElement serverValidationElement = eapType switch
                 {
-                    case EapType.TTLS:
-                        serverValidationElement = configElement.Element(nsTTLS + "EapTtls")
-                                                               .Element(nsTTLS + "ServerValidation");
-                        break;
-                    default:
-                        serverValidationElement = configElement.Element(nsBECP + "Eap")
-                                                               .Element(nsEapType + "EapType")
-                                                               .Element(nsEapType + "ServerValidation");
-                        break;
-                }
+                    EapType.TTLS => configElement
+                        .Element(nsTTLS + "EapTtls")
+                        .Element(nsTTLS + "ServerValidation"),
+                    _ => configElement
+                        .Element(nsBECP + "Eap")
+                        .Element(nsEapType + "EapType")
+                        .Element(nsEapType + "ServerValidation"),
+                };
 
                 // creates TrustedRootCA(/Hash) child elements and assigns thumbprint as value
                 foreach (string thumb in thumbprints)
@@ -238,11 +232,12 @@ namespace EduroamApp
 
                 if (eapType == EapType.TLS)
                 {
-                    XElement caHashListElement = configElement.Element(nsBECP + "Eap")
-                                                              .Element(nsEapType + "EapType")
-                                                              .Element(nsETCPv2 + "TLSExtensions")
-                                                              .Element(nsETCPv3 + "FilteringInfo")
-                                                              .Element(nsETCPv3 + "CAHashList");
+                    XElement caHashListElement = configElement
+                        .Element(nsBECP + "Eap")
+                        .Element(nsEapType + "EapType")
+                        .Element(nsETCPv2 + "TLSExtensions")
+                        .Element(nsETCPv3 + "FilteringInfo")
+                        .Element(nsETCPv3 + "CAHashList");
 
                     // creates IssuerHash child elements and assigns thumbprint as value
                     foreach (string thumb in thumbprints)

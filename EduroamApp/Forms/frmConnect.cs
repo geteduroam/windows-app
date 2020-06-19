@@ -60,22 +60,20 @@ namespace EduroamApp
                     else
                     {
                         // opens form as dialog
-                        using (frmSetTime setTimeDialog = new frmSetTime(validFrom))
+                        using frmSetTime setTimeDialog = new frmSetTime(validFrom);
+                        var dialogResult = setTimeDialog.ShowDialog();
+                        // cancels connection if time not set and dialog cancelled
+                        if (dialogResult == DialogResult.Cancel)
                         {
-                            var dialogResult = setTimeDialog.ShowDialog();
-                            // cancels connection if time not set and dialog cancelled
-                            if (dialogResult == DialogResult.Cancel)
-                            {
-                                lblStatus.Text = "Couldn't connect to eduroam.";
-                                pbxStatus.Image = Properties.Resources.red_x;
-                                lblConnectFailed.Text =
-                                    "Please ensure that the date time and time zone on your computer are set correctly.\n\n" +
-                                    lblConnectFailed.Text;
-                                lblConnectFailed.Visible = true;
-                                frmParent.BtnBackEnabled = true;
-                                frmParent.ProfileCondition = "BADPROFILE";
-                                return;
-                            }
+                            lblStatus.Text = "Couldn't connect to eduroam.";
+                            pbxStatus.Image = Properties.Resources.red_x;
+                            lblConnectFailed.Text =
+                                "Please ensure that the date time and time zone on your computer are set correctly.\n\n" +
+                                lblConnectFailed.Text;
+                            lblConnectFailed.Visible = true;
+                            frmParent.BtnBackEnabled = true;
+                            frmParent.ProfileCondition = "BADPROFILE";
+                            return;
                         }
                     }
                 }
