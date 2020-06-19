@@ -278,8 +278,11 @@ namespace EduroamApp
                 try
                 {
                     OAuth oauth = new OAuth();
+                    // generate authURI based on redirect
                     string authUri = oauth.GetAuthUri(redirect);
+                    // browser authenticate
                     string responseUrl = GetResponseUrl(redirect, authUri);
+                    // get eap-config string if available
                     eapString = oauth.GetEapConfigString(responseUrl);
                 }
                 catch (EduroamAppUserError ex)
@@ -318,6 +321,10 @@ namespace EduroamApp
             }
         }
 
+        /// <summary>
+        /// Gets a response URL after doing Browser authentication with Oauth authUri.
+        /// </summary>
+        /// <returns>response Url as string.</returns>
         public string GetResponseUrl(string redirectUri, string authUri)
         {
             string responseUrl; //= WebServer.NonblockingListener(redirectUri, authUri, parentLocation);
