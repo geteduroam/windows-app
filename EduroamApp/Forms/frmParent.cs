@@ -111,16 +111,28 @@ namespace EduroamApp
                         break;
                     }
                     EapType = (uint)frmSummary.InstallEapConfig();
-                    if (EapType == 13) LoadFrmConnect();
-                    else if (EapType == 25 || EapType == 21) LoadFrmLogin();
-                    else if (EapType == 500) // User needs to find user certificate
+                    switch (EapType)
                     {
-                        LocalFileType = "CERT";
-                        LoadFrmLocalCert();
+                        case (uint)EduroamApp.EapType.TLS:
+                            LoadFrmConnect(); break;
+                        case (uint)EduroamApp.EapType.PEAP:
+                        case (uint)EduroamApp.EapType.TTLS:
+                            LoadFrmLogin(); break;
+                        case 500: // User needs to find user certificate
+                            LocalFileType = "CERT";
+                            LoadFrmLocalCert();
+                            break;
+                        case 600: // Eduroam not available
+                            LoadFrmSaveAndQuit(); break;
+                        case 0:
+                            break; // todo, this shouldn't happen?
+                        default:
+                            MessageBox.Show(
+                                "Couldn't connect to eduroam. \n" +
+                                "Your institution does not have a valid configuration.",
+                                "Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            break;
                     }
-                    else if (EapType == 600) LoadFrmSaveAndQuit();
-                    else if (EapType != 0) MessageBox.Show("Couldn't connect to eduroam. \nYour institution does not have a valid configuration.",
-                        "Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                     break;
 
                 // next form depends on radio button selection
@@ -519,7 +531,7 @@ namespace EduroamApp
         {
             frmConnect = new frmConnect(this);
             currentFormId = FormId.SaveAndQuit;
-            lblTitle.Text = "eduroam not available";
+            lblTitle.Text = "eduroam not available"; // TODO: not obvious from function name
             btnNext.Text = "Save";
             btnNext.Enabled = true;
             btnBack.Enabled = false;
