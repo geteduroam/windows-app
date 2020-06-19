@@ -238,7 +238,7 @@ namespace EduroamApp
 			{
 				string eapPath = files.First();
 				string eapString = File.ReadAllText(eapPath);
-				eapConfig = ConnectToEduroam.GetEapConfig(eapString);
+				eapConfig = ConnectToEduroam.ParseEapXmlData(eapString);
 				return eapConfig;
 			}
 			catch (Exception)
@@ -307,7 +307,7 @@ namespace EduroamApp
 			try
 			{
 				// if not empty, creates and returns EapConfig object from Eap string
-				return ConnectToEduroam.GetEapConfig(eapString);
+				return ConnectToEduroam.ParseEapXmlData(eapString);
 			}
 			catch (XmlException ex)
 			{

@@ -182,6 +182,7 @@ namespace EduroamApp
 			}
 		}
 
+
 		/// <summary>
 		/// Handles EduroamApp exxceptions.
 		/// </summary>
