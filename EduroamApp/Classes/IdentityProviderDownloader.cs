@@ -3,54 +3,30 @@ using System.Collections.Generic;
 using System.Text;
 using System.Net;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace EduroamApp
 {
 	class IdentityProviderDownloader
 	{
+
+
 		/// <summary>
-		/// Fetches a list of all eduroam institutions from https://cat.eduroam.org.
+		/// Fetches data from  https://discovery.geteduroam.app/v1/discovery.json and turns it into a DiscoveryApi object
 		/// </summary>
+		/// <returns>DiscoveryApi object representing the Api</returns>
 		/// <exception cref="EduroamAppUserError">description</exception>
-		public static List<IdentityProvider> GetAllIdProviders()
+
+		public static DiscoveryApi GetDiscoveryApi()
 		{
-			// url for json containing all identity providers/institutions
-			const string allIdentityProvidersUrl = "https://cat.eduroam.org/user/API.php?action=listAllIdentityProviders&lang=en";
-			try
-			{
-				string idProviderJson = GetStringFromUrl(allIdentityProvidersUrl);
-				List<IdentityProvider> identityProviders = JsonConvert.DeserializeObject<List<IdentityProvider>>(idProviderJson);
-
-				if (identityProviders.Count <= 0)
-				{
-					throw new EduroamAppUserError("", "Institutions couldn't be read from JSON file.");
-				}
-				return identityProviders;
-			}
-			catch (WebException ex)
-			{
-				throw new EduroamAppUserError("", GetWebExceptionString(ex));
-			}
-
-		}
-		/// <summary>
-		/// Gets all profiles associated with a identity provider ID.
-		/// </summary>
-		/// <returns>identity provider profile object containing all profiles for given provider</returns>
-		/// <exception cref="EduroamAppUserError">description</exception>
-		public static IdentityProviderProfile GetIdentityProviderProfiles(int idProviderId)
-		{
-
-			// adds institution id to url
-			string profilesUrl = $"https://cat.eduroam.org/user/API.php?action=listProfiles&id={idProviderId}&lang=en";
-
+			string apiUrl = $"https://discovery.geteduroam.app/v1/discovery.json";
 			try
 			{
 				// downloads json file as string
-				string profilesJson = GetStringFromUrl(profilesUrl);
-				// gets identity provider profile from json
-				IdentityProviderProfile idProviderProfiles = JsonConvert.DeserializeObject<IdentityProviderProfile>(profilesJson);
-				return idProviderProfiles;
+				string apiJson = GetStringFromUrl(apiUrl);
+				// gets api instance from json
+				DiscoveryApi apiInstance = JsonConvert.DeserializeObject<DiscoveryApi>(apiJson);
+				return apiInstance;
 			}
 			catch (WebException ex)
 			{
@@ -60,6 +36,26 @@ namespace EduroamApp
 			{
 				throw new EduroamAppUserError("", GetJsonExceptionString(ex));
 			}
+		}
+
+		/// <summary>
+		/// Fetches a list of all eduroam institutions from https://cat.eduroam.org.
+		/// </summary>
+		/// <exception cref="EduroamAppUserError">description</exception>
+		public static List<IdentityProvider> GetAllIdProviders()
+		{
+			return GetDiscoveryApi().Instances;
+		}
+
+		/// <summary>
+		/// Gets all profiles associated with a identity provider ID.
+		/// </summary>
+		/// <returns>identity provider profile object containing all profiles for given provider</returns>
+		/// <exception cref="EduroamAppUserError">description</exception>
+		public static List<IdentityProviderProfile> GetIdentityProviderProfiles(int idProviderId)
+		{
+			List<IdentityProvider> providers = GetAllIdProviders();
+			return providers.Where(p => p.cat_idp == idProviderId).First().Profiles;
 		}
 
 		/// <summary>
@@ -89,33 +85,13 @@ namespace EduroamApp
 		public static string GetEapConfigString(string profileId)
 		{
 			// adds profile ID to url containing json file, which in turn contains url to EAP config file download
-			string generateEapUrl = $"https://cat.eduroam.org/user/API.php?action=generateInstaller&id=eap-config&lang=en&profile={profileId}";
-
-			// contains json with eap config file download link
-			GenerateEapConfig eapConfigInstance;
-			try
-			{
-				// downloads json as string
-				string generateEapJson = GetStringFromUrl(generateEapUrl);
-				// converts json to GenerateEapConfig object
-				eapConfigInstance = JsonConvert.DeserializeObject<GenerateEapConfig>(generateEapJson);
-			}
-			catch (WebException ex)
-			{
-				throw new EduroamAppUserError("", GetWebExceptionString(ex));
-			}
-			catch (JsonReaderException ex)
-			{
-				throw new EduroamAppUserError("", GetJsonExceptionString(ex));
-			}
-
 			// gets url to EAP config file download from GenerateEapConfig object
-			string eapConfigUrl = $"https://cat.eduroam.org/user/{eapConfigInstance.Data.Link}";
+			string endpoint = GetProfileFromId(profileId).eapconfig_endpoint;
 
 			// downloads and returns eap config file as string
 			try
 			{
-				return GetStringFromUrl(eapConfigUrl);
+				return GetStringFromUrl(endpoint);
 			}
 			catch (WebException ex)
 			{
@@ -124,9 +100,28 @@ namespace EduroamApp
 		}
 
 
+		public static IdentityProviderProfile GetProfileFromId(string profileId)
+		{
+			List<IdentityProvider> providers = GetAllIdProviders();
+			foreach (IdentityProvider provider in providers)
+			{
+				foreach (IdentityProviderProfile profile in provider.Profiles)
+				{
+					if (profile.Id == profileId)
+					{
+						return profile;
+					}
+				}
+			}
+			return null;
+		}
+
+
+
 		public static string GetRedirect(string profileId)
 		{
 			// checks profile attributes for a redirect link
+			return GetProfileFromId(profileId).authorization_endpoint;
 			IdProviderProfileAttributes attributes = GetProfileAttributes(profileId);
 			var redirect = "";
 			foreach (var attribute in attributes.Data.Devices)

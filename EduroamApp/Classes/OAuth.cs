@@ -30,51 +30,25 @@ namespace EduroamApp
 		string tokenEndpoint;
 		string generatorEndpoint;
 
+		/// <summary>
+		/// Class used for OAuth process
+		/// </summary>
+		/// <param name="authEndpoint">Authorization Endpoint.</param>
+		/// <param name="tokenEndpoint">Token Endpoint.</param>
+		/// <param name="generatorEndpoint"> Generator endpoint for eap-config (resource endpoint).</param>
+		public OAuth(string authEndpoint, string tokenEndpoint, string generatorEndpoint)
+		{
+			this.authEndpoint = authEndpoint;
+			this.tokenEndpoint = tokenEndpoint;
+			this.generatorEndpoint = generatorEndpoint;
+		}
 
 		/// <summary>
-		/// Gets authorization endpoints and produces an authorization endpoint URI
+		/// Produces an authorization endpoint URI
 		/// </summary>
-		/// <param name="baseUrl">URL containing an encoded json string with endpoints.</param>
 		/// <returns>Authorization endpoint URI as string.</returns>
-		public string GetAuthUri(string baseUrl)
+		public string GetAuthUri()
 		{
-			string letsWifiHtml;
-			try
-			{
-				letsWifiHtml = GetStringFromUrl(baseUrl);
-			}
-			catch (WebException ex)
-			{
-				string error = "Couldn't fetch content from webpage. \nException: " + ex.Message;
-				throw new EduroamAppUserError("", error);
-
-			}
-
-			// gets the base64 encoded json containing the authorization endpoint from html
-			string jsonString = GetBase64AndDecode(letsWifiHtml);
-			// if no json found in html, stop execution
-			if (string.IsNullOrEmpty(jsonString))
-			{
-				string error = "HTML doesn't contain authorization endpoint json.";
-				throw new EduroamAppUserError("", error);
-			}
-
-			// gets JObject containing OAuth endpoints from json string
-			try
-			{
-				JObject endpointJson = JObject.Parse(jsonString);
-				// gets individual endpoints
-				authEndpoint = endpointJson["authorization_endpoint"].ToString();
-				tokenEndpoint = endpointJson["token_endpoint"].ToString();
-				generatorEndpoint = endpointJson["generator_endpoint"].ToString();
-			}
-			catch (JsonReaderException ex)
-			{
-				string error = "Couldn't read endpoints from JSON file.\n" +
-								"Exception: " + ex.Message;
-				throw new EduroamAppUserError("", error);
-			}
-
 			// sets authorization uri parameters
 
 			codeVerifier = Base64UrlEncode(GenerateCodeChallengeBase()); // generate random byte array, convert to base64url
@@ -94,6 +68,8 @@ namespace EduroamApp
 
 			return authUri;
 		}
+
+
 		/// <summary>
 		/// Uses URL containing response after authenticating using authUri from GetAuthUri to get an EAP-config file.
 		/// </summary>
