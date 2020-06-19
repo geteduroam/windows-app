@@ -66,7 +66,7 @@ namespace EduroamApp
         /// Gets profile attributes for a given profile ID.
         /// </summary>
         /// <returns>Profile Attributes</returns>
-        public static IdProviderProfileAttributes GetProfileAttributes(string profileId)
+        private static IdProviderProfileAttributes GetProfileAttributes(string profileId)
         {
             // download attribute in json format
             string profileAttributeUrl = $"https://cat.eduroam.org/user/API.php?action=profileAttributes&id={profileId}&lang=en";
@@ -121,6 +121,22 @@ namespace EduroamApp
             {
                 throw new EduroamAppUserError("", GetWebExceptionString(ex));
             }
+        }
+
+
+        public static string GetRedirect(string profileId)
+        {
+            // checks profile attributes for a redirect link
+            IdProviderProfileAttributes attributes = GetProfileAttributes(profileId);
+            var redirect = "";
+            foreach (var attribute in attributes.Data.Devices)
+            {
+                if (attribute.Redirect != "0")
+                {
+                    redirect = attribute.Redirect;
+                }
+            }
+            return redirect;
         }
 
         /// <summary>

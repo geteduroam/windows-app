@@ -108,25 +108,5 @@ namespace EduroamApp
             }
             return countries;
         }
-
-
-
-        /// <summary>
-        /// Gets redirect link from profile's attributes
-        /// </summary>
-        /// <returns>Redirect link, if it exists.</returns>
-        public static string getRedirect(IdProviderProfileAttributes attributes)
-        {
-            // checks profile attributes for a redirect link
-            var redirect = "";
-            foreach (var attribute in attributes.Data.Devices)
-            {
-                if (attribute.Redirect != "0")
-                {
-                    redirect = attribute.Redirect;
-                }
-            }
-            return redirect;
-        }
     }
 }
