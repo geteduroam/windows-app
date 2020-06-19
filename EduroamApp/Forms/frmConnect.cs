@@ -44,7 +44,7 @@ namespace EduroamApp
 
             if (frmParent.EapType == 13)
             {
-                DateTime validFrom = ConnectToEduroam.CertValidFrom;
+                DateTime validFrom = ConnectToEduroam.CertValidFrom; // TODO: this static variable will be moved
                 DateTime now = DateTime.Now;
                 TimeSpan difference = validFrom - now;
 
