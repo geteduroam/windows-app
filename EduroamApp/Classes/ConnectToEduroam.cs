@@ -44,7 +44,7 @@ namespace EduroamApp
 
             // load the XML file from its file path
             XElement doc = XElement.Parse(eapXmlData);
-            Func<IEnumerable<XElement>> docElements = () => doc.DescendantsAndSelf().Elements(); // shorthand lambda
+            IEnumerable<XElement> docElements() => doc.DescendantsAndSelf().Elements(); // shorthand lambda
 
             // create new list of authentication methods
             List<EapConfig.AuthenticationMethod> authMethods = new List<EapConfig.AuthenticationMethod>();
@@ -53,7 +53,7 @@ namespace EduroamApp
             IEnumerable<XElement> authMethodElements = docElements().Where(cl => cl.Name.LocalName == "AuthenticationMethod");
             foreach (XElement element in authMethodElements)
             {
-                Func<IEnumerable<XElement>> elementElements = () => element.DescendantsAndSelf().Elements(); // shorthand lambda
+                IEnumerable<XElement> elementElements() => element.DescendantsAndSelf().Elements(); // shorthand lambda
 
                 // get EAP method type
                 var eapTypeEl = (EapType)(uint)elementElements().FirstOrDefault(x => x.Name.LocalName == "Type");
@@ -76,9 +76,6 @@ namespace EduroamApp
                 authMethods.Add(new EapConfig.AuthenticationMethod(eapTypeEl, certAuths, serverNames, clientCert, passphrase));
             }
 
-            // create new EapConfig object
-            var eapConfig = new EapConfig();
-            eapConfig.AuthenticationMethods = authMethods;
 
             // get logo and identity element
             XElement logoElement = docElements().FirstOrDefault(x => x.Name.LocalName == "ProviderLogo");
@@ -101,18 +98,20 @@ namespace EduroamApp
             // get terms of use
             var termsOfUse = (string)docElements().FirstOrDefault(x => x.Name.LocalName == "TermsOfUse");
 
-            // adds the provider info to the EapConfig object
-            eapConfig.InstitutionInfo = new EapConfig.ProviderInfo(
-                displayName ?? string.Empty,
-                logo,
-                logoFormat ?? string.Empty,
-                emailAddress ?? string.Empty,
-                webAddress ?? string.Empty,
-                phone ?? string.Empty,
-                instId ?? string.Empty,
-                termsOfUse ?? string.Empty);
-
-            return eapConfig;
+            // create EapConfig object and adds the info
+            return new EapConfig
+            {
+                AuthenticationMethods = authMethods,
+                InstitutionInfo = new EapConfig.ProviderInfo(
+                    displayName ?? string.Empty,
+                    logo,
+                    logoFormat ?? string.Empty,
+                    emailAddress ?? string.Empty,
+                    webAddress ?? string.Empty,
+                    phone ?? string.Empty,
+                    instId ?? string.Empty,
+                    termsOfUse ?? string.Empty)
+            };
         }
 
 
@@ -152,8 +151,8 @@ namespace EduroamApp
         public class EapAuthMethodInstaller
         {
             // all CA thumbprints that will be added to Wireless Profile XML
-            private List<string> CertificateThumbprints = new List<string>();
-            private EapConfig.AuthenticationMethod AuthMethod;
+            private readonly List<string> CertificateThumbprints = new List<string>();
+            private readonly EapConfig.AuthenticationMethod AuthMethod;
             private bool HasInstalledCertificates = false; // To track proper order of operations
 
             public DateTime CertValidFrom { get; private set; }

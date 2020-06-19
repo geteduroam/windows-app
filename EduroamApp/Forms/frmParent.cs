@@ -148,7 +148,7 @@ namespace EduroamApp
 
                 // next form depends on if downloaded config contains redirect url or not
                 case FormId.Download:
-                    string profileId = frmDownload.profileId;
+                    string profileId = frmDownload.ProfileId;
                     eapConfig = DownloadEapConfig(profileId);
                     if (eapConfig != null)
                     {
