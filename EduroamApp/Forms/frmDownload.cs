@@ -16,7 +16,7 @@ namespace EduroamApp
 		private List<Country> countries = new List<Country>();
 		private List<IdentityProviderProfile> idProviderProfiles; // list containing all profiles of an identity provider
 		private int idProviderId; // id of selected institution
-		public string profileId { get; set; } // id of selected institution profile
+		public string ProfileId { get; set; } // id of selected institution profile
 
 		public frmDownload(frmParent parentInstance)
 		{
@@ -106,7 +106,7 @@ namespace EduroamApp
 			lblSelectProfile.Visible = false;
 			cboProfiles.Visible = false;
 			// clear selected profile
-			profileId = null;
+			ProfileId = null;
 
 			// gets country code of selected country
 			string selectedCountryCode = countries.Where(c => c.CountryName == cboCountry.Text).Select(c => c.CountryCode).FirstOrDefault();
@@ -136,7 +136,7 @@ namespace EduroamApp
 			// clear combobox
 			cboProfiles.Items.Clear();
 			// clear selected profile
-			profileId = null;
+			ProfileId = null;
 
 			// gets id of institution selected in combobox
 			idProviderId = identityProviders.Where(x => x.Name == cboInstitution.Text).Select(x => x.cat_idp).First();
@@ -165,7 +165,8 @@ namespace EduroamApp
 			else
 			{
 				// gets the only profile id
-				profileId = idProviderProfiles.Single().Id;
+				ProfileId = idProviderProfiles.Single().Id;
+
 				// hide combobox
 				cboProfiles.Visible = false;
 				// hide label
@@ -179,7 +180,8 @@ namespace EduroamApp
 			if (cboProfiles.Text != "")
 			{
 				// gets profile id of profile selected in combobox
-				profileId = idProviderProfiles.Where(profile => profile.Name == cboProfiles.Text).Select(x => x.Id).Single();
+				ProfileId = idProviderProfiles.Where(profile => profile.Name == cboProfiles.Text).Select(x => x.Id).Single();
+
 			}
 		}
 

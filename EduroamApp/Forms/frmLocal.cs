@@ -60,7 +60,7 @@ namespace EduroamApp
 				// gets content of config file
 				string eapString = File.ReadAllText(txtFilepath.Text);
 				// creates and returns EapConfig object
-				return ConnectToEduroam.ParseEapXmlData(eapString);
+				return EapConfig.FromXmlData(eapString);
 			}
 			catch (XmlException xmlEx)
 			{
