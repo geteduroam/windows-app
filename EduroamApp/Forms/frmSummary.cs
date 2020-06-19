@@ -191,6 +191,7 @@ namespace EduroamApp
             try
             {
                 uint eapType = 0;
+                // Install EAP config as a profile
                 foreach (var authMethodInstaller in ConnectToEduroam.InstallEapConfig(eapConfig))
                 {
                     // warn user if we need to install CAs
@@ -219,7 +220,7 @@ namespace EduroamApp
                         eapType = 500; // TODO: ew
                         break;
                     }
-                    else
+                    else // success
                     {
                         eapType = (uint)authMethodInstaller.EapType;
                         break;
@@ -246,8 +247,7 @@ namespace EduroamApp
                         "Could not establish a connection through your computer's wireless network interface.\n" +
                         "Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.\n" +
                         "\n" +
-                        "Exception: " +
-                        argEx.Message,
+                        "Exception: " + argEx.Message,
                         "eduroam", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -256,8 +256,8 @@ namespace EduroamApp
                 MessageBox.Show(
                     "One or more certificates are corrupt. Please select another file, or try again later.\n" +
                     "\n" +
-                    "Exception: " + cryptEx.Message, "eduroam - Exception",
-                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    "Exception: " + cryptEx.Message, 
+                    "eduroam - Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             catch (Exception ex) // TODO, handle in ConnectToEuroam or EduroamNetwork
             {
@@ -265,8 +265,8 @@ namespace EduroamApp
                     "Something went wrong.\n" +
                     "Please try connecting with another institution, or try again later.\n" +
                     "\n" +
-                    "Exception: " + ex.Message, "eduroam - Exception",
-                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    "Exception: " + ex.Message, 
+                    "eduroam - Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             return 0;
         }

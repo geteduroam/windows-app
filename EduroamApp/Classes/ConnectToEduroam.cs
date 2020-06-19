@@ -116,8 +116,6 @@ namespace EduroamApp
         }
 
 
-
-
         /// <summary>
         /// Yields EapAuthMethodInstallers which will attempt to install eapConfig for you.
         /// Refer to frmSummary.InstallEapConfig to see how to use it

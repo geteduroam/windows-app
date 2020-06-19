@@ -40,7 +40,7 @@ namespace EduroamApp
         /// Tries to access the wireless interfaces and reports wether the service is available or not
         /// </summary>
         /// <returns>True if wireless service is available</returns>
-        public static bool IsServiceAvailable()
+        public static bool IsWlanServiceAvailable()
         {
             try
             {
@@ -65,10 +65,10 @@ namespace EduroamApp
         /// <summary>
         /// Gets a network pack containing information about an eduroam network, if available.
         /// </summary>
-        /// <returns>Network pack.</returns>
+        /// <returns>Network pack or null</returns>
         public static AvailableNetworkPack GetEduroamPack()
         {
-            if (!IsServiceAvailable()) return null;
+            if (!IsWlanServiceAvailable()) return null;
 
             // gets all available networks and stores them in a list
             List<AvailableNetworkPack> networks = NativeWifi.EnumerateAvailableNetworks().ToList();
@@ -81,6 +81,7 @@ namespace EduroamApp
                     return network;
                 }
             }
+
             // if no profiles exist for eduroam, search again and get network pack without profile
             foreach (AvailableNetworkPack network in networks)
             {
@@ -89,6 +90,7 @@ namespace EduroamApp
                     return network;
                 }
             }
+
             // if no networks called "eduroam" are found, return nothing
             return null;
         }

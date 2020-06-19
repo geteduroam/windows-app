@@ -31,10 +31,10 @@ namespace EduroamApp
         }
 
         // private variables to be used in this form
-        private FormId currentFormId;                                    // Id of currently selected form
-        private readonly List<FormId> formHistory = new List<FormId>();  // Keeps history of previously diplayed forms, in order to backtrack correctly
-        private bool reload = true;                                      // Specifies wether a form is to be re-instantiated when loaded
-        private EapConfig eapConfig = new EapConfig();                   // Selected EAP configuration
+        private FormId currentFormId;                                      // Id of currently selected form
+        private readonly List<FormId> historyFormId = new List<FormId>();  // Keeps history of previously diplayed forms, in order to backtrack correctly
+        private bool reload = true;                                        // Specifies wether a form is to be re-instantiated when loaded
+        private EapConfig eapConfig = new EapConfig();                     // Selected EAP configuration
 
         // makes forms globally accessible in parent form
         private frmSummary frmSummary;
@@ -98,7 +98,7 @@ namespace EduroamApp
             // creates new instances of forms when going forward
             reload = true;
             // adds current form to history for easy backtracking
-            formHistory.Add(currentFormId);
+            historyFormId.Add(currentFormId);
 
             switch (currentFormId)
             {
@@ -195,7 +195,7 @@ namespace EduroamApp
             }
 
             // removes current form from history if it gets added twice
-            if (formHistory.LastOrDefault() == currentFormId) formHistory.RemoveAt(formHistory.Count - 1);
+            if (historyFormId.LastOrDefault() == currentFormId) historyFormId.RemoveAt(historyFormId.Count - 1);
         }
 
         private void btnBack_Click(object sender, EventArgs e)
@@ -205,7 +205,7 @@ namespace EduroamApp
             // clears logo if going back from summary page
             if (currentFormId == FormId.Summary) ResetLogo();
 
-            switch (formHistory.Last())
+            switch (historyFormId.Last())
             {
                 case FormId.Summary:
                     if (SelfExtractFlag) // reloads the included config file if exists
@@ -234,7 +234,7 @@ namespace EduroamApp
             }
 
             // removes current form from history
-            formHistory.RemoveAt(formHistory.Count - 1);
+            historyFormId.RemoveAt(historyFormId.Count - 1);
         }
 
         /// <summary>
@@ -341,9 +341,10 @@ namespace EduroamApp
             }
             catch (XmlException ex)
             {
-                MessageBox.Show("The selected institution or profile is not supported. " +
-                            "Please select a different institution or profile.\n"
-                            + "Exception: " + ex.Message);
+                MessageBox.Show(
+                    "The selected institution or profile is not supported. " +
+                    "Please select a different institution or profile.\n" +
+                    "Exception: " + ex.Message);
                 return null;
             }
         }
