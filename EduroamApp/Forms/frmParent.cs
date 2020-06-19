@@ -17,12 +17,24 @@ namespace EduroamApp
 	/// </summary>
 	public partial class frmParent : Form
 	{
+		private enum FormId
+		{
+			Summary,
+			SelectMethod,
+			Download,
+			Local,
+			Login,
+			Connect,
+			Redirect,
+			LocalCert,
+			SaveAndQuit
+		}
+
 		// private variables to be used in this form
-		private int currentFormId;                                 // Id of currently selected form
-		private readonly List<int> formHistory = new List<int>();  // Keeps history of previously diplayed forms, in order to backtrack correctly
-		private bool reload = true;                                // Specifies wether a form is to be re-instantiated when loaded
-		private EapConfig eapConfig = new EapConfig();             // Selected EAP configuration
-											  // EAP type of selected EAP config
+		private FormId currentFormId;                                    // Id of currently selected form
+		private readonly List<FormId> formHistory = new List<FormId>();  // Keeps history of previously diplayed forms, in order to backtrack correctly
+		private bool reload = true;                                      // Specifies wether a form is to be re-instantiated when loaded
+		private EapConfig eapConfig = new EapConfig();                   // Selected EAP configuration
 
 		// makes forms globally accessible in parent form
 		private frmSummary frmSummary;
@@ -35,7 +47,7 @@ namespace EduroamApp
 
 		// public variables to be used across forms
 		public GeoCoordinateWatcher GeoWatcher { get; set; }
-		public uint EapType { get; set; }
+		public uint EapType { get; set; }  // EAP type of selected EAP config
 		public string InstId { get; set; }
 		public string ProfileCondition { get; set; }
 		public string LocalFileType { get; set; }
@@ -91,7 +103,7 @@ namespace EduroamApp
 			switch (currentFormId)
 			{
 				// next form depends on EAP type of selected config
-				case 1:
+				case FormId.Summary:
 					if (SelectAlternative) // if user has config from self extract but wants to select another inst
 					{
 						ResetLogo();
@@ -112,7 +124,7 @@ namespace EduroamApp
 					break;
 
 				// next form depends on radio button selection
-				case 2:
+				case FormId.SelectMethod:
 					SelfExtractFlag = false;
 					if (frmSelectMethod.GoToForm() == 3) LoadFrmDownload();
 					else
@@ -123,7 +135,7 @@ namespace EduroamApp
 					break;
 
 				// next form depends on if downloaded config contains redirect url or not
-				case 3:
+				case FormId.Download:
 					string profileId = frmDownload.profileId;
 					eapConfig = DownloadEapConfig(profileId);
 					if (eapConfig != null)
@@ -137,13 +149,13 @@ namespace EduroamApp
 					break;
 
 				// opens summary form if config is not null
-				case 4:
+				case FormId.Local:
 					eapConfig = frmLocal.LocalEapConfig();
 					if (eapConfig != null) LoadFrmSummary();
 					break;
 
 				// lets user log in and opens connection form
-				case 5:
+				case FormId.Login:
 					if (EapType != 21)
 					{
 						frmLogin.ConnectWithLogin();
@@ -153,17 +165,19 @@ namespace EduroamApp
 					break;
 
 				// closes application after successful connect
-				case 6:
+				case FormId.Connect:
 					Close();
 					break;
 
+				// TODO: missing case Redirect. sanity is to throw on default
+
 				// lets user select client cert and opens connection form
-				case 8:
+				case FormId.LocalCert:
 					if (frmLocal.InstallCertFile()) LoadFrmConnect();
 					break;
 
 				// closes application after saving setup
-				case 9:
+				case FormId.SaveAndQuit:
 					Close();
 					break;
 			}
@@ -177,33 +191,34 @@ namespace EduroamApp
 			// reuses existing instances of forms when going backwards
 			reload = false;
 			// clears logo if going back from summary page
-			if (currentFormId == 1) ResetLogo();
+			if (currentFormId == FormId.Summary) ResetLogo();
 
 			switch (formHistory.Last())
 			{
-				case 1:
+				case FormId.Summary:
 					if (SelfExtractFlag) // reloads the included config file if exists
 					{
 						eapConfig = GetSelfExtractingEap();
 					}
 					LoadFrmSummary();
 					break;
-				case 2:
+				case FormId.SelectMethod:
 					if (ComesFromSelfExtract) SelfExtractFlag = true; // enables back button if config file included in self extract
 					LoadFrmSelectMethod();
 					break;
-				case 3:
+				case FormId.Download:
 					LoadFrmDownload();
 					break;
-				case 4:
+				case FormId.Local:
 					LoadFrmLocal();
 					break;
-				case 5:
+				case FormId.Login:
 					LoadFrmLogin();
 					break;
-				case 8:
+				case FormId.LocalCert:
 					LoadFrmLocalCert();
 					break;
+				// TODO: missing cases? sanity is to throw on default
 			}
 
 			// removes current form from history
@@ -238,7 +253,7 @@ namespace EduroamApp
 			{
 				string eapPath = files.First();
 				string eapString = File.ReadAllText(eapPath);
-				eapConfig = ConnectToEduroam.GetEapConfig(eapString);
+				eapConfig = ConnectToEduroam.ParseEapXmlData(eapString);
 				return eapConfig;
 			}
 			catch (Exception)
@@ -310,7 +325,7 @@ namespace EduroamApp
 			try
 			{
 				// if not empty, creates and returns EapConfig object from Eap string
-				return ConnectToEduroam.GetEapConfig(eapString);
+				return ConnectToEduroam.ParseEapXmlData(eapString);
 			}
 			catch (XmlException ex)
 			{
@@ -378,7 +393,7 @@ namespace EduroamApp
 		public void LoadFrmSummary()
 		{
 			if (reload) frmSummary = new frmSummary(this, eapConfig);
-			currentFormId = 1;
+			currentFormId = FormId.Summary;
 			// changes controls depending on where the summary form is called from
 			if (SelfExtractFlag)
 			{
@@ -400,7 +415,7 @@ namespace EduroamApp
 		public void LoadFrmSelectMethod()
 		{
 			frmSelectMethod = new frmSelectMethod(this);
-			currentFormId = 2;
+			currentFormId = FormId.SelectMethod;
 			lblTitle.Text = "Select configuration source";
 			btnNext.Enabled = true;
 			// if config file exists in self extract but user wants to choose another institution
@@ -414,7 +429,7 @@ namespace EduroamApp
 		public void LoadFrmDownload()
 		{
 			if (reload) frmDownload = new frmDownload(this);
-			currentFormId = 3;
+			currentFormId = FormId.Download;
 			lblTitle.Text = "Select your institution";
 			btnNext.Enabled = !reload;
 			btnNext.Text = "Next >";
@@ -429,7 +444,7 @@ namespace EduroamApp
 		public void LoadFrmLocal()
 		{
 			if (reload) frmLocal = new frmLocal(this);
-			currentFormId = 4;
+			currentFormId = FormId.Local;
 			lblTitle.Text = "Select EAP-config file";
 			btnNext.Enabled = true;
 			btnNext.Text = "Next >";
@@ -444,7 +459,7 @@ namespace EduroamApp
 		public void LoadFrmLogin()
 		{
 			frmLogin = new frmLogin(this);
-			currentFormId = 5;
+			currentFormId = FormId.Login;
 			lblTitle.Text = "Log in";
 			btnNext.Enabled = false;
 			btnNext.Text = "Connect";
@@ -459,7 +474,7 @@ namespace EduroamApp
 		public void LoadFrmConnect()
 		{
 			frmConnect = new frmConnect(this);
-			currentFormId = 6;
+			currentFormId = FormId.Connect;
 			lblTitle.Text = "Connection status";
 			btnNext.Enabled = false;
 			btnBack.Enabled = false;
@@ -473,7 +488,7 @@ namespace EduroamApp
 		public void LoadFrmRedirect()
 		{
 			frmRedirect = new frmRedirect(this);
-			currentFormId = 7;
+			currentFormId = FormId.Redirect;
 			lblTitle.Text = "You are being redirected";
 			btnNext.Enabled = false;
 			btnNext.Text = "Next >";
@@ -488,7 +503,7 @@ namespace EduroamApp
 		public void LoadFrmLocalCert()
 		{
 			if (reload) frmLocal = new frmLocal(this);
-			currentFormId = 8;
+			currentFormId = FormId.LocalCert;
 			lblTitle.Text = "Select client certificate file";
 			btnNext.Enabled = true;
 			btnNext.Text = "Connect";
@@ -503,7 +518,7 @@ namespace EduroamApp
 		public void LoadFrmSaveAndQuit()
 		{
 			frmConnect = new frmConnect(this);
-			currentFormId = 9;
+			currentFormId = FormId.SaveAndQuit;
 			lblTitle.Text = "eduroam not available";
 			btnNext.Text = "Save";
 			btnNext.Enabled = true;
