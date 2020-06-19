@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
-using System.Device.Location;
 namespace EduroamApp
 {
 	/// <summary>
@@ -17,7 +15,7 @@ namespace EduroamApp
 		private List<Country> countries = new List<Country>();
 		private IdentityProviderProfile idProviderProfiles; // list containing all profiles of an identity provider
 		private int idProviderId; // id of selected institution
-		private string profileId; // id of selected institution profile
+		public string profileId { get; set; } // id of selected institution profile
 
 		public frmDownload(frmParent parentInstance)
 		{
@@ -61,7 +59,7 @@ namespace EduroamApp
 		/// <summary>
 		/// Fetches a list of all eduroam institutions from https://cat.eduroam.org.
 		/// </summary>
-		public bool GetAllInstitutions()
+		private bool GetAllInstitutions()
 		{
 			try
 			{
@@ -183,77 +181,6 @@ namespace EduroamApp
 				profileId = idProviderProfiles.Data.Where(profile => profile.Display == cboProfiles.Text).Select(x => x.Id).Single();
 			}
 		}
-
-
-		/// <summary>
-		/// Gets EAP-config file, either directly or after browser authentication.
-		/// Prepares for redirect if no EAP-config.
-		/// </summary>
-		/// <returns>EapConfig object.</returns>
-		public EapConfig DownloadEapConfig()
-		{
-			// checks if user has selected an institution and/or profile
-			if (string.IsNullOrEmpty(profileId))
-			{
-				MessageBox.Show("Please select an institution and/or a profile.",
-					"Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				return null; // exits function if no institution/profile selected
-			}
-
-			// checks for redirect link in profile attributes
-			IdProviderProfileAttributes attributes = IdentityProviderDownloader.GetProfileAttributes(profileId);
-			string redirect = IdentityProviderParser.getRedirect(attributes);
-			// eap config file as string
-			string eapString;
-
-			// if no redirect link
-			if (string.IsNullOrEmpty(redirect))
-			{
-				// gets eap config file directly
-				eapString = IdentityProviderDownloader.GetEapConfigString(profileId);
-			}
-			// if Let's Wifi redirect
-			else if (redirect.Contains("#letswifi"))
-			{
-				// get eap config file from browser authenticate
-				try
-				{
-					eapString = OAuth.BrowserAuthenticate(redirect);
-				}
-				catch (EduroamAppUserError ex)
-				{
-					EduroamAppExceptionHandler(ex);
-					eapString = "";
-				}
-				// return focus to application
-				frmParent.Activate();
-			}
-			// if other redirect
-			else
-			{
-				// makes redirect link accessible in parent form
-				frmParent.RedirectUrl = redirect;
-				return null;
-			}
-
-			// if not empty, creates and returns EapConfig object from Eap string
-			if (string.IsNullOrEmpty(eapString))
-			{
-				return null;
-			}
-
-			try
-			{
-				// if not empty, creates and returns EapConfig object from Eap string
-				return ConnectToEduroam.GetEapConfig(eapString);
-			}
-			catch (XmlException ex)
-			{
-				EapExceptionHandler(ex);
-				return null;
-			}
-		}
-
 
 		/// <summary>
 		/// Handles EduroamApp exxceptions.

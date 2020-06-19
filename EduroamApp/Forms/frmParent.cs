@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
 using System.Device.Location;
+using System.Xml;
 using Image = System.Drawing.Image;
 
 namespace EduroamApp
@@ -123,7 +124,8 @@ namespace EduroamApp
 
 				// next form depends on if downloaded config contains redirect url or not
 				case 3:
-					eapConfig = frmDownload.DownloadEapConfig();
+					string profileId = frmDownload.profileId;
+					eapConfig = DownloadEapConfig(profileId);
 					if (eapConfig != null)
 					{
 						LoadFrmSummary();
@@ -243,6 +245,90 @@ namespace EduroamApp
 			{
 				return null;
 			}
+		}
+
+		/// <summary>
+		/// Gets EAP-config file, either directly or after browser authentication.
+		/// Prepares for redirect if no EAP-config.
+		/// </summary>
+		/// <returns>EapConfig object.</returns>
+		public EapConfig DownloadEapConfig(string profileId)
+		{
+			// checks if user has selected an institution and/or profile
+			if (string.IsNullOrEmpty(profileId))
+			{
+				MessageBox.Show("Please select an institution and/or a profile.",
+					"Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return null; // exits function if no institution/profile selected
+			};
+			string redirect = IdentityProviderDownloader.GetRedirect(profileId);
+			// eap config file as string
+			string eapString;
+
+			// if no redirect link
+			if (string.IsNullOrEmpty(redirect))
+			{
+				// gets eap config file directly
+				eapString = IdentityProviderDownloader.GetEapConfigString(profileId);
+			}
+			// if Let's Wifi redirect
+			else if (redirect.Contains("#letswifi"))
+			{
+				// get eap config file from browser authenticate
+				try
+				{
+					OAuth oauth = new OAuth();
+					string authUri = oauth.GetAuthUri(redirect);
+					string responseUrl = GetResponseUrl(redirect, authUri);
+					eapString = oauth.GetEapConfigString(responseUrl);
+				}
+				catch (EduroamAppUserError ex)
+				{
+					MessageBox.Show(ex.UserFacingMessage);
+					eapString = "";
+				}
+				// return focus to application
+				Activate();
+			}
+			// if other redirect
+			else
+			{
+				// makes redirect link accessible in parent form
+				RedirectUrl = redirect;
+				return null;
+			}
+
+			// if not empty, creates and returns EapConfig object from Eap string
+			if (string.IsNullOrEmpty(eapString))
+			{
+				return null;
+			}
+
+			try
+			{
+				// if not empty, creates and returns EapConfig object from Eap string
+				return ConnectToEduroam.GetEapConfig(eapString);
+			}
+			catch (XmlException ex)
+			{
+				MessageBox.Show("The selected institution or profile is not supported. " +
+							"Please select a different institution or profile.\n"
+							+ "Exception: " + ex.Message);
+				return null;
+			}
+		}
+
+		public string GetResponseUrl(string redirectUri, string authUri)
+		{
+			string responseUrl; //= WebServer.NonblockingListener(redirectUri, authUri, parentLocation);
+			using (var waitForm = new frmWaitDialog(redirectUri, authUri))
+			{
+				DialogResult result = waitForm.ShowDialog();
+				if (result != DialogResult.OK)
+					return "";
+				responseUrl = waitForm.responseUrl;
+			}
+			return responseUrl;
 		}
 
 		public PictureBox PbxLogo => pbxLogo;
