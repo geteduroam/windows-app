@@ -52,7 +52,7 @@ namespace EduroamApp
                     case EduroamApp.EapType.TLS:
                     case EduroamApp.EapType.TTLS: // not fully there yet
                     case EduroamApp.EapType.PEAP:
-                        yield return new EapAuthMethodInstaller(authMethod);
+                        yield return new EapAuthMethodInstaller(authMethod, eduroamInstance);
                         break;
 
                     // Since this profile supports TTLS, be sure that any error returned is about TTLS not being supported
@@ -70,6 +70,7 @@ namespace EduroamApp
         {
             // all CA thumbprints that will be added to Wireless Profile XML
             private readonly List<string> CertificateThumbprints = new List<string>();
+            private readonly EduroamNetwork EduroamInstance;
             private readonly EapConfig.AuthenticationMethod AuthMethod;
             private bool HasInstalledCertificates = false; // To track proper order of operations
 
@@ -84,9 +85,10 @@ namespace EduroamApp
             /// Constructs a EapAuthMethodInstaller
             /// </summary>
             /// <param name="authMethod">The authentification method to attempt to install</param>
-            public EapAuthMethodInstaller(EapConfig.AuthenticationMethod authMethod)
+            public EapAuthMethodInstaller(EapConfig.AuthenticationMethod authMethod, EduroamNetwork eduroamInstance)
             {
                 AuthMethod = authMethod;
+                EduroamInstance = eduroamInstance;
             }
 
             /// <summary>
@@ -243,7 +245,7 @@ namespace EduroamApp
                     CertificateThumbprints);
 
                 // create a new wireless profile
-                CreateNewProfile(InterfaceId, profileXml); // TODO: static variables
+                CreateNewProfile(EduroamInstance.InterfaceId, profileXml);
 
                 // check if EAP type is TLS and there is no client certificate
                 if (AuthMethod.EapType == EapType.TLS && string.IsNullOrEmpty(AuthMethod.ClientCertificate))
