@@ -12,14 +12,14 @@ namespace EduroamApp
 
 
         /// <summary>
-        /// Fetches data from  https://discovery.geteduroam.app/v1/discovery.json and turns it into a DiscoveryApi object
+        /// Fetches data from  https://discovery.geteduroam.no/v1/discovery.json and turns it into a DiscoveryApi object
         /// </summary>
         /// <returns>DiscoveryApi object representing the Api</returns>
         /// <exception cref="EduroamAppUserError">description</exception>
 
         public static DiscoveryApi GetDiscoveryApi()
         {
-            string apiUrl = $"https://discovery.geteduroam.app/v1/discovery.json";
+            string apiUrl = "https://discovery.geteduroam.no/v1/discovery.json";
             try
             {
                 // downloads json file as string
@@ -56,23 +56,6 @@ namespace EduroamApp
         {
             List<IdentityProvider> providers = GetAllIdProviders();
             return providers.Where(p => p.cat_idp == idProviderId).First().Profiles;
-        }
-
-        /// <summary>
-        /// Gets profile attributes for a given profile ID.
-        /// </summary>
-        /// <returns>Profile Attributes</returns>
-        private static IdProviderProfileAttributes GetProfileAttributes(string profileId)
-        {
-            // download attribute in json format
-            string profileAttributeUrl = $"https://cat.eduroam.org/user/API.php?action=profileAttributes&id={profileId}&lang=en";
-            string profileAttributeJson = GetStringFromUrl(profileAttributeUrl);
-
-            // deserialize json to get profilattributes
-            IdProviderProfileAttributes profileAttributes;
-            profileAttributes = JsonConvert.DeserializeObject<IdProviderProfileAttributes>(profileAttributeJson);
-
-            return profileAttributes;
         }
 
 
@@ -116,23 +99,6 @@ namespace EduroamApp
             return null;
         }
 
-
-
-        public static string GetRedirect(string profileId)
-        {
-            // checks profile attributes for a redirect link
-            return GetProfileFromId(profileId).authorization_endpoint;
-            IdProviderProfileAttributes attributes = GetProfileAttributes(profileId);
-            var redirect = "";
-            foreach (var attribute in attributes.Data.Devices)
-            {
-                if (attribute.Redirect != "0")
-                {
-                    redirect = attribute.Redirect;
-                }
-            }
-            return redirect;
-        }
 
         /// <summary>
         /// Gets a json file as string from url.

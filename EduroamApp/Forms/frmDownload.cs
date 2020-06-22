@@ -123,7 +123,7 @@ namespace EduroamApp
                 IdentityProvider closestInstitute = IdentityProviderParser.GetClosestIdProvider(providersInCountry, frmParent.GeoWatcher.Position.Location);
                 // select closest institute to be default select
                 cboInstitution.SelectedIndex = cboInstitution.FindStringExact(closestInstitute.Name);
-            } catch (EduroamAppUserError ex)
+            } catch (EduroamAppUserError)
             {
 
             }
