@@ -210,19 +210,20 @@ namespace EduroamApp
 						if (retryCa == DialogResult.Cancel)
 							break;
 					}
-					if (authMethodInstaller.NeedToInstallCAs()) // if user refused to install CA
+					if (authMethodInstaller.NeedToInstallCAs()) break; // if user refused to install CA
+
+					// Everything is in order, install the profile!
+					if (authMethodInstaller.InstallProfile())
+					{
+						eapType = (uint)authMethodInstaller.EapType;
 						break;
-					if (!authMethodInstaller.InstallProfile())
+					}
+					else
 					{
 						DialogResult dialogResult = MessageBox.Show(
 							"The selected profile requires a separate client certificate. Do you want to browse your local files for one?",
 							"Client certificate required", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
 						eapType = 500; // TODO: ew
-						break;
-					}
-					else // success
-					{
-						eapType = (uint)authMethodInstaller.EapType;
 						break;
 					}
 				}

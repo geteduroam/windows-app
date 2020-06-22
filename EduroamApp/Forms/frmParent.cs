@@ -115,16 +115,19 @@ namespace EduroamApp
 					switch (EapType)
 					{
 						case (uint)EduroamApp.EapType.TLS:
-							LoadFrmConnect(); break;
+							LoadFrmConnect();
+							break;
 						case (uint)EduroamApp.EapType.PEAP:
 						case (uint)EduroamApp.EapType.TTLS:
-							LoadFrmLogin(); break;
+							LoadFrmLogin();
+							break;
 						case 500: // User needs to find user certificate
 							LocalFileType = "CERT";
 							LoadFrmLocalCert();
 							break;
 						case 600: // Eduroam not available (no access point in range, or no WLAN service)
-							LoadFrmSaveAndQuit(); break;
+							LoadFrmSaveAndQuit();
+							break;
 						case 0:
 							break; // todo, this shouldn't happen?
 						default:
@@ -178,12 +181,16 @@ namespace EduroamApp
 
 				// lets user log in and opens connection form
 				case FormId.Login:
-					if (EapType != 21)
+					if (EapType != (uint)EduroamApp.EapType.TTLS)
 					{
 						frmLogin.ConnectWithLogin();
 						LoadFrmConnect();
 					}
-					else MessageBox.Show("Support for TTLS configuration is not yet ready.", "TTLS not ready", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					else
+					{
+						MessageBox.Show("Support for TTLS configuration is not yet ready.",
+							"TTLS not ready", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					}
 					break;
 
 				// closes application after successful connect

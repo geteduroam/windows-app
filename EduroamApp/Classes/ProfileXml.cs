@@ -95,12 +95,13 @@ namespace EduroamApp
 			XNamespace nsEapType = "";
 			string thumbprintNode = "";
 			// gets xml element to add values to
-			XElement configElement = newProfile.Element(nsWLAN + "MSM")
-										.Element(nsWLAN + "security")
-										.Element(nsOneX + "OneX")
-										.Element(nsOneX + "EAPConfig")
-										.Element(nsEHC + "EapHostConfig")
-										.Element(nsEHC + "Config");
+			XElement configElement = newProfile
+				.Element(nsWLAN + "MSM")
+				.Element(nsWLAN + "security")
+				.Element(nsOneX + "OneX")
+				.Element(nsOneX + "EAPConfig")
+				.Element(nsEHC + "EapHostConfig")
+				.Element(nsEHC + "Config");
 
 			if (eapType == EapType.TLS)
 			{
