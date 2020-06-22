@@ -112,7 +112,7 @@ namespace EduroamApp
 				// adds TLS specific xml elements
 				configElement.Add(
 					new XElement(nsBECP + "Eap",
-						new XElement(nsBECP + "Type", eapType),
+						new XElement(nsBECP + "Type", (uint)eapType),
 						new XElement(nsETCPv1 + "EapType",
 							new XElement(nsETCPv1 + "CredentialsSource",
 								new XElement(nsETCPv1 + "CertificateStore",
@@ -145,7 +145,7 @@ namespace EduroamApp
 				// adds MSCHAPv2 specific elements
 				configElement.Add(
 					new XElement(nsBECP + "Eap",
-						new XElement(nsBECP + "Type", eapType),
+						new XElement(nsBECP + "Type", (uint)eapType),
 						new XElement(nsMPCPv1 + "EapType",
 							new XElement(nsMPCPv1 + "ServerValidation",
 								new XElement(nsMPCPv1 + "DisableUserPromptForServerValidation", "false"),
