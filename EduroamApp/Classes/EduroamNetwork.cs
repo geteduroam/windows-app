@@ -118,7 +118,7 @@ namespace EduroamApp
 
             return NativeWifi.EnumerateAvailableNetworks()
                 .Where(network => network.Ssid.ToString() == Ssid)
-                .OrderByDescending(network => string.IsNullOrEmpty(network.ProfileName))
+                .OrderBy(network => string.IsNullOrEmpty(network.ProfileName))
                 .ToList();
         }
 

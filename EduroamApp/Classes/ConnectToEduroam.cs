@@ -388,6 +388,8 @@ namespace EduroamApp
             // gets updated eduroam network packs
             foreach (AvailableNetworkPack network in EduroamNetwork.GetAllEduroamPacks())
             {
+                if (string.IsNullOrEmpty(network.ProfileName)) continue; // TODO: will cause NativeWifi to throw, but should not happen
+
                 // TODO: do in parallel instead of sequentially?
 
                 // attempt to connect
