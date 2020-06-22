@@ -309,8 +309,10 @@ namespace EduroamApp
                     OAuth oauth = new OAuth(profile.authorization_endpoint, profile.token_endpoint, profile.eapconfig_endpoint);
                     // generate authURI based on redirect
                     string authUri = oauth.GetAuthUri();
+                    // get redirect uri
+                    string prefix = oauth.getRedirectUri();
                     // browser authenticate
-                    string responseUrl = GetResponseUrl(profile.authorization_endpoint, authUri);
+                    string responseUrl = GetResponseUrl(prefix, authUri);
                     // get eap-config string if available
                     eapString = oauth.GetEapConfigString(responseUrl);
                 }
@@ -362,7 +364,9 @@ namespace EduroamApp
             {
                 DialogResult result = waitForm.ShowDialog();
                 if (result != DialogResult.OK)
+                {
                     return "";
+                }
                 responseUrl = waitForm.responseUrl;
             }
             return responseUrl;
