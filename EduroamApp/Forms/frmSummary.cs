@@ -202,7 +202,7 @@ namespace EduroamApp
 							"Accept Certificate Authority", MessageBoxButtons.OK);
 					while (!authMethodInstaller.InstallCertificates())
 					{
-						// Ask user if he wan'ts to retry
+						// Ask user if he wants to retry
 						DialogResult retryCa = MessageBox.Show(
 							"CA not installed. \n" +
 							"In order to connect to eduroam, you must press \"Yes\" when prompted to install the Certificate Authority.",
@@ -257,6 +257,12 @@ namespace EduroamApp
 					"One or more certificates are corrupt. Please select another file, or try again later.\n" +
 					"\n" +
 					"Exception: " + cryptEx.Message,
+					"eduroam - Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+			}
+			catch (EduroamAppUserError ex)
+			{
+				MessageBox.Show(
+					ex.UserFacingMessage,
 					"eduroam - Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
 			catch (Exception ex) // TODO, handle in ConnectToEuroam or EduroamNetwork

@@ -154,19 +154,29 @@ namespace EduroamApp
 			/// <returns></returns>
 			public bool NeedToInstallCAs()
 			{
-				var rootStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
+				using var rootStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
 				rootStore.Open(OpenFlags.ReadWrite);
-
 				//foreach (string ca in AuthMethod.CertificateAuthorities)
 				foreach (var caCert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
 				{
+					if (caCert.NotAfter < DateTime.Now)
+					{
+						rootStore.Close();
+						throw new EduroamAppUserError("expired CA",
+							"One of the provided Certificate Authorities from this institution has expired!\r\n" +
+							"Please contact the institution to have the issue fixed.");
+					}
+
 					// check if CA is not already installed
 					X509Certificate2Collection matchingCerts = rootStore.Certificates.Find(X509FindType.FindByThumbprint, caCert.Thumbprint, true);
 					if (matchingCerts.Count < 1)
+					{
+						rootStore.Close();
 						return true; // user must be informed
+					}
 				}
+				rootStore.Close();
 				return false;
-
 			}
 
 			/// <summary>
@@ -181,7 +191,7 @@ namespace EduroamApp
 				CertificateThumbprints.Clear();
 
 				// open the trusted root CA store
-				var rootStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
+				using var rootStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
 				try
 				{
 					rootStore.Open(OpenFlags.ReadWrite);
