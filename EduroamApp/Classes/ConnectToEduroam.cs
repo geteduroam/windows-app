@@ -5,6 +5,7 @@ using ManagedNativeWifi;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace EduroamApp
 {
@@ -19,10 +20,6 @@ namespace EduroamApp
 	{
 		// TODO: move these static variables to the caller
 
-		// SSID of eduroam network
-		private static string Ssid { get; set; }
-		// Id of wireless network interface
-		private static Guid InterfaceId { get; set; }
 		// EAP type of selected configuration
 		private static EapType EapType { get; set; }
 		// client certificate valid from
@@ -37,12 +34,9 @@ namespace EduroamApp
 		/// <returns>Enumeration of EapAuthMethodInstaller intances for each supported authentification method in eapConfig</returns>
 		public static IEnumerable<EapAuthMethodInstaller> InstallEapConfig(EapConfig eapConfig)
 		{
-			// create new instance of eduroam network
-			var eduroamInstance = new EduroamNetwork();
-			// get SSID
-			Ssid = eduroamInstance.Ssid;
-			// get interface ID
-			InterfaceId = eduroamInstance.InterfaceId;
+			var eduroamNetworks = EduroamNetwork.EnumerateEduroamNetworks();
+			if (!eduroamNetworks.Any())
+				yield break; // TODO: concider throwing
 
 			foreach (EapConfig.AuthenticationMethod authMethod in eapConfig.AuthenticationMethods)
 			{
@@ -52,7 +46,7 @@ namespace EduroamApp
 					case EduroamApp.EapType.TLS:
 					case EduroamApp.EapType.TTLS: // not fully there yet
 					case EduroamApp.EapType.PEAP:
-						yield return new EapAuthMethodInstaller(authMethod, eduroamInstance);
+						yield return new EapAuthMethodInstaller(authMethod, eduroamNetworks);
 						break;
 
 					// Since this profile supports TTLS, be sure that any error returned is about TTLS not being supported
@@ -70,7 +64,7 @@ namespace EduroamApp
 		{
 			// all CA thumbprints that will be added to Wireless Profile XML
 			private readonly List<string> CertificateThumbprints = new List<string>();
-			private readonly EduroamNetwork EduroamInstance;
+			private readonly List<EduroamNetwork> EduroamNetworks;
 			private readonly EapConfig.AuthenticationMethod AuthMethod;
 			private bool HasInstalledCertificates = false; // To track proper order of operations
 
@@ -85,10 +79,10 @@ namespace EduroamApp
 			/// Constructs a EapAuthMethodInstaller
 			/// </summary>
 			/// <param name="authMethod">The authentification method to attempt to install</param>
-			public EapAuthMethodInstaller(EapConfig.AuthenticationMethod authMethod, EduroamNetwork eduroamInstance)
+			public EapAuthMethodInstaller(EapConfig.AuthenticationMethod authMethod, List<EduroamNetwork> eduroamNetworks)
 			{
 				AuthMethod = authMethod;
-				EduroamInstance = eduroamInstance;
+				EduroamNetworks = eduroamNetworks;
 			}
 
 			/// <summary>
@@ -239,13 +233,17 @@ namespace EduroamApp
 
 				// generate new profile xml
 				var profileXml = EduroamApp.ProfileXml.CreateProfileXml(
-					EduroamInstance.Ssid,
+					EduroamNetwork.Ssid,
 					AuthMethod.EapType,
 					serverNames,
 					CertificateThumbprints);
 
 				// create a new wireless profile
-				CreateNewProfile(EduroamInstance.InterfaceId, profileXml);
+				foreach (EduroamNetwork eduroamInstance in EduroamNetworks)
+				{
+					CreateNewProfile(eduroamInstance.InterfaceId, profileXml);
+					// TODO: check output ^
+				}
 
 				// check if EAP type is TLS and there is no client certificate
 				if (AuthMethod.EapType == EapType.TLS && string.IsNullOrEmpty(AuthMethod.ClientCertificate))
@@ -277,12 +275,28 @@ namespace EduroamApp
 		}
 
 		/// <summary>
-		/// Deletes eduroam profile.
+		/// Deletes all network profile matching ssid, which is "eduroam" by default
 		/// </summary>
-		/// <returns>True if profile delete succesful, false if not.</returns>
-		public static bool RemoveProfile()
+		/// <param name="ssid">ssid to delete all profiles of</param>
+		/// <returns>True if any profile deletion was succesful</returns>
+		public static bool RemoveAllProfiles(string ssid = "eduroam")
 		{
-			return NativeWifi.DeleteProfile(InterfaceId, Ssid);
+			bool ret = false;
+			foreach (Guid interfaceId in EduroamNetwork.GetAllInterfaceIds())
+			{
+				if (RemoveProfile(interfaceId, ssid))
+					ret = true;
+			}
+			return ret;
+		}
+
+		/// <summary>
+		/// Deletes a network profile by matching ssid on specified network interface
+		/// </summary>
+		/// <returns>True if profile delete was succesful</returns>
+		private static bool RemoveProfile(Guid interfaceId, string ssid = "eduroam")
+		{
+			return NativeWifi.DeleteProfile(interfaceId, ssid);
 		}
 
 		/// <summary>
@@ -294,8 +308,13 @@ namespace EduroamApp
 		{
 			// generates user data xml file
 			string userDataXml = UserDataXml.CreateUserDataXml(username, password, EapType);
+
 			// sets user data
-			SetUserData(InterfaceId, Ssid, userDataXml);
+			foreach (EduroamNetwork network in EduroamNetwork.EnumerateEduroamNetworks())
+			{
+				SetUserData(network.InterfaceId, EduroamNetwork.Ssid, userDataXml);
+				// TODO: use return value
+			}
 		}
 
 		/// <summary>
@@ -325,22 +344,26 @@ namespace EduroamApp
 		}
 
 		/// <summary>
-		/// Connects to the chosen wireless LAN.
+		/// Connects to any eduroam wireless LAN
 		/// </summary>
 		/// <returns>True if successfully connected. False if not.</returns>
 		private static async Task<bool> ConnectAsync()
 		{
-			// gets updated eduroam network pack
-			AvailableNetworkPack network = EduroamNetwork.GetEduroamPack();
+			// gets updated eduroam network packs
+			foreach (AvailableNetworkPack network in EduroamNetwork.GetAllEduroamPacks())
+			{
+				// TODO: do in parallel instead of sequentially?
 
-			if (network == null)
-				return false;
-
-			return await NativeWifi.ConnectNetworkAsync(
-				interfaceId: network.Interface.Id,
-				profileName: network.ProfileName,
-				bssType: network.BssType,
-				timeout: TimeSpan.FromSeconds(5));
+				// attempt to connect
+				bool success = await NativeWifi.ConnectNetworkAsync(
+					interfaceId: network.Interface.Id,
+					profileName: network.ProfileName,
+					bssType: network.BssType,
+					timeout: TimeSpan.FromSeconds(5));
+				if (success)
+					return true;
+			}
+			return false;
 		}
 
 	}

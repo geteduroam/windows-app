@@ -596,7 +596,7 @@ namespace EduroamApp
 			// deletes bad profile on application exit if connection was unsuccessful
 			if (ProfileCondition == "BADPROFILE")
 			{
-				ConnectToEduroam.RemoveProfile();
+				ConnectToEduroam.RemoveAllProfiles();
 			}
 		}
 	}

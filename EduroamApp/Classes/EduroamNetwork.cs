@@ -13,31 +13,67 @@ namespace EduroamApp
 	/// </summary>
 	class EduroamNetwork
 	{
+		public const string Ssid = "eduroam";
+
 		// Properties
 		public AvailableNetworkPack NetworkPack { get; }
-		public string Ssid { get; }
+		public bool IsAvailable { get; }
 		public Guid InterfaceId { get; }
 
-		// Constructor
-		public EduroamNetwork()
+		// TODO: Add support for Wired 801x
+
+		private EduroamNetwork(Guid interfaceId)
 		{
-			NetworkPack = GetEduroamPack();
-			// if eduroam network available, get ssid and interface id from network pack
-			if (NetworkPack != null)
-			{
-				Ssid = NetworkPack.Ssid.ToString();
-				InterfaceId = NetworkPack.Interface.Id;
-			}
-			// if eduroam network not available, hardcode ssid and get interface id so profile creation still possible
-			else
-			{
-				Ssid = "eduroam";
-				InterfaceId = GetInterfaceId();
-			}
+			NetworkPack = null;
+			IsAvailable = false;
+			InterfaceId = interfaceId;
+		}
+
+		private EduroamNetwork(AvailableNetworkPack networkPack)
+			: this(networkPack.Interface.Id)
+		{
+			NetworkPack = networkPack;
+			IsAvailable = true;
+		}
+
+		/// <summary>
+		/// Enumerates EduroamNetwork objects for all wireless network interfaces.
+		/// </summary>
+		/// <returns></returns>
+		public static IEnumerable<EduroamNetwork> EnumerateEduroamNetworks()
+		{
+			return EnumerateAvailableEduroamNetworks()
+				.Concat(EnumerateUnavailableEduroamNetworks());
+		}
+
+		/// <summary>
+		/// Enumerates EduroamNetwork objects for wireless interfaces where is eduroam available
+		/// </summary>
+		/// <returns></returns>
+		public static IEnumerable<EduroamNetwork> EnumerateAvailableEduroamNetworks()
+		{
+			return GetAllEduroamPacks().Select(networkPack => new EduroamNetwork(networkPack));
+		}
+
+		/// <summary>
+		/// Enumerates EduroamNetwork objects for wireless interfaces with no eduroam available.
+		/// Make profile creation still possible.
+		/// </summary>
+		/// <returns></returns>
+		public static IEnumerable<EduroamNetwork> EnumerateUnavailableEduroamNetworks()
+		{
+			List<Guid> configuredInterfaces = GetAllEduroamPacks()
+				.Select(networkPack => networkPack.Interface.Id)
+				.ToList();
+
+			return GetAllInterfaceIds()
+				.Where(guid => !configuredInterfaces.Contains(guid))
+				.Select(guid => new EduroamNetwork(guid));
 		}
 
 		/// <summary>
 		/// Tries to access the wireless interfaces and reports wether the service is available or not
+		/// If this returns false, then no interfaces nor packs will be available to configure
 		/// </summary>
 		/// <returns>True if wireless service is available</returns>
 		public static bool IsWlanServiceAvailable()
@@ -51,55 +87,46 @@ namespace EduroamApp
 				if (ex.GetBaseException().GetType().Name == "Win32Exception")
 					if (ex.GetBaseException().Message == "MethodName: WlanOpenHandle, ErrorCode: 1062, ErrorMessage: The service has not been started.\r\n")
 						return false;
-				throw ex;
+				throw;
 			}
 			catch (Win32Exception ex)
 			{
 				if (ex.NativeErrorCode == 1062) // ERROR_SERVICE_NOT_ACTIVE
 					return false;
-				throw ex;
+				throw;
 			}
 			return true;
 		}
 
 		/// <summary>
-		/// Gets a network pack containing information about an eduroam network, if available.
+		/// If any eduroam networks are available
 		/// </summary>
-		/// <returns>Network pack or null</returns>
-		public static AvailableNetworkPack GetEduroamPack()
+		/// <returns></returns>
+		public static bool IsEduroamAvailable()
 		{
-			if (!IsWlanServiceAvailable()) return null;
-
-			// gets all available networks and stores them in a list
-			List<AvailableNetworkPack> networks = NativeWifi.EnumerateAvailableNetworks().ToList();
-
-			// gets eduroam network pack, prefers a network with an existing profile
-			foreach (AvailableNetworkPack network in networks)
-			{
-				if (network.Ssid.ToString() == "eduroam" && network.ProfileName != "")
-				{
-					return network;
-				}
-			}
-
-			// if no profiles exist for eduroam, search again and get network pack without profile
-			foreach (AvailableNetworkPack network in networks)
-			{
-				if (network.Ssid.ToString() == "eduroam")
-				{
-					return network;
-				}
-			}
-
-			// if no networks called "eduroam" are found, return nothing
-			return null;
+			return GetAllEduroamPacks().Any();
 		}
 
 		/// <summary>
-		/// Gets the computer's wireless network interface Id, if it exists.
+		/// Gets all network packs containing information about an eduroam network, if any.
 		/// </summary>
-		/// <returns>Wireless interface id.</returns>
-		public static Guid GetInterfaceId()
+		/// <returns>Network packs</returns>
+		public static List<AvailableNetworkPack> GetAllEduroamPacks()
+		{
+			if (!IsWlanServiceAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
+				return new List<AvailableNetworkPack>();
+
+			return NativeWifi.EnumerateAvailableNetworks()
+				.Where(network => network.Ssid.ToString() == Ssid)
+				.OrderByDescending(network => string.IsNullOrEmpty(network.ProfileName))
+				.ToList();
+		}
+
+		/// <summary>
+		/// Gets the computer's wireless network interface Ids, if they exists.
+		/// </summary>
+		/// <returns>all Wireless interface IDs</returns>
+		public static IEnumerable<Guid> GetAllInterfaceIds()
 		{
 			var interfaces = NetworkInterface.GetAllNetworkInterfaces();
 			foreach (NetworkInterface nic in interfaces)
@@ -107,10 +134,9 @@ namespace EduroamApp
 				// searches for wireless network interface
 				if (nic.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 && nic.Speed != -1)
 				{
-					return new Guid(nic.Id);
+					yield return new Guid(nic.Id);
 				}
 			}
-			return Guid.Empty;
 		}
 	}
 }
