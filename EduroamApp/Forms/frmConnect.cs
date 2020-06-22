@@ -42,7 +42,7 @@ namespace EduroamApp
             lblStatus.Visible = true;
             pbxStatus.Visible = true;
 
-            if (frmParent.EapType == 13)
+            if (frmParent.EapType == (uint)EduroamApp.EapType.TLS)
             {
                 DateTime validFrom = ConnectToEduroam.CertValidFrom; // TODO: this static variable will be moved
                 DateTime now = DateTime.Now;
@@ -52,7 +52,7 @@ namespace EduroamApp
                 if (DateTime.Compare(validFrom, now) > 0)
                 {
                     // waits at connecting screen if under 9 seconds difference
-                    if (difference.TotalSeconds < 8)
+                    if (difference.TotalSeconds < 8) // TODO: muyto intressante
                     {
                         await PutTaskDelay(difference.Milliseconds + 1000);
                     }

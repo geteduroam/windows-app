@@ -33,7 +33,7 @@ namespace EduroamApp
             /// </summary>
             public IEnumerable<X509Certificate2> CertificateAuthoritiesAsX509Certificate2() {
                 foreach (var ca in CertificateAuthorities)
-                { 
+                {
                     var cert = new X509Certificate2(Convert.FromBase64String(ca));
                     cert.FriendlyName = cert.GetNameInfo(X509NameType.SimpleName, false);
                     yield return cert;
