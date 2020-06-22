@@ -31,23 +31,54 @@ namespace EduroamApp
 			// loops through all institutions' coordinates and compares them with current shortest distance
 			foreach (IdentityProvider inst in instList)
 			{
-				if (inst.Geo != null) // excludes if geo property not set
+
+				if (!IsNullOrEmptyList(inst.Geo)) // excludes if geo property not set
 				{
-					// gets lat and long
-					instCoord.Latitude = inst.Geo.First().Lat;
-					instCoord.Longitude = inst.Geo.First().Lon;
-					// gets current distance
-					double currentDistance = userCoord.GetDistanceTo(instCoord);
-					// compares with shortest distance
-					if (currentDistance < shortestDistance)
+
+					// check all coordinates for each institute
+					foreach (Geo instGeo in inst.Geo)
 					{
-						// sets the current distance as the shortest dstance
-						shortestDistance = currentDistance;
-						closestInst = inst;
+						// store to GeoCoordinate object
+						instCoord.Latitude = instGeo.Lat;
+						instCoord.Longitude = instGeo.Lon;
+						// gets current distance
+						double currentDistance = userCoord.GetDistanceTo(instCoord);
+						// compares with shortest distance
+						if (currentDistance < shortestDistance)
+						{
+							// sets the current distance as the shortest dstance
+							shortestDistance = currentDistance;
+							// sets inst with shortest distance to be the closest institute
+							closestInst = inst;
+						}
 					}
 				}
 			}
 			return closestInst;
+		}
+
+		/// <summary>
+		/// Determines whether the collection is null or contains no elements.
+		/// </summary>
+		/// <typeparam name="T">The IEnumerable type.</typeparam>
+		/// <param name="enumerable">The enumerable, which may be null or empty.</param>
+		/// <returns>
+		///     <c>true</c> if the IEnumerable is null or empty; otherwise, <c>false</c>.
+		/// </returns>
+		private static bool IsNullOrEmptyList<T>(IEnumerable<T> enumerable)
+		{
+			if (enumerable == null)
+			{
+				return true;
+			}
+			/* If this is a list, use the Count property for efficiency.
+			 * The Count property is O(1) while IEnumerable.Count() is O(N). */
+			var collection = enumerable as ICollection<T>;
+			if (collection != null)
+			{
+				return collection.Count < 1;
+			}
+			return !enumerable.Any();
 		}
 
 		/// <summary>
@@ -65,7 +96,7 @@ namespace EduroamApp
 			{
 				return GetClosestIdProvider(instList, userCoord).Country;
 			}
-			catch (EduroamAppUserError ex)
+			catch (EduroamAppUserError)
 			{
 
 			}

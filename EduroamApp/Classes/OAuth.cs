@@ -24,11 +24,11 @@ namespace EduroamApp
 		private string codeChallenge;
 		private const string redirectUri = "http://localhost:8080/";
 		private const string clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a";
-		private string state = Base64UrlEncode(Guid.NewGuid().ToByteArray()); // random alphanumeric string
 		private const string grantType = "authorization_code";
 		private string authEndpoint;
 		private string tokenEndpoint;
 		private string generatorEndpoint;
+		private string state;
 
 		/// <summary>
 		/// Class used for OAuth process
@@ -41,7 +41,7 @@ namespace EduroamApp
 			this.authEndpoint = authEndpoint;
 			this.tokenEndpoint = tokenEndpoint;
 			this.generatorEndpoint = generatorEndpoint;
-		}
+	}
 
 		/// <summary>
 		/// Produces an authorization endpoint URI
@@ -49,8 +49,8 @@ namespace EduroamApp
 		/// <returns>Authorization endpoint URI as string.</returns>
 		public string GetAuthUri()
 		{
-			// sets authorization uri parameters
-
+			// sets non-static authorization uri parameters
+			state = Base64UrlEncode(Guid.NewGuid().ToByteArray()); // random alphanumeric string
 			codeVerifier = Base64UrlEncode(GenerateCodeChallengeBase()); // generate random byte array, convert to base64url
 			codeChallenge = Base64UrlEncode(HashWithSHA256(codeVerifier)); // hash code verifier with SHA256, convert to base64url
 
