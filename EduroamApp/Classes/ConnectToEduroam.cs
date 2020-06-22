@@ -269,17 +269,18 @@ namespace EduroamApp
 					CertificateThumbprints);
 
 				// create a new wireless profile
+				bool any_installed = false;
 				foreach (EduroamNetwork eduroamInstance in EduroamNetworks)
 				{
-					CreateNewProfile(eduroamInstance.InterfaceId, profileXml);
-					// TODO: check output ^
+					any_installed |= CreateNewProfile(eduroamInstance.InterfaceId, profileXml);
+					// TODO: update docstring and handling in frmSummary due to any_installed
 				}
 
 				// check if EAP type is TLS and there is no client certificate
 				if (AuthMethod.EapType == EapType.TLS && string.IsNullOrEmpty(AuthMethod.ClientCertificate))
 					return false;
 
-				return true;
+				return any_installed;
 			}
 		}
 
