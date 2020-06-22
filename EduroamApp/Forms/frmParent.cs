@@ -48,6 +48,7 @@ namespace EduroamApp
 		// public variables to be used across forms
 		public GeoCoordinateWatcher GeoWatcher { get; set; }
 		public uint EapType { get; set; }  // EAP type of selected EAP config
+		// TODO: change to EapType ^
 		public string InstId { get; set; }
 		public string ProfileCondition { get; set; }
 		public string LocalFileType { get; set; }
@@ -122,7 +123,7 @@ namespace EduroamApp
 							LocalFileType = "CERT";
 							LoadFrmLocalCert();
 							break;
-						case 600: // Eduroam not available
+						case 600: // Eduroam not available (no access point in range, or no WLAN service)
 							LoadFrmSaveAndQuit(); break;
 						case 0:
 							break; // todo, this shouldn't happen?
@@ -600,7 +601,7 @@ namespace EduroamApp
 			// deletes bad profile on application exit if connection was unsuccessful
 			if (ProfileCondition == "BADPROFILE")
 			{
-				ConnectToEduroam.RemoveProfile();
+				ConnectToEduroam.RemoveAllProfiles();
 			}
 		}
 	}
