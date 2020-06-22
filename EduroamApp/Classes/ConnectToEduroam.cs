@@ -5,6 +5,7 @@ using ManagedNativeWifi;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace EduroamApp
 {
@@ -19,12 +20,6 @@ namespace EduroamApp
     {
         // TODO: move these static variables to the caller
 
-        // SSID of eduroam network
-        private static string Ssid { get; set; }
-        // Id of wireless network interface
-        private static Guid InterfaceId { get; set; }
-        // xml file for building wireless profile
-        private static string ProfileXml { get; set; }
         // EAP type of selected configuration
         private static EapType EapType { get; set; }
         // client certificate valid from
@@ -33,34 +28,52 @@ namespace EduroamApp
 
         /// <summary>
         /// Yields EapAuthMethodInstallers which will attempt to install eapConfig for you.
-        /// Refer to frmSummary.InstallEapConfig to see how to use it
+        /// Refer to frmSummary.InstallEapConfig to see how to use it (TODO: actually explain when finalized)
         /// </summary>
         /// <param name="eapConfig">EapConfig object</param>
         /// <returns>Enumeration of EapAuthMethodInstaller intances for each supported authentification method in eapConfig</returns>
         public static IEnumerable<EapAuthMethodInstaller> InstallEapConfig(EapConfig eapConfig)
         {
-            // create new instance of eduroam network
-            var eduroamInstance = new EduroamNetwork();
-            // get SSID
-            Ssid = eduroamInstance.Ssid;
-            // get interface ID
-            InterfaceId = eduroamInstance.InterfaceId;
+            List<EduroamNetwork> eduroamNetworks = EduroamNetwork.EnumerateEduroamNetworks().ToList();
+            if (!eduroamNetworks.Any())
+                yield break; // TODO: concider throwing
+            if (!EapTypeIsSupported(eapConfig))
+                yield break; // TODO: concider throwing
 
             foreach (EapConfig.AuthenticationMethod authMethod in eapConfig.AuthenticationMethods)
             {
-                switch (authMethod.EapType)
-                {
-                    // Supported EAP types:
-                    case EduroamApp.EapType.TLS:
-                    case EduroamApp.EapType.TTLS: // not fully there yet
-                    case EduroamApp.EapType.PEAP:
-                        yield return new EapAuthMethodInstaller(authMethod);
-                        break;
+                if (EapTypeIsSupported(authMethod.EapType))
+                    yield return new EapAuthMethodInstaller(authMethod, eduroamNetworks);
+                // if EAP type is not supported, skip this authMethod
+            }
+        }
 
-                    // Since this profile supports TTLS, be sure that any error returned is about TTLS not being supported
-                    default:
-                        continue; // if EAP type is not supported, skip this authMethod
-                }
+        /// <summary>
+        /// Checks if eapConfig contains any supported authentification methods.
+        /// If no such method exists, then warn the user before trying to install the config.
+        /// </summary>
+        /// <param name="eapConfig">The EAP config to check</param>
+        /// <returns>True if it contains a supported type</returns>
+        public static bool EapTypeIsSupported(EapConfig eapConfig)
+        {
+            foreach (EapConfig.AuthenticationMethod authMethod in eapConfig.AuthenticationMethods)
+                if (EapTypeIsSupported(authMethod.EapType))
+                    return true;
+            return false;
+        }
+
+        private static bool EapTypeIsSupported(EapType eapType)
+        {
+            switch (eapType)
+            {
+                // Supported EAP types:
+                case EduroamApp.EapType.TLS:
+                case EduroamApp.EapType.TTLS: // not fully there yet
+                    // TODO: Since this profile supports TTLS, be sure that any error returned is about TTLS not being supported
+                case EduroamApp.EapType.PEAP:
+                    return true;
+                default:
+                    return false;
             }
         }
 
@@ -72,6 +85,7 @@ namespace EduroamApp
         {
             // all CA thumbprints that will be added to Wireless Profile XML
             private readonly List<string> CertificateThumbprints = new List<string>();
+            private readonly List<EduroamNetwork> EduroamNetworks;
             private readonly EapConfig.AuthenticationMethod AuthMethod;
             private bool HasInstalledCertificates = false; // To track proper order of operations
 
@@ -86,9 +100,10 @@ namespace EduroamApp
             /// Constructs a EapAuthMethodInstaller
             /// </summary>
             /// <param name="authMethod">The authentification method to attempt to install</param>
-            public EapAuthMethodInstaller(EapConfig.AuthenticationMethod authMethod)
+            public EapAuthMethodInstaller(EapConfig.AuthenticationMethod authMethod, List<EduroamNetwork> eduroamNetworks)
             {
                 AuthMethod = authMethod;
+                EduroamNetworks = eduroamNetworks;
             }
 
             /// <summary>
@@ -238,10 +253,18 @@ namespace EduroamApp
                 string serverNames = string.Join(";", AuthMethod.ServerName);
 
                 // generate new profile xml
-                ProfileXml = EduroamApp.ProfileXml.CreateProfileXml(Ssid, AuthMethod.EapType, serverNames, CertificateThumbprints);
+                var profileXml = EduroamApp.ProfileXml.CreateProfileXml(
+                    EduroamNetwork.Ssid,
+                    AuthMethod.EapType,
+                    serverNames,
+                    CertificateThumbprints);
 
                 // create a new wireless profile
-                CreateNewProfile(InterfaceId, ProfileXml); // TODO: static variables
+                foreach (EduroamNetwork eduroamInstance in EduroamNetworks)
+                { 
+                    CreateNewProfile(eduroamInstance.InterfaceId, profileXml);
+                    // TODO: check output ^
+                }
 
                 // check if EAP type is TLS and there is no client certificate
                 if (AuthMethod.EapType == EapType.TLS && string.IsNullOrEmpty(AuthMethod.ClientCertificate))
@@ -264,7 +287,7 @@ namespace EduroamApp
             const ProfileType profileType = ProfileType.AllUser;
 
             // security type not required
-            const string securityType = null;
+            const string securityType = null; // TODO: document why
 
             // overwrites if profile already exists
             const bool overwrite = true;
@@ -273,12 +296,28 @@ namespace EduroamApp
         }
 
         /// <summary>
-        /// Deletes eduroam profile.
+        /// Deletes all network profile matching ssid, which is "eduroam" by default
         /// </summary>
-        /// <returns>True if profile delete succesful, false if not.</returns>
-        public static bool RemoveProfile()
+        /// <param name="ssid">ssid to delete all profiles of</param>
+        /// <returns>True if any profile deletion was succesful</returns>
+        public static bool RemoveAllProfiles(string ssid = "eduroam")
         {
-            return NativeWifi.DeleteProfile(InterfaceId, Ssid);
+            bool ret = false;
+            foreach (Guid interfaceId in EduroamNetwork.GetAllInterfaceIds())
+            {
+                if (RemoveProfile(interfaceId, ssid))
+                    ret = true;
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// Deletes a network profile by matching ssid on specified network interface
+        /// </summary>
+        /// <returns>True if profile delete was succesful</returns>
+        private static bool RemoveProfile(Guid interfaceId, string ssid = "eduroam")
+        {
+            return NativeWifi.DeleteProfile(interfaceId, ssid);
         }
 
         /// <summary>
@@ -290,23 +329,30 @@ namespace EduroamApp
         {
             // generates user data xml file
             string userDataXml = UserDataXml.CreateUserDataXml(username, password, EapType);
+
             // sets user data
-            SetUserData(InterfaceId, Ssid, userDataXml);
+            foreach (EduroamNetwork network in EduroamNetwork.EnumerateEduroamNetworks())
+            {
+                SetUserData(network.InterfaceId, EduroamNetwork.Ssid, userDataXml);
+                // TODO: use return value
+            }
         }
 
         /// <summary>
         /// Sets user data for a wireless profile.
         /// </summary>
-        /// <param name="networkId">Interface ID of selected network.</param>
+        /// <param name="interfaceId">Interface ID of selected network.</param>
         /// <param name="profileName">Name of associated wireless profile.</param>
         /// <param name="userDataXml">User data XML converted to string.</param>
         /// <returns>True if succeeded, false if failed.</returns>
-        public static bool SetUserData(Guid networkId, string profileName, string userDataXml)
+        public static bool SetUserData(Guid interfaceId, string profileName, string userDataXml)
         {
             // sets the profile user type to "WLAN_SET_EAPHOST_DATA_ALL_USERS"
             const uint profileUserType = 0x00000001;
 
-            return NativeWifi.SetProfileUserData(networkId, profileName, profileUserType, userDataXml);
+            // TODO: document the const above
+
+            return NativeWifi.SetProfileUserData(interfaceId, profileName, profileUserType, userDataXml);
         }
 
         /// <summary>
@@ -321,22 +367,26 @@ namespace EduroamApp
         }
 
         /// <summary>
-        /// Connects to the chosen wireless LAN.
+        /// Connects to any eduroam wireless LAN
         /// </summary>
         /// <returns>True if successfully connected. False if not.</returns>
         private static async Task<bool> ConnectAsync()
         {
-            // gets updated eduroam network pack
-            AvailableNetworkPack network = EduroamNetwork.GetEduroamPack();
+            // gets updated eduroam network packs
+            foreach (AvailableNetworkPack network in EduroamNetwork.GetAllEduroamPacks())
+            {
+                // TODO: do in parallel instead of sequentially?
 
-            if (network == null)
-                return false;
-
-            return await NativeWifi.ConnectNetworkAsync(
-                interfaceId: network.Interface.Id,
-                profileName: network.ProfileName,
-                bssType: network.BssType,
-                timeout: TimeSpan.FromSeconds(5));
+                // attempt to connect
+                bool success = await NativeWifi.ConnectNetworkAsync(
+                    interfaceId: network.Interface.Id,
+                    profileName: network.ProfileName,
+                    bssType: network.BssType,
+                    timeout: TimeSpan.FromSeconds(5));
+                if (success)
+                    return true;
+            }
+            return false;
         }
 
     }

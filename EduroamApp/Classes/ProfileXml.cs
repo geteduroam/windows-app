@@ -47,6 +47,8 @@ namespace EduroamApp
             // sets AuthorId to 311 if using eap type TTLS
             int authId = eapType == EapType.TTLS ? 311 : 0;
 
+            // hotspot2.0 domain is EapConfig.InstitutionInfo.InstId
+
             // creates common xml elements
             XElement newProfile =
                 new XElement(nsWLAN + "WLANProfile",

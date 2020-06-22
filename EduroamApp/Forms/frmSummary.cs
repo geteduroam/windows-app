@@ -229,7 +229,7 @@ namespace EduroamApp
 
                 frmParent.InstId = eapConfig.InstitutionInfo.InstId;
 
-                if (EduroamNetwork.GetEduroamPack() == null)
+                if (!EduroamNetwork.IsEduroamAvailable())
                 {
                     eapType = 600; // TODO: ew
                     frmParent.EduroamAvailable = false;
