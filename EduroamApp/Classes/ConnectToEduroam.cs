@@ -28,7 +28,7 @@ namespace EduroamApp
 
         /// <summary>
         /// Yields EapAuthMethodInstallers which will attempt to install eapConfig for you.
-        /// Refer to frmSummary.InstallEapConfig to see how to use it
+        /// Refer to frmSummary.InstallEapConfig to see how to use it (TODO: actually explain when finalized)
         /// </summary>
         /// <param name="eapConfig">EapConfig object</param>
         /// <returns>Enumeration of EapAuthMethodInstaller intances for each supported authentification method in eapConfig</returns>
@@ -287,7 +287,7 @@ namespace EduroamApp
             const ProfileType profileType = ProfileType.AllUser;
 
             // security type not required
-            const string securityType = null;
+            const string securityType = null; // TODO: document why
 
             // overwrites if profile already exists
             const bool overwrite = true;
@@ -349,6 +349,8 @@ namespace EduroamApp
         {
             // sets the profile user type to "WLAN_SET_EAPHOST_DATA_ALL_USERS"
             const uint profileUserType = 0x00000001;
+
+            // TODO: document the const above
 
             return NativeWifi.SetProfileUserData(interfaceId, profileName, profileUserType, userDataXml);
         }
