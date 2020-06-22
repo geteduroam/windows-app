@@ -150,7 +150,16 @@ namespace EduroamApp
 				// next form depends on if downloaded config contains redirect url or not
 				case FormId.Download:
 					string profileId = frmDownload.ProfileId;
-					eapConfig = DownloadEapConfig(profileId);
+					try
+					{
+						eapConfig = DownloadEapConfig(profileId);
+					}
+					catch (EduroamAppUserError ex) // TODO: register this in some higher level
+					{
+						MessageBox.Show(
+							ex.UserFacingMessage,
+							"eduroam - Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					}
 					if (eapConfig != null)
 					{
 						LoadFrmSummary();

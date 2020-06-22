@@ -95,7 +95,7 @@ namespace EduroamApp
 			}
 			catch (WebException ex)
 			{
-				throw new EduroamAppUserError("", GetWebExceptionString(ex));
+				throw new EduroamAppUserError("WebException", GetWebExceptionString(ex));
 			}
 		}
 
