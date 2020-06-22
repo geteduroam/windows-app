@@ -109,7 +109,7 @@ namespace EduroamApp
 			}
 			string password = txtPassword.Text;
 
-			ConnectToEduroam.SetupLogin(username, password);
+			ConnectToEduroam.SetupLogin(username, password, (EapType)frmParent.EapType);
 		}
 
 		private void txtUsername_TextChanged(object sender, EventArgs e)

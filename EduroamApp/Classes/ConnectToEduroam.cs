@@ -21,7 +21,6 @@ namespace EduroamApp
 		// TODO: move these static variables to the caller
 
 		// EAP type of selected configuration
-		private static EapType EapType { get; set; }
 		// client certificate valid from
 		public static DateTime CertValidFrom { get; set; } // TODO: use EapAuthMethodInstaller.CertValidFrom instead
 
@@ -335,10 +334,13 @@ namespace EduroamApp
 		/// </summary>
 		/// <param name="username">User's username.</param>
 		/// <param name="password">User's password.</param>
-		public static void SetupLogin(string username, string password)
+		/// <param name="eapType">EapType of installed profike</param>
+		public static void SetupLogin(string username, string password, EapType eapType)
 		{
+			// TODO: move into EapAuthMethodInstaller
+
 			// generates user data xml file
-			string userDataXml = UserDataXml.CreateUserDataXml(username, password, EapType);
+			string userDataXml = UserDataXml.CreateUserDataXml(username, password, eapType);
 
 			// sets user data
 			foreach (EduroamNetwork network in EduroamNetwork.EnumerateEduroamNetworks())
