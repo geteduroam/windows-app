@@ -17,18 +17,18 @@ namespace EduroamApp
     class OAuth
     {
 
-        const string responseType = "code";
-        const string codeChallengeMethod = "S256";
-        const string scope = "eap-metadata";
-        string codeVerifier;
-        string codeChallenge;
-        const string redirectUri = "http://localhost:8080/";
-        const string clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a";
-        string state = Base64UrlEncode(Guid.NewGuid().ToByteArray()); // random alphanumeric string
-        const string grantType = "authorization_code";
-        string authEndpoint;
-        string tokenEndpoint;
-        string generatorEndpoint;
+        private const string responseType = "code";
+        private const string codeChallengeMethod = "S256";
+        private const string scope = "eap-metadata";
+        private string codeVerifier;
+        private string codeChallenge;
+        private const string redirectUri = "http://localhost:8080/";
+        private const string clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a";
+        private string state = Base64UrlEncode(Guid.NewGuid().ToByteArray()); // random alphanumeric string
+        private const string grantType = "authorization_code";
+        private string authEndpoint;
+        private string tokenEndpoint;
+        private string generatorEndpoint;
 
         /// <summary>
         /// Class used for OAuth process
@@ -280,6 +280,11 @@ namespace EduroamApp
                 items.Add(string.Concat(System.Web.HttpUtility.UrlEncode(name), "=", System.Web.HttpUtility.UrlEncode(parameters[name])));
 
             return string.Join("&", items.ToArray());
+        }
+
+        public string getRedirectUri()
+        {
+            return redirectUri;
         }
     }
 }
