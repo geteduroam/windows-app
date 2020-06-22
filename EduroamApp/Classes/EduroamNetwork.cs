@@ -76,7 +76,7 @@ namespace EduroamApp
         /// If this returns false, then no interfaces nor packs will be available to configure
         /// </summary>
         /// <returns>True if wireless service is available</returns>
-        public static bool IsWlanServiceAvailable()
+        private static bool IsWlanServiceAvailable()
         {
             try
             {

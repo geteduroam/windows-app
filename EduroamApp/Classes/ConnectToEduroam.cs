@@ -357,7 +357,7 @@ namespace EduroamApp
         /// <param name="profileName">Name of associated wireless profile.</param>
         /// <param name="userDataXml">User data XML converted to string.</param>
         /// <returns>True if succeeded, false if failed.</returns>
-        public static bool SetUserData(Guid interfaceId, string profileName, string userDataXml)
+        private static bool SetUserData(Guid interfaceId, string profileName, string userDataXml)
         {
             // sets the profile user type to "WLAN_SET_EAPHOST_DATA_ALL_USERS"
             const uint profileUserType = 0x00000001;
