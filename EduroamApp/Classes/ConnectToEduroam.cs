@@ -34,25 +34,46 @@ namespace EduroamApp
         /// <returns>Enumeration of EapAuthMethodInstaller intances for each supported authentification method in eapConfig</returns>
         public static IEnumerable<EapAuthMethodInstaller> InstallEapConfig(EapConfig eapConfig)
         {
-            var eduroamNetworks = EduroamNetwork.EnumerateEduroamNetworks();
+            List<EduroamNetwork> eduroamNetworks = EduroamNetwork.EnumerateEduroamNetworks().ToList();
             if (!eduroamNetworks.Any())
+                yield break; // TODO: concider throwing
+            if (!EapTypeIsSupported(eapConfig))
                 yield break; // TODO: concider throwing
 
             foreach (EapConfig.AuthenticationMethod authMethod in eapConfig.AuthenticationMethods)
             {
-                switch (authMethod.EapType)
-                {
-                    // Supported EAP types:
-                    case EduroamApp.EapType.TLS:
-                    case EduroamApp.EapType.TTLS: // not fully there yet
-                    case EduroamApp.EapType.PEAP:
-                        yield return new EapAuthMethodInstaller(authMethod, eduroamNetworks);
-                        break;
+                if (EapTypeIsSupported(authMethod.EapType))
+                    yield return new EapAuthMethodInstaller(authMethod, eduroamNetworks);
+                // if EAP type is not supported, skip this authMethod
+            }
+        }
 
-                    // Since this profile supports TTLS, be sure that any error returned is about TTLS not being supported
-                    default:
-                        continue; // if EAP type is not supported, skip this authMethod
-                }
+        /// <summary>
+        /// Checks if eapConfig contains any supported authentification methods.
+        /// If no such method exists, then warn the user before trying to install the config.
+        /// </summary>
+        /// <param name="eapConfig">The EAP config to check</param>
+        /// <returns>True if it contains a supported type</returns>
+        public static bool EapTypeIsSupported(EapConfig eapConfig)
+        {
+            foreach (EapConfig.AuthenticationMethod authMethod in eapConfig.AuthenticationMethods)
+                if (EapTypeIsSupported(authMethod.EapType))
+                    return true;
+            return false;
+        }
+
+        private static bool EapTypeIsSupported(EapType eapType)
+        {
+            switch (eapType)
+            {
+                // Supported EAP types:
+                case EduroamApp.EapType.TLS:
+                case EduroamApp.EapType.TTLS: // not fully there yet
+                    // TODO: Since this profile supports TTLS, be sure that any error returned is about TTLS not being supported
+                case EduroamApp.EapType.PEAP:
+                    return true;
+                default:
+                    return false;
             }
         }
 
