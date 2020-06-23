@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace EduroamApp
@@ -40,7 +41,7 @@ namespace EduroamApp
 		/// <param name="ssid">Name of SSID associated with profile.</param>
 		/// <param name="eapType">Type of EAP.</param>
 		/// <param name="serverNames">Server names.</param>
-		/// <param name="thumbprints">List of CA thumbprints.</param>
+		/// <param name="thumbprints">List of CA thumbprints, in hex</param>
 		/// <returns>Complete wireless profile xml as string.</returns>
 		public static string CreateProfileXml(string ssid, EapType eapType, string serverNames, List<string> thumbprints)
 		{
@@ -227,11 +228,18 @@ namespace EduroamApp
 						.Element(nsEapType + "ServerValidation"),
 				};
 
+
+				// Format CA thumbprints into xs:element type="hexBinary"
+				List<string> formattedThumbprints = thumbprints
+					.Select(thumb => Regex.Replace(thumb, " ", ""))
+					.Select(thumb => Regex.Replace(thumb, ".{2}", "$0 "))
+					.Select(thumb => thumb.ToUpper())
+					.Select(thumb => thumb.Trim())
+					.ToList();
+
 				// creates TrustedRootCA(/Hash) child elements and assigns thumbprint as value
-				foreach (string thumb in thumbprints)
-				{
-					serverValidationElement.Add(new XElement(nsEapType + thumbprintNode, thumb));
-				}
+				formattedThumbprints.ForEach(thumb =>
+					serverValidationElement.Add(new XElement(nsEapType + thumbprintNode, thumb)));
 
 				if (eapType == EapType.TLS)
 				{
@@ -243,10 +251,8 @@ namespace EduroamApp
 						.Element(nsETCPv3 + "CAHashList");
 
 					// creates IssuerHash child elements and assigns thumbprint as value
-					foreach (string thumb in thumbprints)
-					{
-						caHashListElement.Add(new XElement(nsETCPv3 + "IssuerHash", thumb));
-					}
+					formattedThumbprints.ForEach(thumb =>
+						caHashListElement.Add(new XElement(nsETCPv3 + "IssuerHash", thumb)));
 				}
 			}
 
