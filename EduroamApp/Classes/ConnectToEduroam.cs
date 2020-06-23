@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using ManagedNativeWifi;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Text.RegularExpressions;
 using System.Linq;
 
 namespace EduroamApp
@@ -216,9 +215,8 @@ namespace EduroamApp
                             }
                         }
 
-                        // get CA thumbprint and formats it
-                        string formattedThumbprint = Regex.Replace(caCert.Thumbprint, ".{2}", "$0 ");
-                        CertificateThumbprints.Add(formattedThumbprint); // add thumbprint to list
+                        // get CA thumbprint and adds to list
+                        CertificateThumbprints.Add(caCert.Thumbprint);
                     }
 
                     string clientCertIssuer = InstallClientCertificate();
@@ -230,12 +228,10 @@ namespace EduroamApp
                         X509Certificate2Collection existingCAs = rootStore.Certificates
                             .Find(X509FindType.FindByIssuerDistinguishedName, clientCertIssuer, true);
 
+                        // get CA thumbprint and adds to list
                         foreach (X509Certificate2 ca in existingCAs)
                         {
-                            // get CA thumbprint and formats it
-                            string formattedThumbprint = Regex.Replace(ca.Thumbprint, ".{2}", "$0 ");
-                            // add thumbprint to list
-                            CertificateThumbprints.Add(formattedThumbprint);
+                            CertificateThumbprints.Add(ca.Thumbprint);
                         }
                     }
                     HasInstalledCertificates = true;
