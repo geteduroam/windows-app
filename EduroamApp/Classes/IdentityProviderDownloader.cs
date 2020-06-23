@@ -4,6 +4,9 @@ using System.Text;
 using System.Net;
 using Newtonsoft.Json;
 using System.Linq;
+using EduroamApp.Classes;
+using System.Windows.Forms.VisualStyles;
+using System.Device.Location;
 
 namespace EduroamApp
 {
@@ -38,6 +41,25 @@ namespace EduroamApp
             }
         }
 
+        public static Location GetLocationApi()
+        {
+            string apiUrl = "https://geo.geteduroam.app/geoip";
+            try
+            {
+                string apiJson = GetStringFromUrl(apiUrl);
+                Location apiInstance = JsonConvert.DeserializeObject<Location>(apiJson);
+                return apiInstance;
+            }
+            catch (WebException ex)
+            {
+                throw new EduroamAppUserError("", GetWebExceptionString(ex));
+            }
+            catch (JsonReaderException ex)
+            {
+                throw new EduroamAppUserError("", GetJsonExceptionString(ex));
+            }
+        }
+
         /// <summary>
         /// Fetches a list of all eduroam institutions from https://cat.eduroam.org.
         /// </summary>
@@ -59,6 +81,40 @@ namespace EduroamApp
         }
 
 
+        public static List<IdentityProvider> GetClosestProviders(int n, GeoCoordinate userCoords)
+        {
+            // get user location and store in GeoCoordinate object
+            if (userCoords.IsUnknown)
+            {
+                userCoords = GetGeoCoordinates();
+            }
+
+            // find all providers in current country
+            List<IdentityProvider> allProviders = GetAllIdProviders();
+            string closestCountryCode = GetLocationApi().Country;
+            List<IdentityProvider> localProviders = allProviders.Where(p => p.Country == closestCountryCode).ToList();
+
+            // sort provider list by distance to user location
+            localProviders = localProviders.OrderBy(
+                p => userCoords.GetDistanceTo(p.GetClosestGeoCoordinate(userCoords))
+            ).ToList();
+            
+            foreach (IdentityProvider provider in localProviders)
+            {
+                System.Diagnostics.Debug.WriteLine(userCoords.GetDistanceTo(provider.GetClosestGeoCoordinate(userCoords)));
+            }
+
+            // return n closest
+            return localProviders.Take(n).ToList();
+           
+        }
+
+        private static GeoCoordinate GetGeoCoordinates()
+        {
+            Location userLocation = GetLocationApi();
+            Geo userGeo = userLocation.Geo;
+            return userGeo.toGeoCoordinate();
+        }
 
         /// <summary>
         /// Gets download link for EAP config from json and downloads it.
@@ -81,7 +137,6 @@ namespace EduroamApp
                 throw new EduroamAppUserError("WebException", GetWebExceptionString(ex));
             }
         }
-
 
         public static IdentityProviderProfile GetProfileFromId(string profileId)
         {

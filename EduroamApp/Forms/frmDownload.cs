@@ -13,7 +13,7 @@ namespace EduroamApp
     {
         private readonly frmParent frmParent; // makes parent form accessible from this class
         private List<IdentityProvider> identityProviders = new List<IdentityProvider>(); // list containing all identity providers
-        private List<Country> countries = new List<Country>();
+        private List<IdentityProvider> allIdentityProviders;
         private List<IdentityProviderProfile> idProviderProfiles; // list containing all profiles of an identity provider
         private int idProviderId; // id of selected institution
         public string ProfileId { get; set; } // id of selected institution profile
@@ -40,15 +40,20 @@ namespace EduroamApp
             if (getInstSuccess)
             {
                 // enables controls
-                lblCountry.Visible = true;
-                lblInstitution.Visible = true;
-                cboCountry.Visible = true;
-                cboInstitution.Visible = true;
                 tlpLoading.Visible = false;
                 frmParent.BtnNextEnabled = true;
 
-                // populates countries combobox
-                PopulateCountries();
+                PopulateInstitutions();
+                cboProfiles.Visible = true;
+                cboProfiles.Enabled = false;
+
+                lblSearch.Visible = true;
+                tbSearch.Visible = true;
+                lbInstitution.Visible = true;
+
+                lblSelectProfile.Visible = true;
+                lblSelectProfile.Enabled = false;
+                this.ActiveControl = tbSearch;
             }
             else
             {
@@ -64,7 +69,7 @@ namespace EduroamApp
         {
             try
             {
-                identityProviders = IdentityProviderDownloader.GetAllIdProviders();
+                allIdentityProviders = IdentityProviderDownloader.GetAllIdProviders();
                 return true;
             }
             catch (EduroamAppUserError ex)
@@ -74,64 +79,42 @@ namespace EduroamApp
             return false;
         }
 
-        /// <summary>
-        /// Converts country codes from identity provider json to country names, and loads them into combo box.
-        /// Next, gets user's location and chooses closest country by default.
-        /// </summary>
-        private void PopulateCountries()
+
+        private void PopulateInstitutions()
         {
-            // get all countries
-            countries = IdentityProviderParser.GetCountries(identityProviders);
-
-            // adds countries to combobox
-            cboCountry.Items.AddRange(countries.OrderBy(c => c.CountryName).Select(c => c.CountryName).ToArray());
-
-            //Find the country code for the country closest to this machine
-            string closestCountryCode = IdentityProviderParser.GetClosestCountryCode(identityProviders, frmParent.GeoWatcher.Position.Location);
-
-            // search countries for match on closestCountryCode
-            string closestCountry = countries.Where(c => c.CountryCode == closestCountryCode).Select(c => c.CountryName).FirstOrDefault();
-
-            // select closest country to be default select
-            cboCountry.SelectedIndex = cboCountry.FindStringExact(closestCountry);
+            List<IdentityProvider> closeProviders = IdentityProviderDownloader.GetClosestProviders(10, frmParent.GeoWatcher.Position.Location);
+            updateInstitutions(closeProviders);
         }
 
-        // populates identity provider combo box
-        private void cboCountry_SelectedIndexChanged(object sender, EventArgs e)
+
+        private void updateInstitutions(List<IdentityProvider> institutions)
         {
-            // clear combobox
-            cboInstitution.Items.Clear();
-            cboProfiles.Items.Clear();
-            // hide profile combobox
-            lblSelectProfile.Visible = false;
-            cboProfiles.Visible = false;
-            // clear selected profile
-            ProfileId = null;
+            lbInstitution.Items.Clear();
 
-            // gets country code of selected country
-            string selectedCountryCode = countries.Where(c => c.CountryName == cboCountry.Text).Select(c => c.CountryCode).FirstOrDefault();
+            identityProviders = institutions;
 
-            // get all institues in selected country
-            List<IdentityProvider> providersInCountry = identityProviders.Where(provider => provider.Country == selectedCountryCode)
-                                            .OrderBy(provider => provider.Name).ToList();
-            // adds identity providers from selected country to combobox
-            cboInstitution.Items.AddRange(providersInCountry.Select(provider => provider.Name).ToArray());
+            lbInstitution.Items.AddRange(identityProviders.Select(provider => provider.Name).ToArray());
+        }
 
-            try
+
+        // gets profile id of selected profile
+        private void cboProfiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cboProfiles.Text != "")
             {
-                // find closest insitute in the country
-                IdentityProvider closestInstitute = IdentityProviderParser.GetClosestIdProvider(providersInCountry, frmParent.GeoWatcher.Position.Location);
-                // select closest institute to be default select
-                cboInstitution.SelectedIndex = cboInstitution.FindStringExact(closestInstitute.Name);
-            } catch (EduroamAppUserError)
-            {
+                // gets profile id of profile selected in combobox
+                ProfileId = idProviderProfiles.Where(profile => profile.Name == cboProfiles.Text).Select(x => x.Id).Single();
 
             }
-
         }
 
-        // gets identity provider profiles, and populates profile combo box if more than one
-        private void cboInstitution_SelectedIndexChanged(object sender, EventArgs e)
+        private void tbSearch_TextChanged(object sender, EventArgs e)
+        {
+            List<IdentityProvider> sortedProviders = IdentityProviderParser.SortBySearch(allIdentityProviders, tbSearch.Text);
+            updateInstitutions(sortedProviders);
+        }
+
+        private void lbInstitution_SelectedIndexChanged(object sender, EventArgs e)
         {
             // clear combobox
             cboProfiles.Items.Clear();
@@ -139,7 +122,7 @@ namespace EduroamApp
             ProfileId = null;
 
             // gets id of institution selected in combobox
-            idProviderId = identityProviders.Where(x => x.Name == cboInstitution.Text).Select(x => x.cat_idp).First();
+            idProviderId = identityProviders.Where(x => x.Name == lbInstitution.Text).Select(x => x.cat_idp).First();
 
             // get IdentityProviderProfile object for provider, containing all profiles
             try
@@ -152,39 +135,32 @@ namespace EduroamApp
                 return;
             }
 
-            // if an identity provider has more than one profile, add to combobox
+            // add profiles to combobox
+            cboProfiles.Items.AddRange(idProviderProfiles.Select(profile => profile.Name).ToArray());
+
+            // if an identity provider has more than one, activate combobox so a different profile can be used
             if (idProviderProfiles.Count > 1)
             {
-                // show combobox
-                cboProfiles.Visible = true;
-                // show label
-                lblSelectProfile.Visible = true;
-                // add profiles to combobox
-                cboProfiles.Items.AddRange(idProviderProfiles.Select(profile => profile.Name).ToArray());
+                // enable combobox
+                cboProfiles.Enabled = true;
+
+                // enable label
+                lblSelectProfile.Enabled = true;
             }
             else
             {
-                // gets the only profile id
-                ProfileId = idProviderProfiles.Single().Id;
+                // get first profile from combobox list
+                IdentityProviderProfile profile = IdentityProviderDownloader.GetProfileFromId(idProviderProfiles.First().Id);
+                // set first profile to be selected automatically
+                cboProfiles.SelectedIndex = cboProfiles.FindStringExact(profile.Name);
+                // disable combobox
+                cboProfiles.Enabled = false;
 
-                // hide combobox
-                cboProfiles.Visible = false;
-                // hide label
-                lblSelectProfile.Visible = false;
+                // disble label
+                lblSelectProfile.Enabled = false;
             }
         }
 
-        // gets profile id of selected profile
-        private void cboProfiles_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (cboProfiles.Text != "")
-            {
-                // gets profile id of profile selected in combobox
-                ProfileId = idProviderProfiles.Where(profile => profile.Name == cboProfiles.Text).Select(x => x.Id).Single();
-
-            }
-        }
-      
 
         /// <summary>
         /// Handles EduroamApp exxceptions.
@@ -199,31 +175,23 @@ namespace EduroamApp
         }
 
 
-
-        /// <summary>
-        /// Handles exceptions related to deserializing JSON files and corrupted XML files.
-        /// </summary>
-        /// <param name="ex">Exception.</param>
-        private void EapExceptionHandler(Exception ex)
-        {
-            MessageBox.Show("The selected institution or profile is not supported. " +
-                            "Please select a different institution or profile.\n"
-                            + "Exception: " + ex.Message);
-        }
-
         /// <summary>
         /// Hides all controls on form.
         /// </summary>
         private void HideControls()
         {
             lblError.Visible = false;
-            lblCountry.Visible = false;
-            lblInstitution.Visible = false;
             lblSelectProfile.Visible = false;
-            cboCountry.Visible = false;
-            cboInstitution.Visible = false;
+            lblSearch.Visible = false;
+            tbSearch.Visible = false;
+            lbInstitution.Visible = false;
             cboProfiles.Visible = false;
             frmParent.BtnNextEnabled = false;
+        }
+
+        private void lblSearch_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

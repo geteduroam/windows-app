@@ -306,18 +306,12 @@ namespace EduroamApp
                 return null; // exits function if no institution/profile selected
             };
             IdentityProviderProfile profile = IdentityProviderDownloader.GetProfileFromId(profileId);
-            string redirect = profile.authorization_endpoint;
+            string redirect = profile.redirect;
             // eap config file as string
             string eapString;
 
-            // if no redirect link
-            if (!profile.oauth)
-            {
-                // gets eap config file directly
-                eapString = IdentityProviderDownloader.GetEapConfigString(profileId);
-            }
-            // if Let's Wifi redirect
-            else if (profile.oauth)
+            // if OAuth
+            if (profile.oauth)
             {
                 // get eap config file from browser authenticate
                 try
@@ -325,7 +319,7 @@ namespace EduroamApp
                     OAuth oauth = new OAuth(profile.authorization_endpoint, profile.token_endpoint, profile.eapconfig_endpoint);
                     // generate authURI based on redirect
                     string authUri = oauth.GetAuthUri();
-                    // get redirect uri
+                    // get local listening uri prefix
                     string prefix = oauth.getRedirectUri();
                     // browser authenticate
                     string responseUrl = GetResponseUrl(prefix, authUri);
@@ -340,15 +334,21 @@ namespace EduroamApp
                 // return focus to application
                 Activate();
             }
+
             // if other redirect
-            else
+            else if (!String.IsNullOrEmpty(redirect))
             {
                 // makes redirect link accessible in parent form
                 RedirectUrl = redirect;
                 return null;
             }
+            else
+            {
+                eapString = IdentityProviderDownloader.GetEapConfigString(profileId);
+            }
 
             // if not empty, creates and returns EapConfig object from Eap string
+
             if (string.IsNullOrEmpty(eapString))
             {
                 return null;
