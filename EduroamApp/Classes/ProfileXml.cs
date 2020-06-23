@@ -150,7 +150,7 @@ namespace EduroamApp
                         new XElement(nsBECP + "Type", (uint)eapType),
                         new XElement(nsMPCPv1 + "EapType",
                             new XElement(nsMPCPv1 + "ServerValidation",
-                                new XElement(nsMPCPv1 + "DisableUserPromptForServerValidation", "false"),
+                                new XElement(nsMPCPv1 + "DisableUserPromptForServerValidation", "true"),
                                 new XElement(nsMPCPv1 + "ServerNames", serverNames)
                             ),
                             new XElement(nsMPCPv1 + "FastReconnect", "true"),
@@ -167,7 +167,7 @@ namespace EduroamApp
                                 new XElement(nsMPCPv2 + "PerformServerValidation", "true"),
                                 new XElement(nsMPCPv2 + "AcceptServerName", "true"),
                                 new XElement(nsMPCPv2 + "PeapExtensionsV2",
-                                    new XElement(nsMPCPv3 + "AllowPromptingWhenServerCANotFound", "true")
+                                    new XElement(nsMPCPv3 + "AllowPromptingWhenServerCANotFound", "true") // TODO: should be false?
                                 )
                             )
                         )
