@@ -127,6 +127,7 @@
     <Compile Include="Classes\Exceptions.cs" />
     <Compile Include="Classes\FileDialog.cs" />
     <Compile Include="Classes\ImageFunctions.cs" />
+    <Compile Include="Classes\Location.cs" />
     <Compile Include="Forms\frmRedirect.cs">
       <SubType>Form</SubType>
     </Compile>
