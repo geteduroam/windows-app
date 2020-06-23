@@ -11,6 +11,11 @@ namespace EduroamApp
 	/// - TLS (13)
 	/// - PEAP-MSCHAPv2 (25/26)
 	/// - TTLS (21) [NOT YET FUNCTIONAL]
+	///
+	/// Documentation of the XML format:
+	///     https://docs.microsoft.com/en-us/windows/win32/nativewifi/wlan-profileschema-elements
+	///     https://docs.microsoft.com/en-us/windows/win32/nativewifi/onexschema-elements
+	///     https://docs.microsoft.com/en-us/windows/win32/eaphost/eaptlsconnectionpropertiesv1schema-servervalidationparameters-complextype
 	/// </summary>
 	class ProfileXml
 	{
@@ -21,17 +26,17 @@ namespace EduroamApp
 		static readonly XNamespace nsEC = "http://www.microsoft.com/provisioning/EapCommon";
 
 		static readonly XNamespace nsBECP = "http://www.microsoft.com/provisioning/BaseEapConnectionPropertiesV1";
-			// TLS specific
+		// TLS specific
 		static readonly XNamespace nsETCPv1 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV1";
 		static readonly XNamespace nsETCPv2 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV2";
 		static readonly XNamespace nsETCPv3 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV3";
-			// MSCHAPv2 specific
+		// MSCHAPv2 specific
 		static readonly XNamespace nsMPCPv1 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV1";
 		static readonly XNamespace nsMPCPv2 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV2";
 		static readonly XNamespace nsMPCPv3 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV3";
 
 		static readonly XNamespace nsMCCP = "http://www.microsoft.com/provisioning/MsChapV2ConnectionPropertiesV1";
-			// TTLS specific
+		// TTLS specific
 		static readonly XNamespace nsTTLS = "http://www.microsoft.com/provisioning/EapTtlsConnectionPropertiesV1";
 
 
@@ -77,7 +82,7 @@ namespace EduroamApp
 							new XElement(nsOneX + "OneX",
 								new XElement(nsOneX + "authMode", "user"),
 								new XElement(nsOneX + "EAPConfig",
-									new XElement(nsEHC + "EapHostConfig",
+									new XElement(nsEHC + "EapHostConfig", // TODO:  new XAttribute(XNamespace.Xmlns + "asdasd", nsASDASD),
 										new XElement(nsEHC + "EapMethod",
 											new XElement(nsEC + "Type", (uint)eapType),
 											new XElement(nsEC + "VendorId", 0),
@@ -144,7 +149,7 @@ namespace EduroamApp
 				// sets name of thumbprint node
 				thumbprintNode = "TrustedRootCA";
 
-				// adds MSCHAPv2 specific elements
+				// adds MSCHAPv2 specific elements (inner eap)
 				configElement.Add(
 					new XElement(nsBECP + "Eap",
 						new XElement(nsBECP + "Type", (uint)eapType),
@@ -156,7 +161,7 @@ namespace EduroamApp
 							new XElement(nsMPCPv1 + "FastReconnect", "true"),
 							new XElement(nsMPCPv1 + "InnerEapOptional", "false"),
 							new XElement(nsBECP + "Eap",
-								new XElement(nsBECP + "Type", "26"),
+								new XElement(nsBECP + "Type", "26"), // MSCHAPv2
 								new XElement(nsMCCP + "EapType",
 									new XElement(nsMCCP + "UseWinLogonCredentials", "false")
 								)
@@ -174,7 +179,7 @@ namespace EduroamApp
 					)
 				);
 			}
-			// WORK IN PROGRESS - Dependent on setting correct user data for TTLS
+			// TODO: WORK IN PROGRESS - Dependent on setting correct user data for TTLS
 			else if (eapType == EapType.TTLS)
 			{
 				// sets namespace
@@ -198,7 +203,7 @@ namespace EduroamApp
 								),
 								new XElement(nsEHC + "Config",
 									new XElement(nsBECP + "Eap",
-										new XElement(nsBECP + "Type", 26),
+										new XElement(nsBECP + "Type", 26), // MSCHAPv2
 										new XElement(nsMCCP + "EapType",
 											new XElement(nsMCCP + "UseWinLogonCredentials", "false")
 										)
@@ -213,6 +218,7 @@ namespace EduroamApp
 					)
 				);
 			}
+			// TODO: else throw?
 
 			// if any thumbprints exist, add them to the profile
 			if (thumbprints.Any())
