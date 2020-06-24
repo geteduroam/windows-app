@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
 
-namespace EduroamApp
+namespace EduroamConfigure
 {
 	/// <summary>
 	/// Stores information found in an EAP-config file.
@@ -107,7 +107,7 @@ namespace EduroamApp
 			{
 				// get EAP method type
 				EapType eapType = (EapType)(uint)authMethodXml
-					.Elements().Where(nameIs("EapMethod"))
+					.Elements().First(nameIs("EAPMethod"))
 					.Elements().First(nameIs("Type"));
 
 				// get EAP method type

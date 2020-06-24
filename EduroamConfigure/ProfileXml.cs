@@ -3,7 +3,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
-namespace EduroamApp
+namespace EduroamConfigure
 {
 	/// <summary>
 	/// Wireless profile XML generator.

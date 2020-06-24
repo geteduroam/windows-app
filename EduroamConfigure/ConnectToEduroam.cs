@@ -5,9 +5,8 @@ using ManagedNativeWifi;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Linq;
-using EduroamConfigure;
 
-namespace EduroamApp
+namespace EduroamConfigure
 {
 	/// <summary>
 	/// Contains various functions for:
@@ -16,7 +15,7 @@ namespace EduroamApp
 	/// - setting user data
 	/// - connecting to a network
 	/// </summary>
-	class ConnectToEduroam
+	public class ConnectToEduroam
 	{
 		// TODO: move these static variables to the caller
 
@@ -83,10 +82,10 @@ namespace EduroamApp
 			switch (eapType)
 			{
 				// Supported EAP types:
-				case EduroamApp.EapType.TLS:
-				case EduroamApp.EapType.TTLS: // not fully there yet
+				case EapType.TLS:
+				case EapType.TTLS: // not fully there yet
 					// TODO: Since this profile supports TTLS, be sure that any error returned is about TTLS not being supported
-				case EduroamApp.EapType.PEAP:
+				case EapType.PEAP:
 					return true;
 				default:
 					return false;
@@ -263,7 +262,7 @@ namespace EduroamApp
 				string serverNames = string.Join(";", AuthMethod.ServerName);
 
 				// generate new profile xml
-				var profileXml = EduroamApp.ProfileXml.CreateProfileXml(
+				var profileXml = ProfileXml.CreateProfileXml(
 					EduroamNetwork.Ssid,
 					AuthMethod.EapType,
 					serverNames,
