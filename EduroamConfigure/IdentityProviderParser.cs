@@ -11,20 +11,33 @@ namespace EduroamConfigure
 		public static List<IdentityProvider> SortBySearch(List<IdentityProvider> providers, string searchString)
 		{
 			searchString = NormalizeString(searchString);
-			List<IdentityProvider> sortedList = providers.OrderByDescending(
-				p => NormalizeString(p.Name).StartsWith(searchString)
-				).ThenByDescending(
-				p => {
-					foreach (String word in NormalizeString(p.Name).Split(' '))
+			List<IdentityProvider> sortedList = providers.OrderByDescending(p =>
 					{
-						if (word.StartsWith(searchString))
+						foreach (string word in NormalizeString(p.Name).Split(' '))
 						{
-								return true;
+							if (string.Equals(word, searchString))
+							{
+									return true;
+							}
 						}
+						return false;
 					}
-					return false;
-				}
+				).ThenByDescending(p => NormalizeString(p.Name).StartsWith(searchString)
+
 				).ThenByDescending(p => StringToAcronym(NormalizeString(p.Name)).Contains(searchString)
+
+				).ThenByDescending(p =>
+				 {
+					 foreach (string word in NormalizeString(p.Name).Split(' '))
+					 {
+						 if (word.StartsWith(searchString))
+						 {
+							 return true;
+						 }
+					 }
+					 return false;
+				}
+
 				).ThenByDescending(p => NormalizeString(p.Name).Contains(searchString)
 			).ToList();
 
@@ -34,7 +47,10 @@ namespace EduroamConfigure
 		//removes accents and converts non-US character to US charactres (ø to o etc)
 		private static string NormalizeString(string str)
 		{
-			return Encoding.ASCII.GetString(Encoding.GetEncoding("Cyrillic").GetBytes(str)).ToLowerInvariant();
+			string strippedString = Encoding.ASCII.GetString(Encoding.GetEncoding("Cyrillic").GetBytes(str)).ToLowerInvariant();
+			strippedString = strippedString.Replace("(", "");
+			strippedString = strippedString.Replace(")", "");
+			return strippedString;
 		}
 
 		private static string StringToAcronym(string str)
