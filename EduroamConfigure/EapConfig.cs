@@ -104,57 +104,67 @@ namespace EduroamConfigure
 		/// <summary>
 		/// Creates a new EapConfig object from EAP config xml data
 		/// </summary>
-		/// <param name="eapXmlData">EAP config XML as string</param>
+		/// <param name="eapConfigXmlData">EAP config XML as string</param>
 		/// <returns>EapConfig object</returns>
-		public static EapConfig FromXmlData(string eapXmlData)
+		public static EapConfig FromXmlData(string eapConfigXmlData)
 		{
-			// XML format Documentation: https://tools.ietf.org/id/draft-winter-opsawg-eap-metadata-00.html
+			// XML format Documentation:
+			// Current:  https://github.com/GEANT/CAT/blob/master/devices/eap_config/eap-metadata.xsd
+			// Outdated: https://tools.ietf.org/id/draft-winter-opsawg-eap-metadata-00.html
 
 			// TODO: Hotspot 2.0
 			// TODO: TTLS
 
-			// load the XML file into a XElement object
-			XElement eapXml = XElement.Parse(eapXmlData);
 			static Func<XElement, bool> nameIs(string name) => // shorthand lambda
 				element => element.Name.LocalName == name;
 
+			// load the XML file into a XElement object
+			XElement eapConfigXml = XElement.Parse(eapConfigXmlData);
+			foreach (XElement eapIdentityProvider in eapConfigXml.Descendants().Where(nameIs("EAPIdentityProvider")))
+			{
+				//TODO: yield return from this
+			}
+
 			// create a new empty list for authentication methods
-			List<EapConfig.AuthenticationMethod> authMethods = new List<EapConfig.AuthenticationMethod>();
+			List<EapConfig.AuthenticationMethod> authMethods =
+				new List<EapConfig.AuthenticationMethod>();
 
 			// iterate over all AuthenticationMethods elements from xml
-			IEnumerable<XElement> authMethodXmlElements = eapXml.Descendants().Where(nameIs("AuthenticationMethod"));
-			foreach (XElement authMethodXml in authMethodXmlElements)
+			foreach (XElement authMethodXml in eapConfigXml.Descendants().Where(nameIs("AuthenticationMethod")))
 			{
+				XElement serverSideCredentialXml = authMethodXml
+					.Elements().FirstOrDefault(nameIs("ServerSideCredential"));
+				XElement clientSideCredentialXml = authMethodXml
+					.Elements().FirstOrDefault(nameIs("ClientSideCredential"));
+
 				// get EAP method type
 				EapType eapType = (EapType)(uint)authMethodXml
 					.Elements().First(nameIs("EAPMethod"))
 					.Elements().First(nameIs("Type"));
 
-				// get EAP method type
-				authMethodXml.Elements().Where(nameIs("EapMethod"));
+				// get list of strings of CA certificates
+				List<string> certAuths = serverSideCredentialXml
+					.Elements().Where(nameIs("CA"))
+					.Select(xElement => (string)xElement)
+					.ToList();
 
-				// get string value of CAs
-				IEnumerable<XElement> caElements = authMethodXml.Descendants().Where(nameIs("CA"));
-				List<string> certAuths = caElements.Select(caElement => (string)caElement).ToList();
+				// get list of strings of server IDs
+				List<string> serverNames = serverSideCredentialXml
+					.Elements().Where(nameIs("ServerID"))
+					.Select(xElement => (string)xElement)
+					.ToList();
 
-				// get string value of server elements
-				IEnumerable<XElement> serverElements = authMethodXml.Descendants().Where(nameIs("ServerID"));
-				List<string> serverNames = serverElements.Select((serverElement) => (string)serverElement).ToList();
+				// Get user certificate values
+				var clientCert = (string)clientSideCredentialXml
+					?.Elements().FirstOrDefault(nameIs("ClientCertificate"));
+				var clientCertPasswd = (string)clientSideCredentialXml
+					?.Elements().FirstOrDefault(nameIs("Passphrase"));
 
-				// get client certificate
-				var clientCert = (string)authMethodXml.Descendants().FirstOrDefault(nameIs("ClientCertificate"));
-
-				// get client cert passphrase
-				var clientCertPasswd = (string)authMethodXml.Descendants().FirstOrDefault(nameIs("Passphrase"));
-
-				var InnerIdentitySuffix = (string)authMethodXml
-					.Elements().Where(nameIs("ClientSideCredential"))
-					.Elements().FirstOrDefault(nameIs("InnerIdentitySuffix"));
-
-				var InnerIdentityHint = "True" == (string)authMethodXml
-					.Elements().Where(nameIs("ClientSideCredential"))
-					.Elements().FirstOrDefault(nameIs("InnerIdentityHint"));
-
+				// Get inner identity values
+				var innerIdentitySuffix = (string)clientSideCredentialXml
+					?.Elements().FirstOrDefault(nameIs("InnerIdentitySuffix"));
+				var innerIdentityHint = "True" == (string)clientSideCredentialXml // TODO: will cast to bool work?
+					?.Elements().FirstOrDefault(nameIs("InnerIdentityHint"));
 
 				// create new authentication method object and adds it to list
 				authMethods.Add(new EapConfig.AuthenticationMethod(
@@ -163,32 +173,40 @@ namespace EduroamConfigure
 					serverNames,
 					clientCert,
 					clientCertPasswd,
-					InnerIdentitySuffix,
-					InnerIdentityHint
+					innerIdentitySuffix,
+					innerIdentityHint
 				));
 			}
 
-
 			// get logo and identity element
-			XElement logoElement = eapXml.Descendants().FirstOrDefault(nameIs("ProviderLogo"));
-			XElement eapIdentityElement = eapXml.Descendants().FirstOrDefault(nameIs("EAPIdentityProvider"));
+			XElement logoElement = eapConfigXml
+				.Descendants().FirstOrDefault(nameIs("ProviderLogo"));
+			XElement eapIdentityElement = eapConfigXml
+				.Descendants().FirstOrDefault(nameIs("EAPIdentityProvider")); // TODO: remove
 
-			// get provider's display name
-			var displayName = (string)eapXml.Descendants().FirstOrDefault(nameIs("DisplayName"));
-			// get provider's logo as base64 encoded string from logo element
-			var logo = Convert.FromBase64String((string)logoElement ?? "");
-			// get the file format of the logo
-			var logoFormat = (string)logoElement?.Attribute("mime");
-			// get provider's email address
-			var emailAddress = (string)eapXml.Descendants().FirstOrDefault(nameIs("EmailAddress"));
-			// get provider's web address
-			var webAddress = (string)eapXml.Descendants().FirstOrDefault(nameIs("WebAddress"));
-			// get provider's phone number
-			var phone = (string)eapXml.Descendants().FirstOrDefault(nameIs("Phone"));
 			// get institution ID from identity element
-			var instId = (string)eapIdentityElement?.Attribute("ID");
+			var instId = (string)eapIdentityElement.Attribute("ID"); // TODO: obsolete?
+
+			// get provider's logo as base64 encoded string and its mime-type
+			var logoData = Convert.FromBase64String((string)logoElement ?? "");
+			var logoMimeType = (string)logoElement?.Attribute("mime");
+
+			// Read ProviderInfo attributes:
+			XElement providerInfoXml = eapConfigXml
+				.Descendants().FirstOrDefault(nameIs("ProviderInfo"));
+
+			var displayName = (string)providerInfoXml
+				?.Descendants().FirstOrDefault(nameIs("DisplayName"));
+			var emailAddress = (string)providerInfoXml
+				?.Descendants().FirstOrDefault(nameIs("EmailAddress"));
+			var webAddress = (string)providerInfoXml
+				?.Descendants().FirstOrDefault(nameIs("WebAddress"));
+			var phone = (string)providerInfoXml
+				?.Descendants().FirstOrDefault(nameIs("Phone"));
+
 			// get terms of use
-			var termsOfUse = (string)eapXml.Descendants().FirstOrDefault(nameIs("TermsOfUse"));
+			var termsOfUse = (string)providerInfoXml
+				?.Descendants().FirstOrDefault(nameIs("TermsOfUse"));
 
 			// create EapConfig object and adds the info
 			return new EapConfig
@@ -196,8 +214,8 @@ namespace EduroamConfigure
 				AuthenticationMethods = authMethods,
 				InstitutionInfo = new EapConfig.ProviderInfo(
 					displayName ?? string.Empty,
-					logo,
-					logoFormat ?? string.Empty,
+					logoData,
+					logoMimeType ?? string.Empty,
 					emailAddress ?? string.Empty,
 					webAddress ?? string.Empty,
 					phone ?? string.Empty,
