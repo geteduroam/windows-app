@@ -2,6 +2,12 @@
 
 This application helps set up eduroam on end-users' computers by automatically fetching and installing the required certificates.
 
+## Structure
+
+* **EduroamApp**:       The graphical user interface.
+* **EduroamConfigure**: The logic interfacing with the discovery api, and the logic to configure the various profiles into windows.
+
+
 ## Getting started
 
 ### Prerequisites
@@ -32,6 +38,8 @@ The timestamp is needed so that the signature remains valid even when the code s
 For more information, [check this guide from Digicert](https://www.digicert.com/kb/code-signing/signcode-signtool-command-line.htm)
 
 ## Dependencies
+
+These dependencies are managed with `NuGet`, native to Visual Studio. The exception being ManagedNativeWifi which has been cloned and patched.
 
  * ManagedNativeWifi by emoacht (https://github.com/emoacht/ManagedNativeWifi) ~ [LICENSE](Licenses/ManagedNativeWifi_LICENSE.md)
  * Newtonsoft.Json by JamesNK (https://github.com/JamesNK/Newtonsoft.Json) ~ [LICENSE](Licenses/Newtonsoft.Json_LICENSE.md)
