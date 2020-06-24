@@ -191,6 +191,14 @@ namespace EduroamApp
 		{
 			try
 			{
+				if (!ConnectToEduroam.EapTypeIsSupported(eapConfig))
+				{
+					MessageBox.Show(
+						"The profile you have selected is not supported by this application.",
+						"No supported authentification method found.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					return 0; // TODO: ew
+				}
+
 				uint eapType = 0;
 				// Install EAP config as a profile
 				foreach (var authMethodInstaller in ConnectToEduroam.InstallEapConfig(eapConfig))
