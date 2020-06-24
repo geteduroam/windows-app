@@ -27,6 +27,8 @@ namespace EduroamConfigure
 			public List<string> ServerName { get; set; }
 			public string ClientCertificate { get; set; }
 			public string ClientPassphrase { get; set; }
+			public string InnerIdentitySuffix { get; set; }
+			public bool InnerIdentityHint{ get; set; }
 
 			/// <summary>
 			/// Enumerates CertificateAuthorities as X509Certificate2 objects
@@ -41,13 +43,23 @@ namespace EduroamConfigure
 			}
 
 			// Constructor
-			public AuthenticationMethod(EapType eapType, List<string> certificateAuthorities, List<string> serverName, string clientCertificate = null, string clientPassphrase = null)
+			public AuthenticationMethod(
+				EapType eapType,
+				List<string> certificateAuthorities,
+				List<string> serverName,
+				string clientCertificate = null,
+				string clientPassphrase = null,
+				string innerIdentitySuffix = null,
+				bool InnerIdentityHint = false
+			)
 			{
 				EapType = eapType;
 				CertificateAuthorities = certificateAuthorities;
 				ServerName = serverName;
 				ClientCertificate = clientCertificate;
 				ClientPassphrase = clientPassphrase;
+				InnerIdentitySuffix = innerIdentitySuffix;
+				InnerIdentityHint = InnerIdentityHint;
 			}
 		}
 
@@ -67,7 +79,15 @@ namespace EduroamConfigure
 			public string TermsOfUse { get; set; }
 
 			// Constructor
-			public ProviderInfo(string displayName, byte[] logo, string logoFormat, string emailAddress, string webAddress, string phone, string instId, string termsOfUse)
+			public ProviderInfo(
+				string displayName,
+				byte[] logo,
+				string logoFormat,
+				string emailAddress,
+				string webAddress,
+				string phone,
+				string instId,
+				string termsOfUse)
 			{
 				DisplayName = displayName;
 				Logo = logo;
@@ -115,21 +135,37 @@ namespace EduroamConfigure
 
 				// get string value of CAs
 				IEnumerable<XElement> caElements = authMethodXml.Descendants().Where(nameIs("CA"));
-				List<string> certAuths = caElements.Select((caElement) => (string)caElement).ToList();
+				List<string> certAuths = caElements.Select(caElement => (string)caElement).ToList();
 
 				// get string value of server elements
 				IEnumerable<XElement> serverElements = authMethodXml.Descendants().Where(nameIs("ServerID"));
 				List<string> serverNames = serverElements.Select((serverElement) => (string)serverElement).ToList();
 
 				// get client certificate
-
 				var clientCert = (string)authMethodXml.Descendants().FirstOrDefault(nameIs("ClientCertificate"));
 
 				// get client cert passphrase
 				var clientCertPasswd = (string)authMethodXml.Descendants().FirstOrDefault(nameIs("Passphrase"));
 
+				var InnerIdentitySuffix = (string)authMethodXml
+					.Elements().Where(nameIs("ClientSideCredential"))
+					.Elements().FirstOrDefault(nameIs("InnerIdentitySuffix"));
+
+				var InnerIdentityHint = "True" == (string)authMethodXml
+					.Elements().Where(nameIs("ClientSideCredential"))
+					.Elements().FirstOrDefault(nameIs("InnerIdentityHint"));
+
+
 				// create new authentication method object and adds it to list
-				authMethods.Add(new EapConfig.AuthenticationMethod(eapType, certAuths, serverNames, clientCert, clientCertPasswd));
+				authMethods.Add(new EapConfig.AuthenticationMethod(
+					eapType,
+					certAuths,
+					serverNames,
+					clientCert,
+					clientCertPasswd,
+					InnerIdentitySuffix,
+					InnerIdentityHint
+				));
 			}
 
 
