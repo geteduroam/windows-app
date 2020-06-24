@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Costura.Fody.4.1.0\build\Costura.Fody.props" Condition="Exists('..\packages\Costura.Fody.4.1.0\build\Costura.Fody.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -86,11 +87,8 @@
     <ApplicationIcon>Resources\geteduroam.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Costura, Version=3.1.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
-      <HintPath>..\packages\Costura.Fody.3.1.0\lib\net46\Costura.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Costura, Version=4.1.0.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
+      <HintPath>..\packages\Costura.Fody.4.1.0\lib\net40\Costura.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -114,17 +112,11 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\DiscoveryApi.cs" />
-    <Compile Include="Classes\IdentityProviderParser.cs" />
-    <Compile Include="Classes\IdentityProviderDownloader.cs" />
     <Compile Include="Classes\EapConfig.cs" />
     <Compile Include="Classes\ConnectToEduroam.cs" />
-    <Compile Include="Classes\Country.cs" />
     <Compile Include="Classes\EduroamNetwork.cs" />
-    <Compile Include="Classes\Exceptions.cs" />
     <Compile Include="Classes\FileDialog.cs" />
     <Compile Include="Classes\ImageFunctions.cs" />
-    <Compile Include="Classes\Location.cs" />
     <Compile Include="Forms\frmRedirect.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -149,7 +141,6 @@
     <Compile Include="Forms\frmWaitDialog.Designer.cs">
       <DependentUpon>frmWaitDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="Classes\OAuth.cs" />
     <Compile Include="Forms\frmSummary.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -192,7 +183,6 @@
     <Compile Include="Forms\frmParent.Designer.cs">
       <DependentUpon>frmParent.cs</DependentUpon>
     </Compile>
-    <Compile Include="Classes\IdentityProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classes\ProfileXml.cs" />
@@ -277,6 +267,10 @@
     <None Include="Resources\x-mark-3-16.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\EduroamConfigure\EduroamConfigure.csproj">
+      <Project>{8d2c283d-5868-4329-b86e-060adf68734c}</Project>
+      <Name>EduroamConfigure</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ManagedNativeWifi\ManagedNativeWifi.csproj">
       <Project>{ebff4686-23e6-42bf-97ca-cf82641bcfa7}</Project>
       <Name>ManagedNativeWifi</Name>
@@ -293,9 +287,8 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Costura.Fody.3.1.0\build\Costura.Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.3.1.0\build\Costura.Fody.targets'))" />
-    <Error Condition="!Exists('..\packages\Fody.3.2.1\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.3.2.1\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Fody.6.2.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.6.2.0\build\Fody.targets'))" />
+    <Error Condition="!Exists('..\packages\Costura.Fody.4.1.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.4.1.0\build\Costura.Fody.props'))" />
   </Target>
-  <Import Project="..\packages\Costura.Fody.3.1.0\build\Costura.Fody.targets" Condition="Exists('..\packages\Costura.Fody.3.1.0\build\Costura.Fody.targets')" />
-  <Import Project="..\packages\Fody.3.2.1\build\Fody.targets" Condition="Exists('..\packages\Fody.3.2.1\build\Fody.targets')" />
+  <Import Project="..\packages\Fody.6.2.0\build\Fody.targets" Condition="Exists('..\packages\Fody.6.2.0\build\Fody.targets')" />
 </Project>

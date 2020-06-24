@@ -6,9 +6,9 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Device.Location;
 
-namespace EduroamApp
+namespace EduroamConfigure
 {
-    class IdentityProviderDownloader
+    public class IdentityProviderDownloader
     {
 
 

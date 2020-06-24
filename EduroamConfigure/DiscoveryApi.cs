@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace EduroamApp
+namespace EduroamConfigure
 {
-    class DiscoveryApi
+    public class DiscoveryApi
     {
         public int Version { get; set; }
         public int Seq { get; set; }

@@ -11,72 +11,49 @@ using System.Collections.Specialized;
 namespace EduroamConfigure
 {
     /// <summary>
-    /// Performs necessary steps in order to let the user authenticate through Feide.
+    /// Performs necessary steps in order to let the user authenticate through Feide. The actual browser
+    /// authentication has to be performed between GetAuthUri and GetEapConfigString.
     /// </summary>
-    class OAuth
+    public class OAuth
     {
+
+        private const string responseType = "code";
+        private const string codeChallengeMethod = "S256";
+        private const string scope = "eap-metadata";
+        private string codeVerifier;
+        private string codeChallenge;
+        private const string redirectUri = "http://localhost:8080/";
+        private const string clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a";
+        private const string grantType = "authorization_code";
+        private string authEndpoint;
+        private string tokenEndpoint;
+        private string generatorEndpoint;
+        private string state;
+
         /// <summary>
-        /// Gets authorization endpoints and calls method for browser authentication to get an EAP-config file.
+        /// Class used for OAuth process
         /// </summary>
-        /// <param name="baseUrl">URL containing an encoded json string with endpoints.</param>
-        /// <returns>EAP-config file as string.</returns>
-        public static string BrowserAuthenticate(string baseUrl)
+        /// <param name="authEndpoint">Authorization Endpoint.</param>
+        /// <param name="tokenEndpoint">Token Endpoint.</param>
+        /// <param name="generatorEndpoint"> Generator endpoint for eap-config (resource endpoint).</param>
+        public OAuth(string authEndpoint, string tokenEndpoint, string generatorEndpoint)
         {
-            // downloads html file from url as string
-            string letsWifiHtml;
-            try
-            {
-                letsWifiHtml = GetStringFromUrl(baseUrl);
-            }
-            catch (WebException ex)
-            {
-                //MessageBox.Show("Couldn't fetch content from webpage. \nException: " + ex.Message, 
-                //                "eduroam - Web exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return "";
-            }
-            
-            // gets the base64 encoded json containing the authorization endpoint from html
-            string jsonString = GetBase64AndDecode(letsWifiHtml);
-            // if no json found in html, stop execution
-            if (string.IsNullOrEmpty(jsonString))
-            {
-               // MessageBox.Show("HTML doesn't contain authorization endpoint json.");
-                return "";
-            }
+            this.authEndpoint = authEndpoint;
+            this.tokenEndpoint = tokenEndpoint;
+            this.generatorEndpoint = generatorEndpoint;
+    }
 
-            // authorization endpoint
-            string authEndpoint;
-            // token endpoint
-            string tokenEndpoint;
-            // eap config generator endpoint
-            string generatorEndpoint;
+        /// <summary>
+        /// Produces an authorization endpoint URI
+        /// </summary>
+        /// <returns>Authorization endpoint URI as string.</returns>
+        public string GetAuthUri()
+        {
+            // sets non-static authorization uri parameters
+            state = Base64UrlEncode(Guid.NewGuid().ToByteArray()); // random alphanumeric string
+            codeVerifier = Base64UrlEncode(GenerateCodeChallengeBase()); // generate random byte array, convert to base64url
+            codeChallenge = Base64UrlEncode(HashWithSHA256(codeVerifier)); // hash code verifier with SHA256, convert to base64url
 
-            // gets JObject containing OAuth endpoints from json string
-            try
-            {
-                JObject endpointJson = JObject.Parse(jsonString);
-                // gets individual endpoints
-                authEndpoint = endpointJson["authorization_endpoint"].ToString();
-                tokenEndpoint = endpointJson["token_endpoint"].ToString();
-                generatorEndpoint = endpointJson["generator_endpoint"].ToString();
-            }
-            catch (JsonReaderException ex)
-            {
-               // MessageBox.Show("Couldn't read endpoints from JSON file.\n" +
-               //                 "Exception: " + ex.Message, "JSON endpoints", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return "";
-            }
-            
-            // sets authorization uri parameters
-            const string responseType = "code";
-            const string codeChallengeMethod = "S256";
-            const string scope = "eap-metadata";
-            string codeVerifier = Base64UrlEncode(GenerateCodeChallengeBase()); // generate random byte array, convert to base64url
-            string codeChallenge = Base64UrlEncode(HashWithSHA256(codeVerifier)); // hash code verifier with SHA256, convert to base64url
-            const string redirectUri = "http://localhost:8080/";
-            const string clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a";
-            string state = Base64UrlEncode(Guid.NewGuid().ToByteArray()); // random alphanumeric string
-            const string grantType = "authorization_code";
 
             // concatenates parameters into authorization endpoint URI
             string authUri = string.Concat(authEndpoint, "?", ConstructQueryString(new NameValueCollection() {
@@ -89,33 +66,29 @@ namespace EduroamConfigure
                 { "state", state }
             }));
 
-            // opens web browser for user authentication through feide
-            string responseUrl; //= WebServer.NonblockingListener(redirectUri, authUri, parentLocation);
-            using (var waitForm = new frmWaitDialog(redirectUri, authUri))
-            {
-                DialogResult result = waitForm.ShowDialog();
-                if (result == DialogResult.OK)
-                {
-                    responseUrl = waitForm.responseUrl;
-                }
-                else
-                {
-                    return "";
-                }
-            }
+            return authUri;
+        }
 
-            // checks if returned url is not empty
+
+        /// <summary>
+        /// Uses URL containing response after authenticating using authUri from GetAuthUri to get an EAP-config file.
+        /// </summary>
+        /// <param name="reponseUrl">URL response from authentication.</param>
+        /// <returns>EAP-config file as string.</returns>
+        public string GetEapConfigString(string responseUrl)
+        {
+            // checks if url is not empty
             if (string.IsNullOrEmpty(responseUrl))
             {
-                MessageBox.Show("HTTP request returned nothing.");
-                return "";
+                string error = "HTTP request returned nothing.";
+                throw new EduroamAppUserError("", error);
             }
 
             // checks if user chose to reject authorization
             if (responseUrl.Contains("access_denied"))
             {
-                MessageBox.Show("Authorization rejected. Please try again.");
-                return "";
+                string error = "Authorization rejected. Please try again.";
+                throw new EduroamAppUserError("", error);
             }
 
             // convert response url string to URI object
@@ -126,9 +99,9 @@ namespace EduroamConfigure
             // checks if state has remained, if not cancel operation
             if (newState != state)
             {
-                MessageBox.Show("State from request and response do not match. Aborting operation.\n", 
-                    "Eduroam - State exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return "";
+                string error = "State from request and response do not match. Aborting operation.";
+                throw new EduroamAppUserError("", error);
+
             }
 
             // gets code from response url
@@ -136,13 +109,12 @@ namespace EduroamConfigure
             // checks if code is not empty
             if (string.IsNullOrEmpty(code))
             {
-                MessageBox.Show("Response string doesn't contain code. Aborting operation.\n",
-                    "Eduroam - Code exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return "";
+                string error = "Response string doesn't contain code. Aborting operation.";
+                throw new EduroamAppUserError("", error);
             }
 
-            
-                
+
+
             // concatenates parameters into token endpoint URI
             NameValueCollection tokenPostData = new NameValueCollection() {
                 { "grant_type", grantType },
@@ -161,9 +133,8 @@ namespace EduroamConfigure
             }
             catch (WebException ex)
             {
-                MessageBox.Show("Couldn't fetch token json. \nException: " + ex.Message,
-                    "Eduroam - Web exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return "";
+                string error = "Couldn't fetch token json. \nException: " + ex.Message;
+                throw new EduroamAppUserError("", error);
             }
 
             // token for authorizing Oauth request
@@ -181,9 +152,8 @@ namespace EduroamConfigure
             }
             catch (JsonReaderException ex)
             {
-                MessageBox.Show("Couldn't read token from JSON file.\n" +
-                                "Exception: " + ex.Message, "JSON token", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return "";
+                string error = "Couldn't read token from JSON file.\n" + "Exception: " + ex.Message;
+                throw new EduroamAppUserError("", error);
             }
 
             // gets and returns EAP config file as a string
@@ -200,12 +170,11 @@ namespace EduroamConfigure
             }
             catch (WebException ex)
             {
-                MessageBox.Show("Couldn't fetch EAP config file. \nException: " + ex.Message,
-                    "Eduroam - Web exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return "";
+                string error = "Couldn't fetch EAP config file. \nException: " + ex.Message;
+                throw new EduroamAppUserError("", error);
             }
         }
-        
+
         /// <summary>
         /// Downloads web page content as a string.
         /// </summary>
@@ -311,6 +280,11 @@ namespace EduroamConfigure
                 items.Add(string.Concat(System.Web.HttpUtility.UrlEncode(name), "=", System.Web.HttpUtility.UrlEncode(parameters[name])));
 
             return string.Join("&", items.ToArray());
+        }
+
+        public string getRedirectUri()
+        {
+            return redirectUri;
         }
     }
 }

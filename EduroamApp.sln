@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduroamApp", "EduroamApp\Ed
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedNativeWifi", "ManagedNativeWifi\ManagedNativeWifi.csproj", "{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduroamConfigure", "EduroamConfigure\EduroamConfigure.csproj", "{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduroamConfigure", "EduroamConfigure\EduroamConfigure.csproj", "{8D2C283D-5868-4329-B86E-060ADF68734C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -43,18 +43,18 @@ Global
 		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Release|x64.Build.0 = Release|Any CPU
 		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Release|x86.ActiveCfg = Release|Any CPU
 		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Release|x86.Build.0 = Release|Any CPU
-		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Debug|x64.Build.0 = Debug|Any CPU
-		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Debug|x86.Build.0 = Debug|Any CPU
-		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Release|Any CPU.Build.0 = Release|Any CPU
-		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Release|x64.ActiveCfg = Release|Any CPU
-		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Release|x64.Build.0 = Release|Any CPU
-		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Release|x86.ActiveCfg = Release|Any CPU
-		{762B6EDF-EE64-4C58-97B5-D022D8FBBA73}.Release|x86.Build.0 = Release|Any CPU
+		{8D2C283D-5868-4329-B86E-060ADF68734C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D2C283D-5868-4329-B86E-060ADF68734C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D2C283D-5868-4329-B86E-060ADF68734C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{8D2C283D-5868-4329-B86E-060ADF68734C}.Debug|x64.Build.0 = Debug|Any CPU
+		{8D2C283D-5868-4329-B86E-060ADF68734C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8D2C283D-5868-4329-B86E-060ADF68734C}.Debug|x86.Build.0 = Debug|Any CPU
+		{8D2C283D-5868-4329-B86E-060ADF68734C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D2C283D-5868-4329-B86E-060ADF68734C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D2C283D-5868-4329-B86E-060ADF68734C}.Release|x64.ActiveCfg = Release|Any CPU
+		{8D2C283D-5868-4329-B86E-060ADF68734C}.Release|x64.Build.0 = Release|Any CPU
+		{8D2C283D-5868-4329-B86E-060ADF68734C}.Release|x86.ActiveCfg = Release|Any CPU
+		{8D2C283D-5868-4329-B86E-060ADF68734C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EduroamApp
+namespace EduroamConfigure
 {
-    class EduroamAppUserError : Exception
+    public class EduroamAppUserError : Exception
     {
         public string UserFacingMessage { get; }
 

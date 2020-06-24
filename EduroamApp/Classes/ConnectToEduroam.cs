@@ -5,6 +5,7 @@ using ManagedNativeWifi;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Linq;
+using EduroamConfigure;
 
 namespace EduroamApp
 {
