@@ -21,7 +21,7 @@ namespace EduroamApp
 
 		private void frm6_Load(object sender, EventArgs e)
 		{
-			// shows helping text by default
+			// shows helping (placeholder) text by default
 			txtUsername.Text = "Username";
 			txtUsername.ForeColor = SystemColors.GrayText;
 			txtPassword.Text = "Password";

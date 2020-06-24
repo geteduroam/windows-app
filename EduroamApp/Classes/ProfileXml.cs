@@ -108,6 +108,8 @@ namespace EduroamApp
 			XNamespace nsEapType = "";
 			string thumbprintNode = "";
 
+			// TODO: test TLS
+			// TODO: test PEAP on someone elses computer
 			if (eapType == EapType.TLS)
 			{
 				// sets namespace and name of thumbprint node

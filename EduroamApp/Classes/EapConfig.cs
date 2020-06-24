@@ -164,6 +164,9 @@ namespace EduroamApp
 		}
 	}
 
+	/// <summary>
+	///  https://www.vocal.com/secure-communication/eap-types/
+	/// </summary>
 	public enum EapType : uint
 	{
 		TLS = 13,
