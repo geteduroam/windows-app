@@ -1,6 +1,6 @@
 ﻿using System.Xml.Linq;
 
-namespace EduroamApp
+namespace EduroamConfigure
 {
     /// <summary>
     /// User data XML generator.

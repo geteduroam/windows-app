@@ -6,12 +6,12 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using ManagedNativeWifi;
 
-namespace EduroamApp
+namespace EduroamConfigure
 {
     /// <summary>
     /// Connects to an Eduroam network if available and stores information about it.
     /// </summary>
-    class EduroamNetwork
+    public class EduroamNetwork
     {
         public const string Ssid = "eduroam";
 

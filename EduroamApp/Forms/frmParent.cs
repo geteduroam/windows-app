@@ -115,11 +115,11 @@ namespace EduroamApp
                     EapType = (uint)frmSummary.InstallEapConfig();
                     switch (EapType)
                     {
-                        case (uint)EduroamApp.EapType.TLS:
+                        case (uint)EduroamConfigure.EapType.TLS:
                             LoadFrmConnect();
                             break;
-                        case (uint)EduroamApp.EapType.PEAP:
-                        case (uint)EduroamApp.EapType.TTLS:
+                        case (uint)EduroamConfigure.EapType.PEAP:
+                        case (uint)EduroamConfigure.EapType.TTLS:
                             LoadFrmLogin();
                             break;
                         case 500: // User needs to find user certificate
@@ -182,7 +182,7 @@ namespace EduroamApp
 
                 // lets user log in and opens connection form
                 case FormId.Login:
-                    if (EapType != (uint)EduroamApp.EapType.TTLS)
+                    if (EapType != (uint)EduroamConfigure.EapType.TTLS)
                     {
                         frmLogin.ConnectWithLogin();
                         LoadFrmConnect();
@@ -441,7 +441,7 @@ namespace EduroamApp
                 lblTitle.Text = "Summary";
             }
             if (!reload) btnNext.Enabled = true;
-            btnNext.Text = eapConfig.AuthenticationMethods.First().EapType == EduroamApp.EapType.TLS ? "Connect" : "Next >";
+            btnNext.Text = eapConfig.AuthenticationMethods.First().EapType == EduroamConfigure.EapType.TLS ? "Connect" : "Next >";
             LoadNewForm(frmSummary);
         }
 

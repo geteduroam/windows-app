@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ManagedNativeWifi;
+using EduroamConfigure;
 
 namespace EduroamApp
 {
@@ -42,7 +43,7 @@ namespace EduroamApp
             lblStatus.Visible = true;
             pbxStatus.Visible = true;
 
-            if (frmParent.EapType == (uint)EduroamApp.EapType.TLS)
+            if (frmParent.EapType == (uint)EduroamConfigure.EapType.TLS)
             {
                 DateTime validFrom = ConnectToEduroam.CertValidFrom; // TODO: this static variable will be moved
                 DateTime now = DateTime.Now;

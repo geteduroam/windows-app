@@ -9,7 +9,8 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>EduroamConfigure</RootNamespace>
     <AssemblyName>EduroamConfigure</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <LangVersion>8.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
@@ -47,14 +48,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="ConnectToEduroam.cs" />
     <Compile Include="DiscoveryApi.cs" />
+    <Compile Include="EapConfig.cs" />
+    <Compile Include="EduroamNetwork.cs" />
     <Compile Include="Exceptions.cs" />
     <Compile Include="IdentityProvider.cs" />
     <Compile Include="IdentityProviderDownloader.cs" />
     <Compile Include="IdentityProviderParser.cs" />
     <Compile Include="Location.cs" />
+    <Compile Include="ProfileXml.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="OAuth.cs" />
+    <Compile Include="UserDataXml.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ManagedNativeWifi\ManagedNativeWifi.csproj">
