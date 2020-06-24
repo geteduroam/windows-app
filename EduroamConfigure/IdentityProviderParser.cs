@@ -11,7 +11,10 @@ namespace EduroamConfigure
 		public static List<IdentityProvider> SortBySearch(List<IdentityProvider> providers, string searchString)
 		{
 			searchString = NormalizeString(searchString);
-			List<IdentityProvider> sortedList = providers.OrderByDescending(p =>
+			// sort by prioritized criterias. first criteria most important
+			List<IdentityProvider> sortedList = providers.OrderByDescending
+				// name contains a word equal to the exact search string
+				(p =>
 					{
 						foreach (string word in NormalizeString(p.Name).Split(' '))
 						{
@@ -22,22 +25,23 @@ namespace EduroamConfigure
 						}
 						return false;
 					}
+				// name starts with search string
 				).ThenByDescending(p => NormalizeString(p.Name).StartsWith(searchString)
-
+				// acronym for name contains searchstring
 				).ThenByDescending(p => StringToAcronym(NormalizeString(p.Name)).Contains(searchString)
-
+				// any word in name begins with search string
 				).ThenByDescending(p =>
-				 {
-					 foreach (string word in NormalizeString(p.Name).Split(' '))
-					 {
-						 if (word.StartsWith(searchString))
+					{
+						 foreach (string word in NormalizeString(p.Name).Split(' '))
 						 {
-							 return true;
+							 if (word.StartsWith(searchString))
+							 {
+								 return true;
+							 }
 						 }
-					 }
-					 return false;
-				}
-
+						 return false;
+					}
+				// search string can be found somewhere in the name
 				).ThenByDescending(p => NormalizeString(p.Name).Contains(searchString)
 			).ToList();
 
