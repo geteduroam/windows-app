@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using ManagedNativeWifi;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Text.RegularExpressions;
 using System.Linq;
 
 namespace EduroamApp
@@ -23,6 +22,23 @@ namespace EduroamApp
         // EAP type of selected configuration
         // client certificate valid from
         public static DateTime CertValidFrom { get; set; } // TODO: use EapAuthMethodInstaller.CertValidFrom instead
+
+        // Configuration for how to install the eduroam profile to Windows:
+        
+        // Certificate stores
+        private const StoreName caStoreName = StoreName.Root; // Used to install CAs to verify server certificates with
+        private const StoreLocation caStoreLocation = StoreLocation.CurrentUser;
+        private const StoreName userCertStoreName = StoreName.My; // Used to install TLS client certificates
+        private const StoreLocation userCertStoreLocation = StoreLocation.CurrentUser;
+
+        // Profile.xml - EAP auth mode, ssid, allowed CA fingerprint, and failure modes
+        // See 'dwFlags' at: https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/nf-wlanapi-wlansetprofile
+        private const ProfileType profileType = ProfileType.AllUser; // TODO: make this work as PerUser
+
+        // UserData.xml - EAP user credentials
+        // See 'dwFlags' at: https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/nf-wlanapi-wlansetprofileeapxmluserdata
+        private const uint profileUserType = 0x00000000; // "current user" - https://github.com/rozmansi/WLANSetEAPUserData
+        //private const uint profileUserType = 0x00000001; // WLAN_SET_EAPHOST_DATA_ALL_USERS
 
 
         /// <summary>
@@ -126,16 +142,10 @@ namespace EduroamApp
                     clientCert.FriendlyName = clientCert.GetNameInfo(X509NameType.SimpleName, false);
 
                     // open personal certificate store to add client cert
-                    var personalStore = new X509Store(StoreName.My, StoreLocation.CurrentUser);
-                    try
-                    {
-                        personalStore.Open(OpenFlags.ReadWrite);
-                        personalStore.Add(clientCert); // TODO: does this fail if done multiple times? perhaps add a guard like for CAs
-                    }
-                    finally
-                    {
-                        personalStore.Close();
-                    }
+                    using var personalStore = new X509Store(userCertStoreName, userCertStoreLocation);
+                    personalStore.Open(OpenFlags.ReadWrite);
+                    personalStore.Add(clientCert); // TODO: does this fail if done multiple times? perhaps add a guard like for CAs
+                    personalStore.Close();
 
                     // gets name of CA that issued the certificate
                     // gets valid from time of certificate
@@ -153,14 +163,13 @@ namespace EduroamApp
             /// <returns></returns>
             public bool NeedToInstallCAs()
             {
-                using var rootStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
+                using var rootStore = new X509Store(caStoreName, caStoreLocation);
                 rootStore.Open(OpenFlags.ReadWrite);
                 //foreach (string ca in AuthMethod.CertificateAuthorities)
                 foreach (var caCert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
                 {
                     if (caCert.NotAfter < DateTime.Now)
                     {
-                        rootStore.Close();
                         throw new EduroamAppUserError("expired CA",
                             "One of the provided Certificate Authorities from this institution has expired!\r\n" +
                             "Please contact the institution to have the issue fixed.");
@@ -170,11 +179,9 @@ namespace EduroamApp
                     X509Certificate2Collection matchingCerts = rootStore.Certificates.Find(X509FindType.FindByThumbprint, caCert.Thumbprint, true);
                     if (matchingCerts.Count < 1)
                     {
-                        rootStore.Close();
                         return true; // user must be informed
                     }
                 }
-                rootStore.Close();
                 return false;
             }
 
@@ -190,61 +197,54 @@ namespace EduroamApp
                 CertificateThumbprints.Clear();
 
                 // open the trusted root CA store
-                using var rootStore = new X509Store(StoreName.Root, StoreLocation.CurrentUser);
-                try
+                using var rootStore = new X509Store(caStoreName, caStoreLocation);
+                rootStore.Open(OpenFlags.ReadWrite);
+
+                // get all CAs from Authentication method
+                foreach (var caCert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
                 {
-                    rootStore.Open(OpenFlags.ReadWrite);
-
-                    // get all CAs from Authentication method
-                    foreach (var caCert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
+                    // check if CA is not already installed
+                    X509Certificate2Collection matchingCerts = rootStore.Certificates.Find(X509FindType.FindByThumbprint, caCert.Thumbprint, true);
+                    if (matchingCerts.Count < 1)
                     {
-                        // check if CA is not already installed
-                        X509Certificate2Collection matchingCerts = rootStore.Certificates.Find(X509FindType.FindByThumbprint, caCert.Thumbprint, true);
-                        if (matchingCerts.Count < 1)
+                        try
                         {
-                            try
-                            {
-                                // add CA to trusted root store
-                                rootStore.Add(caCert);
-                            }
-                            catch (CryptographicException ex)
-                            {
-                                // if user selects No when prompted to install CA
-                                if ((uint)ex.HResult == 0x800704C7)
-                                    return false;
-                                throw; // unknown exception
-                            }
+                            // add CA to trusted root store
+                            rootStore.Add(caCert);
+                            // ^ Will produce a popup if the certificate is not already installed
                         }
-
-                        // get CA thumbprint and formats it
-                        string formattedThumbprint = Regex.Replace(caCert.Thumbprint, ".{2}", "$0 ");
-                        CertificateThumbprints.Add(formattedThumbprint); // add thumbprint to list
-                    }
-
-                    string clientCertIssuer = InstallClientCertificate();
-
-                    // get thumbprints of already installed CAs that match client certificate issuer
-                    if (clientCertIssuer != null)
-                    {
-                        // get CAs by client certificate issuer name
-                        X509Certificate2Collection existingCAs = rootStore.Certificates
-                            .Find(X509FindType.FindByIssuerDistinguishedName, clientCertIssuer, true);
-
-                        foreach (X509Certificate2 ca in existingCAs)
+                        catch (CryptographicException ex)
                         {
-                            // get CA thumbprint and formats it
-                            string formattedThumbprint = Regex.Replace(ca.Thumbprint, ".{2}", "$0 ");
-                            // add thumbprint to list
-                            CertificateThumbprints.Add(formattedThumbprint);
+                            // if user selects No when prompted to install the CA
+                            if ((uint)ex.HResult == 0x800704C7)
+                                return false;
+
+                            // unknown exception
+                            throw;
                         }
                     }
-                    HasInstalledCertificates = true;
-                    return true;
+
+                    // get CA thumbprint and adds to list
+                    CertificateThumbprints.Add(caCert.Thumbprint);
                 }
-                finally
+
+                string clientCertIssuer = InstallClientCertificate();
+
+                // get thumbprints of already installed CAs that match client certificate issuer
+                if (clientCertIssuer != null)
                 {
-                    rootStore.Close(); // close trusted root store
+                    // get CAs by client certificate issuer name
+                    X509Certificate2Collection existingCAs = rootStore.Certificates
+                        .Find(X509FindType.FindByIssuerDistinguishedName, clientCertIssuer, true);
+
+                    // get CA thumbprint and adds to list
+                    foreach (X509Certificate2 ca in existingCAs)
+                    {
+                        CertificateThumbprints.Add(ca.Thumbprint);
+                    }
                 }
+                HasInstalledCertificates = true;
+                return true;
             }
 
             /// <summary>
@@ -293,9 +293,6 @@ namespace EduroamApp
         /// <returns>True if profile create success, false if not.</returns>
         private static bool CreateNewProfile(Guid interfaceId, string profileXml)
         {
-            // sets the profile type to be All-user (value = 0)
-            const ProfileType profileType = ProfileType.AllUser;
-
             // security type not required
             const string securityType = null; // TODO: document why
 
@@ -310,7 +307,7 @@ namespace EduroamApp
         /// </summary>
         /// <param name="ssid">ssid to delete all profiles of</param>
         /// <returns>True if any profile deletion was succesful</returns>
-        public static bool RemoveAllProfiles(string ssid = "eduroam")
+        public static bool RemoveAllProfiles(string ssid = EduroamNetwork.Ssid)
         {
             bool ret = false;
             foreach (Guid interfaceId in EduroamNetwork.GetAllInterfaceIds())
@@ -325,7 +322,7 @@ namespace EduroamApp
         /// Deletes a network profile by matching ssid on specified network interface
         /// </summary>
         /// <returns>True if profile delete was succesful</returns>
-        private static bool RemoveProfile(Guid interfaceId, string ssid = "eduroam")
+        private static bool RemoveProfile(Guid interfaceId, string ssid = EduroamNetwork.Ssid)
         {
             return NativeWifi.DeleteProfile(interfaceId, ssid);
         }
@@ -333,7 +330,7 @@ namespace EduroamApp
         /// <summary>
         /// Creates user data xml for connecting using credentials.
         /// </summary>
-        /// <param name="username">User's username.</param>
+        /// <param name="username">User's username optionally with realm</param>
         /// <param name="password">User's password.</param>
         /// <param name="eapType">EapType of installed profike</param>
         public static void SetupLogin(string username, string password, EapType eapType)
@@ -360,11 +357,6 @@ namespace EduroamApp
         /// <returns>True if succeeded, false if failed.</returns>
         private static bool SetUserData(Guid interfaceId, string profileName, string userDataXml)
         {
-            // sets the profile user type to "WLAN_SET_EAPHOST_DATA_ALL_USERS"
-            const uint profileUserType = 0x00000001;
-
-            // TODO: document the const above
-
             return NativeWifi.SetProfileUserData(interfaceId, profileName, profileUserType, userDataXml);
         }
 
