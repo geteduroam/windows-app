@@ -7,6 +7,10 @@ namespace EduroamApp
 	/// Generates user data for the following EAP types:
 	/// - PEAP-MSCHAPv2 (25/26)
 	/// - TTLS (21) [NOT YET FUNCTIONAL]
+	///
+	/// Documentation:
+	/// https://docs.microsoft.com/en-us/windows/win32/eaphost/eaphostusercredentialsschema-schema
+	/// https://docs.microsoft.com/en-us/windows/win32/eaphost/user-profiles
 	/// </summary>
 	class UserDataXml
 	{
@@ -43,7 +47,7 @@ namespace EduroamApp
 						new XAttribute(XNamespace.Xmlns + "eapCommon", nsEC),
 						new XAttribute(XNamespace.Xmlns + "baseEap", nsBEMUC),
 						new XElement(nsEHUC + "EapMethod",
-							new XElement(nsEC + "Type", "25"),
+							new XElement(nsEC + "Type", (uint)EapType.PEAP),
 							new XElement(nsEC + "AuthorId", "0")
 						),
 						new XElement(nsEHUC + "Credentials",
@@ -53,11 +57,11 @@ namespace EduroamApp
 							new XAttribute(XNamespace.Xmlns + "MsPeap", nsMPUP),
 							new XAttribute(XNamespace.Xmlns + "MsChapV2", nsMCUP),
 							new XElement(nsBEUP + "Eap",
-								new XElement(nsBEUP + "Type", "25"),
+								new XElement(nsBEUP + "Type", (uint)EapType.PEAP),
 								new XElement(nsMPUP + "EapType",
 									new XElement(nsMPUP + "RoutingIdentity"),
 									new XElement(nsBEUP + "Eap",
-										new XElement(nsBEUP + "Type", "26"),
+										new XElement(nsBEUP + "Type", "26"), // MSCHAPv2
 										new XElement(nsMCUP + "EapType",
 											new XElement(nsMCUP + "Username", uname),
 											new XElement(nsMCUP + "Password", pword),
@@ -69,7 +73,7 @@ namespace EduroamApp
 						)
 					);
 			}
-			// WORK IN PROGRESS - Dependent on creating a correct profile XML for TTLS
+			// TODO: WORK IN PROGRESS - Dependent on creating a correct profile XML for TTLS
 			else if (eapType == EapType.TTLS)
 			{
 				newUserData =
@@ -77,8 +81,8 @@ namespace EduroamApp
 						new XAttribute(XNamespace.Xmlns + "eapCommon", nsEC),
 						new XAttribute(XNamespace.Xmlns + "baseEap", nsBEMUC),
 						new XElement(nsEHUC + "EapMethod",
-							new XElement(nsEC + "Type", "21"),
-							new XElement(nsEC + "AuthorId", "67532")
+							new XElement(nsEC + "Type", (uint)EapType.TTLS),
+							new XElement(nsEC + "AuthorId", "67532") // TODO: nani?
 						),
 						new XElement(nsEHUC + "Credentials",
 							new XAttribute(XNamespace.Xmlns + "eapuser", nsEUP),
@@ -89,7 +93,7 @@ namespace EduroamApp
 								new XElement(nsTTLS + "Username", uname),
 								new XElement(nsTTLS + "Password", pword),
 								new XElement(nsBEUP + "Eap",
-									new XElement(nsBEUP + "Type", 21)
+									new XElement(nsBEUP + "Type", (uint)EapType.TTLS)
 								)
 							)
 						)
