@@ -33,21 +33,10 @@ namespace EduroamApp
 			return sortedList;
 		}
 
+		//removes accents and converts non-US character to US charactres (ø to o etc)
 		private static string NormalizeString(string str)
 		{
-			string normalized = str.Normalize(NormalizationForm.FormD);
-
-
-			StringBuilder resultBuilder = new StringBuilder();
-			foreach (var character in normalized)
-			{
-				UnicodeCategory category = CharUnicodeInfo.GetUnicodeCategory(character);
-				if (category == UnicodeCategory.LowercaseLetter
-					|| category == UnicodeCategory.UppercaseLetter
-					|| category == UnicodeCategory.SpaceSeparator)
-					resultBuilder.Append(character);
-			}
-			return resultBuilder.ToString().ToLowerInvariant();
+			return Encoding.ASCII.GetString(Encoding.GetEncoding("Cyrillic").GetBytes(str)).ToLowerInvariant();
 		}
 
 		private static string StringToAcronym(string str)
