@@ -28,11 +28,21 @@ namespace EduroamApp
 		private async void frmDownload_Load(object sender, EventArgs e)
 		{
 			// hides certain controls while loading
-			HideControls();
+			//HideControls();
 			// displays loading animation while fetching list of institutions
+			tlpLoading.BringToFront();
 			tlpLoading.Visible = true;
 			// resets redirect url
 			frmParent.RedirectUrl = "";
+
+			lblSelectProfile.Visible = true;
+			lblSelectProfile.Enabled = false;
+			tbSearch.Enabled = false;
+
+			cboProfiles.Visible = true;
+			cboProfiles.Enabled = false;
+
+			//HideControls();
 
 			// async method to get list of institutions
 			bool getInstSuccess = await Task.Run(() => GetAllInstitutions());
@@ -49,6 +59,7 @@ namespace EduroamApp
 
 				lblSearch.Visible = true;
 				tbSearch.Visible = true;
+				tbSearch.Enabled = true;
 				lbInstitution.Visible = true;
 
 				lblSelectProfile.Visible = true;
@@ -186,7 +197,10 @@ namespace EduroamApp
 			tbSearch.Visible = false;
 			lbInstitution.Visible = false;
 			cboProfiles.Visible = false;
+			lblSelectProfile.Visible = false;
 			frmParent.BtnNextEnabled = false;
+
+
 		}
 
 		private void lblSearch_Click(object sender, EventArgs e)

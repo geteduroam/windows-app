@@ -4,8 +4,6 @@ using System.Text;
 using System.Net;
 using Newtonsoft.Json;
 using System.Linq;
-using EduroamApp.Classes;
-using System.Windows.Forms.VisualStyles;
 using System.Device.Location;
 
 namespace EduroamApp
@@ -98,11 +96,6 @@ namespace EduroamApp
 			localProviders = localProviders.OrderBy(
 				p => userCoords.GetDistanceTo(p.GetClosestGeoCoordinate(userCoords))
 			).ToList();
-
-			foreach (IdentityProvider provider in localProviders)
-			{
-				System.Diagnostics.Debug.WriteLine(userCoords.GetDistanceTo(provider.GetClosestGeoCoordinate(userCoords)));
-			}
 
 			// return n closest
 			return localProviders.Take(n).ToList();

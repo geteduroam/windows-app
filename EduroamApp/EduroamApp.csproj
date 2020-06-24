@@ -197,8 +197,6 @@
     </Compile>
     <Compile Include="Classes\GenerateEapConfig.cs" />
     <Compile Include="Classes\IdentityProvider.cs" />
-    <Compile Include="Classes\IdentityProviderProfile.cs" />
-    <Compile Include="Classes\IdProviderProfileAttributes.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classes\ProfileXml.cs" />
