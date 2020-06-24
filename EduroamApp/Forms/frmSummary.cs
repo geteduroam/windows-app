@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.Drawing;
 using System.Security.Cryptography;
+using EduroamConfigure;
 
 namespace EduroamApp
 {

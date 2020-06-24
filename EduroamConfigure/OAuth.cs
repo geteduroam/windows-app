@@ -8,13 +8,13 @@ using System.Web;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 
-namespace EduroamApp
+namespace EduroamConfigure
 {
 	/// <summary>
 	/// Performs necessary steps in order to let the user authenticate through Feide. The actual browser
 	/// authentication has to be performed between GetAuthUri and GetEapConfigString.
 	/// </summary>
-	class OAuth
+	public class OAuth
 	{
 
 		private const string responseType = "code";

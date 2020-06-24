@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Device.Location;
 
-namespace EduroamApp
+namespace EduroamConfigure
 {
 	/// <summary>
 	/// Stores geographical coordinates.

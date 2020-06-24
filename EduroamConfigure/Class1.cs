@@ -6,12 +6,7 @@ using System.Threading.Tasks;
 
 namespace EduroamConfigure
 {
-	class Program
+	public class Class1
 	{
-		static void Main(string[] args)
-		{
-			Console.WriteLine("Hallo, Verden!");
-			System.Threading.Thread.Sleep(1000);
-		}
 	}
 }

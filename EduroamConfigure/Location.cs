@@ -1,6 +1,6 @@
-namespace EduroamApp
+namespace EduroamConfigure
 {
-	class Location
+	public class Location
 	{
 
 		public string Country { get; set; }

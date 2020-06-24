@@ -7,6 +7,7 @@ using System.IO;
 using System.Reflection;
 using System.Device.Location;
 using System.Xml;
+using EduroamConfigure;
 using Image = System.Drawing.Image;
 
 namespace EduroamApp

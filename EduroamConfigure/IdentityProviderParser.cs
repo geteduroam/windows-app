@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace EduroamApp
+namespace EduroamConfigure
 {
-	class IdentityProviderParser
+	public class IdentityProviderParser
 	{
 
 		public static List<IdentityProvider> SortBySearch(List<IdentityProvider> providers, string searchString)
