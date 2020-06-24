@@ -47,8 +47,9 @@ namespace EduroamApp
         /// <param name="eapType">Type of EAP.</param>
         /// <param name="serverNames">Server names.</param>
         /// <param name="thumbprints">List of CA thumbprints, in hex</param>
+        /// <param name="disablePromptForServerValidation">Will cause the wifi profile to fail if server cannot be validated</param>
         /// <returns>Complete wireless profile xml as string.</returns>
-        public static string CreateProfileXml(string ssid, EapType eapType, string serverNames, List<string> thumbprints)
+        public static string CreateProfileXml(string ssid, EapType eapType, string serverNames, List<string> thumbprints, bool disablePromptForServerValidation = true)
         {
             // sets AuthorId to 311 if using eap type TTLS
             int authId = eapType == EapType.TTLS ? 311 : 0;
@@ -127,7 +128,7 @@ namespace EduroamApp
                                 )
                             ),
                             new XElement(nsETCPv1 + "ServerValidation",
-                                new XElement(nsETCPv1 + "DisableUserPromptForServerValidation", "false"),
+                                new XElement(nsETCPv1 + "DisableUserPromptForServerValidation", disablePromptForServerValidation? "true" : "false"),
                                 new XElement(nsETCPv1 + "ServerNames", serverNames)
                             ),
                             new XElement(nsETCPv1 + "DifferentUsername", "false"),
@@ -155,7 +156,7 @@ namespace EduroamApp
                         new XElement(nsBECP + "Type", (uint)eapType),
                         new XElement(nsMPCPv1 + "EapType",
                             new XElement(nsMPCPv1 + "ServerValidation",
-                                new XElement(nsMPCPv1 + "DisableUserPromptForServerValidation", "true"),
+                                new XElement(nsMPCPv1 + "DisableUserPromptForServerValidation", disablePromptForServerValidation ? "true" : "false"),
                                 new XElement(nsMPCPv1 + "ServerNames", serverNames)
                             ),
                             new XElement(nsMPCPv1 + "FastReconnect", "true"),
@@ -172,7 +173,7 @@ namespace EduroamApp
                                 new XElement(nsMPCPv2 + "PerformServerValidation", "true"),
                                 new XElement(nsMPCPv2 + "AcceptServerName", "true"),
                                 new XElement(nsMPCPv2 + "PeapExtensionsV2",
-                                    new XElement(nsMPCPv3 + "AllowPromptingWhenServerCANotFound", "true") // TODO: should be false?
+                                    new XElement(nsMPCPv3 + "AllowPromptingWhenServerCANotFound", "true")
                                 )
                             )
                         )
@@ -191,7 +192,7 @@ namespace EduroamApp
                     new XElement(nsTTLS + "EapTtls",
                         new XElement(nsTTLS + "ServerValidation",
                             new XElement(nsTTLS + "ServerNames", serverNames),
-                            new XElement(nsTTLS + "DisablePrompt", "false")
+                            new XElement(nsTTLS + "DisablePrompt", "false") // TODO:  disablePromptForServerValidation ? "true" : "false"
                         ),
                         new XElement(nsTTLS + "Phase2Authentication"/*,
                             new XElement(nsEHC + "EapHostConfig",
@@ -218,7 +219,7 @@ namespace EduroamApp
                     )
                 );
             }
-            // TODO: else throw?
+            // TODO: else throw? Return null?
 
             // if any thumbprints exist, add them to the profile
             if (thumbprints.Any())
