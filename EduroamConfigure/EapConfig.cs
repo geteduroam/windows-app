@@ -50,7 +50,7 @@ namespace EduroamConfigure
                 string clientCertificate = null,
                 string clientPassphrase = null,
                 string innerIdentitySuffix = null,
-                bool InnerIdentityHint = false
+                bool innerIdentityHint = false
             )
             {
                 EapType = eapType;
@@ -59,7 +59,7 @@ namespace EduroamConfigure
                 ClientCertificate = clientCertificate;
                 ClientPassphrase = clientPassphrase;
                 InnerIdentitySuffix = innerIdentitySuffix;
-                InnerIdentityHint = InnerIdentityHint;
+                InnerIdentityHint = innerIdentityHint;
             }
         }
 
