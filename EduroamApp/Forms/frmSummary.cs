@@ -119,8 +119,8 @@ namespace EduroamApp
 			frmParent.SelectAlternative = false;
 
 			// gets institution logo encoded to base64
-			byte[] logoBytes = eapConfig.InstitutionInfo.Logo;
-			string logoFormat = eapConfig.InstitutionInfo.LogoFormat;
+			byte[] logoBytes = eapConfig.InstitutionInfo.LogoData;
+			string logoFormat = eapConfig.InstitutionInfo.LogoMimeType;
 			// adds logo to form if exists
 			if (logoBytes.Length > 0)
 			{

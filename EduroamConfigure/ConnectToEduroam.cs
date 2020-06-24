@@ -27,7 +27,7 @@ namespace EduroamConfigure
 
 		// Certificate stores
 		private const StoreName caStoreName = StoreName.Root; // Used to install CAs to verify server certificates with
-		private const StoreLocation caStoreLocation = StoreLocation.CurrentUser;
+		private const StoreLocation caStoreLocation = StoreLocation.CurrentUser; // TODO: make this configurable to LocalMachine
 		private const StoreName userCertStoreName = StoreName.My; // Used to install TLS client certificates
 		private const StoreLocation userCertStoreLocation = StoreLocation.CurrentUser;
 
@@ -136,7 +136,7 @@ namespace EduroamConfigure
 				{
 					// creates certificate object from base64 encoded cert
 					var clientCertBytes = Convert.FromBase64String(AuthMethod.ClientCertificate);
-					var clientCert = new X509Certificate2(clientCertBytes, AuthMethod.ClientPassphrase, X509KeyStorageFlags.PersistKeySet);
+					var clientCert = new X509Certificate2(clientCertBytes, AuthMethod.ClientCertificatePassphrase, X509KeyStorageFlags.PersistKeySet);
 
 					// sets friendly name of certificate
 					clientCert.FriendlyName = clientCert.GetNameInfo(X509NameType.SimpleName, false);
@@ -259,7 +259,7 @@ namespace EduroamConfigure
 					throw new EduroamAppUserError("missing certificates", "You must first install certificates with InstallCertificates");
 
 				// get server names of authentication method and joins them into one single string
-				string serverNames = string.Join(";", AuthMethod.ServerName);
+				string serverNames = string.Join(";", AuthMethod.ServerNames);
 
 				// generate new profile xml
 				var profileXml = ProfileXml.CreateProfileXml(
