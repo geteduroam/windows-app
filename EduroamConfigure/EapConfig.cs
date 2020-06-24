@@ -12,23 +12,30 @@ namespace EduroamConfigure
     public class EapConfig
     {
         // Properties
-        public List<AuthenticationMethod> AuthenticationMethods { get; set; }
-        public ProviderInfo InstitutionInfo { get; set; }
+        public List<AuthenticationMethod> AuthenticationMethods { get; }
+        public ProviderInfo InstitutionInfo { get; }
 
+        // Constructor
+        EapConfig(List<AuthenticationMethod> authenticationMethods, ProviderInfo institutionInfo)
+        {
+            AuthenticationMethods = authenticationMethods;
+            InstitutionInfo = institutionInfo;
+        }
 
+        
         /// <summary>
         /// AuthenticationMethod contains information about client certificates and CAs.
         /// </summary>
         public class AuthenticationMethod
         {
             // Properties
-            public EapType EapType { get; set; }
-            public List<string> CertificateAuthorities { get; set; }
-            public List<string> ServerName { get; set; }
-            public string ClientCertificate { get; set; }
-            public string ClientPassphrase { get; set; }
-            public string InnerIdentitySuffix { get; set; }
-            public bool InnerIdentityHint{ get; set; }
+            public EapType EapType { get; }
+            public List<string> CertificateAuthorities { get; } // TODO: document format, probably DER in base64?
+            public List<string> ServerNames { get; }
+            public string ClientCertificate { get; } // TODO: document format, probably PKCS12 in base64?
+            public string ClientCertificatePassphrase { get; }
+            public string InnerIdentitySuffix { get; }
+            public bool InnerIdentityHint { get; }
 
             /// <summary>
             /// Enumerates CertificateAuthorities as X509Certificate2 objects
@@ -48,16 +55,16 @@ namespace EduroamConfigure
                 List<string> certificateAuthorities,
                 List<string> serverName,
                 string clientCertificate = null,
-                string clientPassphrase = null,
+                string clientCertificatePassphrase = null,
                 string innerIdentitySuffix = null,
                 bool innerIdentityHint = false
             )
             {
                 EapType = eapType;
                 CertificateAuthorities = certificateAuthorities;
-                ServerName = serverName;
+                ServerNames = serverName;
                 ClientCertificate = clientCertificate;
-                ClientPassphrase = clientPassphrase;
+                ClientCertificatePassphrase = clientCertificatePassphrase;
                 InnerIdentitySuffix = innerIdentitySuffix;
                 InnerIdentityHint = innerIdentityHint;
             }
@@ -69,29 +76,29 @@ namespace EduroamConfigure
         public class ProviderInfo
         {
             // Properties
-            public string DisplayName { get; set; }
-            public byte[] Logo { get; set; }
-            public string LogoFormat { get; set; }
-            public string EmailAddress { get; set; }
-            public string WebAddress { get; set; }
-            public string Phone { get; set; }
-            public string InstId { get; set; }
-            public string TermsOfUse { get; set; }
+            public string DisplayName { get; }
+            public byte[] LogoData { get; }
+            public string LogoMimeType { get; }
+            public string EmailAddress { get; }
+            public string WebAddress { get; }
+            public string Phone { get;  }
+            public string InstId { get; }
+            public string TermsOfUse { get; }
 
             // Constructor
             public ProviderInfo(
-                string displayName, 
-                byte[] logo, 
-                string logoFormat, 
-                string emailAddress, 
-                string webAddress, 
-                string phone, 
-                string instId, 
+                string displayName,
+                byte[] logoData,
+                string logoMimeType,
+                string emailAddress,
+                string webAddress,
+                string phone,
+                string instId,
                 string termsOfUse)
             {
                 DisplayName = displayName;
-                Logo = logo;
-                LogoFormat = logoFormat;
+                LogoData = logoData;
+                LogoMimeType = logoMimeType;
                 EmailAddress = emailAddress;
                 WebAddress = webAddress;
                 Phone = phone;
@@ -209,10 +216,9 @@ namespace EduroamConfigure
                 ?.Descendants().FirstOrDefault(nameIs("TermsOfUse"));
 
             // create EapConfig object and adds the info
-            return new EapConfig
-            {
-                AuthenticationMethods = authMethods,
-                InstitutionInfo = new EapConfig.ProviderInfo(
+            return new EapConfig(
+                authMethods,
+                new EapConfig.ProviderInfo(
                     displayName ?? string.Empty,
                     logoData,
                     logoMimeType ?? string.Empty,
@@ -221,7 +227,7 @@ namespace EduroamConfigure
                     phone ?? string.Empty,
                     instId ?? string.Empty,
                     termsOfUse ?? string.Empty)
-            };
+            );
         }
     }
 
