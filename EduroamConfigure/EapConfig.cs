@@ -218,8 +218,6 @@ namespace EduroamConfigure
                 ?.Descendants().FirstOrDefault(nameIs("WebAddress"));
             var phone = (string)providerInfoXml
                 ?.Descendants().FirstOrDefault(nameIs("Phone"));
-
-            // get terms of use
             var termsOfUse = (string)providerInfoXml
                 ?.Descendants().FirstOrDefault(nameIs("TermsOfUse"));
 
