@@ -58,6 +58,7 @@ namespace EduroamConfigure
                     .All(authMethod => authMethod.CertificateAuthorities.Any()))
                 yield return (true, "This configuration is missing Certificate Authorities");
 
+
             DateTime now = DateTime.Now;
             bool has_expired_ca = eapConfig.AuthenticationMethods
                 .Where(AuthMethodIsSupported)
@@ -374,12 +375,12 @@ namespace EduroamConfigure
         /// <param name="username">User's username optionally with realm</param>
         /// <param name="password">User's password.</param>
         /// <param name="eapType">EapType of installed profike</param>
-        public static void SetupLogin(string username, string password, EapType eapType)
+        public static void SetupLogin(string username, string password, EapConfig.AuthenticationMethod authMethod)
         {
             // TODO: move into EapAuthMethodInstaller
 
             // generates user data xml file
-            string userDataXml = UserDataXml.CreateUserDataXml(username, password, eapType);
+            string userDataXml = UserDataXml.CreateUserDataXml(username, password, authMethod.EapType, authMethod.InnerAuthType);
 
             // sets user data
             foreach (EduroamNetwork network in EduroamNetwork.EnumerateEduroamNetworks())

@@ -282,6 +282,7 @@ namespace EduroamConfigure
 
         public static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
         {
+            bool at_least_win10 = System.Environment.OSVersion.Version.Major >= 10;
             return (eapType, innerAuthType) switch
             {
                 (EapType.PEAP, InnerAuthType.EAP_MSCHAPv2) => true,
@@ -289,7 +290,7 @@ namespace EduroamConfigure
                 (EapType.TTLS, InnerAuthType.PAP) => true,
                 (EapType.TTLS, InnerAuthType.MSCHAP) => true,
                 (EapType.TTLS, InnerAuthType.MSCHAPv2) => true,
-                (EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => true,
+                (EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => at_least_win10,
                 _ => false,
             };
         }
