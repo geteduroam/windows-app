@@ -109,9 +109,9 @@ namespace EduroamConfigure
 			List<string> caThumbprints,
 			bool disablePromptForServerValidation = true)
 		{
-			// creates common xml elements
+			// creates the root xml strucure, with references to some of its descendants
 			XElement configElement;
-			XElement EapConfiguration =
+			XElement eapConfiguration =
 				new XElement(nsEHC + "EapHostConfig",
 					new XElement(nsEHC + "EapMethod",
 						new XElement(nsEC + "Type", (uint)eapType),
@@ -119,8 +119,12 @@ namespace EduroamConfigure
 						new XElement(nsEC + "VendorType", 0),
 						new XElement(nsEC + "AuthorId", eapType == EapType.TTLS ? 311 : 0)
 					),
-					configElement = new XElement(nsEHC + "Config")
+					configElement =
+					new XElement(nsEHC + "Config")
 				);
+			XElement serverValidationElement = null; // null to make compiler play nice
+			XElement caHashListElement = null; // eapType == eapType.TLS only
+
 
 			// namespace variable, value depends on Eap type
 			XNamespace nsEapType = "";
@@ -144,6 +148,7 @@ namespace EduroamConfigure
 									new XElement(nsETCPv1 + "SimpleCertSelection", "true")
 								)
 							),
+							serverValidationElement =
 							new XElement(nsETCPv1 + "ServerValidation",
 								new XElement(nsETCPv1 + "DisableUserPromptForServerValidation", disablePromptForServerValidation ? "true" : "false"),
 								new XElement(nsETCPv1 + "ServerNames", serverNames)
@@ -153,6 +158,7 @@ namespace EduroamConfigure
 							new XElement(nsETCPv2 + "AcceptServerName", "false"),
 							new XElement(nsETCPv2 + "TLSExtensions",
 								new XElement(nsETCPv3 + "FilteringInfo",
+									caHashListElement =
 									new XElement(nsETCPv3 + "CAHashList", new XAttribute("Enabled", "true"))
 								)
 							)
@@ -160,7 +166,7 @@ namespace EduroamConfigure
 					)
 				);
 			}
-			else if (eapType == EapType.PEAP)
+			else if ((eapType, innerAuthType) == (EapType.PEAP, InnerAuthType.EAP_MSCHAPv2))
 			{
 				// sets namespace and name of thumbprint node
 				nsEapType = nsMPCPv1;
@@ -171,6 +177,7 @@ namespace EduroamConfigure
 					new XElement(nsBECP + "Eap",
 						new XElement(nsBECP + "Type", (uint)eapType),
 						new XElement(nsMPCPv1 + "EapType",
+							serverValidationElement =
 							new XElement(nsMPCPv1 + "ServerValidation",
 								new XElement(nsMPCPv1 + "DisableUserPromptForServerValidation", disablePromptForServerValidation ? "true" : "false"),
 								new XElement(nsMPCPv1 + "ServerNames", serverNames)
@@ -178,7 +185,7 @@ namespace EduroamConfigure
 							new XElement(nsMPCPv1 + "FastReconnect", "true"),
 							new XElement(nsMPCPv1 + "InnerEapOptional", "false"),
 							new XElement(nsBECP + "Eap",
-								new XElement(nsBECP + "Type", "26"), // MSCHAPv2
+								new XElement(nsBECP + "Type", (uint)innerAuthType),
 								new XElement(nsMCCP + "EapType",
 									new XElement(nsMCCP + "UseWinLogonCredentials", "false")
 								)
@@ -205,6 +212,7 @@ namespace EduroamConfigure
 
 				configElement?.Add(
 					new XElement(nsTTLS + "EapTtls",
+						serverValidationElement =
 						new XElement(nsTTLS + "ServerValidation",
 							new XElement(nsTTLS + "ServerNames", serverNames),
 							new XElement(nsTTLS + "DisablePrompt", "false") // TODO:  disablePromptForServerValidation ? "true" : "false"
@@ -234,24 +242,15 @@ namespace EduroamConfigure
 					)
 				);
 			}
-			// TODO: else throw? Return null?
+			else
+			{
+				throw new EduroamAppUserError("unsupported auth method");
+			}
 
-			// if any thumbprints exist, add them to the profile
+			// if any CA thumbprints exist, add them to the profile
 			if (caThumbprints.Any())
 			{
-				XElement serverValidationElement = eapType switch
-				{
-					EapType.TTLS => configElement
-						.Element(nsTTLS + "EapTtls")
-						.Element(nsTTLS + "ServerValidation"),
-					_ => configElement
-						.Element(nsBECP + "Eap")
-						.Element(nsEapType + "EapType")
-						.Element(nsEapType + "ServerValidation"),
-				};
-
-
-				// Format CA thumbprints into xs:element type="hexBinary"
+				// Format the CA thumbprints into xs:element type="hexBinary"
 				List<string> formattedThumbprints = caThumbprints
 					.Select(thumb => Regex.Replace(thumb, " ", ""))
 					.Select(thumb => Regex.Replace(thumb, ".{2}", "$0 "))
@@ -259,26 +258,18 @@ namespace EduroamConfigure
 					.Select(thumb => thumb.Trim())
 					.ToList();
 
-				// creates TrustedRootCA(/Hash) child elements and assigns thumbprint as value
-				formattedThumbprints.ForEach(thumb =>
-					serverValidationElement.Add(new XElement(nsEapType + thumbprintNode, thumb)));
+				// Write the CA thumbprints to their proper places in the XML:
 
-				if (eapType == EapType.TLS)
-				{
-					XElement caHashListElement = configElement
-						.Element(nsBECP + "Eap")
-						.Element(nsEapType + "EapType")
-						.Element(nsETCPv2 + "TLSExtensions")
-						.Element(nsETCPv3 + "FilteringInfo")
-						.Element(nsETCPv3 + "CAHashList");
+				if (serverValidationElement != null)
+					formattedThumbprints.ForEach(thumb =>
+						serverValidationElement.Add(new XElement(nsEapType + thumbprintNode, thumb)));
 
-					// creates IssuerHash child elements and assigns thumbprint as value
+				if (caHashListElement != null) // TLS only
 					formattedThumbprints.ForEach(thumb =>
 						caHashListElement.Add(new XElement(nsETCPv3 + "IssuerHash", thumb)));
-				}
 			}
 
-			return EapConfiguration;
+			return eapConfiguration;
 		}
 		}
 	}
