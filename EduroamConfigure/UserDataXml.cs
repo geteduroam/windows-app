@@ -11,6 +11,7 @@ namespace EduroamConfigure
 	/// Documentation:
 	/// https://docs.microsoft.com/en-us/windows/win32/eaphost/eaphostusercredentialsschema-schema
 	/// https://docs.microsoft.com/en-us/windows/win32/eaphost/user-profiles
+	/// https://github.com/rozmansi/WLANSetEAPUserData/tree/master/Examples
 	/// </summary>
 	class UserDataXml
 	{
@@ -39,11 +40,15 @@ namespace EduroamConfigure
 		/// <param name="pword">Password.</param>
 		/// <param name="eapType">EAP type</param>
 		/// <returns>Complete user data xml as string.</returns>
-		public static string CreateUserDataXml(string uname, string pword, EapType eapType)
+		public static string CreateUserDataXml(
+			string uname,
+			string pword,
+			EapType eapType,
+			InnerAuthType innerAuthType)
 		{
 			XElement newUserData = null;
 
-			if (eapType == EapType.PEAP)
+			if ((eapType, innerAuthType) == (EapType.PEAP, InnerAuthType.EAP_MSCHAPv2))
 			{
 				newUserData =
 					new XElement(nsEHUC + "EapHostUserCredentials",
@@ -64,7 +69,7 @@ namespace EduroamConfigure
 								new XElement(nsMPUP + "EapType",
 									new XElement(nsMPUP + "RoutingIdentity"),
 									new XElement(nsBEUP + "Eap",
-										new XElement(nsBEUP + "Type", "26"), // MSCHAPv2
+										new XElement(nsBEUP + "Type", (uint)InnerAuthType.EAP_MSCHAPv2),
 										new XElement(nsMCUP + "EapType",
 											new XElement(nsMCUP + "Username", uname),
 											new XElement(nsMCUP + "Password", pword),
@@ -77,7 +82,10 @@ namespace EduroamConfigure
 					);
 			}
 			// TODO: WORK IN PROGRESS - Dependent on creating a correct profile XML for TTLS
-			else if (eapType == EapType.TTLS)
+			else if (eapType == EapType.TTLS
+					&& ( innerAuthType == InnerAuthType.PAP
+					|| innerAuthType == InnerAuthType.MSCHAP
+					|| innerAuthType == InnerAuthType.MSCHAPv2))
 			{
 				newUserData =
 					new XElement(nsEHUC + "EapHostUserCredentials",
@@ -85,19 +93,17 @@ namespace EduroamConfigure
 						new XAttribute(XNamespace.Xmlns + "baseEap", nsBEMUC),
 						new XElement(nsEHUC + "EapMethod",
 							new XElement(nsEC + "Type", (uint)EapType.TTLS),
-							new XElement(nsEC + "AuthorId", "67532") // TODO: nani?
+							new XElement(nsEC + "AuthorId", 311)
+							//new XElement(nsEC + "AuthorId", "67532") // geant link
 						),
 						new XElement(nsEHUC + "Credentials",
 							new XAttribute(XNamespace.Xmlns + "eapuser", nsEUP),
 							new XAttribute(XNamespace.Xmlns + "xsi", nsXSI),
 							new XAttribute(XNamespace.Xmlns + "baseEap", nsBEUP),
 							new XAttribute(XNamespace.Xmlns + "eapTtls", nsTTLS),
-							new XElement(nsTTLS + "eapTtls",
+							new XElement(nsTTLS + "EapTtls",
 								new XElement(nsTTLS + "Username", uname),
-								new XElement(nsTTLS + "Password", pword),
-								new XElement(nsBEUP + "Eap",
-									new XElement(nsBEUP + "Type", (uint)EapType.TTLS)
-								)
+								new XElement(nsTTLS + "Password", pword)
 							)
 						)
 					);

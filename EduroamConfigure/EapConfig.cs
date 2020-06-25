@@ -123,7 +123,6 @@ namespace EduroamConfigure
 			// Outdated: https://tools.ietf.org/id/draft-winter-opsawg-eap-metadata-00.html
 
 			// TODO: Hotspot 2.0
-			// TODO: TTLS
 
 			static Func<XElement, bool> nameIs(string name) => // shorthand lambda
 				element => element.Name.LocalName == name;
@@ -235,6 +234,7 @@ namespace EduroamConfigure
 					termsOfUse ?? string.Empty)
 			);
 		}
+
 	}
 
 	/// <summary>
