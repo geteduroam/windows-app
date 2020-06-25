@@ -34,8 +34,8 @@ namespace EduroamApp
 		// private variables to be used in this form
 		private FormId currentFormId;                                      // Id of currently selected form
 		private readonly List<FormId> historyFormId = new List<FormId>();  // Keeps history of previously diplayed forms, in order to backtrack correctly
-		private bool reload = true;                                        // Specifies wether a form is to be re-instantiated when loaded
-		//private EapConfig eapConfig = new EapConfig();                     // Selected EAP configuration
+		private bool reload = true;                                        // Specifies wether a form is to be re-instantiated when loaded                                // Selected EAP configuration
+
 
 		// makes forms globally accessible in parent form
 		private frmSummary frmSummary;
@@ -67,6 +67,7 @@ namespace EduroamApp
 			GeoWatcher.TryStart(false, TimeSpan.FromMilliseconds(3000));
 			// adds formClosed listener
 			FormClosed += frmParent_FormClosed;
+			eapConfig = null;
 			InitializeComponent();
 		}
 
@@ -321,7 +322,7 @@ namespace EduroamApp
 					// generate authURI based on redirect
 					string authUri = oauth.GetAuthUri();
 					// get local listening uri prefix
-					string prefix = oauth.getRedirectUri();
+					string prefix = oauth.GetRedirectUri();
 					// browser authenticate
 					string responseUrl = GetResponseUrl(prefix, authUri);
 					// get eap-config string if available

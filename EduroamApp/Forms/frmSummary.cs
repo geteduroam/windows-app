@@ -119,8 +119,8 @@ namespace EduroamApp
 			frmParent.SelectAlternative = false;
 
 			// gets institution logo encoded to base64
-			byte[] logoBytes = eapConfig.InstitutionInfo.Logo;
-			string logoFormat = eapConfig.InstitutionInfo.LogoFormat;
+			byte[] logoBytes = eapConfig.InstitutionInfo.LogoData;
+			string logoMimeType = eapConfig.InstitutionInfo.LogoMimeType;
 			// adds logo to form if exists
 			if (logoBytes.Length > 0)
 			{
@@ -128,7 +128,7 @@ namespace EduroamApp
 				int cWidth = frmParent.PbxLogo.Width;
 				int cHeight = frmParent.PbxLogo.Height;
 
-				if (logoFormat == "image/svg+xml")
+				if (logoMimeType == "image/svg+xml")
 				{
 					frmParent.WebLogo.Visible = true;
 					frmParent.WebLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight);
@@ -156,6 +156,8 @@ namespace EduroamApp
 					}
 				}
 			}
+
+			// TODO: use ConnectToEduroam.LookForWarningsInEapConfig(eapConfig)
 
 		}
 
@@ -191,7 +193,7 @@ namespace EduroamApp
 		{
 			try
 			{
-				if (!ConnectToEduroam.EapTypeIsSupported(eapConfig))
+				if (!ConnectToEduroam.EapConfigIsSupported(eapConfig))
 				{
 					MessageBox.Show(
 						"The profile you have selected is not supported by this application.",
@@ -204,7 +206,7 @@ namespace EduroamApp
 				foreach (var authMethodInstaller in ConnectToEduroam.InstallEapConfig(eapConfig))
 				{
 					// warn user if we need to install CAs
-					if (authMethodInstaller.NeedToInstallCAs())
+					if (authMethodInstaller.NeedsToInstallCAs())
 						MessageBox.Show(
 							"You will now be prompted to install a Certificate Authority. \n" +
 							"In order to connect to eduroam, you need to accept this by pressing \"Yes\" in the following dialog.",
@@ -219,7 +221,7 @@ namespace EduroamApp
 						if (retryCa == DialogResult.Cancel)
 							break;
 					}
-					if (authMethodInstaller.NeedToInstallCAs()) break; // if user refused to install CA
+					if (authMethodInstaller.NeedsToInstallCAs()) break; // if user refused to install CA
 
 					// Everything is in order, install the profile!
 					if (authMethodInstaller.InstallProfile())
