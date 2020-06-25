@@ -271,6 +271,24 @@ namespace EduroamConfigure
 
             return eapConfiguration;
         }
+        
+        public static bool IsSupported(EapConfig.AuthenticationMethod authMethod)
+        {
+            return IsSupported(authMethod.EapType, authMethod.InnerAuthType);
+        }
+
+        public static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
+        {
+            return (eapType, innerAuthType) switch
+            {
+                (EapType.PEAP, InnerAuthType.EAP_MSCHAPv2) => true,
+                (EapType.TLS, InnerAuthType.None) => true,
+                (EapType.TTLS, InnerAuthType.PAP) => true,
+                (EapType.TTLS, InnerAuthType.MSCHAP) => true,
+                (EapType.TTLS, InnerAuthType.MSCHAPv2) => true,
+                (EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => true,
+                _ => false,
+            };
         }
     }
 

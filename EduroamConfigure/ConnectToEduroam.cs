@@ -52,12 +52,12 @@ namespace EduroamConfigure
             List<EduroamNetwork> eduroamNetworks = EduroamNetwork.EnumerateEduroamNetworks().ToList();
             if (!eduroamNetworks.Any())
                 yield break; // TODO: concider throwing
-            if (!EapTypeIsSupported(eapConfig))
+            if (!EapConfigIsSupported(eapConfig))
                 yield break; // TODO: concider throwing
 
             foreach (EapConfig.AuthenticationMethod authMethod in eapConfig.AuthenticationMethods)
             {
-                if (EapTypeIsSupported(authMethod.EapType))
+                if (AuthMethodIsSupported(authMethod))
                     yield return new EapAuthMethodInstaller(authMethod, eduroamNetworks);
                 // if EAP type is not supported, skip this authMethod
             }
@@ -69,27 +69,16 @@ namespace EduroamConfigure
         /// </summary>
         /// <param name="eapConfig">The EAP config to check</param>
         /// <returns>True if it contains a supported type</returns>
-        public static bool EapTypeIsSupported(EapConfig eapConfig)
+        public static bool EapConfigIsSupported(EapConfig eapConfig)
         {
-            foreach (EapConfig.AuthenticationMethod authMethod in eapConfig.AuthenticationMethods)
-                if (EapTypeIsSupported(authMethod.EapType))
-                    return true;
-            return false;
+            return eapConfig.AuthenticationMethods
+                .Where(AuthMethodIsSupported).Any();
         }
 
-        private static bool EapTypeIsSupported(EapType eapType)
+        private static bool AuthMethodIsSupported(EapConfig.AuthenticationMethod authMethod)
         {
-            switch (eapType)
-            {
-                // Supported EAP types:
-                case EapType.TLS:
-                case EapType.TTLS: // not fully there yet
-                    // TODO: Since this profile supports TTLS, be sure that any error returned is about TTLS not being supported
-                case EapType.PEAP:
-                    return true;
-                default:
-                    return false;
-            }
+            return ProfileXml.IsSupported(authMethod);
+            // TODO: check with UserDataXml
         }
 
         /// <summary>
