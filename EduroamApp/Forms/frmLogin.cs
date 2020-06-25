@@ -2,6 +2,8 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using EduroamConfigure;
+using System.Linq;
+using System.Diagnostics;
 
 namespace EduroamApp
 {
@@ -13,10 +15,13 @@ namespace EduroamApp
 		private bool passwordDefault = true;
 		private bool usernameSet;
 		private bool passwordSet;
+		private bool usernameValid = false;
+		private EapConfig.AuthenticationMethod authMethod;
 
 		public frmLogin(frmParent parentInstance)
 		{
 			frmParent = parentInstance;
+			authMethod = frmParent.eapConfig.AuthenticationMethods.First();
 			InitializeComponent();
 		}
 
@@ -31,7 +36,8 @@ namespace EduroamApp
 
 			if (!string.IsNullOrEmpty(frmParent.InstId))
 			{
-				lblInst.Text = "@" + frmParent.InstId;
+				// lblInst.Text = "@" + frmParent.InstId;
+				lblInst.Text = "@" + authMethod.InnerIdentitySuffix;
 			}
 			else
 			{
@@ -77,12 +83,27 @@ namespace EduroamApp
 				usernameDefault = false;
 			}
 
-			// display instution id as username suffix
-			if (!txtUsername.Text.Contains("@"))
+			string username = txtUsername.Text;
+			string realm = authMethod.InnerIdentitySuffix;
+			bool hint = authMethod.InnerIdentityHint;
+
+			// use realm as suffix
+			if (!username.Contains('@'))
 			{
+				username += "@" + realm;
 				lblInst.Visible = true;
 				usernameFieldLeave = true;
 			}
+			string brokenRules = IdentityProviderParser.GetBrokenRules(username, realm, hint);
+			bool valid = string.IsNullOrEmpty(brokenRules);
+			lblRules.Text = "";
+			if (!valid)
+			{
+				lblRules.Text = "Error:\n" + brokenRules;
+			}
+			usernameValid = valid;
+			ValidateFields();
+
 		}
 
 		// shows helping text when field loses focus and is empty
@@ -116,6 +137,8 @@ namespace EduroamApp
 		private void txtUsername_TextChanged(object sender, EventArgs e)
 		{
 			usernameSet = !string.IsNullOrEmpty(txtUsername.Text) && !usernameDefault && txtUsername.ContainsFocus;
+			// set to false in case user changes a previously validated username
+			usernameValid = false;
 			ValidateFields();
 			if (usernameFieldLeave) lblInst.Visible = !txtUsername.Text.Contains("@");
 		}
@@ -128,7 +151,7 @@ namespace EduroamApp
 
 		private void ValidateFields()
 		{
-			frmParent.BtnNextEnabled = (usernameSet && passwordSet);
+			frmParent.BtnNextEnabled = (usernameSet && passwordSet && usernameValid);
 		}
 	}
 }

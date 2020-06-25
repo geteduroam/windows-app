@@ -35,7 +35,7 @@ namespace EduroamApp
 		private FormId currentFormId;                                      // Id of currently selected form
 		private readonly List<FormId> historyFormId = new List<FormId>();  // Keeps history of previously diplayed forms, in order to backtrack correctly
 		private bool reload = true;                                        // Specifies wether a form is to be re-instantiated when loaded
-		private EapConfig eapConfig = new EapConfig();                     // Selected EAP configuration
+		//private EapConfig eapConfig = new EapConfig();                     // Selected EAP configuration
 
 		// makes forms globally accessible in parent form
 		private frmSummary frmSummary;
@@ -59,7 +59,7 @@ namespace EduroamApp
 		public bool SelectAlternative { get; set; }
 		public bool EduroamAvailable { get; set; }
 		public DateTime CertValidFrom { get; set; }
-
+		public EapConfig eapConfig { get; set;  }
 		public frmParent()
 		{
 			// starts GeoCoordinateWatcher when app starts
