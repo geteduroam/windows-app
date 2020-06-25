@@ -111,6 +111,8 @@ namespace EduroamConfigure
         {
             // creates the root xml strucure, with references to some of its descendants
             XElement configElement;
+            XElement serverValidationElement;
+            XElement caHashListElement = null; // eapType == eapType.TLS only
             XElement eapConfiguration =
                 new XElement(nsEHC + "EapHostConfig",
                     new XElement(nsEHC + "EapMethod",
@@ -122,13 +124,11 @@ namespace EduroamConfigure
                     configElement =
                     new XElement(nsEHC + "Config")
                 );
-            XElement serverValidationElement = null; // null to make compiler play nice
-            XElement caHashListElement = null; // eapType == eapType.TLS only
 
 
-            // namespace variable, value depends on Eap type
-            XNamespace nsEapType = "";
-            string thumbprintNode = "";
+            // namespace element local names dependant on EAP type
+            XNamespace nsEapType;
+            string thumbprintNodeName;
 
             // TODO: test TLS
             // TODO: test PEAP on someone elses computer
@@ -136,7 +136,7 @@ namespace EduroamConfigure
             {
                 // sets namespace and name of thumbprint node
                 nsEapType = nsETCPv1;
-                thumbprintNode = "TrustedRootCA";
+                thumbprintNodeName = "TrustedRootCA";
 
                 // adds TLS specific xml elements
                 configElement.Add(
@@ -170,7 +170,7 @@ namespace EduroamConfigure
             {
                 // sets namespace and name of thumbprint node
                 nsEapType = nsMPCPv1;
-                thumbprintNode = "TrustedRootCA";
+                thumbprintNodeName = "TrustedRootCA";
 
                 // adds MSCHAPv2 specific elements (inner eap)
                 configElement.Add(
@@ -208,33 +208,37 @@ namespace EduroamConfigure
             {
                 // sets namespace and name of thumbprint node
                 nsEapType = nsTTLS;
-                thumbprintNode = "TrustedRootCAHash";
+                thumbprintNodeName = "TrustedRootCAHash";
 
-                configElement?.Add(
+                configElement.Add(
                     new XElement(nsTTLS + "EapTtls",
                         serverValidationElement =
                         new XElement(nsTTLS + "ServerValidation",
                             new XElement(nsTTLS + "ServerNames", serverNames),
                             new XElement(nsTTLS + "DisablePrompt", "false") // TODO:  disablePromptForServerValidation ? "true" : "false"
                         ),
-                        new XElement(nsTTLS + "Phase2Authentication"/*,
-                            new XElement(nsEHC + "EapHostConfig",
-                                new XElement(nsEHC + "EapMethod",
-                                    new XElement(nsEC + "Type", 26),
-                                    new XElement(nsEC + "VendorId", 0),
-                                    new XElement(nsEC + "VendorType", 0),
-                                    new XElement(nsEC + "AuthorId", 0)
-                                ),
-                                new XElement(nsEHC + "Config",
-                                    new XElement(nsBECP + "Eap",
-                                        new XElement(nsBECP + "Type", 26), // MSCHAPv2
-                                        new XElement(nsMCCP + "EapType",
-                                            new XElement(nsMCCP + "UseWinLogonCredentials", "false")
-                                        )
-                                    )
-                                )
-                            )
-                        */),
+                        new XElement(nsTTLS + "Phase2Authentication",
+                            innerAuthType switch
+                            {
+                                InnerAuthType.PAP =>
+                                    new XElement(nsTTLS + "PAPAuthentication"),
+                                InnerAuthType.MSCHAP =>
+                                    new XElement(nsTTLS + "MSCHAPAuthentication"),
+                                InnerAuthType.MSCHAPv2 =>
+                                    new XElement(nsTTLS + "MSCHAPv2Authentication",
+                                        new XElement(nsTTLS + "UseWinlogonCredentials", "false")
+                                    ),
+                                InnerAuthType.EAP_MSCHAPv2 =>
+                                    CreateEapConfiguration(
+                                        EapType.PEAP,
+                                        InnerAuthType.EAP_MSCHAPv2,
+                                        serverNames,
+                                        caThumbprints,
+                                        disablePromptForServerValidation
+                                    ),
+                                _ => throw new EduroamAppUserError("unsupported inner auth method"),
+                            }
+                        ),
                         new XElement(nsTTLS + "Phase1Identity",
                             new XElement(nsTTLS + "IdentityPrivacy", "true"),
                             new XElement(nsTTLS + "AnonymousIdentity", "user")
@@ -260,9 +264,8 @@ namespace EduroamConfigure
 
                 // Write the CA thumbprints to their proper places in the XML:
 
-                if (serverValidationElement != null)
-                    formattedThumbprints.ForEach(thumb =>
-                        serverValidationElement.Add(new XElement(nsEapType + thumbprintNode, thumb)));
+                formattedThumbprints.ForEach(thumb =>
+                    serverValidationElement.Add(new XElement(nsEapType + thumbprintNodeName, thumb)));
 
                 if (caHashListElement != null) // TLS only
                     formattedThumbprints.ForEach(thumb =>
