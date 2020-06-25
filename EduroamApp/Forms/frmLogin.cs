@@ -131,7 +131,7 @@ namespace EduroamApp
             }
             string password = txtPassword.Text;
 
-            ConnectToEduroam.SetupLogin(username, password, (EapType)frmParent.EapType);
+            ConnectToEduroam.SetupLogin(username, password, frmParent.AuthMethod);
         }
         
         private void txtUsername_TextChanged(object sender, EventArgs e)

@@ -189,19 +189,21 @@ namespace EduroamApp
         /// or 600 if there is no connectivity,
         /// or 0 if some other error happened
         /// </returns>
-        public uint InstallEapConfig()
+        public ValueTuple<EapConfig.AuthenticationMethod, string> InstallEapConfig()
         {
             try
             {
+                EapConfig.AuthenticationMethod authMethod = null;
+                string err = "nothing installed"; // TODO: enum?
+
                 if (!ConnectToEduroam.EapConfigIsSupported(eapConfig))
                 {
                     MessageBox.Show(
                         "The profile you have selected is not supported by this application.",
                         "No supported authentification method found.", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return 0; // TODO: ew
+                    return (authMethod, "not supported");
                 }
 
-                uint eapType = 0;
                 // Install EAP config as a profile
                 foreach (var authMethodInstaller in ConnectToEduroam.InstallEapConfig(eapConfig))
                 {
@@ -221,40 +223,43 @@ namespace EduroamApp
                         if (retryCa == DialogResult.Cancel)
                             break;
                     }
-                    if (authMethodInstaller.NeedsToInstallCAs()) break; // if user refused to install CA
+                    if (authMethodInstaller.NeedsToInstallCAs()) break; // if user refused to install the CAs
                     
                     // Everything is in order, install the profile!
                     if (authMethodInstaller.InstallProfile())
                     {
-                        eapType = (uint)authMethodInstaller.EapType;
-                        break;
-                    }
-                    else
-                    {
-                        DialogResult dialogResult = MessageBox.Show(
-                            "The selected profile requires a separate client certificate. Do you want to browse your local files for one?",
-                            "Client certificate required", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-                        eapType = 500; // TODO: ew
+                        // installation was a success
+
+                        if (authMethodInstaller.NeedClientCertificate())
+                        {
+                            DialogResult dialogResult = MessageBox.Show(
+                                "The selected profile requires a separate client certificate. Do you want to browse your local files for one?",
+                                "Client certificate required", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                            if (dialogResult != DialogResult.Yes)
+                                continue; // TODO: uninstall the newly installed profile
+                        }
+
+                        authMethod = authMethodInstaller.AuthMethod;
+                        err = null;
                         break;
                     }
                 }
 
-                frmParent.InstId = eapConfig.InstitutionInfo.InstId;
+                frmParent.InstId = eapConfig.InstitutionInfo.InstId; // TODO: what does this do? Move to frmParent?
 
                 if (!EduroamNetwork.IsEduroamAvailable())
                 {
-                    eapType = 600; // TODO: ew
-                    frmParent.EduroamAvailable = false;
+                    err = "eduroam not available";
                 }
-                else frmParent.EduroamAvailable = true;
 
-                frmParent.ProfileCondition = "BADPROFILE";
-                return eapType;
+                frmParent.ProfileCondition = "BADPROFILE"; // TODO: what does this do? Move to frmParent?
+                return (authMethod, err);
             }
             catch (ArgumentException argEx) // TODO, handle in ConnectToEuroam or EduroamNetwork
             {
                 if (argEx.Message == "interfaceId")
                 {
+                    // was this due to Guid.Empty?
                     MessageBox.Show(
                         "Could not establish a connection through your computer's wireless network interface.\n" +
                         "Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.\n" +
@@ -286,7 +291,7 @@ namespace EduroamApp
                     "Exception: " + ex.Message,
                     "eduroam - Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
-            return 0;
+            return (null, "exception occured");
         }
 
         // enables Next button if user agrees to Terms of Use
