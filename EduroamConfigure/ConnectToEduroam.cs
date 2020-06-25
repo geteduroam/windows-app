@@ -265,6 +265,7 @@ namespace EduroamConfigure
                 var profileXml = ProfileXml.CreateProfileXml(
                     EduroamNetwork.Ssid,
                     AuthMethod.EapType,
+                    AuthMethod.InnerAuthType,
                     serverNames,
                     CertificateThumbprints);
 
