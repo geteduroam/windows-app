@@ -27,7 +27,7 @@ namespace EduroamConfigure
         
         // Certificate stores
         private const StoreName caStoreName = StoreName.Root; // Used to install CAs to verify server certificates with
-        private const StoreLocation caStoreLocation = StoreLocation.CurrentUser;
+        private const StoreLocation caStoreLocation = StoreLocation.CurrentUser; // TODO: make this configurable to LocalMachine
         private const StoreName userCertStoreName = StoreName.My; // Used to install TLS client certificates
         private const StoreLocation userCertStoreLocation = StoreLocation.CurrentUser;
 
@@ -42,6 +42,61 @@ namespace EduroamConfigure
 
 
         /// <summary>
+        /// Checks the EAP config to see if there is any issues
+        /// </summary>
+        /// <returns>A tuple on the form: (bool isCritical, string description)</returns>
+        public IEnumerable<ValueTuple<bool, string>> LookForWarningsInEapConfig(EapConfig eapConfig)
+        {
+            if (!EapConfigIsSupported(eapConfig))
+            {
+                yield return (true, "This configuration is not supported");
+                yield break;
+            }
+
+            if (!eapConfig.AuthenticationMethods
+                    .Where(AuthMethodIsSupported)
+                    .All(authMethod => authMethod.CertificateAuthorities.Any()))
+                yield return (true, "This configuration is missing Certificate Authorities");
+
+            DateTime now = DateTime.Now;
+            bool has_expired_ca = eapConfig.AuthenticationMethods
+                .Where(AuthMethodIsSupported)
+                .SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
+                .Any(caCert => caCert.NotAfter < now);
+
+            bool has_valid_ca = eapConfig.AuthenticationMethods
+                .Where(AuthMethodIsSupported)
+                .SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
+                .Where(caCert => now < caCert.NotAfter)
+                .Any(caCert => caCert.NotBefore < now);
+
+            if (has_expired_ca)
+            {
+                yield return has_valid_ca switch
+                {
+                    true => (false,
+                        "One of the provided Certificate Authorities from this institution has expired.\r\n" +
+                        "There might be some issues connecting to eduroam."),
+                    false => (true,
+                        "The provided Certificate Authorities from this institution have all expired!\r\n" +
+                        "Please contact the institution to have the issue fixed!"),
+                };
+            }
+            else if (!has_valid_ca)
+            {
+                DateTime earliest = eapConfig.AuthenticationMethods
+                    .Where(AuthMethodIsSupported)
+                    .SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
+                    .Where(caCert => now < caCert.NotAfter)
+                    .Max(caCert => caCert.NotBefore);
+
+                yield return (false,
+                    "The Certificate Authorities in this configuration has yet to become valid.\r\n" +
+                    "This configuration will become valid in " + (earliest - now).TotalMinutes + " minutes.");
+            }
+        }
+
+        /// <summary>
         /// Yields EapAuthMethodInstallers which will attempt to install eapConfig for you.
         /// Refer to frmSummary.InstallEapConfig to see how to use it (TODO: actually explain when finalized)
         /// </summary>
@@ -52,12 +107,12 @@ namespace EduroamConfigure
             List<EduroamNetwork> eduroamNetworks = EduroamNetwork.EnumerateEduroamNetworks().ToList();
             if (!eduroamNetworks.Any())
                 yield break; // TODO: concider throwing
-            if (!EapTypeIsSupported(eapConfig))
+            if (!EapConfigIsSupported(eapConfig))
                 yield break; // TODO: concider throwing
 
             foreach (EapConfig.AuthenticationMethod authMethod in eapConfig.AuthenticationMethods)
             {
-                if (EapTypeIsSupported(authMethod.EapType))
+                if (AuthMethodIsSupported(authMethod))
                     yield return new EapAuthMethodInstaller(authMethod, eduroamNetworks);
                 // if EAP type is not supported, skip this authMethod
             }
@@ -69,27 +124,16 @@ namespace EduroamConfigure
         /// </summary>
         /// <param name="eapConfig">The EAP config to check</param>
         /// <returns>True if it contains a supported type</returns>
-        public static bool EapTypeIsSupported(EapConfig eapConfig)
+        public static bool EapConfigIsSupported(EapConfig eapConfig)
         {
-            foreach (EapConfig.AuthenticationMethod authMethod in eapConfig.AuthenticationMethods)
-                if (EapTypeIsSupported(authMethod.EapType))
-                    return true;
-            return false;
+            return eapConfig.AuthenticationMethods
+                .Where(AuthMethodIsSupported).Any();
         }
 
-        private static bool EapTypeIsSupported(EapType eapType)
+        private static bool AuthMethodIsSupported(EapConfig.AuthenticationMethod authMethod)
         {
-            switch (eapType)
-            {
-                // Supported EAP types:
-                case EapType.TLS:
-                case EapType.TTLS: // not fully there yet
-                    // TODO: Since this profile supports TTLS, be sure that any error returned is about TTLS not being supported
-                case EapType.PEAP:
-                    return true;
-                default:
-                    return false;
-            }
+            return ProfileXml.IsSupported(authMethod);
+            // TODO: check with UserDataXml
         }
 
         /// <summary>
@@ -136,7 +180,7 @@ namespace EduroamConfigure
                 {
                     // creates certificate object from base64 encoded cert
                     var clientCertBytes = Convert.FromBase64String(AuthMethod.ClientCertificate);
-                    var clientCert = new X509Certificate2(clientCertBytes, AuthMethod.ClientPassphrase, X509KeyStorageFlags.PersistKeySet);
+                    var clientCert = new X509Certificate2(clientCertBytes, AuthMethod.ClientCertificatePassphrase, X509KeyStorageFlags.PersistKeySet);
 
                     // sets friendly name of certificate
                     clientCert.FriendlyName = clientCert.GetNameInfo(X509NameType.SimpleName, false);
@@ -157,26 +201,21 @@ namespace EduroamConfigure
                 return null;
             }
 
+
             /// <summary>
             /// Call this to check if there are any CAs left to install
             /// </summary>
             /// <returns></returns>
-            public bool NeedToInstallCAs()
+            public bool NeedsToInstallCAs()
             {
                 using var rootStore = new X509Store(caStoreName, caStoreLocation);
-                rootStore.Open(OpenFlags.ReadWrite);
+                rootStore.Open(OpenFlags.ReadOnly);
                 //foreach (string ca in AuthMethod.CertificateAuthorities)
                 foreach (var caCert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
                 {
-                    if (caCert.NotAfter < DateTime.Now)
-                    {
-                        throw new EduroamAppUserError("expired CA",
-                            "One of the provided Certificate Authorities from this institution has expired!\r\n" +
-                            "Please contact the institution to have the issue fixed.");
-                    }
-
                     // check if CA is not already installed
-                    X509Certificate2Collection matchingCerts = rootStore.Certificates.Find(X509FindType.FindByThumbprint, caCert.Thumbprint, true);
+                    X509Certificate2Collection matchingCerts = rootStore.Certificates.Find(
+                        X509FindType.FindByThumbprint, caCert.Thumbprint, true);
                     if (matchingCerts.Count < 1)
                     {
                         return true; // user must be informed
@@ -256,15 +295,17 @@ namespace EduroamConfigure
             public bool InstallProfile()
             {
                 if (!HasInstalledCertificates)
-                    throw new EduroamAppUserError("missing certificates", "You must first install certificates with InstallCertificates");
+                    throw new EduroamAppUserError("missing certificates",
+                        "You must first install certificates with InstallCertificates");
 
                 // get server names of authentication method and joins them into one single string
-                string serverNames = string.Join(";", AuthMethod.ServerName);
+                string serverNames = string.Join(";", AuthMethod.ServerNames);
 
                 // generate new profile xml
                 var profileXml = ProfileXml.CreateProfileXml(
                     EduroamNetwork.Ssid,
                     AuthMethod.EapType,
+                    AuthMethod.InnerAuthType,
                     serverNames,
                     CertificateThumbprints);
 
