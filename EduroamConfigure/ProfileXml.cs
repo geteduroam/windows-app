@@ -119,7 +119,7 @@ namespace EduroamConfigure
                         new XElement(nsEC + "Type", (uint)eapType),
                         new XElement(nsEC + "VendorId",   0),
                         new XElement(nsEC + "VendorType", 0),
-                        new XElement(nsEC + "AuthorId", eapType == EapType.TTLS ? 311 : 0)
+                        new XElement(nsEC + "AuthorId", eapType == EapType.TTLS ? 311 : 0) // no geant link
                     ),
                     configElement =
                     new XElement(nsEHC + "Config")
