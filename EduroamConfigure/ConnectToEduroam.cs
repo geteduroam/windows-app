@@ -133,8 +133,7 @@ namespace EduroamConfigure
 
 		private static bool AuthMethodIsSupported(EapConfig.AuthenticationMethod authMethod)
 		{
-			return ProfileXml.IsSupported(authMethod);
-			// TODO: check with UserDataXml
+			return ProfileXml.IsSupported(authMethod) && (UserDataXml.IsSupported(authMethod) || !UserDataXml.IsNeeded(authMethod));
 		}
 
 		/// <summary>
@@ -143,18 +142,17 @@ namespace EduroamConfigure
 		/// </summary>
 		public class EapAuthMethodInstaller
 		{
-			// all CA thumbprints that will be added to Wireless Profile XML
+			// all the CA thumbprints that will be added to Wireless Profile XML
 			private readonly List<string> CertificateThumbprints = new List<string>();
 			private readonly List<EduroamNetwork> EduroamNetworks;
-			private readonly EapConfig.AuthenticationMethod AuthMethod;
-			private bool HasInstalledCertificates = false; // To track proper order of operations
 
+			// To track proper order of operations
+			private bool HasInstalledCertificates = false;
+			private bool HasInstalledProfile = false;
+
+			public readonly EapConfig.AuthenticationMethod AuthMethod;
 			public DateTime CertValidFrom { get; private set; }
 
-			public EapType EapType
-			{
-				get { return AuthMethod.EapType; }
-			}
 
 			/// <summary>
 			/// Constructs a EapAuthMethodInstaller
@@ -292,7 +290,7 @@ namespace EduroamConfigure
 			/// Having run InstallCertificates successfully before calling this is a prerequisite
 			/// If this returns FALSE: It means there is a missing TLS client certificate left to be installed
 			/// </summary>
-			/// <returns>True on success, False if missing a client certificate</returns>
+			/// <returns>True if the profile was installed on any interface</returns>
 			public bool InstallProfile()
 			{
 				if (!HasInstalledCertificates)
@@ -318,11 +316,24 @@ namespace EduroamConfigure
 					// TODO: update docstring and handling in frmSummary due to any_installed
 				}
 
-				// check if EAP type is TLS and there is no client certificate
-				if (AuthMethod.EapType == EapType.TLS && string.IsNullOrEmpty(AuthMethod.ClientCertificate))
-					return false;
-
+				HasInstalledProfile = any_installed;
 				return any_installed;
+			}
+
+			public bool NeedsLoginCredentials()
+			{
+				if (!HasInstalledProfile)
+					throw new EduroamAppUserError("profile not installed",
+						"You must first install the profile with InstallProfile");
+				return AuthMethod.NeedsLoginCredentials();
+			}
+
+			public bool NeedClientCertificate()
+			{
+				if (!HasInstalledProfile)
+					throw new EduroamAppUserError("profile not installed",
+						"You must first install the profile with InstallProfile");
+				return AuthMethod.NeedClientCertificate();
 			}
 		}
 

@@ -43,7 +43,7 @@ namespace EduroamApp
 			lblStatus.Visible = true;
 			pbxStatus.Visible = true;
 
-			if (frmParent.EapType == (uint)EduroamConfigure.EapType.TLS)
+			if (frmParent.AuthMethod.EapType == EapType.TLS)
 			{
 				DateTime validFrom = ConnectToEduroam.CertValidFrom; // TODO: this static variable will be moved
 				DateTime now = DateTime.Now;

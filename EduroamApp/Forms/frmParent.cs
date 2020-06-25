@@ -48,8 +48,7 @@ namespace EduroamApp
 
 		// public variables to be used across forms
 		public GeoCoordinateWatcher GeoWatcher { get; set; }
-		public uint EapType { get; set; }  // EAP type of selected EAP config
-		// TODO: change to EapType ^
+		public EapConfig.AuthenticationMethod AuthMethod; // installed authmethod in EAP config
 		public string InstId { get; set; }
 		public string ProfileCondition { get; set; }
 		public string LocalFileType { get; set; }
@@ -113,25 +112,39 @@ namespace EduroamApp
 						LoadFrmSelectMethod();
 						break;
 					}
-					EapType = (uint)frmSummary.InstallEapConfig();
-					switch (EapType)
+
+					string err;
+					(AuthMethod, err) = frmSummary.InstallEapConfig();
+
+					if (AuthMethod != null) // Profile was successfully installed
 					{
-						case (uint)EduroamConfigure.EapType.TLS:
-							LoadFrmConnect();
-							break;
-						case (uint)EduroamConfigure.EapType.PEAP:
-						case (uint)EduroamConfigure.EapType.TTLS:
-							LoadFrmLogin();
-							break;
-						case 500: // User needs to find user certificate
+						if (AuthMethod.NeedClientCertificate()) {
 							LocalFileType = "CERT";
 							LoadFrmLocalCert();
-							break;
-						case 600: // Eduroam not available (no access point in range, or no WLAN service)
+						}
+						else if (AuthMethod.NeedsLoginCredentials())
+						{
+							LoadFrmLogin();
+						}
+						else
+						{
+							LoadFrmConnect();
+						}
+						EduroamAvailable = true;
+						break;
+					}
+
+					EduroamAvailable = true;
+					switch (err)
+					{
+						case "eduroam not available": // (no access point in range, or no WLAN service/device enabled)
+							EduroamAvailable = false;
 							LoadFrmSaveAndQuit();
 							break;
-						case 0:
-							break; // todo, this shouldn't happen?
+						case "not supported":
+						case "exception occured":
+							break; // dialogbox should have already been produced
+						case "nothing installed":
 						default:
 							MessageBox.Show(
 								"Couldn't connect to eduroam. \n" +
@@ -183,16 +196,8 @@ namespace EduroamApp
 
 				// lets user log in and opens connection form
 				case FormId.Login:
-					if (EapType != (uint)EduroamConfigure.EapType.TTLS)
-					{
-						frmLogin.ConnectWithLogin();
-						LoadFrmConnect();
-					}
-					else
-					{
-						MessageBox.Show("Support for TTLS configuration is not yet ready.",
-							"TTLS not ready", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-					}
+					frmLogin.ConnectWithLogin();
+					LoadFrmConnect();
 					break;
 
 				// closes application after successful connect

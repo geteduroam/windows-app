@@ -114,5 +114,32 @@ namespace EduroamConfigure
 			return newUserData != null ? newUserData.ToString() : "";
 		}
 
+		public static bool IsNeeded(EapConfig.AuthenticationMethod authMethod)
+		{
+			return authMethod.EapType switch
+			{
+				(EapType.TLS) => false,
+				_ => true,
+			};
+		}
+
+		public static bool IsSupported(EapConfig.AuthenticationMethod authMethod)
+		{
+			return IsSupported(authMethod.EapType, authMethod.InnerAuthType);
+		}
+
+		public static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
+		{
+			bool at_least_win10 = System.Environment.OSVersion.Version.Major >= 10;
+			return (eapType, innerAuthType) switch
+			{
+				(EapType.PEAP, InnerAuthType.EAP_MSCHAPv2) => true,
+				(EapType.TTLS, InnerAuthType.PAP) => true,
+				(EapType.TTLS, InnerAuthType.MSCHAP) => true,
+				(EapType.TTLS, InnerAuthType.MSCHAPv2) => true,
+				(EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => false,  // TODO: set to at_least_win10 when done
+				_ => false,
+			};
+		}
 	}
 }

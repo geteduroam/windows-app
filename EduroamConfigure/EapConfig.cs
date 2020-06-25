@@ -50,6 +50,18 @@ namespace EduroamConfigure
 				}
 			}
 
+			public bool NeedsLoginCredentials()
+			{
+				return UserDataXml.IsNeeded(this);
+			}
+
+			public bool NeedClientCertificate()
+			{
+				if (UserDataXml.IsNeeded(this)) return false;
+				if (!string.IsNullOrEmpty(ClientCertificate)) return false;
+				return true;
+			}
+
 			// Constructor
 			public AuthenticationMethod(
 				EapType eapType,
