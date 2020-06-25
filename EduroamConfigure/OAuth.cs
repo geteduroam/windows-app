@@ -274,7 +274,7 @@ namespace EduroamConfigure
 			return string.Join("&", items.ToArray());
 		}
 
-		public string getRedirectUri()
+		public string GetRedirectUri()
 		{
 			return redirectUri;
 		}
