@@ -30,6 +30,7 @@ namespace EduroamConfigure
 		{
 			// Properties
 			public EapType EapType { get; }
+			public InnerAuthType InnerAuthType { get; }
 			public List<string> CertificateAuthorities { get; } // TODO: document format, probably DER in base64?
 			public List<string> ServerNames { get; }
 			public string ClientCertificate { get; } // TODO: document format, probably PKCS12 in base64?
@@ -52,6 +53,7 @@ namespace EduroamConfigure
 			// Constructor
 			public AuthenticationMethod(
 				EapType eapType,
+				InnerAuthType innerAuthType,
 				List<string> certificateAuthorities,
 				List<string> serverName,
 				string clientCertificate = null,
@@ -61,6 +63,7 @@ namespace EduroamConfigure
 			)
 			{
 				EapType = eapType;
+				InnerAuthType = innerAuthType;
 				CertificateAuthorities = certificateAuthorities;
 				ServerNames = serverName;
 				ClientCertificate = clientCertificate;
@@ -149,6 +152,10 @@ namespace EduroamConfigure
 					.Elements().First(nameIs("EAPMethod"))
 					.Elements().First(nameIs("Type"));
 
+				InnerAuthType innerAuthType = (InnerAuthType)(uint)authMethodXml
+					.Elements().FirstOrDefault(nameIs("InnerAuthenticationMethod"))
+					?.Descendants().FirstOrDefault(nameIs("Type"));
+
 				// get list of strings of CA certificates
 				List<string> certAuths = serverSideCredentialXml
 					.Elements().Where(nameIs("CA"))
@@ -176,6 +183,7 @@ namespace EduroamConfigure
 				// create new authentication method object and adds it to list
 				authMethods.Add(new EapConfig.AuthenticationMethod(
 					eapType,
+					innerAuthType,
 					certAuths,
 					serverNames,
 					clientCert,
@@ -237,8 +245,20 @@ namespace EduroamConfigure
 	public enum EapType : uint
 	{
 		TLS = 13,
-		PEAP = 25, // also covers MSCHAPv2 (26)
 		TTLS = 21,
+		PEAP = 25,
+	}
+
+	public enum InnerAuthType: uint
+	{
+		// For those EAP types with no inner auth method
+		None = 0,
+		// Non-EAP methods
+		PAP = 1, // Same as GTC and 'Indentify'
+		MSCHAP = 2,
+		MSCHAPv2 = 3,
+		// Tunneled Eap methods
+		TunneledMSCHAPv2 = 26,
 	}
 
 }
