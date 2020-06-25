@@ -191,7 +191,7 @@ namespace EduroamApp
 		{
 			try
 			{
-				if (!ConnectToEduroam.EapTypeIsSupported(eapConfig))
+				if (!ConnectToEduroam.EapConfigIsSupported(eapConfig))
 				{
 					MessageBox.Show(
 						"The profile you have selected is not supported by this application.",
