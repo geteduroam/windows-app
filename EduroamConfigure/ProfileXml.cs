@@ -50,19 +50,21 @@ namespace EduroamConfigure
         /// </summary>
         /// <param name="ssid">Name of SSID associated with profile.</param>
         /// <param name="eapType">Type of EAP.</param>
+        /// <param name="innerAuthType">Type of inner auth method.</param>
         /// <param name="serverNames">Server names.</param>
-        /// <param name="thumbprints">List of CA thumbprints, in hex</param>
+        /// <param name="caThumbprints">List of CA thumbprints, in hex</param>
         /// <param name="disablePromptForServerValidation">Will cause the wifi profile to fail if server cannot be validated</param>
         /// <returns>Complete wireless profile xml as string.</returns>
-        public static string CreateProfileXml(string ssid, EapType eapType, string serverNames, List<string> thumbprints, bool disablePromptForServerValidation = true)
+        public static string CreateProfileXml(
+            string ssid,
+            EapType eapType,
+            InnerAuthType innerAuthType,
+            string serverNames,
+            List<string> caThumbprints,
+            bool disablePromptForServerValidation = true)
         {
-            // sets AuthorId to 311 if using eap type TTLS
-            int authId = eapType == EapType.TTLS ? 311 : 0;
-
             // hotspot2.0 domain is EapConfig.InstitutionInfo.InstId
 
-            // creates common xml elements
-            XElement configElement; // OneX > EAPConfig > EapHostConfig > Config
             XElement newProfile =
                 new XElement(nsWLAN + "WLANProfile",
                     new XElement(nsWLAN + "name", ssid),
@@ -89,19 +91,35 @@ namespace EduroamConfigure
                             new XElement(nsOneX + "OneX",
                                 new XElement(nsOneX + "authMode", "user"),
                                 new XElement(nsOneX + "EAPConfig",
-                                    new XElement(nsEHC + "EapHostConfig",
-                                        new XElement(nsEHC + "EapMethod",
-                                            new XElement(nsEC + "Type", (uint)eapType),
-                                            new XElement(nsEC + "VendorId", 0),
-                                            new XElement(nsEC + "VendorType", 0),
-                                            new XElement(nsEC + "AuthorId", authId)
-                                        ),
-                                        configElement = new XElement(nsEHC + "Config")
-                                    )
+                                    CreateEapConfiguration(eapType, innerAuthType, serverNames, caThumbprints, disablePromptForServerValidation)
                                 )
                             )
                         )
                     )
+                );
+
+            // returns xml as string
+            return newProfile.ToString();
+        }
+        
+        private static XElement CreateEapConfiguration(
+            EapType eapType,
+            InnerAuthType innerAuthType,
+            string serverNames,
+            List<string> caThumbprints,
+            bool disablePromptForServerValidation = true)
+        {
+            // creates common xml elements
+            XElement configElement;
+            XElement EapConfiguration =
+                new XElement(nsEHC + "EapHostConfig",
+                    new XElement(nsEHC + "EapMethod",
+                        new XElement(nsEC + "Type", (uint)eapType),
+                        new XElement(nsEC + "VendorId",   0),
+                        new XElement(nsEC + "VendorType", 0),
+                        new XElement(nsEC + "AuthorId", eapType == EapType.TTLS ? 311 : 0)
+                    ),
+                    configElement = new XElement(nsEHC + "Config")
                 );
 
             // namespace variable, value depends on Eap type
@@ -118,7 +136,7 @@ namespace EduroamConfigure
 
                 // adds TLS specific xml elements
                 configElement.Add(
-                    new XElement(nsBECP + "Eap", 
+                    new XElement(nsBECP + "Eap",
                         new XElement(nsBECP + "Type", (uint)eapType),
                         new XElement(nsETCPv1 + "EapType",
                             new XElement(nsETCPv1 + "CredentialsSource",
@@ -127,7 +145,7 @@ namespace EduroamConfigure
                                 )
                             ),
                             new XElement(nsETCPv1 + "ServerValidation",
-                                new XElement(nsETCPv1 + "DisableUserPromptForServerValidation", disablePromptForServerValidation? "true" : "false"),
+                                new XElement(nsETCPv1 + "DisableUserPromptForServerValidation", disablePromptForServerValidation ? "true" : "false"),
                                 new XElement(nsETCPv1 + "ServerNames", serverNames)
                             ),
                             new XElement(nsETCPv1 + "DifferentUsername", "false"),
@@ -219,7 +237,7 @@ namespace EduroamConfigure
             // TODO: else throw? Return null?
 
             // if any thumbprints exist, add them to the profile
-            if (thumbprints.Any())
+            if (caThumbprints.Any())
             {
                 XElement serverValidationElement = eapType switch
                 {
@@ -234,7 +252,7 @@ namespace EduroamConfigure
 
 
                 // Format CA thumbprints into xs:element type="hexBinary"
-                List<string> formattedThumbprints = thumbprints
+                List<string> formattedThumbprints = caThumbprints
                     .Select(thumb => Regex.Replace(thumb, " ", ""))
                     .Select(thumb => Regex.Replace(thumb, ".{2}", "$0 "))
                     .Select(thumb => thumb.ToUpper())
@@ -260,8 +278,8 @@ namespace EduroamConfigure
                 }
             }
 
-            // returns xml as string
-            return newProfile.ToString();
+            return EapConfiguration;
+        }
         }
     }
 

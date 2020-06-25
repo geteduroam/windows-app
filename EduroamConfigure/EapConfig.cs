@@ -254,11 +254,11 @@ namespace EduroamConfigure
         // For those EAP types with no inner auth method
         None = 0,
         // Non-EAP methods
-        PAP = 1, // Same as GTC and 'Indentify'
+        PAP = 1,
         MSCHAP = 2,
         MSCHAPv2 = 3,
         // Tunneled Eap methods
-        TunneledMSCHAPv2 = 26,
+        EAP_MSCHAPv2 = 26,
     }
 
 }
