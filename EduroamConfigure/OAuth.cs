@@ -81,42 +81,41 @@ namespace EduroamConfigure
 			if (string.IsNullOrEmpty(responseUrl))
 			{
 				string error = "HTTP request returned nothing.";
-				throw new EduroamAppUserError("", error);
+				throw new EduroamAppUserError("oath empty reponse url", error);
 			}
 
 			// checks if user chose to reject authorization
 			if (responseUrl.Contains("access_denied"))
 			{
 				string error = "Authorization rejected. Please try again.";
-				throw new EduroamAppUserError("", error);
+				throw new EduroamAppUserError("oath access denied", error);
 			}
 
-			// convert response url string to URI object
-			var responseUri = new Uri(responseUrl);
+			// Extract query parameters from response url
+			var responseUrlQueryParams = HttpUtility.ParseQueryString(new Uri(responseUrl).Query);
 
 			// gets state from response url and compares it to original state
-			string newState = HttpUtility.ParseQueryString(responseUri.Query).Get("state");
+			string newState = responseUrlQueryParams.Get("state");
 			// checks if state has remained, if not cancel operation
 			if (newState != state)
 			{
 				string error = "State from request and response do not match. Aborting operation.";
-				throw new EduroamAppUserError("", error);
-
+				throw new EduroamAppUserError("oath state mismatch", error);
 			}
 
 			// gets code from response url
-			string code = HttpUtility.ParseQueryString(responseUri.Query).Get("code");
+			string code = responseUrlQueryParams.Get("code");
 			// checks if code is not empty
 			if (string.IsNullOrEmpty(code))
 			{
 				string error = "Response string doesn't contain code. Aborting operation.";
-				throw new EduroamAppUserError("", error);
+				throw new EduroamAppUserError("oath code missing", error);
 			}
 
 
 
 			// concatenates parameters into token endpoint URI
-			NameValueCollection tokenPostData = new NameValueCollection() {
+			var tokenPostData = new NameValueCollection() {
 				{ "grant_type", grantType },
 				{ "code", code },
 				{ "redirect_uri", redirectUri },
@@ -134,7 +133,7 @@ namespace EduroamConfigure
 			catch (WebException ex)
 			{
 				string error = "Couldn't fetch token json. \nException: " + ex.Message;
-				throw new EduroamAppUserError("", error);
+				throw new EduroamAppUserError("oath post error", error);
 			}
 
 			// token for authorizing Oauth request
@@ -153,25 +152,24 @@ namespace EduroamConfigure
 			catch (JsonReaderException ex)
 			{
 				string error = "Couldn't read token from JSON file.\n" + "Exception: " + ex.Message;
-				throw new EduroamAppUserError("", error);
+				throw new EduroamAppUserError("oath unprocessable response", error);
 			}
 
 			// gets and returns EAP config file as a string
 			try
 			{
-				using (var client = new WebClient())
-				{
-					// adds new header containing authorization token
-					client.Headers.Add("Authorization", tokenType + " " + token);
-					// downloads file
-					string eapConfigString = client.DownloadString(generatorEndpoint + "?format=eap-metadata");
-					return eapConfigString;
-				}
+				// Setup client with authorization token in header
+				using var client = new WebClient();
+				client.Headers.Add("Authorization", tokenType + " " + token);
+
+				// download file
+				string eapConfigString = client.DownloadString(generatorEndpoint + "?format=eap-metadata");
+				return eapConfigString;
 			}
 			catch (WebException ex)
 			{
 				string error = "Couldn't fetch EAP config file. \nException: " + ex.Message;
-				throw new EduroamAppUserError("", error);
+				throw new EduroamAppUserError("oath eapconfig get error", error);
 			}
 		}
 
@@ -182,10 +180,8 @@ namespace EduroamConfigure
 		/// <returns>Web page content.</returns>
 		public static string GetStringFromUrl(string url)
 		{
-			using (var client = new WebClient())
-			{
-				return client.DownloadString(url);
-			}
+			using var client = new WebClient();
+			return client.DownloadString(url);
 		}
 
 		/// <summary>
@@ -196,10 +192,8 @@ namespace EduroamConfigure
 		/// <returns>Web page content.</returns>
 		public static string PostFormToUrl(string url, NameValueCollection data)
 		{
-			using (var client = new WebClient())
-			{
-				return Encoding.UTF8.GetString(client.UploadValues(url, "POST", data));
-			}
+			using var client = new WebClient();
+			return Encoding.UTF8.GetString(client.UploadValues(url, "POST", data));
 		}
 
 		/// <summary>
@@ -230,11 +224,10 @@ namespace EduroamConfigure
 		/// <returns>Code challenge base.</returns>
 		private static byte[] GenerateCodeChallengeBase()
 		{
+			using var random = new RNGCryptoServiceProvider();
+
 			var salt = new byte[32];
-			using (var random = new RNGCryptoServiceProvider())
-			{
-				random.GetNonZeroBytes(salt);
-			}
+			random.GetNonZeroBytes(salt);
 			return salt;
 		}
 
@@ -259,12 +252,11 @@ namespace EduroamConfigure
 		/// <returns>Hashed byte array.</returns>
 		private static byte[] HashWithSHA256(string dataString)
 		{
-			// creates a SHA256
-			using (SHA256 sha256Hash = SHA256.Create())
-			{
-				// ComputeHash - returns byte array
-				return sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(dataString));
-			}
+			// creates a SHA256 context
+			using SHA256 sha256Hash = SHA256.Create();
+
+			// ComputeHash - returns byte array
+			return sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(dataString));
 		}
 
 		/// <summary>
