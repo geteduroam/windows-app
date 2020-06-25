@@ -214,7 +214,7 @@ namespace EduroamConfigure
 				{
 					// check if CA is not already installed
 					X509Certificate2Collection matchingCerts = rootStore.Certificates.Find(
-						X509FindType.FindByThumbprint, caCert.Thumbprint, true);
+						X509FindType.FindByThumbprint, caCert.Thumbprint, false);
 					if (matchingCerts.Count < 1)
 					{
 						return true; // user must be informed
@@ -242,7 +242,7 @@ namespace EduroamConfigure
 				foreach (var caCert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
 				{
 					// check if CA is not already installed
-					X509Certificate2Collection matchingCerts = rootStore.Certificates.Find(X509FindType.FindByThumbprint, caCert.Thumbprint, true);
+					X509Certificate2Collection matchingCerts = rootStore.Certificates.Find(X509FindType.FindByThumbprint, caCert.Thumbprint, false);
 					if (matchingCerts.Count < 1)
 					{
 						try

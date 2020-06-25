@@ -30,6 +30,7 @@ namespace EduroamConfigure
 
 		// TTLS specific
 		static readonly XNamespace nsTTLS = "http://www.microsoft.com/provisioning/EapTtlsUserPropertiesV1";
+
 		// TLS specific
 		static readonly XNamespace nsTLS = "http://www.microsoft.com/provisioning/EapTtlsUserPropertiesV1";
 
