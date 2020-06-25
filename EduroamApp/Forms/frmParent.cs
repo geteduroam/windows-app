@@ -321,7 +321,7 @@ namespace EduroamApp
                     // generate authURI based on redirect
                     string authUri = oauth.GetAuthUri();
                     // get local listening uri prefix
-                    string prefix = oauth.getRedirectUri();
+                    string prefix = oauth.GetRedirectUri();
                     // browser authenticate
                     string responseUrl = GetResponseUrl(prefix, authUri);
                     // get eap-config string if available
