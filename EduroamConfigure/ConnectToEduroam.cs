@@ -133,7 +133,8 @@ namespace EduroamConfigure
 
         private static bool AuthMethodIsSupported(EapConfig.AuthenticationMethod authMethod)
         {
-            return ProfileXml.IsSupported(authMethod) && (UserDataXml.IsSupported(authMethod) || !UserDataXml.IsNeeded(authMethod));
+            return ProfileXml.IsSupported(authMethod)
+                && UserDataXml.IsSupported(authMethod);
         }
 
         /// <summary>
@@ -297,15 +298,12 @@ namespace EduroamConfigure
                     throw new EduroamAppUserError("missing certificates",
                         "You must first install certificates with InstallCertificates");
 
-                // get server names of authentication method and joins them into one single string
-                string serverNames = string.Join(";", AuthMethod.ServerNames);
-
                 // generate new profile xml
                 var profileXml = ProfileXml.CreateProfileXml(
                     EduroamNetwork.Ssid,
                     AuthMethod.EapType,
                     AuthMethod.InnerAuthType,
-                    serverNames,
+                    AuthMethod.ServerNames,
                     CertificateThumbprints);
 
                 // create a new wireless profile

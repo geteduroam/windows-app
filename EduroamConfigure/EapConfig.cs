@@ -257,17 +257,19 @@ namespace EduroamConfigure
         TLS = 13,
         TTLS = 21,
         PEAP = 25,
+        MSCHAPv2 = 26,
     }
 
     public enum InnerAuthType: uint
     {
-        // For those EAP types with no inner auth method
+        // For those EAP types with no inner auth method (TLS and MSCHAPv2)
         None = 0,
         // Non-EAP methods
         PAP = 1,
         MSCHAP = 2,
         MSCHAPv2 = 3,
         // Tunneled Eap methods
+        EAP_PEAP_MSCHAPv2 = 25,
         EAP_MSCHAPv2 = 26,
     }
 

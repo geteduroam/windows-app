@@ -17,7 +17,7 @@ namespace EduroamConfigure
     ///     https://docs.microsoft.com/en-us/windows/win32/nativewifi/onexschema-elements
     ///     https://docs.microsoft.com/en-us/windows/win32/eaphost/eaptlsconnectionpropertiesv1schema-servervalidationparameters-complextype
     ///     https://docs.microsoft.com/en-us/powershell/module/vpnclient/new-eapconfiguration?view=win10-ps
-    /// 
+    ///     C:\Windows\schemas\EAPMethods
     /// </summary>
     class ProfileXml
     {
@@ -59,9 +59,8 @@ namespace EduroamConfigure
             string ssid,
             EapType eapType,
             InnerAuthType innerAuthType,
-            string serverNames,
-            List<string> caThumbprints,
-            bool disablePromptForServerValidation = true)
+            List<string> serverNames,
+            List<string> caThumbprints)
         {
             // hotspot2.0 domain is EapConfig.InstitutionInfo.InstId
 
@@ -91,7 +90,7 @@ namespace EduroamConfigure
                             new XElement(nsOneX + "OneX",
                                 new XElement(nsOneX + "authMode", "user"),
                                 new XElement(nsOneX + "EAPConfig",
-                                    CreateEapConfiguration(eapType, innerAuthType, serverNames, caThumbprints, disablePromptForServerValidation)
+                                    CreateEapConfiguration(eapType, innerAuthType, serverNames, caThumbprints)
                                 )
                             )
                         )
@@ -105,10 +104,11 @@ namespace EduroamConfigure
         private static XElement CreateEapConfiguration(
             EapType eapType,
             InnerAuthType innerAuthType,
-            string serverNames,
-            List<string> caThumbprints,
-            bool disablePromptForServerValidation = true)
+            List<string> serverNames,
+            List<string> caThumbprints)
         {
+            bool enableServerValidation = serverNames.Any() || caThumbprints.Any();
+            
             // creates the root xml strucure, with references to some of its descendants
             XElement configElement;
             XElement serverValidationElement;
@@ -125,14 +125,15 @@ namespace EduroamConfigure
                     new XElement(nsEHC + "Config")
                 );
 
-
             // namespace element local names dependant on EAP type
             XNamespace nsEapType;
             string thumbprintNodeName;
 
             // TODO: test TLS
             // TODO: test PEAP on someone elses computer
-            if (eapType == EapType.TLS)
+            // TODO: test TTLS PAP on someone elses computer
+            // TODO: test TTLS EAP MSCHAPv2 on someone elses computer
+            if ((eapType, innerAuthType) == (EapType.TLS, InnerAuthType.None))
             {
                 // sets namespace and name of thumbprint node
                 nsEapType = nsETCPv1;
@@ -150,8 +151,8 @@ namespace EduroamConfigure
                             ),
                             serverValidationElement =
                             new XElement(nsETCPv1 + "ServerValidation",
-                                new XElement(nsETCPv1 + "DisableUserPromptForServerValidation", disablePromptForServerValidation ? "true" : "false"),
-                                new XElement(nsETCPv1 + "ServerNames", serverNames)
+                                new XElement(nsETCPv1 + "DisableUserPromptForServerValidation", enableServerValidation ? "true" : "false"),
+                                new XElement(nsETCPv1 + "ServerNames", string.Join(";", serverNames))
                             ),
                             new XElement(nsETCPv1 + "DifferentUsername", "false"),
                             new XElement(nsETCPv2 + "PerformServerValidation", "true"),
@@ -162,6 +163,27 @@ namespace EduroamConfigure
                                     new XElement(nsETCPv3 + "CAHashList", new XAttribute("Enabled", "true"))
                                 )
                             )
+                        )
+                    )
+                );
+            }
+            else if ((eapType, innerAuthType) == (EapType.MSCHAPv2, InnerAuthType.None))
+            {
+                // MSCHAPv2 as outer EAP type should only be used in a TTLS tunnel
+                // It does not support server validation
+                if (enableServerValidation)
+                    throw new EduroamAppUserError("not supported",
+                        "MSCHAPv2 as outer EAP does bit support server validation");
+                nsEapType = null;
+                thumbprintNodeName = null;
+                serverValidationElement = null;
+
+                // adds MSCHAPv2 specific elements (inner eap)
+                configElement.Add(
+                    new XElement(nsBECP + "Eap",
+                        new XElement(nsBECP + "Type", (uint)eapType),
+                        new XElement(nsMCCP + "EapType",
+                            new XElement(nsMCCP + "UseWinLogonCredentials", "false")
                         )
                     )
                 );
@@ -179,8 +201,8 @@ namespace EduroamConfigure
                         new XElement(nsMPCPv1 + "EapType",
                             serverValidationElement =
                             new XElement(nsMPCPv1 + "ServerValidation",
-                                new XElement(nsMPCPv1 + "DisableUserPromptForServerValidation", disablePromptForServerValidation ? "true" : "false"),
-                                new XElement(nsMPCPv1 + "ServerNames", serverNames)
+                                new XElement(nsMPCPv1 + "DisableUserPromptForServerValidation", enableServerValidation ? "true" : "false"),
+                                new XElement(nsMPCPv1 + "ServerNames", string.Join(";", serverNames))
                             ),
                             new XElement(nsMPCPv1 + "FastReconnect", "true"),
                             new XElement(nsMPCPv1 + "InnerEapOptional", "false"),
@@ -203,7 +225,6 @@ namespace EduroamConfigure
                     )
                 );
             }
-            // TODO: WORK IN PROGRESS - Dependent on setting correct user data for TTLS
             else if (eapType == EapType.TTLS)
             {
                 // sets namespace and name of thumbprint node
@@ -214,29 +235,38 @@ namespace EduroamConfigure
                     new XElement(nsTTLS + "EapTtls",
                         serverValidationElement =
                         new XElement(nsTTLS + "ServerValidation",
-                            new XElement(nsTTLS + "ServerNames", serverNames),
-                            new XElement(nsTTLS + "DisablePrompt", "false") // TODO:  disablePromptForServerValidation ? "true" : "false"
+                            new XElement(nsTTLS + "ServerNames", string.Join(";", serverNames)),
+                            new XElement(nsTTLS + "DisablePrompt", enableServerValidation ? "true" : "false")
                         ),
                         new XElement(nsTTLS + "Phase2Authentication",
                             innerAuthType switch
                             {
                                 InnerAuthType.PAP =>
                                     new XElement(nsTTLS + "PAPAuthentication"),
+                                //InnerAuthType.CHAP =>
+                                //    new XElement(nsTTLS + "CHAPAuthentication"),
                                 InnerAuthType.MSCHAP =>
                                     new XElement(nsTTLS + "MSCHAPAuthentication"),
                                 InnerAuthType.MSCHAPv2 =>
                                     new XElement(nsTTLS + "MSCHAPv2Authentication",
                                         new XElement(nsTTLS + "UseWinlogonCredentials", "false")
                                     ),
-                                InnerAuthType.EAP_MSCHAPv2 =>
+                                InnerAuthType.EAP_PEAP_MSCHAPv2 =>
                                     CreateEapConfiguration(
                                         EapType.PEAP,
                                         InnerAuthType.EAP_MSCHAPv2,
-                                        serverNames,
-                                        caThumbprints,
-                                        disablePromptForServerValidation
+                                        serverNames, // strip server names from inner eap? remove this case altogether?
+                                        caThumbprints
                                     ),
-                                _ => throw new EduroamAppUserError("unsupported inner auth method"),
+                                InnerAuthType.EAP_MSCHAPv2 =>
+                                    CreateEapConfiguration(
+                                        EapType.MSCHAPv2,
+                                        InnerAuthType.None,
+                                        new List<string>(),
+                                        new List<string>()
+                                    ),
+                                _ =>
+                                    throw new EduroamAppUserError("unsupported auth method"),
                             }
                         ),
                         new XElement(nsTTLS + "Phase1Identity",
@@ -251,7 +281,7 @@ namespace EduroamConfigure
                 throw new EduroamAppUserError("unsupported auth method");
             }
 
-            // if any CA thumbprints exist, add them to the profile
+            // Server validation
             if (caThumbprints.Any())
             {
                 // Format the CA thumbprints into xs:element type="hexBinary"
@@ -264,8 +294,9 @@ namespace EduroamConfigure
 
                 // Write the CA thumbprints to their proper places in the XML:
 
-                formattedThumbprints.ForEach(thumb =>
-                    serverValidationElement.Add(new XElement(nsEapType + thumbprintNodeName, thumb)));
+                if (serverValidationElement != null) // Not on bare MSCHAPv2
+                    formattedThumbprints.ForEach(thumb =>
+                        serverValidationElement.Add(new XElement(nsEapType + thumbprintNodeName, thumb)));
 
                 if (caHashListElement != null) // TLS only
                     formattedThumbprints.ForEach(thumb =>
@@ -285,12 +316,14 @@ namespace EduroamConfigure
             bool at_least_win10 = System.Environment.OSVersion.Version.Major >= 10;
             return (eapType, innerAuthType) switch
             {
+                (EapType.MSCHAPv2, InnerAuthType.None) => true,
                 (EapType.PEAP, InnerAuthType.EAP_MSCHAPv2) => true,
                 (EapType.TLS, InnerAuthType.None) => true,
                 (EapType.TTLS, InnerAuthType.PAP) => true,
                 (EapType.TTLS, InnerAuthType.MSCHAP) => true,
                 (EapType.TTLS, InnerAuthType.MSCHAPv2) => true,
                 (EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => at_least_win10,
+                (EapType.TTLS, InnerAuthType.EAP_PEAP_MSCHAPv2) => at_least_win10,
                 _ => false,
             };
         }

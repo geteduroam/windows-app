@@ -12,6 +12,8 @@ namespace EduroamConfigure
     /// https://docs.microsoft.com/en-us/windows/win32/eaphost/eaphostusercredentialsschema-schema
     /// https://docs.microsoft.com/en-us/windows/win32/eaphost/user-profiles
     /// https://github.com/rozmansi/WLANSetEAPUserData/tree/master/Examples
+    /// C:\Windows\schemas\EAPMethods
+    /// C:\Windows\schemas\EAPHost
     /// </summary>
     class UserDataXml
     {
@@ -24,7 +26,7 @@ namespace EduroamConfigure
         static readonly XNamespace nsXSI = "http://www.w3.org/2001/XMLSchema-instance";
         static readonly XNamespace nsBEUP = "http://www.microsoft.com/provisioning/BaseEapUserPropertiesV1";
         
-        // MSCHAPv2 specific
+        // PEAP / MSCHAPv2 specific
         static readonly XNamespace nsMPUP = "http://www.microsoft.com/provisioning/MsPeapUserPropertiesV1";
         static readonly XNamespace nsMCUP = "http://www.microsoft.com/provisioning/MsChapV2UserPropertiesV1";
         
@@ -40,6 +42,7 @@ namespace EduroamConfigure
         /// <param name="uname">Username.</param>
         /// <param name="pword">Password.</param>
         /// <param name="eapType">EAP type</param>
+        /// <param name="innerAuthType">inner EAP type</param>
         /// <returns>Complete user data xml as string.</returns>
         public static string CreateUserDataXml(
             string uname,
@@ -47,17 +50,79 @@ namespace EduroamConfigure
             EapType eapType,
             InnerAuthType innerAuthType)
         {
-            XElement newUserData = null;
+            // TODO: install a profile for TLS with a fingerprint of the user certificate
+            /*  <EapHostUserCredentials xmlns="http://www.microsoft.com/provisioning/EapHostUserCredentials"
+                  xmlns:eapCommon="http://www.microsoft.com/provisioning/EapCommon"
+                  xmlns:baseEap="http://www.microsoft.com/provisioning/BaseEapMethodUserCredentials">
+                  <EapMethod>
+                    <eapCommon:Type>13</eapCommon:Type>
+                    <eapCommon:AuthorId>0</eapCommon:AuthorId>
+                  </EapMethod>
+                  <Credentials xmlns:eapUser="http://www.microsoft.com/provisioning/EapUserPropertiesV1"
+                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                      xmlns:baseEap="http://www.microsoft.com/provisioning/BaseEapUserPropertiesV1"
+                      xmlns:eapTls="http://www.microsoft.com/provisioning/EapTlsUserPropertiesV1">
+                    <baseEap:Eap>
+                       <baseEap:Type>13</baseEap:Type>
+                       <eapTls:EapType>
+                          <eapTls:UserCert>e7 d5 3f 53 8a 30 c5 e3 8c a9 79 7e eb 40 33 a0 d9 c6 8f eb </eapTls:UserCert>
+                       </eapTls:EapType>
+                    </baseEap:Eap>
+                  </Credentials>
+                </EapHostUserCredentials> 
+             */
 
-            if ((eapType, innerAuthType) == (EapType.PEAP, InnerAuthType.EAP_MSCHAPv2))
+
+            XElement newUserData = (eapType, innerAuthType) switch
             {
-                newUserData =
+                var x when
+                x == (EapType.PEAP, InnerAuthType.EAP_MSCHAPv2) =>
+
                     new XElement(nsEHUC + "EapHostUserCredentials",
                         new XAttribute(XNamespace.Xmlns + "eapCommon", nsEC),
                         new XAttribute(XNamespace.Xmlns + "baseEap", nsBEMUC),
                         new XElement(nsEHUC + "EapMethod",
-                            new XElement(nsEC + "Type", (uint)EapType.PEAP),
-                            new XElement(nsEC + "AuthorId", "0")
+                            new XElement(nsEC + "Type", (uint)eapType),
+                            new XElement(nsEC + "AuthorId", eapType==EapType.TTLS ? 311: 0)
+                            //new XElement(nsEC + "AuthorId", "67532") // geant link
+                        ),  
+                        new XElement(nsEHUC + "Credentials",
+                            new XAttribute(XNamespace.Xmlns + "eapuser", nsEUP),
+                            new XAttribute(XNamespace.Xmlns + "xsi", nsXSI),
+                            new XAttribute(XNamespace.Xmlns + "baseEap", nsBEUP),
+                            new XAttribute(XNamespace.Xmlns + "MsPeap", nsMPUP),
+                            new XAttribute(XNamespace.Xmlns + "MsChapV2", nsMCUP),
+                            new XAttribute(XNamespace.Xmlns + "eapTtls", nsTTLS), // test
+                            new XElement(nsBEUP + "Eap",
+                                new XElement(nsBEUP + "Type", (uint)EapType.PEAP),
+                                new XElement(nsMPUP + "EapType",
+                                    new XElement(nsMPUP + "RoutingIdentity"), // TODO: probably anonymous/outer identity. use it!
+                                    new XElement(nsBEUP + "Eap",
+                                        new XElement(nsBEUP + "Type", (uint)InnerAuthType.EAP_MSCHAPv2),
+                                        new XElement(nsMCUP + "EapType",
+                                            new XElement(nsMCUP + "Username", uname),
+                                            new XElement(nsMCUP + "Password", pword),
+                                            new XElement(nsMCUP + "LogonDomain") // what is this?
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    ),
+
+
+                var x when
+                x == (EapType.TTLS, InnerAuthType.PAP) ||
+                x == (EapType.TTLS, InnerAuthType.MSCHAP) || // needs testing
+                x == (EapType.TTLS, InnerAuthType.MSCHAPv2) => // needs testing
+
+                    new XElement(nsEHUC + "EapHostUserCredentials",
+                        new XAttribute(XNamespace.Xmlns + "eapCommon", nsEC),
+                        new XAttribute(XNamespace.Xmlns + "baseEap", nsBEMUC),
+                        new XElement(nsEHUC + "EapMethod",
+                            new XElement(nsEC + "Type", (uint)eapType),
+                            new XElement(nsEC + "AuthorId", eapType == EapType.TTLS ? 311 : 0)
+                            //new XElement(nsEC + "AuthorId", "67532") // geant link
                         ),
                         new XElement(nsEHUC + "Credentials",
                             new XAttribute(XNamespace.Xmlns + "eapuser", nsEUP),
@@ -65,63 +130,58 @@ namespace EduroamConfigure
                             new XAttribute(XNamespace.Xmlns + "baseEap", nsBEUP),
                             new XAttribute(XNamespace.Xmlns + "MsPeap", nsMPUP),
                             new XAttribute(XNamespace.Xmlns + "MsChapV2", nsMCUP),
-                            new XElement(nsBEUP + "Eap",
-                                new XElement(nsBEUP + "Type", (uint)EapType.PEAP),
-                                new XElement(nsMPUP + "EapType",
-                                    new XElement(nsMPUP + "RoutingIdentity"),
-                                    new XElement(nsBEUP + "Eap",
-                                        new XElement(nsBEUP + "Type", (uint)InnerAuthType.EAP_MSCHAPv2),
-                                        new XElement(nsMCUP + "EapType",
-                                            new XElement(nsMCUP + "Username", uname),
-                                            new XElement(nsMCUP + "Password", pword),
-                                            new XElement(nsMCUP + "LogonDomain")
-                                        )
-                                    )
-                                )
+                            new XAttribute(XNamespace.Xmlns + "eapTtls", nsTTLS),
+                            new XElement(nsTTLS + "EapTtls", // schema says lower camelcase, but only upper camelcase works
+                                new XElement(nsTTLS + "Username", uname),
+                                new XElement(nsTTLS + "Password", pword)
                             )
                         )
-                    );
-            }
-            // TODO: WORK IN PROGRESS - Dependent on creating a correct profile XML for TTLS
-            else if (eapType == EapType.TTLS
-                    && ( innerAuthType == InnerAuthType.PAP
-                    || innerAuthType == InnerAuthType.MSCHAP
-                    || innerAuthType == InnerAuthType.MSCHAPv2))
-            {
-                newUserData =
+                    ),
+
+
+                // TODO: WORK IN PROGRESS - Dependent on creating a correct profile XML for TTLS
+                var x when
+                //x == (EapType.TTLS, InnerAuthType.EAP_PEAP_MSCHAPv2) || // TODO: <-- does not work, needs a test also
+                x == (EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) =>
+
                     new XElement(nsEHUC + "EapHostUserCredentials",
                         new XAttribute(XNamespace.Xmlns + "eapCommon", nsEC),
                         new XAttribute(XNamespace.Xmlns + "baseEap", nsBEMUC),
                         new XElement(nsEHUC + "EapMethod",
-                            new XElement(nsEC + "Type", (uint)EapType.TTLS),
-                            new XElement(nsEC + "AuthorId", 311)
+                            new XElement(nsEC + "Type", (uint)eapType), // TODO: test
+                            new XElement(nsEC + "AuthorId", eapType == EapType.TTLS ? 311 : 0)
                             //new XElement(nsEC + "AuthorId", "67532") // geant link
                         ),
                         new XElement(nsEHUC + "Credentials",
                             new XAttribute(XNamespace.Xmlns + "eapuser", nsEUP),
                             new XAttribute(XNamespace.Xmlns + "xsi", nsXSI),
                             new XAttribute(XNamespace.Xmlns + "baseEap", nsBEUP),
+                            new XAttribute(XNamespace.Xmlns + "MsPeap", nsMPUP),
+                            new XAttribute(XNamespace.Xmlns + "MsChapV2", nsMCUP),
                             new XAttribute(XNamespace.Xmlns + "eapTtls", nsTTLS),
                             new XElement(nsTTLS + "EapTtls",
-                                new XElement(nsTTLS + "Username", uname),
-                                new XElement(nsTTLS + "Password", pword)
+                                //new XElement(nsTTLS + "Username", uname),
+                                //new XElement(nsTTLS + "Password", pword),
+                                new XElement(nsBEUP + "Eap",
+                                    new XElement(nsBEUP + "Type", (uint)EapType.MSCHAPv2),
+                                    new XElement(nsMCUP + "EapType",
+                                        new XElement(nsMCUP + "Username", uname),
+                                        new XElement(nsMCUP + "Password", pword),
+                                        new XElement(nsMCUP + "LogonDomain")
+                                    )
+                                )
                             )
                         )
-                    );
-            }
-            // TODO: handle the missing EapType cases in a different way?
+                    ),
+
+
+                // TODO: handle the missing EapType cases in a different way?
+                _ => null,
+
+            };
 
             // returns xml as string if not null
             return newUserData != null ? newUserData.ToString() : "";
-        }
-
-        public static bool IsNeeded(EapConfig.AuthenticationMethod authMethod)
-        {
-            return authMethod.EapType switch
-            {
-                (EapType.TLS) => false,
-                _ => true,
-            };
         }
 
         public static bool IsSupported(EapConfig.AuthenticationMethod authMethod)
@@ -134,11 +194,12 @@ namespace EduroamConfigure
             bool at_least_win10 = System.Environment.OSVersion.Version.Major >= 10;
             return (eapType, innerAuthType) switch
             {
+                //(EapType.TLS, _) => true, // TODO
                 (EapType.PEAP, InnerAuthType.EAP_MSCHAPv2) => true,
                 (EapType.TTLS, InnerAuthType.PAP) => true,
                 (EapType.TTLS, InnerAuthType.MSCHAP) => true,
                 (EapType.TTLS, InnerAuthType.MSCHAPv2) => true,
-                (EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => false,  // TODO: set to at_least_win10 when done
+                //(EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => at_least_win10, // TODO: xml matches the schema, but win32 throws an error.
                 _ => false,
             };
         }
