@@ -52,14 +52,13 @@ namespace EduroamConfigure
 
 			public bool NeedsLoginCredentials()
 			{
-				return UserDataXml.IsNeeded(this);
+				return EapType != EapType.TLS; // TODO: make this more maintainable
 			}
 
 			public bool NeedClientCertificate()
 			{
-				if (UserDataXml.IsNeeded(this)) return false;
-				if (!string.IsNullOrEmpty(ClientCertificate)) return false;
-				return true;
+				if (NeedsLoginCredentials()) return false;
+				return string.IsNullOrEmpty(ClientCertificate);
 			}
 
 			// Constructor
