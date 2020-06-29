@@ -10,13 +10,13 @@ namespace EduroamApp
     public partial class frmLogin : Form
     {
         private readonly frmParent frmParent;
+        private readonly EapConfig.AuthenticationMethod authMethod;
         private bool usernameFieldLeave;
         private bool usernameDefault = true;
         private bool passwordDefault = true;
         private bool usernameSet;
         private bool passwordSet;
         private bool usernameValid = false;
-        private EapConfig.AuthenticationMethod authMethod;
 
         public frmLogin(frmParent parentInstance)
         {

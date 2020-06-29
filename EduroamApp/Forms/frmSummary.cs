@@ -55,6 +55,7 @@ namespace EduroamApp
                 chkAgree.Visible = true;
                 lnkToU.Visible = true;
                 chkAgree.Checked = false;
+                chkAgree.Focus();
             }
             // displays website, email and phone number
             lblWeb.Text = webAddress;

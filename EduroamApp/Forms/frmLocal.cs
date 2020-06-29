@@ -91,6 +91,7 @@ namespace EduroamApp
             try
             {
                 var certificate = new X509Certificate2(txtFilepath.Text, txtCertPassword.Text);
+                // TODO!!! this cert is never added to eapConfig ! it won't be installed
                 return true;
             }
             // checks if correct password by trying to install certificate 
