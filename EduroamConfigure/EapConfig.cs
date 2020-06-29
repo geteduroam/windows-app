@@ -92,6 +92,7 @@ namespace EduroamConfigure
         {
             // Properties
             public string DisplayName { get; }
+            public string Description { get; }
             public byte[] LogoData { get; }
             public string LogoMimeType { get; }
             public string EmailAddress { get; }
@@ -103,6 +104,7 @@ namespace EduroamConfigure
             // Constructor
             public ProviderInfo(
                 string displayName,
+                string description,
                 byte[] logoData,
                 string logoMimeType,
                 string emailAddress,
@@ -112,6 +114,7 @@ namespace EduroamConfigure
                 string termsOfUse)
             {
                 DisplayName = displayName;
+                Description = description;
                 LogoData = logoData;
                 LogoMimeType = logoMimeType;
                 EmailAddress = emailAddress;
@@ -222,7 +225,9 @@ namespace EduroamConfigure
                 .Descendants().FirstOrDefault(nameIs("ProviderInfo"));
 
             var displayName = (string)providerInfoXml
-                ?.Descendants().FirstOrDefault(nameIs("DisplayName"));
+                ?.Elements().FirstOrDefault(nameIs("DisplayName"));
+            var description = (string)providerInfoXml
+                ?.Elements().FirstOrDefault(nameIs("Description"));
             var emailAddress = (string)providerInfoXml
                 ?.Descendants().FirstOrDefault(nameIs("EmailAddress"));
             var webAddress = (string)providerInfoXml
@@ -237,6 +242,7 @@ namespace EduroamConfigure
                 authMethods,
                 new EapConfig.ProviderInfo(
                     displayName ?? string.Empty,
+                    description ?? string.Empty,
                     logoData,
                     logoMimeType ?? string.Empty,
                     emailAddress ?? string.Empty,
