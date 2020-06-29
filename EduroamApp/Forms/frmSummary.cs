@@ -237,7 +237,7 @@ namespace EduroamApp
 								"The selected profile requires a separate client certificate. Do you want to browse your local files for one?",
 								"Client certificate required", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
 							if (dialogResult != DialogResult.Yes)
-								continue; // TODO: uninstall the newly installed profile
+								continue; // TODO: uninstall the newly installed profile, along with client certificates
 						}
 
 						authMethod = authMethodInstaller.AuthMethod;
@@ -268,6 +268,7 @@ namespace EduroamApp
 						"Exception: " + argEx.Message,
 						"eduroam", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				}
+				throw;
 			}
 			catch (CryptographicException cryptEx) // TODO, handle in ConnectToEuroam or EduroamNetwork
 			{

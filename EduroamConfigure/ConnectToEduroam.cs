@@ -283,6 +283,9 @@ namespace EduroamConfigure
 					}
 				}
 				HasInstalledCertificates = true;
+
+				// TODO: dedup CertificateThumbprints
+
 				return true;
 			}
 
@@ -307,12 +310,20 @@ namespace EduroamConfigure
 					AuthMethod.ServerNames,
 					CertificateThumbprints);
 
+				Console.WriteLine(AuthMethod.EapSchemeName()); // TODO: remove this
+
 				// create a new wireless profile
 				bool any_installed = false;
 				foreach (EduroamNetwork eduroamInstance in EduroamNetworks)
 				{
 					any_installed |= CreateNewProfile(eduroamInstance.InterfaceId, profileXml);
 					// TODO: update docstring and handling in frmSummary due to any_installed
+
+				}
+
+				if (AuthMethod.EapType == EapType.TLS) // TODO: this is hacky, SetupLogin should be a part of InstallProfile
+				{
+					SetupLogin(null, null, AuthMethod);
 				}
 
 				HasInstalledProfile = any_installed;
