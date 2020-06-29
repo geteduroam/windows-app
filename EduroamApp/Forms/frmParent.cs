@@ -115,7 +115,8 @@ namespace EduroamApp
                     
                     string err;
                     (AuthMethod, err) = frmSummary.InstallEapConfig();
-                    
+                    EduroamAvailable = true;
+
                     if (AuthMethod != null) // Profile was successfully installed
                     {
                         if (AuthMethod.NeedClientCertificate()) {
@@ -130,11 +131,9 @@ namespace EduroamApp
                         { 
                             LoadFrmConnect();
                         }
-                        EduroamAvailable = true;
                         break;
                     }
 
-                    EduroamAvailable = true;
                     switch (err)
                     {
                         case "eduroam not available": // (no access point in range, or no WLAN service/device enabled)

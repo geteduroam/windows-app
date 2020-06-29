@@ -181,9 +181,10 @@ namespace EduroamConfigure
                     .Elements().First(nameIs("EAPMethod"))
                     .Elements().First(nameIs("Type"));
 
-                InnerAuthType innerAuthType = (InnerAuthType)(uint)authMethodXml
+                InnerAuthType innerAuthType = (InnerAuthType?)(uint?)authMethodXml
                     .Elements().FirstOrDefault(nameIs("InnerAuthenticationMethod"))
-                    ?.Descendants().FirstOrDefault(nameIs("Type"));
+                    ?.Descendants().FirstOrDefault(nameIs("Type"))
+                    ?? InnerAuthType.None;
 
                 // ServerSideCredential
 
