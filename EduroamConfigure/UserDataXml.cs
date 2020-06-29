@@ -139,9 +139,22 @@ namespace EduroamConfigure
                         )
                     ),
 
+                (EapType.TLS, InnerAuthType.None) =>
+
+                    new XElement(nsBEUP + "Eap",
+                        new XElement(nsBEUP + "Type", (uint)EapType.TLS),
+                        new XElement(nsTLS + "EapType",
+                            new XElement(nsTLS + "Username", outerIdentity),
+                            new XElement(nsTLS + "UserCert", // xs:hexBinary
+                                // format fingerprint:
+                                Regex.Replace(Regex.Replace(userCertFingerprint, " ", ""), ".{2}", "$0 ").ToUpperInvariant().Trim()
+                            )
+                        )
+                    ),
+
                 var x when
                 x == (EapType.TTLS, InnerAuthType.PAP) ||
-                x == (EapType.TTLS, InnerAuthType.MSCHAP) || // v1 needs testing
+                x == (EapType.TTLS, InnerAuthType.MSCHAP) || // v1 is not tested
                 x == (EapType.TTLS, InnerAuthType.MSCHAPv2) =>
                     
                     new XElement(nsTTLS + "EapTtls", // schema says lower camelcase, but only upper camelcase works
@@ -195,7 +208,7 @@ namespace EduroamConfigure
             bool at_least_win10 = System.Environment.OSVersion.Version.Major >= 10;
             return (eapType, innerAuthType) switch
             {
-                //(EapType.TLS, _) => true, // TODO
+                (EapType.TLS, _) => true, // TODO: not really supported yet?
                 (EapType.PEAP, InnerAuthType.EAP_MSCHAPv2) => true,
                 (EapType.TTLS, InnerAuthType.PAP) => true,
                 (EapType.TTLS, InnerAuthType.MSCHAP) => true, // not tested

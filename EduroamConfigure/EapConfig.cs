@@ -213,8 +213,8 @@ namespace EduroamConfigure
                     ?.Elements().FirstOrDefault(nameIs("OuterIdentity"));
                 var clientInnerIdentitySuffix = (string)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("InnerIdentitySuffix"));
-                var clientInnerIdentityHint = "True" == (string)clientSideCredentialXml // TODO: will cast to bool work?
-                    ?.Elements().FirstOrDefault(nameIs("InnerIdentityHint"));
+                var clientInnerIdentityHint = (bool?)clientSideCredentialXml // TODO: will cast to bool work?
+                    ?.Elements().FirstOrDefault(nameIs("InnerIdentityHint")) ?? false;
 
                 // Translate erronous data from cat.eduroam.org: https://github.com/GEANT/CAT/pull/191
                 // TODO: remove this when PR is merged and deployed!
