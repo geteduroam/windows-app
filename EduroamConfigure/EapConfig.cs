@@ -102,6 +102,7 @@ namespace EduroamConfigure
             public string Phone { get;  }
             public string InstId { get; }
             public string TermsOfUse { get; }
+            public ValueTuple<double, double>? Coordinates { get; } // (Latitude, Longitude)
 
             // Constructor
             public ProviderInfo(
@@ -113,7 +114,8 @@ namespace EduroamConfigure
                 string webAddress,
                 string phone,
                 string instId,
-                string termsOfUse)
+                string termsOfUse,
+                ValueTuple<double, double>? coordinates)
             {
                 DisplayName = displayName;
                 Description = description;
@@ -123,7 +125,8 @@ namespace EduroamConfigure
                 WebAddress = webAddress;
                 Phone = phone;
                 InstId = instId;
-                TermsOfUse = termsOfUse.Replace("\r\n", "");
+                TermsOfUse = termsOfUse.Replace("\r\n", " "); // TODO: n-n-n-nani?
+                Coordinates = coordinates;
             }
         }
 
@@ -172,6 +175,8 @@ namespace EduroamConfigure
                     .Elements().FirstOrDefault(nameIs("InnerAuthenticationMethod"))
                     ?.Descendants().FirstOrDefault(nameIs("Type"));
 
+                // ServerSideCredential
+
                 // get list of strings of CA certificates
                 List<string> certAuths = serverSideCredentialXml
                     .Elements().Where(nameIs("CA"))
@@ -184,7 +189,9 @@ namespace EduroamConfigure
                     .Select(xElement => (string)xElement)
                     .ToList();
 
-                // Get user certificate values
+                // ClientSideCredential
+
+                // user certificate
                 var clientCert = (string)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("ClientCertificate"));
                 var clientCertPasswd = (string)clientSideCredentialXml
@@ -234,13 +241,27 @@ namespace EduroamConfigure
             var description = (string)providerInfoXml
                 ?.Elements().FirstOrDefault(nameIs("Description"));
             var emailAddress = (string)providerInfoXml
-                ?.Descendants().FirstOrDefault(nameIs("EmailAddress"));
+                ?.Elements().FirstOrDefault(nameIs("Helpdesk"))
+                ?.Elements().FirstOrDefault(nameIs("EmailAddress"));
             var webAddress = (string)providerInfoXml
-                ?.Descendants().FirstOrDefault(nameIs("WebAddress"));
+                ?.Elements().FirstOrDefault(nameIs("Helpdesk"))
+                ?.Elements().FirstOrDefault(nameIs("WebAddress"));
             var phone = (string)providerInfoXml
-                ?.Descendants().FirstOrDefault(nameIs("Phone"));
+                ?.Elements().FirstOrDefault(nameIs("Helpdesk"))
+                ?.Elements().FirstOrDefault(nameIs("Phone"));
             var termsOfUse = (string)providerInfoXml
-                ?.Descendants().FirstOrDefault(nameIs("TermsOfUse"));
+                ?.Elements().FirstOrDefault(nameIs("TermsOfUse"));
+
+            // Read coordinates
+            ValueTuple<double, double>? coordinates = null;
+            if (providerInfoXml?.Elements().Where(nameIs("ProviderLocation")).Any() ?? false)
+            {
+                coordinates = (
+                    (double)providerInfoXml?.Descendants().FirstOrDefault(nameIs("Latitude")),
+                    (double)providerInfoXml?.Descendants().FirstOrDefault(nameIs("Longitude"))
+                );
+            }
+
 
             // create EapConfig object and adds the info
             return new EapConfig(
@@ -254,7 +275,8 @@ namespace EduroamConfigure
                     webAddress ?? string.Empty,
                     phone ?? string.Empty,
                     instId ?? string.Empty,
-                    termsOfUse ?? string.Empty)
+                    termsOfUse ?? string.Empty,
+                    coordinates)
             );
         }
 
