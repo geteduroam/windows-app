@@ -34,7 +34,7 @@ namespace EduroamConfigure
 		static readonly XNamespace nsTTLS = "http://www.microsoft.com/provisioning/EapTtlsUserPropertiesV1";
 
 		// TLS specific
-		static readonly XNamespace nsTLS = "http://www.microsoft.com/provisioning/EapTtlsUserPropertiesV1";
+		static readonly XNamespace nsTLS = "http://www.microsoft.com/provisioning/EapTlsUserPropertiesV1";
 
 		/// <summary>
 		/// Generates user data xml.
@@ -59,7 +59,7 @@ namespace EduroamConfigure
 					new XElement(nsEHUC + "EapMethod",
 						new XElement(nsEC + "Type", (uint)eapType),
 						new XElement(nsEC + "AuthorId", eapType == EapType.TTLS ? 311 : 0)
-					//new XElement(nsEC + "AuthorId", "67532") // geant link
+						//new XElement(nsEC + "AuthorId", "67532") // geant link
 					),
 					new XElement(nsEHUC + "Credentials",
 						new XAttribute(XNamespace.Xmlns + "eapuser", nsEUP),

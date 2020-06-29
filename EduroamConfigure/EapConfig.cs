@@ -51,6 +51,16 @@ namespace EduroamConfigure
 				}
 			}
 
+			/// <summary>
+			/// User presentable EAP scheme identitifer
+			/// </summary>
+			public string EapSchemeName()
+			{
+				if (InnerAuthType != InnerAuthType.None)
+					return EapType.ToString() + "_" + InnerAuthType.ToString();
+				return EapType.ToString();
+			}
+
 			public bool NeedsLoginCredentials()
 			{
 				return EapType != EapType.TLS; // TODO: make this more maintainable
@@ -306,6 +316,7 @@ namespace EduroamConfigure
 		None = 0,
 		// Non-EAP methods
 		PAP = 1,
+		//CHAP = NaN, // Not defined in EapConfig schema
 		MSCHAP = 2,
 		MSCHAPv2 = 3,
 		// Tunneled Eap methods

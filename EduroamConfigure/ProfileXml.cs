@@ -17,6 +17,7 @@ namespace EduroamConfigure
 	///     https://docs.microsoft.com/en-us/windows/win32/nativewifi/onexschema-elements
 	///     https://docs.microsoft.com/en-us/windows/win32/eaphost/eaptlsconnectionpropertiesv1schema-servervalidationparameters-complextype
 	///     https://docs.microsoft.com/en-us/powershell/module/vpnclient/new-eapconfiguration?view=win10-ps
+	///     https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-gpwl/7fda6c4b-0347-466c-926f-0e7e45a0aa7a
 	///     C:\Windows\schemas\EAPMethods
 	/// </summary>
 	class ProfileXml
@@ -144,7 +145,7 @@ namespace EduroamConfigure
 
 				// adds TLS specific xml elements
 				configElement.Add(
-					new XElement(nsBECP + "Eap",
+					new XElement(nsBECP + "Eap", // TLS
 						new XElement(nsBECP + "Type", (uint)eapType),
 						new XElement(nsETCPv1 + "EapType",
 							new XElement(nsETCPv1 + "CredentialsSource",
@@ -183,7 +184,7 @@ namespace EduroamConfigure
 
 				// adds MSCHAPv2 specific elements (inner eap)
 				configElement.Add(
-					new XElement(nsBECP + "Eap",
+					new XElement(nsBECP + "Eap", // MSCHAPv2
 						new XElement(nsBECP + "Type", (uint)eapType),
 						new XElement(nsMCCP + "EapType",
 							new XElement(nsMCCP + "UseWinLogonCredentials", "false")
@@ -201,7 +202,7 @@ namespace EduroamConfigure
 
 				// adds MSCHAPv2 specific elements (inner eap)
 				configElement.Add(
-					new XElement(nsBECP + "Eap",
+					new XElement(nsBECP + "Eap", // PEAP
 						new XElement(nsBECP + "Type", (uint)eapType),
 						new XElement(nsMPCPv1 + "EapType",
 							serverValidationElement =
@@ -211,7 +212,7 @@ namespace EduroamConfigure
 							),
 							new XElement(nsMPCPv1 + "FastReconnect", "true"),
 							new XElement(nsMPCPv1 + "InnerEapOptional", "false"),
-							new XElement(nsBECP + "Eap",
+							new XElement(nsBECP + "Eap", // MSCHAPv2
 								new XElement(nsBECP + "Type", (uint)innerAuthType),
 								new XElement(nsMCCP + "EapType",
 									new XElement(nsMCCP + "UseWinLogonCredentials", "false")
@@ -248,7 +249,7 @@ namespace EduroamConfigure
 							{
 								InnerAuthType.PAP =>
 									new XElement(nsTTLS + "PAPAuthentication"),
-								//InnerAuthType.CHAP =>
+								//InnerAuthType.CHAP => // not defined by EapConfig
 								//    new XElement(nsTTLS + "CHAPAuthentication"),
 								InnerAuthType.MSCHAP =>
 									new XElement(nsTTLS + "MSCHAPAuthentication"),
