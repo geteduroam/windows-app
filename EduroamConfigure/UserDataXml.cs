@@ -39,14 +39,16 @@ namespace EduroamConfigure
         /// <summary>
         /// Generates user data xml.
         /// </summary>
-        /// <param name="uname">Username.</param>
-        /// <param name="pword">Password.</param>
+        /// <param name="innerIdentity">Username</param>
+        /// <param name="password">Password</param>
+        /// <param name="outerIdentity">anonymous username, realm will be used for routing</param>
         /// <param name="eapType">EAP type</param>
         /// <param name="innerAuthType">inner EAP type</param>
         /// <returns>Complete user data xml as string.</returns>
         public static string CreateUserDataXml(
-            string uname,
-            string pword,
+            string innerIdentity,
+            string password,
+            string outerIdentity,
             EapType eapType,
             InnerAuthType innerAuthType)
         {

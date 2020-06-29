@@ -37,7 +37,7 @@ namespace EduroamApp
             if (!string.IsNullOrEmpty(frmParent.InstId))
             {
                 // lblInst.Text = "@" + frmParent.InstId;
-                lblInst.Text = "@" + authMethod.InnerIdentitySuffix;
+                lblInst.Text = "@" + authMethod.ClientInnerIdentitySuffix;
             }
             else
             {
@@ -84,8 +84,8 @@ namespace EduroamApp
             }
             
             string username = txtUsername.Text;
-            string realm = authMethod.InnerIdentitySuffix;
-            bool hint = authMethod.InnerIdentityHint;
+            string realm = authMethod.ClientInnerIdentitySuffix;
+            bool hint = authMethod.ClientInnerIdentityHint;
 
             // use realm as suffix
             if (!username.Contains('@'))

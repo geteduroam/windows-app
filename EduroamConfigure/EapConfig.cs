@@ -35,8 +35,9 @@ namespace EduroamConfigure
             public List<string> ServerNames { get; }
             public string ClientCertificate { get; } // TODO: document format, probably PKCS12 in base64?
             public string ClientCertificatePassphrase { get; }
-            public string InnerIdentitySuffix { get; }
-            public bool InnerIdentityHint { get; }
+            public string ClientOuterIdentity { get; }
+            public string ClientInnerIdentitySuffix { get; }
+            public bool ClientInnerIdentityHint { get; }
 
             /// <summary>
             /// Enumerates CertificateAuthorities as X509Certificate2 objects
@@ -69,6 +70,7 @@ namespace EduroamConfigure
                 List<string> serverName,
                 string clientCertificate = null,
                 string clientCertificatePassphrase = null,
+                string clientOuterIdentity = null,
                 string innerIdentitySuffix = null,
                 bool innerIdentityHint = false
             )
@@ -79,8 +81,9 @@ namespace EduroamConfigure
                 ServerNames = serverName;
                 ClientCertificate = clientCertificate;
                 ClientCertificatePassphrase = clientCertificatePassphrase;
-                InnerIdentitySuffix = innerIdentitySuffix;
-                InnerIdentityHint = innerIdentityHint;
+                ClientOuterIdentity = clientOuterIdentity;
+                ClientInnerIdentitySuffix = innerIdentitySuffix;
+                ClientInnerIdentityHint = innerIdentityHint;
             }
         }
 
@@ -187,10 +190,12 @@ namespace EduroamConfigure
                 var clientCertPasswd = (string)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("Passphrase"));
 
-                // Get inner identity values
-                var innerIdentitySuffix = (string)clientSideCredentialXml
+                // inner/outer identity
+                var clientOuterIdentity = (string)clientSideCredentialXml
+                    ?.Elements().FirstOrDefault(nameIs("OuterIdentity"));
+                var clientInnerIdentitySuffix = (string)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("InnerIdentitySuffix"));
-                var innerIdentityHint = "True" == (string)clientSideCredentialXml // TODO: will cast to bool work?
+                var clientInnerIdentityHint = "True" == (string)clientSideCredentialXml // TODO: will cast to bool work?
                     ?.Elements().FirstOrDefault(nameIs("InnerIdentityHint"));
 
                 // create new authentication method object and adds it to list
@@ -201,8 +206,9 @@ namespace EduroamConfigure
                     serverNames,
                     clientCert,
                     clientCertPasswd,
-                    innerIdentitySuffix,
-                    innerIdentityHint
+                    clientOuterIdentity,
+                    clientInnerIdentitySuffix,
+                    clientInnerIdentityHint
                 ));
             }
 

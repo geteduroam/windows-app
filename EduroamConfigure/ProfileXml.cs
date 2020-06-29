@@ -59,6 +59,7 @@ namespace EduroamConfigure
             string ssid,
             EapType eapType,
             InnerAuthType innerAuthType,
+            string outerIdentity, // with realm
             List<string> serverNames,
             List<string> caThumbprints)
         {
@@ -90,7 +91,8 @@ namespace EduroamConfigure
                             new XElement(nsOneX + "OneX",
                                 new XElement(nsOneX + "authMode", "user"),
                                 new XElement(nsOneX + "EAPConfig",
-                                    CreateEapConfiguration(eapType, innerAuthType, serverNames, caThumbprints)
+                                    CreateEapConfiguration(eapType, innerAuthType,
+                                        outerIdentity, serverNames, caThumbprints)
                                 )
                             )
                         )
@@ -104,6 +106,7 @@ namespace EduroamConfigure
         private static XElement CreateEapConfiguration(
             EapType eapType,
             InnerAuthType innerAuthType,
+            string outerIdentity,
             List<string> serverNames,
             List<string> caThumbprints)
         {
@@ -154,7 +157,7 @@ namespace EduroamConfigure
                                 new XElement(nsETCPv1 + "DisableUserPromptForServerValidation", enableServerValidation ? "true" : "false"),
                                 new XElement(nsETCPv1 + "ServerNames", string.Join(";", serverNames))
                             ),
-                            new XElement(nsETCPv1 + "DifferentUsername", "false"),
+                            new XElement(nsETCPv1 + "DifferentUsername", "false"), // TODO: outerIdentity
                             new XElement(nsETCPv2 + "PerformServerValidation", "true"),
                             new XElement(nsETCPv2 + "AcceptServerName", "false"),
                             new XElement(nsETCPv2 + "TLSExtensions",
@@ -193,6 +196,8 @@ namespace EduroamConfigure
                 // sets namespace and name of thumbprint node
                 nsEapType = nsMPCPv1;
                 thumbprintNodeName = "TrustedRootCA";
+
+                // TODO: outerIdentity
 
                 // adds MSCHAPv2 specific elements (inner eap)
                 configElement.Add(
@@ -255,6 +260,7 @@ namespace EduroamConfigure
                                     CreateEapConfiguration(
                                         EapType.PEAP,
                                         InnerAuthType.EAP_MSCHAPv2,
+                                        outerIdentity,
                                         serverNames, // strip server names from inner eap? remove this case altogether?
                                         caThumbprints
                                     ),
@@ -262,6 +268,7 @@ namespace EduroamConfigure
                                     CreateEapConfiguration(
                                         EapType.MSCHAPv2,
                                         InnerAuthType.None,
+                                        outerIdentity,
                                         new List<string>(),
                                         new List<string>()
                                     ),
@@ -270,8 +277,8 @@ namespace EduroamConfigure
                             }
                         ),
                         new XElement(nsTTLS + "Phase1Identity",
-                            new XElement(nsTTLS + "IdentityPrivacy", "true"),
-                            new XElement(nsTTLS + "AnonymousIdentity", "user")
+                            new XElement(nsTTLS + "IdentityPrivacy", "true"), // TODO, based on outerIdentity being null?
+                            new XElement(nsTTLS + "AnonymousIdentity", outerIdentity ?? "")
                         )
                     )
                 );

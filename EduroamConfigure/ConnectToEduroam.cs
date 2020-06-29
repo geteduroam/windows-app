@@ -303,6 +303,7 @@ namespace EduroamConfigure
                     EduroamNetwork.Ssid,
                     AuthMethod.EapType,
                     AuthMethod.InnerAuthType,
+                    AuthMethod.ClientOuterIdentity,
                     AuthMethod.ServerNames,
                     CertificateThumbprints);
 
@@ -389,7 +390,12 @@ namespace EduroamConfigure
             // TODO: move into EapAuthMethodInstaller
 
             // generates user data xml file
-            string userDataXml = UserDataXml.CreateUserDataXml(username, password, authMethod.EapType, authMethod.InnerAuthType);
+            string userDataXml = UserDataXml.CreateUserDataXml(
+                username, 
+                password,
+                authMethod.ClientOuterIdentity,
+                authMethod.EapType, 
+                authMethod.InnerAuthType);
 
             // sets user data
             foreach (EduroamNetwork network in EduroamNetwork.EnumerateEduroamNetworks())
