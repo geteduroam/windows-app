@@ -146,13 +146,13 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(529, 122);
+            this.panel1.Size = new System.Drawing.Size(529, 112);
             this.panel1.TabIndex = 4;
             // 
             // lblTitle
             // 
             this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitle.Location = new System.Drawing.Point(13, 82);
+            this.lblTitle.Location = new System.Drawing.Point(13, 72);
             this.lblTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(503, 29);
@@ -168,7 +168,7 @@
             this.pnlLogo.Controls.Add(this.webLogo);
             this.pnlLogo.Location = new System.Drawing.Point(12, 3);
             this.pnlLogo.Name = "pnlLogo";
-            this.pnlLogo.Size = new System.Drawing.Size(504, 76);
+            this.pnlLogo.Size = new System.Drawing.Size(504, 66);
             this.pnlLogo.TabIndex = 12;
             // 
             // pbxLogo
@@ -186,7 +186,7 @@
             this.webEduroamLogo.AllowWebBrowserDrop = false;
             this.webEduroamLogo.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.webEduroamLogo.IsWebBrowserContextMenuEnabled = false;
-            this.webEduroamLogo.Location = new System.Drawing.Point(164, 10);
+            this.webEduroamLogo.Location = new System.Drawing.Point(164, 5);
             this.webEduroamLogo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.webEduroamLogo.MinimumSize = new System.Drawing.Size(30, 31);
             this.webEduroamLogo.Name = "webEduroamLogo";
@@ -218,30 +218,30 @@
             this.pnlContent.BackColor = System.Drawing.Color.White;
             this.pnlContent.Controls.Add(this.tableLayoutPanel1);
             this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlContent.Location = new System.Drawing.Point(10, 122);
+            this.pnlContent.Location = new System.Drawing.Point(10, 112);
             this.pnlContent.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pnlContent.Name = "pnlContent";
-            this.pnlContent.Size = new System.Drawing.Size(506, 379);
+            this.pnlContent.Size = new System.Drawing.Size(506, 389);
             this.pnlContent.TabIndex = 7;
             // 
             // pnlRightMargin
             // 
             this.pnlRightMargin.BackColor = System.Drawing.Color.White;
             this.pnlRightMargin.Dock = System.Windows.Forms.DockStyle.Right;
-            this.pnlRightMargin.Location = new System.Drawing.Point(516, 122);
+            this.pnlRightMargin.Location = new System.Drawing.Point(516, 112);
             this.pnlRightMargin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pnlRightMargin.Name = "pnlRightMargin";
-            this.pnlRightMargin.Size = new System.Drawing.Size(13, 379);
+            this.pnlRightMargin.Size = new System.Drawing.Size(13, 389);
             this.pnlRightMargin.TabIndex = 6;
             // 
             // pnlLeftMargin
             // 
             this.pnlLeftMargin.BackColor = System.Drawing.Color.White;
             this.pnlLeftMargin.Dock = System.Windows.Forms.DockStyle.Left;
-            this.pnlLeftMargin.Location = new System.Drawing.Point(0, 122);
+            this.pnlLeftMargin.Location = new System.Drawing.Point(0, 112);
             this.pnlLeftMargin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pnlLeftMargin.Name = "pnlLeftMargin";
-            this.pnlLeftMargin.Size = new System.Drawing.Size(10, 379);
+            this.pnlLeftMargin.Size = new System.Drawing.Size(10, 389);
             this.pnlLeftMargin.TabIndex = 5;
             // 
             // notifyIcon
