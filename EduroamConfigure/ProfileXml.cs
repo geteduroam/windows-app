@@ -71,7 +71,7 @@ namespace EduroamConfigure
 					new XElement(nsWLAN + "name", ssid),
 					new XElement(nsWLAN + "SSIDConfig",
 						new XElement(nsWLAN + "SSID",
-							new XElement(nsWLAN + "name", ssid)
+							new XElement(nsWLAN + "name", ssid) // TODO: support multiple SSIDs (see "Open Universiteit *" institution )
 						),
 						new XElement(nsWLAN + "nonBroadcast", "false")
 					),

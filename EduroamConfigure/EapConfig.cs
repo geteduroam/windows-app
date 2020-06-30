@@ -13,12 +13,18 @@ namespace EduroamConfigure
 	{
 		// Properties
 		public List<AuthenticationMethod> AuthenticationMethods { get; }
+		public List<CredentialApplicability> CredentialApplicabilities { get; }
 		public ProviderInfo InstitutionInfo { get; }
 
+
 		// Constructor
-		EapConfig(List<AuthenticationMethod> authenticationMethods, ProviderInfo institutionInfo)
+		EapConfig(
+			List<AuthenticationMethod> authenticationMethods,
+			List<CredentialApplicability> credentialApplicabilities,
+			ProviderInfo institutionInfo)
 		{
 			AuthenticationMethods = authenticationMethods;
+			CredentialApplicabilities = credentialApplicabilities;
 			InstitutionInfo = institutionInfo;
 		}
 
@@ -157,7 +163,63 @@ namespace EduroamConfigure
 				Phone = phone;
 				InstId = instId;
 				TermsOfUse = termsOfUse.Replace("\r\n", " "); // TODO: n-n-n-nani?
-				Coordinates = coordinates;
+				this.Location = Location;
+			}
+		}
+
+		/// <summary>
+		/// TODO
+		/// </summary>
+		public class CredentialApplicability
+		{
+			IEEE802x NetworkType { get; }
+
+			// IEEE80211 only:
+			string Ssid { get; } // Wifi SSID
+			string ConsortiumOid { get; } // Hotspot2.0
+			string MinRsnProto { get; } // "TKIP" or "CCMP"
+
+
+			// IEEE8023 only:
+			string NetworkId { get; }
+
+			private CredentialApplicability(
+				IEEE802x networkType,
+				string ssid,
+				string consortiumOid,
+				string minRsnProto,
+				string networkId)
+			{
+
+				NetworkType = networkType;
+				Ssid = ssid;
+				ConsortiumOid = consortiumOid;
+				MinRsnProto = minRsnProto;
+				NetworkId = networkId;
+			}
+
+			public static CredentialApplicability IEEE80211(
+				string ssid,
+				string consortiumOid,
+				string minRsnProto)
+			{
+				return new CredentialApplicability(
+					IEEE802x.IEEE80211,
+					ssid,
+					consortiumOid,
+					minRsnProto,
+					null);
+			}
+
+			public static CredentialApplicability IEEE8023(
+				string networkId)
+			{
+				return new CredentialApplicability(
+					IEEE802x.IEEE8023,
+					null,
+					null,
+					null,
+					networkId);
 			}
 
 		}
@@ -259,6 +321,28 @@ namespace EduroamConfigure
 				));
 			}
 
+			// create a new empty list for authentication methods
+			List<EapConfig.CredentialApplicability> credentialApplicabilities =
+				new List<EapConfig.CredentialApplicability>();
+
+			foreach (XElement credentialApplicabilityXml in eapConfigXml.Descendants().First(nameIs("CredentialApplicability")).Elements())
+			{
+				credentialApplicabilities.Add(credentialApplicabilityXml.Name.LocalName switch
+				{
+					"IEEE80211" =>
+						CredentialApplicability.IEEE80211(
+							(string)credentialApplicabilityXml.Elements().FirstOrDefault(nameIs("SSID")),
+							(string)credentialApplicabilityXml.Elements().FirstOrDefault(nameIs("ConsortiumOID")),
+							(string)credentialApplicabilityXml.Elements().FirstOrDefault(nameIs("MinRSNProto"))
+						),
+					"IEEE8023" =>
+						CredentialApplicability.IEEE8023(
+							(string)credentialApplicabilityXml.Elements().FirstOrDefault(nameIs("NetworkID"))
+						),
+					_ => throw new NotImplementedException(),
+				});
+			}
+
 			// get logo and identity element
 			XElement logoElement = eapConfigXml
 				.Descendants().FirstOrDefault(nameIs("ProviderLogo"));
@@ -306,6 +390,7 @@ namespace EduroamConfigure
 			// create EapConfig object and adds the info
 			return new EapConfig(
 				authMethods,
+				credentialApplicabilities,
 				new EapConfig.ProviderInfo(
 					displayName ?? string.Empty,
 					description ?? string.Empty,
@@ -316,10 +401,23 @@ namespace EduroamConfigure
 					phone ?? string.Empty,
 					instId ?? string.Empty,
 					termsOfUse ?? string.Empty,
-					coordinates)
+					location)
 			);
 		}
 
+	}
+
+	public enum IEEE802x
+	{
+		/// <summary>
+		/// Wired LAN
+		/// </summary>
+		IEEE8023, // TODO: add full support for this
+
+		/// <summary>
+		/// Wireless LAN
+		/// </summary>
+		IEEE80211
 	}
 
 	/// <summary>
