@@ -64,17 +64,21 @@ namespace EduroamConfigure
             /// <summary>
             /// Converts the client certificate base64 data to a X509Certificate2 object
             /// </summary>
+            /// <returns>X509Certificate2 if any, otherwise null</returns>
             public X509Certificate2 ClientCertificateAsX509Certificate2()
             {
-                var certBytes = Convert.FromBase64String(ClientCertificate);
+                if (string.IsNullOrEmpty(ClientCertificate))
+                    return null;
+
                 var cert = new X509Certificate2(
-                    certBytes,
+                    Convert.FromBase64String(ClientCertificate),
                     ClientCertificatePassphrase,
                     X509KeyStorageFlags.PersistKeySet);
 
                 // sets the friendly name of certificate
                 if (string.IsNullOrEmpty(cert.FriendlyName))
                     cert.FriendlyName = cert.GetNameInfo(X509NameType.SimpleName, false);
+
                 return cert;
             }
 

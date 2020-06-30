@@ -183,7 +183,7 @@ namespace EduroamConfigure
                     // open personal certificate store to add client cert
                     using var personalStore = new X509Store(userCertStoreName, userCertStoreLocation);
                     personalStore.Open(OpenFlags.ReadWrite);
-                    personalStore.Add(clientCert); // TODO: does this fail if done multiple times? perhaps add a guard like for CAs
+                    personalStore.Add(clientCert);
                     personalStore.Close();
 
                     // gets name of CA that issued the certificate
