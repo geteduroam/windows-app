@@ -31,6 +31,8 @@ namespace EduroamConfigure
 		static readonly XNamespace nsEC = "http://www.microsoft.com/provisioning/EapCommon";
 		static readonly XNamespace nsBECP = "http://www.microsoft.com/provisioning/BaseEapConnectionPropertiesV1";
 
+		static readonly XNamespace nsHSP = "http://www.microsoft.com/networking/WLAN/HotspotProfile/v1";
+
 		// TLS specific
 		static readonly XNamespace nsETCPv1 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV1";
 		static readonly XNamespace nsETCPv2 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV2";
@@ -57,24 +59,40 @@ namespace EduroamConfigure
 		/// <param name="disablePromptForServerValidation">Will cause the wifi profile to fail if server cannot be validated</param>
 		/// <returns>Complete wireless profile xml as string.</returns>
 		public static string CreateProfileXml(
-			string ssid,
-			EapType eapType,
-			InnerAuthType innerAuthType,
-			string outerIdentity, // with realm
-			List<string> serverNames,
+			EapConfig.AuthenticationMethod authMethod,
 			List<string> caThumbprints)
 		{
-			// hotspot2.0 domain is EapConfig.InstitutionInfo.InstId
+			// hotspot2.0 requires windows 10
 
+			// Get list of SSIDs
+			List<string> ssids = authMethod.EapConfig.CredentialApplicabilities
+				.Where(cred => cred.NetworkType == IEEE802x.IEEE80211)
+				.Where(cred => cred.Ssid != null)
+				.Select(cred => cred.Ssid)
+				.ToList();
+
+			// Get list of ConsortiumOIDs
+			List<string> consortiumOids = authMethod.EapConfig.CredentialApplicabilities
+				.Where(cred => cred.ConsortiumOid != null)
+				.Select(cred => cred.ConsortiumOid)
+				.ToList();
+
+			XElement ssidConfigElement;
+			XElement roamingConsortium;
 			XElement newProfile =
 				new XElement(nsWLAN + "WLANProfile",
-					new XElement(nsWLAN + "name", ssid),
-					new XElement(nsWLAN + "SSIDConfig",
-						new XElement(nsWLAN + "SSID",
-							new XElement(nsWLAN + "name", ssid) // TODO: support multiple SSIDs (see "Open Universiteit *" institution )
-						),
-						new XElement(nsWLAN + "nonBroadcast", "false")
+					new XElement(nsWLAN + "name", ssids.FirstOrDefault() ?? "eduroam"), // TODO: default case should not happen
+					ssidConfigElement =
+					new XElement(nsWLAN + "SSIDConfig"),
+					/*
+					new XElement(nsWLAN + "Hotspot2",
+						new XElement(nsWLAN + "DomainName", authMethod.EapConfig.InstitutionInfo.InstId),
+						//new XElement(nsWLAN + "NAIRealm", ), // A list of Network Access Identifier (NAI) Realm identifiers. Entries in this list are usually of the form user@domain.
+						// new XElement(nsWLAN + "Network3GPP", ), // A list of Public Land Mobile Network (PLMN) IDs.
+						roamingConsortium =
+						new XElement(nsWLAN + "RoamingConsortium") // A list of Organizationally Unique Identifiers (OUI) assigned by IEEE.
 					),
+					*/
 					new XElement(nsWLAN + "connectionType", "ESS"),
 					new XElement(nsWLAN + "connectionMode", "auto"),
 					new XElement(nsWLAN + "autoSwitch", "false"),
@@ -82,7 +100,7 @@ namespace EduroamConfigure
 						new XElement(nsWLAN + "security",
 							new XElement(nsWLAN + "authEncryption",
 								new XElement(nsWLAN + "authentication", "WPA2"),
-								new XElement(nsWLAN + "encryption", "AES"),
+								new XElement(nsWLAN + "encryption", "AES"), // TODO: CredentialApplicability.MinRsnProto
 								new XElement(nsWLAN + "useOneX", "true")
 							),
 							new XElement(nsWLAN + "PMKCacheMode", "enabled"),
@@ -92,13 +110,41 @@ namespace EduroamConfigure
 							new XElement(nsOneX + "OneX",
 								new XElement(nsOneX + "authMode", "user"),
 								new XElement(nsOneX + "EAPConfig",
-									CreateEapConfiguration(eapType, innerAuthType,
-										outerIdentity, serverNames, caThumbprints)
+									CreateEapConfiguration(
+										authMethod.EapType,
+										authMethod.InnerAuthType,
+										authMethod.ClientOuterIdentity,
+										authMethod.ServerNames,
+										caThumbprints)
 								)
 							)
 						)
 					)
 				);
+
+			// Add all the supported SSIDs
+			foreach (string ssid in ssids) // 256 max occurrances
+			{
+				ssidConfigElement.Add(
+					new XElement(nsWLAN + "SSID",
+						//new XElement(nsWLAN + "hex", ),
+						new XElement(nsWLAN + "name", ssid)
+					)
+				);
+			}
+			ssidConfigElement.Add(
+				new XElement(nsWLAN + "nonBroadcast", "true")
+			);
+
+			/*
+			foreach (string oui in consortiumOids)
+			{
+				roamingConsortium.Add(
+					new XElement(nsWLAN + "OUI", oui)
+				);
+			}
+			*/
+
 
 			// returns xml as string
 			return newProfile.ToString();

@@ -43,6 +43,7 @@ namespace EduroamConfigure
 
 		/// <summary>
 		/// Checks the EAP config to see if there is any issues
+		/// TODO: test this
 		/// </summary>
 		/// <returns>A tuple on the form: (bool isCritical, string description)</returns>
 		public static IEnumerable<ValueTuple<bool, string>> LookForWarningsInEapConfig(EapConfig eapConfig)
@@ -78,7 +79,7 @@ namespace EduroamConfigure
 					true => (false,
 						"One of the provided Certificate Authorities from this institution has expired.\r\n" +
 						"There might be some issues connecting to eduroam."),
-					false => (true,
+					false => (true, // TODO: This case means that the ProfileXml will be configured to not expect any fingerprint, meaning no connection can be made
 						"The provided Certificate Authorities from this institution have all expired!\r\n" +
 						"Please contact the institution to have the issue fixed!"),
 				};
@@ -298,11 +299,7 @@ namespace EduroamConfigure
 
 				// generate new profile xml
 				var profileXml = ProfileXml.CreateProfileXml(
-					EduroamNetwork.Ssid,
-					AuthMethod.EapType,
-					AuthMethod.InnerAuthType,
-					AuthMethod.ClientOuterIdentity,
-					AuthMethod.ServerNames,
+					AuthMethod,
 					CertificateThumbprints);
 
 				Console.WriteLine(AuthMethod.EapSchemeName()); // TODO: remove this
@@ -446,6 +443,8 @@ namespace EduroamConfigure
 				if (string.IsNullOrEmpty(network.ProfileName)) continue; // TODO: will cause NativeWifi to throw, but should not happen
 
 				// TODO: do in parallel instead of sequentially?
+
+				// TODO: hotspot2.0 support
 
 				// attempt to connect
 				bool success = await NativeWifi.ConnectNetworkAsync(

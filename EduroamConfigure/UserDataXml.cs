@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
@@ -69,10 +68,10 @@ namespace EduroamConfigure
 						EapUserData(
 							username,
 							password,
-							authMethod.ClientOuterIdentity,
+							authMethod.ClientOuterIdentity ?? username, // TODO: can this default case happen?
 							authMethod.EapType,
 							authMethod.InnerAuthType,
-							authMethod.ClientCertificateAsX509Certificate2().Thumbprint
+							authMethod.ClientCertificateAsX509Certificate2()?.Thumbprint
 						)
 					)
 				);
