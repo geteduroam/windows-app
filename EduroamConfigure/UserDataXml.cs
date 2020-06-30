@@ -71,32 +71,11 @@ namespace EduroamConfigure
 							password,
 							authMethod.ClientOuterIdentity,
 							authMethod.EapType,
-							authMethod.InnerAuthType
+							authMethod.InnerAuthType,
+							authMethod.ClientCertificateAsX509Certificate2().Thumbprint
 						)
 					)
 				);
-
-			// TODO: install a profile for TLS with a fingerprint of the user certificate
-			/*  <EapHostUserCredentials xmlns="http://www.microsoft.com/provisioning/EapHostUserCredentials"
-				  xmlns:eapCommon="http://www.microsoft.com/provisioning/EapCommon"
-				  xmlns:baseEap="http://www.microsoft.com/provisioning/BaseEapMethodUserCredentials">
-				  <EapMethod>
-					<eapCommon:Type>13</eapCommon:Type>
-					<eapCommon:AuthorId>0</eapCommon:AuthorId>
-				  </EapMethod>
-				  <Credentials xmlns:eapUser="http://www.microsoft.com/provisioning/EapUserPropertiesV1"
-					  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-					  xmlns:baseEap="http://www.microsoft.com/provisioning/BaseEapUserPropertiesV1"
-					  xmlns:eapTls="http://www.microsoft.com/provisioning/EapTlsUserPropertiesV1">
-					<baseEap:Eap>
-						<baseEap:Type>13</baseEap:Type>
-						<eapTls:EapType>
-						  <eapTls:UserCert>e7 d5 3f 53 8a 30 c5 e3 8c a9 79 7e eb 40 33 a0 d9 c6 8f eb </eapTls:UserCert>
-						</eapTls:EapType>
-					</baseEap:Eap>
-				  </Credentials>
-				</EapHostUserCredentials>
-			 */
 
 			// returns xml as string if not null
 			return newUserData != null ? newUserData.ToString() : "";
@@ -147,8 +126,9 @@ namespace EduroamConfigure
 							new XElement(nsTLS + "UserCert", // xs:hexBinary
 								// format fingerprint:
 								userCertFingerprint != null
-								? Regex.Replace(Regex.Replace(userCertFingerprint, " ", ""), ".{2}", "$0 ").ToUpperInvariant().Trim()
-								: ""
+									? Regex.Replace(Regex.Replace(userCertFingerprint, " ", ""), ".{2}", "$0 ")
+										.ToUpperInvariant().Trim()
+									: ""
 							)
 						)
 					),
