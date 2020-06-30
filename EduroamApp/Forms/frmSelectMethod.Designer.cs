@@ -28,7 +28,6 @@ namespace EduroamApp
 		/// </summary>
 		private void InitializeComponent()
 		{
-			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSelectMethod));
 			this.label1 = new System.Windows.Forms.Label();
 			this.btnNewProfile = new System.Windows.Forms.Button();
 			this.btnLocalProfile = new System.Windows.Forms.Button();
@@ -36,31 +35,37 @@ namespace EduroamApp
 			//
 			// label1
 			//
-			this.label1.Location = new System.Drawing.Point(34, 33);
+			this.label1.Location = new System.Drawing.Point(48, 12);
 			this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(446, 177);
+			this.label1.Size = new System.Drawing.Size(405, 63);
 			this.label1.TabIndex = 2;
-			this.label1.Text = resources.GetString("label1.Text");
+			this.label1.Text = "Configure Eduroam to gain access to Eduroam WiFi\r\nand free access to the internet" +
+	"";
 			//
 			// btnNewProfile
 			//
-			this.btnNewProfile.Location = new System.Drawing.Point(90, 233);
+			this.btnNewProfile.BackColor = System.Drawing.SystemColors.Highlight;
+			this.btnNewProfile.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.btnNewProfile.ForeColor = System.Drawing.SystemColors.ControlLight;
+			this.btnNewProfile.Location = new System.Drawing.Point(93, 78);
 			this.btnNewProfile.Name = "btnNewProfile";
 			this.btnNewProfile.Size = new System.Drawing.Size(326, 95);
 			this.btnNewProfile.TabIndex = 3;
-			this.btnNewProfile.Text = "Download New Profile";
-			this.btnNewProfile.UseVisualStyleBackColor = true;
+			this.btnNewProfile.Text = "Configure Eduroam";
+			this.btnNewProfile.UseVisualStyleBackColor = false;
 			this.btnNewProfile.Click += new System.EventHandler(this.btnNewProfile_Click);
 			//
 			// btnLocalProfile
 			//
-			this.btnLocalProfile.Location = new System.Drawing.Point(90, 350);
+			this.btnLocalProfile.BackColor = System.Drawing.Color.White;
+			this.btnLocalProfile.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.btnLocalProfile.Location = new System.Drawing.Point(167, 179);
 			this.btnLocalProfile.Name = "btnLocalProfile";
-			this.btnLocalProfile.Size = new System.Drawing.Size(326, 95);
+			this.btnLocalProfile.Size = new System.Drawing.Size(169, 40);
 			this.btnLocalProfile.TabIndex = 4;
 			this.btnLocalProfile.Text = "Upload Profile";
-			this.btnLocalProfile.UseVisualStyleBackColor = true;
+			this.btnLocalProfile.UseVisualStyleBackColor = false;
 			this.btnLocalProfile.Click += new System.EventHandler(this.btnLocalProfile_Click);
 			//
 			// frmSelectMethod
@@ -77,6 +82,7 @@ namespace EduroamApp
 			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "frmSelectMethod";
 			this.Text = "frm2";
+			this.Load += new System.EventHandler(this.frmSelectMethod_Load);
 			this.ResumeLayout(false);
 
 		}

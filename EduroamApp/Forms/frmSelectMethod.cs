@@ -1,5 +1,6 @@
 using System.Drawing;
 using System.Windows.Forms;
+using System;
 
 namespace EduroamApp
 {
@@ -22,6 +23,11 @@ namespace EduroamApp
 			newProfile = false;
 			//this.Font = SystemFonts.MessageBoxFont;
 			InitializeComponent();
+		}
+
+		private void frmSelectMethod_Load(object sender, EventArgs e)
+		{
+			//webEduroamLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(Properties.Resources.eduroam_logo, webEduroamLogo.Width, webEduroamLogo.Height);
 		}
 
 

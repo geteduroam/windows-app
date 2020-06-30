@@ -44,7 +44,7 @@ namespace EduroamApp
 			this.tlpLoading.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60.71429F));
 			this.tlpLoading.Controls.Add(this.label1, 0, 0);
 			this.tlpLoading.Controls.Add(this.pictureBox1, 0, 1);
-			this.tlpLoading.Location = new System.Drawing.Point(145, 143);
+			this.tlpLoading.Location = new System.Drawing.Point(144, 57);
 			this.tlpLoading.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.tlpLoading.Name = "tlpLoading";
 			this.tlpLoading.RowCount = 2;
@@ -78,10 +78,10 @@ namespace EduroamApp
 			//
 			// lblError
 			//
-			this.lblError.Location = new System.Drawing.Point(13, 422);
+			this.lblError.Location = new System.Drawing.Point(25, 146);
 			this.lblError.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.lblError.Name = "lblError";
-			this.lblError.Size = new System.Drawing.Size(494, 89);
+			this.lblError.Size = new System.Drawing.Size(457, 79);
 			this.lblError.TabIndex = 39;
 			this.lblError.Text = "Couldn\'t connect to the server.\r\n\r\nMake sure that you are connected to the intern" +
 	"et, then try again.";
@@ -94,7 +94,7 @@ namespace EduroamApp
 			this.lbInstitution.ItemHeight = 20;
 			this.lbInstitution.Location = new System.Drawing.Point(10, 44);
 			this.lbInstitution.Name = "lbInstitution";
-			this.lbInstitution.Size = new System.Drawing.Size(484, 364);
+			this.lbInstitution.Size = new System.Drawing.Size(484, 244);
 			this.lbInstitution.TabIndex = 40;
 			this.lbInstitution.SelectedIndexChanged += new System.EventHandler(this.lbInstitution_SelectedIndexChanged);
 			//
@@ -114,10 +114,10 @@ namespace EduroamApp
 			this.AutoScroll = true;
 			this.BackColor = System.Drawing.Color.White;
 			this.ClientSize = new System.Drawing.Size(506, 745);
+			this.Controls.Add(this.lblError);
 			this.Controls.Add(this.tlpLoading);
 			this.Controls.Add(this.tbSearch);
 			this.Controls.Add(this.lbInstitution);
-			this.Controls.Add(this.lblError);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "frmSelectInstitution";

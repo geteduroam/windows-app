@@ -30,6 +30,8 @@ namespace EduroamApp
 
 		private async void frmSelectProfile_Load(object sender, EventArgs e)
 		{
+			this.ActiveControl = lbProfile;
+			frmParent.BtnNextEnabled = false;
 			try
 			{
 				idProviderProfiles = IdentityProviderDownloader.GetIdentityProviderProfiles(idProviderId);
@@ -49,7 +51,6 @@ namespace EduroamApp
 
 			if (getInstSuccess)
 			{
-				frmParent.BtnNextEnabled = true;
 
 				PopulateProfiles();
 
@@ -102,6 +103,7 @@ namespace EduroamApp
 
 			// gets id of selected profile
 			ProfileId = idProviderProfiles.Where(x => x.Name == (string) lbProfile.SelectedItem).Select(x => x.Id).Single();
+			frmParent.BtnNextEnabled = true;
 		}
 
 

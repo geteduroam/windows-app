@@ -30,6 +30,7 @@ namespace EduroamApp
 
 		private void frmSummary_Load(object sender, EventArgs e)
 		{
+			ResetLogo();
 			// gets institution information from EapConfig object
 			string instName = eapConfig.InstitutionInfo.DisplayName;
 			string tou = eapConfig.InstitutionInfo.TermsOfUse;
@@ -39,7 +40,8 @@ namespace EduroamApp
 			string description = eapConfig.InstitutionInfo.Description;
 			frmParent.BtnNextEnabled = true;
 			// displays institution name
-			lblInstName.Text =  instName;
+			//lblInstName2.Text =  instName;
+			lblInstName.Text = instName;
 			// displays prompt to accept Terms of use if they exist
 			if (string.IsNullOrEmpty(tou))
 			{
@@ -116,7 +118,7 @@ namespace EduroamApp
 
 			// sets flag
 			frmParent.SelectAlternative = false;
-
+			/*
 			// gets institution logo encoded to base64
 			byte[] logoBytes = eapConfig.InstitutionInfo.LogoData;
 			string logoMimeType = eapConfig.InstitutionInfo.LogoMimeType;
@@ -156,13 +158,54 @@ namespace EduroamApp
 					}
 				}
 			}
-
-			lblWarnings.Text = "";
-			var warnings = ConnectToEduroam.LookForWarningsInEapConfig(eapConfig).ToList();
-			foreach ((bool, string) warning in warnings)
+			*/
+			byte[] logoBytes = eapConfig.InstitutionInfo.LogoData;
+			string logoMimeType = eapConfig.InstitutionInfo.LogoMimeType;
+			// adds logo to form if exists
+			if (logoBytes.Length > 0)
 			{
-				lblWarnings.Text += warning.Item1 + warning.Item2 + "\n";
+				// gets size of container
+				int cWidth = pbxLogo.Width;
+				int cHeight = pbxLogo.Height;
+
+				if (logoMimeType == "image/svg+xml")
+				{
+					//frmParent.WebLogo.Visible = true;
+					//frmParent.WebLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight);
+					this.webLogo.Visible = true;
+					this.webLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight);
+				}
+				else // other filetypes (jpg, png etc.)
+				{
+					try
+					{
+						// converts from base64 to image
+						Image logo = ImageFunctions.BytesToImage(logoBytes);
+						decimal hScale = decimal.Divide(cWidth, logo.Width);
+						decimal vScale = decimal.Divide(cHeight, logo.Height);
+						decimal pScale = vScale < hScale ? vScale : hScale;
+						// resizes image to fit container
+						Bitmap resizedLogo = ImageFunctions.ResizeImage(logo, (int)(logo.Width * pScale), (int)(logo.Height * pScale));
+						pbxLogo.Image = resizedLogo;
+						// centers image in container
+						int lPad = cWidth - pbxLogo.Image.Width;
+						pbxLogo.Padding = new Padding(lPad / 2, 0, 0, 0);
+						pbxLogo.Visible = true;
+					}
+					catch (System.FormatException)
+					{
+						// ignore
+					}
+				}
 			}
+
+
+			//lblWarnings.Text = "";
+			//var warnings = ConnectToEduroam.LookForWarningsInEapConfig(eapConfig).ToList();
+			//foreach ((bool, string) warning in warnings)
+			/*{
+				lblWarnings.Text += warning.Item1 + warning.Item2 + "\n";
+			}*/
 
 		}
 
@@ -300,6 +343,24 @@ namespace EduroamApp
 			return (null, "exception occured");
 		}
 
+		/// <summary>
+		/// Empties both logo controls and makes them invisible.
+		/// </summary>
+		public void ResetLogo()
+		{
+			// reset pbxLogo
+			pbxLogo.Image = null;
+			pbxLogo.Visible = false;
+
+			// reset webLogo
+			webLogo.Navigate("about:blank");
+			if (webLogo.Document != null)
+			{
+				webLogo.Document.Write(string.Empty);
+			}
+			webLogo.Visible = false;
+		}
+
 
 		private void btnSelectInst_Click(object sender, EventArgs e)
 		{
@@ -309,5 +370,9 @@ namespace EduroamApp
 			frmParent.btnNext_Click(sender, e);
 		}
 
+		private void pbxLogo_Click(object sender, EventArgs e)
+		{
+
+		}
 	}
 }

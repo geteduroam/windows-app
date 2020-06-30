@@ -40,7 +40,7 @@ namespace EduroamApp
 			// resets redirect url
 			frmParent.RedirectUrl = "";
 			lbInstitution.Enabled = false;
-
+			frmParent.BtnNextEnabled = false;
 			//HideControls();
 
 			// async method to get list of institutions
@@ -50,7 +50,6 @@ namespace EduroamApp
 			{
 				// enables controls
 				tlpLoading.Visible = false;
-				frmParent.BtnNextEnabled = true;
 
 				PopulateInstitutions();
 
@@ -132,6 +131,7 @@ namespace EduroamApp
 			idProviderId = identityProviders.Where(x => x.Name == (string) lbInstitution.SelectedItem).Select(x => x.cat_idp).First();
 			// update parent state. frmParent.idProviderId is used to create frmSelectProfile
 			frmParent.idProviderId = idProviderId;
+			frmParent.BtnNextEnabled = true;
 
 		}
 
