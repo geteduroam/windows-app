@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System.Drawing;
+using System.Windows.Forms;
 
 namespace EduroamApp
 {
@@ -12,21 +13,27 @@ namespace EduroamApp
     {
         // makes parent form accessible from this class
         readonly frmParent frmParent;
+        public bool newProfile { get; set; }
         
         public frmSelectMethod(frmParent parentInstance)
         {
             // gets parent form instance
             frmParent = parentInstance;
-
+            newProfile = false;
+            //this.Font = SystemFonts.MessageBoxFont;
             InitializeComponent();
         }
 
-        /// <summary>
-        /// Checks which radio button is selected and loads corresponding form.
-        /// </summary>
-        public int GoToForm()
+
+        private void btnNewProfile_Click(object sender, System.EventArgs e)
         {
-            return rdbDownload.Checked ? 3 : 4;
+            newProfile = true;
+            frmParent.btnNext_Click(sender, e);
+        }
+
+        private void btnLocalProfile_Click(object sender, System.EventArgs e)
+        {
+            frmParent.btnNext_Click(sender, e);
         }
     }
 }

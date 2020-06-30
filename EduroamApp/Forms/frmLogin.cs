@@ -101,11 +101,15 @@ namespace EduroamApp
             { 
                 lblRules.Text = "Error:\n" + brokenRules;
             }
+            else
+            {
+                lblRules.Text = "Valid username";
+            }
             usernameValid = valid;
             ValidateFields();
             
         }
-
+        //
         // shows helping text when field loses focus and is empty
         private void txtPassword_Leave(object sender, EventArgs e)
         {
