@@ -31,15 +31,6 @@ namespace EduroamConfigure
 		private const StoreName userCertStoreName = StoreName.My; // Used to install TLS client certificates
 		private const StoreLocation userCertStoreLocation = StoreLocation.CurrentUser;
 
-		// Profile.xml - EAP auth mode, ssid, allowed CA fingerprint, and failure modes
-		// See 'dwFlags' at: https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/nf-wlanapi-wlansetprofile
-		private const ProfileType profileType = ProfileType.AllUser; // TODO: make this work as PerUser
-
-		// UserData.xml - EAP user credentials
-		// See 'dwFlags' at: https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/nf-wlanapi-wlansetprofileeapxmluserdata
-		private const uint profileUserType = 0x00000000; // "current user" - https://github.com/rozmansi/WLANSetEAPUserData
-		//private const uint profileUserType = 0x00000001; // WLAN_SET_EAPHOST_DATA_ALL_USERS
-
 
 		/// <summary>
 		/// Checks the EAP config to see if there is any issues
@@ -106,7 +97,7 @@ namespace EduroamConfigure
 		/// <returns>Enumeration of EapAuthMethodInstaller intances for each supported authentification method in eapConfig</returns>
 		public static IEnumerable<EapAuthMethodInstaller> InstallEapConfig(EapConfig eapConfig)
 		{
-			List<EduroamNetwork> eduroamNetworks = EduroamNetwork.EnumerateEduroamNetworks().ToList();
+			List<EduroamNetwork> eduroamNetworks = EduroamNetwork.GetAll().ToList();
 			if (!eduroamNetworks.Any())
 				yield break; // TODO: concider throwing
 			if (!EapConfigIsSupported(eapConfig))
@@ -302,15 +293,11 @@ namespace EduroamConfigure
 					AuthMethod,
 					CertificateThumbprints);
 
-				Console.WriteLine(AuthMethod.EapSchemeName()); // TODO: remove this
-
 				// create a new wireless profile
 				bool any_installed = false;
-				foreach (EduroamNetwork eduroamInstance in EduroamNetworks)
+				foreach (EduroamNetwork network in EduroamNetworks)
 				{
-					any_installed |= CreateNewProfile(eduroamInstance.InterfaceId, profileXml);
-					// TODO: update docstring and handling in frmSummary due to any_installed
-
+					any_installed |= network.InstallProfile(profileXml);
 				}
 
 				if (AuthMethod.EapType == EapType.TLS) // TODO: this is hacky, SetupLogin should be a part of InstallProfile
@@ -341,45 +328,18 @@ namespace EduroamConfigure
 
 
 		/// <summary>
-		/// Creates new network profile according to selected network and profile XML.
-		/// </summary>
-		/// <param name="interfaceId">Interface ID</param>
-		/// <param name="profileXml">Profile XML</param>
-		/// <returns>True if profile create success, false if not.</returns>
-		private static bool CreateNewProfile(Guid interfaceId, string profileXml)
-		{
-			// security type not required
-			const string securityType = null; // TODO: document why
-
-			// overwrites if profile already exists
-			const bool overwrite = true;
-
-			return NativeWifi.SetProfile(interfaceId, profileType, profileXml, securityType, overwrite);
-		}
-
-		/// <summary>
 		/// Deletes all network profile matching ssid, which is "eduroam" by default
 		/// </summary>
-		/// <param name="ssid">ssid to delete all profiles of</param>
 		/// <returns>True if any profile deletion was succesful</returns>
-		public static bool RemoveAllProfiles(string ssid = EduroamNetwork.Ssid)
+		public static bool RemoveAllProfiles()
 		{
 			bool ret = false;
-			foreach (Guid interfaceId in EduroamNetwork.GetAllInterfaceIds())
+			foreach (EduroamNetwork network in EduroamNetwork.GetAll())
 			{
-				if (RemoveProfile(interfaceId, ssid))
+				if (network.RemoveProfile())
 					ret = true;
 			}
 			return ret;
-		}
-
-		/// <summary>
-		/// Deletes a network profile by matching ssid on specified network interface
-		/// </summary>
-		/// <returns>True if profile delete was succesful</returns>
-		private static bool RemoveProfile(Guid interfaceId, string ssid = EduroamNetwork.Ssid)
-		{
-			return NativeWifi.DeleteProfile(interfaceId, ssid);
 		}
 
 		/// <summary>
@@ -400,58 +360,25 @@ namespace EduroamConfigure
 
 			// sets user data
 			bool anyInstalled = false;
-			foreach (EduroamNetwork network in EduroamNetwork.EnumerateEduroamNetworks())
+			foreach (EduroamNetwork network in EduroamNetwork.GetAll())
 			{
-				anyInstalled |= SetUserData(network.InterfaceId, EduroamNetwork.Ssid, userDataXml);
-				// TODO: use return value
+				anyInstalled |= network.InstallUserData(userDataXml);
 			}
 			return anyInstalled;
 		}
 
 		/// <summary>
-		/// Sets user data for a wireless profile.
-		/// </summary>
-		/// <param name="interfaceId">Interface ID of selected network.</param>
-		/// <param name="profileName">Name of associated wireless profile.</param>
-		/// <param name="userDataXml">User data XML converted to string.</param>
-		/// <returns>True if succeeded, false if failed.</returns>
-		private static bool SetUserData(Guid interfaceId, string profileName, string userDataXml)
-		{
-			return NativeWifi.SetProfileUserData(interfaceId, profileName, profileUserType, userDataXml);
-		}
-
-		/// <summary>
-		/// Waits for async connection to complete.
-		/// </summary>
-		/// <returns>Connection result.</returns>
-		public static Task<bool> WaitForConnect()
-		{
-			// runs async method
-			Task<bool> connectResult = Task.Run(ConnectAsync);
-			return connectResult;
-		}
-
-		/// <summary>
-		/// Connects to any eduroam wireless LAN
+		/// Attempts to connects to any eduroam wireless LAN, in succession
 		/// </summary>
 		/// <returns>True if successfully connected. False if not.</returns>
-		private static async Task<bool> ConnectAsync()
+		public static async Task<bool> TryToConnect()
 		{
 			// gets updated eduroam network packs
-			foreach (AvailableNetworkPack network in EduroamNetwork.GetAllEduroamPacks())
+			foreach (var network in EduroamNetwork.GetAll())
 			{
-				if (string.IsNullOrEmpty(network.ProfileName)) continue; // TODO: will cause NativeWifi to throw, but should not happen
-
 				// TODO: do in parallel instead of sequentially?
 
-				// TODO: hotspot2.0 support
-
-				// attempt to connect
-				bool success = await NativeWifi.ConnectNetworkAsync(
-					interfaceId: network.Interface.Id,
-					profileName: network.ProfileName,
-					bssType: network.BssType,
-					timeout: TimeSpan.FromSeconds(5));
+				bool success = await network.TryToConnect();
 				if (success)
 					return true;
 			}

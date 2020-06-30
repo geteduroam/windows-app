@@ -135,6 +135,7 @@ namespace EduroamApp
 			}
 			string password = txtPassword.Text;
 
+			// TODO: use return value?
 			ConnectToEduroam.SetupLogin(username, password, frmParent.AuthMethod);
 		}
 
