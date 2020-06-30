@@ -130,10 +130,10 @@ namespace EduroamConfigure
 			public string LogoMimeType { get; }
 			public string EmailAddress { get; }
 			public string WebAddress { get; }
-			public string Phone { get;  }
+			public string Phone { get; }
 			public string InstId { get; }
 			public string TermsOfUse { get; }
-			public ValueTuple<double, double>? Coordinates { get; } // (Latitude, Longitude)
+			public ValueTuple<double, double>? Location { get; } // nullable coordinates on the form (Latitude, Longitude)
 
 			// Constructor
 			public ProviderInfo(
@@ -146,7 +146,7 @@ namespace EduroamConfigure
 				string phone,
 				string instId,
 				string termsOfUse,
-				ValueTuple<double, double>? coordinates)
+				ValueTuple<double, double>? Location)
 			{
 				DisplayName = displayName;
 				Description = description;
@@ -159,6 +159,7 @@ namespace EduroamConfigure
 				TermsOfUse = termsOfUse.Replace("\r\n", " "); // TODO: n-n-n-nani?
 				Coordinates = coordinates;
 			}
+
 		}
 
 
@@ -292,12 +293,12 @@ namespace EduroamConfigure
 				?.Elements().FirstOrDefault(nameIs("TermsOfUse"));
 
 			// Read coordinates
-			ValueTuple<double, double>? coordinates = null;
+			ValueTuple<double, double>? location = null;
 			if (providerInfoXml?.Elements().Where(nameIs("ProviderLocation")).Any() ?? false)
 			{
-				coordinates = (
-					(double)providerInfoXml?.Descendants().FirstOrDefault(nameIs("Latitude")),
-					(double)providerInfoXml?.Descendants().FirstOrDefault(nameIs("Longitude"))
+				location = (
+					(double)providerInfoXml.Descendants().First(nameIs("Latitude")),
+					(double)providerInfoXml.Descendants().First(nameIs("Longitude"))
 				);
 			}
 
