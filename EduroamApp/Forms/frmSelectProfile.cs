@@ -30,37 +30,34 @@ namespace EduroamApp
 
         private async void frmSelectProfile_Load(object sender, EventArgs e)
         {
-            this.ActiveControl = lbProfile;
+            frmParent.WebEduroamLogo.Visible = true;
             frmParent.BtnNextEnabled = false;
-            try
-            {
-                idProviderProfiles = IdentityProviderDownloader.GetIdentityProviderProfiles(idProviderId);
-            }
-            catch (EduroamAppUserError error)
-            {
-                EduroamAppExceptionHandler(error);
-                return;
-            }
 
             frmParent.RedirectUrl = "";
             lbProfile.Enabled = false;
 
-            lbProfile.Items.AddRange(idProviderProfiles.Select(profile => profile.Name).ToArray());
-             //async method to get list of institutions
+            //async method to get list of institutions
             bool getInstSuccess = await Task.Run(() => GetProfiles());
 
             if (getInstSuccess)
             {
-
                 PopulateProfiles();
-
-                lbProfile.Visible = true;
                 lbProfile.Enabled = true;
+
+                // autoselect first profile
+                lbProfile.SetSelected(0, true);
             }
             else
             {
 
             }
+
+        }
+
+        // double clicking profile acts as clicking "next"
+        private void lbProfile_DoubleClick(object sender, EventArgs e)
+        {
+            frmParent.btnNext_Click(sender, e);
         }
 
         /// <summary>

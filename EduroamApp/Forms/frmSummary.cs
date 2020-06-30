@@ -30,7 +30,6 @@ namespace EduroamApp
 
         private void frmSummary_Load(object sender, EventArgs e)
         {
-            ResetLogo();
             // gets institution information from EapConfig object
             string instName = eapConfig.InstitutionInfo.DisplayName;
             string tou = eapConfig.InstitutionInfo.TermsOfUse;
@@ -118,13 +117,15 @@ namespace EduroamApp
 
             // sets flag
             frmParent.SelectAlternative = false;
-            /*
+            
             // gets institution logo encoded to base64
             byte[] logoBytes = eapConfig.InstitutionInfo.LogoData;
             string logoMimeType = eapConfig.InstitutionInfo.LogoMimeType;
             // adds logo to form if exists
             if (logoBytes.Length > 0)
             {
+                // deactivate eduroam logo if institute has its own logo
+                frmParent.WebEduroamLogo.Visible = false;
                 // gets size of container
                 int cWidth = frmParent.PbxLogo.Width;
                 int cHeight = frmParent.PbxLogo.Height;
@@ -158,22 +159,25 @@ namespace EduroamApp
                     }
                 }
             } 
-            */
-            byte[] logoBytes = eapConfig.InstitutionInfo.LogoData;
+            
+            
+           /* byte[] logoBytes = eapConfig.InstitutionInfo.LogoData;
             string logoMimeType = eapConfig.InstitutionInfo.LogoMimeType;
             // adds logo to form if exists
             if (logoBytes.Length > 0)
             {
+                // deactivate eduroam logo if institute has its own logo
+                frmParent.WebEduroamLogo.Visible = false;
                 // gets size of container
                 int cWidth = pbxLogo.Width;
                 int cHeight = pbxLogo.Height;
 
                 if (logoMimeType == "image/svg+xml")
                 {
-                    //frmParent.WebLogo.Visible = true;
-                    //frmParent.WebLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight);
-                    this.webLogo.Visible = true;
-                    this.webLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight);
+                    frmParent.WebLogo.Visible = true;
+                    frmParent.WebLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight);
+                    //this.webLogo.Visible = true;
+                    //this.webLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight);
                 }
                 else // other filetypes (jpg, png etc.)
                 {
@@ -343,23 +347,6 @@ namespace EduroamApp
             return (null, "exception occured");
         }
 
-        /// <summary>
-        /// Empties both logo controls and makes them invisible.
-        /// </summary>
-        public void ResetLogo()
-        {
-            // reset pbxLogo
-            pbxLogo.Image = null;
-            pbxLogo.Visible = false;
-
-            // reset webLogo
-            webLogo.Navigate("about:blank");
-            if (webLogo.Document != null)
-            {
-                webLogo.Document.Write(string.Empty);
-            }
-            webLogo.Visible = false;
-        }
 
 
         private void btnSelectInst_Click(object sender, EventArgs e)

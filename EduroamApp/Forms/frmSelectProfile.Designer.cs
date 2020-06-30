@@ -53,6 +53,7 @@
             this.lbProfile.Size = new System.Drawing.Size(484, 284);
             this.lbProfile.TabIndex = 40;
             this.lbProfile.SelectedIndexChanged += new System.EventHandler(this.lbProfile_SelectedIndexChanged);
+            this.lbProfile.DoubleClick += new System.EventHandler(this.lbProfile_DoubleClick);
             // 
             // frmSelectProfile
             // 

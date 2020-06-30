@@ -45,7 +45,7 @@
             // lblStatus
             // 
             this.lblStatus.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblStatus.Location = new System.Drawing.Point(35, 28);
+            this.lblStatus.Location = new System.Drawing.Point(35, 71);
             this.lblStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblStatus.Name = "lblStatus";
             this.lblStatus.Size = new System.Drawing.Size(450, 63);
