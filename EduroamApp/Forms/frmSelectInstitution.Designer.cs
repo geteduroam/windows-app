@@ -1,6 +1,6 @@
 namespace EduroamApp
 {
-	partial class frmDownload
+	partial class frmSelectInstitution
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -28,8 +28,6 @@ namespace EduroamApp
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.lblSelectProfile = new System.Windows.Forms.Label();
-			this.cboProfiles = new System.Windows.Forms.ComboBox();
 			this.tlpLoading = new System.Windows.Forms.TableLayoutPanel();
 			this.label1 = new System.Windows.Forms.Label();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -40,36 +38,13 @@ namespace EduroamApp
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
 			this.SuspendLayout();
 			//
-			// lblSelectProfile
-			//
-			this.lblSelectProfile.AutoSize = true;
-			this.lblSelectProfile.Location = new System.Drawing.Point(31, 646);
-			this.lblSelectProfile.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-			this.lblSelectProfile.Name = "lblSelectProfile";
-			this.lblSelectProfile.Size = new System.Drawing.Size(105, 20);
-			this.lblSelectProfile.TabIndex = 36;
-			this.lblSelectProfile.Text = "Select profile:";
-			this.lblSelectProfile.Visible = false;
-			//
-			// cboProfiles
-			//
-			this.cboProfiles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.cboProfiles.FormattingEnabled = true;
-			this.cboProfiles.Location = new System.Drawing.Point(144, 646);
-			this.cboProfiles.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.cboProfiles.Name = "cboProfiles";
-			this.cboProfiles.Size = new System.Drawing.Size(301, 28);
-			this.cboProfiles.TabIndex = 35;
-			this.cboProfiles.Visible = false;
-			this.cboProfiles.SelectedIndexChanged += new System.EventHandler(this.cboProfiles_SelectedIndexChanged);
-			//
 			// tlpLoading
 			//
 			this.tlpLoading.ColumnCount = 1;
 			this.tlpLoading.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60.71429F));
 			this.tlpLoading.Controls.Add(this.label1, 0, 0);
 			this.tlpLoading.Controls.Add(this.pictureBox1, 0, 1);
-			this.tlpLoading.Location = new System.Drawing.Point(180, 276);
+			this.tlpLoading.Location = new System.Drawing.Point(145, 143);
 			this.tlpLoading.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.tlpLoading.Name = "tlpLoading";
 			this.tlpLoading.RowCount = 2;
@@ -103,7 +78,7 @@ namespace EduroamApp
 			//
 			// lblError
 			//
-			this.lblError.Location = new System.Drawing.Point(2, -1);
+			this.lblError.Location = new System.Drawing.Point(13, 422);
 			this.lblError.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.lblError.Name = "lblError";
 			this.lblError.Size = new System.Drawing.Size(494, 89);
@@ -114,40 +89,38 @@ namespace EduroamApp
 			//
 			// lbInstitution
 			//
-			this.lbInstitution.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.lbInstitution.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.lbInstitution.FormattingEnabled = true;
-			this.lbInstitution.ItemHeight = 29;
-			this.lbInstitution.Location = new System.Drawing.Point(12, 143);
+			this.lbInstitution.ItemHeight = 20;
+			this.lbInstitution.Location = new System.Drawing.Point(10, 44);
 			this.lbInstitution.Name = "lbInstitution";
-			this.lbInstitution.Size = new System.Drawing.Size(516, 381);
+			this.lbInstitution.Size = new System.Drawing.Size(484, 364);
 			this.lbInstitution.TabIndex = 40;
 			this.lbInstitution.SelectedIndexChanged += new System.EventHandler(this.lbInstitution_SelectedIndexChanged);
 			//
 			// tbSearch
 			//
-			this.tbSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tbSearch.Location = new System.Drawing.Point(12, 91);
+			this.tbSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tbSearch.Location = new System.Drawing.Point(10, 12);
 			this.tbSearch.Name = "tbSearch";
-			this.tbSearch.Size = new System.Drawing.Size(516, 35);
+			this.tbSearch.Size = new System.Drawing.Size(484, 26);
 			this.tbSearch.TabIndex = 42;
 			this.tbSearch.TextChanged += new System.EventHandler(this.tbSearch_TextChanged);
 			//
-			// frmDownload
+			// frmSelectInstitution
 			//
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoScroll = true;
 			this.BackColor = System.Drawing.Color.White;
-			this.ClientSize = new System.Drawing.Size(540, 745);
+			this.ClientSize = new System.Drawing.Size(506, 745);
 			this.Controls.Add(this.tlpLoading);
 			this.Controls.Add(this.tbSearch);
 			this.Controls.Add(this.lbInstitution);
-			this.Controls.Add(this.lblSelectProfile);
-			this.Controls.Add(this.cboProfiles);
 			this.Controls.Add(this.lblError);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.Name = "frmDownload";
+			this.Name = "frmSelectInstitution";
 			this.Text = "frm3";
 			this.Load += new System.EventHandler(this.frmDownload_Load);
 			this.tlpLoading.ResumeLayout(false);
@@ -159,8 +132,6 @@ namespace EduroamApp
 		}
 
 		#endregion
-		private System.Windows.Forms.Label lblSelectProfile;
-		private System.Windows.Forms.ComboBox cboProfiles;
 		private System.Windows.Forms.TableLayoutPanel tlpLoading;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.PictureBox pictureBox1;

@@ -45,7 +45,7 @@ namespace EduroamConfigure
 		/// Checks the EAP config to see if there is any issues
 		/// </summary>
 		/// <returns>A tuple on the form: (bool isCritical, string description)</returns>
-		public IEnumerable<ValueTuple<bool, string>> LookForWarningsInEapConfig(EapConfig eapConfig)
+		public static IEnumerable<ValueTuple<bool, string>> LookForWarningsInEapConfig(EapConfig eapConfig)
 		{
 			if (!EapConfigIsSupported(eapConfig))
 			{

@@ -10,25 +10,26 @@ namespace EduroamApp
 	/// <summary>
 	/// Lets the user select a country, institution and optionally a profile, and downloads an appropriate EAP-config file.
 	/// </summary>
-	public partial class frmDownload : Form
+	public partial class frmSelectInstitution : Form
 	{
 		private readonly frmParent frmParent; // makes parent form accessible from this class
 		private List<IdentityProvider> identityProviders = new List<IdentityProvider>(); // list containing all identity providers
 		private List<IdentityProvider> allIdentityProviders;
-		private List<IdentityProviderProfile> idProviderProfiles; // list containing all profiles of an identity provider
 		private int idProviderId; // id of selected institution
-		//private static string helpString = "Search here ..";
-		public string ProfileId { get; set; } // id of selected institution profile
+		// private static string helpString = "Search here ..";
 
 
 
-		public frmDownload(frmParent parentInstance)
+		public frmSelectInstitution(frmParent parentInstance)
 		{
 			// gets parent form instance
 			frmParent = parentInstance;
 			InitializeComponent();
 		}
 
+		/// <summary>
+		/// Called fron InitializeComponents(). Used to get various components ready
+		/// </summary>
 		private async void frmDownload_Load(object sender, EventArgs e)
 		{
 			// hides certain controls while loading
@@ -38,15 +39,9 @@ namespace EduroamApp
 			tlpLoading.Visible = true;
 			// resets redirect url
 			frmParent.RedirectUrl = "";
+			lbInstitution.Enabled = false;
 
-			lblSelectProfile.Visible = true;
-			lblSelectProfile.Enabled = false;
-			tbSearch.Enabled = false;
-
-			cboProfiles.Visible = true;
-			cboProfiles.Enabled = false;
-
-
+			//HideControls();
 
 			// async method to get list of institutions
 			bool getInstSuccess = await Task.Run(() => GetAllInstitutions());
@@ -58,15 +53,13 @@ namespace EduroamApp
 				frmParent.BtnNextEnabled = true;
 
 				PopulateInstitutions();
-				cboProfiles.Visible = true;
-				cboProfiles.Enabled = false;
 
+				//lblSearch.Visible = true;
+				//tbSearch.Text = helpString;
 				tbSearch.Visible = true;
 				tbSearch.Enabled = true;
 				lbInstitution.Visible = true;
-
-				lblSelectProfile.Visible = true;
-				lblSelectProfile.Enabled = false;
+				lbInstitution.Enabled = true;
 				this.ActiveControl = tbSearch;
 			}
 			else
@@ -93,14 +86,25 @@ namespace EduroamApp
 			return false;
 		}
 
-
+		/// <summary>
+		/// Called when the form is created to present the 10 closest providers
+		/// </summary>
 		private void PopulateInstitutions()
 		{
-			List<IdentityProvider> closeProviders = IdentityProviderDownloader.GetClosestProviders(10, frmParent.GeoWatcher.Position.Location);
-			updateInstitutions(closeProviders);
+			try
+			{
+				List<IdentityProvider> closeProviders = IdentityProviderDownloader.GetClosestProviders(10, frmParent.GeoWatcher.Position.Location);
+				updateInstitutions(closeProviders);
+			}
+			catch (EduroamAppUserError e)
+			{
+				EduroamAppExceptionHandler(e);
+			}
 		}
 
-
+		/// <summary>
+		/// Used to update institution list portrayed to users
+		/// </summary>
 		private void updateInstitutions(List<IdentityProvider> institutions)
 		{
 			lbInstitution.Items.Clear();
@@ -110,18 +114,9 @@ namespace EduroamApp
 			lbInstitution.Items.AddRange(identityProviders.Select(provider => provider.Name).ToArray());
 		}
 
-
-		// gets profile id of selected profile
-		private void cboProfiles_SelectedIndexChanged(object sender, EventArgs e)
-		{
-			if (cboProfiles.Text != "")
-			{
-				// gets profile id of profile selected in combobox
-				ProfileId = idProviderProfiles.Where(profile => profile.Name == cboProfiles.Text).Select(x => x.Id).Single();
-
-			}
-		}
-
+		/// <summary>
+		/// Called when user types something in the seach bar
+		/// </summary>
 		private void tbSearch_TextChanged(object sender, EventArgs e)
 		{
 			List<IdentityProvider> sortedProviders = IdentityProviderParser.SortBySearch(allIdentityProviders, tbSearch.Text);
@@ -131,49 +126,13 @@ namespace EduroamApp
 
 		private void lbInstitution_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			// clear combobox
-			cboProfiles.Items.Clear();
-			// clear selected profile
-			ProfileId = null;
+			// if user clicks on empty area of the listbox it will cause event but no item is selected
+			if (lbInstitution.SelectedItem == null) return;
+			// select provider ID based on chosen profile name
+			idProviderId = identityProviders.Where(x => x.Name == (string) lbInstitution.SelectedItem).Select(x => x.cat_idp).First();
+			// update parent state. frmParent.idProviderId is used to create frmSelectProfile
+			frmParent.idProviderId = idProviderId;
 
-			// gets id of institution selected in combobox
-			idProviderId = identityProviders.Where(x => x.Name == lbInstitution.Text).Select(x => x.cat_idp).First();
-
-			// get IdentityProviderProfile object for provider, containing all profiles
-			try
-			{
-				idProviderProfiles = IdentityProviderDownloader.GetIdentityProviderProfiles(idProviderId);
-			}
-			catch (EduroamAppUserError ex)
-			{
-				EduroamAppExceptionHandler(ex);
-				return;
-			}
-
-			// add profiles to combobox
-			cboProfiles.Items.AddRange(idProviderProfiles.Select(profile => profile.Name).ToArray());
-
-			// if an identity provider has more than one, activate combobox so a different profile can be used
-			if (idProviderProfiles.Count > 1)
-			{
-				// enable combobox
-				cboProfiles.Enabled = true;
-
-				// enable label
-				lblSelectProfile.Enabled = true;
-			}
-			else
-			{
-				// get first profile from combobox list
-				IdentityProviderProfile profile = IdentityProviderDownloader.GetProfileFromId(idProviderProfiles.First().Id);
-				// set first profile to be selected automatically
-				cboProfiles.SelectedIndex = cboProfiles.FindStringExact(profile.Name);
-				// disable combobox
-				cboProfiles.Enabled = false;
-
-				// disble label
-				lblSelectProfile.Enabled = false;
-			}
 		}
 
 
@@ -186,7 +145,9 @@ namespace EduroamApp
 			//HideControls();
 			//lblError.Text = ex.UserFacingMessage;
 			//lblError.Visible = true;
-			MessageBox.Show(ex.UserFacingMessage, "eduroam - Web exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
+			MessageBox.Show(ex.UserFacingMessage,
+					"eduroam - Web exception",
+					MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
 
@@ -196,20 +157,12 @@ namespace EduroamApp
 		private void HideControls()
 		{
 			lblError.Visible = false;
-			lblSelectProfile.Visible = false;
-			//lblSearch.Visible = false;
 			tbSearch.Visible = false;
 			lbInstitution.Visible = false;
-			cboProfiles.Visible = false;
-			lblSelectProfile.Visible = false;
 			frmParent.BtnNextEnabled = false;
 
 
 		}
 
-		private void lblSearch_Click(object sender, EventArgs e)
-		{
-
-		}
 	}
 }

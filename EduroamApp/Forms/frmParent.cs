@@ -22,6 +22,8 @@ namespace EduroamApp
 		{
 			Summary,
 			SelectMethod,
+			SelectInstitution,
+			SelectProfile,
 			Download,
 			Local,
 			Login,
@@ -40,6 +42,8 @@ namespace EduroamApp
 		// makes forms globally accessible in parent form
 		private frmSummary frmSummary;
 		private frmSelectMethod frmSelectMethod;
+		private frmSelectInstitution frmSelectInstitution;
+		private frmSelectProfile frmSelectProfile;
 		private frmDownload frmDownload;
 		private frmLocal frmLocal;
 		private frmConnect frmConnect;
@@ -58,7 +62,10 @@ namespace EduroamApp
 		public bool SelectAlternative { get; set; }
 		public bool EduroamAvailable { get; set; }
 		public DateTime CertValidFrom { get; set; }
-		public EapConfig eapConfig { get; set;  }
+		public EapConfig eapConfig { get; set; }
+		public int? idProviderId {get; set;}
+
+		public Font font;
 		public frmParent()
 		{
 			// starts GeoCoordinateWatcher when app starts
@@ -156,15 +163,55 @@ namespace EduroamApp
 				// next form depends on radio button selection
 				case FormId.SelectMethod:
 					SelfExtractFlag = false;
-					if (frmSelectMethod.GoToForm() == 3) LoadFrmDownload();
+					if (frmSelectMethod.newProfile) LoadFrmSelectInstitution();
 					else
 					{
-						LocalFileType = "EAPCONFIG";
+
 						LoadFrmLocal();
 					}
 					break;
 
+				case FormId.SelectInstitution:
+					System.Diagnostics.Debug.WriteLine("idproviderid:"+idProviderId);
+					if (!idProviderId.HasValue)
+					{
+						MessageBox.Show("Please select an institution.",
+							"Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						break;
+					}
+					LoadFrmSelectProfile();
+					break;
+
+
+				case FormId.SelectProfile:
+					string profileId = frmSelectProfile.ProfileId;
+					if (string.IsNullOrEmpty(profileId))
+					{
+						MessageBox.Show("Please select a Profile.",
+							"Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						break;
+					}
+					try
+					{
+						eapConfig = DownloadEapConfig(profileId);
+					}
+					catch (EduroamAppUserError ex) // TODO: register this in some higher level
+					{
+						MessageBox.Show(
+							ex.UserFacingMessage,
+							"eduroam - Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+					}
+					if (eapConfig != null)
+					{
+						LoadFrmSummary();
+					}
+					else if (!string.IsNullOrEmpty(RedirectUrl))
+					{
+						LoadFrmRedirect();
+					}
+					break;
 				// next form depends on if downloaded config contains redirect url or not
+				/*
 				case FormId.Download:
 					string profileId = frmDownload.ProfileId;
 					try
@@ -186,6 +233,7 @@ namespace EduroamApp
 						LoadFrmRedirect();
 					}
 					break;
+				*/
 
 				// opens summary form if config is not null
 				case FormId.Local:
@@ -240,6 +288,14 @@ namespace EduroamApp
 				case FormId.SelectMethod:
 					if (ComesFromSelfExtract) SelfExtractFlag = true; // enables back button if config file included in self extract
 					LoadFrmSelectMethod();
+					break;
+
+				case FormId.SelectInstitution:
+					idProviderId = null;
+					LoadFrmSelectInstitution();
+					break;
+				case FormId.SelectProfile:
+					LoadFrmSelectProfile();
 					break;
 				case FormId.Download:
 					LoadFrmDownload();
@@ -458,10 +514,31 @@ namespace EduroamApp
 			frmSelectMethod = new frmSelectMethod(this);
 			currentFormId = FormId.SelectMethod;
 			lblTitle.Text = "Select configuration source";
-			btnNext.Enabled = true;
+			//btnNext.Text = "Setup Eduroam";
+			btnNext.Visible = false;
 			// if config file exists in self extract but user wants to choose another institution
+			//btnBack.Visible = ComesFromSelfExtract;
 			btnBack.Visible = ComesFromSelfExtract;
 			LoadNewForm(frmSelectMethod);
+		}
+
+		public void LoadFrmSelectInstitution()
+		{
+			currentFormId = FormId.SelectInstitution;
+			frmSelectInstitution = new frmSelectInstitution(this);
+			btnNext.Enabled = !reload;
+			btnNext.Visible = true;
+			btnNext.Text = "Next >";
+			btnBack.Enabled = true;
+			btnBack.Visible = true;
+			LoadNewForm(frmSelectInstitution);
+		}
+
+		public void LoadFrmSelectProfile()
+		{
+			currentFormId = FormId.SelectProfile;
+			frmSelectProfile = new frmSelectProfile(this, (int) idProviderId);
+			LoadNewForm(frmSelectProfile);
 		}
 
 		/// <summary>
@@ -473,6 +550,7 @@ namespace EduroamApp
 			currentFormId = FormId.Download;
 			lblTitle.Text = "Select your institution";
 			btnNext.Enabled = !reload;
+			btnNext.Visible = true;
 			btnNext.Text = "Next >";
 			btnBack.Enabled = true;
 			btnBack.Visible = true;
@@ -484,10 +562,12 @@ namespace EduroamApp
 		/// </summary>
 		public void LoadFrmLocal()
 		{
+			LocalFileType = "EAPCONFIG";
 			if (reload) frmLocal = new frmLocal(this);
 			currentFormId = FormId.Local;
 			lblTitle.Text = "Select EAP-config file";
 			btnNext.Enabled = true;
+			btnNext.Visible = true;
 			btnNext.Text = "Next >";
 			btnBack.Enabled = true;
 			btnBack.Visible = true;
@@ -569,29 +649,18 @@ namespace EduroamApp
 		}
 
 		// adds lines to panels on parent form
-		private void pnlNavTop_Paint(object sender, PaintEventArgs e)
+		/*private void pnlNavTop_Paint(object sender, PaintEventArgs e)
 		{
 			Pen grayPen = new Pen(Color.LightGray);
-			int width = pnlNavTop.Width;
+			//int width = pnlNavTop.Width;
 
 			Point point1 = new Point(0, 0);
-			Point point2 = new Point(width, 0);
+			//Point point2 = new Point(width, 0);
 
 			// Draw line to screen.
 			e.Graphics.DrawLine(grayPen, point1, point2);
-		}
-		private void pnlLogoRight_Paint(object sender, PaintEventArgs e)
-		{
-			Pen grayPen = new Pen(Color.LightGray);
-			int width = pnlLogoRight.Width;
-			int height = pnlLogoRight.Height;
+		}*/
 
-			Point point1 = new Point(width-1, 0);
-			Point point2 = new Point(width-1, height);
-
-			// Draw line to screen.
-			e.Graphics.DrawLine(grayPen, point1, point2);
-		}
 
 		/// <summary>
 		/// Empties both logo controls and makes them invisible.
@@ -617,7 +686,7 @@ namespace EduroamApp
 			Close();
 		}
 
-		// FormClosed listener
+		// FormClosed listene
 		private void frmParent_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			// deletes bad profile on application exit if connection was unsuccessful
@@ -625,6 +694,16 @@ namespace EduroamApp
 			{
 				ConnectToEduroam.RemoveAllProfiles();
 			}
+		}
+
+		private void button1_Click(object sender, EventArgs e)
+		{
+
+		}
+
+		private void pnlNavigation_Paint(object sender, PaintEventArgs e)
+		{
+
 		}
 	}
 }

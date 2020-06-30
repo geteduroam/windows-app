@@ -114,6 +114,18 @@
   <ItemGroup>
     <Compile Include="Classes\FileDialog.cs" />
     <Compile Include="Classes\ImageFunctions.cs" />
+    <Compile Include="Forms\frmSelectProfile.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmSelectProfile.Designer.cs">
+      <DependentUpon>frmSelectProfile.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\frmSelectInstitution.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\frmSelectInstitution.Designer.cs">
+      <DependentUpon>frmSelectInstitution.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\frmRedirect.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -182,6 +194,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Forms\frmSelectProfile.resx">
+      <DependentUpon>frmSelectProfile.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\frmSelectInstitution.resx">
+      <DependentUpon>frmSelectInstitution.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmRedirect.resx">
       <DependentUpon>frmRedirect.cs</DependentUpon>
     </EmbeddedResource>

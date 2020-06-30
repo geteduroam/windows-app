@@ -36,31 +36,29 @@ namespace EduroamApp
 			string webAddress = eapConfig.InstitutionInfo.WebAddress.ToLower();
 			string emailAddress = eapConfig.InstitutionInfo.EmailAddress.ToLower();
 			string nextOrConnect = eapConfig.AuthenticationMethods.First().EapType == EapType.TLS ? "Connect" : "Next";
-
+			string description = eapConfig.InstitutionInfo.Description;
+			frmParent.BtnNextEnabled = true;
 			// displays institution name
 			lblInstName.Text =  instName;
 			// displays prompt to accept Terms of use if they exist
 			if (string.IsNullOrEmpty(tou))
 			{
-				lblToU.Location = new Point(3, 19);
-				lblToU.Text = "Press " + nextOrConnect + " to continue.";
-				chkAgree.Checked = true;
+				pnlTerms.Visible = false;
 			}
 			else
 			{
-				lblToU.Text = "Agree to the Terms of Use and press " + nextOrConnect + " to continue.";
-				chkAgree.Text = "I agree to the";
-				lnkToU.Text = "Terms of Use";
 				termsOfUse = tou;
-				chkAgree.Visible = true;
 				lnkToU.Visible = true;
-				chkAgree.Checked = false;
-				chkAgree.Focus();
+
+
 			}
-			// displays website, email and phone number
+			// displays website, email, phone number
 			lblWeb.Text = webAddress;
 			lblEmail.Text = emailAddress;
 			lblPhone.Text = eapConfig.InstitutionInfo.Phone;
+
+			// display profile description
+			lblDesc.Text = description;
 
 
 
@@ -133,6 +131,7 @@ namespace EduroamApp
 				{
 					frmParent.WebLogo.Visible = true;
 					frmParent.WebLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight);
+
 				}
 				else // other filetypes (jpg, png etc.)
 				{
@@ -158,7 +157,12 @@ namespace EduroamApp
 				}
 			}
 
-			// TODO: use ConnectToEduroam.LookForWarningsInEapConfig(eapConfig)
+			lblWarnings.Text = "";
+			var warnings = ConnectToEduroam.LookForWarningsInEapConfig(eapConfig).ToList();
+			foreach ((bool, string) warning in warnings)
+			{
+				lblWarnings.Text += warning.Item1 + warning.Item2 + "\n";
+			}
 
 		}
 
@@ -296,11 +300,6 @@ namespace EduroamApp
 			return (null, "exception occured");
 		}
 
-		// enables Next button if user agrees to Terms of Use
-		private void chkAgree_CheckedChanged(object sender, EventArgs e)
-		{
-			frmParent.BtnNextEnabled = chkAgree.Checked;
-		}
 
 		private void btnSelectInst_Click(object sender, EventArgs e)
 		{

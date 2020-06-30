@@ -120,9 +120,6 @@
   <data name="label1.Text" xml:space="preserve">
     <value>In order to connect to eduroam, you must install a configuration file.
 
-We recommend that you choose to download it automatically from the internet.
-If you have a local configuration file on your computer, you may choose to use it instead.
-
-</value>
+Click "Download New Profile" to find a profile from your institution online or click "Upload Profile" to use a profile you already have downloaded.</value>
   </data>
 </root>
