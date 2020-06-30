@@ -36,22 +36,22 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.btnCancel = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.webEduroamLogo = new System.Windows.Forms.WebBrowser();
             this.lblTitle = new System.Windows.Forms.Label();
-            this.webLogo = new System.Windows.Forms.WebBrowser();
+            this.pnlLogo = new System.Windows.Forms.Panel();
             this.pbxLogo = new System.Windows.Forms.PictureBox();
+            this.webEduroamLogo = new System.Windows.Forms.WebBrowser();
+            this.webLogo = new System.Windows.Forms.WebBrowser();
             this.pnlContent = new System.Windows.Forms.Panel();
             this.pnlRightMargin = new System.Windows.Forms.Panel();
             this.pnlLeftMargin = new System.Windows.Forms.Panel();
             this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.pnlLogo = new System.Windows.Forms.Panel();
             this.pnlNavigation.SuspendLayout();
             this.tableLayoutPanelButtons.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.pnlLogo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).BeginInit();
             this.pnlContent.SuspendLayout();
-            this.pnlLogo.SuspendLayout();
             this.SuspendLayout();
             // 
             // pnlNavigation
@@ -149,6 +149,38 @@
             this.panel1.Size = new System.Drawing.Size(529, 116);
             this.panel1.TabIndex = 4;
             // 
+            // lblTitle
+            // 
+            this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTitle.Location = new System.Drawing.Point(13, 82);
+            this.lblTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblTitle.Name = "lblTitle";
+            this.lblTitle.Size = new System.Drawing.Size(503, 29);
+            this.lblTitle.TabIndex = 7;
+            this.lblTitle.Text = "Connection status";
+            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // pnlLogo
+            // 
+            this.pnlLogo.Controls.Add(this.btnBack);
+            this.pnlLogo.Controls.Add(this.pbxLogo);
+            this.pnlLogo.Controls.Add(this.webEduroamLogo);
+            this.pnlLogo.Controls.Add(this.webLogo);
+            this.pnlLogo.Location = new System.Drawing.Point(12, 3);
+            this.pnlLogo.Name = "pnlLogo";
+            this.pnlLogo.Size = new System.Drawing.Size(504, 76);
+            this.pnlLogo.TabIndex = 12;
+            // 
+            // pbxLogo
+            // 
+            this.pbxLogo.Location = new System.Drawing.Point(155, 9);
+            this.pbxLogo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pbxLogo.Name = "pbxLogo";
+            this.pbxLogo.Size = new System.Drawing.Size(195, 67);
+            this.pbxLogo.TabIndex = 9;
+            this.pbxLogo.TabStop = false;
+            this.pbxLogo.Visible = false;
+            // 
             // webEduroamLogo
             // 
             this.webEduroamLogo.AllowWebBrowserDrop = false;
@@ -163,17 +195,6 @@
             this.webEduroamLogo.Size = new System.Drawing.Size(173, 66);
             this.webEduroamLogo.TabIndex = 11;
             this.webEduroamLogo.WebBrowserShortcutsEnabled = false;
-            // 
-            // lblTitle
-            // 
-            this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitle.Location = new System.Drawing.Point(13, 82);
-            this.lblTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.lblTitle.Name = "lblTitle";
-            this.lblTitle.Size = new System.Drawing.Size(503, 29);
-            this.lblTitle.TabIndex = 7;
-            this.lblTitle.Text = "Connection status";
-            this.lblTitle.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // webLogo
             // 
@@ -190,16 +211,6 @@
             this.webLogo.Url = new System.Uri("", System.UriKind.Relative);
             this.webLogo.Visible = false;
             this.webLogo.WebBrowserShortcutsEnabled = false;
-            // 
-            // pbxLogo
-            // 
-            this.pbxLogo.Location = new System.Drawing.Point(155, 9);
-            this.pbxLogo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.pbxLogo.Name = "pbxLogo";
-            this.pbxLogo.Size = new System.Drawing.Size(195, 67);
-            this.pbxLogo.TabIndex = 9;
-            this.pbxLogo.TabStop = false;
-            this.pbxLogo.Visible = false;
             // 
             // pnlContent
             // 
@@ -239,17 +250,6 @@
             this.notifyIcon.Text = "geteduroam";
             this.notifyIcon.Visible = true;
             // 
-            // pnlLogo
-            // 
-            this.pnlLogo.Controls.Add(this.btnBack);
-            this.pnlLogo.Controls.Add(this.pbxLogo);
-            this.pnlLogo.Controls.Add(this.webEduroamLogo);
-            this.pnlLogo.Controls.Add(this.webLogo);
-            this.pnlLogo.Location = new System.Drawing.Point(12, 3);
-            this.pnlLogo.Name = "pnlLogo";
-            this.pnlLogo.Size = new System.Drawing.Size(504, 76);
-            this.pnlLogo.TabIndex = 12;
-            // 
             // frmParent
             // 
             this.AcceptButton = this.btnNext;
@@ -273,9 +273,9 @@
             this.tableLayoutPanelButtons.ResumeLayout(false);
             this.tableLayoutPanel1.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.pnlLogo.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).EndInit();
             this.pnlContent.ResumeLayout(false);
-            this.pnlLogo.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
