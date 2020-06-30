@@ -5,17 +5,16 @@ namespace EduroamConfigure
 {
     /// <summary>
     /// User data XML generator.
-    /// Generates user data for the following EAP types:
-    /// - PEAP-MSCHAPv2 (25/26)
-    /// - TTLS (21) [NOT YET FUNCTIONAL]
-    /// 
+    /// </summary>
+    /// <remarks>
     /// Documentation:
+    ///
     /// https://docs.microsoft.com/en-us/windows/win32/eaphost/eaphostusercredentialsschema-schema
     /// https://docs.microsoft.com/en-us/windows/win32/eaphost/user-profiles
     /// https://github.com/rozmansi/WLANSetEAPUserData/tree/master/Examples
     /// C:\Windows\schemas\EAPMethods
     /// C:\Windows\schemas\EAPHost
-    /// </summary>
+    /// </remarks>
     class UserDataXml
     {
         // Namespaces:

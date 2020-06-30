@@ -7,19 +7,18 @@ namespace EduroamConfigure
 {
     /// <summary>
     /// Wireless profile XML generator.
-    /// Can construct wireless profiles for the following EAP types:
-    /// - TLS (13)
-    /// - PEAP-MSCHAPv2 (25/26)
-    /// - TTLS (21) [NOT YET FUNCTIONAL]
-    ///
-    /// Documentation of the XML format:
-    ///     https://docs.microsoft.com/en-us/windows/win32/nativewifi/wlan-profileschema-elements
-    ///     https://docs.microsoft.com/en-us/windows/win32/nativewifi/onexschema-elements
-    ///     https://docs.microsoft.com/en-us/windows/win32/eaphost/eaptlsconnectionpropertiesv1schema-servervalidationparameters-complextype
-    ///     https://docs.microsoft.com/en-us/powershell/module/vpnclient/new-eapconfiguration?view=win10-ps
-    ///     https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-gpwl/7fda6c4b-0347-466c-926f-0e7e45a0aa7a
-    ///     C:\Windows\schemas\EAPMethods
     /// </summary>
+    /// <remarks>
+    /// Documentation of the XML format:
+    /// 
+    /// https://docs.microsoft.com/en-us/windows/win32/nativewifi/wlan-profileschema-elements
+    /// https://docs.microsoft.com/en-us/windows/win32/nativewifi/onexschema-elements
+    /// https://docs.microsoft.com/en-us/windows/win32/eaphost/eaptlsconnectionpropertiesv1schema-servervalidationparameters-complextype
+    /// https://docs.microsoft.com/en-us/powershell/module/vpnclient/new-eapconfiguration?view=win10-ps
+    /// https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-gpwl/7fda6c4b-0347-466c-926f-0e7e45a0aa7a
+    /// C:\Windows\schemas\EAPMethods
+    /// C:\Windows\schemas\EAPHost
+    /// </remarks>
     class ProfileXml
     {
         // Namespaces:

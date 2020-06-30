@@ -284,7 +284,7 @@ namespace EduroamConfigure
 
                 // get list of strings of CA certificates
                 List<string> certAuths = serverSideCredentialXml
-                    .Elements().Where(nameIs("CA"))
+                    .Elements().Where(nameIs("CA")) // TODO: <CA format="X.509" encoding="base64"> is assumed, check schema
                     .Select(xElement => (string)xElement)
                     .ToList();
 
@@ -298,7 +298,7 @@ namespace EduroamConfigure
 
                 // user certificate
                 var clientCert = (string)clientSideCredentialXml
-                    ?.Elements().FirstOrDefault(nameIs("ClientCertificate"));
+                    ?.Elements().FirstOrDefault(nameIs("ClientCertificate")); // TODO: check schema for supported formats
                 var clientCertPasswd = (string)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("Passphrase"));
 
