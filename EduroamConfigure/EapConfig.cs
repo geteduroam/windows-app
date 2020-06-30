@@ -26,6 +26,11 @@ namespace EduroamConfigure
             AuthenticationMethods = authenticationMethods;
             CredentialApplicabilities = credentialApplicabilities;
             InstitutionInfo = institutionInfo;
+
+            AuthenticationMethods.ForEach(authMethod =>
+            {
+                authMethod.EapConfig = this;
+            });
         }
 
 
@@ -35,6 +40,7 @@ namespace EduroamConfigure
         public class AuthenticationMethod
         {
             // Properties
+            public EapConfig EapConfig { get; set; } // reference to parent EapConfig
             public EapType EapType { get; }
             public InnerAuthType InnerAuthType { get; }
             public List<string> CertificateAuthorities { get; } // base64 encoded DER certificate
@@ -176,16 +182,16 @@ namespace EduroamConfigure
         /// </summary>
         public class CredentialApplicability
         {
-            IEEE802x NetworkType { get; }
+            public IEEE802x NetworkType { get; }
 
             // IEEE80211 only:
-            string Ssid { get; } // Wifi SSID
-            string ConsortiumOid { get; } // Hotspot2.0
-            string MinRsnProto { get; } // "TKIP" or "CCMP"
+            public string Ssid { get; } // Wifi SSID, TODO: use
+            public string ConsortiumOid { get; } // Hotspot2.0
+            public string MinRsnProto { get; } // "TKIP" or "CCMP", TODO: use
 
 
             // IEEE8023 only:
-            string NetworkId { get; }
+            public string NetworkId { get; }
 
             private CredentialApplicability(
                 IEEE802x networkType,
@@ -211,7 +217,7 @@ namespace EduroamConfigure
                     IEEE802x.IEEE80211,
                     ssid,
                     consortiumOid,
-                    minRsnProto,
+                    minRsnProto ?? "CCMP",
                     null);
             }
 

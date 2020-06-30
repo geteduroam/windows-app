@@ -19,7 +19,8 @@ namespace EduroamConfigure
         public AvailableNetworkPack NetworkPack { get; }
         public bool IsAvailable { get; }
         public Guid InterfaceId { get; }
-        
+
+        // TODO: Add support for Hotspot2.0
         // TODO: Add support for Wired 801x
 
         private EduroamNetwork(Guid interfaceId)
