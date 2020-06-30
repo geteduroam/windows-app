@@ -97,6 +97,7 @@ namespace EduroamApp
 			this.lbInstitution.Size = new System.Drawing.Size(484, 244);
 			this.lbInstitution.TabIndex = 40;
 			this.lbInstitution.SelectedIndexChanged += new System.EventHandler(this.lbInstitution_SelectedIndexChanged);
+			this.lbInstitution.DoubleClick += new System.EventHandler(this.lbInstitution_DoubleClick);
 			//
 			// tbSearch
 			//

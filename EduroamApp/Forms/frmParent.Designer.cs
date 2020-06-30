@@ -36,7 +36,6 @@ namespace EduroamApp
 			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
 			this.btnCancel = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
-			this.tlpLogo = new System.Windows.Forms.TableLayoutPanel();
 			this.webEduroamLogo = new System.Windows.Forms.WebBrowser();
 			this.lblTitle = new System.Windows.Forms.Label();
 			this.webLogo = new System.Windows.Forms.WebBrowser();
@@ -50,7 +49,6 @@ namespace EduroamApp
 			this.tableLayoutPanelButtons.SuspendLayout();
 			this.tableLayoutPanel1.SuspendLayout();
 			this.panel1.SuspendLayout();
-			this.tlpLogo.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).BeginInit();
 			this.pnlContent.SuspendLayout();
 			this.pnlLogo.SuspendLayout();
@@ -61,7 +59,7 @@ namespace EduroamApp
 			this.pnlNavigation.BackColor = System.Drawing.Color.White;
 			this.pnlNavigation.Controls.Add(this.tableLayoutPanelButtons);
 			this.pnlNavigation.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.pnlNavigation.Location = new System.Drawing.Point(0, 549);
+			this.pnlNavigation.Location = new System.Drawing.Point(0, 501);
 			this.pnlNavigation.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlNavigation.Name = "pnlNavigation";
 			this.pnlNavigation.Size = new System.Drawing.Size(529, 83);
@@ -102,7 +100,7 @@ namespace EduroamApp
 			// btnBack
 			//
 			this.btnBack.BackColor = System.Drawing.Color.White;
-			this.btnBack.Location = new System.Drawing.Point(6, 8);
+			this.btnBack.Location = new System.Drawing.Point(6, 9);
 			this.btnBack.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.btnBack.Name = "btnBack";
 			this.btnBack.Size = new System.Drawing.Size(80, 37);
@@ -151,28 +149,12 @@ namespace EduroamApp
 			this.panel1.Size = new System.Drawing.Size(529, 116);
 			this.panel1.TabIndex = 4;
 			//
-			// tlpLogo
-			//
-			this.tlpLogo.ColumnCount = 3;
-			this.tlpLogo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 47.46269F));
-			this.tlpLogo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 52.53731F));
-			this.tlpLogo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 159F));
-			this.tlpLogo.Controls.Add(this.webEduroamLogo, 1, 0);
-			this.tlpLogo.Controls.Add(this.btnBack, 0, 0);
-			this.tlpLogo.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.tlpLogo.Location = new System.Drawing.Point(0, 0);
-			this.tlpLogo.Name = "tlpLogo";
-			this.tlpLogo.RowCount = 1;
-			this.tlpLogo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-			this.tlpLogo.Size = new System.Drawing.Size(504, 76);
-			this.tlpLogo.TabIndex = 12;
-			//
 			// webEduroamLogo
 			//
 			this.webEduroamLogo.AllowWebBrowserDrop = false;
 			this.webEduroamLogo.Anchor = System.Windows.Forms.AnchorStyles.None;
 			this.webEduroamLogo.IsWebBrowserContextMenuEnabled = false;
-			this.webEduroamLogo.Location = new System.Drawing.Point(167, 5);
+			this.webEduroamLogo.Location = new System.Drawing.Point(164, 10);
 			this.webEduroamLogo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.webEduroamLogo.MinimumSize = new System.Drawing.Size(30, 31);
 			this.webEduroamLogo.Name = "webEduroamLogo";
@@ -197,13 +179,13 @@ namespace EduroamApp
 			//
 			this.webLogo.AllowWebBrowserDrop = false;
 			this.webLogo.IsWebBrowserContextMenuEnabled = false;
-			this.webLogo.Location = new System.Drawing.Point(243, 116);
+			this.webLogo.Location = new System.Drawing.Point(170, 10);
 			this.webLogo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.webLogo.MinimumSize = new System.Drawing.Size(30, 31);
 			this.webLogo.Name = "webLogo";
 			this.webLogo.ScriptErrorsSuppressed = true;
 			this.webLogo.ScrollBarsEnabled = false;
-			this.webLogo.Size = new System.Drawing.Size(195, 71);
+			this.webLogo.Size = new System.Drawing.Size(152, 66);
 			this.webLogo.TabIndex = 10;
 			this.webLogo.Url = new System.Uri("", System.UriKind.Relative);
 			this.webLogo.Visible = false;
@@ -211,7 +193,7 @@ namespace EduroamApp
 			//
 			// pbxLogo
 			//
-			this.pbxLogo.Location = new System.Drawing.Point(26, 114);
+			this.pbxLogo.Location = new System.Drawing.Point(155, 9);
 			this.pbxLogo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pbxLogo.Name = "pbxLogo";
 			this.pbxLogo.Size = new System.Drawing.Size(195, 67);
@@ -224,13 +206,11 @@ namespace EduroamApp
 			this.pnlContent.AutoSize = true;
 			this.pnlContent.BackColor = System.Drawing.Color.White;
 			this.pnlContent.Controls.Add(this.tableLayoutPanel1);
-			this.pnlContent.Controls.Add(this.pbxLogo);
-			this.pnlContent.Controls.Add(this.webLogo);
 			this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.pnlContent.Location = new System.Drawing.Point(10, 116);
 			this.pnlContent.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlContent.Name = "pnlContent";
-			this.pnlContent.Size = new System.Drawing.Size(506, 433);
+			this.pnlContent.Size = new System.Drawing.Size(506, 385);
 			this.pnlContent.TabIndex = 7;
 			//
 			// pnlRightMargin
@@ -240,7 +220,7 @@ namespace EduroamApp
 			this.pnlRightMargin.Location = new System.Drawing.Point(516, 116);
 			this.pnlRightMargin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlRightMargin.Name = "pnlRightMargin";
-			this.pnlRightMargin.Size = new System.Drawing.Size(13, 433);
+			this.pnlRightMargin.Size = new System.Drawing.Size(13, 385);
 			this.pnlRightMargin.TabIndex = 6;
 			//
 			// pnlLeftMargin
@@ -250,7 +230,7 @@ namespace EduroamApp
 			this.pnlLeftMargin.Location = new System.Drawing.Point(0, 116);
 			this.pnlLeftMargin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlLeftMargin.Name = "pnlLeftMargin";
-			this.pnlLeftMargin.Size = new System.Drawing.Size(10, 433);
+			this.pnlLeftMargin.Size = new System.Drawing.Size(10, 385);
 			this.pnlLeftMargin.TabIndex = 5;
 			//
 			// notifyIcon
@@ -261,7 +241,10 @@ namespace EduroamApp
 			//
 			// pnlLogo
 			//
-			this.pnlLogo.Controls.Add(this.tlpLogo);
+			this.pnlLogo.Controls.Add(this.btnBack);
+			this.pnlLogo.Controls.Add(this.pbxLogo);
+			this.pnlLogo.Controls.Add(this.webEduroamLogo);
+			this.pnlLogo.Controls.Add(this.webLogo);
 			this.pnlLogo.Location = new System.Drawing.Point(12, 3);
 			this.pnlLogo.Name = "pnlLogo";
 			this.pnlLogo.Size = new System.Drawing.Size(504, 76);
@@ -272,7 +255,7 @@ namespace EduroamApp
 			this.AcceptButton = this.btnNext;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(529, 632);
+			this.ClientSize = new System.Drawing.Size(529, 584);
 			this.Controls.Add(this.pnlContent);
 			this.Controls.Add(this.pnlRightMargin);
 			this.Controls.Add(this.pnlLeftMargin);
@@ -290,7 +273,6 @@ namespace EduroamApp
 			this.tableLayoutPanelButtons.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
-			this.tlpLogo.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).EndInit();
 			this.pnlContent.ResumeLayout(false);
 			this.pnlLogo.ResumeLayout(false);
@@ -316,7 +298,6 @@ namespace EduroamApp
 		private System.Windows.Forms.Panel pnlLeftMargin;
 		private System.Windows.Forms.TableLayoutPanel tableLayoutPanelButtons;
 		private System.Windows.Forms.NotifyIcon notifyIcon;
-		private System.Windows.Forms.TableLayoutPanel tlpLogo;
 		private System.Windows.Forms.Panel pnlLogo;
 	}
 }

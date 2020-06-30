@@ -467,6 +467,7 @@ namespace EduroamApp
 
 		public PictureBox PbxLogo => pbxLogo;
 		public WebBrowser WebLogo => webLogo;
+		public WebBrowser WebEduroamLogo => webEduroamLogo;
 
 		public bool BtnNextEnabled
 		{
@@ -514,7 +515,7 @@ namespace EduroamApp
 			}
 			else
 			{
-				lblTitle.Text = "Summary";
+				lblTitle.Text = "Profile Info";
 			}
 			if (!reload) btnNext.Enabled = true;
 			btnNext.Text = eapConfig.AuthenticationMethods.First().EapType == EduroamConfigure.EapType.TLS ? "Connect" : "Next >";

@@ -38,8 +38,6 @@ namespace EduroamApp
 			this.gboContactInfo = new System.Windows.Forms.GroupBox();
 			this.lblAlternate = new System.Windows.Forms.Label();
 			this.pnlTop = new System.Windows.Forms.Panel();
-			this.webLogo = new System.Windows.Forms.WebBrowser();
-			this.pbxLogo = new System.Windows.Forms.PictureBox();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.lblDesc = new System.Windows.Forms.Label();
 			this.pnlInstName = new System.Windows.Forms.Panel();
@@ -56,7 +54,6 @@ namespace EduroamApp
 			this.tblContactInfo.SuspendLayout();
 			this.gboContactInfo.SuspendLayout();
 			this.pnlTop.SuspendLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).BeginInit();
 			this.pnlContactInfo.SuspendLayout();
 			this.pnlTerms.SuspendLayout();
 			this.tblSelectInst.SuspendLayout();
@@ -159,7 +156,7 @@ namespace EduroamApp
 			//
 			this.gboContactInfo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.gboContactInfo.Controls.Add(this.tblContactInfo);
-			this.gboContactInfo.Location = new System.Drawing.Point(34, 5);
+			this.gboContactInfo.Location = new System.Drawing.Point(30, 12);
 			this.gboContactInfo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.gboContactInfo.Name = "gboContactInfo";
 			this.gboContactInfo.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -185,8 +182,6 @@ namespace EduroamApp
 			//
 			this.pnlTop.Controls.Add(this.lblYourinst);
 			this.pnlTop.Controls.Add(this.lblInstName);
-			this.pnlTop.Controls.Add(this.webLogo);
-			this.pnlTop.Controls.Add(this.pbxLogo);
 			this.pnlTop.Controls.Add(this.panel1);
 			this.pnlTop.Controls.Add(this.lblDesc);
 			this.pnlTop.Controls.Add(this.pnlInstName);
@@ -195,35 +190,8 @@ namespace EduroamApp
 			this.pnlTop.Location = new System.Drawing.Point(0, 0);
 			this.pnlTop.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlTop.Name = "pnlTop";
-			this.pnlTop.Size = new System.Drawing.Size(513, 223);
+			this.pnlTop.Size = new System.Drawing.Size(513, 160);
 			this.pnlTop.TabIndex = 13;
-			//
-			// webLogo
-			//
-			this.webLogo.AllowWebBrowserDrop = false;
-			this.webLogo.IsWebBrowserContextMenuEnabled = false;
-			this.webLogo.Location = new System.Drawing.Point(166, 169);
-			this.webLogo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.webLogo.MinimumSize = new System.Drawing.Size(30, 31);
-			this.webLogo.Name = "webLogo";
-			this.webLogo.ScriptErrorsSuppressed = true;
-			this.webLogo.ScrollBarsEnabled = false;
-			this.webLogo.Size = new System.Drawing.Size(205, 61);
-			this.webLogo.TabIndex = 12;
-			this.webLogo.Url = new System.Uri("", System.UriKind.Relative);
-			this.webLogo.Visible = false;
-			this.webLogo.WebBrowserShortcutsEnabled = false;
-			//
-			// pbxLogo
-			//
-			this.pbxLogo.Location = new System.Drawing.Point(176, 161);
-			this.pbxLogo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.pbxLogo.Name = "pbxLogo";
-			this.pbxLogo.Size = new System.Drawing.Size(195, 67);
-			this.pbxLogo.TabIndex = 21;
-			this.pbxLogo.TabStop = false;
-			this.pbxLogo.Visible = false;
-			this.pbxLogo.Click += new System.EventHandler(this.pbxLogo_Click);
 			//
 			// panel1
 			//
@@ -292,7 +260,7 @@ namespace EduroamApp
 			this.pnlContactInfo.Controls.Add(this.gboContactInfo);
 			this.pnlContactInfo.Controls.Add(this.pnlTerms);
 			this.pnlContactInfo.Dock = System.Windows.Forms.DockStyle.Top;
-			this.pnlContactInfo.Location = new System.Drawing.Point(0, 223);
+			this.pnlContactInfo.Location = new System.Drawing.Point(0, 160);
 			this.pnlContactInfo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlContactInfo.Name = "pnlContactInfo";
 			this.pnlContactInfo.Size = new System.Drawing.Size(513, 204);
@@ -388,7 +356,6 @@ namespace EduroamApp
 			this.gboContactInfo.PerformLayout();
 			this.pnlTop.ResumeLayout(false);
 			this.pnlTop.PerformLayout();
-			((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).EndInit();
 			this.pnlContactInfo.ResumeLayout(false);
 			this.pnlTerms.ResumeLayout(false);
 			this.pnlTerms.PerformLayout();
@@ -421,8 +388,6 @@ namespace EduroamApp
 		private System.Windows.Forms.Label lblTerms2;
 		private System.Windows.Forms.Label lblDesc;
 		private System.Windows.Forms.Panel pnlTerms;
-		private System.Windows.Forms.WebBrowser webLogo;
-		private System.Windows.Forms.PictureBox pbxLogo;
 		private System.Windows.Forms.Label lblInstName;
 		private System.Windows.Forms.Label lblYourinst;
 	}

@@ -32,6 +32,7 @@ namespace EduroamApp
 		/// </summary>
 		private async void frmDownload_Load(object sender, EventArgs e)
 		{
+			frmParent.WebEduroamLogo.Visible = true;
 			// hides certain controls while loading
 			//HideControls();
 			// displays loading animation while fetching list of institutions
@@ -133,6 +134,11 @@ namespace EduroamApp
 			frmParent.idProviderId = idProviderId;
 			frmParent.BtnNextEnabled = true;
 
+		}
+
+		private void lbInstitution_DoubleClick(object sender, EventArgs e)
+		{
+			frmParent.btnNext_Click(sender, e);
 		}
 
 
