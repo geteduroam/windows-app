@@ -83,6 +83,8 @@ namespace EduroamApp
             webEduroamLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(Properties.Resources.eduroam_logo, webEduroamLogo.Width, webEduroamLogo.Height);
             Icon = Properties.Resources.geteduroam;
 
+
+
             // checks if file came with self extract
             eapConfig = GetSelfExtractingEap();
             if (eapConfig != null)
@@ -101,6 +103,19 @@ namespace EduroamApp
                 LoadFrmSelectMethod();
             }
         }
+
+
+        private void frmParent_Resize(object sender, EventArgs e)
+        {
+            //if the form is minimized  
+            //hide it from the task bar  
+            //and show the system tray icon (represented by the NotifyIcon control)  
+            if (this.WindowState == FormWindowState.Minimized)
+            {
+                Hide();
+            }
+        }
+
 
         public void btnNext_Click(object sender, EventArgs e)
         {
@@ -513,7 +528,7 @@ namespace EduroamApp
         {
             frmSelectMethod = new frmSelectMethod(this);
             currentFormId = FormId.SelectMethod;
-            lblTitle.Text = "Select configuration source";
+            lblTitle.Text = "Configure Eduroam to get started";
             //btnNext.Text = "Setup Eduroam";
             btnNext.Visible = false;
             // if config file exists in self extract but user wants to choose another institution
@@ -526,6 +541,7 @@ namespace EduroamApp
         {
             currentFormId = FormId.SelectInstitution;
             frmSelectInstitution = new frmSelectInstitution(this);
+            lblTitle.Text = "Select your institution";
             btnNext.Enabled = !reload;
             btnNext.Visible = true;
             btnNext.Text = "Next >";
@@ -538,6 +554,7 @@ namespace EduroamApp
         {
             currentFormId = FormId.SelectProfile;
             frmSelectProfile = new frmSelectProfile(this, (int) idProviderId);
+            lblTitle.Text = "Select your profile";
             LoadNewForm(frmSelectProfile);
         }
 
