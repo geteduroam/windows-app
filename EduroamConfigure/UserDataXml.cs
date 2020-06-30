@@ -1,4 +1,6 @@
-﻿using System.Xml.Linq;
+﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace EduroamConfigure
 {
@@ -39,26 +41,22 @@ namespace EduroamConfigure
         /// <summary>
         /// Generates user data xml.
         /// </summary>
-        /// <param name="innerIdentity">Username</param>
+        /// <param name="authMethod">authMethod</param>
+        /// <param name="username">Username</param>
         /// <param name="password">Password</param>
-        /// <param name="outerIdentity">anonymous username, realm will be used for routing</param>
-        /// <param name="eapType">EAP type</param>
-        /// <param name="innerAuthType">inner EAP type</param>
         /// <returns>Complete user data xml as string.</returns>
         public static string CreateUserDataXml(
-            string innerIdentity,
-            string password,
-            string outerIdentity,
-            EapType eapType,
-            InnerAuthType innerAuthType)
+            EapConfig.AuthenticationMethod authMethod,
+            string username,
+            string password)
         {
             XElement newUserData =
                 new XElement(nsEHUC + "EapHostUserCredentials",
                     new XAttribute(XNamespace.Xmlns + "eapCommon", nsEC),
                     new XAttribute(XNamespace.Xmlns + "baseEap", nsBEMUC),
                     new XElement(nsEHUC + "EapMethod",
-                        new XElement(nsEC + "Type", (uint)eapType),
-                        new XElement(nsEC + "AuthorId", eapType == EapType.TTLS ? 311 : 0)
+                        new XElement(nsEC + "Type", (uint)authMethod.EapType),
+                        new XElement(nsEC + "AuthorId", authMethod.EapType == EapType.TTLS ? 311 : 0)
                         //new XElement(nsEC + "AuthorId", "67532") // geant link
                     ),
                     new XElement(nsEHUC + "Credentials",
@@ -69,11 +67,11 @@ namespace EduroamConfigure
                         new XAttribute(XNamespace.Xmlns + "MsChapV2", nsMCUP),
                         new XAttribute(XNamespace.Xmlns + "eapTtls", nsTTLS),
                         EapUserData(
-                            innerIdentity,
+                            username,
                             password,
-                            outerIdentity,
-                            eapType,
-                            innerAuthType
+                            authMethod.ClientOuterIdentity,
+                            authMethod.EapType,
+                            authMethod.InnerAuthType
                         )
                     )
                 );
@@ -108,7 +106,8 @@ namespace EduroamConfigure
             string password,
             string outerIdentity,
             EapType eapType,
-            InnerAuthType innerAuthType)
+            InnerAuthType innerAuthType,
+            string userCertFingerprint = null)
         {
             return (eapType, innerAuthType) switch
             {
@@ -147,7 +146,9 @@ namespace EduroamConfigure
                             new XElement(nsTLS + "Username", outerIdentity),
                             new XElement(nsTLS + "UserCert", // xs:hexBinary
                                 // format fingerprint:
-                                Regex.Replace(Regex.Replace(userCertFingerprint, " ", ""), ".{2}", "$0 ").ToUpperInvariant().Trim()
+                                userCertFingerprint != null
+                                ? Regex.Replace(Regex.Replace(userCertFingerprint, " ", ""), ".{2}", "$0 ").ToUpperInvariant().Trim()
+                                : ""
                             )
                         )
                     ),
@@ -163,7 +164,6 @@ namespace EduroamConfigure
                     ),
 
 
-                // WORK IN PROGRESS
                 (EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => // TODO: matches schema, but produces an error
 
                     new XElement(nsTTLS + "EapTtls",
@@ -178,7 +178,6 @@ namespace EduroamConfigure
                         )
                     ),
 
-                // WORK IN PROGRESS
                 (EapType.TTLS, InnerAuthType.EAP_PEAP_MSCHAPv2) => // TODO: matches schema, but produces an error
 
                     new XElement(nsTTLS + "EapTtls",

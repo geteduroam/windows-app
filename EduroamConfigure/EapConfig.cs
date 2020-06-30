@@ -31,24 +31,45 @@ namespace EduroamConfigure
             // Properties
             public EapType EapType { get; }
             public InnerAuthType InnerAuthType { get; }
-            public List<string> CertificateAuthorities { get; } // TODO: document format, probably DER in base64?
+            public List<string> CertificateAuthorities { get; } // base64 encoded DER certificate
             public List<string> ServerNames { get; }
-            public string ClientCertificate { get; } // TODO: document format, probably PKCS12 in base64?
-            public string ClientCertificatePassphrase { get; }
-            public string ClientOuterIdentity { get; }
-            public string ClientInnerIdentitySuffix { get; }
-            public bool ClientInnerIdentityHint { get; }
+            public string ClientCertificate { get; } // base64 encoded PKCS12 certificate+privkey bundle
+            public string ClientCertificatePassphrase { get; } // passphrase for ^
+            public string ClientOuterIdentity { get; } // also known as: anonymous identity, routing identity
+            public string ClientInnerIdentitySuffix { get; } // realm
+            public bool ClientInnerIdentityHint { get; } // Wether to disallow subrealms or not (see https://github.com/GEANT/CAT/issues/190)
 
             /// <summary>
-            /// Enumerates CertificateAuthorities as X509Certificate2 objects
+            /// Converts and enumerates CertificateAuthorities as X509Certificate2 objects
             /// </summary>
-            public IEnumerable<X509Certificate2> CertificateAuthoritiesAsX509Certificate2() {
+            public IEnumerable<X509Certificate2> CertificateAuthoritiesAsX509Certificate2()
+            {
                 foreach (var ca in CertificateAuthorities)
                 {
                     var cert = new X509Certificate2(Convert.FromBase64String(ca));
-                    cert.FriendlyName = cert.GetNameInfo(X509NameType.SimpleName, false);
+
+                    // sets the friendly name of certificate
+                    if (string.IsNullOrEmpty(cert.FriendlyName))
+                        cert.FriendlyName = cert.GetNameInfo(X509NameType.SimpleName, false);
                     yield return cert;
                 }
+            }
+
+            /// <summary>
+            /// Converts the client certificate base64 data to a X509Certificate2 object
+            /// </summary>
+            public X509Certificate2 ClientCertificateAsX509Certificate2()
+            {
+                var certBytes = Convert.FromBase64String(ClientCertificate);
+                var cert = new X509Certificate2(
+                    certBytes,
+                    ClientCertificatePassphrase,
+                    X509KeyStorageFlags.PersistKeySet);
+
+                // sets the friendly name of certificate
+                if (string.IsNullOrEmpty(cert.FriendlyName))
+                    cert.FriendlyName = cert.GetNameInfo(X509NameType.SimpleName, false);
+                return cert;
             }
 
             /// <summary>

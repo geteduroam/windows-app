@@ -178,12 +178,7 @@ namespace EduroamConfigure
                 // checks if Authentication method contains a client certificate
                 if (!string.IsNullOrEmpty(AuthMethod.ClientCertificate))
                 {
-                    // creates certificate object from base64 encoded cert
-                    var clientCertBytes = Convert.FromBase64String(AuthMethod.ClientCertificate);
-                    var clientCert = new X509Certificate2(clientCertBytes, AuthMethod.ClientCertificatePassphrase, X509KeyStorageFlags.PersistKeySet);
-
-                    // sets friendly name of certificate
-                    clientCert.FriendlyName = clientCert.GetNameInfo(X509NameType.SimpleName, false);
+                    var clientCert = AuthMethod.ClientCertificateAsX509Certificate2();
 
                     // open personal certificate store to add client cert
                     using var personalStore = new X509Store(userCertStoreName, userCertStoreLocation);
@@ -391,29 +386,29 @@ namespace EduroamConfigure
         }
 
         /// <summary>
-        /// Creates user data xml for connecting using credentials.
+        /// Creates and installs user data xml into all network interfaces
         /// </summary>
         /// <param name="username">User's username optionally with realm</param>
         /// <param name="password">User's password.</param>
-        /// <param name="eapType">EapType of installed profike</param>
-        public static void SetupLogin(string username, string password, EapConfig.AuthenticationMethod authMethod)
+        /// <param name="authMethod">AuthMethod of installed profile</param>
+        public static bool SetupLogin(string username, string password, EapConfig.AuthenticationMethod authMethod)
         {
-            // TODO: move into EapAuthMethodInstaller
+            // TODO: move into EapAuthMethodInstaller?
 
             // generates user data xml file
             string userDataXml = UserDataXml.CreateUserDataXml(
-                username, 
-                password,
-                authMethod.ClientOuterIdentity,
-                authMethod.EapType, 
-                authMethod.InnerAuthType);
+                authMethod,
+                username,
+                password);
 
             // sets user data
+            bool anyInstalled = false;
             foreach (EduroamNetwork network in EduroamNetwork.EnumerateEduroamNetworks())
             {
-                SetUserData(network.InterfaceId, EduroamNetwork.Ssid, userDataXml);
+                anyInstalled |= SetUserData(network.InterfaceId, EduroamNetwork.Ssid, userDataXml);
                 // TODO: use return value
             }
+            return anyInstalled;
         }
 
         /// <summary>
