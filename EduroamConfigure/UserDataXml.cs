@@ -182,7 +182,8 @@ namespace EduroamConfigure
 
         public static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
         {
-            bool at_least_win10 = System.Environment.OSVersion.Version.Major >= 10;
+            //bool at_least_win10 = System.Environment.OSVersion.Version.Major >= 10; // TODO: make this work, requires some application manifest
+            var at_least_win10 = true;
             return (eapType, innerAuthType) switch
             {
                 (EapType.TLS, _) => true, // TODO: not really supported yet?
