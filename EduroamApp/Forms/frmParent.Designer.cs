@@ -152,7 +152,7 @@
             // lblTitle
             // 
             this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTitle.Location = new System.Drawing.Point(13, 72);
+            this.lblTitle.Location = new System.Drawing.Point(13, 82);
             this.lblTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblTitle.Name = "lblTitle";
             this.lblTitle.Size = new System.Drawing.Size(503, 29);
@@ -168,7 +168,7 @@
             this.pnlLogo.Controls.Add(this.webLogo);
             this.pnlLogo.Location = new System.Drawing.Point(12, 3);
             this.pnlLogo.Name = "pnlLogo";
-            this.pnlLogo.Size = new System.Drawing.Size(504, 66);
+            this.pnlLogo.Size = new System.Drawing.Size(504, 76);
             this.pnlLogo.TabIndex = 12;
             // 
             // pbxLogo
@@ -186,7 +186,7 @@
             this.webEduroamLogo.AllowWebBrowserDrop = false;
             this.webEduroamLogo.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.webEduroamLogo.IsWebBrowserContextMenuEnabled = false;
-            this.webEduroamLogo.Location = new System.Drawing.Point(164, 5);
+            this.webEduroamLogo.Location = new System.Drawing.Point(164, 10);
             this.webEduroamLogo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.webEduroamLogo.MinimumSize = new System.Drawing.Size(30, 31);
             this.webEduroamLogo.Name = "webEduroamLogo";
