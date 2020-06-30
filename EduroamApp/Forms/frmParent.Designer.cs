@@ -146,7 +146,7 @@ namespace EduroamApp
 			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(529, 116);
+			this.panel1.Size = new System.Drawing.Size(529, 122);
 			this.panel1.TabIndex = 4;
 			//
 			// lblTitle
@@ -218,30 +218,30 @@ namespace EduroamApp
 			this.pnlContent.BackColor = System.Drawing.Color.White;
 			this.pnlContent.Controls.Add(this.tableLayoutPanel1);
 			this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.pnlContent.Location = new System.Drawing.Point(10, 116);
+			this.pnlContent.Location = new System.Drawing.Point(10, 122);
 			this.pnlContent.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlContent.Name = "pnlContent";
-			this.pnlContent.Size = new System.Drawing.Size(506, 385);
+			this.pnlContent.Size = new System.Drawing.Size(506, 379);
 			this.pnlContent.TabIndex = 7;
 			//
 			// pnlRightMargin
 			//
 			this.pnlRightMargin.BackColor = System.Drawing.Color.White;
 			this.pnlRightMargin.Dock = System.Windows.Forms.DockStyle.Right;
-			this.pnlRightMargin.Location = new System.Drawing.Point(516, 116);
+			this.pnlRightMargin.Location = new System.Drawing.Point(516, 122);
 			this.pnlRightMargin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlRightMargin.Name = "pnlRightMargin";
-			this.pnlRightMargin.Size = new System.Drawing.Size(13, 385);
+			this.pnlRightMargin.Size = new System.Drawing.Size(13, 379);
 			this.pnlRightMargin.TabIndex = 6;
 			//
 			// pnlLeftMargin
 			//
 			this.pnlLeftMargin.BackColor = System.Drawing.Color.White;
 			this.pnlLeftMargin.Dock = System.Windows.Forms.DockStyle.Left;
-			this.pnlLeftMargin.Location = new System.Drawing.Point(0, 116);
+			this.pnlLeftMargin.Location = new System.Drawing.Point(0, 122);
 			this.pnlLeftMargin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlLeftMargin.Name = "pnlLeftMargin";
-			this.pnlLeftMargin.Size = new System.Drawing.Size(10, 385);
+			this.pnlLeftMargin.Size = new System.Drawing.Size(10, 379);
 			this.pnlLeftMargin.TabIndex = 5;
 			//
 			// notifyIcon
