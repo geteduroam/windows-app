@@ -127,8 +127,8 @@ namespace EduroamApp
 				// deactivate eduroam logo if institute has its own logo
 				frmParent.WebEduroamLogo.Visible = false;
 				// gets size of container
-				int cWidth = frmParent.PbxLogo.Width;
-				int cHeight = frmParent.PbxLogo.Height;
+				int cWidth = frmParent.WebLogo.Width;
+				int cHeight = frmParent.WebLogo.Height;
 
 				if (logoMimeType == "image/svg+xml")
 				{
