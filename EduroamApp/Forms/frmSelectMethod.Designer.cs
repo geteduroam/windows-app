@@ -35,7 +35,7 @@
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(48, 12);
+            this.label1.Location = new System.Drawing.Point(54, 47);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(405, 63);
@@ -50,7 +50,7 @@
             this.btnNewProfile.BackColor = System.Drawing.SystemColors.Highlight;
             this.btnNewProfile.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnNewProfile.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.btnNewProfile.Location = new System.Drawing.Point(93, 78);
+            this.btnNewProfile.Location = new System.Drawing.Point(95, 179);
             this.btnNewProfile.Name = "btnNewProfile";
             this.btnNewProfile.Size = new System.Drawing.Size(326, 95);
             this.btnNewProfile.TabIndex = 3;
@@ -62,7 +62,7 @@
             // 
             this.btnLocalProfile.BackColor = System.Drawing.Color.White;
             this.btnLocalProfile.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnLocalProfile.Location = new System.Drawing.Point(167, 179);
+            this.btnLocalProfile.Location = new System.Drawing.Point(169, 280);
             this.btnLocalProfile.Name = "btnLocalProfile";
             this.btnLocalProfile.Size = new System.Drawing.Size(169, 40);
             this.btnLocalProfile.TabIndex = 4;
