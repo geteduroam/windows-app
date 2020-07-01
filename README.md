@@ -12,13 +12,14 @@ This application helps set up eduroam on end-users' computers by automatically f
 
 ### Prerequisites
 
- * Visual Studio 2017 (https://visualstudio.microsoft.com/downloads/)
+ * Visual Studio 2019 (https://visualstudio.microsoft.com/downloads/) with C# 8.0
  * .NET Framework 4.7.1
- 
+
 ### Running the app
 
- * Compile the project to create EduroamApp.exe (in EduroamApp\EduroamApp\bin\Debug). 
+ * Compile the project to create EduroamApp.exe (in EduroamApp\EduroamApp\bin\Release).
 	* This executable can be run independently from the rest of the solution, so you can move it to any desired directory.
+
 
 ## Signing
 
