@@ -34,7 +34,19 @@
             this.lblInst = new System.Windows.Forms.Label();
             this.lblRules = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lblStatus = new System.Windows.Forms.Label();
+            this.pbxStatus = new System.Windows.Forms.PictureBox();
+            this.lblConnectFailed = new System.Windows.Forms.Label();
+            this.pnlEduNotAvail = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.lblEdu2 = new System.Windows.Forms.Label();
+            this.lblEduNotAvail = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxStatus)).BeginInit();
+            this.pnlEduNotAvail.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -95,15 +107,129 @@
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.lblStatus);
+            this.panel1.Controls.Add(this.pbxStatus);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.lblRules);
             this.panel1.Controls.Add(this.txtUsername);
             this.panel1.Controls.Add(this.lblInst);
             this.panel1.Controls.Add(this.txtPassword);
-            this.panel1.Location = new System.Drawing.Point(82, 69);
+            this.panel1.Location = new System.Drawing.Point(32, 21);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(521, 243);
             this.panel1.TabIndex = 4;
+            // 
+            // lblStatus
+            // 
+            this.lblStatus.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblStatus.Location = new System.Drawing.Point(19, 131);
+            this.lblStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblStatus.Name = "lblStatus";
+            this.lblStatus.Size = new System.Drawing.Size(450, 63);
+            this.lblStatus.TabIndex = 8;
+            this.lblStatus.Text = "Connecting...";
+            this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.lblStatus.Visible = false;
+            // 
+            // pbxStatus
+            // 
+            this.pbxStatus.Image = global::EduroamApp.Properties.Resources.loading_gif;
+            this.pbxStatus.Location = new System.Drawing.Point(236, 199);
+            this.pbxStatus.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pbxStatus.Name = "pbxStatus";
+            this.pbxStatus.Size = new System.Drawing.Size(16, 16);
+            this.pbxStatus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pbxStatus.TabIndex = 9;
+            this.pbxStatus.TabStop = false;
+            this.pbxStatus.Visible = false;
+            // 
+            // lblConnectFailed
+            // 
+            this.lblConnectFailed.Location = new System.Drawing.Point(31, 69);
+            this.lblConnectFailed.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblConnectFailed.Name = "lblConnectFailed";
+            this.lblConnectFailed.Size = new System.Drawing.Size(415, 78);
+            this.lblConnectFailed.TabIndex = 11;
+            this.lblConnectFailed.Text = "Press Back if you want to try again, connect to a different institution or select" +
+    " a different config file.";
+            this.lblConnectFailed.Visible = false;
+            // 
+            // pnlEduNotAvail
+            // 
+            this.pnlEduNotAvail.Controls.Add(this.lblConnectFailed);
+            this.pnlEduNotAvail.Controls.Add(this.label2);
+            this.pnlEduNotAvail.Controls.Add(this.label3);
+            this.pnlEduNotAvail.Controls.Add(this.label4);
+            this.pnlEduNotAvail.Controls.Add(this.label5);
+            this.pnlEduNotAvail.Controls.Add(this.lblEdu2);
+            this.pnlEduNotAvail.Controls.Add(this.lblEduNotAvail);
+            this.pnlEduNotAvail.Location = new System.Drawing.Point(55, 204);
+            this.pnlEduNotAvail.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pnlEduNotAvail.Name = "pnlEduNotAvail";
+            this.pnlEduNotAvail.Size = new System.Drawing.Size(457, 206);
+            this.pnlEduNotAvail.TabIndex = 18;
+            this.pnlEduNotAvail.Visible = false;
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(87, 157);
+            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(312, 52);
+            this.label2.TabIndex = 21;
+            this.label2.Text = "Delete your configuration and exit the application.\r\n";
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(24, -31);
+            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(415, 78);
+            this.label3.TabIndex = 10;
+            this.label3.Text = "Press Back if you want to try again, connect to a different institution or select" +
+    " a different config file.";
+            this.label3.Visible = false;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(3, 157);
+            this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(86, 20);
+            this.label4.TabIndex = 20;
+            this.label4.Text = "Cancel - ";
+            // 
+            // label5
+            // 
+            this.label5.Location = new System.Drawing.Point(87, 80);
+            this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(370, 78);
+            this.label5.TabIndex = 19;
+            this.label5.Text = "Save your current configuration.\r\nYou will be able to automatically connect to ed" +
+    "uroam when it becomes available.";
+            // 
+            // lblEdu2
+            // 
+            this.lblEdu2.AutoSize = true;
+            this.lblEdu2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblEdu2.Location = new System.Drawing.Point(4, 80);
+            this.lblEdu2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblEdu2.Name = "lblEdu2";
+            this.lblEdu2.Size = new System.Drawing.Size(81, 20);
+            this.lblEdu2.TabIndex = 18;
+            this.lblEdu2.Text = "Save   - ";
+            // 
+            // lblEduNotAvail
+            // 
+            this.lblEduNotAvail.Location = new System.Drawing.Point(9, 0);
+            this.lblEduNotAvail.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblEduNotAvail.Name = "lblEduNotAvail";
+            this.lblEduNotAvail.Size = new System.Drawing.Size(368, 69);
+            this.lblEduNotAvail.TabIndex = 17;
+            this.lblEduNotAvail.Text = "eduroam is not available at your current location.\r\n\r\nYour options are:";
             // 
             // frmLogin
             // 
@@ -113,6 +239,7 @@
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(608, 431);
             this.Controls.Add(this.panel1);
+            this.Controls.Add(this.pnlEduNotAvail);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "frmLogin";
@@ -120,6 +247,9 @@
             this.Load += new System.EventHandler(this.frm6_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxStatus)).EndInit();
+            this.pnlEduNotAvail.ResumeLayout(false);
+            this.pnlEduNotAvail.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -132,5 +262,15 @@
         private System.Windows.Forms.Label lblInst;
         private System.Windows.Forms.Label lblRules;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Label lblStatus;
+        private System.Windows.Forms.PictureBox pbxStatus;
+        private System.Windows.Forms.Label lblConnectFailed;
+        private System.Windows.Forms.Panel pnlEduNotAvail;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblEdu2;
+        private System.Windows.Forms.Label lblEduNotAvail;
     }
 }

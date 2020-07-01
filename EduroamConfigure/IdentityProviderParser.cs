@@ -100,18 +100,26 @@ namespace EduroamConfigure
             string ruleString = "";
             //checks that there is exactly one @ sign
             // positive lookahead require to find one @. Negative lookahead denies if string contains two (or more) @.
+            
             Regex hasOneAt = new Regex(@"^(?=.*@.*)(?!.*@.*@).*$");
             if (!hasOneAt.Match(username).Success)
             {
                 ruleString += "Username must contain exactly one @\n";
             }
-
+            
             // if realm is specified
             if (!string.IsNullOrEmpty(realm))
             {
                 // if strict realm is set then there can be no subrealms
                 // if not strict: realm = eduroam.no will allow @pedkek.eduroam.no
                 // if strict: has to be @eduroam.no
+
+               /* Regex hasOneAt = new Regex(@"^(?=.*@.*)(?!.*@.*@).*$");
+                if (!hasOneAt.Match(username).Success)
+                {
+                    ruleString += "Username must contain exactly one @\n";
+                }*/
+
                 if (strictRealm)
                 {
                     Regex endsWithRealm = new Regex($@"^.*@{realm}$");

@@ -30,6 +30,7 @@ namespace EduroamApp
 
         private void frmSummary_Load(object sender, EventArgs e)
         {
+            this.Hide();
             // gets institution information from EapConfig object
             string instName = eapConfig.InstitutionInfo.DisplayName;
             string tou = eapConfig.InstitutionInfo.TermsOfUse;
@@ -158,50 +159,10 @@ namespace EduroamApp
                         // ignore
                     }
                 }
-            } 
-            
-            
-           /* byte[] logoBytes = eapConfig.InstitutionInfo.LogoData;
-            string logoMimeType = eapConfig.InstitutionInfo.LogoMimeType;
-            // adds logo to form if exists
-            if (logoBytes.Length > 0)
-            {
-                // deactivate eduroam logo if institute has its own logo
-                frmParent.WebEduroamLogo.Visible = false;
-                // gets size of container
-                int cWidth = pbxLogo.Width;
-                int cHeight = pbxLogo.Height;
-
-                if (logoMimeType == "image/svg+xml")
-                {
-                    frmParent.WebLogo.Visible = true;
-                    frmParent.WebLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight);
-                    //this.webLogo.Visible = true;
-                    //this.webLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight);
-                }
-                else // other filetypes (jpg, png etc.)
-                {
-                    try
-                    {
-                        // converts from base64 to image
-                        Image logo = ImageFunctions.BytesToImage(logoBytes);
-                        decimal hScale = decimal.Divide(cWidth, logo.Width);
-                        decimal vScale = decimal.Divide(cHeight, logo.Height);
-                        decimal pScale = vScale < hScale ? vScale : hScale;
-                        // resizes image to fit container
-                        Bitmap resizedLogo = ImageFunctions.ResizeImage(logo, (int)(logo.Width * pScale), (int)(logo.Height * pScale));
-                        pbxLogo.Image = resizedLogo;
-                        // centers image in container
-                        int lPad = cWidth - pbxLogo.Image.Width;
-                        pbxLogo.Padding = new Padding(lPad / 2, 0, 0, 0);
-                        pbxLogo.Visible = true;
-                    }
-                    catch (System.FormatException)
-                    {
-                        // ignore
-                    }
-                }
             }
+
+            this.Show();
+            
             
 
             //lblWarnings.Text = "";
@@ -358,6 +319,11 @@ namespace EduroamApp
         }
 
         private void pbxLogo_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void lblDesc_Click(object sender, EventArgs e)
         {
 
         }
