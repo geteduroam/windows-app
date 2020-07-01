@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -50,23 +51,20 @@ namespace EduroamConfigure
         /// <summary>
         /// Generates wireless profile xml. Content depends on the EAP type.
         /// </summary>
-        /// <param name="ssid">Name of SSID associated with profile.</param>
-        /// <param name="eapType">Type of EAP.</param>
-        /// <param name="innerAuthType">Type of inner auth method.</param>
-        /// <param name="serverNames">Server names.</param>
-        /// <param name="caThumbprints">List of CA thumbprints, in hex</param>
-        /// <param name="disablePromptForServerValidation">Will cause the wifi profile to fail if server cannot be validated</param>
-        /// <returns>Complete wireless profile xml as string.</returns>
-        public static string CreateProfileXml(
+        /// <param name="authMethod">authMethod</param>
+        /// <param name="asHs2Profile">If to install as hotspot 2.0 profile or not (separate profile from normal eap)</param>
+        /// <returns>A tuple containing the profile name and the WLANProfile XML data</returns>
+        public static ValueTuple<string, string> CreateProfileXml(
             EapConfig.AuthenticationMethod authMethod,
-            List<string> caThumbprints)
+            bool asHs2Profile = false)
         {
-            // hotspot2.0 requires windows 10
+            // TODO: change the return type into a instance of this ProfileXml class
 
             // Get list of SSIDs
             List<string> ssids = authMethod.EapConfig.CredentialApplicabilities
                 .Where(cred => cred.NetworkType == IEEE802x.IEEE80211)
-                .Where(cred => cred.Ssid != null)
+                .Where(cred => cred.MinRsnProto != "TKIP") // too insecure, todo test user experience
+                .Where(cred => cred.Ssid != null) // hs2 oid entires has no ssid
                 .Select(cred => cred.Ssid)
                 .ToList();
 
@@ -76,22 +74,32 @@ namespace EduroamConfigure
                 .Select(cred => cred.ConsortiumOid)
                 .ToList();
 
+            // Decide the profile name
+            var profileName = asHs2Profile
+                ? (authMethod.EapConfig.InstitutionInfo.DisplayName)
+                : ssids.FirstOrDefault() ?? EduroamNetwork.DefaultSsid;
+            
+            if (!ssids.Any())
+                throw new EduroamAppUserError("no valid ssids in config");
+            if (asHs2Profile && !SupportsHs2(authMethod))
+                throw new EduroamAppUserError("hotspot2.0 not supported by authentication method");
+
+            // Construct XML document
             XElement ssidConfigElement;
-            XElement roamingConsortium;
+            XElement hs2Element, roamingConsortiumElement;
             XElement newProfile =
                 new XElement(nsWLAN + "WLANProfile",
-                    new XElement(nsWLAN + "name", ssids.FirstOrDefault() ?? "eduroam"), // TODO: default case should not happen
+                    new XElement(nsWLAN + "name", profileName),
                     ssidConfigElement =
                     new XElement(nsWLAN + "SSIDConfig"),
-                    /*
+                    hs2Element =
                     new XElement(nsWLAN + "Hotspot2",
                         new XElement(nsWLAN + "DomainName", authMethod.EapConfig.InstitutionInfo.InstId),
                         //new XElement(nsWLAN + "NAIRealm", ), // A list of Network Access Identifier (NAI) Realm identifiers. Entries in this list are usually of the form user@domain.
                         // new XElement(nsWLAN + "Network3GPP", ), // A list of Public Land Mobile Network (PLMN) IDs.
-                        roamingConsortium =
+                        roamingConsortiumElement =
                         new XElement(nsWLAN + "RoamingConsortium") // A list of Organizationally Unique Identifiers (OUI) assigned by IEEE.
                     ),
-                    */
                     new XElement(nsWLAN + "connectionType", "ESS"),
                     new XElement(nsWLAN + "connectionMode", "auto"),
                     new XElement(nsWLAN + "autoSwitch", "false"),
@@ -99,7 +107,7 @@ namespace EduroamConfigure
                         new XElement(nsWLAN + "security",
                             new XElement(nsWLAN + "authEncryption",
                                 new XElement(nsWLAN + "authentication", "WPA2"),
-                                new XElement(nsWLAN + "encryption", "AES"), // TODO: CredentialApplicability.MinRsnProto
+                                new XElement(nsWLAN + "encryption", "AES"), // CredentialApplicability.MinRsnProto is forced to not be TKIP
                                 new XElement(nsWLAN + "useOneX", "true")
                             ),
                             new XElement(nsWLAN + "PMKCacheMode", "enabled"),
@@ -114,15 +122,17 @@ namespace EduroamConfigure
                                         authMethod.InnerAuthType,
                                         authMethod.ClientOuterIdentity,
                                         authMethod.ServerNames,
-                                        caThumbprints)
+                                        authMethod.CertificateAuthoritiesAsX509Certificate2()
+                                            .Select(cert => cert.Thumbprint).ToList())
                                 )
                             )
                         )
                     )
                 );
 
+
             // Add all the supported SSIDs
-            foreach (string ssid in ssids) // 256 max occurrances
+            foreach (string ssid in ssids) // xml schema allows for 256 occurrances max
             {
                 ssidConfigElement.Add(
                     new XElement(nsWLAN + "SSID",
@@ -135,18 +145,17 @@ namespace EduroamConfigure
                 new XElement(nsWLAN + "nonBroadcast", "true")
             );
 
-            /*
+            // Populate Hs2 fields
             foreach (string oui in consortiumOids)
             {
-                roamingConsortium.Add(
+                roamingConsortiumElement.Add(
                     new XElement(nsWLAN + "OUI", oui)
                 );
             }
-            */
-
+            if (!asHs2Profile) hs2Element.Remove();
 
             // returns xml as string
-            return newProfile.ToString();
+            return (profileName, newProfile.ToString());
         }
         
         private static XElement CreateEapConfiguration(
@@ -358,10 +367,35 @@ namespace EduroamConfigure
 
             return eapConfiguration;
         }
-        
+
+        /// <summary>
+        /// Use this to determine if authMethod supports Hotspot 2.0
+        /// </summary>
+        public static bool SupportsHs2(EapConfig.AuthenticationMethod authMethod)
+        {
+            // TODO: hotspot2.0 requires Windows 10
+            bool hasOID = authMethod.EapConfig.CredentialApplicabilities
+                .Any(cred => cred.ConsortiumOid != null);
+            bool isPEAP = authMethod.EapType == EapType.PEAP;
+            return hasOID && !isPEAP;
+        }
+
+        /// <summary>
+        /// Use this to determine if the authMethod can be installed as a WLanProfile
+        /// </summary>
+        /// <param name="authMethod"></param>
+        /// <returns></returns>
         public static bool IsSupported(EapConfig.AuthenticationMethod authMethod)
         {
-            return IsSupported(authMethod.EapType, authMethod.InnerAuthType);
+            // check if it has a supported 
+            if (authMethod.EapConfig.CredentialApplicabilities
+                .Where(cred => cred.NetworkType == IEEE802x.IEEE80211)
+                .Where(cred => cred.MinRsnProto != "TKIP") // too insecure
+                .Any())
+            {
+                return IsSupported(authMethod.EapType, authMethod.InnerAuthType);
+            }
+            return false;
         }
 
         public static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
