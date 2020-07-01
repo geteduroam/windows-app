@@ -4,6 +4,13 @@ using System.Windows.Forms;
 using EduroamConfigure;
 using System.Linq;
 using System.Diagnostics;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using ManagedNativeWifi;
+using EduroamConfigure;
+
 
 namespace EduroamApp
 {
@@ -17,6 +24,9 @@ namespace EduroamApp
 		private bool usernameSet;
 		private bool passwordSet;
 		private bool usernameValid = false;
+		private string realm;
+		private bool hint;
+		public bool connected;
 
 		public frmLogin(frmParent parentInstance)
 		{
@@ -27,6 +37,18 @@ namespace EduroamApp
 
 		private void frm6_Load(object sender, EventArgs e)
 		{
+			if (!frmParent.EduroamAvailable)
+			{
+				// prompt user to save config if not
+				SaveAndQuit();
+			}
+
+			realm = authMethod.ClientInnerIdentitySuffix;
+			hint = authMethod.ClientInnerIdentityHint;
+
+			usernameValid = false;
+			lblRules.Visible = true;
+			frmParent.BtnNextEnabled = false;
 			// shows helping (placeholder) text by default
 			txtUsername.Text = "Username";
 			txtUsername.ForeColor = SystemColors.GrayText;
@@ -44,11 +66,18 @@ namespace EduroamApp
 				lblInst.Text = "";
 			}
 
+			// if realm is provided and subrealms not allowed always show realm at end
+			if (!string.IsNullOrEmpty(realm) && hint)
+			{
+				lblInst.Visible = true;
+			}
+
 		}
 
 		// removes helping text when field is in focus
 		private void txtUsername_Enter(object sender, EventArgs e)
 		{
+			lblRules.Visible = false;
 			if (txtUsername.Text == "Username" && usernameDefault)
 			{
 				txtUsername.Text = "";
@@ -72,42 +101,61 @@ namespace EduroamApp
 		// shows helping text when field loses focus and is empty
 		private void txtUsername_Leave(object sender, EventArgs e)
 		{
+			lblRules.Visible = true;
 			if (txtUsername.Text == "")
 			{
 				txtUsername.Text = "Username";
 				txtUsername.ForeColor = SystemColors.GrayText;
 				usernameDefault = true;
+				lblRules.Text = "";
 			}
 			else
 			{
 				usernameDefault = false;
 			}
 
-			string username = txtUsername.Text;
-			string realm = authMethod.ClientInnerIdentitySuffix;
-			bool hint = authMethod.ClientInnerIdentityHint;
+			if (!txtUsername.Text.Contains('@') && !string.IsNullOrEmpty(realm) && !usernameDefault)
+			{
+				lblInst.Visible = true;
+			}
 
-			// use realm as suffix
-			if (!username.Contains('@'))
+		}
+
+		public void ValidateUser()
+		{
+			string username = txtUsername.Text;
+			if (username == "Username" || username == "" )
+			{
+				usernameValid = false;
+				lblRules.Text = "";
+				return;
+			}
+
+			// if username does not contain '@' and realm is given then show realm added to end
+			if (!username.Contains('@') && !string.IsNullOrEmpty(realm))
 			{
 				username += "@" + realm;
-				lblInst.Visible = true;
-				usernameFieldLeave = true;
-			}
-			string brokenRules = IdentityProviderParser.GetBrokenRules(username, realm, hint);
-			bool valid = string.IsNullOrEmpty(brokenRules);
-			lblRules.Text = "";
-			if (!valid)
-			{
-				lblRules.Text = "Error:\n" + brokenRules;
+				//lblInst.Visible = true;
 			}
 			else
 			{
-				lblRules.Text = "Valid username";
+				//lblInst.Visible = false;
 			}
-			usernameValid = valid;
-			ValidateFields();
 
+
+			string brokenRules = IdentityProviderParser.GetBrokenRules(username, realm, hint);
+			usernameValid = string.IsNullOrEmpty(brokenRules);
+			lblRules.Text = "";
+			if (!usernameValid && !usernameDefault)
+			{
+				lblRules.Text = brokenRules;
+			}
+			else
+			{
+				lblRules.Text = "";
+			}
+
+			frmParent.BtnNextEnabled = (passwordSet && usernameValid) || connected;
 		}
 		//
 		// shows helping text when field loses focus and is empty
@@ -136,26 +184,132 @@ namespace EduroamApp
 			string password = txtPassword.Text;
 
 			ConnectToEduroam.SetupLogin(username, password, frmParent.AuthMethod);
+
+			Connect();
 		}
 
 		private void txtUsername_TextChanged(object sender, EventArgs e)
 		{
-			usernameSet = !string.IsNullOrEmpty(txtUsername.Text) && !usernameDefault && txtUsername.ContainsFocus;
-			// set to false in case user changes a previously validated username
-			usernameValid = false;
-			ValidateFields();
-			if (usernameFieldLeave) lblInst.Visible = !txtUsername.Text.Contains("@");
+			lblInst.Visible = false;
+			ValidateUser();
 		}
 
 		private void txtPassword_TextChanged(object sender, EventArgs e)
 		{
 			passwordSet = !string.IsNullOrEmpty(txtPassword.Text) && !passwordDefault && txtPassword.ContainsFocus;
-			ValidateFields();
+			ValidateUser();
 		}
 
 		private void ValidateFields()
 		{
 			frmParent.BtnNextEnabled = (usernameSet && passwordSet && usernameValid);
 		}
+
+
+		private async void Connect()
+		{
+			// displays loading animation while attempt to connect
+			lblStatus.Text = "Connecting...";
+			pbxStatus.Image = Properties.Resources.loading_gif;
+			lblStatus.Visible = true;
+			pbxStatus.Visible = true;
+
+			if (frmParent.AuthMethod.EapType == EapType.TLS)
+			{
+				DateTime validFrom = ConnectToEduroam.CertValidFrom; // TODO: this static variable will be moved
+				DateTime now = DateTime.Now;
+				TimeSpan difference = validFrom - now;
+
+				// if certificate valid from time has passed, do nothing
+				if (DateTime.Compare(validFrom, now) > 0)
+				{
+					// waits at connecting screen if under 9 seconds difference
+					if (difference.TotalSeconds < 8) // TODO: muyto intressante
+					{
+						await PutTaskDelay(difference.Milliseconds + 1000);
+					}
+					// displays dialog that lets user know how long they must wait, or to change their clock manually
+					else
+					{
+						// opens form as dialog
+						using frmSetTime setTimeDialog = new frmSetTime(validFrom);
+						var dialogResult = setTimeDialog.ShowDialog();
+						// cancels connection if time not set and dialog cancelled
+						if (dialogResult == DialogResult.Cancel)
+						{
+							lblStatus.Text = "Couldn't connect to eduroam.";
+							pbxStatus.Image = Properties.Resources.red_x;
+							lblConnectFailed.Text =
+								"Please ensure that the date time and time zone on your computer are set correctly.\n\n" +
+								lblConnectFailed.Text;
+							lblConnectFailed.Visible = true;
+							frmParent.BtnBackEnabled = true;
+							frmParent.ProfileCondition = "BADPROFILE";
+							return;
+						}
+					}
+				}
+			}
+
+			bool connectSuccess;
+			// tries to connect
+			try
+			{
+				connectSuccess = await Task.Run(ConnectToEduroam.WaitForConnect);
+			}
+			catch (Exception ex)
+			{
+				// if an exception is thrown, connection has not succeeded
+				connectSuccess = false;
+				MessageBox.Show("Could not connect. \nException: " + ex.Message);
+			}
+
+			// double check to validate wether eduroam really is an active connection
+			var eduConnected = false;
+			if (connectSuccess)
+			{
+				var checkConnected = NativeWifi.EnumerateConnectedNetworkSsids();
+				foreach (NetworkIdentifier network in checkConnected)
+				{
+					if (network.ToString() == "eduroam")
+					{
+						eduConnected = true;
+					}
+				}
+			}
+
+			if (eduConnected)
+			{
+				lblStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
+				pbxStatus.Image = Properties.Resources.green_checkmark;
+				frmParent.BtnNextText = "Close";
+				frmParent.BtnNextEnabled = true;
+				frmParent.BtnCancelEnabled = false;
+				frmParent.BtnBackVisible = false;
+				frmParent.ProfileCondition = "GOODPROFILE";
+			}
+			else
+			{
+				lblStatus.Text = "Connection to eduroam failed.";
+				pbxStatus.Image = Properties.Resources.red_x;
+				lblConnectFailed.Visible = true;
+				frmParent.BtnBackEnabled = true;
+				frmParent.ProfileCondition = "BADPROFILE";
+			}
+			connected = eduConnected;
+		}
+
+		async Task PutTaskDelay(int milliseconds)
+		{
+			await Task.Delay(milliseconds);
+		}
+
+		// gives user choice of wether they want to save the configuration before quitting
+		private void SaveAndQuit()
+		{
+			frmParent.ProfileCondition = "GOODPROFILE";
+			pnlEduNotAvail.Visible = true;
+		}
+
 	}
 }

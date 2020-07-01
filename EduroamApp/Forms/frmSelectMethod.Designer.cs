@@ -40,8 +40,10 @@ namespace EduroamApp
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(405, 63);
 			this.label1.TabIndex = 2;
-			this.label1.Text = "Configure Eduroam to gain access to Eduroam WiFi\r\nand free access to the internet" +
-	"";
+			this.label1.Text = "Connect to quickly gain access to eduroam.\r\nIf you have previously downloaded a e" +
+	"ap-config file from your institution  you can use this instead";
+			this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+			this.label1.Click += new System.EventHandler(this.label1_Click);
 			//
 			// btnNewProfile
 			//
@@ -52,7 +54,7 @@ namespace EduroamApp
 			this.btnNewProfile.Name = "btnNewProfile";
 			this.btnNewProfile.Size = new System.Drawing.Size(326, 95);
 			this.btnNewProfile.TabIndex = 3;
-			this.btnNewProfile.Text = "Configure Eduroam";
+			this.btnNewProfile.Text = "Connect to eduroam";
 			this.btnNewProfile.UseVisualStyleBackColor = false;
 			this.btnNewProfile.Click += new System.EventHandler(this.btnNewProfile_Click);
 			//
@@ -64,7 +66,7 @@ namespace EduroamApp
 			this.btnLocalProfile.Name = "btnLocalProfile";
 			this.btnLocalProfile.Size = new System.Drawing.Size(169, 40);
 			this.btnLocalProfile.TabIndex = 4;
-			this.btnLocalProfile.Text = "Upload Profile";
+			this.btnLocalProfile.Text = "Use eap-config file";
 			this.btnLocalProfile.UseVisualStyleBackColor = false;
 			this.btnLocalProfile.Click += new System.EventHandler(this.btnLocalProfile_Click);
 			//

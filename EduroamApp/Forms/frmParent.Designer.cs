@@ -59,10 +59,10 @@ namespace EduroamApp
 			this.pnlNavigation.BackColor = System.Drawing.Color.White;
 			this.pnlNavigation.Controls.Add(this.tableLayoutPanelButtons);
 			this.pnlNavigation.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.pnlNavigation.Location = new System.Drawing.Point(0, 501);
+			this.pnlNavigation.Location = new System.Drawing.Point(0, 513);
 			this.pnlNavigation.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlNavigation.Name = "pnlNavigation";
-			this.pnlNavigation.Size = new System.Drawing.Size(529, 83);
+			this.pnlNavigation.Size = new System.Drawing.Size(531, 83);
 			this.pnlNavigation.TabIndex = 0;
 			this.pnlNavigation.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlNavigation_Paint);
 			//
@@ -146,7 +146,7 @@ namespace EduroamApp
 			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(529, 112);
+			this.panel1.Size = new System.Drawing.Size(531, 112);
 			this.panel1.TabIndex = 4;
 			//
 			// lblTitle
@@ -221,17 +221,17 @@ namespace EduroamApp
 			this.pnlContent.Location = new System.Drawing.Point(10, 112);
 			this.pnlContent.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlContent.Name = "pnlContent";
-			this.pnlContent.Size = new System.Drawing.Size(506, 389);
+			this.pnlContent.Size = new System.Drawing.Size(508, 401);
 			this.pnlContent.TabIndex = 7;
 			//
 			// pnlRightMargin
 			//
 			this.pnlRightMargin.BackColor = System.Drawing.Color.White;
 			this.pnlRightMargin.Dock = System.Windows.Forms.DockStyle.Right;
-			this.pnlRightMargin.Location = new System.Drawing.Point(516, 112);
+			this.pnlRightMargin.Location = new System.Drawing.Point(518, 112);
 			this.pnlRightMargin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlRightMargin.Name = "pnlRightMargin";
-			this.pnlRightMargin.Size = new System.Drawing.Size(13, 389);
+			this.pnlRightMargin.Size = new System.Drawing.Size(13, 401);
 			this.pnlRightMargin.TabIndex = 6;
 			//
 			// pnlLeftMargin
@@ -241,7 +241,7 @@ namespace EduroamApp
 			this.pnlLeftMargin.Location = new System.Drawing.Point(0, 112);
 			this.pnlLeftMargin.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlLeftMargin.Name = "pnlLeftMargin";
-			this.pnlLeftMargin.Size = new System.Drawing.Size(10, 389);
+			this.pnlLeftMargin.Size = new System.Drawing.Size(10, 401);
 			this.pnlLeftMargin.TabIndex = 5;
 			//
 			// notifyIcon
@@ -249,13 +249,14 @@ namespace EduroamApp
 			this.notifyIcon.Icon = global::EduroamApp.Properties.Resources.geteduroam;
 			this.notifyIcon.Text = "geteduroam";
 			this.notifyIcon.Visible = true;
+			this.notifyIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.notifyIcon_MouseClick);
 			//
 			// frmParent
 			//
 			this.AcceptButton = this.btnNext;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(529, 584);
+			this.ClientSize = new System.Drawing.Size(531, 596);
 			this.Controls.Add(this.pnlContent);
 			this.Controls.Add(this.pnlRightMargin);
 			this.Controls.Add(this.pnlLeftMargin);
@@ -265,10 +266,13 @@ namespace EduroamApp
 			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.MaximizeBox = false;
 			this.Name = "frmParent";
+			this.ShowInTaskbar = false;
 			this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
 			this.Text = "geteduroam";
+			this.Deactivate += new System.EventHandler(this.frmParent_LostFocus);
 			this.Load += new System.EventHandler(this.frmParent_Load);
+			this.Resize += new System.EventHandler(this.frmParent_Resize);
 			this.pnlNavigation.ResumeLayout(false);
 			this.tableLayoutPanelButtons.ResumeLayout(false);
 			this.tableLayoutPanel1.ResumeLayout(false);

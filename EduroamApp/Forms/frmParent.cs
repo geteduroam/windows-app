@@ -82,7 +82,14 @@ namespace EduroamApp
 			// sets eduroam logo
 			webEduroamLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(Properties.Resources.eduroam_logo, webEduroamLogo.Width, webEduroamLogo.Height);
 			Icon = Properties.Resources.geteduroam;
-
+			//this.Visible = true;
+			//this.ShowInTaskbar = false;
+			//this.Visible = true;
+			//this.Hide();
+			//this.Show();
+			//this.WindowState = FormWindowState.Normal;
+			//Activate();
+			this.ShowInTaskbar = true;
 
 
 			// checks if file came with self extract
@@ -105,6 +112,12 @@ namespace EduroamApp
 		}
 
 
+		private void frmParent_LostFocus(object sender, EventArgs e)
+		{
+			Console.WriteLine("lostfocus");
+			this.WindowState = FormWindowState.Minimized;
+		}
+
 		private void frmParent_Resize(object sender, EventArgs e)
 		{
 			//if the form is minimized
@@ -116,6 +129,20 @@ namespace EduroamApp
 			}
 		}
 
+		private void notifyIcon_MouseClick(object sender, EventArgs e)
+		{
+			Console.WriteLine("Notifycicon click");
+			if (this.WindowState == FormWindowState.Minimized)
+			{
+				this.Show();
+				this.WindowState = FormWindowState.Normal;
+				//this.Show();
+				//Focus();
+				//this.TopMost = true;
+				//this.TopMost = false;
+				Activate();
+			}
+		}
 
 		public void btnNext_Click(object sender, EventArgs e)
 		{
@@ -187,11 +214,18 @@ namespace EduroamApp
 					break;
 
 				case FormId.SelectInstitution:
-					System.Diagnostics.Debug.WriteLine("idproviderid:"+idProviderId);
 					if (!idProviderId.HasValue)
 					{
 						MessageBox.Show("Please select an institution.",
 							"Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						break;
+					}
+					var profiles = GetProfiles((int) idProviderId);
+					// if less than 2 profiles then, if a profile exists, autoselect it and go to Summary
+					if (profiles.Count < 2)
+					{
+						string autoProfileId = profiles.FirstOrDefault().Id;
+						HandleProfileSelect(autoProfileId);
 						break;
 					}
 					LoadFrmSelectProfile();
@@ -200,55 +234,8 @@ namespace EduroamApp
 
 				case FormId.SelectProfile:
 					string profileId = frmSelectProfile.ProfileId;
-					if (string.IsNullOrEmpty(profileId))
-					{
-						MessageBox.Show("Please select a Profile.",
-							"Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						break;
-					}
-					try
-					{
-						eapConfig = DownloadEapConfig(profileId);
-					}
-					catch (EduroamAppUserError ex) // TODO: register this in some higher level
-					{
-						MessageBox.Show(
-							ex.UserFacingMessage,
-							"eduroam - Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-					}
-					if (eapConfig != null)
-					{
-						LoadFrmSummary();
-					}
-					else if (!string.IsNullOrEmpty(RedirectUrl))
-					{
-						LoadFrmRedirect();
-					}
+					HandleProfileSelect(profileId);
 					break;
-				// next form depends on if downloaded config contains redirect url or not
-				/*
-				case FormId.Download:
-					string profileId = frmDownload.ProfileId;
-					try
-					{
-						eapConfig = DownloadEapConfig(profileId);
-					}
-					catch (EduroamAppUserError ex) // TODO: register this in some higher level
-					{
-						MessageBox.Show(
-							ex.UserFacingMessage,
-							"eduroam - Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-					}
-					if (eapConfig != null)
-					{
-						LoadFrmSummary();
-					}
-					else if (!string.IsNullOrEmpty(RedirectUrl))
-					{
-						LoadFrmRedirect();
-					}
-					break;
-				*/
 
 				// opens summary form if config is not null
 				case FormId.Local:
@@ -258,8 +245,12 @@ namespace EduroamApp
 
 				// lets user log in and opens connection form
 				case FormId.Login:
+					if (frmLogin.connected)
+					{
+						Close();
+					}
 					frmLogin.ConnectWithLogin();
-					LoadFrmConnect();
+					//LoadFrmConnect();
 					break;
 
 				// closes application after successful connect
@@ -282,6 +273,55 @@ namespace EduroamApp
 
 			// removes current form from history if it gets added twice
 			if (historyFormId.LastOrDefault() == currentFormId) historyFormId.RemoveAt(historyFormId.Count - 1);
+		}
+
+		/// <summary>
+		/// Fetches a list of all eduroam institutions from https://cat.eduroam.org.
+		/// </summary>
+		private List<IdentityProviderProfile> GetProfiles(int providerId)
+		{
+			try
+			{
+				return IdentityProviderDownloader.GetIdentityProviderProfiles(providerId);
+			}
+			catch (EduroamAppUserError ex)
+			{
+				//lblError.Text = ex.UserFacingMessage;
+			}
+			return null;
+		}
+
+		// downloads eap config based on profileId
+		// seperated into its own function as this can happen either through
+		// user selecting a profile or a profile being autoselected
+		private void HandleProfileSelect(string profileId)
+		{
+			if (string.IsNullOrEmpty(profileId))
+			{
+				MessageBox.Show("Please select a Profile.",
+					"Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return;
+			}
+			try
+			{
+				eapConfig = DownloadEapConfig(profileId);
+			}
+			catch (EduroamAppUserError ex) // TODO: register this in some higher level
+			{
+				MessageBox.Show(
+					ex.UserFacingMessage,
+					"eduroam - Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				eapConfig = null;
+			}
+			if (eapConfig != null)
+			{
+				LoadFrmSummary();
+			}
+			else if (!string.IsNullOrEmpty(RedirectUrl))
+			{
+				LoadFrmRedirect();
+			}
+			return;
 		}
 
 		private void btnBack_Click(object sender, EventArgs e)
@@ -472,7 +512,19 @@ namespace EduroamApp
 		public bool BtnNextEnabled
 		{
 			get => btnNext.Enabled;
-			set => btnNext.Enabled = value;
+			set
+			{
+				btnNext.Enabled = value;
+				btnNext.ForeColor = System.Drawing.SystemColors.ControlLight;
+				if (value)
+				{
+					btnNext.BackColor = System.Drawing.SystemColors.Highlight;
+				}
+				else
+				{
+					btnNext.BackColor = System.Drawing.SystemColors.GrayText;
+				}
+			}
 		}
 
 		public string BtnNextText
@@ -517,7 +569,7 @@ namespace EduroamApp
 			{
 				lblTitle.Text = "Profile Info";
 			}
-			if (!reload) btnNext.Enabled = true;
+			if (!reload) BtnNextEnabled = true;
 			btnNext.Text = eapConfig.AuthenticationMethods.First().EapType == EduroamConfigure.EapType.TLS ? "Connect" : "Next >";
 			LoadNewForm(frmSummary);
 		}
@@ -543,7 +595,7 @@ namespace EduroamApp
 			currentFormId = FormId.SelectInstitution;
 			frmSelectInstitution = new frmSelectInstitution(this);
 			lblTitle.Text = "Select your institution";
-			btnNext.Enabled = !reload;
+			BtnNextEnabled = !reload;
 			btnNext.Visible = true;
 			btnNext.Text = "Next >";
 			btnBack.Enabled = true;
@@ -567,7 +619,7 @@ namespace EduroamApp
 			if (reload) frmDownload = new frmDownload(this);
 			currentFormId = FormId.Download;
 			lblTitle.Text = "Select your institution";
-			btnNext.Enabled = !reload;
+			BtnNextEnabled = !reload;
 			btnNext.Visible = true;
 			btnNext.Text = "Next >";
 			btnBack.Enabled = true;
@@ -584,7 +636,7 @@ namespace EduroamApp
 			if (reload) frmLocal = new frmLocal(this);
 			currentFormId = FormId.Local;
 			lblTitle.Text = "Select EAP-config file";
-			btnNext.Enabled = true;
+			BtnNextEnabled = true;
 			btnNext.Visible = true;
 			btnNext.Text = "Next >";
 			btnBack.Enabled = true;
@@ -600,7 +652,7 @@ namespace EduroamApp
 			frmLogin = new frmLogin(this);
 			currentFormId = FormId.Login;
 			lblTitle.Text = "Log in";
-			btnNext.Enabled = false;
+			BtnNextEnabled = false;
 			btnNext.Text = "Connect";
 			btnBack.Enabled = true;
 			btnBack.Visible = true;
@@ -615,7 +667,7 @@ namespace EduroamApp
 			frmConnect = new frmConnect(this);
 			currentFormId = FormId.Connect;
 			lblTitle.Text = "Connection status";
-			btnNext.Enabled = false;
+			BtnNextEnabled = false;
 			btnBack.Enabled = false;
 			btnBack.Visible = true;
 			LoadNewForm(frmConnect);
@@ -629,7 +681,7 @@ namespace EduroamApp
 			frmRedirect = new frmRedirect(this);
 			currentFormId = FormId.Redirect;
 			lblTitle.Text = "You are being redirected";
-			btnNext.Enabled = false;
+			BtnNextEnabled = false;
 			btnNext.Text = "Next >";
 			btnBack.Enabled = true;
 			btnBack.Visible = true;
@@ -644,7 +696,7 @@ namespace EduroamApp
 			if (reload) frmLocal = new frmLocal(this);
 			currentFormId = FormId.LocalCert;
 			lblTitle.Text = "Select client certificate file";
-			btnNext.Enabled = true;
+			BtnNextEnabled = true;
 			btnNext.Text = "Connect";
 			btnBack.Enabled = true;
 			btnBack.Visible = true;
@@ -660,7 +712,7 @@ namespace EduroamApp
 			currentFormId = FormId.SaveAndQuit;
 			lblTitle.Text = "eduroam not available"; // TODO: not obvious from function name
 			btnNext.Text = "Save";
-			btnNext.Enabled = true;
+			BtnNextEnabled = true;
 			btnBack.Enabled = false;
 			btnBack.Visible = true;
 			LoadNewForm(frmConnect);

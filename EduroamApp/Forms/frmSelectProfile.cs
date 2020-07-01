@@ -30,6 +30,7 @@ namespace EduroamApp
 
 		private async void frmSelectProfile_Load(object sender, EventArgs e)
 		{
+			this.Hide();
 			frmParent.WebEduroamLogo.Visible = true;
 			frmParent.BtnNextEnabled = false;
 
@@ -41,16 +42,20 @@ namespace EduroamApp
 
 			if (getInstSuccess)
 			{
+
 				PopulateProfiles();
 				lbProfile.Enabled = true;
 
 				// autoselect first profile
 				lbProfile.SetSelected(0, true);
+
 			}
 			else
 			{
 
 			}
+
+			this.Show();
 
 		}
 

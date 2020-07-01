@@ -45,12 +45,13 @@ namespace EduroamApp
 			// lblStatus
 			//
 			this.lblStatus.Anchor = System.Windows.Forms.AnchorStyles.Left;
-			this.lblStatus.Location = new System.Drawing.Point(35, 71);
+			this.lblStatus.Location = new System.Drawing.Point(35, 123);
 			this.lblStatus.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.lblStatus.Name = "lblStatus";
 			this.lblStatus.Size = new System.Drawing.Size(450, 63);
 			this.lblStatus.TabIndex = 7;
 			this.lblStatus.Text = "Connecting...";
+			this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.lblStatus.Visible = false;
 			//
 			// tblConnectStatus
@@ -71,7 +72,7 @@ namespace EduroamApp
 			// pbxStatus
 			//
 			this.pbxStatus.Image = global::EduroamApp.Properties.Resources.loading_gif;
-			this.pbxStatus.Location = new System.Drawing.Point(11, 64);
+			this.pbxStatus.Location = new System.Drawing.Point(238, 28);
 			this.pbxStatus.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pbxStatus.Name = "pbxStatus";
 			this.pbxStatus.Size = new System.Drawing.Size(16, 16);
@@ -82,7 +83,7 @@ namespace EduroamApp
 			//
 			// lblConnectFailed
 			//
-			this.lblConnectFailed.Location = new System.Drawing.Point(20, 134);
+			this.lblConnectFailed.Location = new System.Drawing.Point(24, -31);
 			this.lblConnectFailed.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.lblConnectFailed.Name = "lblConnectFailed";
 			this.lblConnectFailed.Size = new System.Drawing.Size(415, 78);
@@ -94,6 +95,7 @@ namespace EduroamApp
 			// pnlEduNotAvail
 			//
 			this.pnlEduNotAvail.Controls.Add(this.label2);
+			this.pnlEduNotAvail.Controls.Add(this.lblConnectFailed);
 			this.pnlEduNotAvail.Controls.Add(this.label3);
 			this.pnlEduNotAvail.Controls.Add(this.label1);
 			this.pnlEduNotAvail.Controls.Add(this.lblEdu2);
@@ -163,7 +165,6 @@ namespace EduroamApp
 			this.BackColor = System.Drawing.Color.White;
 			this.ClientSize = new System.Drawing.Size(509, 465);
 			this.Controls.Add(this.pbxStatus);
-			this.Controls.Add(this.lblConnectFailed);
 			this.Controls.Add(this.lblStatus);
 			this.Controls.Add(this.tblConnectStatus);
 			this.Controls.Add(this.pnlEduNotAvail);
