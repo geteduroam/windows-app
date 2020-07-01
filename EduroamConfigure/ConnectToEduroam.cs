@@ -317,12 +317,12 @@ namespace EduroamConfigure
 				return AuthMethod.NeedsLoginCredentials();
 			}
 
-			public bool NeedClientCertificate()
+			public bool NeedsClientCertificate()
 			{
 				if (!HasInstalledProfile)
 					throw new EduroamAppUserError("profile not installed",
 						"You must first install the profile with InstallProfile");
-				return AuthMethod.NeedClientCertificate();
+				return AuthMethod.NeedsClientCertificate();
 			}
 		}
 

@@ -175,6 +175,16 @@ namespace EduroamConfigure
 			};
 		}
 
+		/// <summary>
+		/// If this returns False, then ther innerIdentity/username and the passord fields may be set to null.
+		/// </summary>
+		/// <param name="authMethod">the authentificsation method to check</param>
+		/// <returns></returns>
+		public static bool NeedsCredentials(EapConfig.AuthenticationMethod authMethod)
+		{
+			return authMethod.EapType != EapType.TLS;
+		}
+
 		public static bool IsSupported(EapConfig.AuthenticationMethod authMethod)
 		{
 			return IsSupported(authMethod.EapType, authMethod.InnerAuthType);
