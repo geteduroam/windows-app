@@ -282,7 +282,7 @@ namespace EduroamApp
                     {
                         // installation was a success
 
-                        if (authMethodInstaller.NeedClientCertificate())
+                        if (authMethodInstaller.NeedsClientCertificate())
                         {
                             DialogResult dialogResult = MessageBox.Show(
                                 "The selected profile requires a separate client certificate. Do you want to browse your local files for one?",
