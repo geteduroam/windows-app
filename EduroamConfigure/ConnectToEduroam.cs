@@ -293,8 +293,11 @@ namespace EduroamConfigure
                 {
                     // TODO: this method is risky, since other authMethods may use other certificates
                     // IDEA: install cetrtificates in separate view in gui
+                    /*
                     hs2AuthMethod = AuthMethod.EapConfig.AuthenticationMethods
                         .FirstOrDefault(ProfileXml.SupportsHs2);
+                    */
+                    hs2AuthMethod = null; // TODO: InstallUserProfile doesn't know which AuthMethod the hs2 profile uses
                 }
 
                 bool anyInstalled = false;
