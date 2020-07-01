@@ -52,21 +52,23 @@ namespace EduroamConfigure
         /// Generates wireless profile xml. Content depends on the EAP type.
         /// </summary>
         /// <param name="authMethod">authMethod</param>
+        /// <param name="withSsid">TODO</param>
         /// <param name="asHs2Profile">If to install as hotspot 2.0 profile or not (separate profile from normal eap)</param>
         /// <returns>A tuple containing the profile name and the WLANProfile XML data</returns>
         public static ValueTuple<string, string> CreateProfileXml(
             EapConfig.AuthenticationMethod authMethod,
+            string withSsid = null,
             bool asHs2Profile = false)
         {
-            // TODO: change the return type into a instance of this ProfileXml class
-
-            // Get list of SSIDs
-            List<string> ssids = authMethod.EapConfig.CredentialApplicabilities
-                .Where(cred => cred.NetworkType == IEEE802x.IEEE80211)
-                .Where(cred => cred.MinRsnProto != "TKIP") // too insecure, todo test user experience
-                .Where(cred => cred.Ssid != null) // hs2 oid entires has no ssid
-                .Select(cred => cred.Ssid)
-                .ToList();
+            // Get list of SSIDs to configure into profile
+            List<string> ssids = withSsid != null
+                ? new List<string> { withSsid }
+                : authMethod.EapConfig.CredentialApplicabilities
+                    .Where(cred => cred.NetworkType == IEEE802x.IEEE80211) // TODO: Wired 802.1x
+                    .Where(cred => cred.MinRsnProto != "TKIP") // too insecure. TODO: test user experience
+                    .Where(cred => cred.Ssid != null) // hs2 oid entires has no ssid
+                    .Select(cred => cred.Ssid)
+                    .ToList();
 
             // Get list of ConsortiumOIDs
             List<string> consortiumOids = authMethod.EapConfig.CredentialApplicabilities
@@ -132,7 +134,7 @@ namespace EduroamConfigure
 
 
             // Add all the supported SSIDs
-            foreach (string ssid in ssids) // xml schema allows for 256 occurrances max
+            foreach (var ssid in ssids) // xml schema allows for 256 occurrances max
             {
                 ssidConfigElement.Add(
                     new XElement(nsWLAN + "SSID",
