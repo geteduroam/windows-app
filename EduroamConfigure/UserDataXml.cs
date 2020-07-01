@@ -67,7 +67,7 @@ namespace EduroamConfigure
 						EapUserData(
 							username,
 							password,
-							authMethod.ClientOuterIdentity ?? username, // TODO: can this default case happen?
+							authMethod.ClientOuterIdentity ?? username, // TODO: can this default case ever happen?
 							authMethod.EapType,
 							authMethod.InnerAuthType,
 							authMethod.ClientCertificateAsX509Certificate2()?.Thumbprint

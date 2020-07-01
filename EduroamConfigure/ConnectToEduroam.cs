@@ -188,6 +188,14 @@ namespace EduroamConfigure
 			/// <summary>
 			/// Provide it by TODO
 			/// </summary>
+			public bool NeedsClientCertificate()
+			{
+				return AuthMethod.NeedsClientCertificate();
+			}
+
+			/// <summary>
+			/// Provide it by TODO
+			/// </summary>
 			public void AddClientCertificate()
 			{
 				// TODO
@@ -225,6 +233,8 @@ namespace EduroamConfigure
 			/// <returns>Returns true if all certificates has been successfully installed</returns>
 			public bool InstallCertificates()
 			{
+				if (NeedsClientCertificate())
+					throw new EduroamAppUserError("no client certificate was provided");
 
 				// open the trusted root CA store
 				using var rootStore = new X509Store(caStoreName, caStoreLocation);
@@ -327,13 +337,6 @@ namespace EduroamConfigure
 				return AuthMethod.NeedsLoginCredentials();
 			}
 
-			public bool NeedsClientCertificate()
-			{
-				if (!HasInstalledProfile)
-					throw new EduroamAppUserError("profile not installed",
-						"You must first install the profile with InstallProfile");
-				return AuthMethod.NeedsClientCertificate();
-			}
 		}
 
 
