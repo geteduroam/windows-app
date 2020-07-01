@@ -24,7 +24,7 @@ namespace EduroamConfigure
 
 		// State
 		private static HashSet<ValueTuple<Guid, string>> configuredProfileNames
-			= new HashSet<ValueTuple<Guid, string>>(); // TODO: make this persist on disk
+			= new HashSet<ValueTuple<Guid, string>>(); // TODO: make this persist on disk, perhaps also use NativeWifi to populate it
 
 		// TODO: Add support for Hotspot2.0
 		// TODO: Add support for Wired 801x
@@ -53,13 +53,46 @@ namespace EduroamConfigure
 
 
 		/// <summary>
-		/// Installs a network profile according to selected network and profile XML.
+		/// Installs network profiles according to selected auth method.
+		/// Will install multiple profile, one for each supported SSID
 		/// Will overwrite any profiles with matching names if they exist.
 		/// </summary>
-		/// <param name="profileXml">a tuple with the profile name and the WLANProfile XML data</param>
+		/// <param name="authMethod">TODO</param>
 		/// <param name="forAllUsers">TODO</param>
 		/// <returns>True if succeeded, false if failed.</returns>
-		public bool InstallProfile(ValueTuple<string, string> profileXml, bool forAllUsers = true)
+		public bool InstallProfiles(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
+		{
+			var ssids = authMethod.EapConfig.CredentialApplicabilities
+				.Where(cred => cred.NetworkType == IEEE802x.IEEE80211) // TODO: Wired 802.1x
+				.Where(cred => cred.MinRsnProto != "TKIP") // too insecure. TODO: test user experience
+				.Where(cred => cred.Ssid != null) // hs2 oid entires has no ssid
+				.Select(cred => cred.Ssid)
+				.ToList();
+
+			bool ret = false;
+			foreach (var ssid in ssids)
+			{
+				(string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, ssid);
+				ret |= InstallProfile(profileName, profileXml, forAllUsers);
+			}
+			return ret;
+		}
+
+		/// <summary>
+		/// Installs a Hotspot 2.0 network profile according to selected auth method.
+		/// Auth method must support Hotspot 2.0.
+		/// Will overwrite any profiles with matching names if they exist.
+		/// </summary>
+		/// <param name="authMethod">TODO</param>
+		/// <param name="forAllUsers">TODO</param>
+		/// <returns>True if succeeded, false if failed.</returns>
+		public bool InstallHs2Profile(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
+		{
+			(string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, asHs2Profile: true);
+			return InstallProfile(profileName, profileXml, forAllUsers);
+		}
+
+		private bool InstallProfile(string profileName, string profileXml, bool forAllUsers)
 		{
 			// security type not required
 			const string securityType = null; // TODO: document why
@@ -73,10 +106,10 @@ namespace EduroamConfigure
 				forAllUsers
 					? ProfileType.AllUser
 					: ProfileType.PerUser, // TODO: make this option work and set as default
-				profileXml.Item2,
+				profileXml,
 				securityType,
 				overwrite);
-			if (success) configuredProfileNames.Add((InterfaceId, profileXml.Item1));
+			if (success) configuredProfileNames.Add((InterfaceId, profileName));
 			return success;
 		}
 

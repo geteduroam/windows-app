@@ -274,37 +274,31 @@ namespace EduroamConfigure
 						"You must first install certificates with InstallCertificates");
 
 				// Find a authMethod which supports Hs2, prefer the current auth method
-				EapConfig.AuthenticationMethod hs2AuthMethod = null;
+				EapConfig.AuthenticationMethod hs2AuthMethod;
 				if (ProfileXml.SupportsHs2(AuthMethod))
 				{
 					hs2AuthMethod = AuthMethod;
 				}
-				else if (AuthMethod.EapConfig.AuthenticationMethods.Any(ProfileXml.SupportsHs2))
+				else
 				{
 					// TODO: this method is risky, since other authMethods may use other certificates
 					// IDEA: install cetrtificates in separate view in gui
-					hs2AuthMethod = AuthMethod.EapConfig.AuthenticationMethods.First(ProfileXml.SupportsHs2);
+					hs2AuthMethod = AuthMethod.EapConfig.AuthenticationMethods
+						.FirstOrDefault(ProfileXml.SupportsHs2);
 				}
 
-				// generate new profile xml
-				var profileXml
-					= ProfileXml.CreateProfileXml(AuthMethod);
-				var profileHs2Xml = hs2AuthMethod != null
-					? ProfileXml.CreateProfileXml(hs2AuthMethod, asHs2Profile: true)
-					: ("", "");
-
 				bool anyInstalled = false;
-				bool anyInstalledHs2 = false;
+				bool anyInstalledHs2 = false; // todo: use
 
 				// Install wlan profile
 				foreach (EduroamNetwork network in EduroamNetworks)
-					anyInstalled |= network.InstallProfile(profileXml);
+					anyInstalled |= network.InstallProfiles(AuthMethod);
 
-				// If successfull, try to install Hs2 as well:
+				// If successfull, try to install Hotspot 2.0 as well:
 				if (anyInstalled && hs2AuthMethod != null)
 				{
 					foreach (EduroamNetwork network in EduroamNetworks)
-						anyInstalledHs2 |= network.InstallProfile(profileHs2Xml);
+						anyInstalledHs2 |= network.InstallHs2Profile(hs2AuthMethod);
 				}
 
 				// TODO: remove
