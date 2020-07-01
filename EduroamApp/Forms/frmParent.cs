@@ -168,7 +168,7 @@ namespace EduroamApp
 
 					if (AuthMethod != null) // Profile was successfully installed
 					{
-						if (AuthMethod.NeedClientCertificate()) {
+						if (AuthMethod.NeedsClientCertificate()) {
 							LocalFileType = "CERT";
 							LoadFrmLocalCert();
 						}
