@@ -108,6 +108,10 @@ namespace EduroamConfigure
                 if (NeedsLoginCredentials()) return false;
                 return string.IsNullOrEmpty(ClientCertificate);
             }
+            public void AddClientCertificate()
+            {
+                // TODO
+            }
 
             // Constructor
             public AuthenticationMethod(
