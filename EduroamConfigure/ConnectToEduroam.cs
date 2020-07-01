@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ManagedNativeWifi;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Linq;
@@ -136,7 +135,6 @@ namespace EduroamConfigure
 		public class EapAuthMethodInstaller
 		{
 			// all the CA thumbprints that will be added to Wireless Profile XML
-			private readonly List<string> CertificateThumbprints = new List<string>();
 			private readonly List<EduroamNetwork> EduroamNetworks;
 
 			// To track proper order of operations
@@ -161,11 +159,7 @@ namespace EduroamConfigure
 			/// Installs the client certificate into the personal
 			/// certificate store of the windows current user
 			/// </summary>
-			/// <returns>
-			/// Returns the name of the issuer of this client certificate,
-			/// if there is any client certificate to install
-			/// </returns>
-			private string InstallClientCertificate()
+			private void InstallClientCertificate()
 			{
 				// checks if Authentication method contains a client certificate
 				if (!string.IsNullOrEmpty(AuthMethod.ClientCertificate))
@@ -182,12 +176,23 @@ namespace EduroamConfigure
 					// gets valid from time of certificate
 					CertValidFrom = clientCert.NotBefore; // TODO: make gui use this
 					ConnectToEduroam.CertValidFrom = clientCert.NotBefore; // TODO: REMOVE
-
-					return clientCert.IssuerName.Name;
 				}
-				return null;
+				/*
+				else
+				{
+					throw TODO
+				}
+				*/
 			}
 
+			/// <summary>
+			/// Provide it by TODO
+			/// </summary>
+			public void AddClientCertificate()
+			{
+				// TODO
+				AuthMethod.AddClientCertificate();
+			}
 
 			/// <summary>
 			/// Call this to check if there are any CAs left to install
@@ -220,7 +225,6 @@ namespace EduroamConfigure
 			/// <returns>Returns true if all certificates has been successfully installed</returns>
 			public bool InstallCertificates()
 			{
-				CertificateThumbprints.Clear();
 
 				// open the trusted root CA store
 				using var rootStore = new X509Store(caStoreName, caStoreLocation);
@@ -249,30 +253,11 @@ namespace EduroamConfigure
 							throw;
 						}
 					}
-
-					// get CA thumbprint and adds to list
-					CertificateThumbprints.Add(caCert.Thumbprint);
 				}
 
-				string clientCertIssuer = InstallClientCertificate();
+				InstallClientCertificate(); // TODO: inline this function?
 
-				// get thumbprints of already installed CAs that match client certificate issuer
-				if (clientCertIssuer != null)
-				{
-					// get CAs by client certificate issuer name
-					X509Certificate2Collection existingCAs = rootStore.Certificates
-						.Find(X509FindType.FindByIssuerDistinguishedName, clientCertIssuer, true);
-
-					// get CA thumbprint and adds to list
-					foreach (X509Certificate2 ca in existingCAs)
-					{
-						CertificateThumbprints.Add(ca.Thumbprint);
-					}
-				}
 				HasInstalledCertificates = true;
-
-				// TODO: dedup CertificateThumbprints
-
 				return true;
 			}
 
@@ -288,27 +273,58 @@ namespace EduroamConfigure
 					throw new EduroamAppUserError("missing certificates",
 						"You must first install certificates with InstallCertificates");
 
+				// Find a authMethod which supports Hs2, prefer the current auth method
+				EapConfig.AuthenticationMethod hs2AuthMethod = null;
+				if (ProfileXml.SupportsHs2(AuthMethod))
+				{
+					hs2AuthMethod = AuthMethod;
+				}
+				else if (AuthMethod.EapConfig.AuthenticationMethods.Any(ProfileXml.SupportsHs2))
+				{
+					// TODO: this method is risky, since other authMethods may use other certificates
+					// IDEA: install cetrtificates in separate view in gui
+					hs2AuthMethod = AuthMethod.EapConfig.AuthenticationMethods.First(ProfileXml.SupportsHs2);
+				}
+
 				// generate new profile xml
-				var profileXml = ProfileXml.CreateProfileXml(
-					AuthMethod,
-					CertificateThumbprints);
+				var profileXml
+					= ProfileXml.CreateProfileXml(AuthMethod);
+				var profileHs2Xml = hs2AuthMethod != null
+					? ProfileXml.CreateProfileXml(hs2AuthMethod, asHs2Profile: true)
+					: ("", "");
 
-				// create a new wireless profile
-				bool any_installed = false;
+				bool anyInstalled = false;
+				bool anyInstalledHs2 = false;
+
+				// Install wlan profile
 				foreach (EduroamNetwork network in EduroamNetworks)
+					anyInstalled |= network.InstallProfile(profileXml);
+
+				// If successfull, try to install Hs2 as well:
+				if (anyInstalled && hs2AuthMethod != null)
 				{
-					any_installed |= network.InstallProfile(profileXml);
+					foreach (EduroamNetwork network in EduroamNetworks)
+						anyInstalledHs2 |= network.InstallProfile(profileHs2Xml);
 				}
 
-				if (AuthMethod.EapType == EapType.TLS) // TODO: this is hacky, SetupLogin should be a part of InstallProfile
+				// TODO: remove
+				Console.WriteLine("anyInstalled: " + anyInstalled);
+				Console.WriteLine("anyInstalledHs2: " + anyInstalledHs2);
+				Console.WriteLine("Installed type: " + AuthMethod?.EapType.ToString() ?? "None");
+				Console.WriteLine("Installed type hs2: " + hs2AuthMethod?.EapType.ToString() ?? "None");
+
+				if (AuthMethod.EapType == EapType.TLS) // TODO: this is hackywacky, InstallUserProfile should be a part of InstallProfile
 				{
-					SetupLogin(null, null, AuthMethod);
+					InstallUserProfile(null, null, AuthMethod);
 				}
 
-				HasInstalledProfile = any_installed;
-				return any_installed;
+				HasInstalledProfile = anyInstalled;
+				return anyInstalled;
 			}
 
+			/// <summary>
+			/// Then provide them by either calling InstallUserProfile()
+			/// </summary>
 			public bool NeedsLoginCredentials()
 			{
 				if (!HasInstalledProfile)
@@ -336,7 +352,7 @@ namespace EduroamConfigure
 			bool ret = false;
 			foreach (EduroamNetwork network in EduroamNetwork.GetAll())
 			{
-				if (network.RemoveProfile())
+				if (network.RemoveInstalledProfiles())
 					ret = true;
 			}
 			return ret;
@@ -348,7 +364,7 @@ namespace EduroamConfigure
 		/// <param name="username">User's username optionally with realm</param>
 		/// <param name="password">User's password.</param>
 		/// <param name="authMethod">AuthMethod of installed profile</param>
-		public static bool SetupLogin(string username, string password, EapConfig.AuthenticationMethod authMethod)
+		public static bool InstallUserProfile(string username, string password, EapConfig.AuthenticationMethod authMethod)
 		{
 			// TODO: move into EapAuthMethodInstaller?
 

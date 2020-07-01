@@ -20,7 +20,11 @@ namespace EduroamConfigure
 		public Guid InterfaceId { get; }
 		public AvailableNetworkPack NetworkPack { get; }
 		public bool IsAvailable { get { return NetworkPack != null; } }
-		public bool IsConfigured { get; private set; }
+		public bool IsConfigured { get => configuredProfileNames.Any(); }
+
+		// State
+		private static HashSet<ValueTuple<Guid, string>> configuredProfileNames
+			= new HashSet<ValueTuple<Guid, string>>(); // TODO: make this persist on disk
 
 		// TODO: Add support for Hotspot2.0
 		// TODO: Add support for Wired 801x
@@ -50,12 +54,12 @@ namespace EduroamConfigure
 
 		/// <summary>
 		/// Installs a network profile according to selected network and profile XML.
-		/// Will overwrite if existing
+		/// Will overwrite any profiles with matching names if they exist.
 		/// </summary>
-		/// <param name="profileXml">User data XML converted to string.</param>
+		/// <param name="profileXml">a tuple with the profile name and the WLANProfile XML data</param>
 		/// <param name="forAllUsers">TODO</param>
 		/// <returns>True if succeeded, false if failed.</returns>
-		public bool InstallProfile(string profileXml, bool forAllUsers = true)
+		public bool InstallProfile(ValueTuple<string, string> profileXml, bool forAllUsers = true)
 		{
 			// security type not required
 			const string securityType = null; // TODO: document why
@@ -64,14 +68,16 @@ namespace EduroamConfigure
 			const bool overwrite = true;
 
 			// https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/nf-wlanapi-wlansetprofile
-			return NativeWifi.SetProfile(
+			bool success = NativeWifi.SetProfile(
 				InterfaceId,
 				forAllUsers
 					? ProfileType.AllUser
 					: ProfileType.PerUser, // TODO: make this option work and set as default
-				profileXml,
+				profileXml.Item2,
 				securityType,
 				overwrite);
+			if (success) configuredProfileNames.Add((InterfaceId, profileXml.Item1));
+			return success;
 		}
 
 		/// <summary>
@@ -79,44 +85,47 @@ namespace EduroamConfigure
 		/// </summary>
 		/// <param name="userDataXml">User data XML converted to string.</param>
 		/// <param name="forAllUsers">TODO - mention the cert store thing</param>
-		/// <returns>True if succeeded, false if failed.</returns>
+		/// <returns>True if all succeeded, false if any failed or none was configured</returns>
 		public bool InstallUserData(string userDataXml, bool forAllUsers = false)
 		{
 			// See 'dwFlags' at: https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/nf-wlanapi-wlansetprofileeapxmluserdata
 			const uint profileUserTypeCurrentUsers = 0x00000000; // "current user" - https://github.com/rozmansi/WLANSetEAPUserData
 			const uint profileUserTypeAllUSers = 0x00000001; // WLAN_SET_EAPHOST_DATA_ALL_USERS
 
-
-			var profileName = "eduroam"; // TODO!!!
-			bool success = NativeWifi.SetProfileUserData(
-				InterfaceId,
-				profileName,
-				forAllUsers
-					? profileUserTypeAllUSers
-					: profileUserTypeCurrentUsers,
-				userDataXml);
-			if (success) IsConfigured = true;
-			return success;
+			// Return success if not any failed
+			return !configuredProfileNames
+				.Where(idAndprofileName => idAndprofileName.Item1/*ID*/ == InterfaceId)
+				.Any(idAndprofileName => !NativeWifi.SetProfileUserData(
+					InterfaceId,
+					idAndprofileName.Item2/*profileName*/,
+					forAllUsers
+						? profileUserTypeAllUSers
+						: profileUserTypeCurrentUsers,
+					userDataXml)
+			);
 		}
 
 		/// <summary>
-		/// Deletes a network profile by matching ssid on specified network interface
+		/// Attempts to delete any previously installed network profiles
 		/// </summary>
-		/// <returns>True if profile delete was succesful</returns>
-		public bool RemoveProfile()
+		/// <returns>True if ANY profile was deleted succesfully</returns>
+		/// <remarks>
+		/// True does not mean all the profiles has been deleted. Check IsConfigured ot verify this.
+		/// </remarks>
+		public bool RemoveInstalledProfiles()
 		{
-			return NativeWifi.DeleteProfile(InterfaceId, DefaultSsid);
-		}
+			var n = configuredProfileNames.Count();
 
-		/// <summary>
-		/// TODO
-		/// </summary>
-		public bool Cleanup() // TODO: use this
-		{
-			if (!IsConfigured) return false;
-			RemoveProfile();
-			IsConfigured = false;
-			return true;
+			foreach ((Guid interfaceId, string profileName) in configuredProfileNames.ToList())
+			{
+				if (interfaceId == InterfaceId)
+				{
+					if (NativeWifi.DeleteProfile(InterfaceId, profileName))
+						configuredProfileNames.Remove((interfaceId, profileName));
+				}
+			}
+
+			return n != configuredProfileNames.Count();
 		}
 
 		public async Task<bool> TryToConnect()
@@ -162,7 +171,6 @@ namespace EduroamConfigure
 
 			return availableNetworks.Concat(unavailableNetworks);
 		}
-
 
 		/// <summary>
 		/// "Can i install and connect to eduroam?"
