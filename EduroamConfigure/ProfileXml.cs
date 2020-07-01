@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -7,19 +8,18 @@ namespace EduroamConfigure
 {
     /// <summary>
     /// Wireless profile XML generator.
-    /// Can construct wireless profiles for the following EAP types:
-    /// - TLS (13)
-    /// - PEAP-MSCHAPv2 (25/26)
-    /// - TTLS (21) [NOT YET FUNCTIONAL]
-    ///
-    /// Documentation of the XML format:
-    ///     https://docs.microsoft.com/en-us/windows/win32/nativewifi/wlan-profileschema-elements
-    ///     https://docs.microsoft.com/en-us/windows/win32/nativewifi/onexschema-elements
-    ///     https://docs.microsoft.com/en-us/windows/win32/eaphost/eaptlsconnectionpropertiesv1schema-servervalidationparameters-complextype
-    ///     https://docs.microsoft.com/en-us/powershell/module/vpnclient/new-eapconfiguration?view=win10-ps
-    ///     https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-gpwl/7fda6c4b-0347-466c-926f-0e7e45a0aa7a
-    ///     C:\Windows\schemas\EAPMethods
     /// </summary>
+    /// <remarks>
+    /// Documentation of the XML format:
+    /// 
+    /// https://docs.microsoft.com/en-us/windows/win32/nativewifi/wlan-profileschema-elements
+    /// https://docs.microsoft.com/en-us/windows/win32/nativewifi/onexschema-elements
+    /// https://docs.microsoft.com/en-us/windows/win32/eaphost/eaptlsconnectionpropertiesv1schema-servervalidationparameters-complextype
+    /// https://docs.microsoft.com/en-us/powershell/module/vpnclient/new-eapconfiguration?view=win10-ps
+    /// https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-gpwl/7fda6c4b-0347-466c-926f-0e7e45a0aa7a
+    /// C:\Windows\schemas\EAPMethods
+    /// C:\Windows\schemas\EAPHost
+    /// </remarks>
     class ProfileXml
     {
         // Namespaces:
@@ -30,7 +30,9 @@ namespace EduroamConfigure
         static readonly XNamespace nsEHC = "http://www.microsoft.com/provisioning/EapHostConfig";
         static readonly XNamespace nsEC = "http://www.microsoft.com/provisioning/EapCommon";
         static readonly XNamespace nsBECP = "http://www.microsoft.com/provisioning/BaseEapConnectionPropertiesV1";
-        
+
+        static readonly XNamespace nsHSP = "http://www.microsoft.com/networking/WLAN/HotspotProfile/v1";
+
         // TLS specific
         static readonly XNamespace nsETCPv1 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV1";
         static readonly XNamespace nsETCPv2 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV2";
@@ -49,31 +51,56 @@ namespace EduroamConfigure
         /// <summary>
         /// Generates wireless profile xml. Content depends on the EAP type.
         /// </summary>
-        /// <param name="ssid">Name of SSID associated with profile.</param>
-        /// <param name="eapType">Type of EAP.</param>
-        /// <param name="innerAuthType">Type of inner auth method.</param>
-        /// <param name="serverNames">Server names.</param>
-        /// <param name="caThumbprints">List of CA thumbprints, in hex</param>
-        /// <param name="disablePromptForServerValidation">Will cause the wifi profile to fail if server cannot be validated</param>
-        /// <returns>Complete wireless profile xml as string.</returns>
-        public static string CreateProfileXml(
-            string ssid,
-            EapType eapType,
-            InnerAuthType innerAuthType,
-            string outerIdentity, // with realm
-            List<string> serverNames,
-            List<string> caThumbprints)
+        /// <param name="authMethod">authMethod</param>
+        /// <param name="withSsid">TODO</param>
+        /// <param name="asHs2Profile">If to install as hotspot 2.0 profile or not (separate profile from normal eap)</param>
+        /// <returns>A tuple containing the profile name and the WLANProfile XML data</returns>
+        public static ValueTuple<string, string> CreateProfileXml(
+            EapConfig.AuthenticationMethod authMethod,
+            string withSsid = null,
+            bool asHs2Profile = false)
         {
-            // hotspot2.0 domain is EapConfig.InstitutionInfo.InstId
+            // Get list of SSIDs to configure into profile
+            List<string> ssids = withSsid != null
+                ? new List<string> { withSsid }
+                : authMethod.EapConfig.CredentialApplicabilities
+                    .Where(cred => cred.NetworkType == IEEE802x.IEEE80211) // TODO: Wired 802.1x
+                    .Where(cred => cred.MinRsnProto != "TKIP") // too insecure. TODO: test user experience
+                    .Where(cred => cred.Ssid != null) // hs2 oid entires has no ssid
+                    .Select(cred => cred.Ssid)
+                    .ToList();
 
+            // Get list of ConsortiumOIDs
+            List<string> consortiumOids = authMethod.EapConfig.CredentialApplicabilities
+                .Where(cred => cred.ConsortiumOid != null)
+                .Select(cred => cred.ConsortiumOid)
+                .ToList();
+
+            // Decide the profile name
+            var profileName = asHs2Profile
+                ? (authMethod.EapConfig.InstitutionInfo.DisplayName)
+                : ssids.FirstOrDefault() ?? EduroamNetwork.DefaultSsid;
+            
+            if (!ssids.Any())
+                throw new EduroamAppUserError("no valid ssids in config");
+            if (asHs2Profile && !SupportsHs2(authMethod))
+                throw new EduroamAppUserError("hotspot2.0 not supported by authentication method");
+
+            // Construct XML document
+            XElement ssidConfigElement;
+            XElement hs2Element, roamingConsortiumElement;
             XElement newProfile =
                 new XElement(nsWLAN + "WLANProfile",
-                    new XElement(nsWLAN + "name", ssid),
-                    new XElement(nsWLAN + "SSIDConfig",
-                        new XElement(nsWLAN + "SSID",
-                            new XElement(nsWLAN + "name", ssid) // TODO: support multiple SSIDs (see "Open Universiteit *" institution )
-                        ),
-                        new XElement(nsWLAN + "nonBroadcast", "false")
+                    new XElement(nsWLAN + "name", profileName),
+                    ssidConfigElement =
+                    new XElement(nsWLAN + "SSIDConfig"),
+                    hs2Element =
+                    new XElement(nsWLAN + "Hotspot2",
+                        new XElement(nsWLAN + "DomainName", authMethod.EapConfig.InstitutionInfo.InstId),
+                        //new XElement(nsWLAN + "NAIRealm", ), // A list of Network Access Identifier (NAI) Realm identifiers. Entries in this list are usually of the form user@domain.
+                        // new XElement(nsWLAN + "Network3GPP", ), // A list of Public Land Mobile Network (PLMN) IDs.
+                        roamingConsortiumElement =
+                        new XElement(nsWLAN + "RoamingConsortium") // A list of Organizationally Unique Identifiers (OUI) assigned by IEEE.
                     ),
                     new XElement(nsWLAN + "connectionType", "ESS"),
                     new XElement(nsWLAN + "connectionMode", "auto"),
@@ -82,7 +109,7 @@ namespace EduroamConfigure
                         new XElement(nsWLAN + "security",
                             new XElement(nsWLAN + "authEncryption",
                                 new XElement(nsWLAN + "authentication", "WPA2"),
-                                new XElement(nsWLAN + "encryption", "AES"),
+                                new XElement(nsWLAN + "encryption", "AES"), // CredentialApplicability.MinRsnProto is forced to not be TKIP
                                 new XElement(nsWLAN + "useOneX", "true")
                             ),
                             new XElement(nsWLAN + "PMKCacheMode", "enabled"),
@@ -92,16 +119,45 @@ namespace EduroamConfigure
                             new XElement(nsOneX + "OneX",
                                 new XElement(nsOneX + "authMode", "user"),
                                 new XElement(nsOneX + "EAPConfig",
-                                    CreateEapConfiguration(eapType, innerAuthType,
-                                        outerIdentity, serverNames, caThumbprints)
+                                    CreateEapConfiguration(
+                                        authMethod.EapType,
+                                        authMethod.InnerAuthType,
+                                        authMethod.ClientOuterIdentity,
+                                        authMethod.ServerNames,
+                                        authMethod.CertificateAuthoritiesAsX509Certificate2()
+                                            .Select(cert => cert.Thumbprint).ToList())
                                 )
                             )
                         )
                     )
                 );
 
+
+            // Add all the supported SSIDs
+            foreach (var ssid in ssids) // xml schema allows for 256 occurrances max
+            {
+                ssidConfigElement.Add(
+                    new XElement(nsWLAN + "SSID",
+                        //new XElement(nsWLAN + "hex", ),
+                        new XElement(nsWLAN + "name", ssid)
+                    )
+                );
+            }
+            ssidConfigElement.Add(
+                new XElement(nsWLAN + "nonBroadcast", "true")
+            );
+
+            // Populate Hs2 fields
+            foreach (string oui in consortiumOids)
+            {
+                roamingConsortiumElement.Add(
+                    new XElement(nsWLAN + "OUI", oui)
+                );
+            }
+            if (!asHs2Profile) hs2Element.Remove();
+
             // returns xml as string
-            return newProfile.ToString();
+            return (profileName, newProfile.ToString());
         }
         
         private static XElement CreateEapConfiguration(
@@ -313,15 +369,41 @@ namespace EduroamConfigure
 
             return eapConfiguration;
         }
-        
+
+        /// <summary>
+        /// Use this to determine if authMethod supports Hotspot 2.0
+        /// </summary>
+        public static bool SupportsHs2(EapConfig.AuthenticationMethod authMethod)
+        {
+            // TODO: hotspot2.0 requires Windows 10
+            bool hasOID = authMethod.EapConfig.CredentialApplicabilities
+                .Any(cred => cred.ConsortiumOid != null);
+            bool isPEAP = authMethod.EapType == EapType.PEAP;
+            return hasOID && !isPEAP;
+        }
+
+        /// <summary>
+        /// Use this to determine if the authMethod can be installed as a WLanProfile
+        /// </summary>
+        /// <param name="authMethod"></param>
+        /// <returns></returns>
         public static bool IsSupported(EapConfig.AuthenticationMethod authMethod)
         {
-            return IsSupported(authMethod.EapType, authMethod.InnerAuthType);
+            // check if it has a supported 
+            if (authMethod.EapConfig.CredentialApplicabilities
+                .Where(cred => cred.NetworkType == IEEE802x.IEEE80211)
+                .Where(cred => cred.MinRsnProto != "TKIP") // too insecure
+                .Any())
+            {
+                return IsSupported(authMethod.EapType, authMethod.InnerAuthType);
+            }
+            return false;
         }
 
         public static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
         {
-            bool at_least_win10 = System.Environment.OSVersion.Version.Major >= 10;
+            //bool at_least_win10 = System.Environment.OSVersion.Version.Major >= 10; // TODO: make this work, requires some application manifest
+            var at_least_win10 = true;
             return (eapType, innerAuthType) switch
             {
                 (EapType.MSCHAPv2, InnerAuthType.None) => true,

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using ManagedNativeWifi;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Linq;
@@ -31,18 +30,10 @@ namespace EduroamConfigure
         private const StoreName userCertStoreName = StoreName.My; // Used to install TLS client certificates
         private const StoreLocation userCertStoreLocation = StoreLocation.CurrentUser;
 
-        // Profile.xml - EAP auth mode, ssid, allowed CA fingerprint, and failure modes
-        // See 'dwFlags' at: https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/nf-wlanapi-wlansetprofile
-        private const ProfileType profileType = ProfileType.AllUser; // TODO: make this work as PerUser
-
-        // UserData.xml - EAP user credentials
-        // See 'dwFlags' at: https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/nf-wlanapi-wlansetprofileeapxmluserdata
-        private const uint profileUserType = 0x00000000; // "current user" - https://github.com/rozmansi/WLANSetEAPUserData
-        //private const uint profileUserType = 0x00000001; // WLAN_SET_EAPHOST_DATA_ALL_USERS
-
 
         /// <summary>
         /// Checks the EAP config to see if there is any issues
+        /// TODO: test this
         /// </summary>
         /// <returns>A tuple on the form: (bool isCritical, string description)</returns>
         public static IEnumerable<ValueTuple<bool, string>> LookForWarningsInEapConfig(EapConfig eapConfig)
@@ -78,7 +69,7 @@ namespace EduroamConfigure
                     true => (false,
                         "One of the provided Certificate Authorities from this institution has expired.\r\n" +
                         "There might be some issues connecting to eduroam."),
-                    false => (true,
+                    false => (true, // TODO: This case means that the ProfileXml will be configured to not expect any fingerprint, meaning no connection can be made
                         "The provided Certificate Authorities from this institution have all expired!\r\n" +
                         "Please contact the institution to have the issue fixed!"),
                 };
@@ -105,7 +96,7 @@ namespace EduroamConfigure
         /// <returns>Enumeration of EapAuthMethodInstaller intances for each supported authentification method in eapConfig</returns>
         public static IEnumerable<EapAuthMethodInstaller> InstallEapConfig(EapConfig eapConfig)
         {
-            List<EduroamNetwork> eduroamNetworks = EduroamNetwork.EnumerateEduroamNetworks().ToList();
+            List<EduroamNetwork> eduroamNetworks = EduroamNetwork.GetAll().ToList();
             if (!eduroamNetworks.Any())
                 yield break; // TODO: concider throwing
             if (!EapConfigIsSupported(eapConfig))
@@ -144,7 +135,6 @@ namespace EduroamConfigure
         public class EapAuthMethodInstaller
         {
             // all the CA thumbprints that will be added to Wireless Profile XML
-            private readonly List<string> CertificateThumbprints = new List<string>();
             private readonly List<EduroamNetwork> EduroamNetworks;
 
             // To track proper order of operations
@@ -169,11 +159,7 @@ namespace EduroamConfigure
             /// Installs the client certificate into the personal
             /// certificate store of the windows current user
             /// </summary>
-            /// <returns>
-            /// Returns the name of the issuer of this client certificate,
-            /// if there is any client certificate to install
-            /// </returns>
-            private string InstallClientCertificate()
+            private void InstallClientCertificate()
             {
                 // checks if Authentication method contains a client certificate
                 if (!string.IsNullOrEmpty(AuthMethod.ClientCertificate))
@@ -183,19 +169,30 @@ namespace EduroamConfigure
                     // open personal certificate store to add client cert
                     using var personalStore = new X509Store(userCertStoreName, userCertStoreLocation);
                     personalStore.Open(OpenFlags.ReadWrite);
-                    personalStore.Add(clientCert); // TODO: does this fail if done multiple times? perhaps add a guard like for CAs
+                    personalStore.Add(clientCert);
                     personalStore.Close();
 
                     // gets name of CA that issued the certificate
                     // gets valid from time of certificate
                     CertValidFrom = clientCert.NotBefore; // TODO: make gui use this
                     ConnectToEduroam.CertValidFrom = clientCert.NotBefore; // TODO: REMOVE
-
-                    return clientCert.IssuerName.Name;
                 }
-                return null;
+                /*
+                else
+                { 
+                    throw TODO
+                }
+                */
             }
 
+            /// <summary>
+            /// Provide it by TODO
+            /// </summary>
+            public void AddClientCertificate()
+            {
+                // TODO
+                AuthMethod.AddClientCertificate();
+            }
 
             /// <summary>
             /// Call this to check if there are any CAs left to install
@@ -228,7 +225,6 @@ namespace EduroamConfigure
             /// <returns>Returns true if all certificates has been successfully installed</returns>
             public bool InstallCertificates()
             {
-                CertificateThumbprints.Clear();
 
                 // open the trusted root CA store
                 using var rootStore = new X509Store(caStoreName, caStoreLocation);
@@ -257,30 +253,11 @@ namespace EduroamConfigure
                             throw;
                         }
                     }
-
-                    // get CA thumbprint and adds to list
-                    CertificateThumbprints.Add(caCert.Thumbprint);
                 }
 
-                string clientCertIssuer = InstallClientCertificate();
+                InstallClientCertificate(); // TODO: inline this function?
 
-                // get thumbprints of already installed CAs that match client certificate issuer
-                if (clientCertIssuer != null)
-                {
-                    // get CAs by client certificate issuer name
-                    X509Certificate2Collection existingCAs = rootStore.Certificates
-                        .Find(X509FindType.FindByIssuerDistinguishedName, clientCertIssuer, true);
-
-                    // get CA thumbprint and adds to list
-                    foreach (X509Certificate2 ca in existingCAs)
-                    {
-                        CertificateThumbprints.Add(ca.Thumbprint);
-                    }
-                }
                 HasInstalledCertificates = true;
-
-                // TODO: dedup CertificateThumbprints
-
                 return true;
             }
 
@@ -296,35 +273,52 @@ namespace EduroamConfigure
                     throw new EduroamAppUserError("missing certificates",
                         "You must first install certificates with InstallCertificates");
 
-                // generate new profile xml
-                var profileXml = ProfileXml.CreateProfileXml(
-                    EduroamNetwork.Ssid,
-                    AuthMethod.EapType,
-                    AuthMethod.InnerAuthType,
-                    AuthMethod.ClientOuterIdentity,
-                    AuthMethod.ServerNames,
-                    CertificateThumbprints);
-
-                Console.WriteLine(AuthMethod.EapSchemeName()); // TODO: remove this
-
-                // create a new wireless profile
-                bool any_installed = false;
-                foreach (EduroamNetwork eduroamInstance in EduroamNetworks)
+                // Find a authMethod which supports Hs2, prefer the current auth method
+                EapConfig.AuthenticationMethod hs2AuthMethod;
+                if (ProfileXml.SupportsHs2(AuthMethod))
                 {
-                    any_installed |= CreateNewProfile(eduroamInstance.InterfaceId, profileXml);
-                    // TODO: update docstring and handling in frmSummary due to any_installed
-
+                    hs2AuthMethod = AuthMethod;
+                }
+                else
+                {
+                    // TODO: this method is risky, since other authMethods may use other certificates
+                    // IDEA: install cetrtificates in separate view in gui
+                    hs2AuthMethod = AuthMethod.EapConfig.AuthenticationMethods
+                        .FirstOrDefault(ProfileXml.SupportsHs2);
                 }
 
-                if (AuthMethod.EapType == EapType.TLS) // TODO: this is hacky, SetupLogin should be a part of InstallProfile
-                { 
-                    SetupLogin(null, null, AuthMethod);
+                bool anyInstalled = false;
+                bool anyInstalledHs2 = false; // todo: use
+
+                // Install wlan profile
+                foreach (EduroamNetwork network in EduroamNetworks)
+                    anyInstalled |= network.InstallProfiles(AuthMethod);
+
+                // If successfull, try to install Hotspot 2.0 as well:
+                if (anyInstalled && hs2AuthMethod != null)
+                {
+                    foreach (EduroamNetwork network in EduroamNetworks)
+                        anyInstalledHs2 |= network.InstallHs2Profile(hs2AuthMethod);
                 }
 
-                HasInstalledProfile = any_installed;
-                return any_installed;
+                // TODO: remove
+                Console.WriteLine("anyInstalled: " + anyInstalled);
+                Console.WriteLine("anyInstalledHs2: " + anyInstalledHs2);
+                Console.WriteLine("Installed type: " + AuthMethod?.EapType.ToString() ?? "None");
+                Console.WriteLine("Installed type hs2: " + hs2AuthMethod?.EapType.ToString() ?? "None");
+
+                if (AuthMethod.EapType == EapType.TLS) // TODO: this is hackywacky, InstallUserProfile should be a part of InstallProfile
+                {
+                    InstallUserProfile(null, null, AuthMethod);
+                }
+
+                HasInstalledProfile = anyInstalled;
+                return anyInstalled;
             }
 
+            /// <summary>
+            /// Then provide them by either calling InstallUserProfile()
+            /// </summary>
             public bool NeedsLoginCredentials()
             {
                 if (!HasInstalledProfile)
@@ -333,56 +327,29 @@ namespace EduroamConfigure
                 return AuthMethod.NeedsLoginCredentials();
             }
 
-            public bool NeedClientCertificate()
+            public bool NeedsClientCertificate()
             {
                 if (!HasInstalledProfile)
                     throw new EduroamAppUserError("profile not installed",
                         "You must first install the profile with InstallProfile");
-                return AuthMethod.NeedClientCertificate();
+                return AuthMethod.NeedsClientCertificate();
             }
         }
 
-
-        /// <summary>
-        /// Creates new network profile according to selected network and profile XML.
-        /// </summary>
-        /// <param name="interfaceId">Interface ID</param>
-        /// <param name="profileXml">Profile XML</param>
-        /// <returns>True if profile create success, false if not.</returns>
-        private static bool CreateNewProfile(Guid interfaceId, string profileXml)
-        {
-            // security type not required
-            const string securityType = null; // TODO: document why
-
-            // overwrites if profile already exists
-            const bool overwrite = true;
-
-            return NativeWifi.SetProfile(interfaceId, profileType, profileXml, securityType, overwrite);
-        }
 
         /// <summary>
         /// Deletes all network profile matching ssid, which is "eduroam" by default
         /// </summary>
-        /// <param name="ssid">ssid to delete all profiles of</param>
         /// <returns>True if any profile deletion was succesful</returns>
-        public static bool RemoveAllProfiles(string ssid = EduroamNetwork.Ssid)
+        public static bool RemoveAllProfiles()
         {
             bool ret = false;
-            foreach (Guid interfaceId in EduroamNetwork.GetAllInterfaceIds())
+            foreach (EduroamNetwork network in EduroamNetwork.GetAll())
             {
-                if (RemoveProfile(interfaceId, ssid))
+                if (network.RemoveInstalledProfiles())
                     ret = true;
             }
             return ret;
-        }
-
-        /// <summary>
-        /// Deletes a network profile by matching ssid on specified network interface
-        /// </summary>
-        /// <returns>True if profile delete was succesful</returns>
-        private static bool RemoveProfile(Guid interfaceId, string ssid = EduroamNetwork.Ssid)
-        {
-            return NativeWifi.DeleteProfile(interfaceId, ssid);
         }
 
         /// <summary>
@@ -391,7 +358,7 @@ namespace EduroamConfigure
         /// <param name="username">User's username optionally with realm</param>
         /// <param name="password">User's password.</param>
         /// <param name="authMethod">AuthMethod of installed profile</param>
-        public static bool SetupLogin(string username, string password, EapConfig.AuthenticationMethod authMethod)
+        public static bool InstallUserProfile(string username, string password, EapConfig.AuthenticationMethod authMethod)
         {
             // TODO: move into EapAuthMethodInstaller?
 
@@ -403,56 +370,25 @@ namespace EduroamConfigure
 
             // sets user data
             bool anyInstalled = false;
-            foreach (EduroamNetwork network in EduroamNetwork.EnumerateEduroamNetworks())
+            foreach (EduroamNetwork network in EduroamNetwork.GetAll())
             {
-                anyInstalled |= SetUserData(network.InterfaceId, EduroamNetwork.Ssid, userDataXml);
-                // TODO: use return value
+                anyInstalled |= network.InstallUserData(userDataXml);
             }
             return anyInstalled;
         }
 
         /// <summary>
-        /// Sets user data for a wireless profile.
-        /// </summary>
-        /// <param name="interfaceId">Interface ID of selected network.</param>
-        /// <param name="profileName">Name of associated wireless profile.</param>
-        /// <param name="userDataXml">User data XML converted to string.</param>
-        /// <returns>True if succeeded, false if failed.</returns>
-        private static bool SetUserData(Guid interfaceId, string profileName, string userDataXml)
-        {
-            return NativeWifi.SetProfileUserData(interfaceId, profileName, profileUserType, userDataXml);
-        }
-
-        /// <summary>
-        /// Waits for async connection to complete.
-        /// </summary>
-        /// <returns>Connection result.</returns>
-        public static Task<bool> WaitForConnect()
-        {
-            // runs async method
-            Task<bool> connectResult = Task.Run(ConnectAsync);
-            return connectResult;
-        }
-
-        /// <summary>
-        /// Connects to any eduroam wireless LAN
+        /// Attempts to connects to any eduroam wireless LAN, in succession
         /// </summary>
         /// <returns>True if successfully connected. False if not.</returns>
-        private static async Task<bool> ConnectAsync()
+        public static async Task<bool> TryToConnect()
         {
             // gets updated eduroam network packs
-            foreach (AvailableNetworkPack network in EduroamNetwork.GetAllEduroamPacks())
+            foreach (var network in EduroamNetwork.GetAll())
             {
-                if (string.IsNullOrEmpty(network.ProfileName)) continue; // TODO: will cause NativeWifi to throw, but should not happen
-
                 // TODO: do in parallel instead of sequentially?
 
-                // attempt to connect
-                bool success = await NativeWifi.ConnectNetworkAsync(
-                    interfaceId: network.Interface.Id,
-                    profileName: network.ProfileName,
-                    bssType: network.BssType,
-                    timeout: TimeSpan.FromSeconds(5));
+                bool success = await network.TryToConnect();
                 if (success)
                     return true;
             }

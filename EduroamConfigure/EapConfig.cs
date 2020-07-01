@@ -26,6 +26,11 @@ namespace EduroamConfigure
             AuthenticationMethods = authenticationMethods;
             CredentialApplicabilities = credentialApplicabilities;
             InstitutionInfo = institutionInfo;
+
+            AuthenticationMethods.ForEach(authMethod =>
+            {
+                authMethod.EapConfig = this;
+            });
         }
 
 
@@ -35,6 +40,7 @@ namespace EduroamConfigure
         public class AuthenticationMethod
         {
             // Properties
+            public EapConfig EapConfig { get; set; } // reference to parent EapConfig
             public EapType EapType { get; }
             public InnerAuthType InnerAuthType { get; }
             public List<string> CertificateAuthorities { get; } // base64 encoded DER certificate
@@ -64,17 +70,21 @@ namespace EduroamConfigure
             /// <summary>
             /// Converts the client certificate base64 data to a X509Certificate2 object
             /// </summary>
+            /// <returns>X509Certificate2 if any, otherwise null</returns>
             public X509Certificate2 ClientCertificateAsX509Certificate2()
             {
-                var certBytes = Convert.FromBase64String(ClientCertificate);
+                if (string.IsNullOrEmpty(ClientCertificate))
+                    return null;
+
                 var cert = new X509Certificate2(
-                    certBytes,
+                    Convert.FromBase64String(ClientCertificate),
                     ClientCertificatePassphrase,
                     X509KeyStorageFlags.PersistKeySet);
 
                 // sets the friendly name of certificate
                 if (string.IsNullOrEmpty(cert.FriendlyName))
                     cert.FriendlyName = cert.GetNameInfo(X509NameType.SimpleName, false);
+
                 return cert;
             }
 
@@ -90,10 +100,10 @@ namespace EduroamConfigure
 
             public bool NeedsLoginCredentials()
             {
-                return EapType != EapType.TLS; // TODO: make this more maintainable
+                return UserDataXml.NeedsCredentials(this);
             }
 
-            public bool NeedClientCertificate()
+            public bool NeedsClientCertificate()
             {
                 if (NeedsLoginCredentials()) return false;
                 return string.IsNullOrEmpty(ClientCertificate);
@@ -172,16 +182,16 @@ namespace EduroamConfigure
         /// </summary>
         public class CredentialApplicability
         {
-            IEEE802x NetworkType { get; }
+            public IEEE802x NetworkType { get; }
 
             // IEEE80211 only:
-            string Ssid { get; } // Wifi SSID
-            string ConsortiumOid { get; } // Hotspot2.0
-            string MinRsnProto { get; } // "TKIP" or "CCMP"
+            public string Ssid { get; } // Wifi SSID, TODO: use
+            public string ConsortiumOid { get; } // Hotspot2.0
+            public string MinRsnProto { get; } // "TKIP" or "CCMP", TODO: use
 
 
             // IEEE8023 only:
-            string NetworkId { get; }
+            public string NetworkId { get; }
 
             private CredentialApplicability(
                 IEEE802x networkType,
@@ -207,7 +217,7 @@ namespace EduroamConfigure
                     IEEE802x.IEEE80211,
                     ssid,
                     consortiumOid,
-                    minRsnProto,
+                    minRsnProto ?? "CCMP",
                     null);
             }
 
@@ -274,7 +284,7 @@ namespace EduroamConfigure
 
                 // get list of strings of CA certificates
                 List<string> certAuths = serverSideCredentialXml
-                    .Elements().Where(nameIs("CA"))
+                    .Elements().Where(nameIs("CA")) // TODO: <CA format="X.509" encoding="base64"> is assumed, check schema
                     .Select(xElement => (string)xElement)
                     .ToList();
 
@@ -288,7 +298,7 @@ namespace EduroamConfigure
 
                 // user certificate
                 var clientCert = (string)clientSideCredentialXml
-                    ?.Elements().FirstOrDefault(nameIs("ClientCertificate"));
+                    ?.Elements().FirstOrDefault(nameIs("ClientCertificate")); // TODO: check schema for supported formats
                 var clientCertPasswd = (string)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("Passphrase"));
 
