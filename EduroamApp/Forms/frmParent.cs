@@ -114,8 +114,8 @@ namespace EduroamApp
 
         private void frmParent_LostFocus(object sender, EventArgs e)
         {
-            Console.WriteLine("lostfocus");
-            this.WindowState = FormWindowState.Minimized;
+
+           // this.WindowState = FormWindowState.Minimized;
         }
 
         private void frmParent_Resize(object sender, EventArgs e)
@@ -125,7 +125,7 @@ namespace EduroamApp
             //and show the system tray icon (represented by the NotifyIcon control)  
             if (this.WindowState == FormWindowState.Minimized)
             {
-                Hide();
+                //Hide();
             }
         }
 
@@ -214,13 +214,7 @@ namespace EduroamApp
                     break;
 
                 case FormId.SelectInstitution:
-                    if (!idProviderId.HasValue)
-                    {
-                        MessageBox.Show("Please select an institution.",
-                            "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        break;
-                    }
-                    var profiles = GetProfiles((int) idProviderId);
+                    var profiles = GetProfiles((int) frmSelectInstitution.idProviderId);
                     // if less than 2 profiles then, if a profile exists, autoselect it and go to Summary
                     if (profiles.Count < 2)
                     {
@@ -606,7 +600,7 @@ namespace EduroamApp
         public void LoadFrmSelectProfile()
         {
             currentFormId = FormId.SelectProfile;
-            frmSelectProfile = new frmSelectProfile(this, (int) idProviderId);
+            frmSelectProfile = new frmSelectProfile(this, (int) frmSelectInstitution.idProviderId);
             lblTitle.Text = "Select your profile";
             LoadNewForm(frmSelectProfile);
         }
