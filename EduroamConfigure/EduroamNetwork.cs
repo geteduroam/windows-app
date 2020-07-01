@@ -26,7 +26,6 @@ namespace EduroamConfigure
 		private static HashSet<ValueTuple<Guid, string>> configuredProfileNames
 			= new HashSet<ValueTuple<Guid, string>>(); // TODO: make this persist on disk, perhaps also use NativeWifi to populate it
 
-		// TODO: Add support for Hotspot2.0
 		// TODO: Add support for Wired 801x
 
 		private EduroamNetwork(Guid interfaceId)
@@ -174,7 +173,7 @@ namespace EduroamConfigure
 				interfaceId: NetworkPack.Interface.Id,
 				profileName: NetworkPack.ProfileName,
 				bssType: NetworkPack.BssType,
-				timeout: TimeSpan.FromSeconds(5));
+				timeout: TimeSpan.FromSeconds(8));
 		}
 
 		// static interface:
@@ -245,13 +244,13 @@ namespace EduroamConfigure
 		/// Gets all network packs containing information about an eduroam network, if any.
 		/// </summary>
 		/// <returns>Network packs</returns>
-		private static List<AvailableNetworkPack> GetAllAvailableEduroamNetworkPacks(string ssid = DefaultSsid, string ConsortiumOid = null)
+		private static List<AvailableNetworkPack> GetAllAvailableEduroamNetworkPacks(string ssid = DefaultSsid, string consortiumOid = null)
 		{
 			if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
 				return new List<AvailableNetworkPack>();
 
 			return NativeWifi.EnumerateAvailableNetworks()
-				.Where(network => network.Ssid.ToString() == ssid) // TODO: ConsortiumOid
+				.Where(network => network.Ssid.ToString() == ssid) // TODO: consortiumOid
 				.OrderBy(network => string.IsNullOrEmpty(network.ProfileName))
 				.ToList();
 		}
