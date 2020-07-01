@@ -3,14 +3,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using EduroamConfigure;
 using System.Linq;
-using System.Diagnostics;
-using System;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using ManagedNativeWifi;
-using EduroamConfigure;
-
 
 namespace EduroamApp
 {
@@ -18,10 +12,8 @@ namespace EduroamApp
 	{
 		private readonly frmParent frmParent;
 		private readonly EapConfig.AuthenticationMethod authMethod;
-		private bool usernameFieldLeave;
 		private bool usernameDefault = true;
 		private bool passwordDefault = true;
-		private bool usernameSet;
 		private bool passwordSet;
 		private bool usernameValid = false;
 		private string realm;
@@ -58,7 +50,6 @@ namespace EduroamApp
 
 			if (!string.IsNullOrEmpty(frmParent.InstId))
 			{
-				// lblInst.Text = "@" + frmParent.InstId;
 				lblInst.Text = "@" + authMethod.ClientInnerIdentitySuffix;
 			}
 			else
@@ -121,7 +112,7 @@ namespace EduroamApp
 
 		}
 
-		public void ValidateUser()
+		public void ValidateFields()
 		{
 			string username = txtUsername.Text;
 			if (username == "Username" || username == "" )
@@ -135,11 +126,6 @@ namespace EduroamApp
 			if (!username.Contains('@') && !string.IsNullOrEmpty(realm))
 			{
 				username += "@" + realm;
-				//lblInst.Visible = true;
-			}
-			else
-			{
-				//lblInst.Visible = false;
 			}
 
 
@@ -191,19 +177,15 @@ namespace EduroamApp
 		private void txtUsername_TextChanged(object sender, EventArgs e)
 		{
 			lblInst.Visible = false;
-			ValidateUser();
+			ValidateFields();
 		}
 
 		private void txtPassword_TextChanged(object sender, EventArgs e)
 		{
 			passwordSet = !string.IsNullOrEmpty(txtPassword.Text) && !passwordDefault && txtPassword.ContainsFocus;
-			ValidateUser();
+			ValidateFields();
 		}
 
-		private void ValidateFields()
-		{
-			frmParent.BtnNextEnabled = (usernameSet && passwordSet && usernameValid);
-		}
 
 
 		private async void Connect()

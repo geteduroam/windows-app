@@ -15,7 +15,7 @@ namespace EduroamApp
 		private readonly frmParent frmParent; // makes parent form accessible from this class
 		private List<IdentityProvider> identityProviders = new List<IdentityProvider>(); // list containing all identity providers
 		private List<IdentityProvider> allIdentityProviders;
-		private int idProviderId; // id of selected institution
+		public int idProviderId; // id of selected institution
 		// private static string helpString = "Search here ..";
 
 
@@ -131,7 +131,7 @@ namespace EduroamApp
 			// select provider ID based on chosen profile name
 			idProviderId = identityProviders.Where(x => x.Name == (string) lbInstitution.SelectedItem).Select(x => x.cat_idp).First();
 			// update parent state. frmParent.idProviderId is used to create frmSelectProfile
-			frmParent.idProviderId = idProviderId;
+			//frmParent.idProviderId = idProviderId;
 			frmParent.BtnNextEnabled = true;
 
 		}
