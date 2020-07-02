@@ -575,7 +575,7 @@ namespace EduroamApp
         {
             frmSelectMethod = new frmSelectMethod(this);
             currentFormId = FormId.SelectMethod;
-            lblTitle.Text = "Configure Eduroam to get started";
+            lblTitle.Text = "Connect to eduroam";
             //btnNext.Text = "Setup Eduroam";
             btnNext.Visible = false;
             // if config file exists in self extract but user wants to choose another institution
