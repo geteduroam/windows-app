@@ -47,7 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="RegisterStore.cs" />
+    <Compile Include="PersistingStore.cs" />
     <Compile Include="ConnectToEduroam.cs" />
     <Compile Include="DiscoveryApi.cs" />
     <Compile Include="EapConfig.cs" />
