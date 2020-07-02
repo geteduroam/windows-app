@@ -1,30 +1,72 @@
 using Microsoft.Win32;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Immutable;
+using System.Diagnostics;
 
 namespace EduroamConfigure
 {
-	class PersistingStore
+
+	public class PersistingStore
 	{
 		/// <summary>
-		/// Username of
+		/// The username to remember from when the user last logged in
 		/// </summary>
 		public static string Username
 		{
-			get => getValue("username");
-			set => setValue("username", value);
+			get => GetValue<string>("Username");
+			set => SetValue<string>("Username", value);
+		}
+
+		/// <summary>
+		/// The ID cof the eap-config profile as assigned by discovery.geteduroam.*
+		/// </summary>
+		public static string ProfileID
+		{
+			get => GetValue<string>("ProfileID");
+			set => SetValue<string>("ProfileID", value);
 		}
 
 		// TODO: persist the static state of EduroamNetworks using this class
-
-		// TODO: use json instead?
-
-		private const string ns = "HKEY_CURRENT_USER\\RegistrySetValueExample"; // Namespace
-		private static string getValue(string key)
+		/// <summary>
+		///
+		/// </summary>
+		public static ImmutableHashSet<ConfiguredProfile> ConfiguredProfiles
 		{
-			return (string)Registry.GetValue(ns, key, null);
+			get => GetValue<ImmutableHashSet<ConfiguredProfile>>("ConfigureProfiles", "[]");
+			set => SetValue<ImmutableHashSet<ConfiguredProfile>>("ConfigureProfiles", value);
 		}
-		private static void setValue(string key, string value)
+
+
+		public readonly struct ConfiguredProfile
 		{
-			Registry.SetValue(ns, key, value);
+			public Guid InterfaceId { get; }
+			public string ProfileName { get; }
+			public bool IsHs2 { get; }
+
+			public ConfiguredProfile(Guid interfaceId, string profileName, bool isHs2)
+			{
+				InterfaceId = interfaceId;
+				ProfileName = profileName;
+				IsHs2 = isHs2;
+			}
+		}
+
+
+		// Inner workings:
+
+		private const string ns = "HKEY_CURRENT_USER\\GetEduroam"; // Namespace in Registry
+		private static T GetValue<T>(string key, string defaultJson = "null")
+		{
+			return JsonConvert.DeserializeObject<T>(
+				(string)Registry.GetValue(ns, key, null) ?? defaultJson);
+		}
+		private static void SetValue<T>(string key, T value)
+		{
+			var serialized = JsonConvert.SerializeObject(value);
+			Debug.WriteLine(string.Format("Write to {0}\\{1}: {2}", ns, key, serialized));
+			Registry.SetValue(ns, key, serialized);
+			return;
 		}
 	}
 }

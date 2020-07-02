@@ -1,11 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Threading.Tasks;
 using ManagedNativeWifi;
+using ConfiguredProfile = EduroamConfigure.PersistingStore.ConfiguredProfile;
 
 namespace EduroamConfigure
 {
@@ -20,11 +23,7 @@ namespace EduroamConfigure
 		public Guid InterfaceId { get; }
 		public AvailableNetworkPack NetworkPack { get; }
 		public bool IsAvailable { get { return NetworkPack != null; } }
-		public bool IsConfigured { get => configuredProfileNames.Any(); }
-
-		// State
-		private readonly static HashSet<ValueTuple<Guid, string, bool>> configuredProfileNames
-			= new HashSet<ValueTuple<Guid, string, bool>>(); // TODO: make this persist on disk, perhaps also use NativeWifi.EnumerateProfiles() to populate/filter it
+		public bool IsConfigured { get => PersistingStore.ConfiguredProfiles.Any(); }
 
 		// TODO: Add support for Wired 801x
 
@@ -107,7 +106,11 @@ namespace EduroamConfigure
 				profileXml,
 				securityType,
 				overwrite);
-			if (success) configuredProfileNames.Add((InterfaceId, profileName, isHs2));
+			if (success) {
+				PersistingStore.ConfiguredProfiles = PersistingStore.ConfiguredProfiles
+					.Add(new ConfiguredProfile(InterfaceId, profileName, isHs2));
+			}
+
 			return success;
 		}
 
@@ -125,21 +128,25 @@ namespace EduroamConfigure
 			const uint profileUserTypeCurrentUsers = 0x00000000; // "current user" - https://github.com/rozmansi/WLANSetEAPUserData
 			const uint profileUserTypeAllUSers = 0x00000001; // WLAN_SET_EAPHOST_DATA_ALL_USERS
 
-			bool ret = configuredProfileNames.Any();
-			foreach ((Guid interfaceId, string profileName, bool isHs2) in configuredProfileNames)
+			PersistingStore.Username = username; // save username
+
+			bool ret = PersistingStore.ConfiguredProfiles.Any();
+			foreach (var configuredProfile in PersistingStore.ConfiguredProfiles)
 			{
-				if (interfaceId != InterfaceId) continue;
+				if (configuredProfile.InterfaceId != InterfaceId) continue;
 
 				// generate user data xml file
 				string userDataXml = UserDataXml.CreateUserDataXml(
-					isHs2? authMethod.Hs2AuthMethod : authMethod, // TODO: move this logic into UserDataXml?
+					configuredProfile.IsHs2
+						? authMethod.Hs2AuthMethod
+						: authMethod, // TODO: move this logic into UserDataXml?
 					username,
 					password);
 
 				// install it
 				ret &= NativeWifi.SetProfileUserData(
 					InterfaceId,
-					profileName,
+					configuredProfile.ProfileName,
 					forAllUsers
 						? profileUserTypeAllUSers
 						: profileUserTypeCurrentUsers,
@@ -157,19 +164,21 @@ namespace EduroamConfigure
 		/// </remarks>
 		public bool RemoveInstalledProfiles()
 		{
-			var n = configuredProfileNames.Count();
+			var n = PersistingStore.ConfiguredProfiles.Count();
 
-			foreach (var entry in configuredProfileNames.ToList())
+			foreach (var configuredProfile in PersistingStore.ConfiguredProfiles.ToList())
 			{
-				(Guid interfaceId, string profileName, bool isHs2) = entry;
-				if (interfaceId == InterfaceId)
+				if (configuredProfile.InterfaceId == InterfaceId)
 				{
-					if (NativeWifi.DeleteProfile(InterfaceId, profileName))
-						configuredProfileNames.Remove(entry);
+					if (NativeWifi.DeleteProfile(InterfaceId, configuredProfile.ProfileName))
+					{
+						PersistingStore.ConfiguredProfiles = PersistingStore.ConfiguredProfiles
+							.Remove(configuredProfile);
+					}
 				}
 			}
 
-			return n != configuredProfileNames.Count();
+			return n != PersistingStore.ConfiguredProfiles.Count();
 		}
 
 		public async Task<bool> TryToConnect()
@@ -194,13 +203,13 @@ namespace EduroamConfigure
 		/// Enumerates EduroamNetwork objects for all wireless network interfaces.
 		/// </summary>
 		/// <returns></returns>
-		public static IEnumerable<EduroamNetwork> GetAll()
+		public static IEnumerable<EduroamNetwork> GetAll(EapConfig eapConfig)
 		{
 			// NativeWifi will throw if service is not available
 			if (!IsWlanServiceApiAvailable())
 				return Enumerable.Empty<EduroamNetwork>();
 
-			var availableNetworks = GetAllAvailableEduroamNetworkPacks()
+			var availableNetworks = GetAllAvailableEduroamNetworkPacks(eapConfig?.CredentialApplicabilities)
 				.Select(networkPack => new EduroamNetwork(networkPack))
 				.ToList();
 
@@ -213,16 +222,46 @@ namespace EduroamConfigure
 				.Where(guid => !configuredInterfaces.Contains(guid))
 				.Select(guid => new EduroamNetwork(guid));
 
+			// look through installed profiles and remove persisted profile configurations which have been uninstalled by user
+			// TODO: move to separate function?
+			var availableProfiles = GetAllNetworkPacksWithProfiles().ToList();
+			foreach (var configuredProfile in PersistingStore.ConfiguredProfiles)
+			{
+				// if still installed
+				if (availableProfiles
+					.Where(network => configuredProfile.InterfaceId == network.Interface.Id)
+					.Where(network => configuredProfile.ProfileName == network.ProfileName)
+					.Any()) continue; // ignore
+
+				// else remove
+				Debug.WriteLine(string.Format("Removing profile from persisting store called {0} on interface {1}",
+					configuredProfile.ProfileName, configuredProfile.InterfaceId));
+				PersistingStore.ConfiguredProfiles = PersistingStore.ConfiguredProfiles
+					.Remove(configuredProfile);
+			}
+
 			return availableNetworks.Concat(unavailableNetworks);
+		}
+
+		public static IEnumerable<EduroamNetwork> GetConfigured()
+		{
+			var installedProfiles = PersistingStore.ConfiguredProfiles.ToList();
+
+			return GetAllNetworkPacksWithProfiles()
+				.Where(network => installedProfiles.Any(p
+					=> p.ProfileName == network.ProfileName
+					&& p.InterfaceId == network.Interface.Id))
+				.Select(network => new EduroamNetwork(network));
 		}
 
 		/// <summary>
 		/// "Can i install and connect to eduroam?"
 		/// </summary>
-		/// <returns></returns>
-		public static bool IsEduroamAvailable(string ssid = DefaultSsid, string ConsortiumOid = null)
+		/// <param name="eapConfig">EAP config</param>
+		/// <returns>true if eduroam is available</returns>
+		public static bool IsEduroamAvailable(EapConfig eapConfig)
 		{
-			return GetAllAvailableEduroamNetworkPacks(ssid, ConsortiumOid).Any();
+			return GetAllAvailableEduroamNetworkPacks(eapConfig?.CredentialApplicabilities).Any();
 		}
 
 		/// <summary>
@@ -257,15 +296,45 @@ namespace EduroamConfigure
 		/// Gets all network packs containing information about an eduroam network, if any.
 		/// </summary>
 		/// <returns>Network packs</returns>
-		private static List<AvailableNetworkPack> GetAllAvailableEduroamNetworkPacks(string ssid = DefaultSsid, string consortiumOid = null)
+		private static List<AvailableNetworkPack> GetAllNetworkPacksWithProfiles()
 		{
 			if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
 				return new List<AvailableNetworkPack>();
 
 			return NativeWifi.EnumerateAvailableNetworks()
-				.Where(network => network.Ssid.ToString() == ssid) // TODO: consortiumOid
-				.OrderBy(network => string.IsNullOrEmpty(network.ProfileName))
+				.Where(network => !string.IsNullOrEmpty(network.ProfileName))
 				.ToList();
+		}
+
+		/// <summary>
+		/// Gets all network packs containing information about an eduroam network, if any.
+		/// </summary>
+		/// <returns>Network packs</returns>
+		private static List<AvailableNetworkPack> GetAllAvailableEduroamNetworkPacks(
+			List<EapConfig.CredentialApplicability> credentialApplicabilities)
+		{
+			if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
+				return new List<AvailableNetworkPack>();
+
+			if (credentialApplicabilities != null)
+			{
+				var ssids = credentialApplicabilities
+					.Where(c => c.Ssid != null)
+					.Select(c => c.Ssid)
+					.ToImmutableHashSet();
+
+				return NativeWifi.EnumerateAvailableNetworks()
+					.Where(network => ssids.Contains(network.Ssid.ToString()))
+					.OrderBy(network => string.IsNullOrEmpty(network.ProfileName))
+					.ToList();
+			}
+			else // TODO: remove?
+			{
+				return NativeWifi.EnumerateAvailableNetworks()
+					.Where(network => network.Ssid.ToString() == DefaultSsid)
+					.OrderBy(network => string.IsNullOrEmpty(network.ProfileName))
+					.ToList();
+			}
 		}
 
 		/// <summary>
