@@ -300,7 +300,7 @@ namespace EduroamConfigure
                 Console.WriteLine("Installed type:     " + AuthMethod?.EapType.ToString() ?? "None");
                 Console.WriteLine("Installed hs2 type: " + AuthMethod.Hs2AuthMethod?.EapType.ToString() ?? "None");
 
-                if (AuthMethod.EapType == EapType.TLS) // TODO: this is hackywacky, InstallUserProfile should be a part of InstallProfile
+                if (!AuthMethod.NeedsClientCertificate() && !AuthMethod.NeedsLoginCredentials())
                 {
                     InstallUserProfile(null, null, AuthMethod);
                 }
