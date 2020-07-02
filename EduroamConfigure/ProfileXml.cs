@@ -147,16 +147,17 @@ namespace EduroamConfigure
 				new XElement(nsWLAN + "nonBroadcast", "true")
 			);
 
-			// Populate Hs2 fields
+			// Populate the Hs2 field
 			foreach (string oui in consortiumOids)
 			{
 				roamingConsortiumElement.Add(
 					new XElement(nsWLAN + "OUI", oui)
 				);
 			}
+			// or remove it if it shouldn't be there
 			if (!asHs2Profile) hs2Element.Remove();
 
-			// returns xml as string
+			// return xml as string
 			return (profileName, newProfile.ToString());
 		}
 

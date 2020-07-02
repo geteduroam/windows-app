@@ -53,8 +53,8 @@ namespace EduroamApp
 		public GeoCoordinateWatcher GeoWatcher { get; set; }
 		public EapConfig.AuthenticationMethod AuthMethod; // installed authmethod in EAP config
 		public string InstId { get; set; }
-		public string ProfileCondition { get; set; }
-		public string LocalFileType { get; set; }
+		public string ProfileCondition { get; set; } // TODO: make into a bool or enum
+		public string LocalFileType { get; set; } // TODO: obsolete
 		public string RedirectUrl { get; set; }
 		public bool ComesFromSelfExtract { get; set; }
 		public bool SelfExtractFlag { get; set; }
@@ -198,7 +198,7 @@ namespace EduroamApp
 						default:
 							MessageBox.Show(
 								"Couldn't connect to eduroam. \n" +
-								"Your institution does not have a valid configuration.",
+								"Your institution does not have a valid configuration.", // TODO: reword. The user may have declined some steps
 								"Configuration not valid", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 							break;
 					}
@@ -210,7 +210,8 @@ namespace EduroamApp
 					if (frmSelectMethod.newProfile) LoadFrmSelectInstitution();
 					else
 					{
-						LoadFrmLocal();
+						eapConfig = FileDialog.AskUserForEapConfig();
+						if (eapConfig != null) LoadFrmSummary();
 					}
 					break;
 
