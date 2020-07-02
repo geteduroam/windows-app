@@ -52,6 +52,22 @@ namespace EduroamConfigure
             public bool ClientInnerIdentityHint { get; } // Wether to disallow subrealms or not (see https://github.com/GEANT/CAT/issues/190)
 
             /// <summary>
+            /// Will point to 'this' if it supports Hotspot2.0,
+            /// otherwise points to the first one supports Hotspot2.0 in EapConfig.AuthenticationMethods,
+            /// otherwise null
+            /// </summary>
+            public AuthenticationMethod Hs2AuthMethod {
+                // TODO: this method is risky, since other authMethods may use other certificates
+                // IDEA: install cetrtificates in separate view in gui
+                get => ProfileXml.SupportsHs2(this)
+                    ? this
+                    //: null
+                    : EapConfig.AuthenticationMethods
+                        .FirstOrDefault(ProfileXml.SupportsHs2);
+            }
+
+
+            /// <summary>
             /// Converts and enumerates CertificateAuthorities as X509Certificate2 objects
             /// </summary>
             public IEnumerable<X509Certificate2> CertificateAuthoritiesAsX509Certificate2()

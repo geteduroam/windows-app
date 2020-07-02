@@ -70,6 +70,11 @@ namespace EduroamConfigure
                     .Select(cred => cred.Ssid)
                     .ToList();
 
+            if (!ssids.Any())
+                throw new EduroamAppUserError("no valid ssids in config");
+            if (asHs2Profile && !SupportsHs2(authMethod))
+                throw new EduroamAppUserError("hotspot2.0 not supported by this authentication method");
+
             // Get list of ConsortiumOIDs
             List<string> consortiumOids = authMethod.EapConfig.CredentialApplicabilities
                 .Where(cred => cred.ConsortiumOid != null)
@@ -79,12 +84,7 @@ namespace EduroamConfigure
             // Decide the profile name
             var profileName = asHs2Profile
                 ? (authMethod.EapConfig.InstitutionInfo.DisplayName)
-                : ssids.FirstOrDefault() ?? EduroamNetwork.DefaultSsid;
-            
-            if (!ssids.Any())
-                throw new EduroamAppUserError("no valid ssids in config");
-            if (asHs2Profile && !SupportsHs2(authMethod))
-                throw new EduroamAppUserError("hotspot2.0 not supported by authentication method");
+                : ssids.First();
 
             // Construct XML document
             XElement ssidConfigElement;

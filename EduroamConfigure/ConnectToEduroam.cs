@@ -98,15 +98,15 @@ namespace EduroamConfigure
         {
             List<EduroamNetwork> eduroamNetworks = EduroamNetwork.GetAll().ToList();
             if (!eduroamNetworks.Any())
-                yield break; // TODO: concider throwing
+                yield break; // TODO: concider throwing, test ux
             if (!EapConfigIsSupported(eapConfig))
-                yield break; // TODO: concider throwing
+                yield break; // TODO: concider throwing, test ux
 
             foreach (EapConfig.AuthenticationMethod authMethod in eapConfig.AuthenticationMethods)
             {
                 if (AuthMethodIsSupported(authMethod))
-                    yield return new EapAuthMethodInstaller(authMethod, eduroamNetworks);
-                // if EAP type is not supported, skip this authMethod
+                    yield return new EapAuthMethodInstaller(authMethod);
+                // if EAP type is not supported, we skip this authMethod
             }
         }
 
@@ -134,9 +134,6 @@ namespace EduroamConfigure
         /// </summary>
         public class EapAuthMethodInstaller
         {
-            // all the CA thumbprints that will be added to Wireless Profile XML
-            private readonly List<EduroamNetwork> EduroamNetworks;
-
             // To track proper order of operations
             private bool HasInstalledCertificates = false; 
             private bool HasInstalledProfile = false;
@@ -149,10 +146,9 @@ namespace EduroamConfigure
             /// Constructs a EapAuthMethodInstaller
             /// </summary>
             /// <param name="authMethod">The authentification method to attempt to install</param>
-            public EapAuthMethodInstaller(EapConfig.AuthenticationMethod authMethod, List<EduroamNetwork> eduroamNetworks)
+            public EapAuthMethodInstaller(EapConfig.AuthenticationMethod authMethod)
             {
                 AuthMethod = authMethod;
-                EduroamNetworks = eduroamNetworks;
             }
 
             /// <summary>
@@ -283,42 +279,26 @@ namespace EduroamConfigure
                     throw new EduroamAppUserError("missing certificates",
                         "You must first install certificates with InstallCertificates");
 
-                // Find a authMethod which supports Hs2, prefer the current auth method
-                EapConfig.AuthenticationMethod hs2AuthMethod;
-                if (ProfileXml.SupportsHs2(AuthMethod))
-                {
-                    hs2AuthMethod = AuthMethod;
-                }
-                else
-                {
-                    // TODO: this method is risky, since other authMethods may use other certificates
-                    // IDEA: install cetrtificates in separate view in gui
-                    /*
-                    hs2AuthMethod = AuthMethod.EapConfig.AuthenticationMethods
-                        .FirstOrDefault(ProfileXml.SupportsHs2);
-                    */
-                    hs2AuthMethod = null; // TODO: InstallUserProfile doesn't know which AuthMethod the hs2 profile uses
-                }
-
+                var eduroamNetworks = EduroamNetwork.GetAll().ToList();
                 bool anyInstalled = false;
                 bool anyInstalledHs2 = false; // todo: use
 
                 // Install wlan profile
-                foreach (EduroamNetwork network in EduroamNetworks)
+                foreach (EduroamNetwork network in eduroamNetworks)
                     anyInstalled |= network.InstallProfiles(AuthMethod);
 
                 // If successfull, try to install Hotspot 2.0 as well:
-                if (anyInstalled && hs2AuthMethod != null)
+                if (anyInstalled && AuthMethod.Hs2AuthMethod != null) // this should be moved into network.InstallProfiles ?
                 {
-                    foreach (EduroamNetwork network in EduroamNetworks)
-                        anyInstalledHs2 |= network.InstallHs2Profile(hs2AuthMethod);
+                    foreach (EduroamNetwork network in eduroamNetworks)
+                        anyInstalledHs2 |= network.InstallHs2Profile(AuthMethod.Hs2AuthMethod);
                 }
 
                 // TODO: remove
-                Console.WriteLine("anyInstalled: " + anyInstalled);
-                Console.WriteLine("anyInstalledHs2: " + anyInstalledHs2);
-                Console.WriteLine("Installed type: " + AuthMethod?.EapType.ToString() ?? "None");
-                Console.WriteLine("Installed type hs2: " + hs2AuthMethod?.EapType.ToString() ?? "None");
+                Console.WriteLine("anyInstalled:       " + anyInstalled);
+                Console.WriteLine("anyInstalledHs2:    " + anyInstalledHs2);
+                Console.WriteLine("Installed type:     " + AuthMethod?.EapType.ToString() ?? "None");
+                Console.WriteLine("Installed hs2 type: " + AuthMethod.Hs2AuthMethod?.EapType.ToString() ?? "None");
 
                 if (AuthMethod.EapType == EapType.TLS) // TODO: this is hackywacky, InstallUserProfile should be a part of InstallProfile
                 {
@@ -366,19 +346,13 @@ namespace EduroamConfigure
         /// <param name="authMethod">AuthMethod of installed profile</param>
         public static bool InstallUserProfile(string username, string password, EapConfig.AuthenticationMethod authMethod)
         {
-            // TODO: move into EapAuthMethodInstaller?
-
-            // generates user data xml file
-            string userDataXml = UserDataXml.CreateUserDataXml(
-                authMethod,
-                username,
-                password);
+            // TODO: move this into EapAuthMethodInstaller?
 
             // sets user data
             bool anyInstalled = false;
             foreach (EduroamNetwork network in EduroamNetwork.GetAll())
             {
-                anyInstalled |= network.InstallUserData(userDataXml);
+                anyInstalled |= network.InstallUserData(username, password, authMethod);
             }
             return anyInstalled;
         }
