@@ -44,20 +44,20 @@
             this.tlpLoading.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60.71429F));
             this.tlpLoading.Controls.Add(this.label1, 0, 0);
             this.tlpLoading.Controls.Add(this.pictureBox1, 0, 1);
-            this.tlpLoading.Location = new System.Drawing.Point(144, 57);
+            this.tlpLoading.Location = new System.Drawing.Point(148, 57);
             this.tlpLoading.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tlpLoading.Name = "tlpLoading";
             this.tlpLoading.RowCount = 2;
             this.tlpLoading.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpLoading.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 134F));
-            this.tlpLoading.Size = new System.Drawing.Size(179, 168);
+            this.tlpLoading.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
+            this.tlpLoading.Size = new System.Drawing.Size(183, 84);
             this.tlpLoading.TabIndex = 38;
             // 
             // label1
             // 
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(56, 0);
+            this.label1.Location = new System.Drawing.Point(58, 0);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(66, 20);
@@ -68,7 +68,7 @@
             // 
             this.pictureBox1.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.pictureBox1.Image = global::EduroamApp.Properties.Resources.loading_gif;
-            this.pictureBox1.Location = new System.Drawing.Point(81, 39);
+            this.pictureBox1.Location = new System.Drawing.Point(83, 40);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(16, 16);
@@ -96,6 +96,7 @@
             this.lbInstitution.Name = "lbInstitution";
             this.lbInstitution.Size = new System.Drawing.Size(484, 244);
             this.lbInstitution.TabIndex = 40;
+            this.lbInstitution.Visible = false;
             this.lbInstitution.SelectedIndexChanged += new System.EventHandler(this.lbInstitution_SelectedIndexChanged);
             this.lbInstitution.DoubleClick += new System.EventHandler(this.lbInstitution_DoubleClick);
             // 
@@ -106,6 +107,7 @@
             this.tbSearch.Name = "tbSearch";
             this.tbSearch.Size = new System.Drawing.Size(484, 26);
             this.tbSearch.TabIndex = 42;
+            this.tbSearch.Visible = false;
             this.tbSearch.TextChanged += new System.EventHandler(this.tbSearch_TextChanged);
             // 
             // frmSelectInstitution
@@ -114,7 +116,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(506, 745);
+            this.ClientSize = new System.Drawing.Size(506, 549);
             this.Controls.Add(this.lblError);
             this.Controls.Add(this.tlpLoading);
             this.Controls.Add(this.tbSearch);

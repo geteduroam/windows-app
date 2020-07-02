@@ -64,8 +64,7 @@ namespace EduroamApp
         public DateTime CertValidFrom { get; set; }
         public EapConfig eapConfig { get; set; }
         public int? idProviderId {get; set;}
-
-        public Font font;
+        public List<IdentityProvider> Providers;
         public frmParent()
         {
             // starts GeoCoordinateWatcher when app starts
@@ -79,6 +78,7 @@ namespace EduroamApp
 
         private void frmParent_Load(object sender, EventArgs e)
         {
+            Providers = IdentityProviderDownloader.GetAllIdProviders();
             // sets eduroam logo
             webEduroamLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(Properties.Resources.eduroam_logo, webEduroamLogo.Width, webEduroamLogo.Height);
             Icon = Properties.Resources.geteduroam;
@@ -214,6 +214,7 @@ namespace EduroamApp
                     break;
 
                 case FormId.SelectInstitution:
+                    frmSelectInstitution.StartLoading();
                     var profiles = GetProfiles((int) frmSelectInstitution.idProviderId);
                     // if less than 2 profiles then, if a profile exists, autoselect it and go to Summary
                     if (profiles.Count < 2)
@@ -278,7 +279,7 @@ namespace EduroamApp
             {
                 return IdentityProviderDownloader.GetIdentityProviderProfiles(providerId);
             }
-            catch (EduroamAppUserError ex)
+            catch (EduroamAppUserError)
             {
                 //lblError.Text = ex.UserFacingMessage;
             }
@@ -539,12 +540,6 @@ namespace EduroamApp
             set => btnBack.Visible = value;
         }
 
-        public bool BtnCancelEnabled
-        {
-            get => btnCancel.Enabled;
-            set => btnCancel.Enabled = value;
-        }
-
 
         /// <summary>
         /// Loads form that shows summary of selected EAP configuration.
@@ -744,11 +739,6 @@ namespace EduroamApp
             webLogo.Visible = false;
         }
 
-        // closes form
-        private void btnCancel_Click(object sender, EventArgs e)
-        {
-            Close();
-        }
 
         // FormClosed listene
         private void frmParent_FormClosed(object sender, FormClosedEventArgs e)
@@ -760,14 +750,5 @@ namespace EduroamApp
             }
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pnlNavigation_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
     }
 }

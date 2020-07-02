@@ -25,6 +25,7 @@ namespace EduroamApp
             // gets parent form instance
             frmParent = parentInstance;
             InitializeComponent();
+
         }
 
         /// <summary>
@@ -32,41 +33,45 @@ namespace EduroamApp
         /// </summary>
         private async void frmDownload_Load(object sender, EventArgs e)
         {
+            StartLoading();
             frmParent.WebEduroamLogo.Visible = true;
-            // hides certain controls while loading
-            //HideControls();
-            // displays loading animation while fetching list of institutions
-            tlpLoading.BringToFront();
-            tlpLoading.Visible = true;
-            // resets redirect url
             frmParent.RedirectUrl = "";
             lbInstitution.Enabled = false;
             frmParent.BtnNextEnabled = false;
-            //HideControls();
 
             // async method to get list of institutions
             bool getInstSuccess = await Task.Run(() => GetAllInstitutions());
 
             if (getInstSuccess)
             {
-                // enables controls
-                tlpLoading.Visible = false;
-
                 PopulateInstitutions();
-
-                //lblSearch.Visible = true;
-                //tbSearch.Text = helpString;
-                tbSearch.Visible = true;
-                tbSearch.Enabled = true;
-                lbInstitution.Visible = true;
-                lbInstitution.Enabled = true;
                 this.ActiveControl = tbSearch;
             }
             else
             {
-                tlpLoading.Visible = false;
                 lblError.Visible = true;
             }
+
+            StopLoading();
+        }
+
+        public void StartLoading()
+        {
+            tbSearch.Visible = false;
+            tbSearch.Enabled = false;
+            lbInstitution.Visible = false;
+            lbInstitution.Enabled = false;
+            tlpLoading.BringToFront();
+            tlpLoading.Visible = true;
+        }
+
+        private void StopLoading()
+        {
+            tbSearch.Visible = true;
+            tbSearch.Enabled = true;
+            lbInstitution.Visible = true;
+            lbInstitution.Enabled = true;
+            tlpLoading.Visible = false;
         }
 
         /// <summary>
@@ -76,7 +81,8 @@ namespace EduroamApp
         {
             try
             {
-                allIdentityProviders = IdentityProviderDownloader.GetAllIdProviders();
+                //allIdentityProviders = IdentityProviderDownloader.GetAllIdProviders();
+                allIdentityProviders = frmParent.Providers;
                 return true;
             }
             catch (EduroamAppUserError ex)
