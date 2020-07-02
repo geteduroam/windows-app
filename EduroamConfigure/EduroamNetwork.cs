@@ -50,7 +50,6 @@ namespace EduroamConfigure
 			*/
 		}
 
-
 		/// <summary>
 		/// Installs network profiles according to selected auth method.
 		/// Will install multiple profile, one for each supported SSID
