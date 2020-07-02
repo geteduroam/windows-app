@@ -25,11 +25,9 @@ namespace EduroamApp
 			SelectInstitution,
 			SelectProfile,
 			Download,
-			Local,
 			Login,
 			Connect,
 			Redirect,
-			LocalCert,
 			SaveAndQuit
 		}
 
@@ -44,7 +42,6 @@ namespace EduroamApp
 		private frmSelectMethod frmSelectMethod;
 		private frmSelectInstitution frmSelectInstitution;
 		private frmSelectProfile frmSelectProfile;
-		private frmLocal frmLocal;
 		private frmConnect frmConnect;
 		private frmLogin frmLogin;
 		private frmRedirect frmRedirect;
@@ -54,7 +51,6 @@ namespace EduroamApp
 		public EapConfig.AuthenticationMethod AuthMethod; // installed authmethod in EAP config
 		public string InstId { get; set; }
 		public string ProfileCondition { get; set; } // TODO: make into a bool or enum
-		public string LocalFileType { get; set; } // TODO: obsolete
 		public string RedirectUrl { get; set; }
 		public bool ComesFromSelfExtract { get; set; }
 		public bool SelfExtractFlag { get; set; }
@@ -170,11 +166,7 @@ namespace EduroamApp
 
 					if (AuthMethod != null) // Profile was successfully installed
 					{
-						if (AuthMethod.NeedsClientCertificate()) {
-							LocalFileType = "CERT";
-							LoadFrmLocalCert();
-						}
-						else if (AuthMethod.NeedsLoginCredentials())
+						if (AuthMethod.NeedsLoginCredentials())
 						{
 							LoadFrmLogin();
 						}
@@ -234,12 +226,6 @@ namespace EduroamApp
 					HandleProfileSelect(profileId);
 					break;
 
-				// opens summary form if config is not null
-				case FormId.Local:
-					eapConfig = frmLocal.LocalEapConfig();
-					if (eapConfig != null) LoadFrmSummary();
-					break;
-
 				// lets user log in and opens connection form
 				case FormId.Login:
 					if (frmLogin.connected)
@@ -256,11 +242,6 @@ namespace EduroamApp
 					break;
 
 				// TODO: missing case Redirect. sanity is to throw on default
-
-				// lets user select client cert and opens connection form
-				case FormId.LocalCert:
-					if (frmLocal.InstallCertFile()) LoadFrmConnect();
-					break;
 
 				// closes application after saving setup
 				case FormId.SaveAndQuit:
@@ -349,14 +330,8 @@ namespace EduroamApp
 				case FormId.SelectProfile:
 					LoadFrmSelectProfile();
 					break;
-				case FormId.Local:
-					LoadFrmLocal();
-					break;
 				case FormId.Login:
 					LoadFrmLogin();
-					break;
-				case FormId.LocalCert:
-					LoadFrmLocalCert();
 					break;
 				// TODO: missing cases? sanity is to throw on default
 			}
@@ -618,23 +593,6 @@ namespace EduroamApp
 
 
 		/// <summary>
-		/// Loads form that lets user select config file from computer.
-		/// </summary>
-		public void LoadFrmLocal()
-		{
-			LocalFileType = "EAPCONFIG";
-			if (reload) frmLocal = new frmLocal(this);
-			currentFormId = FormId.Local;
-			lblTitle.Text = "Select EAP-config file";
-			BtnNextEnabled = true;
-			btnNext.Visible = true;
-			btnNext.Text = "Next >";
-			btnBack.Enabled = true;
-			btnBack.Visible = true;
-			LoadNewForm(frmLocal);
-		}
-
-		/// <summary>
 		/// Loads form that lets user log in with username+password.
 		/// </summary>
 		public void LoadFrmLogin()
@@ -676,21 +634,6 @@ namespace EduroamApp
 			btnBack.Enabled = true;
 			btnBack.Visible = true;
 			LoadNewForm(frmRedirect);
-		}
-
-		/// <summary>
-		/// Loads form that lets you select a local client certificate file.
-		/// </summary>
-		public void LoadFrmLocalCert()
-		{
-			if (reload) frmLocal = new frmLocal(this);
-			currentFormId = FormId.LocalCert;
-			lblTitle.Text = "Select client certificate file";
-			BtnNextEnabled = true;
-			btnNext.Text = "Connect";
-			btnBack.Enabled = true;
-			btnBack.Visible = true;
-			LoadNewForm(frmLocal);
 		}
 
 		/// <summary>

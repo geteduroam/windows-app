@@ -17,7 +17,7 @@ namespace EduroamApp
 		/// TODO
 		/// </summary>
 		/// <returns>(filecontents, passphrase) or null</returns>
-		public static ValueTuple<string, string>? AskUserForClientCertificateBundle() // TODO: test, use
+		public static ValueTuple<string, string>? AskUserForClientCertificateBundle()
 		{
 			string filepath;
 			do
@@ -60,7 +60,7 @@ namespace EduroamApp
 		/// TODO
 		/// </summary>
 		/// <returns>EapConfig object or null</returns>
-		public static EduroamConfigure.EapConfig AskUserForEapConfig() // TODO: test, use
+		public static EduroamConfigure.EapConfig AskUserForEapConfig()
 		{
 			string filepath;
 			do
@@ -106,7 +106,7 @@ namespace EduroamApp
 		/// <param name="dialogTitle">Title of the OpenFileDialog.</param>
 		/// <param name="filter">Filter for OpenFileDialog.</param>
 		/// <returns>Path of selected file.</returns>
-		public static string getFileFromDialog(string dialogTitle, string filter) // TODO: private when frmLocal is gone
+		private static string getFileFromDialog(string dialogTitle, string filter)
 		{
 			OpenFileDialog fileDialog = new OpenFileDialog
 			{
