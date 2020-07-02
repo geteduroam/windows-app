@@ -35,6 +35,7 @@
             this.lblRules = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.lblStatus = new System.Windows.Forms.Label();
+            this.pbxStatus = new System.Windows.Forms.PictureBox();
             this.pnlEduNotAvail = new System.Windows.Forms.Panel();
             this.lblConnectFailed = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -43,10 +44,9 @@
             this.label5 = new System.Windows.Forms.Label();
             this.lblEdu2 = new System.Windows.Forms.Label();
             this.lblEduNotAvail = new System.Windows.Forms.Label();
-            this.pbxStatus = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
-            this.pnlEduNotAvail.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbxStatus)).BeginInit();
+            this.pnlEduNotAvail.SuspendLayout();
             this.SuspendLayout();
             // 
             // label1
@@ -75,7 +75,7 @@
             // txtPassword
             // 
             this.txtPassword.ForeColor = System.Drawing.SystemColors.GrayText;
-            this.txtPassword.Location = new System.Drawing.Point(156, 74);
+            this.txtPassword.Location = new System.Drawing.Point(156, 80);
             this.txtPassword.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(197, 26);
@@ -98,9 +98,9 @@
             // 
             // lblRules
             // 
-            this.lblRules.Location = new System.Drawing.Point(63, 105);
+            this.lblRules.Location = new System.Drawing.Point(63, 111);
             this.lblRules.Name = "lblRules";
-            this.lblRules.Size = new System.Drawing.Size(393, 112);
+            this.lblRules.Size = new System.Drawing.Size(393, 106);
             this.lblRules.TabIndex = 3;
             this.lblRules.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -133,6 +133,18 @@
             this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblStatus.Visible = false;
             this.lblStatus.Click += new System.EventHandler(this.lblStatus_Click);
+            // 
+            // pbxStatus
+            // 
+            this.pbxStatus.Image = global::EduroamApp.Properties.Resources.loading_gif;
+            this.pbxStatus.Location = new System.Drawing.Point(251, 251);
+            this.pbxStatus.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.pbxStatus.Name = "pbxStatus";
+            this.pbxStatus.Size = new System.Drawing.Size(16, 16);
+            this.pbxStatus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pbxStatus.TabIndex = 9;
+            this.pbxStatus.TabStop = false;
+            this.pbxStatus.Visible = false;
             // 
             // pnlEduNotAvail
             // 
@@ -222,18 +234,6 @@
             this.lblEduNotAvail.TabIndex = 17;
             this.lblEduNotAvail.Text = "eduroam is not available at your current location.\r\n\r\nYour options are:";
             // 
-            // pbxStatus
-            // 
-            this.pbxStatus.Image = global::EduroamApp.Properties.Resources.loading_gif;
-            this.pbxStatus.Location = new System.Drawing.Point(251, 251);
-            this.pbxStatus.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.pbxStatus.Name = "pbxStatus";
-            this.pbxStatus.Size = new System.Drawing.Size(16, 16);
-            this.pbxStatus.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pbxStatus.TabIndex = 9;
-            this.pbxStatus.TabStop = false;
-            this.pbxStatus.Visible = false;
-            // 
             // frmLogin
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -249,9 +249,9 @@
             this.Load += new System.EventHandler(this.frmLogin_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbxStatus)).EndInit();
             this.pnlEduNotAvail.ResumeLayout(false);
             this.pnlEduNotAvail.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbxStatus)).EndInit();
             this.ResumeLayout(false);
 
         }
