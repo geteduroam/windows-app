@@ -559,6 +559,8 @@ namespace EduroamApp
                 //lblTitle.Text = eapConfig.InstitutionInfo.DisplayName;
             }
             btnNext.Visible = true;
+            BtnBackEnabled = true;
+            BtnBackVisible = true;
             if (!reload) BtnNextEnabled = true;
             btnNext.Text = eapConfig.AuthenticationMethods.First().EapType == EduroamConfigure.EapType.TLS ? "Connect" : "Next >";
             LoadNewForm(frmSummary);
