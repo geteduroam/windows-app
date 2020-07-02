@@ -70,7 +70,6 @@ namespace EduroamApp
         // removes helping text when field is in focus
         private void txtUsername_Enter(object sender, EventArgs e)
         {
-            //lblRules.Visible = false;
             if (txtUsername.Text == "Username" && usernameDefault)
             {
                 txtUsername.Text = "";
@@ -255,9 +254,5 @@ namespace EduroamApp
             pnlEduNotAvail.Visible = true;
         }
 
-        private void lblStatus_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

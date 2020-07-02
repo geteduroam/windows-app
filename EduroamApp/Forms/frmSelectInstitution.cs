@@ -55,12 +55,9 @@ namespace EduroamApp
             frmParent.WebEduroamLogo.Visible = true;
             frmParent.RedirectUrl = "";
 
-            //PopulateInstitutions();
+            // make user autoselect search
             this.ActiveControl = tbSearch;
-
-                //lblError.Visible = true;
-            
-
+           
             tlpLoading.Visible = false;
         }
 
@@ -189,19 +186,6 @@ namespace EduroamApp
                    MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-
-        /// <summary>
-        /// Hides all controls on form.
-        /// </summary>
-        private void HideControls()
-        {
-            lblError.Visible = false;
-            tbSearch.Visible = false;
-            lbInstitution.Visible = false;
-            frmParent.BtnNextEnabled = false;
-
-
-        }
 
     }
 }

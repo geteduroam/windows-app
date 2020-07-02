@@ -79,13 +79,6 @@ namespace EduroamApp
             // sets eduroam logo
             webEduroamLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(Properties.Resources.eduroam_logo, webEduroamLogo.Width, webEduroamLogo.Height);
             Icon = Properties.Resources.geteduroam;
-            //this.Visible = true;
-            //this.ShowInTaskbar = false;
-            //this.Visible = true;
-            //this.Hide();
-            //this.Show();
-            //this.WindowState = FormWindowState.Normal;
-            //Activate();
             this.ShowInTaskbar = true;
 
 
@@ -133,10 +126,6 @@ namespace EduroamApp
             {
                 this.Show();
                 this.WindowState = FormWindowState.Normal;
-                //this.Show();
-                //Focus();
-                //this.TopMost = true;
-                //this.TopMost = false;
                 Activate();
             }
         }
@@ -550,10 +539,7 @@ namespace EduroamApp
             frmSelectMethod = new frmSelectMethod(this);
             currentFormId = FormId.SelectMethod;
             lblTitle.Text = "Connect to eduroam";
-            //btnNext.Text = "Setup Eduroam";
             btnNext.Visible = false;
-            // if config file exists in self extract but user wants to choose another institution
-            //btnBack.Visible = ComesFromSelfExtract;
             btnBack.Visible = false;
             LoadNewForm(frmSelectMethod);
         }
@@ -561,23 +547,14 @@ namespace EduroamApp
         public void LoadFrmSelectInstitution()
         {
             currentFormId = FormId.SelectInstitution;
+
+            frmSelectInstitution = new frmSelectInstitution(this);
             lblTitle.Text = "Select your institution";
             BtnNextEnabled = !reload;
             btnNext.Visible = true;
             btnNext.Text = "Next >";
             btnBack.Enabled = true;
             btnBack.Visible = true;
-            // hack to have the change above take place immediatley and not after entire event is done
-            // makes them pop up instantly
-            //Application.DoEvents();
-
-            frmSelectInstitution = new frmSelectInstitution(this);
-           /* lblTitle.Text = "Select your institution";
-            BtnNextEnabled = !reload;
-            btnNext.Visible = true;
-            btnNext.Text = "Next >";
-            btnBack.Enabled = true;
-            btnBack.Visible = true;*/
             LoadNewForm(frmSelectInstitution);
         }
 
@@ -651,18 +628,6 @@ namespace EduroamApp
             LoadNewForm(frmConnect);
         }
 
-        // adds lines to panels on parent form
-        /*private void pnlNavTop_Paint(object sender, PaintEventArgs e)
-        {
-            Pen grayPen = new Pen(Color.LightGray);
-            //int width = pnlNavTop.Width;
-
-            Point point1 = new Point(0, 0);
-            //Point point2 = new Point(width, 0);
-
-            // Draw line to screen.
-            e.Graphics.DrawLine(grayPen, point1, point2);
-        }*/
 
 
         /// <summary>
