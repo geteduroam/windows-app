@@ -550,18 +550,17 @@ namespace EduroamApp
 			lblTitle.Text = eapConfig.InstitutionInfo.DisplayName;
 			if (SelfExtractFlag)
 			{
-				// lblTitle.Text = "eduroam Setup";
-				btnBack.Visible = false;
+				BtnBackVisible = false;
 			}
 			else
 			{
-				//lblTitle.Text = "Profile Info";
-				//lblTitle.Text = eapConfig.InstitutionInfo.DisplayName;
+				BtnBackVisible = true;
 			}
+
+
+			BtnNextEnabled = true;
 			btnNext.Visible = true;
-			BtnBackEnabled = true;
-			BtnBackVisible = true;
-			if (!reload) BtnNextEnabled = true;
+
 			btnNext.Text = eapConfig.AuthenticationMethods.First().EapType == EduroamConfigure.EapType.TLS ? "Connect" : "Next >";
 			LoadNewForm(frmSummary);
 		}
