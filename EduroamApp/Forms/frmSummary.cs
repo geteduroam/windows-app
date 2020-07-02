@@ -32,16 +32,19 @@ namespace EduroamApp
 		{
 			this.Hide();
 			// gets institution information from EapConfig object
+
 			string instName = eapConfig.InstitutionInfo.DisplayName;
 			string tou = eapConfig.InstitutionInfo.TermsOfUse;
 			string webAddress = eapConfig.InstitutionInfo.WebAddress.ToLower();
 			string emailAddress = eapConfig.InstitutionInfo.EmailAddress.ToLower();
 			string nextOrConnect = eapConfig.AuthenticationMethods.First().EapType == EapType.TLS ? "Connect" : "Next";
 			string description = eapConfig.InstitutionInfo.Description;
+
+			frmParent.TitleText = instName;
+
 			frmParent.BtnNextEnabled = true;
 			// displays institution name
 			//lblInstName2.Text =  instName;
-			lblInstName.Text = instName;
 			// displays prompt to accept Terms of use if they exist
 			if (string.IsNullOrEmpty(tou))
 			{

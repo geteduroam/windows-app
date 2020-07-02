@@ -64,6 +64,11 @@ namespace EduroamApp
 		public EapConfig eapConfig { get; set; }
 		public int? idProviderId {get; set;}
 		public IdentityProviderDownloader Downloader { get; set; }
+		public string TitleText
+		{
+			get => lblTitle.Text;
+			set => lblTitle.Text = value;
+		}
 		public frmParent()
 		{
 			Downloader = new IdentityProviderDownloader();
@@ -548,7 +553,8 @@ namespace EduroamApp
 			}
 			else
 			{
-				lblTitle.Text = "Profile Info";
+				//lblTitle.Text = "Profile Info";
+				lblTitle.Text = "";
 			}
 			if (!reload) BtnNextEnabled = true;
 			btnNext.Text = eapConfig.AuthenticationMethods.First().EapType == EduroamConfigure.EapType.TLS ? "Connect" : "Next >";

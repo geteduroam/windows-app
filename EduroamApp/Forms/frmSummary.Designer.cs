@@ -41,21 +41,20 @@ namespace EduroamApp
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.lblDesc = new System.Windows.Forms.Label();
 			this.pnlInstName = new System.Windows.Forms.Panel();
+			this.tblSelectInst = new System.Windows.Forms.TableLayoutPanel();
+			this.btnSelectInst = new System.Windows.Forms.Button();
 			this.lnkToU = new System.Windows.Forms.LinkLabel();
 			this.lblToU = new System.Windows.Forms.Label();
 			this.lblTerms2 = new System.Windows.Forms.Label();
 			this.pnlContactInfo = new System.Windows.Forms.Panel();
 			this.pnlTerms = new System.Windows.Forms.Panel();
-			this.tblSelectInst = new System.Windows.Forms.TableLayoutPanel();
-			this.btnSelectInst = new System.Windows.Forms.Button();
 			this.panel4 = new System.Windows.Forms.Panel();
-			this.lblInstName = new System.Windows.Forms.Label();
 			this.tblContactInfo.SuspendLayout();
 			this.gboContactInfo.SuspendLayout();
 			this.pnlTop.SuspendLayout();
+			this.tblSelectInst.SuspendLayout();
 			this.pnlContactInfo.SuspendLayout();
 			this.pnlTerms.SuspendLayout();
-			this.tblSelectInst.SuspendLayout();
 			this.SuspendLayout();
 			//
 			// lblWebTitle
@@ -179,7 +178,6 @@ namespace EduroamApp
 			//
 			// pnlTop
 			//
-			this.pnlTop.Controls.Add(this.lblInstName);
 			this.pnlTop.Controls.Add(this.panel1);
 			this.pnlTop.Controls.Add(this.lblDesc);
 			this.pnlTop.Controls.Add(this.pnlInstName);
@@ -203,7 +201,7 @@ namespace EduroamApp
 			//
 			// lblDesc
 			//
-			this.lblDesc.Location = new System.Drawing.Point(47, 41);
+			this.lblDesc.Location = new System.Drawing.Point(47, 14);
 			this.lblDesc.Name = "lblDesc";
 			this.lblDesc.Size = new System.Drawing.Size(425, 85);
 			this.lblDesc.TabIndex = 19;
@@ -220,6 +218,36 @@ namespace EduroamApp
 			this.pnlInstName.Name = "pnlInstName";
 			this.pnlInstName.Size = new System.Drawing.Size(513, 0);
 			this.pnlInstName.TabIndex = 8;
+			//
+			// tblSelectInst
+			//
+			this.tblSelectInst.AutoSize = true;
+			this.tblSelectInst.ColumnCount = 2;
+			this.tblSelectInst.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+			this.tblSelectInst.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 508F));
+			this.tblSelectInst.Controls.Add(this.btnSelectInst, 1, 0);
+			this.tblSelectInst.Controls.Add(this.lblAlternate, 0, 0);
+			this.tblSelectInst.Location = new System.Drawing.Point(12, 104);
+			this.tblSelectInst.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.tblSelectInst.Name = "tblSelectInst";
+			this.tblSelectInst.RowCount = 1;
+			this.tblSelectInst.RowStyles.Add(new System.Windows.Forms.RowStyle());
+			this.tblSelectInst.Size = new System.Drawing.Size(731, 126);
+			this.tblSelectInst.TabIndex = 16;
+			//
+			// btnSelectInst
+			//
+			this.btnSelectInst.AutoSize = true;
+			this.btnSelectInst.BackColor = System.Drawing.Color.WhiteSmoke;
+			this.btnSelectInst.ForeColor = System.Drawing.SystemColors.ControlText;
+			this.btnSelectInst.Location = new System.Drawing.Point(227, 5);
+			this.btnSelectInst.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+			this.btnSelectInst.Name = "btnSelectInst";
+			this.btnSelectInst.Size = new System.Drawing.Size(292, 74);
+			this.btnSelectInst.TabIndex = 17;
+			this.btnSelectInst.Text = "Select another institution";
+			this.btnSelectInst.UseVisualStyleBackColor = false;
+			this.btnSelectInst.Click += new System.EventHandler(this.btnSelectInst_Click);
 			//
 			// lnkToU
 			//
@@ -275,36 +303,6 @@ namespace EduroamApp
 			this.pnlTerms.Size = new System.Drawing.Size(384, 72);
 			this.pnlTerms.TabIndex = 20;
 			//
-			// tblSelectInst
-			//
-			this.tblSelectInst.AutoSize = true;
-			this.tblSelectInst.ColumnCount = 2;
-			this.tblSelectInst.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tblSelectInst.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 340F));
-			this.tblSelectInst.Controls.Add(this.btnSelectInst, 1, 0);
-			this.tblSelectInst.Controls.Add(this.lblAlternate, 0, 0);
-			this.tblSelectInst.Location = new System.Drawing.Point(12, 104);
-			this.tblSelectInst.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.tblSelectInst.Name = "tblSelectInst";
-			this.tblSelectInst.RowCount = 1;
-			this.tblSelectInst.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tblSelectInst.Size = new System.Drawing.Size(731, 126);
-			this.tblSelectInst.TabIndex = 16;
-			//
-			// btnSelectInst
-			//
-			this.btnSelectInst.AutoSize = true;
-			this.btnSelectInst.BackColor = System.Drawing.Color.WhiteSmoke;
-			this.btnSelectInst.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.btnSelectInst.Location = new System.Drawing.Point(227, 5);
-			this.btnSelectInst.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.btnSelectInst.Name = "btnSelectInst";
-			this.btnSelectInst.Size = new System.Drawing.Size(292, 74);
-			this.btnSelectInst.TabIndex = 17;
-			this.btnSelectInst.Text = "Select another institution";
-			this.btnSelectInst.UseVisualStyleBackColor = false;
-			this.btnSelectInst.Click += new System.EventHandler(this.btnSelectInst_Click);
-			//
 			// panel4
 			//
 			this.panel4.AutoSize = true;
@@ -314,16 +312,6 @@ namespace EduroamApp
 			this.panel4.Name = "panel4";
 			this.panel4.Size = new System.Drawing.Size(513, 0);
 			this.panel4.TabIndex = 18;
-			//
-			// lblInstName
-			//
-			this.lblInstName.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.lblInstName.Location = new System.Drawing.Point(8, 18);
-			this.lblInstName.Name = "lblInstName";
-			this.lblInstName.Size = new System.Drawing.Size(493, 23);
-			this.lblInstName.TabIndex = 22;
-			this.lblInstName.Text = "Instname";
-			this.lblInstName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			//
 			// frmSummary
 			//
@@ -346,11 +334,11 @@ namespace EduroamApp
 			this.gboContactInfo.PerformLayout();
 			this.pnlTop.ResumeLayout(false);
 			this.pnlTop.PerformLayout();
+			this.tblSelectInst.ResumeLayout(false);
+			this.tblSelectInst.PerformLayout();
 			this.pnlContactInfo.ResumeLayout(false);
 			this.pnlTerms.ResumeLayout(false);
 			this.pnlTerms.PerformLayout();
-			this.tblSelectInst.ResumeLayout(false);
-			this.tblSelectInst.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -378,6 +366,5 @@ namespace EduroamApp
 		private System.Windows.Forms.Label lblTerms2;
 		private System.Windows.Forms.Label lblDesc;
 		private System.Windows.Forms.Panel pnlTerms;
-		private System.Windows.Forms.Label lblInstName;
 	}
 }
