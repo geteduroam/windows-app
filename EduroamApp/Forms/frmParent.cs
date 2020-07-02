@@ -159,6 +159,7 @@ namespace EduroamApp
                     if (SelectAlternative) // if user has config from self extract but wants to select another inst
                     {
                         ResetLogo();
+                        WebEduroamLogo.Visible = true;
                         LoadFrmSelectMethod();
                         break;
                     }
