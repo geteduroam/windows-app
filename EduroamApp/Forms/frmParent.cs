@@ -543,20 +543,22 @@ namespace EduroamApp
         /// </summary>
         public void LoadFrmSummary()
         {
-            if (reload) frmSummary = new frmSummary(this, eapConfig);
+           frmSummary = new frmSummary(this, eapConfig);
 
             currentFormId = FormId.Summary;
             // changes controls depending on where the summary form is called from
+            lblTitle.Text = eapConfig.InstitutionInfo.DisplayName;
             if (SelfExtractFlag)
             {
-                lblTitle.Text = "eduroam Setup";
+               // lblTitle.Text = "eduroam Setup";
                 btnBack.Visible = false;
             }
             else
             {
                 //lblTitle.Text = "Profile Info";
-                lblTitle.Text = eapConfig.InstitutionInfo.DisplayName;
+                //lblTitle.Text = eapConfig.InstitutionInfo.DisplayName;
             }
+            btnNext.Visible = true;
             if (!reload) BtnNextEnabled = true;
             btnNext.Text = eapConfig.AuthenticationMethods.First().EapType == EduroamConfigure.EapType.TLS ? "Connect" : "Next >";
             LoadNewForm(frmSummary);
@@ -574,7 +576,7 @@ namespace EduroamApp
             btnNext.Visible = false;
             // if config file exists in self extract but user wants to choose another institution
             //btnBack.Visible = ComesFromSelfExtract;
-            btnBack.Visible = ComesFromSelfExtract;
+            btnBack.Visible = false;
             LoadNewForm(frmSelectMethod);
         }
 

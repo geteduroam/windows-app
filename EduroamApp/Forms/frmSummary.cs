@@ -111,6 +111,8 @@ namespace EduroamApp
             {
                 lblAlternate.Visible = true;
                 btnSelectInst.Visible = true;
+                tblSelectInst.Visible = true;
+                tblSelectInst.BringToFront();
                 lblAlternate.Text = "Not affiliated with " + eapConfig.InstitutionInfo.DisplayName + "?";
             }
             else
@@ -121,7 +123,7 @@ namespace EduroamApp
 
             // sets flag
             frmParent.SelectAlternative = false;
-            
+           
             // gets institution logo encoded to base64
             byte[] logoBytes = eapConfig.InstitutionInfo.LogoData;
             string logoMimeType = eapConfig.InstitutionInfo.LogoMimeType;
@@ -163,6 +165,8 @@ namespace EduroamApp
                     }
                 }
             }
+
+            frmParent.BtnNextEnabled = true;
 
             this.Show();
             

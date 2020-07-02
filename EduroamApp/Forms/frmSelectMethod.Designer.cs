@@ -31,6 +31,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btnNewProfile = new System.Windows.Forms.Button();
             this.btnLocalProfile = new System.Windows.Forms.Button();
+            this.btnExisting = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -50,7 +51,7 @@
             this.btnNewProfile.BackColor = System.Drawing.SystemColors.Highlight;
             this.btnNewProfile.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnNewProfile.ForeColor = System.Drawing.SystemColors.ControlLight;
-            this.btnNewProfile.Location = new System.Drawing.Point(95, 179);
+            this.btnNewProfile.Location = new System.Drawing.Point(93, 221);
             this.btnNewProfile.Name = "btnNewProfile";
             this.btnNewProfile.Size = new System.Drawing.Size(326, 95);
             this.btnNewProfile.TabIndex = 3;
@@ -62,13 +63,26 @@
             // 
             this.btnLocalProfile.BackColor = System.Drawing.Color.White;
             this.btnLocalProfile.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnLocalProfile.Location = new System.Drawing.Point(169, 280);
+            this.btnLocalProfile.Location = new System.Drawing.Point(168, 322);
             this.btnLocalProfile.Name = "btnLocalProfile";
             this.btnLocalProfile.Size = new System.Drawing.Size(169, 40);
             this.btnLocalProfile.TabIndex = 4;
             this.btnLocalProfile.Text = "Use eap-config file";
             this.btnLocalProfile.UseVisualStyleBackColor = false;
             this.btnLocalProfile.Click += new System.EventHandler(this.btnLocalProfile_Click);
+            // 
+            // btnExisting
+            // 
+            this.btnExisting.BackColor = System.Drawing.SystemColors.Highlight;
+            this.btnExisting.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnExisting.ForeColor = System.Drawing.SystemColors.ControlLight;
+            this.btnExisting.Location = new System.Drawing.Point(93, 120);
+            this.btnExisting.Name = "btnExisting";
+            this.btnExisting.Size = new System.Drawing.Size(326, 95);
+            this.btnExisting.TabIndex = 5;
+            this.btnExisting.Text = "Connect with existing profile";
+            this.btnExisting.UseVisualStyleBackColor = false;
+            this.btnExisting.Click += new System.EventHandler(this.btnExisting_Click);
             // 
             // frmSelectMethod
             // 
@@ -77,6 +91,7 @@
             this.AutoScroll = true;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(511, 493);
+            this.Controls.Add(this.btnExisting);
             this.Controls.Add(this.btnLocalProfile);
             this.Controls.Add(this.btnNewProfile);
             this.Controls.Add(this.label1);
@@ -93,5 +108,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btnNewProfile;
         private System.Windows.Forms.Button btnLocalProfile;
+        private System.Windows.Forms.Button btnExisting;
     }
 }

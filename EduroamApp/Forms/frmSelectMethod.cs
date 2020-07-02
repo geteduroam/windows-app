@@ -27,6 +27,7 @@ namespace EduroamApp
 
         private void frmSelectMethod_Load(object sender, EventArgs e)
         {
+            if (!frmParent.ComesFromSelfExtract) btnExisting.Visible = false;
             //webEduroamLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(Properties.Resources.eduroam_logo, webEduroamLogo.Width, webEduroamLogo.Height);
         }
 
@@ -45,6 +46,12 @@ namespace EduroamApp
         private void label1_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void btnExisting_Click(object sender, EventArgs e)
+        {
+            frmParent.eapConfig = frmParent.GetSelfExtractingEap();
+            frmParent.LoadFrmSummary();
         }
     }
 }
