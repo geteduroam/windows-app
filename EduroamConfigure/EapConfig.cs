@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
@@ -47,8 +48,8 @@ namespace EduroamConfigure
 			public List<string> ServerNames { get; }
 			public string ClientUserName { get; } // preset inner identity, expect it to have a realm
 			public string ClientPassword { get; } // preset outer identity
-			public string ClientCertificate { get; } // base64 encoded PKCS12 certificate+privkey bundle
-			public string ClientCertificatePassphrase { get; } // passphrase for ^
+			public string ClientCertificate { get; private set; } // base64 encoded PKCS12 certificate+privkey bundle
+			public string ClientCertificatePassphrase { get; private set; } // passphrase for ^
 			public string ClientOuterIdentity { get; } // expect it to have a realm. Also known as: anonymous identity, routing identity
 			public string ClientInnerIdentitySuffix { get; } // realm
 			public bool ClientInnerIdentityHint { get; } // Wether to disallow subrealms or not (see https://github.com/GEANT/CAT/issues/190)
@@ -131,9 +132,14 @@ namespace EduroamConfigure
 				if (UserDataXml.NeedsCredentials(this)) return false;
 				return string.IsNullOrEmpty(ClientCertificate);
 			}
-			public void AddClientCertificate()
+			public bool AddClientCertificate(string certificatePath, string passphrase = null)
 			{
-				// TODO
+				// TODO: validate password
+
+				ClientCertificate = Convert.ToBase64String(File.ReadAllBytes(certificatePath));
+				ClientCertificatePassphrase = passphrase;
+
+				return true;
 			}
 
 			// Constructor
@@ -277,7 +283,8 @@ namespace EduroamConfigure
 			// Current:  https://github.com/GEANT/CAT/blob/master/devices/eap_config/eap-metadata.xsd
 			// Outdated: https://tools.ietf.org/id/draft-winter-opsawg-eap-metadata-00.html
 
-			// TODO: Hotspot 2.0
+
+			// TODO: validate the file first. use schema?
 
 			static Func<XElement, bool> nameIs(string name) => // shorthand lambda
 				element => element.Name.LocalName == name;

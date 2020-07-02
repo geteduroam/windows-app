@@ -192,10 +192,9 @@ namespace EduroamConfigure
 			/// <summary>
 			/// Provide it by TODO
 			/// </summary>
-			public void AddClientCertificate()
+			public bool AddClientCertificate(string certificatePath, string passphrase = null)
 			{
-				// TODO
-				AuthMethod.AddClientCertificate();
+				return AuthMethod.AddClientCertificate(certificatePath, passphrase);
 			}
 
 			/// <summary>
