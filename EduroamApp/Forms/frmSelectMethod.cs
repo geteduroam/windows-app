@@ -21,7 +21,7 @@ namespace EduroamApp
 			// gets parent form instance
 			frmParent = parentInstance;
 			newProfile = false;
-			//this.Font = SystemFonts.MessageBoxFont;
+
 			InitializeComponent();
 		}
 
@@ -36,7 +36,6 @@ namespace EduroamApp
 			{
 				btnExisting.Visible = false;
 			}
-			//webEduroamLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(Properties.Resources.eduroam_logo, webEduroamLogo.Width, webEduroamLogo.Height);
 		}
 
 

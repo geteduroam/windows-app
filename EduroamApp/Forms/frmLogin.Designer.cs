@@ -132,7 +132,6 @@ namespace EduroamApp
 			this.lblStatus.Text = "Connecting...";
 			this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			this.lblStatus.Visible = false;
-			this.lblStatus.Click += new System.EventHandler(this.lblStatus_Click);
 			//
 			// pbxStatus
 			//

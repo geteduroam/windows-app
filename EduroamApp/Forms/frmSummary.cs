@@ -40,11 +40,9 @@ namespace EduroamApp
 			string nextOrConnect = eapConfig.AuthenticationMethods.First().EapType == EapType.TLS ? "Connect" : "Next";
 			string description = eapConfig.InstitutionInfo.Description;
 
-			//frmParent.TitleText = instName;
-
 			frmParent.BtnNextEnabled = true;
-			// displays institution name
-			//lblInstName2.Text =  instName;
+
+
 			// displays prompt to accept Terms of use if they exist
 			if (string.IsNullOrEmpty(tou))
 			{

@@ -98,29 +98,5 @@ namespace EduroamApp
 			frmParent.BtnNextEnabled = true;
 		}
 
-
-		/// <summary>
-		/// Handles EduroamApp exxceptions.
-		/// </summary>
-		/// <param name="ex">WebException.</param>
-		private void EduroamAppExceptionHandler(EduroamAppUserError ex)
-		{
-			//HideControls();
-			//lblError.Text = ex.UserFacingMessage;
-			//lblError.Visible = true;
-			MessageBox.Show(ex.UserFacingMessage, "eduroam - Web exception", MessageBoxButtons.OK, MessageBoxIcon.Error);
-		}
-
-
-		/// <summary>
-		/// Hides all controls on form.
-		/// </summary>
-		private void HideControls()
-		{
-			lblError.Visible = false;
-			lbProfile.Visible = false;
-			frmParent.BtnNextEnabled = false;
-		}
-
 	}
 }
