@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using EduroamConfigure;
+using System.ComponentModel;
 
 namespace EduroamApp
 {
@@ -16,6 +17,7 @@ namespace EduroamApp
 		private List<IdentityProvider> identityProviders = new List<IdentityProvider>(); // list containing all identity providers
 		private List<IdentityProvider> allIdentityProviders;
 		public int idProviderId; // id of selected institution
+		private BackgroundWorker _worker;
 
 
 
@@ -24,6 +26,9 @@ namespace EduroamApp
 			// gets parent form instance
 			frmParent = parentInstance;
 			InitializeComponent();
+			InitWorker();
+
+
 
 		}
 
@@ -32,26 +37,62 @@ namespace EduroamApp
 		/// </summary>
 		private void frmSelectInstitution_Load(object sender, EventArgs e)
 		{
+			frmParent.BtnNextEnabled = false;
+
 			tlpLoading.BringToFront();
 			tlpLoading.Visible = true;
 
 			tbSearch.Visible = true;
 			tbSearch.Enabled = true;
+			tbSearch.ReadOnly = true;
+			tbSearch.BackColor = System.Drawing.SystemColors.Window;
 			lbInstitution.Visible = true;
 			lbInstitution.Enabled = true;
+
 
 			// display Eduroam logo. Applicable when returning from the Summary form and
 			// institution logo was previously set, deactivating eduroam logo
 			frmParent.WebEduroamLogo.Visible = true;
 			frmParent.RedirectUrl = "";
 
-			PopulateInstitutions();
+			//PopulateInstitutions();
 			this.ActiveControl = tbSearch;
 
 				//lblError.Visible = true;
 
 
 			tlpLoading.Visible = false;
+		}
+
+		private void InitWorker()
+		{
+
+			if (_worker != null)
+			{
+				_worker.Dispose();
+			}
+
+			_worker = new BackgroundWorker
+			{
+				WorkerSupportsCancellation = true
+			};
+
+			_worker.DoWork += DoWork;
+			_worker.RunWorkerCompleted += RunWorkerCompleted;
+			_worker.RunWorkerAsync();
+
+
+		}
+
+		void DoWork(object sender, DoWorkEventArgs e)
+		{
+			PopulateInstitutions();
+		}
+
+		void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+		{
+			tbSearch.Enabled = true;
+			lbInstitution.Enabled = true; ;
 		}
 
 		public void StartLoading()
@@ -73,23 +114,6 @@ namespace EduroamApp
 			tlpLoading.Visible = false;
 		}
 
-		/// <summary>
-		/// Fetches a list of all eduroam institutions from https://cat.eduroam.org.
-		/// </summary>
-		private bool GetAllInstitutions()
-		{
-			try
-			{
-				//allIdentityProviders = IdentityProviderDownloader.GetAllIdProviders();
-				allIdentityProviders = frmParent.Downloader.Providers;
-				return true;
-			}
-			catch (EduroamAppUserError ex)
-			{
-				lblError.Text = ex.UserFacingMessage;
-			}
-			return false;
-		}
 
 		/// <summary>
 		/// Called when the form is created to present the 10 closest providers
@@ -98,6 +122,7 @@ namespace EduroamApp
 		{
 			try
 			{
+				allIdentityProviders = frmParent.Downloader.Providers;
 				List<IdentityProvider> closeProviders = frmParent.Downloader.GetClosestProviders(10);
 				updateInstitutions(closeProviders);
 			}
@@ -108,15 +133,21 @@ namespace EduroamApp
 		}
 
 		/// <summary>
-		/// Used to update institution list portrayed to users
+		/// Used to update institution list portrayed to users.
+		/// Called by different thread than Winform thread
 		/// </summary>
 		private void updateInstitutions(List<IdentityProvider> institutions)
 		{
-			lbInstitution.Items.Clear();
+			BeginInvoke(new Action(() =>
+			{
+				lbInstitution.Items.Clear();
 
-			identityProviders = institutions;
+				identityProviders = institutions;
 
-			lbInstitution.Items.AddRange(identityProviders.Select(provider => provider.Name).ToArray());
+				lbInstitution.Items.AddRange(identityProviders.Select(provider => provider.Name).ToArray());
+
+				tbSearch.ReadOnly = false;
+			}));
 		}
 
 		/// <summary>
@@ -126,6 +157,7 @@ namespace EduroamApp
 		{
 			List<IdentityProvider> sortedProviders = IdentityProviderParser.SortBySearch(allIdentityProviders, tbSearch.Text);
 			updateInstitutions(sortedProviders);
+
 		}
 
 

@@ -63,6 +63,7 @@ namespace EduroamApp
 			//
 			// tableLayoutPanelButtons
 			//
+			this.tableLayoutPanelButtons.BackColor = System.Drawing.Color.WhiteSmoke;
 			this.tableLayoutPanelButtons.ColumnCount = 3;
 			this.tableLayoutPanelButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33224F));
 			this.tableLayoutPanelButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33388F));
@@ -130,6 +131,7 @@ namespace EduroamApp
 			//
 			// pnlLogo
 			//
+			this.pnlLogo.BackColor = System.Drawing.Color.White;
 			this.pnlLogo.Controls.Add(this.btnBack);
 			this.pnlLogo.Controls.Add(this.pbxLogo);
 			this.pnlLogo.Controls.Add(this.webEduroamLogo);
