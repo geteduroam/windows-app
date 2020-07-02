@@ -226,12 +226,29 @@ namespace EduroamApp
                 // Install EAP config as a profile
                 foreach (var authMethodInstaller in ConnectToEduroam.InstallEapConfig(eapConfig))
                 {
-                    // warn user if we need to install CAs
+                    // check if we need to find a client certificate first
+                    if (authMethodInstaller.NeedsClientCertificate())
+                    {
+                        DialogResult dialogResult = MessageBox.Show(
+                            "The selected profile prefers a separately provided client certificate. Do you want to browse your local files for one?",
+                            "Client certificate needed", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                        if (dialogResult != DialogResult.Yes) continue; // try some other auth method
+
+                        var results = FileDialog.AskUserForClientCertificateBundle();
+                        if (results == null) continue; // user aborted
+
+                        (string certPath, string certPass) = results.Value;
+                        authMethodInstaller.AddClientCertificate(certPath, certPass); // todo, check success
+                    }
+
+                    // warn user if we need to install any CAs
                     if (authMethodInstaller.NeedsToInstallCAs())
                         MessageBox.Show(
                             "You will now be prompted to install a Certificate Authority. \n" +
                             "In order to connect to eduroam, you need to accept this by pressing \"Yes\" in the following dialog.",
                             "Accept Certificate Authority", MessageBoxButtons.OK);
+
+                    // install CAs
                     while (!authMethodInstaller.InstallCertificates())
                     {
                         // Ask user if he wants to retry
@@ -242,22 +259,12 @@ namespace EduroamApp
                         if (retryCa == DialogResult.Cancel)
                             break;
                     }
-                    if (authMethodInstaller.NeedsToInstallCAs()) break; // if user refused to install the CAs
+                    if (authMethodInstaller.NeedsToInstallCAs()) break; // if user refused to install the CAs, abort
                     
-                    // Everything is in order, install the profile!
+                    // Everything is now in order, install the profile!
                     if (authMethodInstaller.InstallProfile())
                     {
-                        // installation was a success
-
-                        if (authMethodInstaller.NeedsClientCertificate())
-                        {
-                            DialogResult dialogResult = MessageBox.Show(
-                                "The selected profile requires a separate client certificate. Do you want to browse your local files for one?",
-                                "Client certificate required", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-                            if (dialogResult != DialogResult.Yes)
-                                continue; // TODO: uninstall the newly installed profile, along with client certificates
-                        }
-
+                        // installation was a success!
                         authMethod = authMethodInstaller.AuthMethod;
                         err = null;
                         break;

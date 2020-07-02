@@ -65,8 +65,8 @@ namespace EduroamConfigure
                         new XAttribute(XNamespace.Xmlns + "MsChapV2", nsMCUP),
                         new XAttribute(XNamespace.Xmlns + "eapTtls", nsTTLS),
                         EapUserData(
-                            username,
-                            password,
+                            username ?? authMethod.ClientUserName,
+                            password ?? authMethod.ClientPassword,
                             authMethod.ClientOuterIdentity ?? username, // TODO: can this default case ever happen?
                             authMethod.EapType,
                             authMethod.InnerAuthType,
