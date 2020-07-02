@@ -28,7 +28,7 @@ namespace EduroamApp
             InitializeComponent();
         }
 
-        private async void frmSelectProfile_Load(object sender, EventArgs e)
+        private void frmSelectProfile_Load(object sender, EventArgs e)
         {
             this.Hide();
             frmParent.WebEduroamLogo.Visible = true;
@@ -37,23 +37,13 @@ namespace EduroamApp
             frmParent.RedirectUrl = "";
             lbProfile.Enabled = false;
 
-            //async method to get list of institutions
-            bool getInstSuccess = await Task.Run(() => GetProfiles());
+            GetProfiles();
 
-            if (getInstSuccess)
-            {
+            PopulateProfiles();
+            lbProfile.Enabled = true;
 
-                PopulateProfiles();
-                lbProfile.Enabled = true;
-
-                // autoselect first profile
-                lbProfile.SetSelected(0, true);
-
-            }
-            else
-            {
-
-            }
+            // autoselect first profile
+            lbProfile.SetSelected(0, true);
 
             this.Show();
 

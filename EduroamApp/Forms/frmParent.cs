@@ -544,6 +544,7 @@ namespace EduroamApp
         public void LoadFrmSummary()
         {
             if (reload) frmSummary = new frmSummary(this, eapConfig);
+
             currentFormId = FormId.Summary;
             // changes controls depending on where the summary form is called from
             if (SelfExtractFlag)
@@ -554,7 +555,7 @@ namespace EduroamApp
             else
             {
                 //lblTitle.Text = "Profile Info";
-                lblTitle.Text = "";
+                lblTitle.Text = eapConfig.InstitutionInfo.DisplayName;
             }
             if (!reload) BtnNextEnabled = true;
             btnNext.Text = eapConfig.AuthenticationMethods.First().EapType == EduroamConfigure.EapType.TLS ? "Connect" : "Next >";
@@ -588,7 +589,7 @@ namespace EduroamApp
             btnBack.Visible = true;
             // hack to have the change above take place immediatley and not after entire event is done
             // makes them pop up instantly
-            Application.DoEvents();
+            //Application.DoEvents();
 
             frmSelectInstitution = new frmSelectInstitution(this);
            /* lblTitle.Text = "Select your institution";
@@ -605,6 +606,7 @@ namespace EduroamApp
             currentFormId = FormId.SelectProfile;
             frmSelectProfile = new frmSelectProfile(this, (int) frmSelectInstitution.idProviderId);
             lblTitle.Text = "Select your profile";
+            btnNext.Focus();
             LoadNewForm(frmSelectProfile);
         }
 

@@ -61,16 +61,6 @@ namespace EduroamApp.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap _91 {
-            get {
-                object obj = ResourceManager.GetObject("91", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
         internal static byte[] eduroam_logo {
@@ -116,6 +106,16 @@ namespace EduroamApp.Properties {
         internal static System.Drawing.Bitmap red_x {
             get {
                 object obj = ResourceManager.GetObject("red_x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap searchImg {
+            get {
+                object obj = ResourceManager.GetObject("searchImg", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
