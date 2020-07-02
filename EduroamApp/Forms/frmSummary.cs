@@ -197,10 +197,9 @@ namespace EduroamApp
         /// Installs certificates from EapConfig and creates wireless profile.
         /// </summary>
         /// <returns>
-        /// EAP type (EapType) of installed EapConfig as a uint,
-        /// or 500 if user needs to install a client certificate,
-        /// or 600 if there is no connectivity,
-        /// or 0 if some other error happened
+        /// A tuple containing:
+        ///     - the auth method which succeded installing, or null
+        ///     - a string describing why the installation failed
         /// </returns>
         public ValueTuple<EapConfig.AuthenticationMethod, string> InstallEapConfig()
         {
@@ -272,7 +271,7 @@ namespace EduroamApp
             {
                 if (argEx.Message == "interfaceId")
                 {
-                    // was this due to Guid.Empty?
+                    // was this due to Guid.Empty, in that case this should be solved
                     MessageBox.Show(
                         "Could not establish a connection through your computer's wireless network interface.\n" +
                         "Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.\n" +
@@ -285,7 +284,7 @@ namespace EduroamApp
             catch (CryptographicException cryptEx) // TODO, handle in ConnectToEuroam or EduroamNetwork
             {
                 MessageBox.Show(
-                    "One or more certificates are corrupt. Please select another file, or try again later.\n" +
+                    "One or more certificates are corrupt. Please select an another file, or try again later.\n" +
                     "\n" +
                     "Exception: " + cryptEx.Message, 
                     "eduroam - Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
