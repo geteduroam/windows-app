@@ -82,7 +82,7 @@ namespace EduroamApp
         {
             try
             {
-                idProviderProfiles = IdentityProviderDownloader.GetIdentityProviderProfiles(idProviderId);
+                idProviderProfiles = frmParent.Downloader.GetIdentityProviderProfiles(idProviderId);
                 return true;
             }
             catch (EduroamAppUserError ex)

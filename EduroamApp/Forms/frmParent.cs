@@ -44,7 +44,6 @@ namespace EduroamApp
         private frmSelectMethod frmSelectMethod;
         private frmSelectInstitution frmSelectInstitution;
         private frmSelectProfile frmSelectProfile;
-        private frmDownload frmDownload;
         private frmLocal frmLocal;
         private frmConnect frmConnect;
         private frmLogin frmLogin;
@@ -64,12 +63,10 @@ namespace EduroamApp
         public DateTime CertValidFrom { get; set; }
         public EapConfig eapConfig { get; set; }
         public int? idProviderId {get; set;}
-        public List<IdentityProvider> Providers;
+        public IdentityProviderDownloader Downloader { get; set; }
         public frmParent()
         {
-            // starts GeoCoordinateWatcher when app starts
-            GeoWatcher = new GeoCoordinateWatcher();
-            GeoWatcher.TryStart(false, TimeSpan.FromMilliseconds(3000));
+            Downloader = new IdentityProviderDownloader();
             // adds formClosed listener
             FormClosed += frmParent_FormClosed;
             eapConfig = null;
@@ -78,7 +75,6 @@ namespace EduroamApp
 
         private void frmParent_Load(object sender, EventArgs e)
         {
-            Providers = IdentityProviderDownloader.GetAllIdProviders();
             // sets eduroam logo
             webEduroamLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(Properties.Resources.eduroam_logo, webEduroamLogo.Width, webEduroamLogo.Height);
             Icon = Properties.Resources.geteduroam;
@@ -208,13 +204,12 @@ namespace EduroamApp
                     if (frmSelectMethod.newProfile) LoadFrmSelectInstitution();
                     else
                     {
-                        
                         LoadFrmLocal();
                     }
                     break;
 
                 case FormId.SelectInstitution:
-                    frmSelectInstitution.StartLoading();
+                    //frmSelectInstitution.StartLoading();
                     var profiles = GetProfiles((int) frmSelectInstitution.idProviderId);
                     // if less than 2 profiles then, if a profile exists, autoselect it and go to Summary
                     if (profiles.Count < 2)
@@ -277,7 +272,7 @@ namespace EduroamApp
         {
             try
             {
-                return IdentityProviderDownloader.GetIdentityProviderProfiles(providerId);
+                return Downloader.GetIdentityProviderProfiles(providerId);
             }
             catch (EduroamAppUserError)
             {
@@ -347,9 +342,6 @@ namespace EduroamApp
                 case FormId.SelectProfile:
                     LoadFrmSelectProfile();
                     break;
-                case FormId.Download:
-                    LoadFrmDownload();
-                    break;
                 case FormId.Local:
                     LoadFrmLocal();
                     break;
@@ -417,7 +409,7 @@ namespace EduroamApp
                     "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null; // exits function if no institution/profile selected
             };
-            IdentityProviderProfile profile = IdentityProviderDownloader.GetProfileFromId(profileId);
+            IdentityProviderProfile profile = Downloader.GetProfileFromId(profileId);
             string redirect = profile.redirect;
             // eap config file as string
             string eapString;
@@ -456,7 +448,7 @@ namespace EduroamApp
             }
             else
             {
-                eapString = IdentityProviderDownloader.GetEapConfigString(profileId);
+                eapString = Downloader.GetEapConfigString(profileId);
             }
 
             // if not empty, creates and returns EapConfig object from Eap string
@@ -582,13 +574,23 @@ namespace EduroamApp
         public void LoadFrmSelectInstitution()
         {
             currentFormId = FormId.SelectInstitution;
-            frmSelectInstitution = new frmSelectInstitution(this);
             lblTitle.Text = "Select your institution";
             BtnNextEnabled = !reload;
             btnNext.Visible = true;
             btnNext.Text = "Next >";
             btnBack.Enabled = true;
             btnBack.Visible = true;
+            // hack to have the change above take place immediatley and not after entire event is done
+            // makes them pop up instantly
+            Application.DoEvents();
+
+            frmSelectInstitution = new frmSelectInstitution(this);
+           /* lblTitle.Text = "Select your institution";
+            BtnNextEnabled = !reload;
+            btnNext.Visible = true;
+            btnNext.Text = "Next >";
+            btnBack.Enabled = true;
+            btnBack.Visible = true;*/
             LoadNewForm(frmSelectInstitution);
         }
 
@@ -600,21 +602,7 @@ namespace EduroamApp
             LoadNewForm(frmSelectProfile);
         }
 
-        /// <summary>
-        /// Loads form that lets user select institution and download config file.
-        /// </summary>
-        public void LoadFrmDownload()
-        {
-            if (reload) frmDownload = new frmDownload(this);
-            currentFormId = FormId.Download;
-            lblTitle.Text = "Select your institution";
-            BtnNextEnabled = !reload;
-            btnNext.Visible = true;
-            btnNext.Text = "Next >";
-            btnBack.Enabled = true;
-            btnBack.Visible = true;
-            LoadNewForm(frmDownload);
-        }
+
 
         /// <summary>
         /// Loads form that lets user select config file from computer.

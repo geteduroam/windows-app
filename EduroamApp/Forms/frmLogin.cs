@@ -27,6 +27,8 @@ namespace EduroamApp
             InitializeComponent();
         }
 
+        // TODO: if pressing enter in username field and Connect not active, display rules
+
         private void frmLogin_Load(object sender, EventArgs e)
         {
             if (!frmParent.EduroamAvailable)
@@ -68,7 +70,7 @@ namespace EduroamApp
         // removes helping text when field is in focus
         private void txtUsername_Enter(object sender, EventArgs e)
         {
-            lblRules.Visible = false;
+            //lblRules.Visible = false;
             if (txtUsername.Text == "Username" && usernameDefault)
             {
                 txtUsername.Text = "";
@@ -176,6 +178,7 @@ namespace EduroamApp
         
         private void txtUsername_TextChanged(object sender, EventArgs e)
         {
+            lblRules.Visible = false;
             lblInst.Visible = false;
             ValidateFields();
         }

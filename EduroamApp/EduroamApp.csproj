@@ -162,12 +162,6 @@
     <Compile Include="Forms\frmSelectMethod.Designer.cs">
       <DependentUpon>frmSelectMethod.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\frmDownload.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\frmDownload.Designer.cs">
-      <DependentUpon>frmDownload.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\frmLocal.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -217,9 +211,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmSelectMethod.resx">
       <DependentUpon>frmSelectMethod.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\frmDownload.resx">
-      <DependentUpon>frmDownload.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\frmLocal.resx">
       <DependentUpon>frmLocal.cs</DependentUpon>
