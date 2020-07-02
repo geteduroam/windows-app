@@ -39,10 +39,10 @@
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Location = new System.Drawing.Point(0, 0);
+            this.btnOk.Location = new System.Drawing.Point(4, 0);
             this.btnOk.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnOk.Name = "btnOk";
-            this.btnOk.Size = new System.Drawing.Size(146, 45);
+            this.btnOk.Size = new System.Drawing.Size(154, 55);
             this.btnOk.TabIndex = 1;
             this.btnOk.Text = "Ok";
             this.btnOk.UseVisualStyleBackColor = true;
@@ -59,7 +59,7 @@
             this.txtToU.ReadOnly = true;
             this.txtToU.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.txtToU.ShortcutsEnabled = false;
-            this.txtToU.Size = new System.Drawing.Size(607, 337);
+            this.txtToU.Size = new System.Drawing.Size(733, 382);
             this.txtToU.TabIndex = 2;
             this.txtToU.Text = "";
             this.txtToU.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.txtToU_LinkClicked);
@@ -68,20 +68,20 @@
             // 
             this.pnlOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlOk.Controls.Add(this.btnOk);
-            this.pnlOk.Location = new System.Drawing.Point(542, 388);
+            this.pnlOk.Location = new System.Drawing.Point(625, 423);
             this.pnlOk.Name = "pnlOk";
-            this.pnlOk.Size = new System.Drawing.Size(146, 45);
+            this.pnlOk.Size = new System.Drawing.Size(165, 55);
             this.pnlOk.TabIndex = 3;
             // 
             // frmTermsOfUse
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(700, 445);
+            this.ClientSize = new System.Drawing.Size(826, 490);
             this.ControlBox = false;
             this.Controls.Add(this.pnlOk);
             this.Controls.Add(this.txtToU);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.MaximizeBox = false;
             this.Name = "frmTermsOfUse";
