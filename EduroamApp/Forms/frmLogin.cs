@@ -179,7 +179,7 @@ namespace EduroamApp
         private void txtUsername_TextChanged(object sender, EventArgs e)
         {
             lblRules.Visible = false;
-            lblInst.Visible = false;
+            if (!hint) lblInst.Visible = false;
             ValidateFields();
         }
 
@@ -193,6 +193,7 @@ namespace EduroamApp
 
         private async void Connect()
         {
+            frmParent.BtnNextEnabled = false;
             // displays loading animation while attempt to connect
             lblStatus.Text = "Connecting...";
             pbxStatus.Image = Properties.Resources.loading_gif;
@@ -244,6 +245,7 @@ namespace EduroamApp
                 frmParent.ProfileCondition = "BADPROFILE";
             }
             connected = eduConnected;
+            frmParent.BtnNextEnabled = true;
         }
 
         // gives user choice of wether they want to save the configuration before quitting
@@ -253,5 +255,9 @@ namespace EduroamApp
             pnlEduNotAvail.Visible = true;
         }
 
+        private void lblStatus_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
