@@ -36,8 +36,9 @@
             // 
             // btnOk
             // 
+            this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
             this.btnOk.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOk.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnOk.Location = new System.Drawing.Point(0, 0);
             this.btnOk.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btnOk.Name = "btnOk";
@@ -48,6 +49,9 @@
             // 
             // txtToU
             // 
+            this.txtToU.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtToU.Cursor = System.Windows.Forms.Cursors.IBeam;
             this.txtToU.Location = new System.Drawing.Point(18, 18);
             this.txtToU.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -55,7 +59,7 @@
             this.txtToU.ReadOnly = true;
             this.txtToU.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.txtToU.ShortcutsEnabled = false;
-            this.txtToU.Size = new System.Drawing.Size(598, 336);
+            this.txtToU.Size = new System.Drawing.Size(607, 337);
             this.txtToU.TabIndex = 2;
             this.txtToU.Text = "";
             this.txtToU.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.txtToU_LinkClicked);
@@ -64,7 +68,7 @@
             // 
             this.pnlOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pnlOk.Controls.Add(this.btnOk);
-            this.pnlOk.Location = new System.Drawing.Point(477, 377);
+            this.pnlOk.Location = new System.Drawing.Point(542, 388);
             this.pnlOk.Name = "pnlOk";
             this.pnlOk.Size = new System.Drawing.Size(146, 45);
             this.pnlOk.TabIndex = 3;
@@ -73,7 +77,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(635, 434);
+            this.ClientSize = new System.Drawing.Size(700, 445);
             this.ControlBox = false;
             this.Controls.Add(this.pnlOk);
             this.Controls.Add(this.txtToU);
