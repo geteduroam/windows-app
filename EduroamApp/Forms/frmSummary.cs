@@ -255,7 +255,10 @@ namespace EduroamApp
 								"The selected profile requires a separate client certificate. Do you want to browse your local files for one?",
 								"Client certificate required", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
 							if (dialogResult != DialogResult.Yes)
-								continue; // TODO: uninstall the newly installed profile, along with client certificates
+							{
+								ConnectToEduroam.RemoveAllProfiles();
+								continue;
+							}
 						}
 
 						authMethod = authMethodInstaller.AuthMethod;
