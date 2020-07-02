@@ -210,7 +210,8 @@ namespace EduroamApp
                     if (frmSelectMethod.newProfile) LoadFrmSelectInstitution();
                     else
                     {
-                        LoadFrmLocal();
+                        eapConfig = FileDialog.AskUserForEapConfig();
+                        if (eapConfig != null) LoadFrmSummary();
                     }
                     break;
 
