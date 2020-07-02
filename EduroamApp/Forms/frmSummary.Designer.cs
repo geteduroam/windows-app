@@ -154,11 +154,11 @@ namespace EduroamApp
 			//
 			this.gboContactInfo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
 			this.gboContactInfo.Controls.Add(this.tblContactInfo);
-			this.gboContactInfo.Location = new System.Drawing.Point(30, 12);
+			this.gboContactInfo.Location = new System.Drawing.Point(27, 6);
 			this.gboContactInfo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.gboContactInfo.Name = "gboContactInfo";
 			this.gboContactInfo.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.gboContactInfo.Size = new System.Drawing.Size(414, 124);
+			this.gboContactInfo.Size = new System.Drawing.Size(423, 129);
 			this.gboContactInfo.TabIndex = 11;
 			this.gboContactInfo.TabStop = false;
 			this.gboContactInfo.Text = "Contact info";
@@ -172,21 +172,21 @@ namespace EduroamApp
 			this.lblAlternate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.lblAlternate.MaximumSize = new System.Drawing.Size(360, 0);
 			this.lblAlternate.Name = "lblAlternate";
-			this.lblAlternate.Size = new System.Drawing.Size(215, 126);
+			this.lblAlternate.Size = new System.Drawing.Size(215, 20);
 			this.lblAlternate.TabIndex = 12;
 			this.lblAlternate.Text = "Not connecting to institution?";
+			this.lblAlternate.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
 			//
 			// pnlTop
 			//
 			this.pnlTop.Controls.Add(this.panel1);
 			this.pnlTop.Controls.Add(this.lblDesc);
 			this.pnlTop.Controls.Add(this.pnlInstName);
-			this.pnlTop.Controls.Add(this.tblSelectInst);
 			this.pnlTop.Dock = System.Windows.Forms.DockStyle.Top;
 			this.pnlTop.Location = new System.Drawing.Point(0, 0);
 			this.pnlTop.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlTop.Name = "pnlTop";
-			this.pnlTop.Size = new System.Drawing.Size(513, 117);
+			this.pnlTop.Size = new System.Drawing.Size(512, 95);
 			this.pnlTop.TabIndex = 13;
 			//
 			// panel1
@@ -196,14 +196,14 @@ namespace EduroamApp
 			this.panel1.Location = new System.Drawing.Point(0, 0);
 			this.panel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.panel1.Name = "panel1";
-			this.panel1.Size = new System.Drawing.Size(513, 0);
+			this.panel1.Size = new System.Drawing.Size(512, 0);
 			this.panel1.TabIndex = 9;
 			//
 			// lblDesc
 			//
 			this.lblDesc.Location = new System.Drawing.Point(47, 14);
 			this.lblDesc.Name = "lblDesc";
-			this.lblDesc.Size = new System.Drawing.Size(425, 85);
+			this.lblDesc.Size = new System.Drawing.Size(425, 79);
 			this.lblDesc.TabIndex = 19;
 			this.lblDesc.Text = "Description: ";
 			this.lblDesc.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -216,34 +216,35 @@ namespace EduroamApp
 			this.pnlInstName.Location = new System.Drawing.Point(0, 0);
 			this.pnlInstName.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlInstName.Name = "pnlInstName";
-			this.pnlInstName.Size = new System.Drawing.Size(513, 0);
+			this.pnlInstName.Size = new System.Drawing.Size(512, 0);
 			this.pnlInstName.TabIndex = 8;
 			//
 			// tblSelectInst
 			//
 			this.tblSelectInst.AutoSize = true;
-			this.tblSelectInst.ColumnCount = 2;
+			this.tblSelectInst.ColumnCount = 1;
 			this.tblSelectInst.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-			this.tblSelectInst.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 508F));
-			this.tblSelectInst.Controls.Add(this.btnSelectInst, 1, 0);
+			this.tblSelectInst.Controls.Add(this.btnSelectInst, 0, 1);
 			this.tblSelectInst.Controls.Add(this.lblAlternate, 0, 0);
-			this.tblSelectInst.Location = new System.Drawing.Point(12, 104);
+			this.tblSelectInst.Location = new System.Drawing.Point(40, 135);
 			this.tblSelectInst.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.tblSelectInst.Name = "tblSelectInst";
-			this.tblSelectInst.RowCount = 1;
+			this.tblSelectInst.RowCount = 2;
 			this.tblSelectInst.RowStyles.Add(new System.Windows.Forms.RowStyle());
-			this.tblSelectInst.Size = new System.Drawing.Size(731, 126);
+			this.tblSelectInst.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+			this.tblSelectInst.Size = new System.Drawing.Size(432, 85);
 			this.tblSelectInst.TabIndex = 16;
 			//
 			// btnSelectInst
 			//
+			this.btnSelectInst.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.btnSelectInst.AutoSize = true;
 			this.btnSelectInst.BackColor = System.Drawing.Color.WhiteSmoke;
 			this.btnSelectInst.ForeColor = System.Drawing.SystemColors.ControlText;
-			this.btnSelectInst.Location = new System.Drawing.Point(227, 5);
+			this.btnSelectInst.Location = new System.Drawing.Point(118, 25);
 			this.btnSelectInst.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.btnSelectInst.Name = "btnSelectInst";
-			this.btnSelectInst.Size = new System.Drawing.Size(292, 74);
+			this.btnSelectInst.Size = new System.Drawing.Size(195, 55);
 			this.btnSelectInst.TabIndex = 17;
 			this.btnSelectInst.Text = "Select another institution";
 			this.btnSelectInst.UseVisualStyleBackColor = false;
@@ -285,12 +286,12 @@ namespace EduroamApp
 			// pnlContactInfo
 			//
 			this.pnlContactInfo.Controls.Add(this.gboContactInfo);
-			this.pnlContactInfo.Controls.Add(this.pnlTerms);
+			this.pnlContactInfo.Controls.Add(this.tblSelectInst);
 			this.pnlContactInfo.Dock = System.Windows.Forms.DockStyle.Top;
-			this.pnlContactInfo.Location = new System.Drawing.Point(0, 117);
+			this.pnlContactInfo.Location = new System.Drawing.Point(0, 95);
 			this.pnlContactInfo.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlContactInfo.Name = "pnlContactInfo";
-			this.pnlContactInfo.Size = new System.Drawing.Size(513, 256);
+			this.pnlContactInfo.Size = new System.Drawing.Size(512, 225);
 			this.pnlContactInfo.TabIndex = 14;
 			//
 			// pnlTerms
@@ -298,19 +299,19 @@ namespace EduroamApp
 			this.pnlTerms.Controls.Add(this.lnkToU);
 			this.pnlTerms.Controls.Add(this.lblToU);
 			this.pnlTerms.Controls.Add(this.lblTerms2);
-			this.pnlTerms.Location = new System.Drawing.Point(43, 181);
+			this.pnlTerms.Location = new System.Drawing.Point(40, 328);
 			this.pnlTerms.Name = "pnlTerms";
-			this.pnlTerms.Size = new System.Drawing.Size(384, 72);
+			this.pnlTerms.Size = new System.Drawing.Size(351, 72);
 			this.pnlTerms.TabIndex = 20;
 			//
 			// panel4
 			//
 			this.panel4.AutoSize = true;
 			this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-			this.panel4.Location = new System.Drawing.Point(0, 385);
+			this.panel4.Location = new System.Drawing.Point(0, 412);
 			this.panel4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.panel4.Name = "panel4";
-			this.panel4.Size = new System.Drawing.Size(513, 0);
+			this.panel4.Size = new System.Drawing.Size(512, 0);
 			this.panel4.TabIndex = 18;
 			//
 			// frmSummary
@@ -319,8 +320,9 @@ namespace EduroamApp
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.AutoScroll = true;
 			this.BackColor = System.Drawing.Color.White;
-			this.ClientSize = new System.Drawing.Size(513, 385);
+			this.ClientSize = new System.Drawing.Size(512, 412);
 			this.Controls.Add(this.panel4);
+			this.Controls.Add(this.pnlTerms);
 			this.Controls.Add(this.pnlContactInfo);
 			this.Controls.Add(this.pnlTop);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
@@ -337,6 +339,7 @@ namespace EduroamApp
 			this.tblSelectInst.ResumeLayout(false);
 			this.tblSelectInst.PerformLayout();
 			this.pnlContactInfo.ResumeLayout(false);
+			this.pnlContactInfo.PerformLayout();
 			this.pnlTerms.ResumeLayout(false);
 			this.pnlTerms.PerformLayout();
 			this.ResumeLayout(false);

@@ -111,6 +111,8 @@ namespace EduroamApp
 			{
 				lblAlternate.Visible = true;
 				btnSelectInst.Visible = true;
+				tblSelectInst.Visible = true;
+				tblSelectInst.BringToFront();
 				lblAlternate.Text = "Not affiliated with " + eapConfig.InstitutionInfo.DisplayName + "?";
 			}
 			else
@@ -163,6 +165,8 @@ namespace EduroamApp
 					}
 				}
 			}
+
+			frmParent.BtnNextEnabled = true;
 
 			this.Show();
 
