@@ -113,7 +113,6 @@ namespace EduroamApp
 				pbxStatus.Image = Properties.Resources.green_checkmark;
 				frmParent.BtnNextText = "Close";
 				frmParent.BtnNextEnabled = true;
-				frmParent.BtnCancelEnabled = false;
 				frmParent.BtnBackVisible = false;
 				frmParent.ProfileCondition = "GOODPROFILE";
 			}

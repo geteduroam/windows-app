@@ -33,8 +33,6 @@ namespace EduroamApp
 			this.tableLayoutPanelButtons = new System.Windows.Forms.TableLayoutPanel();
 			this.btnNext = new System.Windows.Forms.Button();
 			this.btnBack = new System.Windows.Forms.Button();
-			this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-			this.btnCancel = new System.Windows.Forms.Button();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.lblTitle = new System.Windows.Forms.Label();
 			this.pnlLogo = new System.Windows.Forms.Panel();
@@ -47,11 +45,9 @@ namespace EduroamApp
 			this.notifyIcon = new System.Windows.Forms.NotifyIcon(this.components);
 			this.pnlNavigation.SuspendLayout();
 			this.tableLayoutPanelButtons.SuspendLayout();
-			this.tableLayoutPanel1.SuspendLayout();
 			this.panel1.SuspendLayout();
 			this.pnlLogo.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).BeginInit();
-			this.pnlContent.SuspendLayout();
 			this.SuspendLayout();
 			//
 			// pnlNavigation
@@ -64,7 +60,6 @@ namespace EduroamApp
 			this.pnlNavigation.Name = "pnlNavigation";
 			this.pnlNavigation.Size = new System.Drawing.Size(531, 83);
 			this.pnlNavigation.TabIndex = 0;
-			this.pnlNavigation.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlNavigation_Paint);
 			//
 			// tableLayoutPanelButtons
 			//
@@ -109,33 +104,6 @@ namespace EduroamApp
 			this.btnBack.UseVisualStyleBackColor = false;
 			this.btnBack.Visible = false;
 			this.btnBack.Click += new System.EventHandler(this.btnBack_Click);
-			//
-			// tableLayoutPanel1
-			//
-			this.tableLayoutPanel1.ColumnCount = 3;
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-			this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-			this.tableLayoutPanel1.Controls.Add(this.btnCancel, 2, 0);
-			this.tableLayoutPanel1.Location = new System.Drawing.Point(126, 249);
-			this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-			this.tableLayoutPanel1.RowCount = 1;
-			this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-			this.tableLayoutPanel1.Size = new System.Drawing.Size(348, 100);
-			this.tableLayoutPanel1.TabIndex = 0;
-			//
-			// btnCancel
-			//
-			this.btnCancel.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.btnCancel.Location = new System.Drawing.Point(236, 5);
-			this.btnCancel.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-			this.btnCancel.Name = "btnCancel";
-			this.btnCancel.Size = new System.Drawing.Size(108, 90);
-			this.btnCancel.TabIndex = 1;
-			this.btnCancel.Text = "Cancel";
-			this.btnCancel.UseVisualStyleBackColor = true;
-			this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
 			//
 			// panel1
 			//
@@ -216,7 +184,6 @@ namespace EduroamApp
 			//
 			this.pnlContent.AutoSize = true;
 			this.pnlContent.BackColor = System.Drawing.Color.White;
-			this.pnlContent.Controls.Add(this.tableLayoutPanel1);
 			this.pnlContent.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.pnlContent.Location = new System.Drawing.Point(10, 112);
 			this.pnlContent.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -275,11 +242,9 @@ namespace EduroamApp
 			this.Resize += new System.EventHandler(this.frmParent_Resize);
 			this.pnlNavigation.ResumeLayout(false);
 			this.tableLayoutPanelButtons.ResumeLayout(false);
-			this.tableLayoutPanel1.ResumeLayout(false);
 			this.panel1.ResumeLayout(false);
 			this.pnlLogo.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.pbxLogo)).EndInit();
-			this.pnlContent.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -288,10 +253,8 @@ namespace EduroamApp
 		#endregion
 
 		private System.Windows.Forms.Panel pnlNavigation;
-		private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 		private System.Windows.Forms.Button btnBack;
 		private System.Windows.Forms.Button btnNext;
-		private System.Windows.Forms.Button btnCancel;
 		private System.Windows.Forms.Panel panel1;
 		private System.Windows.Forms.Label lblTitle;
 		private System.Windows.Forms.Panel pnlContent;

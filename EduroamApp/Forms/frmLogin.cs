@@ -27,7 +27,7 @@ namespace EduroamApp
 			InitializeComponent();
 		}
 
-		private void frm6_Load(object sender, EventArgs e)
+		private void frmLogin_Load(object sender, EventArgs e)
 		{
 			if (!frmParent.EduroamAvailable)
 			{
@@ -143,7 +143,7 @@ namespace EduroamApp
 
 			frmParent.BtnNextEnabled = (passwordSet && usernameValid) || connected;
 		}
-		//
+
 		// shows helping text when field loses focus and is empty
 		private void txtPassword_Leave(object sender, EventArgs e)
 		{
@@ -196,43 +196,6 @@ namespace EduroamApp
 			lblStatus.Visible = true;
 			pbxStatus.Visible = true;
 
-			if (frmParent.AuthMethod.EapType == EapType.TLS)
-			{
-				DateTime validFrom = ConnectToEduroam.CertValidFrom; // TODO: this static variable will be moved
-				DateTime now = DateTime.Now;
-				TimeSpan difference = validFrom - now;
-
-				// if certificate valid from time has passed, do nothing
-				if (DateTime.Compare(validFrom, now) > 0)
-				{
-					// waits at connecting screen if under 9 seconds difference
-					if (difference.TotalSeconds < 8) // TODO: muyto intressante
-					{
-						await PutTaskDelay(difference.Milliseconds + 1000);
-					}
-					// displays dialog that lets user know how long they must wait, or to change their clock manually
-					else
-					{
-						// opens form as dialog
-						using frmSetTime setTimeDialog = new frmSetTime(validFrom);
-						var dialogResult = setTimeDialog.ShowDialog();
-						// cancels connection if time not set and dialog cancelled
-						if (dialogResult == DialogResult.Cancel)
-						{
-							lblStatus.Text = "Couldn't connect to eduroam.";
-							pbxStatus.Image = Properties.Resources.red_x;
-							lblConnectFailed.Text =
-								"Please ensure that the date time and time zone on your computer are set correctly.\n\n" +
-								lblConnectFailed.Text;
-							lblConnectFailed.Visible = true;
-							frmParent.BtnBackEnabled = true;
-							frmParent.ProfileCondition = "BADPROFILE";
-							return;
-						}
-					}
-				}
-			}
-
 			bool connectSuccess;
 			// tries to connect
 			try
@@ -266,7 +229,6 @@ namespace EduroamApp
 				pbxStatus.Image = Properties.Resources.green_checkmark;
 				frmParent.BtnNextText = "Close";
 				frmParent.BtnNextEnabled = true;
-				frmParent.BtnCancelEnabled = false;
 				frmParent.BtnBackVisible = false;
 				frmParent.ProfileCondition = "GOODPROFILE";
 			}
@@ -279,11 +241,6 @@ namespace EduroamApp
 				frmParent.ProfileCondition = "BADPROFILE";
 			}
 			connected = eduConnected;
-		}
-
-		async Task PutTaskDelay(int milliseconds)
-		{
-			await Task.Delay(milliseconds);
 		}
 
 		// gives user choice of wether they want to save the configuration before quitting

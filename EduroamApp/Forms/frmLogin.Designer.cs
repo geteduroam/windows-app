@@ -108,6 +108,7 @@ namespace EduroamApp
 			this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 			| System.Windows.Forms.AnchorStyles.Right)));
 			this.panel1.Controls.Add(this.lblStatus);
+			this.panel1.Controls.Add(this.pnlEduNotAvail);
 			this.panel1.Controls.Add(this.pbxStatus);
 			this.panel1.Controls.Add(this.label1);
 			this.panel1.Controls.Add(this.lblRules);
@@ -163,7 +164,7 @@ namespace EduroamApp
 			this.pnlEduNotAvail.Controls.Add(this.label5);
 			this.pnlEduNotAvail.Controls.Add(this.lblEdu2);
 			this.pnlEduNotAvail.Controls.Add(this.lblEduNotAvail);
-			this.pnlEduNotAvail.Location = new System.Drawing.Point(55, 204);
+			this.pnlEduNotAvail.Location = new System.Drawing.Point(23, 190);
 			this.pnlEduNotAvail.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.pnlEduNotAvail.Name = "pnlEduNotAvail";
 			this.pnlEduNotAvail.Size = new System.Drawing.Size(457, 206);
@@ -239,12 +240,11 @@ namespace EduroamApp
 			this.BackColor = System.Drawing.Color.White;
 			this.ClientSize = new System.Drawing.Size(608, 431);
 			this.Controls.Add(this.panel1);
-			this.Controls.Add(this.pnlEduNotAvail);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "frmLogin";
 			this.Text = "frm6";
-			this.Load += new System.EventHandler(this.frm6_Load);
+			this.Load += new System.EventHandler(this.frmLogin_Load);
 			this.panel1.ResumeLayout(false);
 			this.panel1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pbxStatus)).EndInit();
