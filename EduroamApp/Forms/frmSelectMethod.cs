@@ -27,7 +27,15 @@ namespace EduroamApp
 
         private void frmSelectMethod_Load(object sender, EventArgs e)
         {
-            if (!frmParent.ComesFromSelfExtract) btnExisting.Visible = false;
+            if (frmParent.ComesFromSelfExtract)
+            {
+                btnExisting.Visible = true;
+                btnExisting.Text = "Connect with \n" + frmParent.eapConfig.InstitutionInfo.DisplayName;
+            }
+            else
+            {
+                btnExisting.Visible = false;
+            }
             //webEduroamLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(Properties.Resources.eduroam_logo, webEduroamLogo.Width, webEduroamLogo.Height);
         }
 
