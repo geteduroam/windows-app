@@ -96,7 +96,7 @@ namespace EduroamConfigure
         /// <returns>Enumeration of EapAuthMethodInstaller intances for each supported authentification method in eapConfig</returns>
         public static IEnumerable<EapAuthMethodInstaller> InstallEapConfig(EapConfig eapConfig)
         {
-            List<EduroamNetwork> eduroamNetworks = EduroamNetwork.GetAll().ToList();
+            List<EduroamNetwork> eduroamNetworks = EduroamNetwork.GetAll(eapConfig).ToList();
             if (!eduroamNetworks.Any())
                 yield break; // TODO: concider throwing, test ux
             if (!EapConfigIsSupported(eapConfig))
@@ -292,7 +292,7 @@ namespace EduroamConfigure
                     throw new EduroamAppUserError("missing certificates",
                         "You must first install certificates with InstallCertificates");
 
-                var eduroamNetworks = EduroamNetwork.GetAll().ToList();
+                var eduroamNetworks = EduroamNetwork.GetAll(AuthMethod.EapConfig).ToList();
                 bool anyInstalled = false;
                 bool anyInstalledHs2 = false; // todo: use
 
@@ -343,7 +343,7 @@ namespace EduroamConfigure
         public static bool RemoveAllProfiles()
         {
             bool ret = false;
-            foreach (EduroamNetwork network in EduroamNetwork.GetAll())
+            foreach (EduroamNetwork network in EduroamNetwork.GetAll(null))
             {
                 if (network.RemoveInstalledProfiles())
                     ret = true;
@@ -363,7 +363,7 @@ namespace EduroamConfigure
 
             // sets user data
             bool anyInstalled = false;
-            foreach (EduroamNetwork network in EduroamNetwork.GetAll())
+            foreach (EduroamNetwork network in EduroamNetwork.GetAll(authMethod.EapConfig))
             {
                 anyInstalled |= network.InstallUserData(username, password, authMethod);
             }
@@ -377,7 +377,7 @@ namespace EduroamConfigure
         public static async Task<bool> TryToConnect()
         {
             // gets updated eduroam network packs
-            foreach (var network in EduroamNetwork.GetAll())
+            foreach (var network in EduroamNetwork.GetConfigured())
             {
                 // TODO: do in parallel instead of sequentially?
 

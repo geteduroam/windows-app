@@ -287,7 +287,7 @@ namespace EduroamApp
 
                 frmParent.InstId = eapConfig.InstitutionInfo.InstId; // TODO: what does this do? Move to frmParent?
 
-                if (!EduroamNetwork.IsEduroamAvailable())
+                if (!EduroamNetwork.IsEduroamAvailable(eapConfig))
                 {
                     err = "eduroam not available";
                 }
