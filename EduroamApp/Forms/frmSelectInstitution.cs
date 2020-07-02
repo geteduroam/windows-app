@@ -16,7 +16,6 @@ namespace EduroamApp
 		private List<IdentityProvider> identityProviders = new List<IdentityProvider>(); // list containing all identity providers
 		private List<IdentityProvider> allIdentityProviders;
 		public int idProviderId; // id of selected institution
-		// private static string helpString = "Search here ..";
 
 
 
@@ -31,36 +30,36 @@ namespace EduroamApp
 		/// <summary>
 		/// Called fron InitializeComponents(). Used to get various components ready
 		/// </summary>
-		private async void frmDownload_Load(object sender, EventArgs e)
+		private void frmSelectInstitution_Load(object sender, EventArgs e)
 		{
-			StartLoading();
+			tlpLoading.BringToFront();
+			tlpLoading.Visible = true;
+
+			tbSearch.Visible = true;
+			tbSearch.Enabled = true;
+			lbInstitution.Visible = true;
+			lbInstitution.Enabled = true;
+
+			// display Eduroam logo. Applicable when returning from the Summary form and
+			// institution logo was previously set, deactivating eduroam logo
 			frmParent.WebEduroamLogo.Visible = true;
 			frmParent.RedirectUrl = "";
-			lbInstitution.Enabled = false;
-			frmParent.BtnNextEnabled = false;
 
-			// async method to get list of institutions
-			bool getInstSuccess = await Task.Run(() => GetAllInstitutions());
+			PopulateInstitutions();
+			this.ActiveControl = tbSearch;
 
-			if (getInstSuccess)
-			{
-				PopulateInstitutions();
-				this.ActiveControl = tbSearch;
-			}
-			else
-			{
-				lblError.Visible = true;
-			}
+				//lblError.Visible = true;
 
-			StopLoading();
+
+			tlpLoading.Visible = false;
 		}
 
 		public void StartLoading()
 		{
-			tbSearch.Visible = false;
-			tbSearch.Enabled = false;
-			lbInstitution.Visible = false;
-			lbInstitution.Enabled = false;
+			tbSearch.Visible = true;
+			tbSearch.Enabled = true;
+			lbInstitution.Visible = true;
+			lbInstitution.Enabled = true; ;
 			tlpLoading.BringToFront();
 			tlpLoading.Visible = true;
 		}
@@ -82,7 +81,7 @@ namespace EduroamApp
 			try
 			{
 				//allIdentityProviders = IdentityProviderDownloader.GetAllIdProviders();
-				allIdentityProviders = frmParent.Providers;
+				allIdentityProviders = frmParent.Downloader.Providers;
 				return true;
 			}
 			catch (EduroamAppUserError ex)
@@ -99,7 +98,7 @@ namespace EduroamApp
 		{
 			try
 			{
-				List<IdentityProvider> closeProviders = IdentityProviderDownloader.GetClosestProviders(10, frmParent.GeoWatcher.Position.Location);
+				List<IdentityProvider> closeProviders = frmParent.Downloader.GetClosestProviders(10);
 				updateInstitutions(closeProviders);
 			}
 			catch (EduroamAppUserError e)
@@ -136,8 +135,7 @@ namespace EduroamApp
 			if (lbInstitution.SelectedItem == null) return;
 			// select provider ID based on chosen profile name
 			idProviderId = identityProviders.Where(x => x.Name == (string) lbInstitution.SelectedItem).Select(x => x.cat_idp).First();
-			// update parent state. frmParent.idProviderId is used to create frmSelectProfile
-			//frmParent.idProviderId = idProviderId;
+
 			frmParent.BtnNextEnabled = true;
 
 		}
@@ -154,9 +152,6 @@ namespace EduroamApp
 		/// <param name="ex">WebException.</param>
 		private void EduroamAppExceptionHandler(EduroamAppUserError ex)
 		{
-			//HideControls();
-			//lblError.Text = ex.UserFacingMessage;
-			//lblError.Visible = true;
 			MessageBox.Show(ex.UserFacingMessage,
 					"eduroam - Web exception",
 					MessageBoxButtons.OK, MessageBoxIcon.Error);

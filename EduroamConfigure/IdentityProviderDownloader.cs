@@ -10,6 +10,25 @@ namespace EduroamConfigure
 {
 	public class IdentityProviderDownloader
 	{
+		public List<IdentityProvider> Providers;
+		private GeoCoordinateWatcher GeoWatcher;
+
+		public IdentityProviderDownloader()
+		{
+			GeoWatcher = new GeoCoordinateWatcher();
+			GeoWatcher.TryStart(false, TimeSpan.FromMilliseconds(3000));
+			this.Providers = GetAllIdProviders();
+		}
+
+
+		private GeoCoordinate GetCoordinates()
+		{
+			if (!GeoWatcher.Position.Location.IsUnknown)
+			{
+				return GeoWatcher.Position.Location;
+			}
+			return DownloadCoordinates();
+		}
 
 
 		/// <summary>
@@ -18,7 +37,7 @@ namespace EduroamConfigure
 		/// <returns>DiscoveryApi object representing the Api</returns>
 		/// <exception cref="EduroamAppUserError">description</exception>
 
-		public static DiscoveryApi GetDiscoveryApi()
+		private static DiscoveryApi GetDiscoveryApi()
 		{
 			string apiUrl = "https://discovery.geteduroam.no/v1/discovery.json";
 			try
@@ -39,7 +58,7 @@ namespace EduroamConfigure
 			}
 		}
 
-		public static Location GetLocationApi()
+		private static Location GetLocationApi()
 		{
 			string apiUrl = "https://geo.geteduroam.app/geoip";
 			try
@@ -62,7 +81,7 @@ namespace EduroamConfigure
 		/// Fetches a list of all eduroam institutions from https://cat.eduroam.org.
 		/// </summary>
 		/// <exception cref="EduroamAppUserError">description</exception>
-		public static List<IdentityProvider> GetAllIdProviders()
+		private static List<IdentityProvider> GetAllIdProviders()
 		{
 			return GetDiscoveryApi().Instances;
 		}
@@ -72,26 +91,18 @@ namespace EduroamConfigure
 		/// </summary>
 		/// <returns>identity provider profile object containing all profiles for given provider</returns>
 		/// <exception cref="EduroamAppUserError">description</exception>
-		public static List<IdentityProviderProfile> GetIdentityProviderProfiles(int idProviderId)
+		public List<IdentityProviderProfile> GetIdentityProviderProfiles(int idProviderId)
 		{
-			List<IdentityProvider> providers = GetAllIdProviders();
-			return providers.Where(p => p.cat_idp == idProviderId).First().Profiles;
+			return Providers.Where(p => p.cat_idp == idProviderId).First().Profiles;
 		}
 
 
-		public static List<IdentityProvider> GetClosestProviders(int n, GeoCoordinate userCoords)
+		public List<IdentityProvider> GetClosestProviders(int n)
 		{
-			// get user location and store in GeoCoordinate object
-			if (userCoords.IsUnknown)
-			{
-				userCoords = GetGeoCoordinates();
-			}
-
 			// find all providers in current country
-			List<IdentityProvider> allProviders = GetAllIdProviders();
 			string closestCountryCode = GetLocationApi().Country;
-			List<IdentityProvider> localProviders = allProviders.Where(p => p.Country == closestCountryCode).ToList();
-
+			List<IdentityProvider> localProviders = Providers.Where(p => p.Country == closestCountryCode).ToList();
+			var userCoords = GetCoordinates();
 			// sort provider list by distance to user location
 			localProviders = localProviders.OrderBy(
 				p => userCoords.GetDistanceTo(p.GetClosestGeoCoordinate(userCoords))
@@ -102,7 +113,7 @@ namespace EduroamConfigure
 
 		}
 
-		private static GeoCoordinate GetGeoCoordinates()
+		private static GeoCoordinate DownloadCoordinates()
 		{
 			Location userLocation = GetLocationApi();
 			Geo userGeo = userLocation.Geo;
@@ -114,7 +125,7 @@ namespace EduroamConfigure
 		/// </summary>
 		/// <returns></returns>
 		/// <exception cref="EduroamAppUserError">description</exception>
-		public static string GetEapConfigString(string profileId)
+		public string GetEapConfigString(string profileId)
 		{
 			// adds profile ID to url containing json file, which in turn contains url to EAP config file download
 			// gets url to EAP config file download from GenerateEapConfig object
@@ -131,10 +142,9 @@ namespace EduroamConfigure
 			}
 		}
 
-		public static IdentityProviderProfile GetProfileFromId(string profileId)
+		public IdentityProviderProfile GetProfileFromId(string profileId)
 		{
-			List<IdentityProvider> providers = GetAllIdProviders();
-			foreach (IdentityProvider provider in providers)
+			foreach (IdentityProvider provider in Providers)
 			{
 				foreach (IdentityProviderProfile profile in provider.Profiles)
 				{

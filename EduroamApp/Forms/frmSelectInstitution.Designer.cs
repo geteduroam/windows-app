@@ -96,7 +96,6 @@ namespace EduroamApp
 			this.lbInstitution.Name = "lbInstitution";
 			this.lbInstitution.Size = new System.Drawing.Size(484, 244);
 			this.lbInstitution.TabIndex = 40;
-			this.lbInstitution.Visible = false;
 			this.lbInstitution.SelectedIndexChanged += new System.EventHandler(this.lbInstitution_SelectedIndexChanged);
 			this.lbInstitution.DoubleClick += new System.EventHandler(this.lbInstitution_DoubleClick);
 			//
@@ -107,7 +106,6 @@ namespace EduroamApp
 			this.tbSearch.Name = "tbSearch";
 			this.tbSearch.Size = new System.Drawing.Size(484, 26);
 			this.tbSearch.TabIndex = 42;
-			this.tbSearch.Visible = false;
 			this.tbSearch.TextChanged += new System.EventHandler(this.tbSearch_TextChanged);
 			//
 			// frmSelectInstitution
@@ -117,15 +115,15 @@ namespace EduroamApp
 			this.AutoScroll = true;
 			this.BackColor = System.Drawing.Color.White;
 			this.ClientSize = new System.Drawing.Size(506, 549);
-			this.Controls.Add(this.lblError);
 			this.Controls.Add(this.tlpLoading);
+			this.Controls.Add(this.lblError);
 			this.Controls.Add(this.tbSearch);
 			this.Controls.Add(this.lbInstitution);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
 			this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
 			this.Name = "frmSelectInstitution";
 			this.Text = "frm3";
-			this.Load += new System.EventHandler(this.frmDownload_Load);
+			this.Load += new System.EventHandler(this.frmSelectInstitution_Load);
 			this.tlpLoading.ResumeLayout(false);
 			this.tlpLoading.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
