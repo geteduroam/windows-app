@@ -11,12 +11,12 @@ namespace EduroamConfigure
 	public class IdentityProviderDownloader
 	{
 		// constants
-		private static string GeoApiUrl = "https://geo.geteduroam.app/geoip";
-		private static string ProviderApiUrl = "https://discovery.geteduroam.no/v1/discovery.json";
+		private const string GeoApiUrl = "https://geo.geteduroam.app/geoip";
+		private const string ProviderApiUrl = "https://discovery.geteduroam.no/v1/discovery.json";
 
 		// state
-		public List<IdentityProvider> Providers;
-		private GeoCoordinateWatcher GeoWatcher;
+		public List<IdentityProvider> Providers { get; }
+		private GeoCoordinateWatcher GeoWatcher { get; }
 
 		/// <summary>
 		/// The constructor for this class.
