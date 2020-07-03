@@ -335,9 +335,5 @@ namespace EduroamApp
             frmParent.btnNext_Click(sender, e);
         }
 
-        private void lblDesc_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }

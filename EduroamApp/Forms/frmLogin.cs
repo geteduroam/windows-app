@@ -19,6 +19,9 @@ namespace EduroamApp
         private string realm;
         private bool hint;
         public bool connected;
+        public bool ignorePassChange = false;
+
+   
 
         public frmLogin(frmParent parentInstance)
         {
@@ -83,9 +86,11 @@ namespace EduroamApp
         {
             if (txtPassword.Text == "Password" && passwordDefault)
             {
+                ignorePassChange = true;
                 txtPassword.Text = "";
                 txtPassword.ForeColor = SystemColors.ControlText;
-                txtPassword.UseSystemPasswordChar = true;
+                //txtPassword.UseSystemPasswordChar = true;
+                txtPassword.PasswordChar = '*';
                 passwordDefault = false;
             }
         }
@@ -153,6 +158,10 @@ namespace EduroamApp
         {
             if (ValidateFields())
             {
+                if ((!txtUsername.Text.Contains('@') && !string.IsNullOrEmpty(realm)) || hint)
+                {
+                    lblInst.Visible = true;
+                }
                 ConnectWithLogin();
                 return;
             }
@@ -163,12 +172,14 @@ namespace EduroamApp
         // shows helping text when field loses focus and is empty
         private void txtPassword_Leave(object sender, EventArgs e)
         {
-            if (txtPassword.Text == "")
+
+            if (string.IsNullOrEmpty(txtPassword.Text))
             {
-                txtPassword.Text = "Password";
-                txtPassword.ForeColor = SystemColors.GrayText;
-                txtPassword.UseSystemPasswordChar = false;
                 passwordDefault = true;
+                txtPassword.ForeColor = SystemColors.GrayText;
+                txtPassword.PasswordChar = '\0';
+                ignorePassChange = true;
+                txtPassword.Text = "Password";
             }
             else
             {
@@ -191,15 +202,19 @@ namespace EduroamApp
             pbxStatus.Image = Properties.Resources.loading_gif;
             lblStatus.Visible = true;
             pbxStatus.Visible = true;
-
+            txtPassword.ReadOnly = true;
+            txtUsername.ReadOnly = true;
 
             ConnectToEduroam.InstallUserProfile(username, password, frmParent.AuthMethod);
             Connect();
+           
 
         }
         
         private void txtUsername_TextChanged(object sender, EventArgs e)
         {
+            lblStatus.Visible = false;
+            pbxStatus.Visible = false;
             lblRules.Visible = false;
             if (!hint) lblInst.Visible = false;
             ValidateFields();
@@ -207,7 +222,14 @@ namespace EduroamApp
 
         private void txtPassword_TextChanged(object sender, EventArgs e)
         {
-            passwordSet = !string.IsNullOrEmpty(txtPassword.Text) && !passwordDefault; // && txtPassword.ContainsFocus;
+            pbxStatus.Visible = false;
+            lblStatus.Visible = false;
+            if (ignorePassChange == true)
+            {
+                ignorePassChange = false;
+                return;
+            }
+            passwordSet = !string.IsNullOrEmpty(txtPassword.Text) && !passwordDefault && txtPassword.ContainsFocus;
             ValidateFields();
         }
 
@@ -234,6 +256,8 @@ namespace EduroamApp
                 frmParent.BtnBackEnabled = true;
                 frmParent.ProfileCondition = "BADPROFILE";
             }
+            txtPassword.ReadOnly = false;
+            txtUsername.ReadOnly = false;
             connected = eduConnected;
             frmParent.BtnNextEnabled = true;
         }
