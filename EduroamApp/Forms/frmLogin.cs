@@ -96,9 +96,9 @@ namespace EduroamApp
             lblRules.Visible = true;
             if (txtUsername.Text == "")
             {
+                usernameDefault = true;
                 txtUsername.Text = "Username";
                 txtUsername.ForeColor = SystemColors.GrayText;
-                usernameDefault = true;
                 lblRules.Text = "";
             }
             else
@@ -113,18 +113,21 @@ namespace EduroamApp
 
         }
 
-        public void ValidateFields()
+        public bool ValidateFields()
         {
             string username = txtUsername.Text;
-            if (username == "Username" || username == "" )
+            if ((username == "Username" && usernameDefault) || username == "" )
             {
                 usernameValid = false;
                 lblRules.Text = "";
-                return;
+                frmParent.BtnNextEnabled = false;
+                return false;
             }
+
+            
             
             // if username does not contain '@' and realm is given then show realm added to end
-            if (!username.Contains('@') && !string.IsNullOrEmpty(realm))
+            if ((!username.Contains('@') && !string.IsNullOrEmpty(realm)) || hint)
             {
                 username += "@" + realm;
             }
@@ -142,8 +145,20 @@ namespace EduroamApp
                 lblRules.Text = "";
             }
 
-            frmParent.BtnNextEnabled = (passwordSet && usernameValid) || connected;
+            frmParent.BtnNextEnabled = passwordSet || connected;
+            return (passwordSet && usernameValid) || connected;
         }
+
+        public void ConnectClick()
+        {
+            if (ValidateFields())
+            {
+                ConnectWithLogin();
+                return;
+            }
+            lblRules.Visible = true;
+        }
+
   
         // shows helping text when field loses focus and is empty
         private void txtPassword_Leave(object sender, EventArgs e)
@@ -170,6 +185,14 @@ namespace EduroamApp
             }
             string password = txtPassword.Text;
 
+            frmParent.BtnNextEnabled = false;
+            // displays loading animation while attempt to connect
+            lblStatus.Text = "Connecting...";
+            pbxStatus.Image = Properties.Resources.loading_gif;
+            lblStatus.Visible = true;
+            pbxStatus.Visible = true;
+
+
             ConnectToEduroam.InstallUserProfile(username, password, frmParent.AuthMethod);
             Connect();
 
@@ -192,46 +215,14 @@ namespace EduroamApp
 
         private async void Connect()
         {
-            frmParent.BtnNextEnabled = false;
-            // displays loading animation while attempt to connect
-            lblStatus.Text = "Connecting...";
-            pbxStatus.Image = Properties.Resources.loading_gif;
-            lblStatus.Visible = true;
-            pbxStatus.Visible = true;
 
-            bool connectSuccess;
-            // tries to connect
-            try
-            {
-                connectSuccess = await Task.Run(ConnectToEduroam.TryToConnect);
-            }
-            catch (Exception ex)
-            {
-                // if an exception is thrown, connection has not succeeded
-                connectSuccess = false;
-                MessageBox.Show("Could not connect. \nException: " + ex.Message);
-            }
-
-            // double check to validate wether eduroam really is an active connection
-            var eduConnected = false;
-            if (connectSuccess)
-            {
-                var checkConnected = NativeWifi.EnumerateConnectedNetworkSsids();
-                foreach (NetworkIdentifier network in checkConnected)
-                {
-                    if (network.ToString() == "eduroam")
-                    {
-                        eduConnected = true;
-                    }
-                }
-            }
+            bool eduConnected = await Task.Run(frmParent.Connect);
 
             if (eduConnected)
             {
                 lblStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
                 pbxStatus.Image = Properties.Resources.green_checkmark;
                 frmParent.BtnNextText = "Close";
-                frmParent.BtnNextEnabled = true;
                 frmParent.BtnBackVisible = false;
                 frmParent.ProfileCondition = "GOODPROFILE";
             }

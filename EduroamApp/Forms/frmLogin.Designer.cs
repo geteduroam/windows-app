@@ -98,9 +98,9 @@
             // 
             // lblRules
             // 
-            this.lblRules.Location = new System.Drawing.Point(63, 111);
+            this.lblRules.Location = new System.Drawing.Point(13, 111);
             this.lblRules.Name = "lblRules";
-            this.lblRules.Size = new System.Drawing.Size(393, 106);
+            this.lblRules.Size = new System.Drawing.Size(485, 106);
             this.lblRules.TabIndex = 3;
             this.lblRules.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
@@ -118,7 +118,7 @@
             this.panel1.Controls.Add(this.txtPassword);
             this.panel1.Location = new System.Drawing.Point(-1, 35);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(512, 281);
+            this.panel1.Size = new System.Drawing.Size(522, 281);
             this.panel1.TabIndex = 4;
             // 
             // lblStatus

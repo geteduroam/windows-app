@@ -89,6 +89,7 @@
             this.btnNext.Name = "btnNext";
             this.btnNext.Size = new System.Drawing.Size(167, 67);
             this.btnNext.TabIndex = 0;
+            this.btnNext.TabStop = false;
             this.btnNext.Text = "Next >";
             this.btnNext.UseVisualStyleBackColor = false;
             this.btnNext.Click += new System.EventHandler(this.btnNext_Click);

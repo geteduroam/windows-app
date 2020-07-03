@@ -8,6 +8,9 @@ using System.Reflection;
 using System.Device.Location;
 using System.Xml;
 using EduroamConfigure;
+using System.Threading.Tasks;
+using ManagedNativeWifi;
+
 using Image = System.Drawing.Image;
 
 namespace EduroamApp
@@ -73,6 +76,8 @@ namespace EduroamApp
             eapConfig = null;
             InitializeComponent();
         }
+
+        // TODO: handle if no internet connection
 
         private void frmParent_Load(object sender, EventArgs e)
         {
@@ -197,7 +202,6 @@ namespace EduroamApp
                     break;
 
                 case FormId.SelectInstitution:
-                    //frmSelectInstitution.StartLoading();
                     var profiles = GetProfiles((int) frmSelectInstitution.idProviderId);
                     // if less than 2 profiles then, if a profile exists, autoselect it and go to Summary
                     if (profiles.Count < 2)
@@ -221,8 +225,7 @@ namespace EduroamApp
                     {
                         Close();
                     }
-                    frmLogin.ConnectWithLogin();
-                    //LoadFrmConnect();
+                    frmLogin.ConnectClick();
                     break;
 
                 // closes application after successful connect
@@ -309,6 +312,7 @@ namespace EduroamApp
                     break;
                 case FormId.SelectMethod:
                     if (ComesFromSelfExtract) SelfExtractFlag = true; // enables back button if config file included in self extract
+                    GetSelfExtractingEap();
                     LoadFrmSelectMethod();
                     break;
 
@@ -364,6 +368,38 @@ namespace EduroamApp
             {
                 return null;
             }
+        }
+
+
+        public async Task<bool> Connect()
+        {
+            bool connectSuccess;
+            // tries to connect
+            try
+            {
+                connectSuccess = await Task.Run(ConnectToEduroam.TryToConnect);
+            }
+            catch (Exception ex)
+            {
+                // if an exception is thrown, connection has not succeeded
+                connectSuccess = false;
+                MessageBox.Show("Could not connect. \nException: " + ex.Message);
+            }
+
+            // double check to validate wether eduroam really is an active connection
+            var eduConnected = false;
+            if (connectSuccess)
+            {
+                var checkConnected = NativeWifi.EnumerateConnectedNetworkSsids();
+                foreach (NetworkIdentifier network in checkConnected)
+                {
+                    if (network.ToString() == "eduroam")
+                    {
+                        eduConnected = true;
+                    }
+                }
+            }
+            return eduConnected;
         }
 
         /// <summary>
