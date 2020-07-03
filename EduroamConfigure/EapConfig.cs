@@ -71,17 +71,19 @@ namespace EduroamConfigure
 
 
 			/// <summary>
-			/// Converts and enumerates CertificateAuthorities as X509Certificate2 objects
+			/// Converts and enumerates CertificateAuthorities as X509Certificate2 objects.
+			/// The objects are disposed of when the next object is yielded
 			/// </summary>
 			public IEnumerable<X509Certificate2> CertificateAuthoritiesAsX509Certificate2()
 			{
 				foreach (var ca in CertificateAuthorities)
 				{
-					var cert = new X509Certificate2(Convert.FromBase64String(ca));
+					using var cert = new X509Certificate2(Convert.FromBase64String(ca));
 
 					// sets the friendly name of certificate
 					if (string.IsNullOrEmpty(cert.FriendlyName))
 						cert.FriendlyName = cert.GetNameInfo(X509NameType.SimpleName, false);
+
 					yield return cert;
 				}
 			}
