@@ -44,7 +44,7 @@ namespace EduroamApp
 
             // autoselect first profile
             lbProfile.SetSelected(0, true);
-
+            this.ActiveControl = lbProfile;
             this.Show();
 
         }

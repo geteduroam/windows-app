@@ -141,7 +141,6 @@ namespace EduroamApp
             reload = true;
             // adds current form to history for easy backtracking
             historyFormId.Add(currentFormId);
-
             switch (currentFormId)
             {
                 // next form depends on EAP type of selected config
@@ -211,6 +210,7 @@ namespace EduroamApp
                         break;
                     }
                     LoadFrmSelectProfile();
+                    
                     break;
 
 
@@ -272,8 +272,10 @@ namespace EduroamApp
                     "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
             try
             {
+                //eapConfig = await Task.Run(() => DownloadEapConfig(profileId)); 
                 eapConfig = DownloadEapConfig(profileId);
             }
             catch (EduroamAppUserError ex) // TODO: register this in some higher level
@@ -289,6 +291,7 @@ namespace EduroamApp
             }
             else if (!string.IsNullOrEmpty(RedirectUrl))
             {
+                // TODO: add option to go to selectmethod from redirect
                 LoadFrmRedirect();
             }
             return;
@@ -533,6 +536,16 @@ namespace EduroamApp
             set => btnBack.Enabled = value;
         }
 
+        public Button BtnBack
+        {
+            get => btnBack;
+        }
+
+        public Button BtnNext
+        {
+            get => btnNext;
+        }
+
         public bool BtnBackVisible
         {
             get => btnBack.Visible;
@@ -565,6 +578,7 @@ namespace EduroamApp
 
             btnNext.Text = eapConfig.AuthenticationMethods.First().EapType == EduroamConfigure.EapType.TLS ? "Connect" : "Next >";
             LoadNewForm(frmSummary);
+
         }
 
         /// <summary>
@@ -599,6 +613,7 @@ namespace EduroamApp
             currentFormId = FormId.SelectProfile;
             frmSelectProfile = new frmSelectProfile(this, (int) frmSelectInstitution.idProviderId);
             lblTitle.Text = "Select your profile";
+            BtnNextEnabled = true;
             btnNext.Focus();
             LoadNewForm(frmSelectProfile);
         }

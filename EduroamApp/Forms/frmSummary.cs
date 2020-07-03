@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Security.Cryptography;
 using EduroamConfigure;
+using System.Threading.Tasks;
 
 namespace EduroamApp
 {
@@ -31,8 +32,9 @@ namespace EduroamApp
         private void frmSummary_Load(object sender, EventArgs e)
         {
             this.Hide();
+            
             // gets institution information from EapConfig object
-
+            
             string instName = eapConfig.InstitutionInfo.DisplayName;
             string tou = eapConfig.InstitutionInfo.TermsOfUse;
             string webAddress = eapConfig.InstitutionInfo.WebAddress.ToLower();
@@ -40,9 +42,11 @@ namespace EduroamApp
             string nextOrConnect = eapConfig.AuthenticationMethods.First().EapType == EapType.TLS ? "Connect" : "Next";
             string description = eapConfig.InstitutionInfo.Description;
 
-            frmParent.BtnNextEnabled = true;
+            
 
+            this.ActiveControl = lblDesc;
 
+            
             // displays prompt to accept Terms of use if they exist
             if (string.IsNullOrEmpty(tou))
             {
@@ -103,6 +107,7 @@ namespace EduroamApp
                     cntrl.Text = "-";
                 }
             }
+            
 
             // displays option to choose another institution if using file from self extract
             if (frmParent.SelfExtractFlag)
@@ -165,7 +170,7 @@ namespace EduroamApp
             }
 
             frmParent.BtnNextEnabled = true;
-
+            
             this.Show();
             
             
@@ -178,6 +183,7 @@ namespace EduroamApp
             }*/
 
         }
+
 
         private void lnkToU_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {

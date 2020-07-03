@@ -207,7 +207,7 @@ namespace EduroamApp
 
         private void txtPassword_TextChanged(object sender, EventArgs e)
         {
-            passwordSet = !string.IsNullOrEmpty(txtPassword.Text) && !passwordDefault && txtPassword.ContainsFocus;
+            passwordSet = !string.IsNullOrEmpty(txtPassword.Text) && !passwordDefault; // && txtPassword.ContainsFocus;
             ValidateFields();
         }
 

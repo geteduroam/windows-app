@@ -51,7 +51,7 @@
             this.tlpLoading.Name = "tlpLoading";
             this.tlpLoading.RowCount = 3;
             this.tlpLoading.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpLoading.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 49F));
+            this.tlpLoading.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 41F));
             this.tlpLoading.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpLoading.Size = new System.Drawing.Size(183, 84);
             this.tlpLoading.TabIndex = 38;
@@ -63,7 +63,7 @@
             this.label1.Location = new System.Drawing.Point(58, 0);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(66, 15);
+            this.label1.Size = new System.Drawing.Size(66, 20);
             this.label1.TabIndex = 38;
             this.label1.Text = "Loading";
             // 
@@ -71,7 +71,7 @@
             // 
             this.pbLoading.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.pbLoading.Image = global::EduroamApp.Properties.Resources.loading_gif;
-            this.pbLoading.Location = new System.Drawing.Point(83, 20);
+            this.pbLoading.Location = new System.Drawing.Point(83, 28);
             this.pbLoading.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.pbLoading.Name = "pbLoading";
             this.pbLoading.Size = new System.Drawing.Size(16, 16);
