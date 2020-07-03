@@ -73,7 +73,7 @@ namespace EduroamApp
 								lblConnectFailed.Text;
 							lblConnectFailed.Visible = true;
 							frmParent.BtnBackEnabled = true;
-							frmParent.ProfileCondition = "BADPROFILE";
+							frmParent.ProfileCondition = frmParent.ProfileStatus.Incomplete;
 							return;
 						}
 					}
@@ -89,7 +89,7 @@ namespace EduroamApp
 				frmParent.BtnNextText = "Close";
 				frmParent.BtnNextEnabled = true;
 				frmParent.BtnBackVisible = false;
-				frmParent.ProfileCondition = "GOODPROFILE";
+				frmParent.ProfileCondition = frmParent.ProfileStatus.Working;
 			}
 			else
 			{
@@ -97,7 +97,7 @@ namespace EduroamApp
 				pbxStatus.Image = Properties.Resources.red_x;
 				lblConnectFailed.Visible = true;
 				frmParent.BtnBackEnabled = true;
-				frmParent.ProfileCondition = "BADPROFILE";
+				frmParent.ProfileCondition = frmParent.ProfileStatus.Incomplete;
 			}
 		}
 
@@ -109,7 +109,7 @@ namespace EduroamApp
 		// gives user choice of wether they want to save the configuration before quitting
 		private void SaveAndQuit()
 		{
-			frmParent.ProfileCondition = "GOODPROFILE";
+			frmParent.ProfileCondition = frmParent.ProfileStatus.Working; // TODO: what?
 			pnlEduNotAvail.Visible = true;
 		}
 

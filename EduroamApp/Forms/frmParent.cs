@@ -34,6 +34,13 @@ namespace EduroamApp
 			SaveAndQuit
 		}
 
+		public enum ProfileStatus
+		{
+			NoneConfigured,
+			Incomplete,
+			Working,
+		}
+
 		// private variables to be used in this form
 		private FormId currentFormId;                                      // Id of currently selected form
 		private readonly List<FormId> historyFormId = new List<FormId>();  // Keeps history of previously diplayed forms, in order to backtrack correctly
@@ -53,7 +60,7 @@ namespace EduroamApp
 		public GeoCoordinateWatcher GeoWatcher { get; set; }
 		public EapConfig.AuthenticationMethod AuthMethod; // installed authmethod in EAP config
 		public string InstId { get; set; }
-		public string ProfileCondition { get; set; } // TODO: make into a bool or enum
+		public ProfileStatus ProfileCondition { get; set; }
 		public string RedirectUrl { get; set; }
 		public bool ComesFromSelfExtract { get; set; }
 		public bool SelfExtractFlag { get; set; }
@@ -152,6 +159,9 @@ namespace EduroamApp
 						LoadFrmSelectMethod();
 						break;
 					}
+
+					ConnectToEduroam.RemoveAllProfiles();
+					ProfileCondition = frmParent.ProfileStatus.NoneConfigured;
 
 					string err;
 					(AuthMethod, err) = frmSummary.InstallEapConfig();
@@ -704,7 +714,7 @@ namespace EduroamApp
 		private void frmParent_FormClosed(object sender, FormClosedEventArgs e)
 		{
 			// deletes bad profile on application exit if connection was unsuccessful
-			if (ProfileCondition == "BADPROFILE")
+			if (ProfileCondition != frmParent.ProfileStatus.Working)
 			{
 				ConnectToEduroam.RemoveAllProfiles();
 			}

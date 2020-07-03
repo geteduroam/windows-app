@@ -282,10 +282,11 @@ namespace EduroamApp
 					err = "eduroam not available";
 				}
 
-				frmParent.ProfileCondition = "BADPROFILE"; // TODO: what does this do? Move to frmParent?
+				frmParent.ProfileCondition = frmParent.ProfileStatus.Incomplete;
+
 				return (authMethod, err);
 			}
-			catch (ArgumentException argEx) // TODO, handle in ConnectToEuroam or EduroamNetwork
+			catch (ArgumentException argEx) // TODO, handle in ConnectToEduroam or EduroamNetwork
 			{
 				if (argEx.Message == "interfaceId")
 				{
@@ -299,7 +300,7 @@ namespace EduroamApp
 				}
 				throw;
 			}
-			catch (CryptographicException cryptEx) // TODO, handle in ConnectToEuroam or EduroamNetwork
+			catch (CryptographicException cryptEx) // TODO, handle in ConnectToEduroam, thrown by certificate store .add()
 			{
 				MessageBox.Show(
 					"One or more certificates are corrupt. Please select an another file, or try again later.\n" +
@@ -313,7 +314,7 @@ namespace EduroamApp
 					ex.UserFacingMessage,
 					"eduroam - Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 			}
-			catch (Exception ex) // TODO, handle in ConnectToEuroam or EduroamNetwork
+			catch (Exception ex) // TODO, handle in ConnectToEduroam or EduroamNetwork
 			{
 				MessageBox.Show(
 					"Something went wrong.\n" +

@@ -224,7 +224,7 @@ namespace EduroamApp
 				pbxStatus.Image = Properties.Resources.green_checkmark;
 				frmParent.BtnNextText = "Close";
 				frmParent.BtnBackVisible = false;
-				frmParent.ProfileCondition = "GOODPROFILE";
+				frmParent.ProfileCondition = frmParent.ProfileStatus.Working;
 			}
 			else
 			{
@@ -232,7 +232,7 @@ namespace EduroamApp
 				pbxStatus.Image = Properties.Resources.red_x;
 				lblConnectFailed.Visible = true;
 				frmParent.BtnBackEnabled = true;
-				frmParent.ProfileCondition = "BADPROFILE";
+				frmParent.ProfileCondition = frmParent.ProfileStatus.Incomplete;
 			}
 			connected = eduConnected;
 			frmParent.BtnNextEnabled = true;
@@ -241,7 +241,7 @@ namespace EduroamApp
 		// gives user choice of wether they want to save the configuration before quitting
 		private void SaveAndQuit()
 		{
-			frmParent.ProfileCondition = "GOODPROFILE";
+			frmParent.ProfileCondition = frmParent.ProfileStatus.Working; // what?
 			pnlEduNotAvail.Visible = true;
 		}
 
