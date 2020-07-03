@@ -80,32 +80,7 @@ namespace EduroamApp
 				}
 			}
 
-			bool connectSuccess;
-			// tries to connect
-			try
-			{
-				connectSuccess = await Task.Run(ConnectToEduroam.TryToConnect);
-			}
-			catch (Exception ex)
-			{
-				// if an exception is thrown, connection has not succeeded
-				connectSuccess = false;
-				MessageBox.Show("Could not connect. \nException: " + ex.Message);
-			}
-
-			// double check to validate wether eduroam really is an active connection
-			var eduConnected = false;
-			if (connectSuccess)
-			{
-				var checkConnected = NativeWifi.EnumerateConnectedNetworkSsids();
-				foreach (NetworkIdentifier network in checkConnected)
-				{
-					if (network.ToString() == "eduroam")
-					{
-						eduConnected = true;
-					}
-				}
-			}
+			bool eduConnected = await Task.Run(frmParent.Connect);
 
 			if (eduConnected)
 			{

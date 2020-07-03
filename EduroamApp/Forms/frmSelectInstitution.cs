@@ -86,7 +86,7 @@ namespace EduroamApp
 		void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
 			tbSearch.Enabled = true;
-			lbInstitution.Enabled = true; ;
+			lbInstitution.Enabled = true;
 		}
 
 		public void StartLoading()
@@ -94,7 +94,7 @@ namespace EduroamApp
 			tbSearch.Visible = true;
 			tbSearch.Enabled = true;
 			lbInstitution.Visible = true;
-			lbInstitution.Enabled = true; ;
+			lbInstitution.Enabled = true;
 			tlpLoading.BringToFront();
 			tlpLoading.Visible = true;
 		}
@@ -108,6 +108,8 @@ namespace EduroamApp
 			tlpLoading.Visible = false;
 		}
 
+
+		// TODO more than 10 closest providers
 
 		/// <summary>
 		/// Called when the form is created to present the 10 closest providers

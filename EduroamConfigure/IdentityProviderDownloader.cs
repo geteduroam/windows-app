@@ -68,6 +68,7 @@ namespace EduroamConfigure
 			}
 		}
 
+		/// <exception cref="EduroamAppUserError">description</exception>
 		private static Location GetCurrentLocationFromGeoApi()
 		{
 			try
