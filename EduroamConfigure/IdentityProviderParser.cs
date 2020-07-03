@@ -18,28 +18,34 @@ namespace EduroamConfigure
 
             // Lexically sort by prioritized criterias.
             var sortedList = providers
+                // Only compute the normalized name once
+                .Select(provider => (nname: NormalizeString(provider.Name), provider))
+
                 // name contains a word equal to the exact search string
-                .OrderByDescending(p => NormalizeString(p.Name).Split(' ')
+                .OrderByDescending(p => p.nname.Split(' ')
                     .Any(word => string.Equals(word, query)))
 
                 // name starts with search string
-                .ThenByDescending(p => NormalizeString(p.Name).StartsWith(query))
+                .ThenByDescending(p => p.nname.StartsWith(query))
 
                 // acronym for name contains searchstring
-                .ThenByDescending(p => StringToAcronym(NormalizeString(p.Name)).Contains(query))
+                .ThenByDescending(p => StringToAcronym(p.nname).Contains(query))
 
                 // any word in name begins with search string
-                .ThenByDescending(p => NormalizeString(p.Name).Split(' ')
+                .ThenByDescending(p => p.nname.Split(' ')
                     .Any(word => word.StartsWith(query)))
 
                 // search string can be found somewhere in the name
-                .ThenByDescending(p => NormalizeString(p.Name).Contains(query))
+                .ThenByDescending(p => p.nname.Contains(query))
 
                 // Fuzzy match string
-                .ThenByDescending(p => p.Name.FuzzyMatch(query))
+                .ThenByDescending(p => p.nname.FuzzyMatch(query))
 
                 // due to all of this being evaluated lazily, this is a major speedup
                 .Take(limit)
+
+                // Strip the normalized name
+                .Select(p => p.provider)
 
                 .ToList();
 
@@ -49,9 +55,13 @@ namespace EduroamConfigure
         //removes accents and converts non-US character to US charactres (ø to o etc)
         private static string NormalizeString(string str)
         {
-            string strippedString = Encoding.ASCII.GetString(Encoding.GetEncoding("Cyrillic").GetBytes(str)).ToLowerInvariant();
-            strippedString = strippedString.Replace("(", "");
-            strippedString = strippedString.Replace(")", "");
+            string strippedString = Encoding.ASCII.GetString(Encoding.GetEncoding("Cyrillic").GetBytes(str))
+                .ToLowerInvariant()
+                .Replace("-", " ")
+                .Replace("[", "")
+                .Replace("]", "")
+                .Replace("(", "")
+                .Replace(")", "");
             return strippedString;
         }
 
