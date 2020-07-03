@@ -18,7 +18,6 @@ namespace EduroamApp
 		private List<IdentityProvider> identityProviders = new List<IdentityProvider>(); // list containing all identity providers
 		private List<IdentityProvider> allIdentityProviders; // TODO: delete?
 		public int idProviderId; // id of selected institution
-		private BackgroundWorker _worker;
 
 
 
@@ -27,15 +26,16 @@ namespace EduroamApp
 			// gets parent form instance
 			frmParent = parentInstance;
 			InitializeComponent();
-			InitWorker();
 
 		}
 
 		/// <summary>
 		/// Called fron InitializeComponents(). Used to get various components ready
 		/// </summary>
-		private void frmSelectInstitution_Load(object sender, EventArgs e)
+		private async void frmSelectInstitution_Load(object sender, EventArgs e)
 		{
+			await Task.Run(PopulateInstitutions);
+
 			frmParent.BtnNextEnabled = false;
 
 			tlpLoading.BringToFront();
@@ -58,35 +58,6 @@ namespace EduroamApp
 			this.ActiveControl = tbSearch;
 
 			tlpLoading.Visible = false;
-		}
-
-		private void InitWorker()
-		{
-
-			if (_worker != null)
-			{
-				_worker.Dispose();
-			}
-
-			_worker = new BackgroundWorker
-			{
-				WorkerSupportsCancellation = true
-			};
-
-			_worker.DoWork += DoWork;
-			_worker.RunWorkerCompleted += RunWorkerCompleted;
-			_worker.RunWorkerAsync();
-		}
-
-		void DoWork(object sender, DoWorkEventArgs e)
-		{
-			PopulateInstitutions();
-		}
-
-		void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-		{
-			tbSearch.Enabled = true;
-			lbInstitution.Enabled = true;
 		}
 
 		public void StartLoading()
@@ -120,6 +91,9 @@ namespace EduroamApp
 			{
 				allIdentityProviders = Downloader.Providers;
 				updateInstitutions(Downloader.GetClosestProviders(limit: 10));
+
+				tbSearch.Enabled = true;
+				lbInstitution.Enabled = true;
 			}
 			catch (EduroamAppUserError e)
 			{
