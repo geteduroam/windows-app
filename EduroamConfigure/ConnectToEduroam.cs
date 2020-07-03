@@ -22,11 +22,11 @@ namespace EduroamConfigure
 		// client certificate valid from
 		public static DateTime CertValidFrom { get; set; } // TODO: use EapAuthMethodInstaller.CertValidFrom instead
 
-		// Configuration for how to install the eduroam profile to Windows:
-
 		// Certificate stores
 		private const StoreName caStoreName = StoreName.Root; // Used to install CAs to verify server certificates with
 		private const StoreLocation caStoreLocation = StoreLocation.CurrentUser; // TODO: make this configurable to LocalMachine
+		private const StoreName interStoreName = StoreName.CertificateAuthority; // Used to install CAs to verify server certificates with
+		private const StoreLocation interStoreLocation = StoreLocation.CurrentUser; // TODO: make this configurable to LocalMachine
 		private const StoreName userCertStoreName = StoreName.My; // Used to install TLS client certificates
 		private const StoreLocation userCertStoreLocation = StoreLocation.CurrentUser;
 
@@ -203,19 +203,23 @@ namespace EduroamConfigure
 			/// <returns></returns>
 			public bool NeedsToInstallCAs()
 			{
+				// open the trusted root CA stores
 				using var rootStore = new X509Store(caStoreName, caStoreLocation);
 				rootStore.Open(OpenFlags.ReadOnly);
-				//foreach (string ca in AuthMethod.CertificateAuthorities)
-				foreach (var caCert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
+
+				foreach (var cert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
 				{
+					// if this doesn't work, try https://stackoverflow.com/a/34174890
+					bool isRootCA = cert.Subject == cert.Issuer;
+					if (!isRootCA) continue; // no prompt will be made by this cert during install
+
 					// check if CA is not already installed
-					X509Certificate2Collection matchingCerts = rootStore.Certificates.Find(
-						X509FindType.FindByThumbprint, caCert.Thumbprint, false);
-					if (matchingCerts.Count < 1)
-					{
-						return true; // user must be informed
-					}
+					var matchingCerts = rootStore.Certificates
+						.Find(X509FindType.FindByThumbprint, cert.Thumbprint, false);
+
+					if (matchingCerts.Count < 1) return true; // user must be informed
 				}
+
 				return false;
 			}
 
@@ -231,28 +235,36 @@ namespace EduroamConfigure
 				if (NeedsClientCertificate())
 					throw new EduroamAppUserError("no client certificate was provided");
 
-				// open the trusted root CA store
+				// open the trusted root CA stores
 				using var rootStore = new X509Store(caStoreName, caStoreLocation);
+				using var interStore = new X509Store(interStoreName, interStoreLocation);
 				rootStore.Open(OpenFlags.ReadWrite);
+				interStore.Open(OpenFlags.ReadWrite);
 
 				// get all CAs from Authentication method
-				foreach (var caCert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
+				foreach (var cert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
 				{
+					// if this doesn't work, try https://stackoverflow.com/a/34174890
+					bool isRootCA = cert.Subject == cert.Issuer;
+					var store = isRootCA ? rootStore : interStore;
+
 					// check if CA is not already installed
-					X509Certificate2Collection matchingCerts = rootStore.Certificates.Find(X509FindType.FindByThumbprint, caCert.Thumbprint, false);
+					var matchingCerts = store.Certificates
+						.Find(X509FindType.FindByThumbprint, cert.Thumbprint, false);
 					if (matchingCerts.Count < 1)
 					{
 						try
 						{
-							// add CA to trusted root store
-							rootStore.Add(caCert);
+							// add CA to trusted certificate store
+							store.Add(cert);
 							// ^ Will produce a popup if the certificate is not already installed
+							// There fore you should use use NeedsToInstallCAs to predict this
+							// and warn+instruct the user
 						}
 						catch (CryptographicException ex)
 						{
 							// if user selects No when prompted to install the CA
-							if ((uint)ex.HResult == 0x800704C7)
-								return false;
+							if ((uint)ex.HResult == 0x800704C7) return false;
 
 							// unknown exception
 							throw;

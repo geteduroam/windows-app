@@ -54,11 +54,13 @@ namespace EduroamConfigure
 		/// <param name="authMethod">authMethod</param>
 		/// <param name="withSsid">TODO</param>
 		/// <param name="asHs2Profile">If to install as hotspot 2.0 profile or not (separate profile from normal eap)</param>
+		/// <param name="strictMode">If the server cannot be verified, allow asking the user to allow it anyway</param>
 		/// <returns>A tuple containing the profile name and the WLANProfile XML data</returns>
 		public static ValueTuple<string, string> CreateProfileXml(
 			EapConfig.AuthenticationMethod authMethod,
 			string withSsid = null,
-			bool asHs2Profile = false)
+			bool asHs2Profile = false,
+			bool strictMode = true)
 		{
 			// Get list of SSIDs to configure into profile
 			List<string> ssids = withSsid != null
@@ -125,7 +127,9 @@ namespace EduroamConfigure
 										authMethod.ClientOuterIdentity,
 										authMethod.ServerNames,
 										authMethod.CertificateAuthoritiesAsX509Certificate2()
-											.Select(cert => cert.Thumbprint).ToList())
+											.Where(cert => cert.Subject == cert.Issuer)
+											.Select(cert => cert.Thumbprint).ToList(),
+										strictMode)
 								)
 							)
 						)
@@ -166,9 +170,10 @@ namespace EduroamConfigure
 			InnerAuthType innerAuthType,
 			string outerIdentity,
 			List<string> serverNames,
-			List<string> caThumbprints)
+			List<string> caThumbprints,
+			bool strictMode)
 		{
-			bool enableServerValidation = serverNames.Any() || caThumbprints.Any();
+			bool enableServerValidation = strictMode && (serverNames.Any() || caThumbprints.Any());
 
 			// creates the root xml strucure, with references to some of its descendants
 			XElement configElement;
@@ -320,7 +325,8 @@ namespace EduroamConfigure
 										InnerAuthType.EAP_MSCHAPv2,
 										outerIdentity,
 										serverNames, // strip server names from inner eap? remove this case altogether?
-										caThumbprints
+										caThumbprints,
+										strictMode
 									),
 								InnerAuthType.EAP_MSCHAPv2 =>
 									CreateEapConfiguration(
@@ -328,7 +334,8 @@ namespace EduroamConfigure
 										InnerAuthType.None,
 										outerIdentity,
 										new List<string>(),
-										new List<string>()
+										new List<string>(),
+										strictMode
 									),
 								_ =>
 									throw new EduroamAppUserError("unsupported auth method"),
