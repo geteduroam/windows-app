@@ -59,7 +59,7 @@ namespace EduroamApp
         public DateTime CertValidFrom { get; set; }
         public EapConfig eapConfig { get; set; }
         public int? idProviderId {get; set;}
-        public IdentityProviderDownloader Downloader { get; set; }
+        public IdentityProviderDownloader IdpDownloader { get; set; }
         public string TitleText
         {
             get => lblTitle.Text;
@@ -67,7 +67,7 @@ namespace EduroamApp
         }
         public frmParent()
         {
-            Downloader = new IdentityProviderDownloader();
+            IdpDownloader = new IdentityProviderDownloader();
             // adds formClosed listener
             FormClosed += frmParent_FormClosed;
             eapConfig = null;
@@ -249,7 +249,7 @@ namespace EduroamApp
         {
             try
             {
-                return Downloader.GetIdentityProviderProfiles(providerId);
+                return IdpDownloader.GetIdentityProviderProfiles(providerId);
             }
             catch (EduroamAppUserError)
             {
@@ -380,7 +380,7 @@ namespace EduroamApp
                     "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null; // exits function if no institution/profile selected
             };
-            IdentityProviderProfile profile = Downloader.GetProfileFromId(profileId);
+            IdentityProviderProfile profile = IdpDownloader.GetProfileFromId(profileId);
             string redirect = profile.redirect;
             // eap config file as string
             string eapString;
@@ -419,7 +419,7 @@ namespace EduroamApp
             }
             else
             {
-                eapString = Downloader.GetEapConfigString(profileId);
+                eapString = IdpDownloader.GetEapConfigString(profileId);
             }
 
             // if not empty, creates and returns EapConfig object from Eap string

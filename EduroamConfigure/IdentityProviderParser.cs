@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DuoVia.FuzzyStrings;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -9,43 +10,38 @@ namespace EduroamConfigure
 {
     public class IdentityProviderParser
     {
-
-        public static List<IdentityProvider> SortBySearch(List<IdentityProvider> providers, string searchString)
+        public static List<IdentityProvider> SortByQuery(List<IdentityProvider> providers, string searchString, int limit)
         {
-            searchString = NormalizeString(searchString);
-            // sort by prioritized criterias. first criteria most important
-            List<IdentityProvider> sortedList = providers.OrderByDescending
+            var query = NormalizeString(searchString);
+
+            // TODO: add realms/domain as possible match
+
+            // Lexically sort by prioritized criterias.
+            var sortedList = providers
                 // name contains a word equal to the exact search string
-                (p => 
-                    {
-                        foreach (string word in NormalizeString(p.Name).Split(' '))
-                        {
-                            if (string.Equals(word, searchString))
-                            {
-                                    return true;
-                            }
-                        }
-                        return false;
-                    }
+                .OrderByDescending(p => NormalizeString(p.Name).Split(' ')
+                    .Any(word => string.Equals(word, query)))
+
                 // name starts with search string
-                ).ThenByDescending(p => NormalizeString(p.Name).StartsWith(searchString)
+                .ThenByDescending(p => NormalizeString(p.Name).StartsWith(query))
+
                 // acronym for name contains searchstring
-                ).ThenByDescending(p => StringToAcronym(NormalizeString(p.Name)).Contains(searchString)
+                .ThenByDescending(p => StringToAcronym(NormalizeString(p.Name)).Contains(query))
+
                 // any word in name begins with search string
-                ).ThenByDescending(p =>
-                    {
-                         foreach (string word in NormalizeString(p.Name).Split(' '))
-                         {
-                             if (word.StartsWith(searchString))
-                             {
-                                 return true;
-                             }
-                         }
-                         return false;
-                    }
+                .ThenByDescending(p => NormalizeString(p.Name).Split(' ')
+                    .Any(word => word.StartsWith(query)))
+
                 // search string can be found somewhere in the name
-                ).ThenByDescending(p => NormalizeString(p.Name).Contains(searchString)
-            ).ToList();
+                .ThenByDescending(p => NormalizeString(p.Name).Contains(query))
+
+                // Fuzzy match string
+                .ThenByDescending(p => p.Name.FuzzyMatch(query))
+
+                // due to all of this being evaluated lazily, this is a major speedup
+                .Take(limit)
+
+                .ToList();
 
             return sortedList;
         }
