@@ -207,7 +207,6 @@ namespace EduroamApp
 			this.lblDesc.TabIndex = 19;
 			this.lblDesc.Text = "Description: ";
 			this.lblDesc.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-			this.lblDesc.Click += new System.EventHandler(this.lblDesc_Click);
 			//
 			// pnlInstName
 			//
