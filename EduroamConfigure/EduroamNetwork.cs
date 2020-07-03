@@ -23,7 +23,7 @@ namespace EduroamConfigure
         public bool IsConfigured { get => configuredProfileNames.Any(); }
 
         // State
-        private static HashSet<ValueTuple<Guid, string, bool>> configuredProfileNames
+        private readonly static HashSet<ValueTuple<Guid, string, bool>> configuredProfileNames
             = new HashSet<ValueTuple<Guid, string, bool>>(); // TODO: make this persist on disk, perhaps also use NativeWifi.EnumerateProfiles() to populate/filter it
 
         // TODO: Add support for Wired 801x

@@ -123,10 +123,8 @@ namespace EduroamConfigure
                             new XElement(nsTLS + "Username", outerIdentity),
                             new XElement(nsTLS + "UserCert", // xs:hexBinary
                                 // format fingerprint:
-                                userCertFingerprint != null
-                                    ? Regex.Replace(Regex.Replace(userCertFingerprint, " ", ""), ".{2}", "$0 ")
-                                        .ToUpperInvariant().Trim()
-                                    : ""
+                                Regex.Replace(Regex.Replace(userCertFingerprint, " ", ""), ".{2}", "$0 ")
+                                    .ToUpperInvariant().Trim()
                             )
                         )
                     ),
@@ -196,7 +194,7 @@ namespace EduroamConfigure
             var at_least_win10 = true;
             return (eapType, innerAuthType) switch
             {
-                (EapType.TLS, _) => true, // TODO: not really supported yet?
+                (EapType.TLS, _) => true,
                 (EapType.PEAP, InnerAuthType.EAP_MSCHAPv2) => true,
                 (EapType.TTLS, InnerAuthType.PAP) => true,
                 (EapType.TTLS, InnerAuthType.MSCHAP) => true, // not tested
