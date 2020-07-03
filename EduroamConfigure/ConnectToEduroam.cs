@@ -235,6 +235,8 @@ namespace EduroamConfigure
                 if (NeedsClientCertificate())
                     throw new EduroamAppUserError("no client certificate was provided");
 
+                // TODO: perhaps be nice and persist which thumbprints we have installed, and where, and provide a way to remove them
+
                 // open the trusted root CA stores
                 using var rootStore = new X509Store(caStoreName, caStoreLocation);
                 using var interStore = new X509Store(interStoreName, interStoreLocation);
