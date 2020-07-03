@@ -111,10 +111,10 @@ namespace EduroamApp
 			OpenFileDialog fileDialog = new OpenFileDialog
 			{
 				// sets the initial directory of the open file dialog
-				InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
+				//InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
 				// sets filter for file types that appear in open file dialog
 				Filter = filter, FilterIndex = 0,
-				RestoreDirectory = false,
+				RestoreDirectory = true,
 				Title = dialogTitle
 			};
 
