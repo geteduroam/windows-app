@@ -20,7 +20,6 @@ namespace EduroamApp
 		public int idProviderId; // id of selected institution
 
 
-
 		public frmSelectInstitution(frmParent parentInstance)
 		{
 			// gets parent form instance
@@ -34,19 +33,28 @@ namespace EduroamApp
 		/// </summary>
 		private async void frmSelectInstitution_Load(object sender, EventArgs e)
 		{
-			await Task.Run(PopulateInstitutions);
-
-			frmParent.BtnNextEnabled = false;
-
 			tlpLoading.BringToFront();
 			tlpLoading.Visible = true;
-
-			tbSearch.Visible = true;
-			tbSearch.Enabled = true;
 			tbSearch.ReadOnly = true;
 			tbSearch.BackColor = System.Drawing.SystemColors.Window;
-			lbInstitution.Visible = true;
-			lbInstitution.Enabled = true;
+			frmParent.BtnNextEnabled = false;
+			this.ActiveControl = lbInstitution;
+
+			await Task.Run(() => PopulateInstitutions());
+
+
+			// frmParent.BtnNextEnabled = false;
+
+			// tbSearch.Visible = true;
+			// tbSearch.Enabled = true;
+			//tbSearch.ReadOnly = true;
+			//tbSearch.BackColor = System.Drawing.SystemColors.Window;
+			//lbInstitution.Visible = true;
+			//lbInstitution.Enabled = true;
+
+			tbSearch.ReadOnly = false;
+
+			tlpLoading.Visible = false;
 
 
 			// display Eduroam logo. Applicable when returning from the Summary form and
@@ -57,7 +65,9 @@ namespace EduroamApp
 			// make user autoselect search
 			this.ActiveControl = tbSearch;
 
-			tlpLoading.Visible = false;
+			// tlpLoading.Visible = false;
+
+
 		}
 
 		public void StartLoading()
@@ -92,8 +102,7 @@ namespace EduroamApp
 				allIdentityProviders = Downloader.Providers;
 				updateInstitutions(Downloader.GetClosestProviders(limit: 10));
 
-				tbSearch.Enabled = true;
-				lbInstitution.Enabled = true;
+
 			}
 			catch (EduroamAppUserError e)
 			{
@@ -107,6 +116,7 @@ namespace EduroamApp
 		/// </summary>
 		private void updateInstitutions(List<IdentityProvider> institutions)
 		{
+			//allows changes across different threads
 			BeginInvoke(new Action(() =>
 			{
 				lbInstitution.Items.Clear();
@@ -115,7 +125,6 @@ namespace EduroamApp
 
 				lbInstitution.Items.AddRange(identityProviders.Select(provider => provider.Name).ToArray());
 
-				tbSearch.ReadOnly = false;
 			}));
 		}
 
