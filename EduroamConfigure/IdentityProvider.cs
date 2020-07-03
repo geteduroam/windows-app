@@ -6,17 +6,18 @@ namespace EduroamConfigure
 	/// <summary>
 	/// Stores geographical coordinates.
 	/// </summary>
-	public class Geo
+	public struct Geo
 	{
 		// Properties
 		public double Lon { get; set; }
 		public double Lat { get; set; }
 
-		public GeoCoordinate toGeoCoordinate()
+		public GeoCoordinate GeoCoordinate
 		{
-			return new GeoCoordinate(Lat, Lon);
+			get => new GeoCoordinate(Lat, Lon);
 		}
 	}
+
 	public class IdentityProviderProfile
 	{
 		public string Id { get; set; }
@@ -32,7 +33,7 @@ namespace EduroamConfigure
 	// Stores information found in IdentityProvider json.
 	public class IdentityProvider
 	{
-		public string Country { get; set; }
+		public string Country { get; set; } // ISO2
 		public string Name { get; set; }
 		public List<Geo> Geo { get; set; }
 		public int cat_idp { get; set; }
@@ -45,7 +46,7 @@ namespace EduroamConfigure
 			double shortestDistance = double.MaxValue;
 			foreach (Geo geo in Geo)
 			{
-				double currentDistance = geo.toGeoCoordinate().GetDistanceTo(compareCoordinate);
+				double currentDistance = geo.GeoCoordinate.GetDistanceTo(compareCoordinate);
 				// compares with shortest distance
 				if (currentDistance < shortestDistance)
 				{
@@ -55,8 +56,9 @@ namespace EduroamConfigure
 					closestGeo = geo;
 				}
 			}
-			return closestGeo.toGeoCoordinate();
+			return closestGeo.GeoCoordinate;
 		}
+
 	}
 
 }

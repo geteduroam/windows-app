@@ -14,8 +14,9 @@ namespace EduroamApp
 	public partial class frmSelectInstitution : Form
 	{
 		private readonly frmParent frmParent; // makes parent form accessible from this class
+		private IdentityProviderDownloader Downloader { get => frmParent.IdpDownloader; }
 		private List<IdentityProvider> identityProviders = new List<IdentityProvider>(); // list containing all identity providers
-		private List<IdentityProvider> allIdentityProviders;
+		private List<IdentityProvider> allIdentityProviders; // TODO: delete?
 		public int idProviderId; // id of selected institution
 		private BackgroundWorker _worker;
 
@@ -27,8 +28,6 @@ namespace EduroamApp
 			frmParent = parentInstance;
 			InitializeComponent();
 			InitWorker();
-
-
 
 		}
 
@@ -77,8 +76,6 @@ namespace EduroamApp
 			_worker.DoWork += DoWork;
 			_worker.RunWorkerCompleted += RunWorkerCompleted;
 			_worker.RunWorkerAsync();
-
-
 		}
 
 		void DoWork(object sender, DoWorkEventArgs e)
@@ -119,9 +116,8 @@ namespace EduroamApp
 		{
 			try
 			{
-				allIdentityProviders = frmParent.Downloader.Providers;
-				List<IdentityProvider> closeProviders = frmParent.Downloader.GetClosestProviders(10);
-				updateInstitutions(closeProviders);
+				allIdentityProviders = Downloader.Providers;
+				updateInstitutions(Downloader.GetClosestProviders(limit: 10));
 			}
 			catch (EduroamAppUserError e)
 			{
@@ -152,9 +148,11 @@ namespace EduroamApp
 		/// </summary>
 		private void tbSearch_TextChanged(object sender, EventArgs e)
 		{
-			List<IdentityProvider> sortedProviders = IdentityProviderParser.SortBySearch(allIdentityProviders, tbSearch.Text);
-			updateInstitutions(sortedProviders);
-
+			updateInstitutions(
+				IdentityProviderParser.SortByQuery(
+					allIdentityProviders,
+					tbSearch.Text,
+					limit: 100));
 		}
 
 
@@ -163,10 +161,12 @@ namespace EduroamApp
 			// if user clicks on empty area of the listbox it will cause event but no item is selected
 			if (lbInstitution.SelectedItem == null) return;
 			// select provider ID based on chosen profile name
-			idProviderId = identityProviders.Where(x => x.Name == (string) lbInstitution.SelectedItem).Select(x => x.cat_idp).First();
+			idProviderId = identityProviders
+				.Where(x => x.Name == (string)lbInstitution.SelectedItem)
+				.Select(x => x.cat_idp)
+				.First();
 
 			frmParent.BtnNextEnabled = true;
-
 		}
 
 		private void lbInstitution_DoubleClick(object sender, EventArgs e)
@@ -182,8 +182,8 @@ namespace EduroamApp
 		private void EduroamAppExceptionHandler(EduroamAppUserError ex)
 		{
 			MessageBox.Show(ex.UserFacingMessage,
-					"eduroam - Web exception",
-					MessageBoxButtons.OK, MessageBoxIcon.Error);
+				"eduroam - Web exception",
+				MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
 
