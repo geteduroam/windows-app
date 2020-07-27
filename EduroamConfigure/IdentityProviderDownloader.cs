@@ -26,6 +26,8 @@ namespace EduroamConfigure
 		/// The constructor for this class.
 		/// Will download the list of all providers
 		/// </summary>
+		/// <exception cref="ApiUnreachableException">description</exception>
+		/// <exception cref="ApiParsingException">description</exception>
 		public IdentityProviderDownloader()
 		{
 			GeoWatcher = new GeoCoordinateWatcher();
@@ -51,7 +53,8 @@ namespace EduroamConfigure
 		/// Fetches discovery data from geteduroam
 		/// </summary>
 		/// <returns>DiscoveryApi object with the ata fetched</returns>
-		/// <exception cref="EduroamAppUserError">description</exception>
+		/// <exception cref="ApiUnreachableException">description</exception>
+		/// <exception cref="ApiParsingException">description</exception>
 		private static DiscoveryApi DownloadDiscoveryApi()
 		{
 			try
@@ -64,11 +67,11 @@ namespace EduroamConfigure
 			}
 			catch (WebException ex)
 			{
-				throw new EduroamAppUserError("providers download error", WebExceptionToString(ex));
+				throw new ApiUnreachableException($"Api for discovering Identity providers could not be reached. {ProviderApiUrl}", ex);
 			}
 			catch (JsonReaderException ex)
 			{
-				throw new EduroamAppUserError("providers download error", JsonExceptionToString(ex));
+				throw new ApiParsingException($"Api for discovering Identity providers could not be parsed. {ProviderApiUrl}", ex);
 			}
 		}
 
@@ -83,11 +86,11 @@ namespace EduroamConfigure
 			}
 			catch (WebException ex)
 			{
-				throw new EduroamAppUserError("location download error", WebExceptionToString(ex));
+				throw new EduroamAppUserError("GeoApi download error", WebExceptionToString(ex));
 			}
 			catch (JsonReaderException ex)
 			{
-				throw new EduroamAppUserError("location download error", JsonExceptionToString(ex));
+				throw new EduroamAppUserError("GeoApi parsing error", JsonExceptionToString(ex));
 			}
 		}
 
@@ -117,15 +120,22 @@ namespace EduroamConfigure
 		public List<IdentityProvider> GetClosestProviders(int limit)
 		{
 			// find all providers in current country
-			string closestCountryCode = GetCurrentLocationFromGeoApi().Country;
-			var userCoords = GetCoordinates();
+			try
+			{
+				string closestCountryCode = GetCurrentLocationFromGeoApi().Country;
+				var userCoords = GetCoordinates();
 
-			// sort and return n closest
-			return Providers
-				.Where(p => p.Country == closestCountryCode)
-				.OrderBy(p => userCoords.GetDistanceTo(p.GetClosestGeoCoordinate(userCoords)))
-				.Take(limit)
-				.ToList();
+				// sort and return n closest
+				return Providers
+					.Where(p => p.Country == closestCountryCode)
+					.OrderBy(p => userCoords.GetDistanceTo(p.GetClosestGeoCoordinate(userCoords)))
+					.Take(limit)
+					.ToList();
+			}
+			catch (EduroamAppUserError e)
+			{
+				return Providers;
+			}
 		}
 
 		private static GeoCoordinate DownloadCoordinates()

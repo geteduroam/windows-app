@@ -83,11 +83,15 @@ namespace EduroamApp
 				IdpDownloader = new IdentityProviderDownloader();
 				Online = true;
 			}
-			catch (EduroamAppUserError e)
+			catch (ApiUnreachableException ex)
 			{
 				Online = false;
 			}
-			// IdpDownloader = new IdentityProviderDownloader();
+			catch (ApiParsingException ex)
+			{
+
+			}
+
 			// adds formClosed listener
 			FormClosed += frmParent_FormClosed;
 			eapConfig = null;
