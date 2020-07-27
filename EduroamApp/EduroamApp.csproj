@@ -114,6 +114,12 @@
   <ItemGroup>
     <Compile Include="Classes\FileDialog.cs" />
     <Compile Include="Classes\ImageFunctions.cs" />
+    <Compile Include="Classes\HintTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Classes\PasswordTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Forms\frmSelectProfile.cs">
       <SubType>Form</SubType>
     </Compile>
