@@ -36,6 +36,16 @@ namespace EduroamApp
             {
                 btnExisting.Visible = false;
             }
+
+            // if no internet
+            if (!frmParent.Online)
+            {
+                btnExisting.Enabled = false;
+                btnNewProfile.Enabled = false;
+                btnLocalProfile.Enabled = false;
+                frmParent.TitleText = "Offline";
+                label1.Text = "You are currently offline.\nPlease connect to the internet and restart this application.";
+            }
         }
 
 
