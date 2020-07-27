@@ -12,8 +12,6 @@ namespace EduroamApp
 	{
 		private readonly frmParent frmParent;
 		private readonly EapConfig.AuthenticationMethod authMethod;
-		private bool usernameDefault = true;
-		private bool passwordDefault = true;
 		private bool passwordSet;
 		private bool usernameValid = false;
 		private string realm;
@@ -47,11 +45,9 @@ namespace EduroamApp
 			lblRules.Visible = true;
 			frmParent.BtnNextEnabled = false;
 			// shows helping (placeholder) text by default
-			txtUsername.Text = "Username";
-			txtUsername.ForeColor = SystemColors.GrayText;
-			txtPassword.Text = "Password";
-			txtPassword.ForeColor = SystemColors.GrayText;
-			txtPassword.UseSystemPasswordChar = false;
+
+			txtUsername.Hint = "Username";
+			txtPassword.Hint = "Password";
 
 			if (!string.IsNullOrEmpty(frmParent.InstId))
 			{
@@ -70,48 +66,12 @@ namespace EduroamApp
 
 		}
 
-		// removes helping text when field is in focus
-		private void txtUsername_Enter(object sender, EventArgs e)
-		{
-			if (txtUsername.Text == "Username" && usernameDefault)
-			{
-				txtUsername.Text = "";
-				txtUsername.ForeColor = SystemColors.ControlText;
-				usernameDefault = false;
-			}
-		}
-
-		// removes helping text when field is in focus
-		private void txtPassword_Enter(object sender, EventArgs e)
-		{
-			if (txtPassword.Text == "Password" && passwordDefault)
-			{
-				ignorePassChange = true;
-				txtPassword.Text = "";
-				txtPassword.ForeColor = SystemColors.ControlText;
-				//txtPassword.UseSystemPasswordChar = true;
-				txtPassword.PasswordChar = '*';
-				passwordDefault = false;
-			}
-		}
 
 		// shows helping text when field loses focus and is empty
 		private void txtUsername_Leave(object sender, EventArgs e)
 		{
 			lblRules.Visible = true;
-			if (txtUsername.Text == "")
-			{
-				usernameDefault = true;
-				txtUsername.Text = "Username";
-				txtUsername.ForeColor = SystemColors.GrayText;
-				lblRules.Text = "";
-			}
-			else
-			{
-				usernameDefault = false;
-			}
-
-			if (!txtUsername.Text.Contains('@') && !string.IsNullOrEmpty(realm) && !usernameDefault)
+			if (!txtUsername.Text.Contains('@') && !string.IsNullOrEmpty(realm) && !txtUsername.HintActive)
 			{
 				lblInst.Visible = true;
 			}
@@ -121,7 +81,7 @@ namespace EduroamApp
 		public bool ValidateFields()
 		{
 			string username = txtUsername.Text;
-			if ((username == "Username" && usernameDefault) || username == "" )
+			if (txtUsername.HintActive || username == "" )
 			{
 				usernameValid = false;
 				lblRules.Text = "";
@@ -141,16 +101,12 @@ namespace EduroamApp
 			string brokenRules = IdentityProviderParser.GetBrokenRules(username, realm, hint);
 			usernameValid = string.IsNullOrEmpty(brokenRules);
 			lblRules.Text = "";
-			if (!usernameValid && !usernameDefault)
+			if (!usernameValid && !txtUsername.HintActive)
 			{
 				lblRules.Text = brokenRules;
 			}
-			else
-			{
-				lblRules.Text = "";
-			}
 
-			frmParent.BtnNextEnabled = passwordSet || connected;
+			frmParent.BtnNextEnabled = (passwordSet && usernameValid) || connected;
 			return (passwordSet && usernameValid) || connected;
 		}
 
@@ -168,24 +124,6 @@ namespace EduroamApp
 			lblRules.Visible = true;
 		}
 
-
-		// shows helping text when field loses focus and is empty
-		private void txtPassword_Leave(object sender, EventArgs e)
-		{
-
-			if (string.IsNullOrEmpty(txtPassword.Text))
-			{
-				passwordDefault = true;
-				txtPassword.ForeColor = SystemColors.GrayText;
-				txtPassword.PasswordChar = '\0';
-				ignorePassChange = true;
-				txtPassword.Text = "Password";
-			}
-			else
-			{
-				passwordDefault = false;
-			}
-		}
 
 		public void ConnectWithLogin()
 		{
@@ -224,12 +162,11 @@ namespace EduroamApp
 		{
 			pbxStatus.Visible = false;
 			lblStatus.Visible = false;
-			if (ignorePassChange == true)
+			if (txtPassword.IgnoreChange == true)
 			{
-				ignorePassChange = false;
 				return;
 			}
-			passwordSet = !string.IsNullOrEmpty(txtPassword.Text) && !passwordDefault && txtPassword.ContainsFocus;
+			passwordSet = !string.IsNullOrEmpty(txtPassword.Text) && !txtUsername.HintActive && txtPassword.ContainsFocus;
 			ValidateFields();
 		}
 

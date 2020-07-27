@@ -29,8 +29,8 @@ namespace EduroamApp
 		private void InitializeComponent()
 		{
 			this.label1 = new System.Windows.Forms.Label();
-			this.txtUsername = new System.Windows.Forms.TextBox();
-			this.txtPassword = new System.Windows.Forms.TextBox();
+			this.txtUsername = new HintTextBox();
+			this.txtPassword = new PasswordTextBox();
 			this.lblInst = new System.Windows.Forms.Label();
 			this.lblRules = new System.Windows.Forms.Label();
 			this.panel1 = new System.Windows.Forms.Panel();
@@ -67,9 +67,8 @@ namespace EduroamApp
 			this.txtUsername.Name = "txtUsername";
 			this.txtUsername.Size = new System.Drawing.Size(197, 26);
 			this.txtUsername.TabIndex = 1;
-			this.txtUsername.Text = "Username";
+			this.txtUsername.Text = "";
 			this.txtUsername.TextChanged += new System.EventHandler(this.txtUsername_TextChanged);
-			this.txtUsername.Enter += new System.EventHandler(this.txtUsername_Enter);
 			this.txtUsername.Leave += new System.EventHandler(this.txtUsername_Leave);
 			//
 			// txtPassword
@@ -80,10 +79,8 @@ namespace EduroamApp
 			this.txtPassword.Name = "txtPassword";
 			this.txtPassword.Size = new System.Drawing.Size(197, 26);
 			this.txtPassword.TabIndex = 2;
-			this.txtPassword.Text = "Password";
+			this.txtPassword.Text = "";
 			this.txtPassword.TextChanged += new System.EventHandler(this.txtPassword_TextChanged);
-			this.txtPassword.Enter += new System.EventHandler(this.txtPassword_Enter);
-			this.txtPassword.Leave += new System.EventHandler(this.txtPassword_Leave);
 			//
 			// lblInst
 			//
@@ -258,8 +255,8 @@ namespace EduroamApp
 		#endregion
 
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox txtUsername;
-		private System.Windows.Forms.TextBox txtPassword;
+		private HintTextBox txtUsername;
+		private PasswordTextBox txtPassword;
 		private System.Windows.Forms.Label lblInst;
 		private System.Windows.Forms.Label lblRules;
 		private System.Windows.Forms.Panel panel1;
