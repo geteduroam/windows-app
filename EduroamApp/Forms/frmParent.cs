@@ -1,17 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
-using System.Device.Location;
 using System.Xml;
 using EduroamConfigure;
 using System.Threading.Tasks;
 using ManagedNativeWifi;
 
-using Image = System.Drawing.Image;
 
 namespace EduroamApp
 {
@@ -57,18 +54,14 @@ namespace EduroamApp
         private frmRedirect frmRedirect;
 
         // public variables to be used across forms
-        public GeoCoordinateWatcher GeoWatcher { get; set; }
         public EapConfig.AuthenticationMethod AuthMethod; // installed authmethod in EAP config
         public string InstId { get; set; }
         public ProfileStatus ProfileCondition { get; set; }
         public string RedirectUrl { get; set; }
         public bool ComesFromSelfExtract { get; set; }
         public bool SelfExtractFlag { get; set; }
-        public bool SelectAlternative { get; set; }
         public bool EduroamAvailable { get; set; }
-        public DateTime CertValidFrom { get; set; }
         public EapConfig eapConfig { get; set; }
-        public int? idProviderId {get; set; }
         public bool Online { get; set; }
         public IdentityProviderDownloader IdpDownloader { get; set; }
         public string TitleText
@@ -113,8 +106,6 @@ namespace EduroamApp
                 SelfExtractFlag = true;
                 // reset web logo or else it won't load
                 ResetLogo();
-                // if no internet connection show SelectMethod instead of going directly to the summary
-
                 // loads summary form so user can confirm installation
                 LoadFrmSummary();
             }
@@ -163,15 +154,7 @@ namespace EduroamApp
             switch (currentFormId)
             {
                 // next form depends on EAP type of selected config
-                case FormId.Summary:
-                    if (SelectAlternative) // if user has config from self extract but wants to select another inst
-                    {
-                        ResetLogo();
-                        WebEduroamLogo.Visible = true;
-                        LoadFrmSelectMethod();
-                        break;
-                    }
-                    
+                case FormId.Summary:                    
                     ConnectToEduroam.RemoveAllProfiles();
                     ProfileCondition = frmParent.ProfileStatus.NoneConfigured;
 
@@ -297,7 +280,6 @@ namespace EduroamApp
 
             try
             {
-                //eapConfig = await Task.Run(() => DownloadEapConfig(profileId)); 
                 eapConfig = DownloadEapConfig(profileId);
             }
             catch (EduroamAppUserError ex) // TODO: register this in some higher level
@@ -319,7 +301,7 @@ namespace EduroamApp
             return;
         }
 
-        private void btnBack_Click(object sender, EventArgs e)
+        public void btnBack_Click(object sender, EventArgs e)
         {
             // reuses existing instances of forms when going backwards
             reload = false;
@@ -342,7 +324,6 @@ namespace EduroamApp
                     break;
 
                 case FormId.SelectInstitution:
-                    idProviderId = null;
                     LoadFrmSelectInstitution();
                     break;
                 case FormId.SelectProfile:
@@ -580,7 +561,7 @@ namespace EduroamApp
         /// </summary>
         public void LoadFrmSummary()
         {
-           frmSummary = new frmSummary(this, eapConfig);
+            frmSummary = new frmSummary(this, eapConfig);
 
             currentFormId = FormId.Summary;
             // changes controls depending on where the summary form is called from
@@ -613,6 +594,8 @@ namespace EduroamApp
             lblTitle.Text = "Connect to eduroam";
             btnNext.Visible = false;
             btnBack.Visible = false;
+            ResetLogo();
+            WebEduroamLogo.Visible = true;
             LoadNewForm(frmSelectMethod);
         }
 
