@@ -68,7 +68,8 @@ namespace EduroamApp
 		public bool EduroamAvailable { get; set; }
 		public DateTime CertValidFrom { get; set; }
 		public EapConfig eapConfig { get; set; }
-		public int? idProviderId {get; set;}
+		public int? idProviderId {get; set; }
+		public bool Online { get; set; }
 		public IdentityProviderDownloader IdpDownloader { get; set; }
 		public string TitleText
 		{
@@ -77,7 +78,16 @@ namespace EduroamApp
 		}
 		public frmParent()
 		{
-			IdpDownloader = new IdentityProviderDownloader();
+			try
+			{
+				IdpDownloader = new IdentityProviderDownloader();
+				Online = true;
+			}
+			catch (EduroamAppUserError e)
+			{
+				Online = false;
+			}
+			// IdpDownloader = new IdentityProviderDownloader();
 			// adds formClosed listener
 			FormClosed += frmParent_FormClosed;
 			eapConfig = null;
@@ -103,8 +113,16 @@ namespace EduroamApp
 				SelfExtractFlag = true;
 				// reset web logo or else it won't load
 				ResetLogo();
-				// loads summary form so user can confirm installation
-				LoadFrmSummary();
+				// if no internet connection show SelectMethod instead of going directly to the summary
+				if (Online)
+				{
+					// loads summary form so user can confirm installation
+					LoadFrmSummary();
+				}
+				else
+				{
+					LoadFrmSelectMethod();
+				}
 			}
 			else
 			{
