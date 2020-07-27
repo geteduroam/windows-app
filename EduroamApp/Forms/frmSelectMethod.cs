@@ -40,11 +40,13 @@ namespace EduroamApp
 			// if no internet
 			if (!frmParent.Online)
 			{
-				btnExisting.Enabled = false;
+				//btnExisting.Enabled = false;
 				btnNewProfile.Enabled = false;
-				btnLocalProfile.Enabled = false;
+				//btnLocalProfile.Enabled = false;
 				frmParent.TitleText = "Offline";
-				label1.Text = "You seem to be offline or the Eduroam servers are unreachable. Please ensure that you have an internet connection and restart this application";
+				label1.Text = "Eduroam servers are unreachable. You can still attempt to use a local config file. " +
+					"Please ensure that you have an internet connection and restart this application in order to connect without a local profile";
+
 			}
 		}
 

@@ -19,8 +19,16 @@ namespace EduroamConfigure
 #endif
 		}
 	}
+	public class ApiException : Exception
+	{
+		private static readonly string DefaultMessage = "Error with Api";
 
-	public class ApiUnreachableException : Exception
+		public ApiException() : base(DefaultMessage) { }
+		public ApiException(string message) : base(message) { }
+		public ApiException(string message, System.Exception innerException) : base(message, innerException) { }
+	}
+
+	public class ApiUnreachableException : ApiException
 	{
 		private static readonly string DefaultMessage = "Api could not be reached";
 
