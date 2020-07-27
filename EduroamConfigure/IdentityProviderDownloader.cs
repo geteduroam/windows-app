@@ -18,6 +18,7 @@ namespace EduroamConfigure
 		public List<IdentityProvider> Providers { get; }
 		private GeoCoordinateWatcher GeoWatcher { get; }
 
+
 		/// <summary>
 		/// The constructor for this class.
 		/// Will download the list of all providers
@@ -41,7 +42,6 @@ namespace EduroamConfigure
 			}
 			return DownloadCoordinates();
 		}
-
 
 		/// <summary>
 		/// Fetches discovery data from geteduroam
@@ -175,7 +175,7 @@ namespace EduroamConfigure
 		private static string DownloadUrlAsString(string url)
 		{
 			// download json file from url as string
-			using var client = new WebClient();
+			using var client = new WebClientWithTimeout();
 			client.Encoding = Encoding.UTF8;
 
 			return client.DownloadString(url);
@@ -209,6 +209,19 @@ namespace EduroamConfigure
 				"Exception: " + ex.Message;
 		}
 
+		/// <summary>
+		/// WebClient with support for timeouts
+		/// </summary>
+		private class WebClientWithTimeout : WebClient
+		{
+			public int Timeout = 3000; // ms
+			protected override WebRequest GetWebRequest(Uri uri)
+			{
+				WebRequest w = base.GetWebRequest(uri);
+				w.Timeout = Timeout; // TODO: test
+				return w;
+			}
+		}
 	}
 
 }
