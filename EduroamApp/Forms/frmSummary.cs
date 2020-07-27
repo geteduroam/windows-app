@@ -124,9 +124,6 @@ namespace EduroamApp
 				btnSelectInst.Visible = false;
 			}
 
-			// sets flag
-			frmParent.SelectAlternative = false;
-
 			// gets institution logo encoded to base64
 			byte[] logoBytes = eapConfig.InstitutionInfo.LogoData;
 			string logoMimeType = eapConfig.InstitutionInfo.LogoMimeType;
@@ -330,10 +327,8 @@ namespace EduroamApp
 
 		private void btnSelectInst_Click(object sender, EventArgs e)
 		{
-			// sets variable to signal that user wants to select another method
-			frmParent.SelectAlternative = true;
-			// calls button listener in parent form
-			frmParent.btnNext_Click(sender, e);
+			// go to 'main menu'
+			frmParent.LoadFrmSelectMethod();
 		}
 
 	}
