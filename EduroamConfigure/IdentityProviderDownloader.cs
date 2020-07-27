@@ -5,6 +5,7 @@ using System.Net;
 using Newtonsoft.Json;
 using System.Linq;
 using System.Device.Location;
+using System.Globalization;
 
 namespace EduroamConfigure
 {
@@ -75,7 +76,8 @@ namespace EduroamConfigure
             }
         }
 
-        /// <exception cref="EduroamAppUserError">description</exception>
+        /// <exception cref="ApiUnreachableException">description</exception>
+        /// <exception cref="ApiParsingException">description</exception>
         private static Location GetCurrentLocationFromGeoApi()
         {
             try
@@ -86,11 +88,11 @@ namespace EduroamConfigure
             }
             catch (WebException ex)
             {
-                throw new EduroamAppUserError("GeoApi download error", WebExceptionToString(ex));
+                throw new ApiUnreachableException("GeoApi download error", ex);
             }
             catch (JsonReaderException ex)
             {
-                throw new EduroamAppUserError("GeoApi parsing error", JsonExceptionToString(ex));
+                throw new ApiParsingException("GeoApi parsing error", ex);
             }
         }
 
@@ -119,10 +121,28 @@ namespace EduroamConfigure
         /// <param name="limit">number of providers to return</param>
         public List<IdentityProvider> GetClosestProviders(int limit)
         {
-            // find all providers in current country
+            // find country code
+            string closestCountryCode;
             try
             {
-                string closestCountryCode = GetCurrentLocationFromGeoApi().Country;
+                // find country code from api
+                closestCountryCode = GetCurrentLocationFromGeoApi().Country;
+            }
+            catch (ApiUnreachableException)
+            {
+                // gets country code as set in Settings
+                // https://stackoverflow.com/questions/8879259/get-current-location-as-specified-in-region-and-language-in-c-sharp
+                var regKeyGeoId = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Control Panel\International\Geo");
+                var geoID = (string)regKeyGeoId.GetValue("Nation");
+                var allRegions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.ToString()));
+                var regionInfo = allRegions.FirstOrDefault(r => r.GeoId == Int32.Parse(geoID));
+
+                closestCountryCode = regionInfo.TwoLetterISORegionName;
+            }
+
+
+            try
+            {
                 var userCoords = GetCoordinates();
 
                 // sort and return n closest
@@ -132,9 +152,12 @@ namespace EduroamConfigure
                     .Take(limit)
                     .ToList();
             }
-            catch (EduroamAppUserError e)
+            catch (ApiUnreachableException)
             {
-                return Providers;
+                return Providers
+                   .Where(p => p.Country == closestCountryCode)
+                   .Take(limit)
+                   .ToList();
             }
         }
 

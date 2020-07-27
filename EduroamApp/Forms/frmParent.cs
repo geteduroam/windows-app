@@ -83,14 +83,11 @@ namespace EduroamApp
                 IdpDownloader = new IdentityProviderDownloader();
                 Online = true;
             }
-            catch (ApiUnreachableException ex)
-            {
-                Online = false;
-            }
-            catch (ApiParsingException ex)
+            catch (ApiException ex)
             {
 
             }
+
 
             // adds formClosed listener
             FormClosed += frmParent_FormClosed;
@@ -107,7 +104,6 @@ namespace EduroamApp
             Icon = Properties.Resources.geteduroam;
             this.ShowInTaskbar = true;
 
-
             // checks if file came with self extract
             eapConfig = GetSelfExtractingEap();
             if (eapConfig != null)
@@ -118,15 +114,9 @@ namespace EduroamApp
                 // reset web logo or else it won't load
                 ResetLogo();
                 // if no internet connection show SelectMethod instead of going directly to the summary
-                if (Online)
-                {
-                    // loads summary form so user can confirm installation
-                    LoadFrmSummary();
-                }
-                else
-                {
-                    LoadFrmSelectMethod();
-                }
+
+                // loads summary form so user can confirm installation
+                LoadFrmSummary();
             }
             else
             {

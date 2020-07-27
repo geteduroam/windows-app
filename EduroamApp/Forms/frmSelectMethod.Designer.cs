@@ -36,10 +36,10 @@
             // 
             // label1
             // 
-            this.label1.Location = new System.Drawing.Point(54, 47);
+            this.label1.Location = new System.Drawing.Point(55, 9);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(405, 63);
+            this.label1.Size = new System.Drawing.Size(405, 108);
             this.label1.TabIndex = 2;
             this.label1.Text = "Connect to quickly gain access to eduroam.\r\nIf you have previously downloaded a e" +
     "ap-config file from your institution  you can use this instead";
