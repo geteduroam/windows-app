@@ -44,7 +44,7 @@ namespace EduroamApp
                 btnNewProfile.Enabled = false;
                 btnLocalProfile.Enabled = false;
                 frmParent.TitleText = "Offline";
-                label1.Text = "You are currently offline.\nPlease connect to the internet and restart this application.";
+                label1.Text = "You seem to be offline or the Eduroam servers are unreachable. Please ensure that you have an internet connection and restart this application";
             }
         }
 
