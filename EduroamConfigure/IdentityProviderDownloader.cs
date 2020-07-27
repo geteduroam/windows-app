@@ -12,7 +12,11 @@ namespace EduroamConfigure
 	{
 		// constants
 		private const string GeoApiUrl = "https://geo.geteduroam.app/geoip";
-		private const string ProviderApiUrl = "https://discovery.geteduroam.no/v1/discovery.json";
+#if DEBUG
+		private const string ProviderApiUrl = "https://discovery.eduroam.app/v1/discovery.json";
+#else
+		private const string ProviderApiUrl = "https://discovery.geteduroam.app/v1/discovery.json";
+#endif
 
 		// state
 		public List<IdentityProvider> Providers { get; }
