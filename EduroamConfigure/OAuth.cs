@@ -175,16 +175,6 @@ namespace EduroamConfigure
 			}
 		}
 
-		/// <summary>
-		/// Downloads web page content as a string.
-		/// </summary>
-		/// <param name="url">Url to download from.</param>
-		/// <returns>Web page content.</returns>
-		public static string GetStringFromUrl(string url)
-		{
-			using var client = new WebClient();
-			return client.DownloadString(url);
-		}
 
 		/// <summary>
 		/// Upload form and return data as a string.
@@ -198,27 +188,6 @@ namespace EduroamConfigure
 			return Encoding.UTF8.GetString(client.UploadValues(url, "POST", data));
 		}
 
-		/// <summary>
-		/// Extracts base64 string from html and decodes it to get json with authorization endpoints.
-		/// </summary>
-		/// <param name="html">HTML containing authorization endpoints.</param>
-		/// <returns>Json with authorization endpoints.</returns>
-		private static string GetBase64AndDecode(string html)
-		{
-			const string beginString = "-----BEGIN LETSWIFI BLOCK-----";
-			const string endString = "-----END LETSWIFI BLOCK-----";
-			int indexOfBegin = html.IndexOf(beginString, StringComparison.Ordinal) + beginString.Length;
-			int indexOfEnd = html.LastIndexOf(endString, StringComparison.Ordinal);
-
-			if (indexOfBegin > 0 && indexOfEnd > 0)
-			{
-				string substring = html.Substring(indexOfBegin, indexOfEnd - indexOfBegin);
-				byte[] data = Convert.FromBase64String(substring);
-				string decodedString = Encoding.UTF8.GetString(data).Replace(@"\", "");
-				return decodedString;
-			}
-			return "";
-		}
 
 		/// <summary>
 		/// Generates a random code challenge base to use for the code challenge.

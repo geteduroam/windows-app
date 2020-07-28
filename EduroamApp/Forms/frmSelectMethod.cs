@@ -84,10 +84,6 @@ namespace EduroamApp
 			frmParent.btnNext_Click(sender, e);
 		}
 
-		private void label1_Click(object sender, EventArgs e)
-		{
-
-		}
 
 		private void btnExisting_Click(object sender, EventArgs e)
 		{

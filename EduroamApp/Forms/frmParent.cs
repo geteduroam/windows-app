@@ -197,7 +197,6 @@ namespace EduroamApp
 
 				// next form depends on radio button selection
 				case FormId.SelectMethod:
-					// SelfExtractFlag = false;
 					if (frmSelectMethod.NewProfile) LoadFrmSelectInstitution();
 					else
 					{

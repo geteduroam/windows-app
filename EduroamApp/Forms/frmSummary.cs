@@ -166,21 +166,6 @@ namespace EduroamApp
 				}
 			}
 
-			/*if (frmParent.SelfExtractFlag)
-			{
-				frmParent.BtnBackVisible = false;
-			}
-			else
-			{
-				frmParent.BtnBackVisible = true;
-			}
-
-			// frmParent.BtnNextEnabled = false;
-
-			frmParent.BtnNext.Text = eapConfig.AuthenticationMethods.First().EapType == EduroamConfigure.EapType.TLS ? "Connect" : "Next >";
-
-			frmParent.TitleText = eapConfig.InstitutionInfo.DisplayName;*/
-
 			this.Show();
 
 
