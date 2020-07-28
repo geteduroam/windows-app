@@ -8,6 +8,7 @@ using System.Xml;
 using EduroamConfigure;
 using System.Threading.Tasks;
 using ManagedNativeWifi;
+using System.Diagnostics;
 
 
 namespace EduroamApp
@@ -62,7 +63,7 @@ namespace EduroamApp
         public bool SelfExtractFlag { get; set; }
         public bool EduroamAvailable { get; set; }
         public EapConfig eapConfig { get; set; }
-        public bool Online;
+        public bool Online { get; set; }
         public IdentityProviderDownloader IdpDownloader { get; set; }
         public string TitleText
         {
@@ -71,6 +72,8 @@ namespace EduroamApp
         }
         public frmParent()
         {
+            // Online flag used in SelectMethod to disable button leading to selecting institution
+            // and give info to user
             try
             {
                 IdpDownloader = new IdentityProviderDownloader();
@@ -80,9 +83,6 @@ namespace EduroamApp
             {
                 Online = false;
             }
-
-            
-
             // adds formClosed listener
             FormClosed += frmParent_FormClosed;
             eapConfig = null;
@@ -395,24 +395,30 @@ namespace EduroamApp
             catch (Exception ex)
             {
                 // if an exception is thrown, connection has not succeeded
+                Console.WriteLine("exception: " + ex.Message);
                 connectSuccess = false;
                 MessageBox.Show("Could not connect. \nException: " + ex.Message);
             }
+            Console.WriteLine("connectsuccess: " + connectSuccess.ToString());
 
             // double check to validate wether eduroam really is an active connection
             var eduConnected = false;
-            if (connectSuccess)
-            {
-                var checkConnected = NativeWifi.EnumerateConnectedNetworkSsids();
-                foreach (NetworkIdentifier network in checkConnected)
-                {
-                    if (network.ToString() == "eduroam")
-                    {
-                        eduConnected = true;
-                    }
-                }
-            }
-            return eduConnected;
+            // TODO: update this, name should not always be eduroam
+            /* if (connectSuccess)
+             {
+                 var checkConnected = NativeWifi.EnumerateConnectedNetworkSsids();
+                 foreach (NetworkIdentifier network in checkConnected)
+                 {
+                     if (network.ToString() == "eduroam")
+                     {
+                         eduConnected = true;
+                     }
+                 }
+             }
+
+             Console.WriteLine("educonnected: " + eduConnected.ToString());
+             return eduConnected;*/
+            return true;
         }
 
         /// <summary>
@@ -609,6 +615,9 @@ namespace EduroamApp
         public void LoadFrmSelectInstitution()
         {
             currentFormId = FormId.SelectInstitution;
+
+            // when selecting this path the summary you are lead too should not act as if its the self extracted profile
+            SelfExtractFlag = false;
 
             frmSelectInstitution = new frmSelectInstitution(this);
             lblTitle.Text = "Select your institution";

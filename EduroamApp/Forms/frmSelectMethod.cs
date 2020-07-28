@@ -60,7 +60,8 @@ namespace EduroamApp
             if (!frmParent.Online)
             {
                 BtnNewProfileEnabled = false;
-                label1.Text = "Could not reach geteduroam services. Either the servers are down or you are offline. You can still use local files or already configured profiles." +
+                label1.Text = "Could not reach geteduroam services. Either the servers are down or you are offline. " +
+                    "You can still use local files or already configured profiles." +
                     "Otherwise, connect to the internet and restart this application. ";
             }
             else
