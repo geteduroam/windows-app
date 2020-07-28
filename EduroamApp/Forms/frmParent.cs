@@ -9,7 +9,7 @@ using EduroamConfigure;
 using System.Threading.Tasks;
 using ManagedNativeWifi;
 using System.Diagnostics;
-
+using System.Timers;
 
 namespace EduroamApp
 {
@@ -53,6 +53,7 @@ namespace EduroamApp
         private frmConnect frmConnect;
         private frmLogin frmLogin;
         private frmRedirect frmRedirect;
+        private static System.Timers.Timer timer;
 
         // public variables to be used across forms
         public EapConfig.AuthenticationMethod AuthMethod; // installed authmethod in EAP config
@@ -276,7 +277,10 @@ namespace EduroamApp
         // user selecting a profile or a profile being autoselected
         private void HandleProfileSelect(string profileId)
         {
-
+            // forcefully disable next button so you cant spam it and skip over summary
+            BtnNextEnabled = false;
+            BtnNext.Refresh();
+            Application.DoEvents();
             // TODO: remove this, i dont think this should happen anymore? buttons are disabled if nothing is selected
             if (string.IsNullOrEmpty(profileId))
             {
@@ -305,7 +309,26 @@ namespace EduroamApp
                 // TODO: add option to go to selectmethod from redirect
                 LoadFrmRedirect();
             }
+            //SetTimer();
             return;
+        }
+
+       
+        private void SetTimer()
+        {
+            timer = new System.Timers.Timer(100);
+            timer.Elapsed += OnTimedEvent;
+            timer.Enabled = true;
+        }
+
+        // called by timer to enable next button a short while after Summary is loaded
+        private void OnTimedEvent(Object source, ElapsedEventArgs e)
+        {
+            this.Invoke((MethodInvoker)delegate {
+                BtnNextEnabled = true;
+            });
+            timer.Enabled = false;
+
         }
 
         public void btnBack_Click(object sender, EventArgs e)
@@ -322,6 +345,7 @@ namespace EduroamApp
                     {
                         eapConfig = GetSelfExtractingEap();
                     }
+                    BtnNextEnabled = true;
                     LoadFrmSummary();
                     break;
                 case FormId.SelectMethod:
@@ -402,7 +426,7 @@ namespace EduroamApp
             Console.WriteLine("connectsuccess: " + connectSuccess.ToString());
 
             // double check to validate wether eduroam really is an active connection
-            var eduConnected = false;
+            //var eduConnected = false;
             // TODO: update this, name should not always be eduroam
             /* if (connectSuccess)
              {
@@ -575,7 +599,6 @@ namespace EduroamApp
         public void LoadFrmSummary()
         {
             frmSummary = new frmSummary(this, eapConfig);
-
             currentFormId = FormId.Summary;
             // changes controls depending on where the summary form is called from
             lblTitle.Text = eapConfig.InstitutionInfo.DisplayName;
@@ -589,11 +612,11 @@ namespace EduroamApp
             }
 
 
-            BtnNextEnabled = true;
             btnNext.Visible = true;
 
             btnNext.Text = eapConfig.AuthenticationMethods.First().EapType == EduroamConfigure.EapType.TLS ? "Connect" : "Next >";
             LoadNewForm(frmSummary);
+            SetTimer();
 
         }
 

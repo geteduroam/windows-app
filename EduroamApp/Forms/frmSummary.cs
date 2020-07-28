@@ -32,9 +32,9 @@ namespace EduroamApp
         private void frmSummary_Load(object sender, EventArgs e)
         {
             this.Hide();
-            
+
             // gets institution information from EapConfig object
-            
+
             string instName = eapConfig.InstitutionInfo.DisplayName;
             string tou = eapConfig.InstitutionInfo.TermsOfUse;
             string webAddress = eapConfig.InstitutionInfo.WebAddress.ToLower();
@@ -166,8 +166,21 @@ namespace EduroamApp
                 }
             }
 
-            frmParent.BtnNextEnabled = true;
-            
+            /*if (frmParent.SelfExtractFlag)
+            {
+                frmParent.BtnBackVisible = false;
+            }
+            else
+            {
+                frmParent.BtnBackVisible = true;
+            }
+
+           // frmParent.BtnNextEnabled = false;
+
+            frmParent.BtnNext.Text = eapConfig.AuthenticationMethods.First().EapType == EduroamConfigure.EapType.TLS ? "Connect" : "Next >";
+
+            frmParent.TitleText = eapConfig.InstitutionInfo.DisplayName;*/
+
             this.Show();
             
             
