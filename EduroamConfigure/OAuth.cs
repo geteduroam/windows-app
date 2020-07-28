@@ -21,9 +21,9 @@ namespace EduroamConfigure
 		private const string scope = "eap-metadata";
 		private string codeVerifier;
 		private string codeChallenge;
-		private const string redirectUri = "http://localhost:8080/";
 		private const string clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a";
 		private const string grantType = "authorization_code";
+		private readonly string redirectUri;
 		private readonly string authEndpoint;
 		private readonly string tokenEndpoint;
 		private readonly string generatorEndpoint;
@@ -40,7 +40,10 @@ namespace EduroamConfigure
 			this.authEndpoint = authEndpoint;
 			this.tokenEndpoint = tokenEndpoint;
 			this.generatorEndpoint = generatorEndpoint;
-	}
+			Random rng = new Random();
+			int randomPort = rng.Next(49152, 65535);
+			redirectUri = $"http://[::1]:{randomPort}/";
+		}
 
 		/// <summary>
 		/// Produces an authorization endpoint URI
