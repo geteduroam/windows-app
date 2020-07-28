@@ -59,6 +59,8 @@ namespace EduroamConfigure
         /// <returns>True if succeeded, false if failed.</returns>
         public bool InstallProfiles(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
         {
+            PersistingStore.ProfileID = authMethod.EapConfig.Uid;
+            
             var ssids = authMethod.EapConfig.CredentialApplicabilities
                 .Where(cred => cred.NetworkType == IEEE802x.IEEE80211) // TODO: Wired 802.1x
                 .Where(cred => cred.MinRsnProto != "TKIP") // too insecure. TODO: test user experience
@@ -72,6 +74,7 @@ namespace EduroamConfigure
                 (string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, ssid);
                 ret |= InstallProfile(profileName, profileXml, false, forAllUsers);
             }
+
             return ret;
         }
 
@@ -85,6 +88,8 @@ namespace EduroamConfigure
         /// <returns>True if succeeded, false if failed.</returns>
         public bool InstallHs2Profile(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
         {
+            PersistingStore.ProfileID = authMethod.EapConfig.Uid;
+            
             (string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, asHs2Profile: true);
             return InstallProfile(profileName, profileXml, true, forAllUsers);
         }
