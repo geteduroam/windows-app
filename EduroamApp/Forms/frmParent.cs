@@ -62,7 +62,7 @@ namespace EduroamApp
         public bool SelfExtractFlag { get; set; }
         public bool EduroamAvailable { get; set; }
         public EapConfig eapConfig { get; set; }
-        public bool Online { get; set; }
+        public bool Online;
         public IdentityProviderDownloader IdpDownloader { get; set; }
         public string TitleText
         {
@@ -76,11 +76,12 @@ namespace EduroamApp
                 IdpDownloader = new IdentityProviderDownloader();
                 Online = true;
             }
-            catch (ApiException ex)
+            catch (ApiException)
             {
-
+                Online = false;
             }
 
+            
 
             // adds formClosed listener
             FormClosed += frmParent_FormClosed;
@@ -196,12 +197,16 @@ namespace EduroamApp
 
                 // next form depends on radio button selection
                 case FormId.SelectMethod:
-                    SelfExtractFlag = false;
-                    if (frmSelectMethod.newProfile) LoadFrmSelectInstitution();
+                   // SelfExtractFlag = false;
+                    if (frmSelectMethod.NewProfile) LoadFrmSelectInstitution();
                     else
                     {
                         eapConfig = FileDialog.AskUserForEapConfig();
-                        if (eapConfig != null) LoadFrmSummary();
+                        if (eapConfig != null)
+                        {
+                            SelfExtractFlag = false;
+                            LoadFrmSummary();
+                        }
                     }
                     break;
 
@@ -271,6 +276,8 @@ namespace EduroamApp
         // user selecting a profile or a profile being autoselected
         private void HandleProfileSelect(string profileId)
         {
+
+            // TODO: remove this, i dont think this should happen anymore? buttons are disabled if nothing is selected
             if (string.IsNullOrEmpty(profileId))
             {
                 MessageBox.Show("Please select a Profile.",
