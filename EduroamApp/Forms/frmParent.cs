@@ -396,7 +396,7 @@ namespace EduroamApp
             if (files.Length <= 0) return null;
             try
             {
-                string eapPath = files.First();
+                string eapPath = files.First(); // TODO: although correct, this seems smelly
                 string eapString = File.ReadAllText(eapPath);
                 eapConfig = EapConfig.FromXmlData(uid: "bundled file", eapString);
                 return eapConfig;
@@ -462,7 +462,7 @@ namespace EduroamApp
             IdentityProviderProfile profile = IdpDownloader.GetProfileFromId(profileId);
             string redirect = profile.redirect;
             // eap config file as string
-            string eapString;
+            string eapXmlString;
 
             // if OAuth
             if (profile.oauth)
@@ -478,12 +478,12 @@ namespace EduroamApp
                     // browser authenticate
                     string responseUrl = GetResponseUrl(prefix, authUri);
                     // get eap-config string if available
-                    eapString = oauth.GetEapConfigString(responseUrl);
+                    eapXmlString = oauth.GetEapConfigString(responseUrl);
                 }
                 catch (EduroamAppUserError ex)
                 {
                     MessageBox.Show(ex.UserFacingMessage);
-                    eapString = "";
+                    eapXmlString = "";
                 }
                 // return focus to application
                 Activate();
@@ -498,12 +498,12 @@ namespace EduroamApp
             }
             else
             {
-                eapString = IdpDownloader.GetEapConfigString(profileId);
+                eapXmlString = IdpDownloader.GetEapConfigString(profileId);
             }
 
             // if not empty, creates and returns EapConfig object from Eap string
 
-            if (string.IsNullOrEmpty(eapString))
+            if (string.IsNullOrEmpty(eapXmlString))
             {
                 return null;
             }
@@ -511,7 +511,7 @@ namespace EduroamApp
             try
             {
                 // if not empty, creates and returns EapConfig object from Eap string
-                return EapConfig.FromXmlData(uid: profileId, eapString);
+                return EapConfig.FromXmlData(uid: profileId, eapXmlString);
             }
             catch (XmlException ex)
             {
@@ -529,17 +529,13 @@ namespace EduroamApp
         /// <returns>response Url as string.</returns>
         public string GetResponseUrl(string redirectUri, string authUri)
         {
-            string responseUrl; //= WebServer.NonblockingListener(redirectUri, authUri, parentLocation);
-            using (var waitForm = new frmWaitDialog(redirectUri, authUri))
+            using var waitForm = new frmWaitDialog(redirectUri, authUri);
+            DialogResult result = waitForm.ShowDialog();
+            if (result != DialogResult.OK)
             {
-                DialogResult result = waitForm.ShowDialog();
-                if (result != DialogResult.OK)
-                {
-                    return "";
-                }
-                responseUrl = waitForm.responseUrl;
+                return "";
             }
-            return responseUrl;
+            return waitForm.responseUrl;  //= WebServer.NonblockingListener(redirectUri, authUri, parentLocation);
         }
 
         public PictureBox PbxLogo => pbxLogo;
@@ -553,14 +549,9 @@ namespace EduroamApp
             {
                 btnNext.Enabled = value;
                 btnNext.ForeColor = System.Drawing.SystemColors.ControlLight;
-                if (value)
-                {
-                    btnNext.BackColor = System.Drawing.SystemColors.Highlight;
-                }
-                else
-                {
-                    btnNext.BackColor = System.Drawing.SystemColors.GrayText;
-                }
+                btnNext.BackColor = (value)
+                    ? System.Drawing.SystemColors.Highlight
+                    : System.Drawing.SystemColors.GrayText;
             }
         }
 

@@ -286,18 +286,20 @@ namespace EduroamConfigure
             // Current:  https://github.com/GEANT/CAT/blob/master/devices/eap_config/eap-metadata.xsd
             // Outdated: https://tools.ietf.org/id/draft-winter-opsawg-eap-metadata-00.html
 
-
             // TODO: validate the file first. use schema?
+            // TODO: add a test on this function using fuzzing accoring to schema
 
             static Func<XElement, bool> nameIs(string name) => // shorthand lambda
                 element => element.Name.LocalName == name;
 
             // load the XML file into a XElement object
             XElement eapConfigXml = XElement.Parse(eapConfigXmlData);
+            /*
             foreach (XElement eapIdentityProvider in eapConfigXml.Descendants().Where(nameIs("EAPIdentityProvider")))
             {
                 //TODO: yield return from this
             }
+            */
 
             // create a new empty list for authentication methods
             List<EapConfig.AuthenticationMethod> authMethods =

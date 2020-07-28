@@ -117,7 +117,8 @@ namespace EduroamConfigure
                 PersistingStore.ConfiguredProfiles = PersistingStore.ConfiguredProfiles
                     .Add(new ConfiguredProfile(InterfaceId, profileName, isHs2));
             }
-            
+
+
             return success;
         }
 
@@ -228,9 +229,9 @@ namespace EduroamConfigure
                 .Select(networkPack => new EduroamNetwork(networkPack))
                 .ToList();
 
-            List<Guid> configuredInterfaces = availableNetworks
+            var configuredInterfaces = availableNetworks
                 .Select(network => network.NetworkPack.Interface.Id)
-                .ToList();
+                .ToImmutableHashSet();
 
             // These are not available, but they are configurable
             var unavailableNetworks = GetAllInterfaceIds()
