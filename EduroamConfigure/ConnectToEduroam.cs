@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Linq;
+using System.Diagnostics;
+using System.Diagnostics.Contracts;
 
 namespace EduroamConfigure
 {
@@ -307,11 +309,11 @@ namespace EduroamConfigure
 						anyInstalledHs2 |= network.InstallHs2Profile(AuthMethod.Hs2AuthMethod);
 				}
 
-				// TODO: remove
-				Console.WriteLine("anyInstalled:       " + anyInstalled);
-				Console.WriteLine("anyInstalledHs2:    " + anyInstalledHs2);
-				Console.WriteLine("Installed type:     " + AuthMethod?.EapType.ToString() ?? "None");
-				Console.WriteLine("Installed hs2 type: " + AuthMethod.Hs2AuthMethod?.EapType.ToString() ?? "None");
+				// Debug output
+				Debug.WriteLine("any profile installed:        " + anyInstalled);
+				Debug.WriteLine("any profile installed (Hs2):  " + anyInstalledHs2);
+				Debug.WriteLine("Installed profile type:       " + AuthMethod?.EapType.ToString() ?? "None");
+				Debug.WriteLine("Installed profile type (Hs2): " + AuthMethod.Hs2AuthMethod?.EapType.ToString() ?? "None");
 
 				if (!AuthMethod.NeedsClientCertificate() && !AuthMethod.NeedsLoginCredentials())
 				{
@@ -367,6 +369,11 @@ namespace EduroamConfigure
 			{
 				anyInstalled |= network.InstallUserData(username, password, authMethod);
 			}
+
+			// Debug
+			Debug.WriteLine(string.Format("Install user profile: {0} for user {1}",
+				anyInstalled ? "success" : "failed", username ?? "NULL"));
+
 			return anyInstalled;
 		}
 

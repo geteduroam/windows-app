@@ -64,8 +64,13 @@ namespace EduroamConfigure
 		private static void SetValue<T>(string key, T value)
 		{
 			var serialized = JsonConvert.SerializeObject(value);
-			Debug.WriteLine(string.Format("Write to {0}\\{1}: {2}", ns, key, serialized));
-			Registry.SetValue(ns, key, serialized);
+
+			if ((string)Registry.GetValue(ns, key, null) != serialized) // only write when we make a change
+			{
+				Debug.WriteLine(string.Format("Write to {0}\\{1}: {2}", ns, key, serialized));
+				Registry.SetValue(ns, key, serialized);
+			}
+
 			return;
 		}
 	}

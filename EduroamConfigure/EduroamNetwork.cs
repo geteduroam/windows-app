@@ -112,6 +112,8 @@ namespace EduroamConfigure
 				securityType,
 				overwrite);
 			if (success) {
+				Debug.WriteLine(string.Format("Installed WLANProfile '{0}' on {1}",
+					profileName, InterfaceId));
 				PersistingStore.ConfiguredProfiles = PersistingStore.ConfiguredProfiles
 					.Add(new ConfiguredProfile(InterfaceId, profileName, isHs2));
 			}
@@ -149,13 +151,20 @@ namespace EduroamConfigure
 					password);
 
 				// install it
-				ret &= NativeWifi.SetProfileUserData(
+				var success = NativeWifi.SetProfileUserData(
 					InterfaceId,
 					configuredProfile.ProfileName,
 					forAllUsers
 						? profileUserTypeAllUSers
 						: profileUserTypeCurrentUsers,
 					userDataXml);
+				ret &= success;
+
+				if (success)
+				{
+					Debug.WriteLine(string.Format("Installed {2}UserProfile on '{0}' on {1}",
+						configuredProfile.ProfileName, InterfaceId, configuredProfile.IsHs2 ? "Hs2 " : ""));
+				}
 			}
 			return ret;
 		}
@@ -171,6 +180,7 @@ namespace EduroamConfigure
 		{
 			var n = PersistingStore.ConfiguredProfiles.Count();
 
+			Debug.WriteLine("Removing installed profiles on " + InterfaceId);
 			foreach (var configuredProfile in PersistingStore.ConfiguredProfiles.ToList())
 			{
 				if (configuredProfile.InterfaceId == InterfaceId)
