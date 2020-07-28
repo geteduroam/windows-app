@@ -13,13 +13,14 @@ namespace EduroamConfigure
 	public class EapConfig
 	{
 		// Properties
+		public string Uid { get; }
 		public List<AuthenticationMethod> AuthenticationMethods { get; }
 		public List<CredentialApplicability> CredentialApplicabilities { get; }
 		public ProviderInfo InstitutionInfo { get; }
 
-
 		// Constructor
-		EapConfig(
+		private EapConfig(
+			string uid,
 			List<AuthenticationMethod> authenticationMethods,
 			List<CredentialApplicability> credentialApplicabilities,
 			ProviderInfo institutionInfo)
@@ -279,7 +280,7 @@ namespace EduroamConfigure
 		/// </summary>
 		/// <param name="eapConfigXmlData">EAP config XML as string</param>
 		/// <returns>EapConfig object</returns>
-		public static EapConfig FromXmlData(string eapConfigXmlData)
+		public static EapConfig FromXmlData(string uid, string eapConfigXmlData)
 		{
 			// XML format Documentation:
 			// Current:  https://github.com/GEANT/CAT/blob/master/devices/eap_config/eap-metadata.xsd
@@ -447,6 +448,7 @@ namespace EduroamConfigure
 
 			// create EapConfig object and adds the info
 			return new EapConfig(
+				uid,
 				authMethods,
 				credentialApplicabilities,
 				new EapConfig.ProviderInfo(

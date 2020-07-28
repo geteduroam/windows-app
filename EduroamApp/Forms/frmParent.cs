@@ -398,7 +398,7 @@ namespace EduroamApp
 			{
 				string eapPath = files.First();
 				string eapString = File.ReadAllText(eapPath);
-				eapConfig = EapConfig.FromXmlData(eapString);
+				eapConfig = EapConfig.FromXmlData(uid: "bundled file", eapString);
 				return eapConfig;
 			}
 			catch (Exception)
@@ -511,7 +511,7 @@ namespace EduroamApp
 			try
 			{
 				// if not empty, creates and returns EapConfig object from Eap string
-				return EapConfig.FromXmlData(eapString);
+				return EapConfig.FromXmlData(uid: profileId, eapString);
 			}
 			catch (XmlException ex)
 			{
