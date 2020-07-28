@@ -3,6 +3,9 @@ using System.Device.Location;
 
 namespace EduroamConfigure
 {
+    // disable nameing style checks, since these are json field names
+    #pragma warning disable IDE1006 // Naming Styles
+
     /// <summary>
     /// Stores geographical coordinates.
     /// </summary>
@@ -61,4 +64,5 @@ namespace EduroamConfigure
 
     }
 
+    #pragma warning restore IDE1006 // Naming Styles
 }
