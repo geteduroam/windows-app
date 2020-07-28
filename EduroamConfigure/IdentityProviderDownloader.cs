@@ -213,7 +213,6 @@ namespace EduroamConfigure
         {
             // download json file from url as string
             using var client = new WebClientWithTimeoutAndGzip();
-            client.Encoding = Encoding.UTF8;
             return client.DownloadString(url);
         }
 
@@ -251,6 +250,11 @@ namespace EduroamConfigure
         private class WebClientWithTimeoutAndGzip : WebClient
         {
             public int Timeout = 3000; // ms
+            
+            public WebClientWithTimeoutAndGzip() : base() {
+                Encoding = Encoding.UTF8;
+            }
+
             protected override WebRequest GetWebRequest(Uri uri)
             {
                 HttpWebRequest w = base.GetWebRequest(uri) as HttpWebRequest;
