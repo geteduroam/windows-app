@@ -236,21 +236,22 @@ namespace EduroamConfigure
             {
                 NativeWifi.EnumerateInterfaces().ToList();
             }
-            catch (TargetInvocationException ex)
+            catch (TargetInvocationException ex) // we don't know why it gets wrapped
             {
                 if (ex.GetBaseException().GetType().Name == "Win32Exception")
                     if (ex.GetBaseException().Message == "MethodName: WlanOpenHandle, ErrorCode: 1062, ErrorMessage: The service has not been started.\r\n")
                         return false;
-                throw;
+                throw; // unknown
             }
-            catch (Win32Exception ex)
+            catch (Win32Exception ex) // in case it doesn't get wrapped in RELEASE
             {
                 if (ex.NativeErrorCode == 1062) // ERROR_SERVICE_NOT_ACTIVE
                     return false;
-                throw;
+                throw; // unknown
             }
             return true;
         }
+
 
         /// <summary>
         /// Gets all network packs containing information about an eduroam network, if any.
