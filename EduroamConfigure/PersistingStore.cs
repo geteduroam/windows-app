@@ -58,8 +58,15 @@ namespace EduroamConfigure
 		private const string ns = "HKEY_CURRENT_USER\\GetEduroam"; // Namespace in Registry
 		private static T GetValue<T>(string key, string defaultJson = "null")
 		{
-			return JsonConvert.DeserializeObject<T>(
-				(string)Registry.GetValue(ns, key, null) ?? defaultJson);
+			try
+			{
+				return JsonConvert.DeserializeObject<T>(
+					(string)Registry.GetValue(ns, key, null) ?? defaultJson);
+			}
+			catch (Newtonsoft.Json.JsonReaderException ex)
+			{
+				return JsonConvert.DeserializeObject<T>(defaultJson);
+			}
 		}
 		private static void SetValue<T>(string key, T value)
 		{

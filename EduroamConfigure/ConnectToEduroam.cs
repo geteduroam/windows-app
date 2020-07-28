@@ -347,8 +347,7 @@ namespace EduroamConfigure
 			bool ret = false;
 			foreach (EduroamNetwork network in EduroamNetwork.GetAll(null))
 			{
-				if (network.RemoveInstalledProfiles())
-					ret = true;
+				ret |= network.RemoveInstalledProfiles();
 			}
 			return ret;
 		}
@@ -388,9 +387,8 @@ namespace EduroamConfigure
 			{
 				// TODO: do in parallel instead of sequentially?
 
-				bool success = await network.TryToConnect();
-				if (success)
-					return true;
+				var success = await network.TryToConnect();
+				if (success) return true;
 			}
 			return false;
 		}
