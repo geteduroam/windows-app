@@ -12,7 +12,7 @@ namespace EduroamConfigure
 	public class IdentityProviderDownloader
 	{
 		// constants
-		private const string GeoApiUrl = "https://geo.geteduroam.app/geoip";
+		private const string GeoApiUrl = "https://geo.geteduroam.app/geoip"; // TODO: no access should result in still being able to search among discovery
 #if DEBUG
 		private const string ProviderApiUrl = "https://discovery.eduroam.app/v1/discovery.json";
 #else
