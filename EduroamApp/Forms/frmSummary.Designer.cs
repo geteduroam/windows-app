@@ -165,10 +165,10 @@ namespace EduroamApp
 			//
 			// lblAlternate
 			//
+			this.lblAlternate.Anchor = System.Windows.Forms.AnchorStyles.Top;
 			this.lblAlternate.AutoSize = true;
-			this.lblAlternate.Dock = System.Windows.Forms.DockStyle.Left;
 			this.lblAlternate.ForeColor = System.Drawing.SystemColors.ControlDarkDark;
-			this.lblAlternate.Location = new System.Drawing.Point(4, 0);
+			this.lblAlternate.Location = new System.Drawing.Point(108, 0);
 			this.lblAlternate.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
 			this.lblAlternate.MaximumSize = new System.Drawing.Size(360, 0);
 			this.lblAlternate.Name = "lblAlternate";

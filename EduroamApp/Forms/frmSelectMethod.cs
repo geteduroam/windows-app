@@ -1,6 +1,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using System;
+using EduroamConfigure;
 
 namespace EduroamApp
 {
@@ -14,13 +15,31 @@ namespace EduroamApp
 	{
 		// makes parent form accessible from this class
 		readonly frmParent frmParent;
-		public bool newProfile { get; set; }
+		public bool NewProfile { get; set; }
+		public bool BtnNewProfileEnabled
+		{
+			get => btnNewProfile.Enabled;
+			set
+			{
+				btnNewProfile.Enabled = value;
+				btnNewProfile.ForeColor = System.Drawing.SystemColors.ControlLight;
+				if (value)
+				{
+					btnNewProfile.BackColor = System.Drawing.SystemColors.Highlight;
+				}
+				else
+				{
+					btnNewProfile.BackColor = System.Drawing.SystemColors.GrayText;
+				}
+			}
+		}
 
 		public frmSelectMethod(frmParent parentInstance)
 		{
 			// gets parent form instance
 			frmParent = parentInstance;
-			newProfile = false;
+			NewProfile = false;
+
 
 			InitializeComponent();
 		}
@@ -37,23 +56,25 @@ namespace EduroamApp
 				btnExisting.Visible = false;
 			}
 
-			// if no internet
+
 			if (!frmParent.Online)
 			{
-				//btnExisting.Enabled = false;
-				btnNewProfile.Enabled = false;
-				//btnLocalProfile.Enabled = false;
-				frmParent.TitleText = "Offline";
-				label1.Text = "Eduroam servers are unreachable. You can still attempt to use a local config file. " +
-					"Please ensure that you have an internet connection and restart this application in order to connect without a local profile";
-
+				BtnNewProfileEnabled = false;
+				label1.Text = "Could not reach geteduroam services. Either the servers are down or you are offline. You can still use local files or already configured profiles." +
+					"Otherwise, connect to the internet and restart this application. ";
+			}
+			else
+			{
+				label1.Text = "Connect to quickly gain access to eduroam.\n" +
+				"If you have previously downloaded a eap - config file from your institution  you can use this instead";
 			}
 		}
 
 
+
 		private void btnNewProfile_Click(object sender, System.EventArgs e)
 		{
-			newProfile = true;
+			NewProfile = true;
 			frmParent.btnNext_Click(sender, e);
 		}
 
