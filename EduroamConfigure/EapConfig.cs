@@ -25,6 +25,7 @@ namespace EduroamConfigure
             List<CredentialApplicability> credentialApplicabilities,
             ProviderInfo institutionInfo)
         {
+            Uid = uid;
             AuthenticationMethods = authenticationMethods;
             CredentialApplicabilities = credentialApplicabilities;
             InstitutionInfo = institutionInfo;
