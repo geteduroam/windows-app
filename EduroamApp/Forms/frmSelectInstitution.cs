@@ -100,7 +100,7 @@ namespace EduroamApp
             try
             {
                 allIdentityProviders = Downloader.Providers;
-                updateInstitutions(Downloader.GetClosestProviders(limit: 10));
+                UpdateInstitutions(Downloader.GetClosestProviders(limit: 10));
 
 
             }
@@ -114,7 +114,7 @@ namespace EduroamApp
         /// Used to update institution list portrayed to users.
         /// Called by different thread than Winform thread
         /// </summary>
-        private void updateInstitutions(List<IdentityProvider> institutions)
+        private void UpdateInstitutions(List<IdentityProvider> institutions)
         {
             //allows changes across different threads
             BeginInvoke(new Action(() =>
@@ -133,7 +133,7 @@ namespace EduroamApp
         /// </summary>
         private void tbSearch_TextChanged(object sender, EventArgs e)
         {
-            updateInstitutions(
+            UpdateInstitutions(
                 IdentityProviderParser.SortByQuery(
                     allIdentityProviders, 
                     tbSearch.Text, 

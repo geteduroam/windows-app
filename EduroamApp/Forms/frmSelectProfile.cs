@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using EduroamConfigure;
 
@@ -14,7 +13,7 @@ namespace EduroamApp
     {
         private readonly frmParent frmParent; // makes parent form accessible from this class
         private List<IdentityProviderProfile> idProviderProfiles; // list containing all profiles of an identity provider
-        private int idProviderId; // id of selected institution
+        private readonly int idProviderId; // id of selected institution
         //private static string helpString = "Search here ..";
         public string ProfileId { get; set; } // id of selected institution profile
 
