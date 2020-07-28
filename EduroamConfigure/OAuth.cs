@@ -16,7 +16,6 @@ namespace EduroamConfigure
     /// </summary>
     public class OAuth
     {
-
         private const string responseType = "code";
         private const string codeChallengeMethod = "S256";
         private const string scope = "eap-metadata";
@@ -25,9 +24,9 @@ namespace EduroamConfigure
         private const string redirectUri = "http://localhost:8080/";
         private const string clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a";
         private const string grantType = "authorization_code";
-        private string authEndpoint;
-        private string tokenEndpoint;
-        private string generatorEndpoint;
+        private readonly string authEndpoint;
+        private readonly string tokenEndpoint;
+        private readonly string generatorEndpoint;
         private string state;
 
         /// <summary>

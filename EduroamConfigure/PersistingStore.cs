@@ -63,7 +63,7 @@ namespace EduroamConfigure
                 return JsonConvert.DeserializeObject<T>(
                     (string)Registry.GetValue(ns, key, null) ?? defaultJson);
             }
-            catch (Newtonsoft.Json.JsonReaderException ex)
+            catch (Newtonsoft.Json.JsonReaderException)
             {
                 return JsonConvert.DeserializeObject<T>(defaultJson);
             }

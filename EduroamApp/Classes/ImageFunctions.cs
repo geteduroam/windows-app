@@ -15,11 +15,9 @@ namespace EduroamApp
         public static Image BytesToImage(byte[] imageBytes)
         {
             // converts byte[] to Image
-            using (var stream = new MemoryStream(imageBytes))
-            {
-                Image image = Image.FromStream(stream, true);
-                return image;
-            }
+            using var stream = new MemoryStream(imageBytes);
+            Image image = Image.FromStream(stream, true);
+            return image;
         }
 
         /// <summary>
@@ -44,11 +42,9 @@ namespace EduroamApp
                 graphics.SmoothingMode = SmoothingMode.HighQuality;
                 graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-                using (var wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                }
+                using var wrapMode = new ImageAttributes();
+                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
             }
 
             return destImage;
