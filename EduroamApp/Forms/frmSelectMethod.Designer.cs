@@ -44,7 +44,6 @@
             this.label1.Text = "Connect to quickly gain access to eduroam.\r\nIf you have previously downloaded a e" +
     "ap-config file from your institution  you can use this instead";
             this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // btnNewProfile
             // 

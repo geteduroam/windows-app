@@ -42,16 +42,6 @@ namespace EduroamApp
 
             await Task.Run(() => PopulateInstitutions());
 
-
-           // frmParent.BtnNextEnabled = false;
-
-           // tbSearch.Visible = true;
-           // tbSearch.Enabled = true;
-            //tbSearch.ReadOnly = true;
-            //tbSearch.BackColor = System.Drawing.SystemColors.Window;
-            //lbInstitution.Visible = true;
-            //lbInstitution.Enabled = true;
-
             tbSearch.ReadOnly = false;
 
             tlpLoading.Visible = false;
@@ -64,8 +54,6 @@ namespace EduroamApp
 
             // make user autoselect search
             this.ActiveControl = tbSearch;
-
-           // tlpLoading.Visible = false;
 
 
         }

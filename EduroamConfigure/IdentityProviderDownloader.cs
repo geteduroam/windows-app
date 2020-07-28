@@ -231,18 +231,6 @@ namespace EduroamConfigure
         }
 
 
-        /// <summary>
-        /// Produces error string for exceptions related to deserializing JSON files and corrupted XML files.
-        /// </summary>
-        /// <param name="ex">Exception.</param>
-        /// <returns>String containing error message meant for user to read.</returns>
-        private static string JsonExceptionToString(Exception ex)
-        {
-            return
-                "The selected institution or profile is not supported. " +
-                "Please select a different institution or profile.\n" +
-                "Exception: " + ex.Message;
-        }
 
         /// <summary>
         /// WebClient with support for timeouts

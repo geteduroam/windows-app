@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Drawing;
 using System.Windows.Forms;
 using EduroamConfigure;
 using System.Linq;
 using System.Threading.Tasks;
-using ManagedNativeWifi;
 
 namespace EduroamApp
 {
@@ -16,10 +14,7 @@ namespace EduroamApp
         private bool usernameValid = false;
         private string realm;
         private bool hint;
-        public bool connected;
-        public bool ignorePassChange = false;
-
-   
+        public bool connected; 
 
         public frmLogin(frmParent parentInstance)
         {
