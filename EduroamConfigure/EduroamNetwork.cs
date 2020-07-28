@@ -111,9 +111,14 @@ namespace EduroamConfigure
 				profileXml,
 				securityType,
 				overwrite);
+
+			Debug.WriteLine(string.Format("Install {2}WLANProfile {3} for '{0}' on {1}",
+					profileName,
+					InterfaceId,
+					(isHs2) ? "Hs2 " : "",
+					(success) ? "succeeded" : "failed"));
+
 			if (success) {
-				Debug.WriteLine(string.Format("Installed WLANProfile '{0}' on {1}",
-					profileName, InterfaceId));
 				PersistingStore.ConfiguredProfiles = PersistingStore.ConfiguredProfiles
 					.Add(new ConfiguredProfile(InterfaceId, profileName, isHs2));
 			}
@@ -139,7 +144,7 @@ namespace EduroamConfigure
 			PersistingStore.Username = username; // save username
 
 			bool ret = PersistingStore.ConfiguredProfiles.Any();
-			foreach (var configuredProfile in PersistingStore.ConfiguredProfiles)
+			foreach (var configuredProfile in PersistingStore.ConfiguredProfiles.ToList())
 			{
 				if (configuredProfile.InterfaceId != InterfaceId) continue;
 
@@ -161,10 +166,17 @@ namespace EduroamConfigure
 					userDataXml);
 				ret &= success;
 
-				if (success)
+				Debug.WriteLine(string.Format("Installed {2}UserProfile {3} for '{0}' on {1}",
+						configuredProfile.ProfileName,
+						InterfaceId,
+						configuredProfile.IsHs2 ? "Hs2 " : "",
+						success ? "succeeded" : "failed"));
+
+				if (success && !configuredProfile.HasUserData)
 				{
-					Debug.WriteLine(string.Format("Installed {2}UserProfile on '{0}' on {1}",
-						configuredProfile.ProfileName, InterfaceId, configuredProfile.IsHs2 ? "Hs2 " : ""));
+					PersistingStore.ConfiguredProfiles = PersistingStore.ConfiguredProfiles
+						.Remove(configuredProfile)
+						.Add(configuredProfile.WithUserDataSet());
 				}
 			}
 			return ret;
@@ -225,6 +237,8 @@ namespace EduroamConfigure
 			if (!IsWlanServiceApiAvailable())
 				return Enumerable.Empty<EduroamNetwork>();
 
+			// TODO: multiple profiles on a single interface creates duplicate work further down
+			//       perhaps group by InterfaceId and have a list of ProfileName in each EduroamNetwork?
 			var availableNetworks = GetAllAvailableEduroamNetworkPacks(eapConfig?.CredentialApplicabilities)
 				.Select(networkPack => new EduroamNetwork(networkPack))
 				.ToList();
