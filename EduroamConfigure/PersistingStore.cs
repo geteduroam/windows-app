@@ -43,13 +43,18 @@ namespace EduroamConfigure
             public Guid InterfaceId { get; }
             public string ProfileName { get; }
             public bool IsHs2 { get; }
+            public bool HasUserData { get; }
 
-            public ConfiguredProfile(Guid interfaceId, string profileName, bool isHs2)
+            public ConfiguredProfile(Guid interfaceId, string profileName, bool isHs2, bool hasUserData = false)
             {
                 InterfaceId = interfaceId;
                 ProfileName = profileName;
                 IsHs2 = isHs2;
+                HasUserData = hasUserData;
             }
+
+            public ConfiguredProfile WithUserDataSet()
+                => new ConfiguredProfile(InterfaceId, ProfileName, IsHs2, true);
         }
 
 
