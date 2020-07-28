@@ -22,16 +22,16 @@ namespace EduroamApp
 			string filepath;
 			do
 			{
-				filepath = getFileFromDialog(
+				filepath = GetFileFromDialog(
 					"Select a Client Certificate bundle",
 					"Certificate files (*.PFX, *.P12)|*.pfx;*.p12|All files (*.*)|*.*");
 
 				if (filepath == null) return null; // the user canelled
 			}
-			while (!validateFileSelection(filepath, new List<string> { ".pfx", ".p12" }));
+			while (!ValidateFileSelection(filepath, new List<string> { ".pfx", ".p12" }));
 
 			var passphrase = "";
-			while (!testCertificatePassphrase(filepath, passphrase))
+			while (!TestCertificatePassphrase(filepath, passphrase))
 			{
 				if (passphrase == "")
 				{
@@ -65,13 +65,13 @@ namespace EduroamApp
 			string filepath;
 			do
 			{
-				filepath = getFileFromDialog(
+				filepath = GetFileFromDialog(
 					"Select a EAP Config file",
 					"EAP-CONFIG files (*.eap-config)|*.eap-config|All files (*.*)|*.*");
 
 				if (filepath == null) return null; // the user canelled
 			}
-			while (!validateFileSelection(filepath, new List<string> { ".eap-config" }));
+			while (!ValidateFileSelection(filepath, new List<string> { ".eap-config" }));
 
 			// read, validate, parse and return
 			try
@@ -106,7 +106,7 @@ namespace EduroamApp
 		/// <param name="dialogTitle">Title of the OpenFileDialog.</param>
 		/// <param name="filter">Filter for OpenFileDialog.</param>
 		/// <returns>Path of selected file.</returns>
-		private static string getFileFromDialog(string dialogTitle, string filter)
+		private static string GetFileFromDialog(string dialogTitle, string filter)
 		{
 			OpenFileDialog fileDialog = new OpenFileDialog
 			{
@@ -130,7 +130,7 @@ namespace EduroamApp
 		/// Checks if a config file has been selected, and if the filepath and type extention is valid.
 		/// </summary>
 		/// <returns>True if valid file, false if not.</returns>
-		public static bool validateFileSelection(string filePath, List<string> fileTypes)
+		public static bool ValidateFileSelection(string filePath, List<string> fileTypes)
 		{
 			// checks if filepath is empty
 			if (string.IsNullOrEmpty(filePath))
@@ -159,7 +159,7 @@ namespace EduroamApp
 			return false; // TODO: flow control
 		}
 
-		private static bool testCertificatePassphrase(string certificateFilePath, string passphrase)
+		private static bool TestCertificatePassphrase(string certificateFilePath, string passphrase)
 		{
 			try
 			{
