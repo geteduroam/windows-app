@@ -316,7 +316,7 @@ namespace EduroamApp
 
 		private void SetTimer()
 		{
-			timer = new System.Timers.Timer(100);
+			timer = new System.Timers.Timer(50);
 			timer.Elapsed += OnTimedEvent;
 			timer.Enabled = true;
 		}
@@ -442,7 +442,7 @@ namespace EduroamApp
 
 			 Console.WriteLine("educonnected: " + eduConnected.ToString());
 			 return eduConnected;*/
-			return true;
+			return connectSuccess;
 		}
 
 		/// <summary>
