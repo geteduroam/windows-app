@@ -122,19 +122,17 @@ namespace EduroamApp
 
 			try
 			{
-				using (HttpListenerResponse response = context.Response)
-				{
-					// constructs a response
-					string responseString = responseUrl.Contains("access_denied")
-						? "<HTML><BODY>You rejected the authorization. Please go back to the Eduroam app. <br />You can now close this tab.</BODY></HTML>"
-						: "<HTML><BODY>Feide has been authorized. <br />You can now close this tab.</BODY></HTML>";
+				using HttpListenerResponse response = context.Response;
+				// constructs a response
+				string responseString = responseUrl.Contains("access_denied")
+					? "<HTML><BODY>You rejected the authorization. Please go back to the Eduroam app. <br />You can now close this tab.</BODY></HTML>"
+					: "<HTML><BODY>Feide has been authorized. <br />You can now close this tab.</BODY></HTML>";
 
-					// outputs response to web server
-					byte[] buffer = Encoding.UTF8.GetBytes(responseString);
-					response.ContentLength64 = buffer.Length;
-					Stream output = response.OutputStream;
-					output.Write(buffer, 0, buffer.Length);
-				}
+				// outputs response to web server
+				byte[] buffer = Encoding.UTF8.GetBytes(responseString);
+				response.ContentLength64 = buffer.Length;
+				Stream output = response.OutputStream;
+				output.Write(buffer, 0, buffer.Length);
 			}
 			catch (HttpListenerException ex)
 			{

@@ -78,28 +78,6 @@ namespace EduroamConfigure
 			return resultString;
 		}
 
-
-		public static bool VerifyUsername(string username, string realm, bool hint)
-		{
-			Regex rx;
-			if (string.IsNullOrEmpty(realm)) {
-				return VerifyUsernameGeneric(username);
-			}
-			if (hint) {
-				rx = new Regex($@"^([a-zA-Z0-9](?:[._-]?[a-zA-Z0-9]+)*)@{realm}$");
-			}
-
-			rx = new Regex($@"^([a-zA-Z0-9](?:[._-]?[a-zA-Z0-9]+)*)@(([a-zA-Z0-9]+[._-])*{realm})$");
-			var match = rx.Match(username);
-			return match.Success;
-		}
-
-		public static bool VerifyUsernameGeneric(string username)
-		{
-			Regex rx = new Regex(@"^([a-zA-Z0-9](?:[._-]?[a-zA-Z0-9]+)*)@([a-zA-Z0-9](?:[._-]?[a-zA-Z0-9]+)*\.[a-zA-Z0-9](?:[._-]?[a-zA-Z0-9]+)*)$");
-			var match = rx.Match(username);
-			return match.Success;
-		}
 		//dwd
 		public static string GetBrokenRules(string username, string realm, bool strictRealm)
 		{

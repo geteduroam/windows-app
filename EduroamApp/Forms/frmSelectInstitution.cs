@@ -70,26 +70,6 @@ namespace EduroamApp
 
 		}
 
-		public void StartLoading()
-		{
-			tbSearch.Visible = true;
-			tbSearch.Enabled = true;
-			lbInstitution.Visible = true;
-			lbInstitution.Enabled = true;
-			tlpLoading.BringToFront();
-			tlpLoading.Visible = true;
-		}
-
-		private void StopLoading()
-		{
-			tbSearch.Visible = true;
-			tbSearch.Enabled = true;
-			lbInstitution.Visible = true;
-			lbInstitution.Enabled = true;
-			tlpLoading.Visible = false;
-		}
-
-
 		// TODO more than 10 closest providers
 
 		/// <summary>
