@@ -138,7 +138,6 @@ namespace EduroamApp
 
         private void notifyIcon_MouseClick(object sender, EventArgs e)
         {
-            Console.WriteLine("Notifycicon click");
             if (this.WindowState == FormWindowState.Minimized)
             {
                 this.Show();
@@ -419,11 +418,9 @@ namespace EduroamApp
             catch (Exception ex)
             {
                 // if an exception is thrown, connection has not succeeded
-                Console.WriteLine("exception: " + ex.Message);
                 connectSuccess = false;
                 MessageBox.Show("Could not connect. \nException: " + ex.Message);
             }
-            Console.WriteLine("connectsuccess: " + connectSuccess.ToString());
 
             // double check to validate wether eduroam really is an active connection
             //var eduConnected = false;
