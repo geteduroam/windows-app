@@ -344,11 +344,15 @@ namespace EduroamConfigure
         /// <returns>True if any profile deletion was succesful</returns>
         public static bool RemoveAllProfiles()
         {
+            Debug.WriteLine("Remove all installed profiles");
+
             bool ret = false;
             foreach (EduroamNetwork network in EduroamNetwork.GetAll(null))
             {
                 ret |= network.RemoveInstalledProfiles();
             }
+
+            Debug.WriteLine("Remove all installed profiles: " + ((ret) ? "success" : "failed"));
             return ret;
         }
 
@@ -362,6 +366,9 @@ namespace EduroamConfigure
         {
             // TODO: move this into EapAuthMethodInstaller?
 
+            Debug.WriteLine(string.Format("Install user profile for user {0}",
+                username));
+
             // sets user data
             bool anyInstalled = false;
             foreach (EduroamNetwork network in EduroamNetwork.GetAll(authMethod.EapConfig))
@@ -369,9 +376,9 @@ namespace EduroamConfigure
                 anyInstalled |= network.InstallUserData(username, password, authMethod);
             }
 
-            // Debug
-            Debug.WriteLine(string.Format("Install user profile: {0} for user {1}",
+            Debug.WriteLine(string.Format("Install of user profile for user {1}: {0}",
                 anyInstalled ? "success" : "failed", username ?? "NULL"));
+            Debug.WriteLine("");
 
             return anyInstalled;
         }
