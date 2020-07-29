@@ -126,7 +126,7 @@ namespace EduroamConfigure
                 return JsonConvert.DeserializeObject<T>(
                     (string)Registry.GetValue(ns, key, null) ?? defaultJson);
             }
-            catch (Newtonsoft.Json.JsonReaderException)
+            catch (JsonReaderException)
             {
                 return JsonConvert.DeserializeObject<T>(defaultJson);
             }
@@ -135,12 +135,12 @@ namespace EduroamConfigure
         {
             var serialized = JsonConvert.SerializeObject(value);
 
-            if ((string)Registry.GetValue(ns, key, null) != serialized) // only write when we make a change
+            if (serialized != (string)Registry.GetValue(ns, key, null)) // only write when we make a change
             {
                 Debug.WriteLine(string.Format("Write to {0}\\{1}: {2}", ns, key, serialized));
                 Registry.SetValue(ns, key, serialized);
             }
-            
+
             return;
         }
     }
