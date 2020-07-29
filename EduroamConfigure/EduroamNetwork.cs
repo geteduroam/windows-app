@@ -206,7 +206,7 @@ namespace EduroamConfigure
 				}
 			}
 
-			return n != PersistingStore.ConfiguredProfiles.Count();
+			return n != PersistingStore.ConfiguredProfiles.Count() || n == 0;
 		}
 
 		public async Task<bool> TryToConnect()
