@@ -1,5 +1,5 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using InstalledCertificate = EduroamConfigure.PersistingStore.InstalledCertificate;
@@ -94,6 +94,48 @@ namespace EduroamConfigure
 
             // if we're still able to find it, then it probably wasn't removed.
             return !IsCertificateInstalled(cert, storeName, storeLocation);
+        }
+
+        /// <summary>
+        /// Uses the persistant storage to uninstall all known installed certificates
+        /// </summary>
+        /// <returns>true on success</returns>
+        public static bool UninstallAllInstalledCertificates()
+        {
+            Debug.WriteLine("Uninstalling all installed certificates...");
+
+            bool all_removed = true;
+            foreach (var installedCert in PersistingStore.InstalledCertificates.ToList())
+            {
+                // find matching certs in certstore
+                X509Certificate2Collection matchingCerts;
+                using (var certStore = new X509Store(installedCert.StoreName, installedCert.StoreLocation))
+                {
+                    certStore.Open(OpenFlags.ReadOnly);
+                    matchingCerts = certStore.Certificates
+                        .Find(X509FindType.FindByThumbprint, installedCert.Thumbprint, false);
+                }
+
+                bool this_removed = false;
+                foreach (var cert in matchingCerts)
+                {
+                    // thumbprint already found to match
+                    if (cert.Issuer != installedCert.Issuer) continue;
+                    if (cert.Subject != installedCert.Subject) continue;
+                    if (cert.SerialNumber != installedCert.SerialNumber) continue;
+
+                    this_removed = UninstallCertificate(cert, installedCert.StoreName, installedCert.StoreLocation);
+                    break;
+                }
+                all_removed &= this_removed;
+            }
+
+            // not transactionally secure, probably also not needed
+            all_removed &= PersistingStore.InstalledCertificates.Count == 0;
+
+            Debug.WriteLine("Uninstalling all installed certificates: " + (all_removed ? "SUCCESS": "FAILED"));
+            Debug.WriteLine("");
+            return all_removed;
         }
     }
 }
