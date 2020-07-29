@@ -66,6 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CertificateStore.cs" />
     <Compile Include="PersistingStore.cs" />
     <Compile Include="ConnectToEduroam.cs" />
     <Compile Include="DiscoveryApi.cs" />
