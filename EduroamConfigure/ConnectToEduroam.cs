@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Linq;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
+using InstalledCertificate = EduroamConfigure.PersistingStore.InstalledCertificate;
 
 namespace EduroamConfigure
 {
@@ -18,12 +18,6 @@ namespace EduroamConfigure
 	/// </summary>
 	public class ConnectToEduroam
 	{
-		// TODO: move these static variables to the caller
-
-		// EAP type of selected configuration
-		// client certificate valid from
-		public static DateTime CertValidFrom { get; set; } // TODO: use EapAuthMethodInstaller.CertValidFrom instead
-
 		// Certificate stores
 		private const StoreName caStoreName = StoreName.Root; // Used to install CAs to verify server certificates with
 		private const StoreLocation caStoreLocation = StoreLocation.CurrentUser; // TODO: make this configurable to LocalMachine
@@ -141,7 +135,6 @@ namespace EduroamConfigure
 			private bool HasInstalledProfile = false;
 
 			public readonly EapConfig.AuthenticationMethod AuthMethod;
-			public DateTime CertValidFrom { get; private set; }
 
 
 			/// <summary>
@@ -170,15 +163,14 @@ namespace EduroamConfigure
 					personalStore.Add(clientCert);
 					personalStore.Close();
 
-					// gets name of CA that issued the certificate
-					// gets valid from time of certificate
-					CertValidFrom = clientCert.NotBefore; // TODO: make gui use this
-					ConnectToEduroam.CertValidFrom = clientCert.NotBefore; // TODO: REMOVE
+					// keep track of that we've installed it
+					PersistingStore.InstalledCertificates = PersistingStore.InstalledCertificates
+						.Add(InstalledCertificate.FromCertificate(clientCert, userCertStoreName, userCertStoreLocation));
 				}
 				/*
 				else
 				{
-					throw TODO
+					throw // TODO
 				}
 				*/
 			}
@@ -237,7 +229,7 @@ namespace EduroamConfigure
 				if (NeedsClientCertificate())
 					throw new EduroamAppUserError("no client certificate was provided");
 
-				// TODO: perhaps be nice and persist which thumbprints we have installed, and where, and provide a way to remove them
+				// TODO: provide a way to remove installed certificates
 
 				// open the trusted root CA stores
 				using var rootStore = new X509Store(caStoreName, caStoreLocation);
@@ -273,6 +265,10 @@ namespace EduroamConfigure
 							// unknown exception
 							throw;
 						}
+
+						// keep track of that we've installed it
+						PersistingStore.InstalledCertificates = PersistingStore.InstalledCertificates
+							.Add(InstalledCertificate.FromCertificate(cert, isRootCA ? caStoreName : interStoreName, store.Location));
 					}
 				}
 
