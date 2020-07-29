@@ -26,7 +26,6 @@ namespace EduroamConfigure
         private const StoreName userCertStoreName = StoreName.My; // Used to install TLS client certificates
         private const StoreLocation userCertStoreLocation = StoreLocation.CurrentUser;
 
-
         /// <summary>
         /// Checks the EAP config to see if there is any issues
         /// TODO: test this
@@ -156,23 +155,9 @@ namespace EduroamConfigure
                 if (!string.IsNullOrEmpty(AuthMethod.ClientCertificate))
                 {
                     var clientCert = AuthMethod.ClientCertificateAsX509Certificate2();
-
-                    // open personal certificate store to add client cert
-                    using var personalStore = new X509Store(userCertStoreName, userCertStoreLocation);
-                    personalStore.Open(OpenFlags.ReadWrite);
-                    personalStore.Add(clientCert);
-                    personalStore.Close();
-
-                    // keep track of that we've installed it
-                    PersistingStore.InstalledCertificates = PersistingStore.InstalledCertificates
-                        .Add(InstalledCertificate.FromCertificate(clientCert, userCertStoreName, userCertStoreLocation));
+                    CertificateStore.InstallCertificate(clientCert, userCertStoreName, userCertStoreLocation);
                 }
-                /*
-                else
-                { 
-                    throw // TODO
-                }
-                */
+                // TODO else throw?
             }
 
             /// <summary>
@@ -197,24 +182,9 @@ namespace EduroamConfigure
             /// <returns></returns>
             public bool NeedsToInstallCAs()
             {
-                // open the trusted root CA stores
-                using var rootStore = new X509Store(caStoreName, caStoreLocation);
-                rootStore.Open(OpenFlags.ReadOnly);
-
-                foreach (var cert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
-                {
-                    // if this doesn't work, try https://stackoverflow.com/a/34174890
-                    bool isRootCA = cert.Subject == cert.Issuer;
-                    if (!isRootCA) continue; // no prompt will be made by this cert during install
-
-                    // check if CA is not already installed
-                    var matchingCerts = rootStore.Certificates
-                        .Find(X509FindType.FindByThumbprint, cert.Thumbprint, false);
-                    
-                    if (matchingCerts.Count < 1) return true; // user must be informed
-                }
-
-                return false;
+                return AuthMethod.CertificateAuthoritiesAsX509Certificate2()
+                    .Where(cert => cert.Subject == cert.Issuer) // Not a CA, no prompt will be made by this cert during install. If this doesn't work, try https://stackoverflow.com/a/34174890
+                    .Any(cert => !CertificateStore.IsCertificateInstalled(cert, caStoreName, caStoreLocation));
             }
 
             /// <summary>
@@ -231,45 +201,15 @@ namespace EduroamConfigure
 
                 // TODO: provide a way to remove installed certificates
 
-                // open the trusted root CA stores
-                using var rootStore = new X509Store(caStoreName, caStoreLocation);
-                using var interStore = new X509Store(interStoreName, interStoreLocation);
-                rootStore.Open(OpenFlags.ReadWrite);
-                interStore.Open(OpenFlags.ReadWrite);
-
                 // get all CAs from Authentication method
                 foreach (var cert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
                 {
                     // if this doesn't work, try https://stackoverflow.com/a/34174890
                     bool isRootCA = cert.Subject == cert.Issuer;
-                    var store = isRootCA ? rootStore : interStore;
-
-                    // check if CA is not already installed
-                    var matchingCerts = store.Certificates
-                        .Find(X509FindType.FindByThumbprint, cert.Thumbprint, false);
-                    if (matchingCerts.Count < 1)
-                    {
-                        try
-                        {
-                            // add CA to trusted certificate store
-                            store.Add(cert);
-                            // ^ Will produce a popup if the certificate is not already installed
-                            // There fore you should use use NeedsToInstallCAs to predict this
-                            // and warn+instruct the user
-                        }
-                        catch (CryptographicException ex)
-                        {
-                            // if user selects No when prompted to install the CA
-                            if ((uint)ex.HResult == 0x800704C7) return false;
-
-                            // unknown exception
-                            throw;
-                        }
-
-                        // keep track of that we've installed it
-                        PersistingStore.InstalledCertificates = PersistingStore.InstalledCertificates
-                            .Add(InstalledCertificate.FromCertificate(cert, isRootCA ? caStoreName : interStoreName, store.Location));
-                    }
+                    bool success = CertificateStore.InstallCertificate(cert,
+                        isRootCA ? caStoreName : interStoreName,
+                        isRootCA ? caStoreLocation : interStoreLocation);
+                    if (!success) return false;
                 }
 
                 InstallClientCertificate(); // TODO: inline this function?
