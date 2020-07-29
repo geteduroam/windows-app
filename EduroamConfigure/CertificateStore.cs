@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using InstalledCertificate = EduroamConfigure.PersistingStore.InstalledCertificate;
@@ -22,6 +23,9 @@ namespace EduroamConfigure
 
 			using var certStore = new X509Store(storeName, storeLocation);
 			certStore.Open(OpenFlags.ReadWrite);
+
+			Debug.WriteLine(string.Format("Writing '{0}' to cert store {1}:{2}",
+				cert.FriendlyName, storeName.ToString(), storeLocation.ToString()));
 
 			try
 			{
@@ -77,6 +81,9 @@ namespace EduroamConfigure
 		{
 			if (!IsCertificateInstalled(cert, storeName, storeLocation))
 				return false;
+
+			Debug.WriteLine(string.Format("Removing '{0}' from cert store {1}:{2}",
+				cert.FriendlyName, storeName.ToString(), storeLocation.ToString()));
 
 			using (var certStore = new X509Store(storeName, storeLocation))
 			{
