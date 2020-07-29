@@ -3,10 +3,14 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
 
 namespace EduroamConfigure
 {
-
+    /// <summary>
+    /// This is a class with static properties which access the persistent storage in the windows registry.
+    /// All the entries are immutable, to force you to store all your changes properly.
+    /// </summary>
     public class PersistingStore
     {
         /// <summary>
@@ -19,7 +23,7 @@ namespace EduroamConfigure
         }
 
         /// <summary>
-        /// The ID cof the eap-config profile as assigned by discovery.geteduroam.*
+        /// The ID of the eap-config profile as assigned by discovery.geteduroam.*
         /// </summary>
         public static string ProfileID
         {
@@ -27,9 +31,8 @@ namespace EduroamConfigure
             set => SetValue<string>("ProfileID", value);
         }
 
-        // TODO: persist the static state of EduroamNetworks using this class
         /// <summary>
-        ///
+        /// A set of the configured WLANProfiles
         /// </summary>
         public static ImmutableHashSet<ConfiguredProfile> ConfiguredProfiles
         {
@@ -37,24 +40,79 @@ namespace EduroamConfigure
             set => SetValue<ImmutableHashSet<ConfiguredProfile>>("ConfigureProfiles", value);
         }
 
+        /// <summary>
+        /// A set of the installed CAs and client certificates
+        /// </summary>
+        public static ImmutableHashSet<InstalledCertificate> InstalledCertificates
+        {
+            get => GetValue<ImmutableHashSet<InstalledCertificate>>("InstalledCertificates", "[]");
+            set => SetValue<ImmutableHashSet<InstalledCertificate>>("InstalledCertificates", value);
+        }
 
         public readonly struct ConfiguredProfile
         {
-            public Guid InterfaceId { get; }
+            public Guid   InterfaceId { get; }
             public string ProfileName { get; }
-            public bool IsHs2 { get; }
-            public bool HasUserData { get; }
+            public bool   IsHs2       { get; }
+            public bool   HasUserData { get; }
 
             public ConfiguredProfile(Guid interfaceId, string profileName, bool isHs2, bool hasUserData = false)
             {
                 InterfaceId = interfaceId;
                 ProfileName = profileName;
-                IsHs2 = isHs2;
+                IsHs2       = isHs2;
                 HasUserData = hasUserData;
             }
 
             public ConfiguredProfile WithUserDataSet()
-                => new ConfiguredProfile(InterfaceId, ProfileName, IsHs2, true);
+                => new ConfiguredProfile(
+                    interfaceId: InterfaceId,
+                    profileName: ProfileName,
+                    isHs2:       IsHs2,
+                    hasUserData: true);
+        }
+
+        public readonly struct InstalledCertificate
+        {
+            public StoreName     StoreName     { get; }
+            public StoreLocation StoreLocation { get; }
+            public string        Thumbprint    { get; }
+            public string        SerialNumber  { get; }
+            public string        Subject       { get; }
+            public string        Issuer        { get; }
+            public DateTime      NotBefore     { get; }
+            public DateTime      NotAfter      { get; }
+
+            public InstalledCertificate(
+                StoreName     storeName,
+                StoreLocation storeLocation,
+                string        thumbprint,
+                string        serialNumber,
+                string        subject,
+                string        issuer,
+                DateTime      notBefore,
+                DateTime      notAfter)
+            {
+                StoreName     = storeName;
+                StoreLocation = storeLocation;
+                Thumbprint    = thumbprint;
+                SerialNumber  = serialNumber;
+                Subject       = subject;
+                Issuer        = issuer;
+                NotBefore     = notBefore;
+                NotAfter      = notAfter;
+            }
+
+            public static InstalledCertificate FromCertificate(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation)
+                 => new InstalledCertificate(
+                    storeName:     storeName,
+                    storeLocation: storeLocation,
+                    thumbprint:    cert.Thumbprint,
+                    serialNumber:  cert.SerialNumber,
+                    subject:       cert.Subject,
+                    issuer:        cert.Issuer,
+                    notBefore:     cert.NotBefore,
+                    notAfter:      cert.NotAfter);
         }
 
 
