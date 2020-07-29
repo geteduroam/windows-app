@@ -41,7 +41,8 @@ namespace EduroamConfigure
 		}
 
 		/// <summary>
-		/// A set of the installed CAs and client certificates
+		/// A set of the installed CAs and client certificates.
+		/// Managed by EduroamConfigure.CertificateStore
 		/// </summary>
 		public static ImmutableHashSet<InstalledCertificate> InstalledCertificates
 		{
