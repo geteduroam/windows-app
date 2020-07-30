@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography;
@@ -6,7 +8,7 @@ using InstalledCertificate = EduroamConfigure.PersistingStore.InstalledCertifica
 
 namespace EduroamConfigure
 {
-	class CertificateStore
+	public class CertificateStore
 	{
 		/// <summary>
 		/// Installs the certificate into the certificate store chosen.
@@ -96,15 +98,8 @@ namespace EduroamConfigure
 			return !IsCertificateInstalled(cert, storeName, storeLocation);
 		}
 
-		/// <summary>
-		/// Uses the persistant storage to uninstall all known installed certificates
-		/// </summary>
-		/// <returns>true on success</returns>
-		public static bool UninstallAllInstalledCertificates()
+		public static IEnumerable<(X509Certificate2, InstalledCertificate)> EnumerateInstalledCertificates()
 		{
-			Debug.WriteLine("Uninstalling all installed certificates...");
-
-			bool all_removed = true;
 			foreach (var installedCert in PersistingStore.InstalledCertificates.ToList())
 			{
 				// find matching certs in certstore
@@ -116,18 +111,50 @@ namespace EduroamConfigure
 						.Find(X509FindType.FindByThumbprint, installedCert.Thumbprint, false);
 				}
 
-				bool this_removed = false;
+				bool found = false;
 				foreach (var cert in matchingCerts)
 				{
 					// thumbprint already found to match
+					// TODO: is it possible for these attributes to be modified after adding them to their stores?
 					if (cert.Issuer != installedCert.Issuer) continue;
 					if (cert.Subject != installedCert.Subject) continue;
 					if (cert.SerialNumber != installedCert.SerialNumber) continue;
 
-					this_removed = UninstallCertificate(cert, installedCert.StoreName, installedCert.StoreLocation);
+					found = true;
+					yield return (cert, installedCert);
 					break;
 				}
-				all_removed &= this_removed;
+				if (!found)
+				{
+					// warning
+					if (matchingCerts.Count != 0)
+						Debug.Fail("Unable to find persisted certificate, even when thumbprint matched");
+
+					// not found, stop tracking it
+					PersistingStore.InstalledCertificates = PersistingStore.InstalledCertificates
+						.Remove(installedCert);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Uses the persistant storage to uninstall all known installed certificates
+		/// </summary>
+		/// <returns>true on success</returns>
+		public static bool UninstallAllInstalledCertificates()
+		{
+			Debug.WriteLine("Uninstalling all installed certificates...");
+
+			bool all_removed = true;
+			foreach ((var cert, var installedCert) in EnumerateInstalledCertificates())
+			{
+				var success = UninstallCertificate(cert, installedCert.StoreName, installedCert.StoreLocation);
+
+				if (success)
+					PersistingStore.InstalledCertificates = PersistingStore.InstalledCertificates
+						.Remove(installedCert);
+
+				all_removed &= success;
 			}
 
 			// not transactionally secure, probably also not needed
