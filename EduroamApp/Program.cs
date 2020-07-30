@@ -1,7 +1,6 @@
-﻿using ManagedNativeWifi;
+﻿using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace EduroamApp
@@ -12,7 +11,7 @@ namespace EduroamApp
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             /*
             * /
@@ -67,12 +66,50 @@ namespace EduroamApp
             */
 
 
+            RunGUI(args);
+        }
 
+        static void RunGUI(string[] args)
+        {
             if (Environment.OSVersion.Version.Major >= 6)
                 SetProcessDPIAware();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            /**/
+
+            // Single-instance launch:
+            var sim = new SingleInstanceManager();
+            sim.Run(args);
+
+            /** /
+
+            // Non single-instance launch:
             Application.Run(new frmParent());
+
+            /**/
+        }
+
+
+        // from https://www.red-gate.com/simple-talk/dotnet/net-framework/creating-tray-applications-in-net-a-practical-guide/#seventeenth
+        class SingleInstanceManager : WindowsFormsApplicationBase
+        {
+            public SingleInstanceManager()
+            {
+                IsSingleInstance = true;
+                //EnableVisualStyles = true; // Doesn't seem to do anything
+                //ShutdownStyle = Microsoft.VisualBasic.ApplicationServices.ShutdownMode.AfterMainFormCloses; // TODO: needed?
+                MainForm = new frmParent();
+            }
+
+            protected override void OnStartupNextInstance(StartupNextInstanceEventArgs eventArgs)
+            {
+                //base.OnStartupNextInstance(eventArgs);
+                if (MainForm.WindowState == FormWindowState.Minimized)
+                    MainForm.WindowState = FormWindowState.Normal;
+                MainForm.Activate();
+                // eventArgs.CommandLine.ToArray()
+            }
         }
 
         [System.Runtime.InteropServices.DllImport("user32.dll")]
