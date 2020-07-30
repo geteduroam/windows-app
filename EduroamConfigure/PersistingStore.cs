@@ -138,7 +138,7 @@ namespace EduroamConfigure
 
             if (serialized != (string)Registry.GetValue(ns, key, null)) // only write when we make a change
             {
-                Debug.WriteLine(string.Format("Write to {0}\\{1}: {2}", ns, key, serialized));
+                Debug.WriteLine("Write to {0}\\{1}: {2}", ns, key, serialized);
                 Registry.SetValue(ns, key, serialized);
             }
 

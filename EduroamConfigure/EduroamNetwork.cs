@@ -116,11 +116,11 @@ namespace EduroamConfigure
                 securityType,
                 overwrite);
 
-            Debug.WriteLine(string.Format("Install {2}WLANProfile {3} for '{0}' on {1}",
+            Debug.WriteLine("Install {2}WLANProfile {3} for '{0}' on {1}",
                     profileName, 
                     InterfaceId, 
                     (isHs2) ? "Hs2 " : "", 
-                    (success) ? "succeeded" : "failed"));
+                    (success) ? "succeeded" : "failed");
 
             if (success) {
                 PersistingStore.ConfiguredProfiles = PersistingStore.ConfiguredProfiles
@@ -170,11 +170,11 @@ namespace EduroamConfigure
                     userDataXml);
                 ret &= success;
 
-                Debug.WriteLine(string.Format("Installed {2}UserProfile {3} for '{0}' on {1}",
+                Debug.WriteLine("Installed {2}UserProfile {3} for '{0}' on {1}",
                         configuredProfile.ProfileName, 
                         InterfaceId, 
                         configuredProfile.IsHs2 ? "Hs2 " : "", 
-                        success ? "succeeded" : "failed"));
+                        success ? "succeeded" : "failed");
 
                 if (success && !configuredProfile.HasUserData)
                 {
@@ -301,8 +301,8 @@ namespace EduroamConfigure
                     continue; // ignore
 
                 // else remove
-                Debug.WriteLine(string.Format("Removing profile from persisting store called {0} on interface {1}",
-                    configuredProfile.ProfileName, configuredProfile.InterfaceId));
+                Debug.WriteLine("Removing profile from persisting store called {0} on interface {1}",
+                    configuredProfile.ProfileName, configuredProfile.InterfaceId);
                 PersistingStore.ConfiguredProfiles = PersistingStore.ConfiguredProfiles
                     .Remove(configuredProfile);
             }

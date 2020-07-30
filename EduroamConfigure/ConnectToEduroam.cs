@@ -302,8 +302,7 @@ namespace EduroamConfigure
         {
             // TODO: move this into EapAuthMethodInstaller?
 
-            Debug.WriteLine(string.Format("Install user profile for user {0}",
-                username));
+            Debug.WriteLine("Install user profile for user {0}", username);
 
             // sets user data
             bool anyInstalled = false;
@@ -312,8 +311,8 @@ namespace EduroamConfigure
                 anyInstalled |= network.InstallUserData(username, password, authMethod);
             }
 
-            Debug.WriteLine(string.Format("Install of user profile for user {1}: {0}",
-                anyInstalled ? "success" : "failed", username ?? "NULL"));
+            Debug.WriteLine("Install of user profile for user {1}: {0}",
+                anyInstalled ? "success" : "failed", username ?? "NULL");
             Debug.WriteLine("");
 
             return anyInstalled;
