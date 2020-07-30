@@ -256,6 +256,58 @@ namespace EduroamApp
 		/// </summary>
 		public void ExitAndUninstallSelf(bool usingWinforms = true)
 		{
+			ConnectToEduroam.RemoveAllProfiles();
+
+			CertificateStore.UninstallAllInstalledCertificates();
+
+			// Remove start menu link
+			Debug.WriteLine("Delete file: " + StartMenuLnkPath);
+			if (!File.Exists(StartMenuLnkPath)) File.Delete(StartMenuLnkPath);
+
+			// remove registry entries
+			Debug.WriteLine("Delete registry subkey: " + rnsMeta); ;
+			using (RegistryKey key = Registry.CurrentUser
+					.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall", writable: true))
+				if (key?.OpenSubKey(ApplicationIdentifier) != null)
+					key.DeleteSubKey(ApplicationIdentifier);
+			Debug.WriteLine("Delete registry value: " + rnsRun + "\\" + ApplicationIdentifier);
+			using (RegistryKey key = Registry.CurrentUser
+					.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run", writable: true))
+				if (key?.GetValue(ApplicationIdentifier) != null)
+					key.DeleteValue(ApplicationIdentifier);
+
+			// remove update task
+			Debug.WriteLine("Delete scheduled task: " + ScheduledTaskName);
+			using (var ts = new TaskService())
+				ts.RootFolder.DeleteTask(ScheduledTaskName,
+					exceptionOnNotExists: false);
+
+			// Delete myself:
+
+			// this process delays 3 seconds then deletes the exe file
+			var killme = new ProcessStartInfo
+			{
+				FileName = "cmd.exe",
+				Arguments = "/C choice /C Y /N /D Y /T 3 " + // TODO: escape arguments
+					"& Del " + InstallExePath +
+					"& Del /Q " + InstallDir +
+					"& rmdir " + InstallDir,
+				WindowStyle = ProcessWindowStyle.Hidden,
+				CreateNoWindow = true,
+				WorkingDirectory = "C:\\"
+			};
+			Process.Start(killme);
+
+			// Quit
+			//https://stackoverflow.com/a/12978034
+			if (usingWinforms)
+			{
+				Application.Exit();
+			}
+			else
+			{
+				Environment.Exit(0);
+			}
 		}
 	}
 }

@@ -76,7 +76,7 @@ namespace EduroamApp
 			else if (argsLower().Contains("/uninstall"))
 			{
 				// TODO: confirmation dialog
-				//GetEduroamInstaller.ExitAndUninstallSelf();
+				GetEduroamInstaller.ExitAndUninstallSelf();
 			}
 			else
 			{
