@@ -204,13 +204,13 @@ namespace EduroamApp
 				intWriter: (string key, uint? value) =>
 				{
 					if (value == null) return;
-					Debug.WriteLine(string.Format("Write int to {0}\\{1}: {2}", rnsMeta, key, value));
+					Debug.WriteLine("Write int to {0}\\{1}: {2}", rnsMeta, key, value);
 					Registry.SetValue(rnsMeta, key, value, RegistryValueKind.DWord);
 				},
 				strWriter: (string key, string value) =>
 				{
 					if (value == null) return;
-					Debug.WriteLine(string.Format("Write str to {0}\\{1}: {2}", rnsMeta, key, value));
+					Debug.WriteLine("Write str to {0}\\{1}: {2}", rnsMeta, key, value);
 					Registry.SetValue(rnsMeta, key, value);
 				});
 
