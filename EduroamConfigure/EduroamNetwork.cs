@@ -14,29 +14,33 @@ namespace EduroamConfigure
 {
 	/// <summary>
 	/// Connects to an Eduroam network if available and stores information about it.
+	/// Note: this struct is read only. After using it to store changes, fetch the networks again to see the changes.
 	/// </summary>
-	public class EduroamNetwork
+	public readonly struct EduroamNetwork
 	{
 		public const string DefaultSsid = "eduroam";
 
 		// Properties
 		public Guid InterfaceId { get; }
 		public AvailableNetworkPack NetworkPack { get; }
-		public bool IsAvailable { get { return NetworkPack != null; } }
-		public bool IsConfigured { get => PersistingStore.ConfiguredProfiles.Any(); }
+		public bool IsAvailable { get => NetworkPack != null; }
+		public ConfiguredProfile? Profile { get; }
 
 		// TODO: Add support for Wired 801x
 
 		private EduroamNetwork(Guid interfaceId)
 		{
 			NetworkPack = null;
+			Profile = null;
 			InterfaceId = interfaceId;
 		}
 
-		private EduroamNetwork(AvailableNetworkPack networkPack)
+		private EduroamNetwork(AvailableNetworkPack networkPack, ConfiguredProfile? profile = null)
 			: this(networkPack.Interface.Id)
 		{
 			NetworkPack = networkPack;
+			Profile = profile;
+
 			/*
 			if (!string.IsNullOrEmpty(networkPack.ProfileName))
 			{
@@ -236,6 +240,7 @@ namespace EduroamConfigure
 			// NativeWifi will throw if service is not available
 			if (!IsWlanServiceApiAvailable())
 				return Enumerable.Empty<EduroamNetwork>();
+			PruneMissingPersistedProfiles();
 
 			// TODO: multiple profiles on a single interface creates duplicate work further down
 			//       perhaps group by InterfaceId and have a list of ProfileName in each EduroamNetwork?
@@ -252,36 +257,24 @@ namespace EduroamConfigure
 				.Where(guid => !configuredInterfaces.Contains(guid))
 				.Select(guid => new EduroamNetwork(guid));
 
-			// look through installed profiles and remove persisted profile configurations which have been uninstalled by user
-			// TODO: move to separate function?
-			var availableProfiles = GetAllNetworkPacksWithProfiles().ToList();
-			foreach (var configuredProfile in PersistingStore.ConfiguredProfiles)
-			{
-				// if still installed
-				if (availableProfiles
-					.Where(network => configuredProfile.InterfaceId == network.Interface.Id)
-					.Where(network => configuredProfile.ProfileName == network.ProfileName)
-					.Any()) continue; // ignore
-
-				// else remove
-				Debug.WriteLine(string.Format("Removing profile from persisting store called {0} on interface {1}",
-					configuredProfile.ProfileName, configuredProfile.InterfaceId));
-				PersistingStore.ConfiguredProfiles = PersistingStore.ConfiguredProfiles
-					.Remove(configuredProfile);
-			}
-
 			return availableNetworks.Concat(unavailableNetworks);
 		}
 
+		/// <summary>
+		/// Yields EduroamNetwork instances for each configured profile for each network interface.
+		/// </summary>
 		public static IEnumerable<EduroamNetwork> GetConfigured()
 		{
-			var installedProfiles = PersistingStore.ConfiguredProfiles.ToList();
+			// NativeWifi will throw if service is not available
+			if (!IsWlanServiceApiAvailable())
+				return Enumerable.Empty<EduroamNetwork>();
+			PruneMissingPersistedProfiles();
 
 			return GetAllNetworkPacksWithProfiles()
-				.Where(network => installedProfiles.Any(p
-					=> p.ProfileName == network.ProfileName
-					&& p.InterfaceId == network.Interface.Id))
-				.Select(network => new EduroamNetwork(network));
+				.Join(PersistingStore.ConfiguredProfiles,
+					network => (network.ProfileName, network.Interface.Id),
+					profile => (profile.ProfileName, profile.InterfaceId),
+					(network, profile) => new EduroamNetwork(network, profile));
 		}
 
 		/// <summary>
@@ -292,6 +285,27 @@ namespace EduroamConfigure
 		public static bool IsEduroamAvailable(EapConfig eapConfig)
 		{
 			return GetAllAvailableEduroamNetworkPacks(eapConfig?.CredentialApplicabilities).Any();
+		}
+
+		private static void PruneMissingPersistedProfiles()
+		{
+			// look through installed profiles and remove persisted profile configurations which have been uninstalled by user
+			// TODO: move to separate function?
+			var availableProfiles = GetAllNetworkPacksWithProfiles().ToList();
+			foreach (var configuredProfile in PersistingStore.ConfiguredProfiles)
+			{
+				// if still installed
+				if (availableProfiles.Any(network
+						=> configuredProfile.InterfaceId == network.Interface.Id
+						&& configuredProfile.ProfileName == network.ProfileName))
+					continue; // ignore
+
+				// else remove
+				Debug.WriteLine(string.Format("Removing profile from persisting store called {0} on interface {1}",
+					configuredProfile.ProfileName, configuredProfile.InterfaceId));
+				PersistingStore.ConfiguredProfiles = PersistingStore.ConfiguredProfiles
+					.Remove(configuredProfile);
+			}
 		}
 
 		/// <summary>
@@ -320,7 +334,6 @@ namespace EduroamConfigure
 			}
 			return true;
 		}
-
 
 		/// <summary>
 		/// Gets all network packs containing information about an eduroam network, if any.
