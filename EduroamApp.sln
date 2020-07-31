@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedNativeWifi", "Manage
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduroamConfigure", "EduroamConfigure\EduroamConfigure.csproj", "{8D2C283D-5868-4329-B86E-060ADF68734C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp", "WpfApp\WpfApp.csproj", "{88939F1B-5677-49B1-BC07-71605598494A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{8D2C283D-5868-4329-B86E-060ADF68734C}.Release|x64.Build.0 = Release|Any CPU
 		{8D2C283D-5868-4329-B86E-060ADF68734C}.Release|x86.ActiveCfg = Release|Any CPU
 		{8D2C283D-5868-4329-B86E-060ADF68734C}.Release|x86.Build.0 = Release|Any CPU
+		{88939F1B-5677-49B1-BC07-71605598494A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88939F1B-5677-49B1-BC07-71605598494A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88939F1B-5677-49B1-BC07-71605598494A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{88939F1B-5677-49B1-BC07-71605598494A}.Debug|x64.Build.0 = Debug|Any CPU
+		{88939F1B-5677-49B1-BC07-71605598494A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{88939F1B-5677-49B1-BC07-71605598494A}.Debug|x86.Build.0 = Debug|Any CPU
+		{88939F1B-5677-49B1-BC07-71605598494A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88939F1B-5677-49B1-BC07-71605598494A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88939F1B-5677-49B1-BC07-71605598494A}.Release|x64.ActiveCfg = Release|Any CPU
+		{88939F1B-5677-49B1-BC07-71605598494A}.Release|x64.Build.0 = Release|Any CPU
+		{88939F1B-5677-49B1-BC07-71605598494A}.Release|x86.ActiveCfg = Release|Any CPU
+		{88939F1B-5677-49B1-BC07-71605598494A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

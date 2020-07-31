@@ -1,0 +1,37 @@
+﻿<Page x:Class="WpfApp.Menu.ProfileOverview"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WpfApp.Menu"
+      mc:Ignorable="d" 
+      d:DesignHeight="320" d:DesignWidth="322"
+      Title="ProfileOverview">
+
+    <StackPanel Height="320" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <StackPanel Background="White"/>
+        <Label x:Name="lblDesc" HorizontalAlignment="Center" Margin="5">
+            <TextBlock x:Name="tbDesc" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center"/>
+        </Label>
+        <GroupBox Header="Contact info" Margin="5">
+            <Grid Margin="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="lblWebTitle" Content="Web:" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0"/>
+                <Label x:Name="lblEmailTitle" Content="Email:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Margin="0"/>
+                <Label x:Name="lblPhoneTitle" Content="Phone:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2"/>
+
+            </Grid>
+
+        </GroupBox>
+
+
+    </StackPanel>
+</Page>

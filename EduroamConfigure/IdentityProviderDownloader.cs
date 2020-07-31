@@ -109,7 +109,6 @@ namespace EduroamConfigure
         /// Gets all profiles associated with a identity provider ID.
         /// </summary>
         /// <returns>identity provider profile object containing all profiles for given provider</returns>
-        /// <exception cref="EduroamAppUserError">description</exception>
         public List<IdentityProviderProfile> GetIdentityProviderProfiles(int idProviderId)
         {
             return Providers.Where(p => p.cat_idp == idProviderId).First().Profiles;

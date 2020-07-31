@@ -17,7 +17,7 @@ namespace EduroamApp
         private IdentityProviderDownloader Downloader { get => frmParent.IdpDownloader; }
         private List<IdentityProvider> identityProviders = new List<IdentityProvider>(); // list containing all identity providers
         private List<IdentityProvider> allIdentityProviders; // TODO: delete?
-        public int idProviderId; // id of selected institution
+        public int idProviderId { get; set; } // id of selected institution
 
      
         public frmSelectInstitution(frmParent parentInstance)

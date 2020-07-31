@@ -97,7 +97,7 @@ namespace EduroamApp
             // sets eduroam logo
             webEduroamLogo.DocumentText = ImageFunctions.GenerateSvgLogoHtml(Properties.Resources.eduroam_logo, webEduroamLogo.Width, webEduroamLogo.Height);
             Icon = Properties.Resources.geteduroam;
-            this.ShowInTaskbar = true;
+            //this.ShowInTaskbar = true;
 
             // checks if file came with self extract
             eapConfig = GetSelfExtractingEap();
