@@ -117,7 +117,7 @@
     <Reference Include="WindowsFormsIntegration" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Installer.cs" />
+    <Compile Include="Classes\SelfInstaller.cs" />
     <Compile Include="Classes\FileDialog.cs" />
     <Compile Include="Classes\ImageFunctions.cs" />
     <Compile Include="Classes\HintTextBox.cs">
