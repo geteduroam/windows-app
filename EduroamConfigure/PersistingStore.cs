@@ -11,7 +11,7 @@ namespace EduroamConfigure
 	/// This is a class with static properties which access the persistent storage in the windows registry.
 	/// All the entries are immutable, to force you to store all your changes properly.
 	/// </summary>
-	public class PersistingStore
+	public static class PersistingStore
 	{
 		/// <summary>
 		/// The username to remember from when the user last logged in
@@ -105,15 +105,17 @@ namespace EduroamConfigure
 			}
 
 			public static InstalledCertificate FromCertificate(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation)
-				 => new InstalledCertificate(
-					storeName:     storeName,
-					storeLocation: storeLocation,
-					thumbprint:    cert.Thumbprint,
-					serialNumber:  cert.SerialNumber,
-					subject:       cert.Subject,
-					issuer:        cert.Issuer,
-					notBefore:     cert.NotBefore,
-					notAfter:      cert.NotAfter);
+				 => cert == null
+					? throw new ArgumentNullException(paramName: nameof(cert))
+					: new InstalledCertificate(
+						storeName:     storeName,
+						storeLocation: storeLocation,
+						thumbprint:    cert.Thumbprint,
+						serialNumber:  cert.SerialNumber,
+						subject:       cert.Subject,
+						issuer:        cert.Issuer,
+						notBefore:     cert.NotBefore,
+						notAfter:      cert.NotAfter);
 		}
 
 

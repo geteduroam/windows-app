@@ -1,8 +1,5 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 
 namespace EduroamConfigure
 {
@@ -21,7 +18,7 @@ namespace EduroamConfigure
 	}
 	public class ApiException : Exception
 	{
-		private static readonly string DefaultMessage = "Error with Api";
+		private const string DefaultMessage = "Error with Api";
 
 		public ApiException() : base(DefaultMessage) { }
 		public ApiException(string message) : base(message) { }
@@ -30,7 +27,7 @@ namespace EduroamConfigure
 
 	public class ApiUnreachableException : ApiException
 	{
-		private static readonly string DefaultMessage = "Api could not be reached";
+		private const string DefaultMessage = "Api could not be reached";
 
 		public ApiUnreachableException() : base(DefaultMessage) { }
 		public ApiUnreachableException(string message) : base(message) { }
@@ -39,7 +36,7 @@ namespace EduroamConfigure
 
 	public class ApiParsingException : Exception
 	{
-		private static readonly string DefaultMessage = "Api response could not be parsed";
+		private const string DefaultMessage = "Api response could not be parsed";
 
 		public ApiParsingException() : base(DefaultMessage) { }
 		public ApiParsingException(string message) : base(message) { }

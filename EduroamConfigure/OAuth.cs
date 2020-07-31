@@ -236,7 +236,10 @@ namespace EduroamConfigure
 		/// </summary>
 		public static string ConstructQueryString(NameValueCollection parameters)
 		{
+			_ = parameters ?? throw new ArgumentNullException(paramName: nameof(parameters));
+
 			// https://leekelleher.com/2008/06/06/how-to-convert-namevaluecollection-to-a-query-string/
+			// TODO: reduce to a LINQ query
 			List<string> items = new List<string>();
 
 			foreach (string name in parameters)

@@ -67,7 +67,7 @@ namespace EduroamApp
 							"Will uninstall the program from %USER%/AppData/Local"),
 						("/Close",
 							"Closes the single-instance running for this application"),
-					}) Console.WriteLine(string.Format("\t{0, -24} {1}", cmd, desc.Replace("\n", "\n\t\t")));
+					}) Console.WriteLine("\t{0, -24} {1}", cmd, desc.Replace("\n", "\n\t\t"));
 			}
 			else if (argsLower().Contains("/install"))
 			{

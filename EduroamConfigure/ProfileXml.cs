@@ -360,7 +360,7 @@ namespace EduroamConfigure
 				List<string> formattedThumbprints = caThumbprints
 					.Select(thumb => Regex.Replace(thumb, " ", ""))
 					.Select(thumb => Regex.Replace(thumb, ".{2}", "$0 "))
-					.Select(thumb => thumb.ToUpper())
+					.Select(thumb => thumb.ToUpperInvariant())
 					.Select(thumb => thumb.Trim())
 					.ToList();
 

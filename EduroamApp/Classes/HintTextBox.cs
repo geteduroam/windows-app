@@ -47,7 +47,7 @@ namespace EduroamApp
 
 		protected virtual void txt_Leave(object sender, EventArgs e)
 		{
-			if (Text == "")
+			if (string.IsNullOrEmpty(Text))
 			{
 				ActivateHint();
 			}

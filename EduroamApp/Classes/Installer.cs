@@ -50,7 +50,7 @@ namespace EduroamApp
 			public  string VersionMinor;        // [REQUIRED] Derived from ProductVersion
 			public  string VersionMajor;        // [REQUIRED] Derived from ProductVersion
 			private string Version              // [SET AUTOMATICALLY] Derived from ProductVersion
-			{ get => string.Format("{0}.{1}", VersionMajor, VersionMinor); }
+			{ get => string.Format(CultureInfo.InvariantCulture, "{0}.{1}", VersionMajor, VersionMinor); }
 			public  string HelpLink;            // ARPHELPLINK
 			public  string HelpTelephone;       // ARPHELPTELEPHONE
 			private string InstallDate          // [SET AUTOMATICALLY] The last time this product received service. The value of this property is replaced each time a patch is applied or removed from the product or the /v Command-Line Option is used to repair the product. If the product has received no repairs or patches this property contains the time this product was installed on this computer.
@@ -114,22 +114,22 @@ namespace EduroamApp
 				strWriter(nameof(Readme),              Readme);
 				strWriter(nameof(UninstallString),     UninstallString);
 				strWriter(nameof(SettingsIdentifier),  SettingsIdentifier);
-				intWriter(nameof(NoRepair),            NoRepair.HasValue ? (uint?)Convert.ToInt32(NoRepair) : null);
-				intWriter(nameof(NoModify),            NoModify.HasValue ? (uint?)Convert.ToInt32(NoModify) : null);
+				intWriter(nameof(NoRepair),            NoRepair.HasValue ? (uint?)Convert.ToInt32(NoRepair, CultureInfo.InvariantCulture) : null);
+				intWriter(nameof(NoModify),            NoModify.HasValue ? (uint?)Convert.ToInt32(NoModify, CultureInfo.InvariantCulture) : null);
 				intWriter(nameof(EstimatedSize),       EstimatedSize);
 			}
 
 			public void Nullcheck()
 			{
-				_ = DisplayIcon      ?? throw new ArgumentNullException(paramName: nameof(DisplayIcon),     message: "name should not be null");
-				_ = DisplayName      ?? throw new ArgumentNullException(paramName: nameof(DisplayName),     message: "name should not be null");
-				_ = DisplayVersion   ?? throw new ArgumentNullException(paramName: nameof(DisplayVersion),  message: "name should not be null");
-				_ = Publisher        ?? throw new ArgumentNullException(paramName: nameof(Publisher),       message: "name should not be null");
-				_ = VersionMinor     ?? throw new ArgumentNullException(paramName: nameof(VersionMinor),    message: "name should not be null");
-				_ = VersionMajor     ?? throw new ArgumentNullException(paramName: nameof(VersionMajor),    message: "name should not be null");
-				_ = Version          ?? throw new ArgumentNullException(paramName: nameof(Version),         message: "name should not be null");
-				_ = UninstallString  ?? throw new ArgumentNullException(paramName: nameof(UninstallString), message: "name should not be null");
-				_ = EstimatedSize    ?? throw new ArgumentNullException(paramName: nameof(EstimatedSize),   message: "name should not be null");
+				_ = DisplayIcon      ?? throw new NullReferenceException(nameof(DisplayIcon) +     " should not be null");
+				_ = DisplayName      ?? throw new NullReferenceException(nameof(DisplayName) +     " should not be null");
+				_ = DisplayVersion   ?? throw new NullReferenceException(nameof(DisplayVersion) +  " should not be null");
+				_ = Publisher        ?? throw new NullReferenceException(nameof(Publisher) +       " should not be null");
+				_ = VersionMinor     ?? throw new NullReferenceException(nameof(VersionMinor) +    " should not be null");
+				_ = VersionMajor     ?? throw new NullReferenceException(nameof(VersionMajor) +    " should not be null");
+				_ = Version          ?? throw new NullReferenceException(nameof(Version) +         " should not be null");
+				_ = UninstallString  ?? throw new NullReferenceException(nameof(UninstallString) + " should not be null");
+				_ = EstimatedSize    ?? throw new NullReferenceException(nameof(EstimatedSize) +   " should not be null");
 			}
 		}
 
@@ -158,7 +158,7 @@ namespace EduroamApp
 		{ get => ApplicationIdentifier + " - Check for updated config"; }
 
 		// Registry Namespaces
-		private string rnsRun
+		private static string rnsRun
 		{ get => "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"; }
 		private string rnsMeta
 		{ get => "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" + ApplicationIdentifier; }
@@ -225,7 +225,7 @@ namespace EduroamApp
 			lnk.Save();
 
 			// Register the application to run on boot
-			Debug.WriteLine(string.Format("Write str to {0}\\{1}: {2}", rnsRun, ApplicationIdentifier, StartMinimizedCommand));
+			Debug.WriteLine("Write str to {0}\\{1}: {2}", rnsRun, ApplicationIdentifier, StartMinimizedCommand);
 			Registry.SetValue(rnsRun, ApplicationIdentifier, StartMinimizedCommand);
 
 			// Register scheduled task to check for updates

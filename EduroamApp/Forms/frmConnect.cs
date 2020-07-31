@@ -55,7 +55,7 @@ namespace EduroamApp
 					// waits at connecting screen if under 9 seconds difference
 					if (difference.TotalSeconds < 8) // TODO: muyto intressante, add this to TryToConnect in ConnectToEduroam
 					{
-						await PutTaskDelay(difference.Milliseconds + 1000);
+						await Task.Delay(difference.Milliseconds + 1000);
 					}
 					// displays dialog that lets user know how long they must wait, or to change their clock manually
 					else
@@ -99,11 +99,6 @@ namespace EduroamApp
 				frmParent.BtnBackEnabled = true;
 				frmParent.ProfileCondition = frmParent.ProfileStatus.Incomplete;
 			}
-		}
-
-		async Task PutTaskDelay(int milliseconds)
-		{
-			await Task.Delay(milliseconds);
 		}
 
 		// gives user choice of wether they want to save the configuration before quitting

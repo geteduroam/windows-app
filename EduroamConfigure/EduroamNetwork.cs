@@ -63,6 +63,8 @@ namespace EduroamConfigure
 		/// <returns>True if succeeded, false if failed.</returns>
 		public bool InstallProfiles(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
 		{
+			_ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
+
 			PersistingStore.ProfileID = authMethod.EapConfig.Uid;
 
 			var ssids = authMethod.EapConfig.CredentialApplicabilities
@@ -92,6 +94,8 @@ namespace EduroamConfigure
 		/// <returns>True if succeeded, false if failed.</returns>
 		public bool InstallHs2Profile(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
 		{
+			_ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
+
 			PersistingStore.ProfileID = authMethod.EapConfig.Uid;
 
 			(string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, asHs2Profile: true);
@@ -141,6 +145,8 @@ namespace EduroamConfigure
 		/// <returns>True if all succeeded, false if any failed or none was configured</returns>
 		public bool InstallUserData(string username, string password, EapConfig.AuthenticationMethod authMethod, bool forAllUsers = false)
 		{
+			_ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
+
 			// See 'dwFlags' at: https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/nf-wlanapi-wlansetprofileeapxmluserdata
 			const uint profileUserTypeCurrentUsers = 0x00000000; // "current user" - https://github.com/rozmansi/WLANSetEAPUserData
 			const uint profileUserTypeAllUSers = 0x00000001; // WLAN_SET_EAPHOST_DATA_ALL_USERS
@@ -195,7 +201,7 @@ namespace EduroamConfigure
 		/// </remarks>
 		public bool RemoveInstalledProfiles()
 		{
-			var n = PersistingStore.ConfiguredProfiles.Count();
+			var n = PersistingStore.ConfiguredProfiles.Count;
 
 			Debug.WriteLine("Removing installed profiles on " + InterfaceId);
 			foreach (var configuredProfile in PersistingStore.ConfiguredProfiles.ToList())
@@ -210,7 +216,7 @@ namespace EduroamConfigure
 				}
 			}
 
-			return n != PersistingStore.ConfiguredProfiles.Count() || n == 0;
+			return n != PersistingStore.ConfiguredProfiles.Count || n == 0;
 		}
 
 		public async Task<bool> TryToConnect()

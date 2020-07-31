@@ -33,7 +33,7 @@ namespace EduroamApp
 			var passphrase = "";
 			while (!TestCertificatePassphrase(filepath, passphrase))
 			{
-				if (passphrase == "")
+				if (string.IsNullOrEmpty(passphrase))
 				{
 					MessageBox.Show(
 						"The certificate bundle you chose is password protected.\r\n" +
@@ -108,7 +108,7 @@ namespace EduroamApp
 		/// <returns>Path of selected file.</returns>
 		private static string GetFileFromDialog(string dialogTitle, string filter)
 		{
-			OpenFileDialog fileDialog = new OpenFileDialog
+			using OpenFileDialog fileDialog = new OpenFileDialog
 			{
 				// sets the initial directory of the open file dialog
 				//InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
@@ -163,7 +163,7 @@ namespace EduroamApp
 		{
 			try
 			{
-				var testCertificate = new X509Certificate2(certificateFilePath, passphrase); // TODO: any persist flags needed?
+				using var testCertificate = new X509Certificate2(certificateFilePath, passphrase); // TODO: any persist flags needed?
 			}
 			catch (CryptographicException ex)
 			{
@@ -181,12 +181,11 @@ namespace EduroamApp
 		}
 
 
-
 		/// https://stackoverflow.com/a/5427121
 		private static string PasswordInputDialog(string text, string caption)
 		{
 			// simon TODO: style this ;)
-			Form prompt = new Form()
+			using Form prompt = new Form()
 			{
 				Width = 300,
 				Height = 150,

@@ -8,32 +8,33 @@ using System.Text.RegularExpressions;
 
 namespace EduroamConfigure
 {
-	public class IdentityProviderParser
+	public static class IdentityProviderParser
 	{
 		public static List<IdentityProvider> SortByQuery(List<IdentityProvider> providers, string searchString, int limit)
 		{
 			var query = NormalizeString(searchString);
 
+			bool startsWithInv(string str, string query) =>
+				str.StartsWith(query, StringComparison.InvariantCultureIgnoreCase);
+
 			// TODO: add realms/domain as possible match
 
 			// Lexically sort by prioritized criterias.
 			var sortedList = providers
-				// Only compute the normalized name once
+				// Precompute compute the normalized name
 				.Select(provider => (nname: NormalizeString(provider.Name), provider))
 
 				// name contains a word equal to the exact search string
-				.OrderByDescending(p => p.nname.Split(' ')
-					.Any(word => string.Equals(word, query)))
+				.OrderByDescending(p => p.nname.Split(null).Contains(query))
 
 				// name starts with search string
-				.ThenByDescending(p => p.nname.StartsWith(query))
+				.ThenByDescending(p => startsWithInv(p.nname, query))
 
 				// acronym for name contains searchstring
 				.ThenByDescending(p => StringToAcronym(p.nname).Contains(query))
 
 				// any word in name begins with search string
-				.ThenByDescending(p => p.nname.Split(' ')
-					.Any(word => word.StartsWith(query)))
+				.ThenByDescending(p => p.nname.Split(null).Any(word => startsWithInv(word, query)))
 
 				// search string can be found somewhere in the name
 				.ThenByDescending(p => p.nname.Contains(query))
@@ -52,11 +53,12 @@ namespace EduroamConfigure
 			return sortedList;
 		}
 
-		//removes accents and converts non-US character to US charactres (ø to o etc)
+		//removes accents, casing and converts non-US character to US characters (ø to o etc)
 		private static string NormalizeString(string str)
 		{
+			// TODO: perhaps allow non-us characters?
 			string strippedString = Encoding.ASCII.GetString(Encoding.GetEncoding("Cyrillic").GetBytes(str))
-				.ToLowerInvariant()
+				.ToUpperInvariant()
 				.Replace("-", " ")
 				.Replace("[", "")
 				.Replace("]", "")
@@ -67,17 +69,14 @@ namespace EduroamConfigure
 
 		private static string StringToAcronym(string str)
 		{
-			string resultString = "";
-			foreach (String word in str.ToLower().Split(' '))
-			{
-				if (word.Count() > 0)
-				{
-					resultString += word[0];
-				}
-			}
-			return resultString;
+			return string.Join("", str
+				.ToUpperInvariant()
+				.Split(null) // whitespace
+				.Where(part => part.Any())
+				.Select(word => word[0]));
 		}
 
+		// TODO: rename, docstring, perhaps move?
 		//dwd
 		public static string GetBrokenRules(string username, string realm, bool strictRealm)
 		{

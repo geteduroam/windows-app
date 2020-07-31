@@ -1,3 +1,4 @@
+using System;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
@@ -48,6 +49,9 @@ namespace EduroamConfigure
 			string username,
 			string password)
 		{
+			_ = authMethod ?? throw new ArgumentNullException(nameof(authMethod));
+			using var userCert = authMethod.ClientCertificateAsX509Certificate2();
+
 			XElement newUserData =
 				new XElement(nsEHUC + "EapHostUserCredentials",
 					new XAttribute(XNamespace.Xmlns + "eapCommon", nsEC),
@@ -70,7 +74,7 @@ namespace EduroamConfigure
 							authMethod.ClientOuterIdentity ?? username, // TODO: can this default case ever happen?
 							authMethod.EapType,
 							authMethod.InnerAuthType,
-							authMethod.ClientCertificateAsX509Certificate2()?.Thumbprint
+							userCert?.Thumbprint
 						)
 					)
 				);

@@ -183,7 +183,7 @@ namespace EduroamApp
 		private void lnkToU_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
 		{
 			// displays terms of use in dialog form
-			frmTermsOfUse termsDialog = new frmTermsOfUse(termsOfUse);
+			using frmTermsOfUse termsDialog = new frmTermsOfUse(termsOfUse);
 			termsDialog.ShowDialog();
 		}
 

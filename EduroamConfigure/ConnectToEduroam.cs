@@ -16,7 +16,7 @@ namespace EduroamConfigure
 	/// - setting user data
 	/// - connecting to a network
 	/// </summary>
-	public class ConnectToEduroam
+	public static class ConnectToEduroam
 	{
 		// Certificate stores
 		private const StoreName caStoreName = StoreName.Root; // Used to install CAs to verify server certificates with
@@ -33,6 +33,8 @@ namespace EduroamConfigure
 		/// <returns>A tuple on the form: (bool isCritical, string description)</returns>
 		public static IEnumerable<ValueTuple<bool, string>> LookForWarningsInEapConfig(EapConfig eapConfig)
 		{
+			_ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
+
 			if (!EapConfigIsSupported(eapConfig))
 			{
 				yield return (true, "This configuration is not supported");
@@ -113,6 +115,8 @@ namespace EduroamConfigure
 		/// <returns>True if it contains a supported type</returns>
 		public static bool EapConfigIsSupported(EapConfig eapConfig)
 		{
+			_ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
+
 			return eapConfig.AuthenticationMethods
 				.Where(AuthMethodIsSupported).Any();
 		}
@@ -133,7 +137,8 @@ namespace EduroamConfigure
 			private bool HasInstalledCertificates = false;
 			private bool HasInstalledProfile = false;
 
-			public readonly EapConfig.AuthenticationMethod AuthMethod;
+			// reference to the EAP config
+			public EapConfig.AuthenticationMethod AuthMethod { get; }
 
 
 			/// <summary>
@@ -154,7 +159,7 @@ namespace EduroamConfigure
 				// checks if Authentication method contains a client certificate
 				if (!string.IsNullOrEmpty(AuthMethod.ClientCertificate))
 				{
-					var clientCert = AuthMethod.ClientCertificateAsX509Certificate2();
+					using var clientCert = AuthMethod.ClientCertificateAsX509Certificate2();
 					CertificateStore.InstallCertificate(clientCert, userCertStoreName, userCertStoreLocation);
 				}
 				// TODO else throw?
@@ -300,6 +305,7 @@ namespace EduroamConfigure
 		/// <param name="authMethod">AuthMethod of installed profile</param>
 		public static bool InstallUserProfile(string username, string password, EapConfig.AuthenticationMethod authMethod)
 		{
+			_ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
 			// TODO: move this into EapAuthMethodInstaller?
 
 			Debug.WriteLine("Install user profile for user {0}", username);
