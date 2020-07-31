@@ -45,7 +45,7 @@ namespace EduroamApp
 
 			if (frmParent.AuthMethod.EapType == EapType.TLS)
 			{
-				DateTime validFrom = ConnectToEduroam.CertValidFrom; // TODO: this static variable will be moved
+				DateTime validFrom = frmParent.AuthMethod.ClientCertificateAsX509Certificate2().NotBefore;
 				DateTime now = DateTime.Now;
 				TimeSpan difference = validFrom - now;
 
@@ -53,7 +53,7 @@ namespace EduroamApp
 				if (DateTime.Compare(validFrom, now) > 0)
 				{
 					// waits at connecting screen if under 9 seconds difference
-					if (difference.TotalSeconds < 8) // TODO: muyto intressante
+					if (difference.TotalSeconds < 8) // TODO: muyto intressante, add this to TryToConnect in ConnectToEduroam
 					{
 						await PutTaskDelay(difference.Milliseconds + 1000);
 					}

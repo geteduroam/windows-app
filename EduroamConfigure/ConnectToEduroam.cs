@@ -5,7 +5,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Linq;
 using System.Diagnostics;
-using System.Diagnostics.Contracts;
+using InstalledCertificate = EduroamConfigure.PersistingStore.InstalledCertificate;
 
 namespace EduroamConfigure
 {
@@ -18,12 +18,6 @@ namespace EduroamConfigure
 	/// </summary>
 	public class ConnectToEduroam
 	{
-		// TODO: move these static variables to the caller
-
-		// EAP type of selected configuration
-		// client certificate valid from
-		public static DateTime CertValidFrom { get; set; } // TODO: use EapAuthMethodInstaller.CertValidFrom instead
-
 		// Certificate stores
 		private const StoreName caStoreName = StoreName.Root; // Used to install CAs to verify server certificates with
 		private const StoreLocation caStoreLocation = StoreLocation.CurrentUser; // TODO: make this configurable to LocalMachine
@@ -31,7 +25,6 @@ namespace EduroamConfigure
 		private const StoreLocation interStoreLocation = StoreLocation.CurrentUser; // TODO: make this configurable to LocalMachine
 		private const StoreName userCertStoreName = StoreName.My; // Used to install TLS client certificates
 		private const StoreLocation userCertStoreLocation = StoreLocation.CurrentUser;
-
 
 		/// <summary>
 		/// Checks the EAP config to see if there is any issues
@@ -141,7 +134,6 @@ namespace EduroamConfigure
 			private bool HasInstalledProfile = false;
 
 			public readonly EapConfig.AuthenticationMethod AuthMethod;
-			public DateTime CertValidFrom { get; private set; }
 
 
 			/// <summary>
@@ -163,24 +155,9 @@ namespace EduroamConfigure
 				if (!string.IsNullOrEmpty(AuthMethod.ClientCertificate))
 				{
 					var clientCert = AuthMethod.ClientCertificateAsX509Certificate2();
-
-					// open personal certificate store to add client cert
-					using var personalStore = new X509Store(userCertStoreName, userCertStoreLocation);
-					personalStore.Open(OpenFlags.ReadWrite);
-					personalStore.Add(clientCert);
-					personalStore.Close();
-
-					// gets name of CA that issued the certificate
-					// gets valid from time of certificate
-					CertValidFrom = clientCert.NotBefore; // TODO: make gui use this
-					ConnectToEduroam.CertValidFrom = clientCert.NotBefore; // TODO: REMOVE
+					CertificateStore.InstallCertificate(clientCert, userCertStoreName, userCertStoreLocation);
 				}
-				/*
-				else
-				{
-					throw TODO
-				}
-				*/
+				// TODO else throw?
 			}
 
 			/// <summary>
@@ -205,24 +182,9 @@ namespace EduroamConfigure
 			/// <returns></returns>
 			public bool NeedsToInstallCAs()
 			{
-				// open the trusted root CA stores
-				using var rootStore = new X509Store(caStoreName, caStoreLocation);
-				rootStore.Open(OpenFlags.ReadOnly);
-
-				foreach (var cert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
-				{
-					// if this doesn't work, try https://stackoverflow.com/a/34174890
-					bool isRootCA = cert.Subject == cert.Issuer;
-					if (!isRootCA) continue; // no prompt will be made by this cert during install
-
-					// check if CA is not already installed
-					var matchingCerts = rootStore.Certificates
-						.Find(X509FindType.FindByThumbprint, cert.Thumbprint, false);
-
-					if (matchingCerts.Count < 1) return true; // user must be informed
-				}
-
-				return false;
+				return AuthMethod.CertificateAuthoritiesAsX509Certificate2()
+					.Where(cert => cert.Subject == cert.Issuer) // Not a CA, no prompt will be made by this cert during install. If this doesn't work, try https://stackoverflow.com/a/34174890
+					.Any(cert => !CertificateStore.IsCertificateInstalled(cert, caStoreName, caStoreLocation));
 			}
 
 			/// <summary>
@@ -237,43 +199,17 @@ namespace EduroamConfigure
 				if (NeedsClientCertificate())
 					throw new EduroamAppUserError("no client certificate was provided");
 
-				// TODO: perhaps be nice and persist which thumbprints we have installed, and where, and provide a way to remove them
-
-				// open the trusted root CA stores
-				using var rootStore = new X509Store(caStoreName, caStoreLocation);
-				using var interStore = new X509Store(interStoreName, interStoreLocation);
-				rootStore.Open(OpenFlags.ReadWrite);
-				interStore.Open(OpenFlags.ReadWrite);
+				// TODO: provide a way to remove installed certificates
 
 				// get all CAs from Authentication method
 				foreach (var cert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
 				{
 					// if this doesn't work, try https://stackoverflow.com/a/34174890
 					bool isRootCA = cert.Subject == cert.Issuer;
-					var store = isRootCA ? rootStore : interStore;
-
-					// check if CA is not already installed
-					var matchingCerts = store.Certificates
-						.Find(X509FindType.FindByThumbprint, cert.Thumbprint, false);
-					if (matchingCerts.Count < 1)
-					{
-						try
-						{
-							// add CA to trusted certificate store
-							store.Add(cert);
-							// ^ Will produce a popup if the certificate is not already installed
-							// There fore you should use use NeedsToInstallCAs to predict this
-							// and warn+instruct the user
-						}
-						catch (CryptographicException ex)
-						{
-							// if user selects No when prompted to install the CA
-							if ((uint)ex.HResult == 0x800704C7) return false;
-
-							// unknown exception
-							throw;
-						}
-					}
+					bool success = CertificateStore.InstallCertificate(cert,
+						isRootCA ? caStoreName : interStoreName,
+						isRootCA ? caStoreLocation : interStoreLocation);
+					if (!success) return false;
 				}
 
 				InstallClientCertificate(); // TODO: inline this function?
@@ -366,8 +302,7 @@ namespace EduroamConfigure
 		{
 			// TODO: move this into EapAuthMethodInstaller?
 
-			Debug.WriteLine(string.Format("Install user profile for user {0}",
-				username));
+			Debug.WriteLine("Install user profile for user {0}", username);
 
 			// sets user data
 			bool anyInstalled = false;
@@ -376,8 +311,8 @@ namespace EduroamConfigure
 				anyInstalled |= network.InstallUserData(username, password, authMethod);
 			}
 
-			Debug.WriteLine(string.Format("Install of user profile for user {1}: {0}",
-				anyInstalled ? "success" : "failed", username ?? "NULL"));
+			Debug.WriteLine("Install of user profile for user {1}: {0}",
+				anyInstalled ? "success" : "failed", username ?? "NULL");
 			Debug.WriteLine("");
 
 			return anyInstalled;
