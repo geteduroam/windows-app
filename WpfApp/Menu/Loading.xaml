@@ -9,7 +9,7 @@
       Title="Loading">
 
     <StackPanel Height="320" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Label Content="Loading" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Label Content="" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
 
     </StackPanel>

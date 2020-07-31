@@ -29,16 +29,13 @@ namespace WpfApp.Menu
         // TODO: add loading image
         private async void LoadPage()
         {
-            mainWindow.lblTitle.Content = "Select your institution";
-            mainWindow.btnNext.IsEnabled = false;
-            mainWindow.btnNext.Visibility = Visibility.Visible;
-            mainWindow.btnNext.Content = "Next >";
-            mainWindow.btnBack.IsEnabled = true;
-            mainWindow.btnBack.Visibility = Visibility.Visible;
 
+            mainWindow.btnNext.IsEnabled = false;
             downloader = mainWindow.IdpDownloader;
 
             await Task.Run(() => PopulateInstitutions());
+
+            mainWindow.lblTitle.Content = "Select your institution";
         }
 
 

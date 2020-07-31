@@ -20,9 +20,11 @@ namespace WpfApp.Menu
     /// </summary>
     public partial class Loading : Page
     {
-        public Loading()
+        public Loading(MainWindow mainWindow)
         {
-            InitializeComponent();
+            InitializeComponent();           
+            
+            
         }
     }
 }

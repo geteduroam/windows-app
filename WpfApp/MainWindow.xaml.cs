@@ -23,6 +23,8 @@ namespace WpfApp
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        // TODO: Make Title contain more words / wrap around
         private enum FormId
         {
             MainMenu,
@@ -34,7 +36,8 @@ namespace WpfApp
             Connect,
             Redirect,
             SaveAndQuit,
-            Loading
+            Loading,
+            InstallCertificates,
         }
         private readonly List<FormId> historyFormId = new List<FormId>();
         private FormId currentFormId;
@@ -43,6 +46,8 @@ namespace WpfApp
         private SelectProfile pageSelectProfile;
         private ProfileOverview pageProfileOverview;
         private Loading pageLoading;
+        private Login pageLogin;
+        private InstallCertificates pageInstallCertificates;
         private bool Online;
         private EapConfig eapConfig;
         public ProfileStatus ProfileCondition { get; set; }
@@ -77,7 +82,7 @@ namespace WpfApp
             Main.Content = nextPage;
         }
         
-        public void NextPage()
+        public async void NextPage()
         {
             // adds current form to history for easy backtracking
             historyFormId.Add(currentFormId);
@@ -94,7 +99,8 @@ namespace WpfApp
                         string autoProfileId = profiles.FirstOrDefault().Id;
                         if (!string.IsNullOrEmpty(autoProfileId))
                         {
-                            HandleProfileSelect(autoProfileId);
+                            // if profile could not be handled then return to form
+                            if(! await HandleProfileSelect(autoProfileId)) LoadPageSelectInstitution(refresh: false);
                             break;
                         }
                     }
@@ -103,11 +109,16 @@ namespace WpfApp
 
                 case FormId.SelectProfile:
                     string profileId = pageSelectProfile.ProfileId;
-                    HandleProfileSelect(profileId);
+                    // if profile could not be handled then return to form
+                    if (!await HandleProfileSelect(profileId)) LoadPageSelectProfile(refresh: false);
                     break;
                 case FormId.ProfileOverview:
+                    LoadPageInstallCertificates();
                     break;
-            }
+                case FormId.InstallCertificates:
+                    LoadPageLogin();
+                    break;
+            }   
 
             
             // removes current form from history if it gets added twice
@@ -119,18 +130,19 @@ namespace WpfApp
         {
             // clears logo if going back from summary page
             //if (currentFormId == FormId.Summary) ResetLogo();
-
             switch (historyFormId.Last())
             {
                 case FormId.MainMenu:
                     LoadPageMainMenu();
                     break;
-
                 case FormId.SelectInstitution:
                     LoadPageSelectInstitution();
                     break;
                 case FormId.SelectProfile:
                     LoadPageSelectProfile();
+                    break;
+                case FormId.ProfileOverview:
+                    LoadPageProfileOverview(eapConfig);
                     break;
             }
 
@@ -141,21 +153,36 @@ namespace WpfApp
         // downloads eap config based on profileId
         // seperated into its own function as this can happen either through
         // user selecting a profile or a profile being autoselected
-        private async void HandleProfileSelect(string profileId)
+        private async Task<bool> HandleProfileSelect(string profileId)
         {
-            LoadPageLoading();
+            LoadPageLoading();           
             IdentityProviderProfile profile = IdpDownloader.GetProfileFromId(profileId);
-            eapConfig = await DownloadEapConfig(profile);
+            try
+            {
+                eapConfig = await DownloadEapConfig(profile);
+            }
+            catch (EduroamAppUserError ex) // TODO: register this in some higher level
+            {
+                MessageBox.Show(
+                    ex.UserFacingMessage,
+                    "eduroam - Exception");
+                eapConfig = null;
+                
+            }
+
 
             if (eapConfig != null)
             {
                 LoadPageProfileOverview(eapConfig);
+                return true;
             }
             else if (!string.IsNullOrEmpty(profile.redirect))
             {
                 // TODO: add option to go to selectmethod from redirect
                 LoadPageRedirect();
+                return true;
             }
+            return false;
         }
 
         /// <summary>
@@ -176,6 +203,11 @@ namespace WpfApp
         {
             // eap config file as string
             string eapXmlString;
+
+            if (string.IsNullOrEmpty(profile.Id))
+            {
+                return null;
+            };
 
             // if OAuth
             if (profile.oauth)
@@ -202,9 +234,11 @@ namespace WpfApp
                 Activate();
             }            
             else
-            {
+            {  
                 eapXmlString = await Task.Run(() => IdpDownloader.GetEapConfigString(profile.Id));
             }
+
+
 
             // if not empty, creates and returns EapConfig object from Eap string
 
@@ -249,43 +283,73 @@ namespace WpfApp
             return "";
         }
 
-        public void LoadPageMainMenu()
+        public void LoadPageMainMenu(bool refresh = true)
         {
             currentFormId = FormId.MainMenu;
-            pageMainMenu = new MainMenu(this);
+            lblTitle.Content = "Connect to Eduroam";
+            btnNext.Visibility = Visibility.Hidden;
+            btnBack.Visibility = Visibility.Hidden;
+            lblTitle.Visibility = Visibility.Hidden;
+            if (refresh) pageMainMenu = new MainMenu(this);
             Navigate(pageMainMenu);
         }
 
-        public void LoadPageSelectInstitution()
+        public void LoadPageSelectInstitution(bool refresh = true)
         {
             currentFormId = FormId.SelectInstitution;
-            pageSelectInstitution = new SelectInstitution(this);
+            lblTitle.Content = "Select your institution";
+            lblTitle.Visibility = Visibility.Visible;        
+            btnNext.Visibility = Visibility.Visible;
+            btnNext.Content = "Next >";
+            btnBack.IsEnabled = true;
+            btnBack.Visibility = Visibility.Visible;
+            if (refresh) pageSelectInstitution = new SelectInstitution(this);
+
             Navigate(pageSelectInstitution);
         }
 
-        public void LoadPageSelectProfile()
+        public void LoadPageSelectProfile(bool refresh = true)
         {
             currentFormId = FormId.SelectProfile;
-            pageSelectProfile = new SelectProfile(this, pageSelectInstitution.IdProviderId);
+            lblTitle.Content = "Select Profile";
+            if (refresh) pageSelectProfile = new SelectProfile(this, pageSelectInstitution.IdProviderId);
             Navigate(pageSelectProfile);
         }
 
-        public void LoadPageProfileOverview(EapConfig eapConfig)
+        public void LoadPageProfileOverview(EapConfig eapConfig, bool refresh = true)
         {
-            currentFormId = FormId.SelectProfile;
-            pageProfileOverview = new ProfileOverview(this, eapConfig);
+
+            currentFormId = FormId.ProfileOverview;
+            lblTitle.Content = eapConfig.InstitutionInfo.DisplayName;
+            btnNext.Content = eapConfig.AuthenticationMethods.First().EapType == EapType.TLS ? "Connect" : "Next";
+            if (refresh) pageProfileOverview = new ProfileOverview(this, eapConfig);
             Navigate(pageProfileOverview);
         }
 
-        public void LoadPageRedirect()
+        public void LoadPageInstallCertificates(bool refresh = true)
+        {
+            currentFormId = FormId.InstallCertificates;
+            if (refresh) pageInstallCertificates = new InstallCertificates(this);
+            Navigate(pageInstallCertificates);
+        }
+
+        public void LoadPageLogin(bool refresh = true)
+        {
+            currentFormId = FormId.Login;
+            if (refresh) pageLogin = new Login(this);
+            Navigate(pageLogin);
+        }
+
+        public void LoadPageRedirect(bool refresh = true)
         {
             currentFormId = FormId.Redirect;
         }
 
-        public void LoadPageLoading()
+        public void LoadPageLoading(bool refresh = true)
         {
             currentFormId = FormId.Loading;
-            pageLoading = new Loading();
+            lblTitle.Content = "Loading ...";
+            if (refresh) pageLoading = new Loading(this);
             Navigate(pageLoading);
         }
 

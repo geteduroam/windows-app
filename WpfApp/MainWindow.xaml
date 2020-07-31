@@ -12,8 +12,8 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="49*"/>
-            <RowDefinition Height="25*"/>
-            <RowDefinition Height="330*"/>
+            <RowDefinition Height="34*"/>
+            <RowDefinition Height="321*"/>
             <RowDefinition Height="56*"/>
         </Grid.RowDefinitions>
 
@@ -78,7 +78,7 @@
         </Grid>
         <DockPanel x:Name="dpTitlePanel" Grid.RowSpan="1" Grid.Row="1" Margin="0">
             <Label x:Name="lblTitle" Content="Title" VerticalAlignment="Center" HorizontalAlignment="Center" 
-                   Margin="0" FontSize="16" Height="30"/>
+                   Margin="0" FontSize="16"/>
         </DockPanel>
     </Grid>
 </Window>

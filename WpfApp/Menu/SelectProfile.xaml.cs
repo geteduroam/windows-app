@@ -37,7 +37,7 @@ namespace WpfApp.Menu
           //  frmParent.WebEduroamLogo.Visible = true;
             mainWindow.btnNext.IsEnabled = false;
 
-            mainWindow.lblTitle.Content = "Select Profile";
+            
 
             //  frmParent.RedirectUrl = "";
             lbProfiles.IsEnabled = false;

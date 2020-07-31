@@ -31,11 +31,14 @@ namespace WpfApp.Menu
 
         private void LoadPage()
         {
+            mainWindow.lblTitle.Content = "Connect to Eduroam";
             mainWindow.btnNext.Visibility = Visibility.Hidden;
             mainWindow.btnBack.Visibility = Visibility.Hidden;
+            lblInfo.Visibility = Visibility.Collapsed;
+            mainWindow.lblTitle.Visibility = Visibility.Hidden;
         }
 
-        private void BtnNewProfile_Click(object sender, RoutedEventArgs e)
+        private void btnNewProfile_Click(object sender, RoutedEventArgs e)
         {
             mainWindow.NextPage();
         }
