@@ -61,13 +61,27 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\ImageFunctions.cs" />
+    <Compile Include="Menu\InstallCertificates.xaml.cs">
+      <DependentUpon>InstallCertificates.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Menu\Loading.xaml.cs">
       <DependentUpon>Loading.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Menu\Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
     <Compile Include="Menu\MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
     </Compile>
+    <Page Include="Menu\InstallCertificates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Menu\Loading.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Menu\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

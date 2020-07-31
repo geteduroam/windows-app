@@ -5,15 +5,14 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WpfApp.Menu"
       mc:Ignorable="d" 
-      d:DesignHeight="320" d:DesignWidth="322"
+      d:DesignHeight="311" d:DesignWidth="322"
       Title="ProfileOverview">
 
-    <StackPanel Height="320" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <StackPanel Height="311" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
         <StackPanel Background="White"/>
-        <Label x:Name="lblDesc" HorizontalAlignment="Center" Margin="5">
-            <TextBlock x:Name="tbDesc" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center"/>
-        </Label>
-        <GroupBox Header="Contact info" Margin="5">
+        <TextBlock x:Name="tbDesc" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5"/>
+
+        <GroupBox x:Name="grpInfo" Header="Contact info" Margin="5">
             <Grid Margin="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="1*"/>
@@ -28,9 +27,31 @@
                 <Label x:Name="lblEmailTitle" Content="Email:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Margin="0"/>
                 <Label x:Name="lblPhoneTitle" Content="Phone:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2"/>
 
+                <Label x:Name="lblWeb" Content="-" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" />
+                <Label x:Name="lblEmail" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"/>
+                <Label x:Name="lblPhone" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2"  Grid.Column="1"/>
+
+
             </Grid>
 
         </GroupBox>
+        <Grid x:Name="gridAlt" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="tbAlt" TextWrapping="Wrap" Text="Not affiliated with x?" TextAlignment="Center"  Margin="5"/>
+            <Button Style="{StaticResource WhiteButtonStyle}" x:Name="btnAlt" Content="Select other institution" HorizontalAlignment="Center" VerticalAlignment="Top" Width="141" Grid.Row="1" Margin="0,5" Height="34"/>
+
+
+        </Grid>
+        <TextBlock x:Name="tbTou" TextWrapping="Wrap" TextAlignment="Center"  Margin="5">
+            By clicking 'Next' you agree to the 
+            <Hyperlink RequestNavigate="Hyperlink_TOU">
+               Terms of Use
+            </Hyperlink>
+            of the institution
+        </TextBlock>
 
 
     </StackPanel>

@@ -36,6 +36,7 @@ namespace EduroamConfigure
 			GeoWatcher = new GeoCoordinateWatcher();
 			GeoWatcher.TryStart(false, TimeSpan.FromMilliseconds(3000));
 			Providers = DownloadAllIdProviders();
+			// turns out just running this once, even without saving it and caching makes subsequent calls much faster
 			ClosestProviders = GetClosestProviders();
 		}
 
@@ -121,10 +122,9 @@ namespace EduroamConfigure
 		/// <param name="limit">number of providers to return</param>
 		public List<IdentityProvider> GetClosestProviders(int limit)
 		{
-			return ClosestProviders.Take(limit).ToList();
-			/*return GetClosestProviders().Take(limit).Tolist();
+			 return ClosestProviders.Take(limit).ToList();
+			// return GetClosestProviders().Take(limit).ToList();
 
-			*/
 
 		}
 
