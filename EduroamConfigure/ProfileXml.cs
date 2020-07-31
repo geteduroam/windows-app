@@ -182,7 +182,7 @@ namespace EduroamConfigure
 			XElement eapConfiguration =
 				new XElement(nsEHC + "EapHostConfig",
 					new XElement(nsEHC + "EapMethod",
-						new XElement(nsEC + "Type", (uint)eapType),
+						new XElement(nsEC + "Type", (int)eapType),
 						new XElement(nsEC + "VendorId",   0),
 						new XElement(nsEC + "VendorType", 0),
 						new XElement(nsEC + "AuthorId", eapType == EapType.TTLS ? 311 : 0) // no geant link
@@ -208,7 +208,7 @@ namespace EduroamConfigure
 				// adds TLS specific xml elements
 				configElement.Add(
 					new XElement(nsBECP + "Eap", // TLS
-						new XElement(nsBECP + "Type", (uint)eapType),
+						new XElement(nsBECP + "Type", (int)eapType),
 						new XElement(nsETCPv1 + "EapType",
 							new XElement(nsETCPv1 + "CredentialsSource",
 								new XElement(nsETCPv1 + "CertificateStore",
@@ -247,7 +247,7 @@ namespace EduroamConfigure
 				// adds MSCHAPv2 specific elements (inner eap)
 				configElement.Add(
 					new XElement(nsBECP + "Eap", // MSCHAPv2
-						new XElement(nsBECP + "Type", (uint)eapType),
+						new XElement(nsBECP + "Type", (int)eapType),
 						new XElement(nsMCCP + "EapType",
 							new XElement(nsMCCP + "UseWinLogonCredentials", "false")
 						)
@@ -265,7 +265,7 @@ namespace EduroamConfigure
 				// adds MSCHAPv2 specific elements (inner eap)
 				configElement.Add(
 					new XElement(nsBECP + "Eap", // PEAP
-						new XElement(nsBECP + "Type", (uint)eapType),
+						new XElement(nsBECP + "Type", (int)eapType),
 						new XElement(nsMPCPv1 + "EapType",
 							serverValidationElement =
 							new XElement(nsMPCPv1 + "ServerValidation",
@@ -275,7 +275,7 @@ namespace EduroamConfigure
 							new XElement(nsMPCPv1 + "FastReconnect", "true"),
 							new XElement(nsMPCPv1 + "InnerEapOptional", "false"),
 							new XElement(nsBECP + "Eap", // MSCHAPv2
-								new XElement(nsBECP + "Type", (uint)innerAuthType),
+								new XElement(nsBECP + "Type", (int)innerAuthType),
 								new XElement(nsMCCP + "EapType",
 									new XElement(nsMCCP + "UseWinLogonCredentials", "false")
 								)
