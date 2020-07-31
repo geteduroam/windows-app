@@ -37,8 +37,8 @@ namespace EduroamApp
 
             string instName = eapConfig.InstitutionInfo.DisplayName;
             string tou = eapConfig.InstitutionInfo.TermsOfUse;
-            string webAddress = eapConfig.InstitutionInfo.WebAddress.ToLower();
-            string emailAddress = eapConfig.InstitutionInfo.EmailAddress.ToLower();
+            string webAddress = eapConfig.InstitutionInfo.WebAddress;
+            string emailAddress = eapConfig.InstitutionInfo.EmailAddress;
             string nextOrConnect = eapConfig.AuthenticationMethods.First().EapType == EapType.TLS ? "Connect" : "Next";
             string description = eapConfig.InstitutionInfo.Description;
 
