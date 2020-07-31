@@ -10,6 +10,13 @@ namespace EduroamConfigure
 {
 	public static class IdentityProviderParser
 	{
+		/// <summary>
+		/// Searches thourgh the list of providers, intended for user-facing search interfaces.
+		/// </summary>
+		/// <param name="providers">List of providers to query</param>
+		/// <param name="searchString">Query string</param>
+		/// <param name="limit">Number of results to return, reduce this for a speedup</param>
+		/// <returns>List of providers ordered by match coefficient</returns>
 		public static List<IdentityProvider> SortByQuery(List<IdentityProvider> providers, string searchString, int limit)
 		{
 			var query = NormalizeString(searchString);
@@ -53,7 +60,9 @@ namespace EduroamConfigure
 			return sortedList;
 		}
 
-		//removes accents, casing and converts non-US character to US characters (ø to o etc)
+		/// <summary>
+		/// removes accents, casing and converts non-US character to US characters (ø to o etc)
+		/// </summary>
 		private static string NormalizeString(string str)
 		{
 			// TODO: perhaps allow non-us characters?
@@ -76,74 +85,64 @@ namespace EduroamConfigure
 				.Select(word => word[0]));
 		}
 
-		// TODO: rename, docstring, perhaps move?
-		//dwd
-		public static string GetBrokenRules(string username, string realm, bool strictRealm)
+		/// <summary>
+		/// Returns a sequence of broken formatting rules for the username.
+		///
+		/// if noSubdomanInRealm is set then there can be no subrealms
+		/// otherwise: requiredRealm = 'eduroam.no' will allow @pedkek.eduroam.no
+		/// if noSubdomanInRealm: must be exactly @eduroam.no
+		/// </summary>
+		/// <param name="username">user[@realm]</param>
+		/// <param name="requiredRealm">the realm required for the username</param>
+		/// <param name="noSubdomanInRealm">Wether to allow subdomains in the realm</param>
+		/// <returns>nothing if no rules are broken, otherwise descriptions of rulse being broken</returns>
+		public static IEnumerable<string> GetRulesBroken(string username, string requiredRealm, bool noSubdomanInRealm)
 		{
-			string ruleString = "";
-			//checks that there is exactly one @ sign
-			// positive lookahead require to find one @. Negative lookahead denies if string contains two (or more) @.
+			// TODO: rename, docstring, perhaps move?
 
+			//checks that there is exactly one @ sign
+			// positive lookahead required to find one @. Negative lookahead denies if string contains two (or more) @.
 			Regex hasOneAt = new Regex(@"^(?=.*@.*)(?!.*@.*@).*$");
 			if (!hasOneAt.Match(username).Success)
-			{
-				ruleString += "Username must contain exactly one @\n";
-			}
+				yield return "Username must contain exactly one @";
 
 			// if realm is specified
-			if (!string.IsNullOrEmpty(realm))
+			if (!string.IsNullOrEmpty(requiredRealm))
 			{
-				// if strict realm is set then there can be no subrealms
-				// if not strict: realm = eduroam.no will allow @pedkek.eduroam.no
-				// if strict: has to be @eduroam.no
-
-				/* Regex hasOneAt = new Regex(@"^(?=.*@.*)(?!.*@.*@).*$");
+				/*
+				Regex hasOneAt = new Regex(@"^(?=.*@.*)(?!.*@.*@).*$");
 				if (!hasOneAt.Match(username).Success)
-				{
-					ruleString += "Username must contain exactly one @\n";
-				}*/
+					yield return "Username must contain exactly one @";
+				*/
 
-				if (strictRealm)
+				if (noSubdomanInRealm)
 				{
-					Regex endsWithRealm = new Regex($@"^.*@{realm}$");
+					Regex endsWithRealm = new Regex($@"^.*@{requiredRealm}$");
 					if (!endsWithRealm.Match(username).Success)
-					{
-						ruleString += $"Username must end with @{realm}\n";
-					}
+						yield return $"Username must end with @{requiredRealm}";
 				}
 				else
 				{
-					Regex endsWithRealm = new Regex($@"^.*[._\-@]{realm}$");
+					Regex endsWithRealm = new Regex($@"^.*[._\-@]{requiredRealm}$");
 					if (!endsWithRealm.Match(username).Success)
-					{
-						ruleString += $"Username must end with {realm}\n";
-					}
+						yield return $"Username must end with {requiredRealm}";
 				}
 			}
 
 			// checks that special characters are not adjacent to each other
 			Regex noAdjacentSpecialChars = new Regex(@"^(?!.*[._\-@]{2}.*).*$");
 			if (!noAdjacentSpecialChars.Match(username).Success)
-			{
-				ruleString += "Characters such as [-.@_] can not be adjacent to each other\n";
-			}
-
+				yield return "Characters such as [-.@_] can not be adjacent to each other";
 
 			//checks that username begins with a vald alue
 			Regex validStart = new Regex(@"^[a-zA-Z0-9].*$");
 			if (!validStart.Match(username).Success)
-			{
-				ruleString += "Username must begin with aphanumeric char\n";
-			}
+				yield return "Username must begin with aphanumeric char";
 
 			//checks that username ends with a vald alue
 			Regex validEnd = new Regex(@"^.*[a-zA-Z0-9]$");
 			if (!validEnd.Match(username).Success)
-			{
-				ruleString += "Username must end with aphanumeric char\n";
-			}
-
-			return ruleString;
+				yield return "Username must end with aphanumeric char";
 		}
 	}
 }
