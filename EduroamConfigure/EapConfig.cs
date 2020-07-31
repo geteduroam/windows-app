@@ -178,7 +178,7 @@ namespace EduroamConfigure
         /// <summary>
         /// ProviderInfo contains information about the config file's provider.
         /// </summary>
-        public class ProviderInfo
+        public readonly struct ProviderInfo
         {
             // Properties
             public string DisplayName { get; }
@@ -203,7 +203,7 @@ namespace EduroamConfigure
                 string phone,
                 string instId,
                 string termsOfUse,
-                ValueTuple<double, double>? Location)
+                ValueTuple<double, double>? location)
             {
                 DisplayName = displayName;
                 Description = description;
@@ -213,15 +213,15 @@ namespace EduroamConfigure
                 WebAddress = webAddress;
                 Phone = phone;
                 InstId = instId;
-                TermsOfUse = termsOfUse.Replace("\r\n", " "); // TODO: n-n-n-nani?
-                this.Location = Location;
+                TermsOfUse = termsOfUse?.Replace("\r\n", " "); // TODO: n-n-n-nani?
+                Location = location;
             }
         }
 
         /// <summary>
         /// TODO
         /// </summary>
-        public class CredentialApplicability
+        public readonly struct CredentialApplicability
         {
             public IEEE802x NetworkType { get; }
 

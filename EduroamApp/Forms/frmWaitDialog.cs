@@ -17,7 +17,7 @@ namespace EduroamApp
         private readonly string oAuthUri;
         
         // return value
-        public string responseUrl = "";
+        public string responseUrl { get; private set; } = "";
         // main thread event
         private static ManualResetEvent mainThread;
         // cancel thread event

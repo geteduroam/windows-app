@@ -134,7 +134,7 @@ namespace EduroamConfigure
                 var regKeyGeoId = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Control Panel\International\Geo");
                 var geoID = (string)regKeyGeoId.GetValue("Nation");
                 var allRegions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.ToString()));
-                var regionInfo = allRegions.FirstOrDefault(r => r.GeoId == Int32.Parse(geoID));
+                var regionInfo = allRegions.FirstOrDefault(r => r.GeoId == Int32.Parse(geoID, CultureInfo.InvariantCulture));
 
                 closestCountryCode = regionInfo.TwoLetterISORegionName;
             }

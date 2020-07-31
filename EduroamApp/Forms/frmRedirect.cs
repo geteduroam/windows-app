@@ -21,8 +21,9 @@ namespace EduroamApp
             // sets text of label
             lblRedirectLink.Text = redirectString;
             // checks if link starts with an accepted prefix
-            if (redirectString.StartsWith("http://") || redirectString.StartsWith("https://") ||
-                redirectString.StartsWith("www."))
+            if (redirectString.StartsWith("http://", StringComparison.InvariantCulture)
+                || redirectString.StartsWith("https://", StringComparison.InvariantCulture)
+                || redirectString.StartsWith("www.", StringComparison.InvariantCulture))
             {
                 // sets linkdata
                 var redirectLink = new LinkLabel.Link { LinkData = lblRedirectLink.Text };

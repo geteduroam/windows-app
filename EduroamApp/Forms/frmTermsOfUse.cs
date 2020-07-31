@@ -10,6 +10,8 @@ namespace EduroamApp
 
         public frmTermsOfUse(string termsOfUse)
         {
+            _ = termsOfUse ?? throw new ArgumentNullException(paramName: nameof(termsOfUse));
+
             tou = termsOfUse.Trim();
             InitializeComponent();
         }

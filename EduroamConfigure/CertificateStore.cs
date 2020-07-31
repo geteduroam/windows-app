@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,7 +9,7 @@ using InstalledCertificate = EduroamConfigure.PersistingStore.InstalledCertifica
 
 namespace EduroamConfigure
 {
-	public class CertificateStore
+	public static class CertificateStore
 	{
         /// <summary>
         /// Installs the certificate into the certificate store chosen.
@@ -20,6 +21,8 @@ namespace EduroamConfigure
         /// <returns>False if the user declined</returns>
         public static bool InstallCertificate(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation) // TODO: move
         {
+            _ = cert ?? throw new ArgumentNullException(paramName: nameof(cert));
+
             if (IsCertificateInstalled(cert, storeName, storeLocation))
                 return true;
 
@@ -62,6 +65,8 @@ namespace EduroamConfigure
         /// <returns>True if found</returns>
         public static bool IsCertificateInstalled(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation) // TODO: move
         {
+            _ = cert ?? throw new ArgumentNullException(paramName: nameof(cert));
+
             using var certStore = new X509Store(storeName, storeLocation);
             certStore.Open(OpenFlags.ReadOnly);
 

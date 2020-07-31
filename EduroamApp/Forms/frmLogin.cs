@@ -16,9 +16,10 @@ namespace EduroamApp
         private bool hint;
         public bool connected; 
 
-        public frmLogin(frmParent parentInstance)
+        public frmLogin(frmParent frmParent)
         {
-            frmParent = parentInstance;
+            _ = frmParent ?? throw new ArgumentNullException(paramName: nameof(frmParent));
+            this.frmParent = frmParent;
             authMethod = frmParent.eapConfig.AuthenticationMethods.First();
             InitializeComponent();
         }
@@ -76,7 +77,7 @@ namespace EduroamApp
         public bool ValidateFields()
         {
             string username = txtUsername.Text;
-            if (txtUsername.HintActive || username == "" )
+            if (txtUsername.HintActive || string.IsNullOrEmpty(username))
             {
                 usernameValid = false;
                 lblRules.Text = "";

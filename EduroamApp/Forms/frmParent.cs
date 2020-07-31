@@ -56,7 +56,7 @@ namespace EduroamApp
         private static System.Timers.Timer timer;
 
         // public variables to be used across forms
-        public EapConfig.AuthenticationMethod AuthMethod; // installed authmethod in EAP config
+        public EapConfig.AuthenticationMethod AuthMethod { get; private set; } // installed authmethod in EAP config
         public string InstId { get; set; }
         public ProfileStatus ProfileCondition { get; set; }
         public string RedirectUrl { get; set; }
@@ -740,6 +740,5 @@ namespace EduroamApp
                 ConnectToEduroam.RemoveAllProfiles();
             }
         }
-
     }
 }
