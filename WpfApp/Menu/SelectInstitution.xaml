@@ -11,7 +11,7 @@
     <StackPanel Height="311" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
         <StackPanel Background="White"/>
         <TextBox x:Name="tbSearch" Height="23" TextWrapping="Wrap"  Margin="5" TextChanged="tbSearch_TextChanged"/>
-        <ListBox x:Name="lbInstitutions"  Height="200" Margin="5,0" SelectionChanged="lbInstitutions_SelectionChanged" FontSize="10"/>
+        <ListBox x:Name="lbInstitutions" ItemContainerStyle="{StaticResource ListBoxItemStyle}"  Height="200" Margin="5,0" SelectionChanged="lbInstitutions_SelectionChanged" FontSize="10"/>
 
     </StackPanel>
 </Page>
