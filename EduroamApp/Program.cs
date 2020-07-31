@@ -1,78 +1,131 @@
-﻿using ManagedNativeWifi;
+﻿using Microsoft.VisualBasic.ApplicationServices;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Windows.Forms;
 
 namespace EduroamApp
 {
     static class Program
     {
+        static readonly SelfInstaller GetEduroamInstaller = new SelfInstaller(
+            applicationIdentifier: "GetEduroam", // we could use Application.ProductName
+            applicationMetadata: new SelfInstaller.ApplicationMeta()
+            {
+                DisplayName         = "GetEduroam",  // [REQUIRED] ProductName
+                Publisher           = "Uninett",  // [REQUIRED] Manufacturer
+                VersionMinor        = "1",  // [REQUIRED] Derived from ProductVersion
+                VersionMajor        = "0",  // [REQUIRED] Derived from ProductVersion
+                HelpLink            = null,  // ARPHELPLINK
+                HelpTelephone       = null,  // ARPHELPTELEPHONE
+                InstallSource       = null,  // SourceDir
+                URLInfoAbout        = null,  // ARPURLINFOABOUT
+                URLUpdateInfo       = null,  // ARPURLUPDATEINFO
+                AuthorizedCDFPrefix = null,  // ARPAUTHORIZEDCDFPREFIX
+                Comments            = null,  // [NICE TO HAVE] ARPCOMMENTS. Comments provided to the Add or Remove Programs control panel.
+                Contact             = null,  // [NICE TO HAVE] ARPCONTACT. Contact provided to the Add or Remove Programs control panel.
+                Language            = null,  // ProductLanguage
+                Readme              = null,  // [NICE TO HAVE] ARPREADME. Readme provided to the Add or Remove Programs control panel.
+                SettingsIdentifier  = null,  // MSIARPSETTINGSIDENTIFIER. contains a semi-colon delimited list of the registry locations where the application stores a user's settings and preferences.
+                NoRepair            = null,  // [REQUIRED] REG_DWORD
+                NoModify            = null,  // [REQUIRED] REG_DWORD
+            }
+        );
+
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
-            /*
-            * /
-            var insti = EduroamConfigure.IdentityProviderDownloader.GetAllIdProviders()
-                .Where(p => p.Country == "NL")
-                .Where(p => p.Name == "eduroam Visitor Access (eVA)")
-                .Select(p => p.Profiles.First())
-                .First();
-            var eapConfig = EduroamConfigure.EapConfig.FromXmlData(
-                EduroamConfigure.IdentityProviderDownloader.GetEapConfigString(insti.Id)
-            );
-            foreach (var installer in EduroamConfigure.ConnectToEduroam.InstallEapConfig(eapConfig))
+            // TODO:
+            //if (args.Contains("/InstallEapConfig"))
+
+            IEnumerable<string> argsLower() =>
+                args.Select(p => p.ToLowerInvariant());
+
+
+            if (argsLower().Contains("/?")
+                || argsLower().Contains("/help"))
             {
-                installer.InstallCertificates();
-                installer.InstallProfile();
-                EduroamConfigure.ConnectToEduroam.InstallUserProfile(
-                    "trololo@edu.nl", "hunter2", installer.AuthMethod);
-                break;
+                Console.WriteLine("Supported arguments:");
+                foreach ((string cmd, string desc) in new (string, string)[] {
+                        ("/?",
+                            "This help text"),
+                        ("/Help",
+                            "This help text"),
+                        ("/Refresh",
+                            "If installed with a refresh token, check for a refresh"),
+                        ("/Background",
+                            "Will start minimized to the tray."),
+                        ("/Install",
+                            "Will install app to %USER%/AppData/Local"),
+                        ("/Uninstall",
+                            "Will uninstall the program from %USER%/AppData/Local"),
+                        ("/Close",
+                            "Closes the single-instance running for this application"),
+                    }) Console.WriteLine(string.Format("\t{0, -24} {1}", cmd, desc.Replace("\n", "\n\t\t")));
             }
-            var task = EduroamConfigure.ConnectToEduroam.TryToConnect();
-            //task.RunSynchronously();
-            Console.Write("TryToConnect: ");
-            Console.WriteLine(task.Result);
-            Console.WriteLine("NetworkPacks:");
-            NativeWifi.EnumerateAvailableNetworks().ToList().ForEach(pack =>
+            else if (argsLower().Contains("/install"))
             {
-                Console.Write(" - ");
-                Console.Write(pack.Ssid);
-                Console.Write(" - ");
-                Console.Write(pack.ProfileName ?? "no profile");
-                Console.Write(" @ ");
-                Console.Write(pack.Interface.Id);
-                Console.Write("-");
-                Console.Write(pack.Interface.Description);
-                Console.WriteLine();
-            });
-
-            Console.WriteLine();
-            Console.WriteLine("Profiles:");
-            NativeWifi.EnumerateProfiles().ToList().ForEach(profile =>
+                GetEduroamInstaller.InstallToUserLocal();
+            }
+            else if (argsLower().Contains("/uninstall"))
             {
-                Console.Write(" - ");
-                Console.Write(profile.Name);
-                Console.Write(" @ ");
-                Console.Write(profile.Interface.Id);
-                Console.Write("-");
-                Console.Write(profile.Interface.Description);
-                Console.WriteLine();
-            });
-            return;
-            /*
-            */
+                // TODO: confirmation dialog
+                GetEduroamInstaller.ExitAndUninstallSelf();
+            }
+            else
+            {
+                // handles the rest
+                RunGUI(args);
+            }
+        }
 
-
-
+        static void RunGUI(string[] args)
+        {
             if (Environment.OSVersion.Version.Major >= 6)
                 SetProcessDPIAware();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            /**/
+
+            // Single-instance launch:
+            var sim = new SingleInstanceManager();
+            sim.Run(args);
+
+            /** /
+
+            // Non single-instance launch:
             Application.Run(new frmParent());
+
+            /**/
+        }
+
+
+        // from https://www.red-gate.com/simple-talk/dotnet/net-framework/creating-tray-applications-in-net-a-practical-guide/#seventeenth
+        class SingleInstanceManager : WindowsFormsApplicationBase
+        {
+            public SingleInstanceManager()
+            {
+                IsSingleInstance = true;
+                //EnableVisualStyles = true; // Doesn't seem to do anything
+                //ShutdownStyle = Microsoft.VisualBasic.ApplicationServices.ShutdownMode.AfterMainFormCloses; // TODO: needed?
+                MainForm = new frmParent();
+            }
+
+            protected override void OnStartupNextInstance(StartupNextInstanceEventArgs eventArgs)
+            {
+                //base.OnStartupNextInstance(eventArgs);
+                if (MainForm.WindowState == FormWindowState.Minimized)
+                    MainForm.WindowState = FormWindowState.Normal;
+                MainForm.Activate();
+                // eventArgs.CommandLine.ToArray()
+            }
         }
 
         [System.Runtime.InteropServices.DllImport("user32.dll")]
