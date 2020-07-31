@@ -47,10 +47,8 @@ namespace EduroamApp
 			private string DisplayVersion       // [SET AUTOMATICALLY] Derived from ProductVersion
 			{ get => Version; }
 			public  string Publisher;           // [REQUIRED] Manufacturer
-			public  string VersionMinor;        // [REQUIRED] Derived from ProductVersion
-			public  string VersionMajor;        // [REQUIRED] Derived from ProductVersion
 			private string Version              // [SET AUTOMATICALLY] Derived from ProductVersion
-			{ get => string.Format(CultureInfo.InvariantCulture, "{0}.{1}", VersionMajor, VersionMinor); }
+			{ get => Application.ProductVersion; }
 			public  string HelpLink;            // ARPHELPLINK
 			public  string HelpTelephone;       // ARPHELPTELEPHONE
 			private string InstallDate          // [SET AUTOMATICALLY] The last time this product received service. The value of this property is replaced each time a patch is applied or removed from the product or the /v Command-Line Option is used to repair the product. If the product has received no repairs or patches this property contains the time this product was installed on this computer.
@@ -96,8 +94,8 @@ namespace EduroamApp
 				strWriter(nameof(DisplayName),         DisplayName);
 				strWriter(nameof(DisplayVersion),      DisplayVersion);
 				strWriter(nameof(Publisher),           Publisher);
-				strWriter(nameof(VersionMinor),        VersionMinor);
-				strWriter(nameof(VersionMajor),        VersionMajor);
+				//strWriter(nameof(VersionMinor),        VersionMinor);
+				//strWriter(nameof(VersionMajor),        VersionMajor);
 				strWriter(nameof(Version),             Version);
 				strWriter(nameof(HelpLink),            HelpLink);
 				strWriter(nameof(HelpTelephone),       HelpTelephone);
@@ -125,8 +123,6 @@ namespace EduroamApp
 				_ = DisplayName      ?? throw new NullReferenceException(nameof(DisplayName) +     " should not be null");
 				_ = DisplayVersion   ?? throw new NullReferenceException(nameof(DisplayVersion) +  " should not be null");
 				_ = Publisher        ?? throw new NullReferenceException(nameof(Publisher) +       " should not be null");
-				_ = VersionMinor     ?? throw new NullReferenceException(nameof(VersionMinor) +    " should not be null");
-				_ = VersionMajor     ?? throw new NullReferenceException(nameof(VersionMajor) +    " should not be null");
 				_ = Version          ?? throw new NullReferenceException(nameof(Version) +         " should not be null");
 				_ = UninstallString  ?? throw new NullReferenceException(nameof(UninstallString) + " should not be null");
 				_ = EstimatedSize    ?? throw new NullReferenceException(nameof(EstimatedSize) +   " should not be null");

@@ -240,7 +240,7 @@ namespace EduroamConfigure
 		/// <summary>
 		/// Enumerates EduroamNetwork objects for all wireless network interfaces.
 		/// </summary>
-		/// <returns></returns>
+		/// <param name="eapConfig">Optional eap config to search with.</param>
 		public static IEnumerable<EduroamNetwork> GetAll(EapConfig eapConfig)
 		{
 			// NativeWifi will throw if service is not available
@@ -377,7 +377,7 @@ namespace EduroamConfigure
 					.OrderBy(network => string.IsNullOrEmpty(network.ProfileName))
 					.ToList();
 			}
-			else // TODO: remove?
+			else
 			{
 				return NativeWifi.EnumerateAvailableNetworks()
 					.Where(network => network.Ssid.ToString() == DefaultSsid)
