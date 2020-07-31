@@ -84,7 +84,6 @@
     <Compile Include="IdentityProvider.cs" />
     <Compile Include="IdentityProviderDownloader.cs" />
     <Compile Include="IdentityProviderParser.cs" />
-    <Compile Include="Location.cs" />
     <Compile Include="ProfileXml.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="OAuth.cs" />
