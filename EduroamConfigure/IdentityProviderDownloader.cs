@@ -21,6 +21,7 @@ namespace EduroamConfigure
 
 		// state
 		public List<IdentityProvider> Providers { get; }
+		public List<IdentityProvider> ClosestProviders { get; }
 		private GeoCoordinateWatcher GeoWatcher { get; }
 
 
@@ -35,6 +36,7 @@ namespace EduroamConfigure
 			GeoWatcher = new GeoCoordinateWatcher();
 			GeoWatcher.TryStart(false, TimeSpan.FromMilliseconds(3000));
 			Providers = DownloadAllIdProviders();
+			ClosestProviders = GetClosestProviders();
 		}
 
 		/// <summary>
@@ -119,6 +121,15 @@ namespace EduroamConfigure
 		/// <param name="limit">number of providers to return</param>
 		public List<IdentityProvider> GetClosestProviders(int limit)
 		{
+			return ClosestProviders.Take(limit).ToList();
+			/*return GetClosestProviders().Take(limit).Tolist();
+
+			*/
+
+		}
+
+		private List<IdentityProvider> GetClosestProviders()
+		{
 			// find country code
 			string closestCountryCode;
 			try
@@ -147,14 +158,12 @@ namespace EduroamConfigure
 				return Providers
 					.Where(p => p.Country == closestCountryCode)
 					.OrderBy(p => userCoords.GetDistanceTo(p.GetClosestGeoCoordinate(userCoords)))
-					.Take(limit)
 					.ToList();
 			}
 			catch (ApiUnreachableException)
 			{
 				return Providers
 					.Where(p => p.Country == closestCountryCode)
-					.Take(limit)
 					.ToList();
 			}
 		}
