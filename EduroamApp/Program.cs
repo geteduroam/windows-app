@@ -16,8 +16,6 @@ namespace EduroamApp
 			{
 				DisplayName         = "GetEduroam",  // [REQUIRED] ProductName
 				Publisher           = "Uninett",  // [REQUIRED] Manufacturer
-				VersionMinor        = "1",  // [REQUIRED] Derived from ProductVersion
-				VersionMajor        = "0",  // [REQUIRED] Derived from ProductVersion
 				HelpLink            = null,  // ARPHELPLINK
 				HelpTelephone       = null,  // ARPHELPTELEPHONE
 				InstallSource       = null,  // SourceDir
@@ -80,6 +78,17 @@ namespace EduroamApp
 			}
 			else
 			{
+				// if there are supported NICs to configure
+				if (!EduroamConfigure.EduroamNetwork.GetAll(null).Any())
+				{
+					MessageBox.Show(
+						"No supported network interface was found on this computer,\n" +
+						"we are therefore unable to configure eduroam",
+						caption: Application.ProductName + " - " + Application.ProductVersion,
+						MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return;
+				}
+
 				// handles the rest
 				RunGUI(args);
 			}
