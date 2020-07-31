@@ -105,6 +105,8 @@ namespace WpfApp
                     string profileId = pageSelectProfile.ProfileId;
                     HandleProfileSelect(profileId);
                     break;
+                case FormId.ProfileOverview:
+                    break;
             }
 
             
@@ -126,6 +128,9 @@ namespace WpfApp
 
                 case FormId.SelectInstitution:
                     LoadPageSelectInstitution();
+                    break;
+                case FormId.SelectProfile:
+                    LoadPageSelectProfile();
                     break;
             }
 
