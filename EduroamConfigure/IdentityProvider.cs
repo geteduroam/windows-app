@@ -31,6 +31,11 @@ namespace EduroamConfigure
 		public string token_endpoint { get; set; }
 		public string authorization_endpoint { get; set; }
 		public string redirect { get; set; }
+
+		public override string ToString()
+		{
+			return Name;
+		}
 	}
 
 	// Stores information found in IdentityProvider json.
@@ -60,6 +65,11 @@ namespace EduroamConfigure
 				}
 			}
 			return closestGeo.GeoCoordinate;
+		}
+
+		public override string ToString()
+		{
+			return Name;
 		}
 
 	}
