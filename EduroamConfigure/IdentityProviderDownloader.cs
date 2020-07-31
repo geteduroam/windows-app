@@ -78,13 +78,12 @@ namespace EduroamConfigure
 
         /// <exception cref="ApiUnreachableException">description</exception>
         /// <exception cref="ApiParsingException">description</exception>
-        private static Location GetCurrentLocationFromGeoApi()
+        private static IdpLocation GetCurrentLocationFromGeoApi()
         {
             try
             {
                 string apiJson = DownloadUrlAsString(GeoApiUrl);
-                Location apiInstance = JsonConvert.DeserializeObject<Location>(apiJson);
-                return apiInstance;
+                return JsonConvert.DeserializeObject<IdpLocation>(apiJson);
             }
             catch (WebException ex)
             {
