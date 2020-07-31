@@ -57,7 +57,7 @@ namespace EduroamConfigure
                     new XAttribute(XNamespace.Xmlns + "eapCommon", nsEC),
                     new XAttribute(XNamespace.Xmlns + "baseEap", nsBEMUC),
                     new XElement(nsEHUC + "EapMethod",
-                        new XElement(nsEC + "Type", (uint)authMethod.EapType),
+                        new XElement(nsEC + "Type", (int)authMethod.EapType),
                         new XElement(nsEC + "AuthorId", authMethod.EapType == EapType.TTLS ? 311 : 0)
                         //new XElement(nsEC + "AuthorId", "67532") // geant link
                     ),
@@ -95,7 +95,7 @@ namespace EduroamConfigure
                 (EapType.MSCHAPv2, InnerAuthType.None) =>
 
                     new XElement(nsBEUP + "Eap",
-                        new XElement(nsBEUP + "Type", (uint)EapType.MSCHAPv2),
+                        new XElement(nsBEUP + "Type", (int)EapType.MSCHAPv2),
                         new XElement(nsMCUP + "EapType",
                             new XElement(nsMCUP + "Username", innerIdentity),
                             new XElement(nsMCUP + "Password", password),
@@ -106,7 +106,7 @@ namespace EduroamConfigure
                 (EapType.PEAP, InnerAuthType.EAP_MSCHAPv2) =>
                     
                     new XElement(nsBEUP + "Eap",
-                        new XElement(nsBEUP + "Type", (uint)EapType.PEAP),
+                        new XElement(nsBEUP + "Type", (int)EapType.PEAP),
                         new XElement(nsMPUP + "EapType",
                             new XElement(nsMPUP + "RoutingIdentity", outerIdentity),
                             EapUserData(
@@ -122,7 +122,7 @@ namespace EduroamConfigure
                 (EapType.TLS, InnerAuthType.None) =>
 
                     new XElement(nsBEUP + "Eap",
-                        new XElement(nsBEUP + "Type", (uint)EapType.TLS),
+                        new XElement(nsBEUP + "Type", (int)EapType.TLS),
                         new XElement(nsTLS + "EapType",
                             new XElement(nsTLS + "Username", outerIdentity),
                             new XElement(nsTLS + "UserCert", // xs:hexBinary

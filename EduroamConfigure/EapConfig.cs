@@ -315,11 +315,11 @@ namespace EduroamConfigure
                     .Elements().FirstOrDefault(nameIs("ClientSideCredential"));
 
                 // get EAP method type
-                EapType eapType = (EapType)(uint)authMethodXml
+                EapType eapType = (EapType)(int)authMethodXml
                     .Elements().First(nameIs("EAPMethod"))
                     .Elements().First(nameIs("Type"));
 
-                InnerAuthType innerAuthType = (InnerAuthType?)(uint?)authMethodXml
+                InnerAuthType innerAuthType = (InnerAuthType?)(int?)authMethodXml
                     .Elements().FirstOrDefault(nameIs("InnerAuthenticationMethod"))
                     ?.Descendants().FirstOrDefault(nameIs("Type"))
                     ?? InnerAuthType.None;
@@ -486,7 +486,7 @@ namespace EduroamConfigure
     /// <summary>
     ///  https://www.vocal.com/secure-communication/eap-types/
     /// </summary>
-    public enum EapType : uint
+    public enum EapType
     {
         TLS = 13,
         TTLS = 21,
@@ -494,7 +494,7 @@ namespace EduroamConfigure
         MSCHAPv2 = 26,
     }
 
-    public enum InnerAuthType: uint
+    public enum InnerAuthType
     {
         // For those EAP types with no inner auth method (TLS and MSCHAPv2)
         None = 0,
