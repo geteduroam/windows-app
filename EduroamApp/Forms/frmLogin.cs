@@ -94,12 +94,12 @@ namespace EduroamApp
             }
 
             
-            string brokenRules = IdentityProviderParser.GetBrokenRules(username, realm, hint);
-            usernameValid = string.IsNullOrEmpty(brokenRules);
+            var brokenRules = IdentityProviderParser.GetRulesBroken(username, realm, hint).ToList();
+            usernameValid = !brokenRules.Any();
             lblRules.Text = "";
             if (!usernameValid && !txtUsername.HintActive)
             {
-                lblRules.Text = brokenRules;
+                lblRules.Text = string.Join("\n", brokenRules); ;
             }
 
             frmParent.BtnNextEnabled = (passwordSet && usernameValid) || connected;
