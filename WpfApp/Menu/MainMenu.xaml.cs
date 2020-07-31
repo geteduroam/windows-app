@@ -36,11 +36,17 @@ namespace WpfApp.Menu
             mainWindow.btnBack.Visibility = Visibility.Hidden;
             lblInfo.Visibility = Visibility.Collapsed;
             mainWindow.lblTitle.Visibility = Visibility.Hidden;
+            //btnExisting.IsEnabled = true;
         }
 
         private void btnNewProfile_Click(object sender, RoutedEventArgs e)
         {
             mainWindow.NextPage();
+        }
+
+        private void btnExisting_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
     }
 }
