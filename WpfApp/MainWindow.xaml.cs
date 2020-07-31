@@ -170,6 +170,9 @@ namespace WpfApp
 
 			}
 
+			// reenable buttons after LoadPageLoading() disables them
+			btnBack.IsEnabled = true;
+			btnNext.IsEnabled = true;
 
 			if (eapConfig != null)
 			{
@@ -312,6 +315,7 @@ namespace WpfApp
 		{
 			currentFormId = FormId.SelectProfile;
 			lblTitle.Content = "Select Profile";
+			btnNext.Visibility = Visibility.Visible;
 			if (refresh) pageSelectProfile = new SelectProfile(this, pageSelectInstitution.IdProviderId);
 			Navigate(pageSelectProfile);
 		}
@@ -321,6 +325,8 @@ namespace WpfApp
 
 			currentFormId = FormId.ProfileOverview;
 			lblTitle.Content = eapConfig.InstitutionInfo.DisplayName;
+			btnNext.Visibility = Visibility.Visible;
+			btnBack.Visibility = Visibility.Visible;
 			btnNext.Content = eapConfig.AuthenticationMethods.First().EapType == EapType.TLS ? "Connect" : "Next";
 			if (refresh) pageProfileOverview = new ProfileOverview(this, eapConfig);
 			Navigate(pageProfileOverview);
@@ -349,6 +355,8 @@ namespace WpfApp
 		{
 			currentFormId = FormId.Loading;
 			lblTitle.Content = "Loading ...";
+			btnBack.IsEnabled = false;
+			btnNext.IsEnabled = false;
 			if (refresh) pageLoading = new Loading(this);
 			Navigate(pageLoading);
 		}

@@ -12,8 +12,8 @@
     <StackPanel Height="311" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
         <StackPanel Background="White"/>
         <Label x:Name="lblInfo" Content="Info on connecting" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5"/>
-        <Button Style="{StaticResource BlueButtonStyle}" x:Name="btnExisting" Content="Connect with [local file]" 
-                Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="68,5" Width="186" Background="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}"/>
+        <Button x:Name="btnExisting" Style="{StaticResource BlueButtonStyle}"  Content="Connect with [local file]" 
+                Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="68,5" Width="186" Click="btnExisting_Click"/>
         <Button x:Name="BtnNewProfile" Style="{StaticResource BlueButtonStyle}" Content="Connect to eduroam"
                 Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5" Width="186" Click="btnNewProfile_Click"/>
         <Button Style="{StaticResource WhiteButtonStyle}" Content="Use eap-config file" 
