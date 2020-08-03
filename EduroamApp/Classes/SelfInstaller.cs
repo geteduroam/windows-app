@@ -276,20 +276,22 @@ namespace EduroamApp
 					exceptionOnNotExists: false);
 
 			// Delete myself:
-
-			// this process delays 3 seconds then deletes the exe file
-			var killme = new ProcessStartInfo
+			if (File.Exists(InstallExePath))
 			{
-				FileName = "cmd.exe",
-				Arguments = "/C choice /C Y /N /D Y /T 3 " + // TODO: escape arguments
-					"& Del " + InstallExePath +
-					"& Del /Q " + InstallDir +
-					"& rmdir " + InstallDir,
-				WindowStyle = ProcessWindowStyle.Hidden,
-				CreateNoWindow = true,
-				WorkingDirectory = "C:\\"
-			};
-			Process.Start(killme);
+				// this process delays 3 seconds then deletes the exe file
+				var killme = new ProcessStartInfo
+				{
+					FileName = "cmd.exe",
+					Arguments = "/C choice /C Y /N /D Y /T 3 " + // TODO: escape arguments
+						"& Del " + InstallExePath +
+						"& Del /Q " + InstallDir +
+						"& rmdir " + InstallDir,
+					WindowStyle = ProcessWindowStyle.Hidden,
+					CreateNoWindow = true,
+					WorkingDirectory = "C:\\"
+				};
+				Process.Start(killme);
+			}
 
 			// Quit
 			//https://stackoverflow.com/a/12978034
