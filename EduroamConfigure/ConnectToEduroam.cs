@@ -269,34 +269,28 @@ namespace EduroamConfigure
                     throw new EduroamAppUserError("missing certificates",
                         "You must first install certificates with InstallCertificates");
 
-                var eduroamNetworks = EduroamNetwork.GetAll(AuthMethod.EapConfig).ToList();
-                bool anyInstalled = false;
-                bool anyInstalledHs2 = false; // todo: use
-
                 // Install wlan profile
-                foreach (EduroamNetwork network in eduroamNetworks)
-                    anyInstalled |= network.InstallProfiles(AuthMethod);
-
-                // If successfull, try to install Hotspot 2.0 as well:
-                if (anyInstalled && AuthMethod.Hs2AuthMethod != null) // this should be moved into network.InstallProfiles ?
+                bool anyInstalledSsid = false;
+                bool anyInstalledHs2 = false;
+                foreach (EduroamNetwork network in EduroamNetwork.GetAll(AuthMethod.EapConfig))
                 {
-                    foreach (EduroamNetwork network in eduroamNetworks)
-                        anyInstalledHs2 |= network.InstallHs2Profile(AuthMethod.Hs2AuthMethod);
+                    (bool withSsid, bool withHs2) = network.InstallProfiles(AuthMethod);
+                    anyInstalledSsid |= withSsid;
+                    anyInstalledHs2 |= withHs2;
                 }
-                
+
                 // Debug output
-                Debug.WriteLine("any profile installed:        " + anyInstalled);
+                Debug.WriteLine("any profile installed:        " + anyInstalledSsid);
                 Debug.WriteLine("any profile installed (Hs2):  " + anyInstalledHs2);
                 Debug.WriteLine("Installed profile type:       " + AuthMethod?.EapType.ToString() ?? "None");
                 Debug.WriteLine("Installed profile type (Hs2): " + AuthMethod.Hs2AuthMethod?.EapType.ToString() ?? "None");
 
-                if (!AuthMethod.NeedsClientCertificate() && !AuthMethod.NeedsLoginCredentials())
-                {
+                if (!AuthMethod.NeedsLoginCredentials())
                     InstallUserProfile(null, null, AuthMethod);
-                }
 
-                HasInstalledProfile = anyInstalled;
-                return anyInstalled;
+                bool success = anyInstalledSsid || anyInstalledHs2;
+                HasInstalledProfile = success;
+                return success;
             }
 
             /// <summary>

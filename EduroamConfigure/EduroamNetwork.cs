@@ -60,28 +60,32 @@ namespace EduroamConfigure
         /// </summary>
         /// <param name="authMethod">TODO</param>
         /// <param name="forAllUsers">TODO</param>
-        /// <returns>True if succeeded, false if failed.</returns>
-        public bool InstallProfiles(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
+        /// <returns>(success with ssid, success with hotspot2)</returns>
+        public (bool, bool) InstallProfiles(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
         {
             _ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
 
             PersistingStore.ProfileID = authMethod.EapConfig.Uid;
             
             var ssids = authMethod.EapConfig.CredentialApplicabilities
-                .Where(cred => cred.NetworkType == IEEE802x.IEEE80211) // TODO: Wired 802.1x
-                .Where(cred => cred.MinRsnProto != "TKIP") // too insecure. TODO: test user experience
+                .Where(cred => cred.NetworkType == IEEE802x.IEEE80211) // TODO: add support for Wired 802.1x
+                .Where(cred => cred.MinRsnProto != "TKIP") // too insecure. // TODO: test user experience
                 .Where(cred => cred.Ssid != null) // hs2 oid entires has no ssid
                 .Select(cred => cred.Ssid)
                 .ToList();
 
-            bool ret = false;
+            bool installed = false;
             foreach (var ssid in ssids)
             {
                 (string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, ssid);
-                ret |= InstallProfile(profileName, profileXml, false, forAllUsers);
+                installed |= InstallProfile(profileName, profileXml, false, forAllUsers);
             }
 
-            return ret;
+            bool installedHs2 = false;
+            if (authMethod.Hs2AuthMethod != null)
+                installedHs2 = InstallHs2Profile(authMethod.Hs2AuthMethod, forAllUsers);
+
+            return (installed, installedHs2);
         }
 
         /// <summary>
@@ -92,7 +96,7 @@ namespace EduroamConfigure
         /// <param name="authMethod">TODO</param>
         /// <param name="forAllUsers">TODO</param>
         /// <returns>True if succeeded, false if failed.</returns>
-        public bool InstallHs2Profile(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
+        private bool InstallHs2Profile(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
         {
             _ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
 
