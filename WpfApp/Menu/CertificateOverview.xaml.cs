@@ -12,18 +12,21 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using EduroamConfigure;
 
 namespace WpfApp.Menu
 {
     /// <summary>
     /// Interaction logic for InstallCertificates.xaml
     /// </summary>
-    public partial class InstallCertificates : Page
+    public partial class CertificateOverview : Page
     {
         private MainWindow mainWindow;
-        public InstallCertificates(MainWindow mainWindow)
+        private EapConfig.AuthenticationMethod authMethod;
+        public CertificateOverview(MainWindow mainWindow, EapConfig.AuthenticationMethod authMethod)
         {
             this.mainWindow = mainWindow;
+            this.authMethod = authMethod;
             InitializeComponent();
         }
     }
