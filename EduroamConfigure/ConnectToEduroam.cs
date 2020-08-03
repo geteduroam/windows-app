@@ -61,15 +61,13 @@ namespace EduroamConfigure
 
             if (has_expired_ca)
             {
-                yield return has_valid_ca switch
-                {
-                    true => (false,
+                yield return has_valid_ca 
+                    ? (false,
                         "One of the provided Certificate Authorities from this institution has expired.\r\n" +
-                        "There might be some issues connecting to eduroam."),
-                    false => (true, // TODO: This case means that the ProfileXml will be configured to not expect any fingerprint, meaning no connection can be made
+                        "There might be some issues connecting to eduroam.")
+                    : (true, // TODO: This case means that the ProfileXml will be configured to not expect any fingerprint, meaning no connection can be made
                         "The provided Certificate Authorities from this institution have all expired!\r\n" +
-                        "Please contact the institution to have the issue fixed!"),
-                };
+                        "Please contact the institution to have the issue fixed!");
             }
             else if (!has_valid_ca)
             {
@@ -93,7 +91,7 @@ namespace EduroamConfigure
             _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
             return eapConfig.AuthenticationMethods
                 .SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
-                .Where(CertificateStore.CertificateIsCA)
+                .Where(CertificateStore.CertificateIsRootCA)
                 .GroupBy(cert => cert.Thumbprint, (key, certs) => certs.FirstOrDefault()) // distinct, alternative is to use DistinctBy in MoreLINQ
                 .Select(cert => new CertificateInstaller(cert, caStoreName, caStoreLocation));
         }
@@ -236,7 +234,7 @@ namespace EduroamConfigure
             public bool NeedsToInstallCAs()
             {
                 return AuthMethod.CertificateAuthoritiesAsX509Certificate2()
-                    .Where(CertificateStore.CertificateIsCA) // Not a CA, no prompt will be made by this cert during install
+                    .Where(CertificateStore.CertificateIsRootCA) // If not a root CA, no prompt will be made by this cert during install
                     .Any(cert => !CertificateStore.IsCertificateInstalled(cert, caStoreName, caStoreLocation));
             }
 

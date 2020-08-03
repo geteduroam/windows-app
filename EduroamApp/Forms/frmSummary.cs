@@ -235,8 +235,8 @@ namespace EduroamApp
 
                         var results = FileDialog.AskUserForClientCertificateBundle();
                         if (results == null) continue; // user aborted
-
                         (string certPath, string certPass) = results.Value;
+
                         authMethodInstaller.AddClientCertificate(certPath, certPass); // todo, check success
                     }
 
