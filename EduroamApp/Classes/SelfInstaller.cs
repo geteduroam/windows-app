@@ -43,7 +43,7 @@ namespace EduroamApp
 			{ get => Version; }
 			public  string Publisher;           // [REQUIRED] Manufacturer
 			private string Version              // [SET AUTOMATICALLY] Derived from ProductVersion
-			{ get => Application.ProductVersion; }
+			{ get => Application.ProductVersion; } // TODO: make sure this is correct, and derive MajorVersion and MinorVersion
 			public  string HelpLink;            // ARPHELPLINK
 			public  string HelpTelephone;       // ARPHELPTELEPHONE
 			private string InstallDate          // [SET AUTOMATICALLY] The last time this product received service. The value of this property is replaced each time a patch is applied or removed from the product or the /v Command-Line Option is used to repair the product. If the product has received no repairs or patches this property contains the time this product was installed on this computer.
