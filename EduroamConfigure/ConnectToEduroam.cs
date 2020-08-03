@@ -61,15 +61,13 @@ namespace EduroamConfigure
 
 			if (has_expired_ca)
 			{
-				yield return has_valid_ca switch
-				{
-					true => (false,
+				yield return has_valid_ca
+					? (false,
 						"One of the provided Certificate Authorities from this institution has expired.\r\n" +
-						"There might be some issues connecting to eduroam."),
-					false => (true, // TODO: This case means that the ProfileXml will be configured to not expect any fingerprint, meaning no connection can be made
+						"There might be some issues connecting to eduroam.")
+					: (true, // TODO: This case means that the ProfileXml will be configured to not expect any fingerprint, meaning no connection can be made
 						"The provided Certificate Authorities from this institution have all expired!\r\n" +
-						"Please contact the institution to have the issue fixed!"),
-				};
+						"Please contact the institution to have the issue fixed!");
 			}
 			else if (!has_valid_ca)
 			{
