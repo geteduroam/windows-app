@@ -169,5 +169,8 @@ namespace EduroamConfigure
             Debug.WriteLine("");
             return all_removed;
         }
+
+        public static bool CertificateIsCA(X509Certificate2 cert)
+            => cert != null && cert?.Subject == cert?.Issuer; // If this doesn't work, try https://stackoverflow.com/a/34174890
     }
 }
