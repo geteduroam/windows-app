@@ -1,9 +1,7 @@
 using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Windows.Documents;
 using System.Windows.Forms;
 
 // TODO: support program to start hidden with tray icon

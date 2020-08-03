@@ -293,9 +293,8 @@ namespace EduroamApp
 			}
 			catch (EduroamAppUserError ex) // TODO: register this in some higher level
 			{
-				MessageBox.Show(
-					ex.UserFacingMessage,
-					"eduroam - Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				MessageBox.Show(ex.UserFacingMessage,
+					"geteduroam - Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 				eapConfig = null;
 			}
 			if (eapConfig != null)
@@ -405,18 +404,19 @@ namespace EduroamApp
 			}
 		}
 
-
+		/// <summary>
+		/// Tries to connect to eduroam
+		/// </summary>
+		/// <returns></returns>
 		public async Task<bool> Connect()
 		{
 			bool connectSuccess;
-			// tries to connect
 			try
 			{
 				connectSuccess = await Task.Run(ConnectToEduroam.TryToConnect);
 			}
 			catch (Exception ex)
 			{
-				// if an exception is thrown, connection has not succeeded
 				connectSuccess = false;
 				MessageBox.Show("Could not connect. \nException: " + ex.Message);
 			}

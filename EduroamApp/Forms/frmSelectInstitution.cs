@@ -25,7 +25,6 @@ namespace EduroamApp
 			// gets parent form instance
 			frmParent = parentInstance;
 			InitializeComponent();
-
 		}
 
 		/// <summary>
@@ -38,7 +37,7 @@ namespace EduroamApp
 			tbSearch.ReadOnly = true;
 			tbSearch.BackColor = System.Drawing.SystemColors.Window;
 			frmParent.BtnNextEnabled = false;
-			this.ActiveControl = lbInstitution;
+			ActiveControl = lbInstitution;
 
 			await Task.Run(() => PopulateInstitutions());
 
@@ -53,24 +52,19 @@ namespace EduroamApp
 			frmParent.RedirectUrl = "";
 
 			// make user autoselect search
-			this.ActiveControl = tbSearch;
-
+			ActiveControl = tbSearch;
 
 		}
-
-		// TODO more than 10 closest providers
 
 		/// <summary>
 		/// Called when the form is created to present the 10 closest providers
 		/// </summary>
-		private void PopulateInstitutions()
+		private void PopulateInstitutions(int limit = 10)
 		{
 			try
 			{
-				allIdentityProviders = Downloader.Providers;
-				UpdateInstitutions(Downloader.GetClosestProviders(limit: 10));
-
-
+				allIdentityProviders = downloader.Providers;
+				UpdateInstitutions(downloader.GetClosestProviders(limit));
 			}
 			catch (EduroamAppUserError e)
 			{

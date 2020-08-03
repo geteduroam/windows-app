@@ -130,7 +130,8 @@ namespace EduroamApp
 		}
 
 		/// <summary>
-		/// Checks if a config file has been selected, and if the filepath and type extention is valid.
+		/// Checks if a config file has been selected,
+		/// and if the filepath and type extention is valid.
 		/// </summary>
 		/// <returns>True if valid file, false if not.</returns>
 		public static bool ValidateFileSelection(string filePath, List<string> fileTypes)

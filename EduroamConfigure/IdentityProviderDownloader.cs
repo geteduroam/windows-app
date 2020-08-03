@@ -238,7 +238,6 @@ namespace EduroamConfigure
 		}
 
 
-
 		/// <summary>
 		/// WebClient with support for timeouts
 		/// </summary>
