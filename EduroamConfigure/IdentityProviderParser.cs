@@ -98,7 +98,7 @@ namespace EduroamConfigure
 		/// <returns>nothing if no rules are broken, otherwise descriptions of rulse being broken</returns>
 		public static IEnumerable<string> GetRulesBroken(string username, string requiredRealm, bool noSubdomanInRealm)
 		{
-			// TODO: rename, docstring, perhaps move?
+			// TODO: perhaps move this function?
 
 			//checks that there is exactly one @ sign
 			// positive lookahead required to find one @. Negative lookahead denies if string contains two (or more) @.

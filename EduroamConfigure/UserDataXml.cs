@@ -71,7 +71,10 @@ namespace EduroamConfigure
 						EapUserData(
 							username ?? authMethod.ClientUserName,
 							password ?? authMethod.ClientPassword,
-							authMethod.ClientOuterIdentity ?? username, // TODO: can this default case ever happen?
+							outerIdentity:
+								!string.IsNullOrEmpty(authMethod.ClientOuterIdentity)
+									? authMethod.ClientOuterIdentity
+									: username,
 							authMethod.EapType,
 							authMethod.InnerAuthType,
 							userCert?.Thumbprint
@@ -172,7 +175,7 @@ namespace EduroamConfigure
 						)
 					),
 
-				// TODO: handle the missing EapType cases in a different way?
+				// not supported
 				_ => throw new EduroamAppUserError("unsupported auth method"),
 			};
 		}

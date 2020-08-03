@@ -8,12 +8,7 @@ using System.IO;
 using System.Windows.Forms;
 
 
-// TODO: register uninstall
-// TODO: register run on boot
-// TODO: register start menu entry
-// TODO: support program removing registry entries and uninstalling all profiles and certificates
-// TODO: support program to starting hidden with tray icon
-// TODO: support program to wake already hidden instance instead of creating new instance
+// TODO: test register of run on boot
 
 namespace EduroamApp
 {
@@ -80,10 +75,7 @@ namespace EduroamApp
 				UninstallString = installer.UninstallCommand;
 				EstimatedSize   = (uint)new FileInfo(SelfInstaller.ThisExePath).Length;
 				ModifyPath      = null;
-
-				// TODO: SettingsIdentifier
-				// TODO: InstallLocation
-				// TODO: InstallSource?
+				// TODO: SettingsIdentifier ?
 			}
 
 			public void Write(
@@ -176,13 +168,18 @@ namespace EduroamApp
 		{
 			// avoid uneccesary/illegal updates
 			if (IsRunningFromInstallDir) // sanity check, should never happen
-				throw new EduroamAppUserError("already installed", // TODO: use a more fitting exception
+				throw new EduroamAppUserError("already installed", // TODO: use a more fitting exception?
 					"This application has already been installed. Installing it again won't have any effect.");
 			if (File.Exists(InstallExePath))
 			{
 				var d1 = File.GetLastWriteTime(ThisExePath);
 				var d2 = File.GetLastWriteTime(InstallExePath);
-				if (d1 <= d2) return; // TODO: throw?
+				if (d1 <= d2)
+				{
+					Console.WriteLine(
+						"The date of the currently installed version is equal to or newer than this one.");
+					return;
+				}
 			}
 
 			// Create target install directory
