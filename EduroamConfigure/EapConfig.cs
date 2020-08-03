@@ -188,6 +188,7 @@ namespace EduroamConfigure
 			/// Sets the passphrase to use when derypting the certificate bundle.
 			/// Will only be stored if valid.
 			/// </summary>
+			/// <param name="passphrase">the passphrase to the certificate</param>
 			/// <returns>true if the passphrase was valid and has been stored</returns>
 			public bool AddClientCertificatePassphrase(string passphrase)
 			{
@@ -557,25 +558,53 @@ namespace EduroamConfigure
 			);
 		}
 
+		/// <summary>
+		/// If this returns true, then the user must provide the login credentials
+		/// when installing with ConnectToEduroam or EduroamNetwork
+		/// </summary>
 		public bool NeedsLoginCredentials()
 			=> AuthenticationMethods
 				.Any(authMethod => authMethod.NeedsLoginCredentials());
+
+		/// <summary>
+		/// If this is true, then you must provide a
+		/// certificate file and add it with this.AddClientCertificate
+		/// </summary>
 		public bool NeedsClientCertificate()
 			=> AuthenticationMethods
 				.Any(authMethod => authMethod.NeedsClientCertificate());
+
+		/// <summary>
+		/// If this is true, then the user must provide a passphrase to the bundled certificate bundle.
+		/// Add this passphrase with this.AddClientCertificatePassphrase
+		/// </summary>
 		public bool NeedsClientCertificatePassphrase()
 			=> AuthenticationMethods
-				.Any(authMethod => authMethod.NeedsClientCertificatePassphrase());
+					.Any(authMethod => authMethod.NeedsClientCertificatePassphrase());
+
+		/// <summary>
+		/// Reads and adds the user certificate to be installed along with the wlan profile
+		/// </summary>
+		/// <param name="filePath">path to the certificate file in question. PKCS12</param>
+		/// <param name="passphrase">the passphrase to the certificate file in question</param>
+		/// <returns>true if valid and installed</returns>
 		public bool AddClientCertificate(string certificatePath, string certificatePassphrase = null)
 			=> AuthenticationMethods
 				.Select(authMethod => authMethod
 					.AddClientCertificate(certificatePath, certificatePassphrase))
 				.ToList().Any(); // evaluate all
+
+		/// <summary>
+		/// Sets the passphrase to use when derypting the certificate bundle.
+		/// Will only be stored if valid.
+		/// </summary>
+		/// <param name="passphrase">the passphrase to the certificate</param>
+		/// <returns>true if the passphrase was valid and has been stored</returns>
 		public bool AddClientCertificatePassphrase(string certificatePassphrase)
-				=> AuthenticationMethods
-					.Select(authMethod => authMethod
-						.AddClientCertificatePassphrase(certificatePassphrase))
-					.ToList().Any(); // evaluate all
+			=> AuthenticationMethods
+				.Select(authMethod => authMethod
+					.AddClientCertificatePassphrase(certificatePassphrase))
+				.ToList().Any(); // evaluate all
 
 	}
 
