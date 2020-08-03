@@ -232,6 +232,7 @@ namespace EduroamConfigure
 			/// Call this to check if there are any CAs left to install
 			/// </summary>
 			/// <returns></returns>
+			[Obsolete]
 			public bool NeedsToInstallCAs()
 			{
 				return AuthMethod.CertificateAuthoritiesAsX509Certificate2()
@@ -240,10 +241,10 @@ namespace EduroamConfigure
 			}
 
 			/// <summary>
-			/// Will install CAs and user certificates provided by the authMethod.
+			/// Will install CAs, intermediate certificates and user certificates provided by the authMethod.
 			/// Installing a CA in windows will produce a dialog box which the user must accept.
 			/// This will quit partway through if the user refuses to install any CA, but it is safe to run again.
-			/// Use NeedToInstallCAs to predict if it will need to install any CAs
+			/// Use EnumerateCAs to have the user install the CAs in a controlled manner before installing the EAP config
 			/// </summary>
 			/// <returns>Returns true if all certificates has been successfully installed</returns>
 			public bool InstallCertificates()
