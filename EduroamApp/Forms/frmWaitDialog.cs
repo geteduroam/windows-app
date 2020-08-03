@@ -129,10 +129,9 @@ namespace EduroamApp
                     : Properties.Resources.oauth_accepted;
 
                 // outputs response to web server
-                byte[] buffer = Encoding.UTF8.GetBytes(responseString);
-                response.ContentLength64 = buffer.Length;
-                Stream output = response.OutputStream;
-                output.Write(buffer, 0, buffer.Length);
+                byte[] responseBytes = Encoding.UTF8.GetBytes(responseString);
+                response.ContentLength64 = responseBytes.Length;
+                response.OutputStream.Write(responseBytes, 0, responseBytes.Length);
             }
             catch (HttpListenerException ex)
             {
