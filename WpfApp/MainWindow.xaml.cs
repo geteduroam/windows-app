@@ -116,36 +116,7 @@ namespace WpfApp
                // case FormId.ProfileOverview:
                //     LoadPageInstallCertificates();
                 case FormId.ProfileOverview:
-                    ConnectToEduroam.RemoveAllProfiles();
-                    ProfileCondition = ProfileStatus.NoneConfigured;
-
-                    string err;
-                    (AuthMethod, err) = pageProfileOverview.InstallEapConfig();
-                    EduroamAvailable = true;
-
-                    if (AuthMethod != null) // Profile was successfully installed
-                    {
-                        LoadPageCertificateOverview();
-                        break;
-                    }
-
-                    switch (err)
-                    {
-                        case "eduroam not available": // (no access point in range, or no WLAN service/device enabled)
-                            EduroamAvailable = false;
-                            //LoadFrmSaveAndQuit();
-                            break;
-                        case "not supported":
-                        case "exception occured":
-                            break; // dialogbox should have already been produced
-                        case "nothing installed":
-                        default:
-                            MessageBox.Show(
-                                "Couldn't connect to eduroam. \n" +
-                                "Your institution does not have a valid configuration.", // TODO: reword. The user may have declined some steps
-                                "Configuration not valid", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                            break;
-                    }
+                    LoadPageCertificateOverview();
                     break;
                 case FormId.InstallCertificates:
                     LoadPageLogin();
@@ -267,7 +238,14 @@ namespace WpfApp
                 }
                 // return focus to application
                 Activate();
-            }            
+            }
+            else if (!String.IsNullOrEmpty(profile.redirect))
+            {
+                //TODO handle redirect
+                // makes redirect link accessible in parent form
+                //RedirectUrl = redirect;
+                return null;
+            }
             else
             {  
                 eapXmlString = await Task.Run(() => IdpDownloader.GetEapConfigString(profile.Id));

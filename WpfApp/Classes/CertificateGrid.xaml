@@ -8,12 +8,15 @@
              d:DesignHeight="50" d:DesignWidth="300"
              Name="thisControl">
 
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="6*"/>
             <ColumnDefinition Width="4*"/>
         </Grid.ColumnDefinitions>
-        <TextBlock x:Name="tbCertificate" Text="{Binding ElementName=thisControl, Path=Text}"  TextWrapping="Wrap" TextAlignment="Left" Margin="5" VerticalAlignment="Center"/>
-        <Button x:Name="btnInstall"  Style="{StaticResource InstallButtonStyle}" Margin="5" Grid.Column="1" Width="80" Height="40" VerticalAlignment="Top"/>
+        <TextBlock x:Name="tbCertificate" Text="{Binding ElementName=thisControl, Path=Text}"  
+            TextWrapping="Wrap" TextAlignment="Left" Margin="5" VerticalAlignment="Center"/>
+        <Button x:Name="btnInstall"  Style="{StaticResource InstallButtonStyle}" IsEnabled="{Binding ElementName=thisControl, Path=IsInstalled, Converter={StaticResource inverseBoolConverter}}"
+            Grid.Column="1" Width="80" Height="40" VerticalAlignment="Top"/>
     </Grid>
 </UserControl>
