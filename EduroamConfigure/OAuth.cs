@@ -16,17 +16,20 @@ namespace EduroamConfigure
     /// </summary>
     public class OAuth
     {
+        // static config
         private const string responseType = "code";
         private const string codeChallengeMethod = "S256";
         private const string scope = "eap-metadata";
-        private string codeVerifier;
-        private string codeChallenge;
-        private const string clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a";
+        private const string clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a"; //TODO: move to application settings? (the thing in visual studio)
         private const string grantType = "authorization_code";
+        // instance config
         private readonly string redirectUri;
         private readonly string authEndpoint;
         private readonly string tokenEndpoint;
         private readonly string generatorEndpoint;
+        // state created by GetAuthUri
+        private string codeVerifier;
+        private string codeChallenge;
         private string state;
 
         /// <summary>
@@ -71,7 +74,6 @@ namespace EduroamConfigure
             return authUri;
         }
 
-
         /// <summary>
         /// Uses URL containing response after authenticating using authUri from GetAuthUri to get an EAP-config file.
         /// </summary>
@@ -79,41 +81,30 @@ namespace EduroamConfigure
         /// <returns>EAP-config file as string.</returns>
         public string GetEapConfigString(string responseUrl)
         {
-            // checks if url is not empty
+            // check if url is not empty
             if (string.IsNullOrEmpty(responseUrl))
-            {
-                string error = "HTTP request returned nothing.";
-                throw new EduroamAppUserError("oath empty reponse url", error);
-            }
+                throw new EduroamAppUserError("oauth empty reponse url",
+                    userFacingMessage: "HTTP request returned nothing.");
 
-            // checks if user chose to reject authorization
+            // check if user chose to reject authorization
             if (responseUrl.Contains("access_denied"))
-            {
-                string error = "Authorization rejected. Please try again.";
-                throw new EduroamAppUserError("oath access denied", error);
-            }
+                throw new EduroamAppUserError("oauth access denied",
+                    userFacingMessage: "Authorization rejected. Please try again.");
 
-            // Extract query parameters from response url 
+            // Extract query parameters from response url
             var responseUrlQueryParams = HttpUtility.ParseQueryString(new Uri(responseUrl).Query);
 
-            // gets state from response url and compares it to original state
+            // get and check state from response url and compares it to original state
             string newState = responseUrlQueryParams.Get("state");
-            // checks if state has remained, if not cancel operation
             if (newState != state)
-            {
-                string error = "State from request and response do not match. Aborting operation.";
-                throw new EduroamAppUserError("oath state mismatch", error);
-            }
+                throw new EduroamAppUserError("oauth state mismatch",
+                    userFacingMessage: "State from request and response do not match. Aborting operation.");
 
-            // gets code from response url
+            // get and check code from response url
             string code = responseUrlQueryParams.Get("code");
-            // checks if code is not empty
             if (string.IsNullOrEmpty(code))
-            {
-                string error = "Response string doesn't contain code. Aborting operation.";
-                throw new EduroamAppUserError("oath code missing", error);
-            }
-
+                throw new EduroamAppUserError("oauth code missing",
+                    userFacingMessage: "Response string doesn't contain code. Aborting operation.");
 
 
             // concatenates parameters into token endpoint URI
@@ -125,18 +116,8 @@ namespace EduroamConfigure
                 { "code_verifier", codeVerifier }
             };
 
-
-            string tokenJsonString;
             // downloads json file from url as string
-            try
-            {
-                tokenJsonString = PostFormToUrl(tokenEndpoint, tokenPostData);
-            }
-            catch (WebException ex)
-            {
-                string error = "Couldn't fetch token json. \nException: " + ex.Message;
-                throw new EduroamAppUserError("oath post error", error);
-            }
+            string tokenJsonString = PostFormToUrl(tokenEndpoint, tokenPostData); ;
 
             // token for authorizing Oauth request
             string token;
@@ -153,8 +134,8 @@ namespace EduroamConfigure
             }
             catch (JsonReaderException ex)
             {
-                string error = "Couldn't read token from JSON file.\n" + "Exception: " + ex.Message;
-                throw new EduroamAppUserError("oath unprocessable response", error);
+                throw new EduroamAppUserError("oauth unprocessable response",
+                    userFacingMessage: "Couldn't read token from JSON file.\n" + "Exception: " + ex.Message);
             }
 
             // gets and returns EAP config file as a string
@@ -165,16 +146,14 @@ namespace EduroamConfigure
                 client.Headers.Add("Authorization", tokenType + " " + token);
 
                 // download file
-                string eapConfigString = client.DownloadString(generatorEndpoint + "?format=eap-metadata");
-                return eapConfigString;
+                return client.DownloadString(generatorEndpoint + "?format=eap-metadata");
             }
             catch (WebException ex)
             {
-                string error = "Couldn't fetch EAP config file. \nException: " + ex.Message;
-                throw new EduroamAppUserError("oath eapconfig get error", error);
+                throw new EduroamAppUserError("oauth eapconfig get error",
+                    userFacingMessage: "Couldn't fetch EAP config file. \nException: " + ex.Message);
             }
         }
-
 
         /// <summary>
         /// Upload form and return data as a string.
@@ -184,10 +163,17 @@ namespace EduroamConfigure
         /// <returns>Web page content.</returns>
         public static string PostFormToUrl(string url, NameValueCollection data)
         {
-            using var client = new WebClient();
-            return Encoding.UTF8.GetString(client.UploadValues(url, "POST", data));
+            try
+            {
+                using var client = new WebClient();
+                return Encoding.UTF8.GetString(client.UploadValues(url, "POST", data));
+            }
+            catch (WebException ex)
+            {
+                throw new EduroamAppUserError("oauth post error",
+                    userFacingMessage: "Couldn't fetch token json.\nException: " + ex.Message);
+            }
         }
-
 
         /// <summary>
         /// Generates a random code challenge base to use for the code challenge.
