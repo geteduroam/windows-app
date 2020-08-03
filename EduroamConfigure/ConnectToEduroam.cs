@@ -86,6 +86,53 @@ namespace EduroamConfigure
 		}
 
 		/// <summary>
+		/// Enumerates the CAs which the eapConfig in question defines
+		/// </summary>
+		public static IEnumerable<CertificateInstaller> EnumerateCAs(EapConfig eapConfig)
+		{
+			_ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
+			return eapConfig.AuthenticationMethods
+				.SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
+				.Where(CertificateStore.CertificateIsCA)
+				.GroupBy(cert => cert.Thumbprint, (key, certs) => certs.FirstOrDefault()) // distinct, alternative is to use DistinctBy in MoreLINQ
+				.Select(cert => new CertificateInstaller(cert, caStoreName, caStoreLocation));
+		}
+
+		/// <summary>
+		/// A helper class which helps you ensure a single certificates is installed.
+		/// </summary>
+		public class CertificateInstaller
+		{
+
+			private readonly X509Certificate2 cert;
+			private readonly StoreName storeName;
+			private readonly StoreLocation storeLocation;
+
+			public CertificateInstaller(
+				X509Certificate2 cert,
+				StoreName storeName,
+				StoreLocation storeLocation)
+			{
+				this.cert = cert ?? throw new ArgumentNullException(paramName: nameof(cert));
+				this.storeLocation = storeLocation;
+				this.storeName = storeName;
+			}
+
+			override public string ToString()
+				=> cert.FriendlyName;
+
+			public bool IsCa { get => storeName == caStoreName; }
+
+			public bool IsInstalled
+			{
+				get => CertificateStore.IsCertificateInstalled(cert, storeName, storeLocation);
+			}
+
+			public bool InstallCertificate()
+				=> CertificateStore.InstallCertificate(cert, storeName, storeLocation);
+		}
+
+		/// <summary>
 		/// Yields EapAuthMethodInstallers which will attempt to install eapConfig for you.
 		/// Refer to frmSummary.InstallEapConfig to see how to use it (TODO: actually explain when finalized)
 		/// </summary>
@@ -188,7 +235,7 @@ namespace EduroamConfigure
 			public bool NeedsToInstallCAs()
 			{
 				return AuthMethod.CertificateAuthoritiesAsX509Certificate2()
-					.Where(cert => cert.Subject == cert.Issuer) // Not a CA, no prompt will be made by this cert during install. If this doesn't work, try https://stackoverflow.com/a/34174890
+					.Where(CertificateStore.CertificateIsCA) // Not a CA, no prompt will be made by this cert during install
 					.Any(cert => !CertificateStore.IsCertificateInstalled(cert, caStoreName, caStoreLocation));
 			}
 

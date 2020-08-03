@@ -87,6 +87,8 @@ namespace EduroamConfigure
 			var profileName = asHs2Profile
 				? (authMethod.EapConfig.InstitutionInfo.DisplayName)
 				: ssids.First();
+			if (asHs2Profile && ssids.Contains(profileName))
+				profileName += " via Passpoint"; // GEANT convention sa fallback
 
 			// Construct XML document
 			XElement ssidConfigElement;
