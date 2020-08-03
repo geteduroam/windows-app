@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EduroamConfigure;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,9 +15,10 @@ namespace EduroamApp
     class FileDialog
     {
         /// <summary>
-        /// TODO
+        /// Asks the user to supply a user certificate bundle along with a valid password.
+        /// Returns null if user aborted.
         /// </summary>
-        /// <returns>(filecontents, passphrase) or null</returns>
+        /// <returns>(filepath, passphrase) or null</returns>
         public static ValueTuple<string, string>? AskUserForClientCertificateBundle()
         {
             string filepath;
@@ -31,7 +33,7 @@ namespace EduroamApp
             while (!ValidateFileSelection(filepath, new List<string> { ".pfx", ".p12" }));
 
             var passphrase = "";
-            while (!TestCertificatePassphrase(filepath, passphrase))
+            while (!EapConfig.AuthenticationMethod.VerifyCertificateBundle(filepath, passphrase))
             {
                 if (string.IsNullOrEmpty(passphrase))
                 {
@@ -57,10 +59,11 @@ namespace EduroamApp
         }
 
         /// <summary>
-        /// TODO
+        /// Asks the user to supply a .eap-config file.
+        /// Returns null if user aborted.
         /// </summary>
         /// <returns>EapConfig object or null</returns>
-        public static EduroamConfigure.EapConfig AskUserForEapConfig()
+        public static EapConfig AskUserForEapConfig()
         {
             string filepath;
             do
@@ -157,27 +160,6 @@ namespace EduroamApp
                 "The file type you chose is not supported.",
                 "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return false; // TODO: flow control
-        }
-
-        private static bool TestCertificatePassphrase(string certificateFilePath, string passphrase)
-        {
-            try
-            {
-                using var testCertificate = new X509Certificate2(certificateFilePath, passphrase); // TODO: any persist flags needed?
-            }
-            catch (CryptographicException ex)
-            {
-                if ((ex.HResult & 0xFFFF) == 0x56) return false; // wrong passphrase
-                throw;
-            }
-            /*
-            // TODO: remove
-            catch (Exception)
-            {
-                // ignored
-            }
-            */
-            return true;
         }
 
 
