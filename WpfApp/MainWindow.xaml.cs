@@ -39,6 +39,14 @@ namespace WpfApp
 			Loading,
 			InstallCertificates,
 		}
+
+		public enum ProfileStatus
+		{
+			NoneConfigured,
+			Incomplete,
+			Working,
+		}
+
 		private readonly List<FormId> historyFormId = new List<FormId>();
 		private FormId currentFormId;
 		private MainMenu pageMainMenu;
@@ -47,20 +55,13 @@ namespace WpfApp
 		private ProfileOverview pageProfileOverview;
 		private Loading pageLoading;
 		private Login pageLogin;
-		private InstallCertificates pageInstallCertificates;
+		private CertificateOverview pageCertificateOverview;
 		private bool Online;
 		private EapConfig eapConfig;
 		public ProfileStatus ProfileCondition { get; set; }
 		public IdentityProviderDownloader IdpDownloader;
-
-		public enum ProfileStatus
-		{
-			NoneConfigured,
-			Incomplete,
-			Working,
-		}
-		public EapConfig.AuthenticationMethod AuthMethod;
-
+		public bool EduroamAvailable { get; set; }
+		public EapConfig.AuthenticationMethod AuthMethod { get; set; }
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -112,8 +113,39 @@ namespace WpfApp
 					// if profile could not be handled then return to form
 					if (!await HandleProfileSelect(profileId)) LoadPageSelectProfile(refresh: false);
 					break;
+				// case FormId.ProfileOverview:
+				//     LoadPageInstallCertificates();
 				case FormId.ProfileOverview:
-					LoadPageInstallCertificates();
+					ConnectToEduroam.RemoveAllProfiles();
+					ProfileCondition = ProfileStatus.NoneConfigured;
+
+					string err;
+					(AuthMethod, err) = pageProfileOverview.InstallEapConfig();
+					EduroamAvailable = true;
+
+					if (AuthMethod != null) // Profile was successfully installed
+					{
+						LoadPageCertificateOverview();
+						break;
+					}
+
+					switch (err)
+					{
+						case "eduroam not available": // (no access point in range, or no WLAN service/device enabled)
+							EduroamAvailable = false;
+							//LoadFrmSaveAndQuit();
+							break;
+						case "not supported":
+						case "exception occured":
+							break; // dialogbox should have already been produced
+						case "nothing installed":
+						default:
+							MessageBox.Show(
+								"Couldn't connect to eduroam. \n" +
+								"Your institution does not have a valid configuration.", // TODO: reword. The user may have declined some steps
+								"Configuration not valid", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+							break;
+					}
 					break;
 				case FormId.InstallCertificates:
 					LoadPageLogin();
@@ -322,7 +354,6 @@ namespace WpfApp
 
 		public void LoadPageProfileOverview(EapConfig eapConfig, bool refresh = true)
 		{
-
 			currentFormId = FormId.ProfileOverview;
 			lblTitle.Content = eapConfig.InstitutionInfo.DisplayName;
 			btnNext.Visibility = Visibility.Visible;
@@ -332,11 +363,14 @@ namespace WpfApp
 			Navigate(pageProfileOverview);
 		}
 
-		public void LoadPageInstallCertificates(bool refresh = true)
+		public void LoadPageCertificateOverview(bool refresh = true)
 		{
 			currentFormId = FormId.InstallCertificates;
-			if (refresh) pageInstallCertificates = new InstallCertificates(this);
-			Navigate(pageInstallCertificates);
+			lblTitle.Content = "Certificates";
+			btnBack.Visibility = Visibility.Visible;
+			btnBack.IsEnabled = true;
+			if (refresh) pageCertificateOverview = new CertificateOverview(this, eapConfig.AuthenticationMethods.First());
+			Navigate(pageCertificateOverview);
 		}
 
 		public void LoadPageLogin(bool refresh = true)
