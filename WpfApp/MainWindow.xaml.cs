@@ -223,7 +223,7 @@ namespace WpfApp
                 {
                     OAuth oauth = new OAuth(profile.authorization_endpoint, profile.token_endpoint, profile.eapconfig_endpoint);
                     // generate authURI based on redirect
-                    string authUri = oauth.GetAuthUri();
+                    string authUri = oauth.CreateAuthUri();
                     // get local listening uri prefix
                     string prefix = oauth.GetRedirectUri();
                     // browser authenticate
