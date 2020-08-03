@@ -242,7 +242,7 @@ namespace EduroamApp
                     Close();
                     break;
 
-                // TODO: missing case Redirect. sanity is to throw on default
+                // TODO: missing cases? For sanity we should throw on default
 
                 // closes application after saving setup
                 case FormId.SaveAndQuit:
@@ -279,8 +279,8 @@ namespace EduroamApp
             BtnNextEnabled = false;
             BtnNext.Refresh();
             Application.DoEvents();
-            // TODO: remove this, i dont think this should happen anymore? buttons are disabled if nothing is selected
-            if (string.IsNullOrEmpty(profileId))
+            
+            if (string.IsNullOrEmpty(profileId)) // Should not happen, but for sanity
             {
                 MessageBox.Show("Please select a Profile.",
                     "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -361,7 +361,7 @@ namespace EduroamApp
                 case FormId.Login:
                     LoadFrmLogin();
                     break;
-                // TODO: missing cases? sanity is to throw on default
+                // TODO: missing cases? For sanity we should throw on default
             }
 
             // removes current form from history
@@ -420,24 +420,6 @@ namespace EduroamApp
                 connectSuccess = false;
                 MessageBox.Show("Could not connect. \nException: " + ex.Message);
             }
-
-            // double check to validate wether eduroam really is an active connection
-            //var eduConnected = false;
-            // TODO: update this, name should not always be eduroam
-            /* if (connectSuccess)
-             {
-                 var checkConnected = NativeWifi.EnumerateConnectedNetworkSsids();
-                 foreach (NetworkIdentifier network in checkConnected)
-                 {
-                     if (network.ToString() == "eduroam")
-                     {
-                         eduConnected = true;
-                     }
-                 }
-             }
-
-             Console.WriteLine("educonnected: " + eduConnected.ToString());
-             return eduConnected;*/
             return connectSuccess;
         }
 

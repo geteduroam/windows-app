@@ -196,21 +196,6 @@ namespace EduroamConfigure
             }
 
             /// <summary>
-            /// Installs the client certificate into the personal
-            /// certificate store of the windows current user
-            /// </summary>
-            private void InstallClientCertificate()
-            {
-                // checks if Authentication method contains a client certificate
-                if (!string.IsNullOrEmpty(AuthMethod.ClientCertificate))
-                {
-                    using var clientCert = AuthMethod.ClientCertificateAsX509Certificate2();
-                    CertificateStore.InstallCertificate(clientCert, userCertStoreName, userCertStoreLocation);
-                }
-                // TODO else throw?
-            }
-
-            /// <summary>
             /// Provide it by TODO
             /// </summary>
             public bool NeedsClientCertificate()
@@ -230,7 +215,7 @@ namespace EduroamConfigure
             /// Call this to check if there are any CAs left to install
             /// </summary>
             /// <returns></returns>
-            [Obsolete]
+            [Obsolete("Use ConnectToEduroam.EnumerateCAs instead")]
             public bool NeedsToInstallCAs()
             {
                 return AuthMethod.CertificateAuthoritiesAsX509Certificate2()
@@ -250,8 +235,6 @@ namespace EduroamConfigure
                 if (NeedsClientCertificate())
                     throw new EduroamAppUserError("no client certificate was provided");
 
-                // TODO: provide a way to remove installed certificates
-
                 // get all CAs from Authentication method
                 foreach (var cert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
                 {
@@ -263,7 +246,12 @@ namespace EduroamConfigure
                     if (!success) return false;
                 }
 
-                InstallClientCertificate(); // TODO: inline this function?
+                // Install client certificate if any
+                if (!string.IsNullOrEmpty(AuthMethod.ClientCertificate))
+                {
+                    using var clientCert = AuthMethod.ClientCertificateAsX509Certificate2();
+                    CertificateStore.InstallCertificate(clientCert, userCertStoreName, userCertStoreLocation);
+                }
 
                 HasInstalledCertificates = true;
                 return true;

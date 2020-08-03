@@ -197,10 +197,6 @@ namespace EduroamConfigure
             XNamespace nsEapType;
             string thumbprintNodeName;
 
-            // TODO: test TLS
-            // TODO: test PEAP on someone elses computer
-            // TODO: test TTLS PAP on someone elses computer
-            // TODO: test TTLS EAP MSCHAPv2 on someone elses computer
             if ((eapType, innerAuthType) == (EapType.TLS, InnerAuthType.None))
             {
                 // sets namespace and name of thumbprint node

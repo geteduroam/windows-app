@@ -141,7 +141,7 @@ namespace EduroamApp
                 MessageBox.Show(
                     "Please select a file.",
                     "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false; // TODO, flow control
+                return false;
             }
 
             // checks if filepath is valid
@@ -149,7 +149,7 @@ namespace EduroamApp
             {
                 MessageBox.Show("The specified file does not exist.",
                     "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false; // TODO, flow control
+                return false;
             }
 
             // checks if file extension is valid
@@ -159,7 +159,7 @@ namespace EduroamApp
             MessageBox.Show(
                 "The file type you chose is not supported.",
                 "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return false; // TODO: flow control
+            return false;
         }
 
 
