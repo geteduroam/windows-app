@@ -4,11 +4,22 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WpfApp.Menu"
+      xmlns:c="clr-namespace:WpfApp.Classes"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="311" d:DesignWidth="322"
       Title="CertificateOverview">
 
-    <Grid>
-        
-    </Grid>
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="5">
+        <StackPanel  Background="White">
+            <c:CertificateGrid Text="Uninett CA" Margin="5"/>
+            <Separator Height="1" BorderThickness="1" BorderBrush="LightGray" Margin="5,0"/>
+            <c:CertificateGrid Text="User Certificate" Margin="5"/>
+            <Separator Height="1" BorderThickness="1" BorderBrush="LightGray" Margin="5,0"/>
+            <c:CertificateGrid Text="Root CA" Margin="5"/>
+            <Separator Height="1" BorderThickness="1" BorderBrush="LightGray" Margin="5,0"/>
+            <c:CertificateGrid Text="Root CA" Margin="5"/>
+
+        </StackPanel>
+    </ScrollViewer>
 </Page>

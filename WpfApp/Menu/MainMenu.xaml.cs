@@ -34,7 +34,8 @@ namespace WpfApp.Menu
             mainWindow.lblTitle.Content = "Connect to Eduroam";
             mainWindow.btnNext.Visibility = Visibility.Hidden;
             mainWindow.btnBack.Visibility = Visibility.Hidden;
-            lblInfo.Visibility = Visibility.Collapsed;
+            //lblInfo.Visibility = Visibility.Collapsed;
+            tbInfo.Visibility = Visibility.Collapsed;
             mainWindow.lblTitle.Visibility = Visibility.Hidden;
             //btnExisting.IsEnabled = true;
         }

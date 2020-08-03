@@ -41,6 +41,10 @@ namespace EduroamConfigure
         public string authorization_endpoint { get; set; }
         public string redirect { get; set; }
 
+        /// <summary>
+        /// Represents profile with name of profile to show user
+        /// </summary>
+        /// <returns>Name of profile</returns>
         public override string ToString()
         {
             return Name;
@@ -75,7 +79,10 @@ namespace EduroamConfigure
             }
             return closestGeo.GeoCoordinate;
         }
-
+        /// <summary>
+        /// represents insitutiion with name of institution to show user
+        /// </summary>
+        /// <returns>Name of institution</returns>
         public override string ToString()
         {
             return Name;

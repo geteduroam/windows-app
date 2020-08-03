@@ -369,7 +369,7 @@ namespace WpfApp
             lblTitle.Content = "Certificates";
             btnBack.Visibility = Visibility.Visible;
             btnBack.IsEnabled = true;
-            if (refresh) pageCertificateOverview = new CertificateOverview(this, eapConfig.AuthenticationMethods.First());
+            if (refresh) pageCertificateOverview = new CertificateOverview(this, eapConfig);
             Navigate(pageCertificateOverview);
         }
 
