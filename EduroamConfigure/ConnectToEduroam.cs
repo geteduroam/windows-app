@@ -91,7 +91,7 @@ namespace EduroamConfigure
             _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
             return eapConfig.AuthenticationMethods
                 .SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
-                .Where(CertificateStore.CertificateIsCA)
+                .Where(CertificateStore.CertificateIsRootCA)
                 .GroupBy(cert => cert.Thumbprint, (key, certs) => certs.FirstOrDefault()) // distinct, alternative is to use DistinctBy in MoreLINQ
                 .Select(cert => new CertificateInstaller(cert, caStoreName, caStoreLocation));
         }
@@ -234,7 +234,7 @@ namespace EduroamConfigure
             public bool NeedsToInstallCAs()
             {
                 return AuthMethod.CertificateAuthoritiesAsX509Certificate2()
-                    .Where(CertificateStore.CertificateIsCA) // Not a CA, no prompt will be made by this cert during install
+                    .Where(CertificateStore.CertificateIsRootCA) // If not a root CA, no prompt will be made by this cert during install
                     .Any(cert => !CertificateStore.IsCertificateInstalled(cert, caStoreName, caStoreLocation));
             }
 
