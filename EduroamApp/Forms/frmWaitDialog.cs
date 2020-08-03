@@ -124,9 +124,9 @@ namespace EduroamApp
 			{
 				using HttpListenerResponse response = context.Response;
 				// constructs a response
-				string responseString = responseUrl.Contains("access_denied")
-					? "<HTML><BODY>You rejected the authorization. Please go back to the Eduroam app. <br />You can now close this tab.</BODY></HTML>"
-					: "<HTML><BODY>Feide has been authorized. <br />You can now close this tab.</BODY></HTML>";
+				string responseString = responseUrl.Contains("access_denied") // TODO: this check sucks
+					? Properties.Resources.oauth_rejected
+					: Properties.Resources.oauth_accepted;
 
 				// outputs response to web server
 				byte[] buffer = Encoding.UTF8.GetBytes(responseString);
