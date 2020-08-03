@@ -89,7 +89,7 @@ namespace EduroamConfigure
 			{
 				foreach (var ca in CertificateAuthorities)
 				{
-					using var cert = new X509Certificate2(Convert.FromBase64String(ca));
+					var cert = new X509Certificate2(Convert.FromBase64String(ca));
 
 					// sets the friendly name of certificate
 					if (string.IsNullOrEmpty(cert.FriendlyName))
