@@ -34,29 +34,39 @@ namespace WpfApp.Menu
 
 		private void Load()
 		{
-
-			AddCertGrid("Cert1");
-			AddSeparator();
-			AddCertGrid("Cert2");
-			AddSeparator();
-			AddCertGrid("Cert3");
+			var certs = ConnectToEduroam.EnumerateCAs(eapConfig).ToList();
+			foreach (ConnectToEduroam.CertificateInstaller installer in certs )
+			{
+				AddCertGrid(installer);
+				AddSeparator();
+			}
 		}
 
-		private void AddCertGrid(string text)
+		private void AddCertGrid( ConnectToEduroam.CertificateInstaller installer)
 		{
-			CertificateGrid grid = new CertificateGrid();
-			grid.Text = text;
-			grid.Margin = new Thickness(5, 5, 5, 5);
+			CertificateGrid grid = new CertificateGrid
+			{
+				Text = installer.ToString(),
+				Margin = new Thickness(5, 5, 5, 5),
+				IsInstalled = installer.IsInstalled
+			};
+			/* grid.Click += new EventHandler(delegate (Object o, EventArgs a)
+			{
+				//snip
+			});*/
+
 			AddToStack(grid);
 		}
 
 		private void AddSeparator()
 		{
-			Separator sep = new Separator();
-			sep.Height = 1;
-			sep.BorderThickness = new Thickness(1, 1, 1, 1);
-			sep.BorderBrush = Brushes.LightGray;
-			sep.Margin = new Thickness(5, 0, 5, 0);
+			Separator sep = new Separator
+			{
+				Height = 1,
+				BorderThickness = new Thickness(1, 1, 1, 1),
+				BorderBrush = Brushes.LightGray,
+				Margin = new Thickness(5, 0, 5, 0)
+			};
 			AddToStack(sep);
 		}
 
