@@ -116,18 +116,8 @@ namespace EduroamConfigure
 				{ "code_verifier", codeVerifier }
 			};
 
-
-			string tokenJsonString;
 			// downloads json file from url as string
-			try
-			{
-				tokenJsonString = PostFormToUrl(tokenEndpoint, tokenPostData);
-			}
-			catch (WebException ex)
-			{
-				string error = "Couldn't fetch token json. \nException: " + ex.Message;
-				throw new EduroamAppUserError("oath post error", error);
-			}
+			string tokenJsonString = PostFormToUrl(tokenEndpoint, tokenPostData); ;
 
 			// token for authorizing Oauth request
 			string token;
@@ -173,8 +163,16 @@ namespace EduroamConfigure
 		/// <returns>Web page content.</returns>
 		public static string PostFormToUrl(string url, NameValueCollection data)
 		{
-			using var client = new WebClient();
-			return Encoding.UTF8.GetString(client.UploadValues(url, "POST", data));
+			try
+			{
+				using var client = new WebClient();
+				return Encoding.UTF8.GetString(client.UploadValues(url, "POST", data));
+			}
+			catch (WebException ex)
+			{
+				throw new EduroamAppUserError("oauth post error",
+					userFacingMessage: "Couldn't fetch token json.\nException: " + ex.Message);
+			}
 		}
 
 		/// <summary>
