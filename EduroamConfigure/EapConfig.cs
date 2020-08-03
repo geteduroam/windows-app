@@ -471,15 +471,6 @@ namespace EduroamConfigure
                 var clientInnerIdentityHint = (bool?)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("InnerIdentityHint")) ?? false;
 
-
-
-                // Translate erronous data from cat.eduroam.org: https://github.com/GEANT/CAT/pull/191
-                // TODO: remove this when PR is merged and deployed!
-                if ((eapType, innerAuthType) == (EapType.TTLS, InnerAuthType.EAP_MSCHAPv2))
-                {
-                    innerAuthType = InnerAuthType.MSCHAPv2;
-                }
-
                 // create new authentication method object and adds it to list
                 authMethods.Add(new EapConfig.AuthenticationMethod(
                     eapType,
