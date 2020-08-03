@@ -11,14 +11,8 @@
 
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="5">
-        <StackPanel  Background="White">
-            <c:CertificateGrid Text="Uninett CA" Margin="5"/>
-            <Separator Height="1" BorderThickness="1" BorderBrush="LightGray" Margin="5,0"/>
-            <c:CertificateGrid Text="User Certificate" Margin="5"/>
-            <Separator Height="1" BorderThickness="1" BorderBrush="LightGray" Margin="5,0"/>
-            <c:CertificateGrid Text="Root CA" Margin="5"/>
-            <Separator Height="1" BorderThickness="1" BorderBrush="LightGray" Margin="5,0"/>
-            <c:CertificateGrid Text="Root CA" Margin="5"/>
+        <StackPanel x:Name="stpCerts"  Background="White">
+
 
         </StackPanel>
     </ScrollViewer>
