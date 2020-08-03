@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
 
@@ -56,21 +57,29 @@ namespace EduroamConfigure
             public string ClientInnerIdentitySuffix { get; } // realm
             public bool ClientInnerIdentityHint { get; } // Wether to disallow subrealms or not (see https://github.com/GEANT/CAT/issues/190)
 
+            private byte[] ClientCertificateRaw
+            { get => Convert.FromBase64String(ClientCertificate); }
+            private bool CertificateIsValid
+            {
+                get => VerifyCertificateBundle(
+                        Convert.FromBase64String(ClientCertificate),
+                        ClientCertificatePassphrase);
+            }
+
             /// <summary>
             /// Will point to 'this' if it supports Hotspot2.0,
             /// otherwise points to the first one supports Hotspot2.0 in EapConfig.AuthenticationMethods,
-            /// otherwise null
+            /// otherwise null.
+            /// 
+            /// This method is somewhat risky, since other authMethods may use other certificates
+            /// Ensure you install certificates with ConnectToEduroam.EnumerateCAs()
             /// </summary>
             public AuthenticationMethod Hs2AuthMethod {
-                // TODO: this method is risky, since other authMethods may use other certificates
-                // IDEA: install cetrtificates in separate view in gui
                 get => ProfileXml.SupportsHs2(this)
                     ? this
-                    //: null
                     : EapConfig.AuthenticationMethods
                         .FirstOrDefault(ProfileXml.SupportsHs2);
             }
-
 
             /// <summary>
             /// Converts and enumerates CertificateAuthorities as X509Certificate2 objects.
@@ -121,9 +130,15 @@ namespace EduroamConfigure
                 return EapType.ToString();
             }
 
+            // methods to check if the authentification method is complete, and methods to mend it
+
+            /// <summary>
+            /// If this returns true, then the user must provide the login credentials
+            /// when installing with ConnectToEduroam or EduroamNetwork
+            /// </summary>
             public bool NeedsLoginCredentials()
             {
-                if (UserDataXml.NeedsCredentials(this)) // Auth method expects it
+                if (UserDataXml.NeedsLoginCredentials(this)) // Auth method expects it
                 {
                     if (string.IsNullOrEmpty(ClientUserName) || string.IsNullOrEmpty(ClientUserName)) // we don't already have them
                        return true;
@@ -131,19 +146,93 @@ namespace EduroamConfigure
                 return false;
             }
 
+            /// <summary>
+            /// If this is true, then you must provide a
+            /// certificate file and add it with this.AddClientCertificate
+            /// </summary>
             public bool NeedsClientCertificate()
             {
-                if (UserDataXml.NeedsCredentials(this)) return false;
+                if (UserDataXml.NeedsLoginCredentials(this)) return false;
                 return string.IsNullOrEmpty(ClientCertificate);
             }
-            public bool AddClientCertificate(string certificatePath, string passphrase = null)
+
+            /// <summary>
+            /// If this is true, then the user must provide a passphrase to the bundled certificate bundle.
+            /// Add this passphrase with this.AddClientCertificatePassphrase
+            /// </summary>
+            public bool NeedsClientCertificatePassphrase() // TODO: use this
+                => !UserDataXml.NeedsLoginCredentials(this)
+                && !string.IsNullOrEmpty(ClientCertificate)
+                && !CertificateIsValid;
+
+            /// <summary>
+            /// Reads and adds the user certificate to be installed along with the wlan profile
+            /// </summary>
+            /// <param name="filePath">path to the certificate file in question. PKCS12</param>
+            /// <param name="passphrase">the passphrase to the certificate file in question</param>
+            /// <returns>true if valid and installed</returns>
+            public bool AddClientCertificate(string filePath, string passphrase = null)
             {
-                // TODO: validate password
+                var valid = VerifyCertificateBundle(filePath, passphrase);
+                
+                if (valid)
+                {
+                    ClientCertificate = Convert.ToBase64String(File.ReadAllBytes(filePath));
+                    ClientCertificatePassphrase = passphrase;
+                }
 
-                ClientCertificate = Convert.ToBase64String(File.ReadAllBytes(certificatePath));
-                ClientCertificatePassphrase = passphrase;
+                return valid;
+            }
 
+            /// <summary>
+            /// Sets the passphrase to use when derypting the certificate bundle.
+            /// Will only be stored if valid.
+            /// </summary>
+            /// <returns>true if the passphrase was valid and has been stored</returns>
+            public bool AddClientCertificatePassphrase(string passphrase)
+            {
+                var valid = VerifyCertificateBundle(ClientCertificateRaw, passphrase);
+                if (valid)
+                    ClientCertificatePassphrase = passphrase;
+                return valid;
+            }
+
+            /// <summary>
+            /// Helper function which verifies if the 
+            /// certificate data and the passphrase is as valid combo
+            /// </summary>
+            /// <param name="rawCertificateData">Certificate data, PKCS12</param>
+            /// <param name="passphrase">the passphrase to the certificate file in question</param>
+            /// <returns>true if valid</returns>
+            public static bool VerifyCertificateBundle(byte[] rawCertificateData, string passphrase = null)
+            {
+                try
+                {
+                    using var testCertificate = new X509Certificate2(rawCertificateData, passphrase);
+                }
+                catch (CryptographicException ex)
+                {
+                    if ((ex.HResult & 0xFFFF) == 0x56) return false; // wrong passphrase
+                    throw;
+                }
                 return true;
+            }
+
+            /// <summary>
+            /// Helper function which verifies if the filepath exists and
+            /// that the passphrase is valid to read the certificate bundle
+            /// </summary>
+            /// <param name="filePath">path to the certificate file in question. PKCS12</param>
+            /// <param name="passphrase">the passphrase to the certificate file in question</param>
+            /// <returns>true if valid</returns>
+            public static bool VerifyCertificateBundle(string filePath, string passphrase = null)
+            {
+                if (filePath == null)
+                    throw new ArgumentNullException(paramName: nameof(filePath));
+                if (!File.Exists(filePath))
+                    throw new ArgumentException(paramName: nameof(filePath), message: "file not found");
+
+                return VerifyCertificateBundle(File.ReadAllBytes(filePath), passphrase);
             }
 
             // Constructor
@@ -163,8 +252,8 @@ namespace EduroamConfigure
             {
                 EapType = eapType;
                 InnerAuthType = innerAuthType;
-                CertificateAuthorities = certificateAuthorities;
-                ServerNames = serverName;
+                CertificateAuthorities = certificateAuthorities ?? new List<string>();
+                ServerNames = serverName ?? new List<string>();
                 ClientUserName = clientUserName;
                 ClientPassword = clientPassword;
                 ClientCertificate = clientCertificate;
@@ -467,6 +556,26 @@ namespace EduroamConfigure
                     location)
             );
         }
+
+        public bool NeedsLoginCredentials()
+            => AuthenticationMethods
+                .Any(authMethod => authMethod.NeedsLoginCredentials());
+        public bool NeedsClientCertificate()
+            => AuthenticationMethods
+                .Any(authMethod => authMethod.NeedsClientCertificate());
+        public bool NeedsClientCertificatePassphrase()
+            => AuthenticationMethods
+                .Any(authMethod => authMethod.NeedsClientCertificatePassphrase());
+        public bool AddClientCertificate(string certificatePath, string certificatePassphrase = null)
+            => AuthenticationMethods
+                .Select(authMethod => authMethod
+                    .AddClientCertificate(certificatePath, certificatePassphrase))
+                .ToList().Any(); // evaluate all
+        public bool AddClientCertificatePassphrase(string certificatePassphrase)
+                => AuthenticationMethods
+                    .Select(authMethod => authMethod
+                        .AddClientCertificatePassphrase(certificatePassphrase))
+                    .ToList().Any(); // evaluate all
 
     }
 
