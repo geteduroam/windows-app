@@ -22,12 +22,18 @@ namespace WpfApp.Menu
 	public partial class CertificateOverview : Page
 	{
 		private MainWindow mainWindow;
-		private EapConfig.AuthenticationMethod authMethod;
-		public CertificateOverview(MainWindow mainWindow, EapConfig.AuthenticationMethod authMethod)
+		private EapConfig eapConfig;
+		public CertificateOverview(MainWindow mainWindow, EapConfig eapConfig)
 		{
 			this.mainWindow = mainWindow;
-			this.authMethod = authMethod;
+			this.eapConfig = eapConfig;
 			InitializeComponent();
+			Load();
+		}
+
+		private void Load()
+		{
+
 		}
 	}
 }
