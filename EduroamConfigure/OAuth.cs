@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using System.Web;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 
 namespace EduroamConfigure
 {
@@ -224,14 +225,11 @@ namespace EduroamConfigure
 		{
 			_ = parameters ?? throw new ArgumentNullException(paramName: nameof(parameters));
 
-			// https://leekelleher.com/2008/06/06/how-to-convert-namevaluecollection-to-a-query-string/
-			// TODO: reduce to a LINQ query
-			List<string> items = new List<string>();
-
-			foreach (string name in parameters)
-				items.Add(string.Concat(System.Web.HttpUtility.UrlEncode(name), "=", System.Web.HttpUtility.UrlEncode(parameters[name])));
-
-			return string.Join("&", items.ToArray());
+			return string.Join("&",
+				parameters.AllKeys
+					.Select(key => (key, value: parameters[key]))
+					.Select(i => string.Concat(HttpUtility.UrlEncode(i.key), "=", HttpUtility.UrlEncode(i.value)))
+			);
 		}
 
 		public string GetRedirectUri()
