@@ -21,7 +21,7 @@ namespace EduroamConfigure
 		private const string responseType = "code";
 		private const string codeChallengeMethod = "S256";
 		private const string scope = "eap-metadata";
-		private const string clientId = "f817fbcc-e8f4-459e-af75-0822d86ff47a"; //TODO: move to application settings? (the thing in visual studio)
+		private const string clientId = "app.geteduroam.win";
 		private const string grantType = "authorization_code";
 		// instance config
 		private readonly string redirectUri;
