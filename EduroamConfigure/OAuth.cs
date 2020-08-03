@@ -53,7 +53,7 @@ namespace EduroamConfigure
 		/// Produces an authorization endpoint URI
 		/// </summary>
 		/// <returns>Authorization endpoint URI as string.</returns>
-		public string GetAuthUri()
+		public string CreateAuthUri()
 		{
 			// sets non-static authorization uri parameters
 			state = Base64UrlEncode(Guid.NewGuid().ToByteArray()); // random alphanumeric string
