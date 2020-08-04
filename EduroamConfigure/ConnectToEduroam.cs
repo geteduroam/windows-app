@@ -96,14 +96,24 @@ namespace EduroamConfigure
 		/// <summary>
 		/// Enumerates the CAs which the eapConfig in question defines
 		/// </summary>
-		public static IEnumerable<CertificateInstaller> EnumerateCAs(EapConfig eapConfig)
+		private static IEnumerable<X509Certificate2> EnumerateCAs(EapConfig eapConfig)
 		{
 			_ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
 			return eapConfig.AuthenticationMethods
+				.Where(AuthMethodIsSupported)
 				.SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
 				.Where(CertificateStore.CertificateIsRootCA)
-				.GroupBy(cert => cert.Thumbprint, (key, certs) => certs.FirstOrDefault()) // distinct, alternative is to use DistinctBy in MoreLINQ
-				.Select(cert => new CertificateInstaller(cert, caStoreName, caStoreLocation));
+				.GroupBy(cert => cert.Thumbprint, (key, certs) => certs.FirstOrDefault()); // distinct, alternative is to use DistinctBy in MoreLINQ
+		}
+
+		/// <summary>
+		/// Enumerates the CAs which the eapConfig in question defines, wrapped a install helper class
+		/// </summary>
+		public static IEnumerable<CertificateInstaller> EnumerateCAInstallers(EapConfig eapConfig)
+		{
+			_ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
+			return EnumerateCAs(eapConfig)
+				.Select(cert => new CertificateInstaller(cert, rootCaStoreName, rootCaStoreLocation));
 		}
 
 		/// <summary>
