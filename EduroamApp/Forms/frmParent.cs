@@ -452,15 +452,22 @@ namespace EduroamApp
 				// get eap config file from browser authenticate
 				try
 				{
-					OAuth oauth = new OAuth(profile);
-					// generate authURI based on redirect
+					OAuth oauth = new OAuth(new Uri(profile.authorization_endpoint));
+					// The url to send the user to
 					var authUri = oauth.CreateAuthUri();
-					// get local listening uri prefix
+					// The url to listen to for the user to be redirected back to
 					var prefix = oauth.GetRedirectUri();
-					// browser authenticate
-					var responseUrl = GetResponseUrl(prefix.ToString(), authUri.ToString());
-					// get eap-config string if available
-					eapConfig = oauth.DownloadEapConfig(responseUrl);
+
+					// Send the user to the url and await the response
+					var responseUrl = OpenSSOAndAwaitResultRedirect(prefix.ToString(), authUri.ToString());
+
+					// Parse the result and download the eap config if successfull
+					(string authorizationCode, string codeVerifier) = oauth.ParseAndExtractAuthorizationCode(responseUrl);
+					bool success = LetsWifi.RequestAccess(profile, authorizationCode, codeVerifier, prefix);
+
+					eapConfig = success
+						? LetsWifi.DownloadEapConfig()
+						: null;
 				}
 				catch (EduroamAppUserError ex)
 				{
@@ -498,7 +505,7 @@ namespace EduroamApp
 		/// Gets a response URL after doing Browser authentication with Oauth authUri.
 		/// </summary>
 		/// <returns>response Url as string.</returns>
-		public string GetResponseUrl(string redirectUri, string authUri)
+		public string OpenSSOAndAwaitResultRedirect(string redirectUri, string authUri)
 		{
 			using var waitForm = new frmWaitDialog(redirectUri, authUri);
 			DialogResult result = waitForm.ShowDialog();

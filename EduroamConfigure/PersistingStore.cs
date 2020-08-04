@@ -50,6 +50,28 @@ namespace EduroamConfigure
 			set => SetValue<ImmutableHashSet<InstalledCertificate>>("InstalledCertificates", value);
 		}
 
+		/// <summary>
+		/// The endpoints to access the lets-wifi
+		/// using the refresh token
+		/// </summary>
+		public static (string profileId, Uri tokenEndpoint, Uri eapEndpoint)? LetsWifiEndpoints
+		{
+			get => GetValue<(string, Uri, Uri)?>("LetsWifiEndpoints");
+			set => SetValue<(string, Uri, Uri)?>("LetsWifiEndpoints", value);
+		}
+
+		/// <summary>
+		/// The single-use refresh token to talk with the lets-wifi API
+		/// </summary>
+		public static string LetsWifiRefreshToken
+		{
+			// TODO: perhaps encrypt this in some fashion?
+			// https://stackoverflow.com/questions/32548714/how-to-store-and-retrieve-credentials-on-windows-using-c-sharp
+			get => GetValue<string>("LetsWifiRefreshToken");
+			set => SetValue<string>("LetsWifiRefreshToken", value);
+		}
+
+
 		public readonly struct ConfiguredProfile
 		{
 			public Guid   InterfaceId { get; }

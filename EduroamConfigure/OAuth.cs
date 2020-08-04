@@ -21,25 +21,14 @@ namespace EduroamConfigure
 		private const string responseType = "code";
 		private const string codeChallengeMethod = "S256";
 		private const string scope = "eap-metadata";
-		private const string clientId = "app.geteduroam.win";
+		public const string clientId = "app.geteduroam.win";
 		// instance config
-		private readonly Uri redirectUri;
-		private readonly string profileId;
-		private readonly string authEndpoint;
-		private readonly string tokenEndpoint;
-		private readonly string generatorEndpoint;
+		private readonly Uri redirectUri; // uri to locally hosted servers
+		private readonly Uri authEndpoint; // used to get authorization code through oauth
 		// state created by CreateAuthUri
 		private string codeVerifier;
 		private string codeChallenge;
 		private string state;
-
-		public OAuth(IdentityProviderProfile profile) :
-			this(
-				profile?.authorization_endpoint,
-				profile?.token_endpoint,
-				profile?.eapconfig_endpoint,
-				profile?.Id
-			) { }
 
 		/// <summary>
 		/// Class used for OAuth process
@@ -47,12 +36,9 @@ namespace EduroamConfigure
 		/// <param name="authEndpoint">Authorization Endpoint.</param>
 		/// <param name="tokenEndpoint">Token Endpoint.</param>
 		/// <param name="generatorEndpoint"> Generator endpoint for eap-config (resource endpoint).</param>
-		public OAuth(string authEndpoint, string tokenEndpoint, string generatorEndpoint, string profileId)
+		public OAuth(Uri authEndpoint)
 		{
 			this.authEndpoint = authEndpoint;
-			this.tokenEndpoint = tokenEndpoint;
-			this.generatorEndpoint = generatorEndpoint;
-			this.profileId = profileId;
 
 			Random rng = new Random();
 			int randomPort = rng.Next(49152, 65535);
@@ -88,11 +74,11 @@ namespace EduroamConfigure
 			=> redirectUri;
 
 		/// <summary>
-		/// Uses URL containing response after authenticating using authUri from GetAuthUri to get an EAP-config file.
+		/// Extracts the authorization code from the response url.
 		/// </summary>
-		/// <param name="reponseUrl">URL response from authentication.</param>
-		/// <returns>EAP-config file as string.</returns>
-		public EapConfig DownloadEapConfig(string responseUrl)
+		/// <param name="responseUrl">URL response from authentication.</param>
+		/// <returns>(string authorizationCode, string codeVerifier)</returns>
+		public (string, string) ParseAndExtractAuthorizationCode(string responseUrl)
 		{
 			// check if url is not empty
 			if (string.IsNullOrEmpty(responseUrl))
@@ -119,77 +105,9 @@ namespace EduroamConfigure
 				throw new EduroamAppUserError("oauth code missing",
 					userFacingMessage: "Response string doesn't contain code. Aborting operation.");
 
-
-			// concatenates parameters into token endpoint URI
-			var tokenPostData = new NameValueCollection() {
-				{ "grant_type", "authorization_code" },
-				{ "code", code },
-				{ "redirect_uri", redirectUri.ToString() },
-				{ "client_id", clientId },
-				{ "code_verifier", codeVerifier }
-			};
-
-			// downloads json file from url as string
-			string tokenJsonString = PostFormGetResponse(tokenEndpoint, tokenPostData);
-
-			// Parse json response to retrieve authorization tokens
-			string accessToken;
-			string accessTokenType;
-			string refreshToken;
-			int? refreshTokenExpiresIn;
-			try
-			{
-				JObject tokenJson = JObject.Parse(tokenJsonString);
-
-				accessToken = tokenJson["access_token"].ToString(); // token to retrieve EAP config
-				accessTokenType = tokenJson["token_type"].ToString(); // Usually "Bearer", a http authorization scheme
-				refreshToken = tokenJson["refresh_token"].ToString(); // token to refresh access token
-				refreshTokenExpiresIn = tokenJson["expires_in"].ToObject<int?>();
-			}
-			catch (JsonReaderException ex)
-			{
-				throw new EduroamAppUserError("oauth unprocessable response",
-					userFacingMessage: "Couldn't read tokens from JSON file.\n" + "Exception: " + ex.Message);
-			}
-
-			// gets and returns EAP config file as a string
-			string eapConfigXml;
-			try
-			{
-				// Setup client with authorization token in header
-				using var client = new WebClient();
-				client.Headers.Add("Authorization", accessTokenType + " " + accessToken);
-
-				// download file
-				eapConfigXml = client.DownloadString(generatorEndpoint + "?format=eap-metadata"); // TODO: use a uri builder or something
-			}
-			catch (WebException ex)
-			{
-				throw new EduroamAppUserError("oauth eapconfig get error",
-					userFacingMessage: "Couldn't fetch EAP config file. \nException: " + ex.Message);
-			}
-			return EapConfig.FromXmlData(uid: profileId, eapConfigXml);
+			return (code, codeVerifier);
 		}
 
-		/// <summary>
-		/// Upload form and return data as a string.
-		/// </summary>
-		/// <param name="url">Url to upload to.</param>
-		/// <param name="data">Data to post.</param>
-		/// <returns>Web page content.</returns>
-		public static string PostFormGetResponse(string url, NameValueCollection data)
-		{
-			try
-			{
-				using var client = new WebClient();
-				return Encoding.UTF8.GetString(client.UploadValues(url, "POST", data));
-			}
-			catch (WebException ex)
-			{
-				throw new EduroamAppUserError("oauth post error",
-					userFacingMessage: "Couldn't fetch token json.\nException: " + ex.Message);
-			}
-		}
 
 		/// <summary>
 		/// Generates a random code challenge base to use for the code challenge.
