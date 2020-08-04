@@ -23,7 +23,7 @@ namespace EduroamConfigure
 		private const string scope = "eap-metadata";
 		private const string clientId = "app.geteduroam.win";
 		// instance config
-		private readonly string redirectUri;
+		private readonly Uri redirectUri;
 		private readonly string profileId;
 		private readonly string authEndpoint;
 		private readonly string tokenEndpoint;
@@ -56,14 +56,14 @@ namespace EduroamConfigure
 
 			Random rng = new Random();
 			int randomPort = rng.Next(49152, 65535);
-			redirectUri = $"http://[::1]:{randomPort}/";
+			redirectUri = new Uri($"http://[::1]:{randomPort}/");
 		}
 
 		/// <summary>
 		/// Produces an authorization endpoint URI
 		/// </summary>
 		/// <returns>Authorization endpoint URI as string.</returns>
-		public string CreateAuthUri()
+		public Uri CreateAuthUri()
 		{
 			// sets non-static authorization uri parameters
 			state = Base64UrlEncode(Guid.NewGuid().ToByteArray()); // random alphanumeric string
@@ -76,15 +76,15 @@ namespace EduroamConfigure
 				{ "code_challenge_method", codeChallengeMethod },
 				{ "scope", scope },
 				{ "code_challenge", codeChallenge },
-				{ "redirect_uri", redirectUri },
+				{ "redirect_uri", redirectUri.ToString() },
 				{ "client_id", clientId },
 				{ "state", state }
 			}));
 
-			return authUri;
+			return new Uri(authUri);
 		}
 
-		public string GetRedirectUri()
+		public Uri GetRedirectUri()
 			=> redirectUri;
 
 		/// <summary>
@@ -124,7 +124,7 @@ namespace EduroamConfigure
 			var tokenPostData = new NameValueCollection() {
 				{ "grant_type", "authorization_code" },
 				{ "code", code },
-				{ "redirect_uri", redirectUri },
+				{ "redirect_uri", redirectUri.ToString() },
 				{ "client_id", clientId },
 				{ "code_verifier", codeVerifier }
 			};
@@ -239,6 +239,8 @@ namespace EduroamConfigure
 		private static string ConstructQueryString(NameValueCollection parameters)
 		{
 			_ = parameters ?? throw new ArgumentNullException(paramName: nameof(parameters));
+
+			// TODO: this function should be removed and replaced with some uribuilder thing
 
 			return string.Join("&",
 				parameters.AllKeys
