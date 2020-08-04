@@ -35,7 +35,7 @@ namespace WpfApp.Menu
 			mainWindow.btnNext.Visibility = Visibility.Hidden;
 			mainWindow.btnBack.Visibility = Visibility.Hidden;
 			//lblInfo.Visibility = Visibility.Collapsed;
-			tbInfo.Visibility = Visibility.Collapsed;
+			tbInfo.Visibility = Visibility.Hidden;
 			//mainWindow.lblTitle.Visibility = Visibility.Hidden;
 			//btnExisting.IsEnabled = true;
 		}
