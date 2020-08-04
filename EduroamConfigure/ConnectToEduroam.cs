@@ -48,7 +48,7 @@ namespace EduroamConfigure
 
             if (!eapConfig.AuthenticationMethods
                     .Where(AuthMethodIsSupported)
-                    .All(authMethod => authMethod.CertificateAuthorities.Any()))
+                    .All(authMethod => authMethod.ServerCertificateAuthorities.Any()))
                 yield return (true, "This configuration is missing Certificate Authorities");
 
             var CAs = EnumerateCAs(eapConfig).ToList();
