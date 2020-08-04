@@ -13,10 +13,10 @@
         <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="Redirect" TextAlignment="Center" Margin="5" FontSize="14"/>
         <TextBlock x:Name="tbRedirect" TextWrapping="Wrap" TextAlignment="Center"  Margin="5">
             Click 
-            <Hyperlink RequestNavigate="Hyperlink_redirect">
+            <Hyperlink x:Name="hlink" RequestNavigate="Hyperlink_redirect">
                here
             </Hyperlink>
-            to be redirected to the insitutions site for more info on how to connect
+            to be redirected to the insitutions site for more info on how to connect. When you click the link this application will close.
         </TextBlock>
     </StackPanel>
 </Page>

@@ -55,7 +55,7 @@
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-            <Setter Property="Content" Value="Install"/>
+            <Setter Property="Content" Value="Install ❌"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -73,7 +73,7 @@
             </Setter>
             <Style.Triggers>
                 <Trigger Property="IsEnabled" Value="False">
-                    <Setter Property="Content" Value="Installed"/>
+                    <Setter Property="Content" Value="Installed ✔️"/>
                 </Trigger>
             </Style.Triggers>
         </Style>

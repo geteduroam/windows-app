@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,16 +22,28 @@ namespace WpfApp.Menu
     public partial class Redirect : Page
     {
         private MainWindow mainWindow;
-        public Redirect(MainWindow mainWindow)
+        private string redirect;
+        public Redirect(MainWindow mainWindow, string redirect)
         {
             this.mainWindow = mainWindow;
+            this.redirect = redirect;
             InitializeComponent();
+            Load();
+        }
+
+        private void Load()
+        {
+            hlink.NavigateUri = new Uri(redirect);
         }
 
         // TODO: fix hyperlink and open redirect + closing application
         private void Hyperlink_redirect(object sender, RequestNavigateEventArgs e)
         {
-            // tbTou.Visibility = Visibility.Collapsed;
+            Hyperlink hl = (Hyperlink)sender;
+            string navigateUri = hl.NavigateUri.ToString();
+            Process.Start(new ProcessStartInfo(navigateUri));
+            e.Handled = true;
+            System.Windows.Application.Current.Shutdown();
         }
     }
 }

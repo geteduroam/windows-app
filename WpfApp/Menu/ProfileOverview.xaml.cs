@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Security.Cryptography;
 using EduroamConfigure;
+using System.Diagnostics;
 
 namespace WpfApp.Menu
 {
@@ -49,41 +50,51 @@ namespace WpfApp.Menu
         {
             string webAddress = eapConfig.InstitutionInfo.WebAddress;
             string emailAddress = eapConfig.InstitutionInfo.EmailAddress;
-           
+            string phone = eapConfig.InstitutionInfo.Phone;
+
             // displays website, email, phone number
-            lblWeb.Content = !string.IsNullOrEmpty(webAddress) ? webAddress : "-";
-            lblEmail.Content = emailAddress;
-            lblPhone.Content = eapConfig.InstitutionInfo.Phone;
-/*
+            lblPhone.Content = phone;
+
             // checks if website url is valid
             bool isValidUrl = Uri.TryCreate(webAddress, UriKind.Absolute, out Uri uriResult)
                                   && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+            // show url as link
             if (isValidUrl)
             {
-                // sets linkdata
-                var redirectLink = new LinkLabel.Link { LinkData = webAddress };
-                lblWeb.Links.Add(redirectLink);
+
+                tbWebLink.Text = webAddress;
+                hlinkWeb.NavigateUri = new Uri(webAddress);
+                hlinkWeb.TextDecorations = null;
+
             }
-            // disables link, but still displays it
+            // show url but not as link
             else
             {
-                lblWeb.Enabled = false;
+                tbWebText.Text = webAddress;
             }
 
             // checks if email address is valid
-            if (emailAddress.Contains(" ") || !emailAddress.Contains("@"))
+            bool isValidEmail = !(emailAddress.Contains(" ") || !emailAddress.Contains("@"));
+            // show url as link
+            if (isValidEmail)
             {
-                // disables link, but still displays it
-                lblEmail.Enabled = false;
+                tbEmailLink.Text = emailAddress;
+                hlinkEmail.NavigateUri = new Uri("mailto:"+emailAddress);
+                hlinkEmail.TextDecorations = null;
 
-                if (emailAddress.Contains("******"))
+             /*   if (emailAddress.Contains("******"))
                 {
-                    lblEmail.Text = "-";
-                }
+                    lblEmail.Texst = "-";
+                }*/
             }
-
+            // show url but not as link
+            else
+            {
+                tbEmailText.Text = emailAddress;
+            }
+            
             // checks if phone number has numbers, disables label if not
-            if (!lblPhone.Text.Any(char.IsDigit)) lblPhone.Enabled = false;
+          /*  if (!lblPhone.Text.Any(char.IsDigit)) lblPhone.Enabled = false;
 
             // replaces empty fields with a dash
             foreach (Control cntrl in tblContactInfo.Controls)
@@ -93,7 +104,7 @@ namespace WpfApp.Menu
                     cntrl.Text = "-";
                 }
             }
-*/
+            */
         }
 
         private void LoadTOU()
@@ -128,9 +139,20 @@ namespace WpfApp.Menu
         }
 
         // TODO: fix hyperlink and show ToU to user
+
+        private void LinkClick(object sender, RequestNavigateEventArgs e)
+        {
+            Hyperlink hl = (Hyperlink)sender;
+            string navigateUri = hl.NavigateUri.ToString();
+            Process.Start(new ProcessStartInfo(navigateUri));
+            e.Handled = true;
+        }
         private void Hyperlink_TOU(object sender, RequestNavigateEventArgs e)
         {
-            tbTou.Visibility = Visibility.Collapsed;
+            Hyperlink hl = (Hyperlink)sender;
+            string navigateUri = hl.NavigateUri.ToString();
+            Process.Start(new ProcessStartInfo(navigateUri));
+            e.Handled = true;
         }
 
         /// <summary>

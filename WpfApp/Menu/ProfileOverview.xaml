@@ -10,15 +10,15 @@
 
     <StackPanel Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
         <StackPanel Background="White"/>
-        <TextBlock x:Name="tbName" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5" FontSize="14"/>
-        <TextBlock x:Name="tbDesc" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5"/>
+        <TextBlock x:Name="tbName" TextWrapping="Wrap" Text="Profile name" TextAlignment="Center" Margin="5" FontSize="14"/>
+        <TextBlock x:Name="tbDesc" TextWrapping="Wrap" Text="Profile info" TextAlignment="Center" Margin="5"/>
 
         <GroupBox x:Name="grpInfo" Header="Contact info" Margin="5">
             <Grid Margin="0">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
@@ -28,9 +28,19 @@
                 <Label x:Name="lblEmailTitle" Content="Email:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Margin="0"/>
                 <Label x:Name="lblPhoneTitle" Content="Phone:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2"/>
 
-                <Label x:Name="lblWeb" Content="-" VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="0" Grid.Column="1" />
-                <Label x:Name="lblEmail" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Grid.Column="1"/>
-                <Label x:Name="lblPhone" Content="-" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2"  Grid.Column="1"/>
+                <TextBlock x:Name="tbWebText" Grid.Row="0" Grid.Column="1" Text="" TextWrapping="Wrap"  VerticalAlignment="Center" >
+                    <Hyperlink x:Name="hlinkWeb" RequestNavigate="LinkClick">
+                       <TextBlock x:Name="tbWebLink" Text="" TextWrapping="Wrap" />
+                    </Hyperlink>    
+                </TextBlock>
+
+                <TextBlock x:Name="tbEmailText" Grid.Row="1" Grid.Column="1" Text="" TextWrapping="Wrap"  VerticalAlignment="Center" >
+                    <Hyperlink x:Name="hlinkEmail" RequestNavigate="LinkClick">
+                       <TextBlock x:Name="tbEmailLink" Text="" TextWrapping="Wrap" />
+                    </Hyperlink>    
+                </TextBlock>
+                
+                <Label x:Name="lblPhone" Content="" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2"  Grid.Column="1"/>
 
 
             </Grid>
@@ -41,14 +51,14 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <TextBlock x:Name="tbAlt" TextWrapping="Wrap" Text="Not affiliated with x?" TextAlignment="Center"  Margin="5"/>
+            <TextBlock x:Name="tbAlt" TextWrapping="Wrap" Text="Not affiliated with institution?" TextAlignment="Center"  Margin="5"/>
             <Button Style="{StaticResource WhiteButtonStyle}" x:Name="btnAlt" Content="Select other institution" HorizontalAlignment="Center" VerticalAlignment="Top" Width="141" Grid.Row="1" Margin="0,5" Height="34"/>
 
 
         </Grid>
         <TextBlock x:Name="tbTou" TextWrapping="Wrap" TextAlignment="Center"  Margin="5">
             By clicking 'Next' you agree to the 
-            <Hyperlink RequestNavigate="Hyperlink_TOU">
+            <Hyperlink RequestNavigate="Hyperlink_TOU" NavigateUri="www.google.com">
                Terms of Use
             </Hyperlink>
             of the institution
