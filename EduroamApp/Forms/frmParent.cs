@@ -463,7 +463,7 @@ namespace EduroamApp
 
                     // Parse the result and download the eap config if successfull
                     (string authorizationCode, string codeVerifier) = oauth.ParseAndExtractAuthorizationCode(responseUrl);
-                    bool success = LetsWifi.RequestAccess(profile, authorizationCode, codeVerifier, prefix);
+                    bool success = LetsWifi.AuthorizeAccess(profile, authorizationCode, codeVerifier, prefix);
 
                     eapConfig = success
                         ? LetsWifi.DownloadEapConfig()
