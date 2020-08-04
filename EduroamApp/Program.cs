@@ -1,10 +1,10 @@
 using Microsoft.VisualBasic.ApplicationServices;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Windows.Documents;
 using System.Windows.Forms;
+
+// TODO: support program to start hidden with tray icon
 
 namespace EduroamApp
 {
@@ -83,7 +83,8 @@ namespace EduroamApp
 				{
 					MessageBox.Show(
 						"No supported network interface was found on this computer,\n" +
-						"we are therefore unable to configure eduroam",
+						"we are therefore unable to configure eduroam.\n\n" +
+						"Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.\n",
 						caption: Application.ProductName + " - " + Application.ProductVersion,
 						MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return;

@@ -19,7 +19,7 @@ namespace EduroamConfigure
 		/// <param name="storeName">The certificate store to use</param>
 		/// <param name="storeLocation">The location within the certificate store to use</param>
 		/// <returns>False if the user declined</returns>
-		public static bool InstallCertificate(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation) // TODO: move
+		public static bool InstallCertificate(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation)
 		{
 			_ = cert ?? throw new ArgumentNullException(paramName: nameof(cert));
 
@@ -63,7 +63,7 @@ namespace EduroamConfigure
 		/// <param name="storeName">The certificate store to use</param>
 		/// <param name="storeLocation">The location within the certificate store to use</param>
 		/// <returns>True if found</returns>
-		public static bool IsCertificateInstalled(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation) // TODO: move
+		public static bool IsCertificateInstalled(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation)
 		{
 			_ = cert ?? throw new ArgumentNullException(paramName: nameof(cert));
 
@@ -84,7 +84,7 @@ namespace EduroamConfigure
 		/// <param name="storeName">The certificate store to use</param>
 		/// <param name="storeLocation">The location within the certificate store to use</param>
 		/// <returns>True if found</returns>
-		public static bool UninstallCertificate(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation) // TODO: move
+		public static bool UninstallCertificate(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation)
 		{
 			if (!IsCertificateInstalled(cert, storeName, storeLocation))
 				return false;

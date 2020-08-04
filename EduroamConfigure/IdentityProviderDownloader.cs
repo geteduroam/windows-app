@@ -178,21 +178,23 @@ namespace EduroamConfigure
 		/// </summary>
 		/// <returns></returns>
 		/// <exception cref="EduroamAppUserError">description</exception>
-		public string GetEapConfigString(string profileId)
+		public EapConfig DownloadEapConfig(string profileId)
 		{
 			// adds profile ID to url containing json file, which in turn contains url to EAP config file download
 			// gets url to EAP config file download from GenerateEapConfig object
 			string endpoint = GetProfileFromId(profileId).eapconfig_endpoint;
 
 			// downloads and returns eap config file as string
+			string eapXml;
 			try
 			{
-				return DownloadUrlAsString(endpoint);
+				eapXml = DownloadUrlAsString(endpoint);
 			}
 			catch (WebException ex)
 			{
 				throw new EduroamAppUserError("WebException", WebExceptionToString(ex));
 			}
+			return EapConfig.FromXmlData(profileId, eapXml);
 		}
 
 		public IdentityProviderProfile GetProfileFromId(string profileId)
@@ -238,7 +240,6 @@ namespace EduroamConfigure
 		}
 
 
-
 		/// <summary>
 		/// WebClient with support for timeouts
 		/// </summary>
@@ -258,6 +259,15 @@ namespace EduroamConfigure
 				return w;
 			}
 		}
+
+#pragma warning disable CA2227 // Collection properties should be read only
+		private class DiscoveryApi
+		{
+			public int Version { get; set; }
+			public int Seq { get; set; }
+			public List<IdentityProvider> Instances { get; set; }
+		}
+#pragma warning restore CA2227 // Collection properties should be read only
 	}
 
 }

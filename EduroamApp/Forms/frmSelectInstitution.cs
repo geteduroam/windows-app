@@ -14,9 +14,9 @@ namespace EduroamApp
 	public partial class frmSelectInstitution : Form
 	{
 		private readonly frmParent frmParent; // makes parent form accessible from this class
-		private IdentityProviderDownloader Downloader { get => frmParent.IdpDownloader; }
-		private List<IdentityProvider> identityProviders = new List<IdentityProvider>(); // list containing all identity providers
-		private List<IdentityProvider> allIdentityProviders; // TODO: delete?
+		private IdentityProviderDownloader downloader { get => frmParent.IdpDownloader; }
+		private List<IdentityProvider> currentlyShownIdpSelection = new List<IdentityProvider>();
+		private List<IdentityProvider> allIdentityProviders;
 		public int idProviderId { get; set; } // id of selected institution
 
 
@@ -25,7 +25,6 @@ namespace EduroamApp
 			// gets parent form instance
 			frmParent = parentInstance;
 			InitializeComponent();
-
 		}
 
 		/// <summary>
@@ -38,7 +37,7 @@ namespace EduroamApp
 			tbSearch.ReadOnly = true;
 			tbSearch.BackColor = System.Drawing.SystemColors.Window;
 			frmParent.BtnNextEnabled = false;
-			this.ActiveControl = lbInstitution;
+			ActiveControl = lbInstitution;
 
 			await Task.Run(() => PopulateInstitutions());
 
@@ -53,24 +52,19 @@ namespace EduroamApp
 			frmParent.RedirectUrl = "";
 
 			// make user autoselect search
-			this.ActiveControl = tbSearch;
-
+			ActiveControl = tbSearch;
 
 		}
-
-		// TODO more than 10 closest providers
 
 		/// <summary>
 		/// Called when the form is created to present the 10 closest providers
 		/// </summary>
-		private void PopulateInstitutions()
+		private void PopulateInstitutions(int limit = 10)
 		{
 			try
 			{
-				allIdentityProviders = Downloader.Providers;
-				UpdateInstitutions(Downloader.GetClosestProviders(limit: 10));
-
-
+				allIdentityProviders = downloader.Providers;
+				UpdateInstitutions(downloader.GetClosestProviders(limit));
 			}
 			catch (EduroamAppUserError e)
 			{
@@ -82,17 +76,14 @@ namespace EduroamApp
 		/// Used to update institution list portrayed to users.
 		/// Called by different thread than Winform thread
 		/// </summary>
-		private void UpdateInstitutions(List<IdentityProvider> institutions)
+		private void UpdateInstitutions(List<IdentityProvider> institutionSelection)
 		{
 			//allows changes across different threads
 			BeginInvoke(new Action(() =>
 			{
 				lbInstitution.Items.Clear();
-
-				identityProviders = institutions;
-
-				lbInstitution.Items.AddRange(identityProviders.Select(provider => provider.Name).ToArray());
-
+				currentlyShownIdpSelection = institutionSelection;
+				lbInstitution.Items.AddRange(currentlyShownIdpSelection.Select(provider => provider.Name).ToArray());
 			}));
 		}
 
@@ -114,7 +105,7 @@ namespace EduroamApp
 			// if user clicks on empty area of the listbox it will cause event but no item is selected
 			if (lbInstitution.SelectedItem == null) return;
 			// select provider ID based on chosen profile name
-			idProviderId = identityProviders
+			idProviderId = currentlyShownIdpSelection
 				.Where(x => x.Name == (string)lbInstitution.SelectedItem)
 				.Select(x => x.cat_idp)
 				.First();

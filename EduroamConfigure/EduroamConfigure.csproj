@@ -74,10 +74,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CertificateStore.cs" />
+    <Compile Include="LetsWifi.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="PersistingStore.cs" />
     <Compile Include="ConnectToEduroam.cs" />
-    <Compile Include="DiscoveryApi.cs" />
     <Compile Include="EapConfig.cs" />
     <Compile Include="EduroamNetwork.cs" />
     <Compile Include="Exceptions.cs" />
