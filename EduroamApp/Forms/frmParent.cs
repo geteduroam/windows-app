@@ -439,8 +439,8 @@ namespace EduroamApp
 			};
 			IdentityProviderProfile profile = IdpDownloader.GetProfileFromId(profileId);
 			string redirect = profile.redirect;
-			// eap config file as string
-			string eapXmlString;
+
+			EapConfig eapConfig;
 
 			// if OAuth
 			if (profile.oauth)
@@ -448,20 +448,20 @@ namespace EduroamApp
 				// get eap config file from browser authenticate
 				try
 				{
-					OAuth oauth = new OAuth(profile.authorization_endpoint, profile.token_endpoint, profile.eapconfig_endpoint);
+					OAuth oauth = new OAuth(profile);
 					// generate authURI based on redirect
-					string authUri = oauth.CreateAuthUri();
+					var authUri = oauth.CreateAuthUri();
 					// get local listening uri prefix
-					string prefix = oauth.GetRedirectUri();
+					var prefix = oauth.GetRedirectUri();
 					// browser authenticate
-					string responseUrl = GetResponseUrl(prefix, authUri);
+					var responseUrl = GetResponseUrl(prefix.ToString(), authUri.ToString());
 					// get eap-config string if available
-					eapXmlString = oauth.GetEapConfigString(responseUrl);
+					eapConfig = oauth.DownloadEapConfig(responseUrl);
 				}
 				catch (EduroamAppUserError ex)
 				{
 					MessageBox.Show(ex.UserFacingMessage);
-					eapXmlString = "";
+					eapConfig = null;
 				}
 				// return focus to application
 				Activate();
@@ -476,30 +476,19 @@ namespace EduroamApp
 			}
 			else
 			{
-				eapXmlString = IdpDownloader.GetEapConfigString(profileId);
+				try
+				{
+					eapConfig = IdpDownloader.DownloadEapConfig(profileId);
+				}
+				catch (EduroamAppUserError ex)
+				{
+					MessageBox.Show(ex.UserFacingMessage);
+					eapConfig = null;
+				}
 			}
-
-			// if not empty, creates and returns EapConfig object from Eap string
-
-			if (string.IsNullOrEmpty(eapXmlString))
-			{
-				return null;
-			}
-
-			try
-			{
-				// if not empty, creates and returns EapConfig object from Eap string
-				return EapConfig.FromXmlData(uid: profileId, eapXmlString);
-			}
-			catch (XmlException ex)
-			{
-				MessageBox.Show(
-					"The selected institution or profile is not supported. " +
-					"Please select a different institution or profile.\n" +
-					"Exception: " + ex.Message);
-				return null;
-			}
+			return eapConfig;
 		}
+
 
 		/// <summary>
 		/// Gets a response URL after doing Browser authentication with Oauth authUri.

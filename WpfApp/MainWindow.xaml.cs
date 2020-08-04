@@ -207,13 +207,10 @@ namespace WpfApp
 		/// <returns>EapConfig object.</returns>
 		public async Task<EapConfig> DownloadEapConfig(IdentityProviderProfile profile)
 		{
-			// eap config file as string
-			string eapXmlString;
-
-			if (string.IsNullOrEmpty(profile.Id))
-			{
+			if (string.IsNullOrEmpty(profile?.Id))
 				return null;
-			};
+
+			EapConfig eapConfig; // return value
 
 			// if OAuth
 			if (profile.oauth)
@@ -221,25 +218,25 @@ namespace WpfApp
 				// get eap config file from browser authenticate
 				try
 				{
-					OAuth oauth = new OAuth(profile.authorization_endpoint, profile.token_endpoint, profile.eapconfig_endpoint);
+					OAuth oauth = new OAuth(profile);
 					// generate authURI based on redirect
-					string authUri = oauth.CreateAuthUri();
+					var authUri = oauth.CreateAuthUri();
 					// get local listening uri prefix
-					string prefix = oauth.GetRedirectUri();
+					var prefix = oauth.GetRedirectUri();
 					// browser authenticate
-					string responseUrl = GetResponseUrl(prefix, authUri);
+					var responseUrl = GetResponseUrl(prefix.ToString(), authUri.ToString());
 					// get eap-config string if available
-					eapXmlString = oauth.GetEapConfigString(responseUrl);
+					eapConfig = oauth.DownloadEapConfig(responseUrl);
 				}
 				catch (EduroamAppUserError ex)
 				{
 					MessageBox.Show(ex.UserFacingMessage);
-					eapXmlString = "";
+					eapConfig = null;
 				}
 				// return focus to application
 				Activate();
 			}
-			else if (!String.IsNullOrEmpty(profile.redirect))
+			else if (!string.IsNullOrEmpty(profile.redirect))
 			{
 				//TODO handle redirect
 				// makes redirect link accessible in parent form
@@ -248,31 +245,19 @@ namespace WpfApp
 			}
 			else
 			{
-				eapXmlString = await Task.Run(() => IdpDownloader.GetEapConfigString(profile.Id));
+				try
+				{
+					eapConfig = await Task.Run(() =>
+						IdpDownloader.DownloadEapConfig(profile.Id)
+					);
+				}
+				catch (EduroamAppUserError ex)
+				{
+					MessageBox.Show(ex.UserFacingMessage);
+					eapConfig = null;
+				}
 			}
-
-
-
-			// if not empty, creates and returns EapConfig object from Eap string
-
-			if (string.IsNullOrEmpty(eapXmlString))
-			{
-				return null;
-			}
-
-			try
-			{
-				// if not empty, creates and returns EapConfig object from Eap string
-				return EapConfig.FromXmlData(uid: profile.Id, eapXmlString);
-			}
-			catch (XmlException ex)
-			{
-				MessageBox.Show(
-					"The selected institution or profile is not supported. " +
-					"Please select a different institution or profile.\n" +
-					"Exception: " + ex.Message);
-				return null;
-			}
+			return eapConfig;
 		}
 
 

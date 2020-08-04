@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace EduroamConfigure
@@ -407,7 +408,18 @@ namespace EduroamConfigure
 				element => element.Name.LocalName == name;
 
 			// load the XML file into a XElement object
-			XElement eapConfigXml = XElement.Parse(eapConfigXmlData);
+			XElement eapConfigXml;
+			try
+			{
+				eapConfigXml = XElement.Parse(eapConfigXmlData);
+			}
+			catch (XmlException ex)
+			{
+				throw new EduroamAppUserError("xml parse exception",
+					"The institution or profile is either not supported or malformed. " +
+					"Please select a different institution or profile.\n\n" +
+					"Exception: " + ex.Message);
+			}
 			/*
 			foreach (XElement eapIdentityProvider in eapConfigXml.Descendants().Where(nameIs("EAPIdentityProvider")))
 			{
