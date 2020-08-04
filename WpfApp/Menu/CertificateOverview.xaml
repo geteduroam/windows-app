@@ -8,12 +8,16 @@
       mc:Ignorable="d" 
       d:DesignHeight="345" d:DesignWidth="322"
       Title="CertificateOverview">
+    <Grid Background="White" ScrollViewer.CanContentScroll="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="tbInfo" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5" FontSize="14"/>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0" Grid.Row="1">
+            <StackPanel x:Name="stpCerts">
 
-
-    <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="5">
-        <StackPanel x:Name="stpCerts"  Background="White">
-            <TextBlock x:Name="tbInfo" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5" FontSize="14"/>
-
-        </StackPanel>
-    </ScrollViewer>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </Page>
