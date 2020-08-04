@@ -127,7 +127,7 @@ namespace EduroamConfigure
 					new XElement(nsBEUP + "Eap",
 						new XElement(nsBEUP + "Type", (int)EapType.TLS),
 						new XElement(nsTLS + "EapType",
-							new XElement(nsTLS + "Username", outerIdentity),
+							new XElement(nsTLS + "Username", outerIdentity), // TODO: test if this gets used
 							new XElement(nsTLS + "UserCert", // xs:hexBinary
 								// format fingerprint:
 								Regex.Replace(Regex.Replace(userCertFingerprint, " ", ""), ".{2}", "$0 ")

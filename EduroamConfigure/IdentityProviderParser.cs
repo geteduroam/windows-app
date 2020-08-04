@@ -24,7 +24,7 @@ namespace EduroamConfigure
 			bool startsWithInv(string str, string query) =>
 				str.StartsWith(query, StringComparison.InvariantCultureIgnoreCase);
 
-			// TODO: add realms/domain as possible match
+			// NICE TO HAVE: add realms/domain as possible match
 
 			// Lexically sort by prioritized criterias.
 			var sortedList = providers
