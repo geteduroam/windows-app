@@ -48,7 +48,7 @@ namespace EduroamConfigure
 			public EapConfig EapConfig { get; set; } // reference to parent EapConfig
 			public EapType EapType { get; }
 			public InnerAuthType InnerAuthType { get; }
-			public List<string> CertificateAuthorities { get; } // base64 encoded DER certificate
+			public List<string> ServerCertificateAuthorities { get; } // base64 encoded DER certificate
 			public List<string> ServerNames { get; }
 			public string ClientUserName { get; } // preset inner identity, expect it to have a realm
 			public string ClientPassword { get; } // preset outer identity
@@ -88,7 +88,7 @@ namespace EduroamConfigure
 			/// </summary>
 			public IEnumerable<X509Certificate2> CertificateAuthoritiesAsX509Certificate2()
 			{
-				foreach (var ca in CertificateAuthorities)
+				foreach (var ca in ServerCertificateAuthorities)
 				{
 					// TODO: find some nice way to ensure these are disposed of
 					var cert = new X509Certificate2(Convert.FromBase64String(ca));
@@ -242,7 +242,7 @@ namespace EduroamConfigure
 			public AuthenticationMethod(
 				EapType eapType,
 				InnerAuthType innerAuthType,
-				List<string> certificateAuthorities,
+				List<string> serverCertificateAuthorities,
 				List<string> serverName,
 				string clientUserName = null,
 				string clientPassword = null,
@@ -255,7 +255,7 @@ namespace EduroamConfigure
 			{
 				EapType = eapType;
 				InnerAuthType = innerAuthType;
-				CertificateAuthorities = certificateAuthorities ?? new List<string>();
+				ServerCertificateAuthorities = serverCertificateAuthorities ?? new List<string>();
 				ServerNames = serverName ?? new List<string>();
 				ClientUserName = clientUserName;
 				ClientPassword = clientPassword;
