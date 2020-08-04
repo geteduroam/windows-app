@@ -299,10 +299,10 @@ namespace WpfApp
         public void LoadPageMainMenu(bool refresh = true)
         {
             currentFormId = FormId.MainMenu;
-            lblTitle.Content = "Connect to Eduroam";
+            //lblTitle.Content = "Connect to Eduroam";
             btnNext.Visibility = Visibility.Hidden;
             btnBack.Visibility = Visibility.Hidden;
-            lblTitle.Visibility = Visibility.Hidden;
+            //lblTitle.Visibility = Visibility.Hidden;
             if (refresh) pageMainMenu = new MainMenu(this);
             Navigate(pageMainMenu);
         }
@@ -310,8 +310,8 @@ namespace WpfApp
         public void LoadPageSelectInstitution(bool refresh = true)
         {
             currentFormId = FormId.SelectInstitution;
-            lblTitle.Content = "Select your institution";
-            lblTitle.Visibility = Visibility.Visible;        
+            //lblTitle.Content = "Select your institution";
+            //lblTitle.Visibility = Visibility.Visible;        
             btnNext.Visibility = Visibility.Visible;
             btnNext.Content = "Next >";
             btnBack.IsEnabled = true;
@@ -324,7 +324,7 @@ namespace WpfApp
         public void LoadPageSelectProfile(bool refresh = true)
         {
             currentFormId = FormId.SelectProfile;
-            lblTitle.Content = "Select Profile";
+            //lblTitle.Content = "Select Profile";
             btnNext.Visibility = Visibility.Visible;
             if (refresh) pageSelectProfile = new SelectProfile(this, pageSelectInstitution.IdProviderId);
             Navigate(pageSelectProfile);
@@ -333,7 +333,7 @@ namespace WpfApp
         public void LoadPageProfileOverview(EapConfig eapConfig, bool refresh = true)
         {
             currentFormId = FormId.ProfileOverview;
-            lblTitle.Content = eapConfig.InstitutionInfo.DisplayName;
+            //lblTitle.Content = eapConfig.InstitutionInfo.DisplayName;
             btnNext.Visibility = Visibility.Visible;
             btnBack.Visibility = Visibility.Visible;
             btnNext.Content = eapConfig.AuthenticationMethods.First().EapType == EapType.TLS ? "Connect" : "Next";
@@ -344,7 +344,7 @@ namespace WpfApp
         public void LoadPageCertificateOverview(bool refresh = true)
         {
             currentFormId = FormId.InstallCertificates;
-            lblTitle.Content = "";
+            //lblTitle.Content = "";
             btnBack.Visibility = Visibility.Visible;
             btnBack.IsEnabled = true;
             if (refresh) pageCertificateOverview = new CertificateOverview(this, eapConfig);
@@ -366,7 +366,7 @@ namespace WpfApp
         public void LoadPageLoading(bool refresh = true)
         {
             currentFormId = FormId.Loading;
-            lblTitle.Content = "Loading ...";
+            //lblTitle.Content = "Loading ...";
             btnBack.IsEnabled = false;
             btnNext.IsEnabled = false;
             if (refresh) pageLoading = new Loading(this);

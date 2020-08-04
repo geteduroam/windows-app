@@ -5,11 +5,12 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WpfApp.Menu"
       mc:Ignorable="d" 
-      d:DesignHeight="311" d:DesignWidth="322"
+      d:DesignHeight="345" d:DesignWidth="322"
       Title="SelectProfile">
 
-    <StackPanel Height="311" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <StackPanel Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
         <StackPanel Background="White"/>
+        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5" FontSize="14"/>
         <ListBox x:Name="lbProfiles" ItemContainerStyle="{StaticResource ListBoxItemStyle}"  Height="200" Margin="5,5,5,0" SelectionChanged="LbProfiles_SelectionChanged" FontSize="10"/>
     </StackPanel>
 </Page>

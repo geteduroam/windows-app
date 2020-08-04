@@ -34,7 +34,8 @@ namespace WpfApp.Menu
 
         private async void LoadPage()
         {
-          //  frmParent.WebEduroamLogo.Visible = true;
+            //  frmParent.WebEduroamLogo.Visible = true;
+            tbTitle.Text = "Select profile";
             mainWindow.btnNext.IsEnabled = false;
 
             

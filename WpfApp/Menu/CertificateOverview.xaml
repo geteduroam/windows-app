@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:WpfApp.Menu"
       xmlns:c="clr-namespace:WpfApp.Classes"
       mc:Ignorable="d" 
-      d:DesignHeight="311" d:DesignWidth="322"
+      d:DesignHeight="345" d:DesignWidth="322"
       Title="CertificateOverview">
 
 
