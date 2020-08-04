@@ -34,11 +34,12 @@ namespace WpfApp.Menu
 
         private void Load()
         {
+            tbInfo.Text = "In order to continue you have to install the listed certificates";
             var certs = ConnectToEduroam.EnumerateCAs(eapConfig).ToList();
             foreach (ConnectToEduroam.CertificateInstaller installer in certs )
             {
-                AddCertGrid(installer);
                 AddSeparator();
+                AddCertGrid(installer);
             }
         }
 
@@ -46,15 +47,10 @@ namespace WpfApp.Menu
         {
             CertificateGrid grid = new CertificateGrid
             {
-                Text = installer.ToString(),
                 Margin = new Thickness(5, 5, 5, 5),
-                IsInstalled = installer.IsInstalled
+                Installer = installer,
             };
-           /* grid.Click += new EventHandler(delegate (Object o, EventArgs a)
-            {
-                //snip
-            });*/
-           
+
             AddToStack(grid);
         }
 
@@ -70,9 +66,9 @@ namespace WpfApp.Menu
             AddToStack(sep);
         }
 
-        private void AddToStack(Control uc)
+        private void AddToStack(Control c)
         {
-            stpCerts.Children.Add(uc);
+            stpCerts.Children.Add(c);
         }
     }
 }

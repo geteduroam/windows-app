@@ -344,7 +344,7 @@ namespace WpfApp
         public void LoadPageCertificateOverview(bool refresh = true)
         {
             currentFormId = FormId.InstallCertificates;
-            lblTitle.Content = "Certificates";
+            lblTitle.Content = "";
             btnBack.Visibility = Visibility.Visible;
             btnBack.IsEnabled = true;
             if (refresh) pageCertificateOverview = new CertificateOverview(this, eapConfig);

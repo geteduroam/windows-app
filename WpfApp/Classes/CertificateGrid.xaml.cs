@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using EduroamConfigure;
 
 namespace WpfApp.Classes
 {
@@ -46,16 +47,30 @@ namespace WpfApp.Classes
             DependencyProperty.Register("IsInstalled", typeof(bool), typeof(CertificateGrid), new UIPropertyMetadata(null));
 
         
-        public RoutedEventHandler Click
+        public ConnectToEduroam.CertificateInstaller Installer
         {
             
-            get { return (RoutedEventHandler)GetValue(ClickProperty); }
-            set { this.SetValue(ClickProperty, value); }
+            get { return (ConnectToEduroam.CertificateInstaller)GetValue(InstallerProperty); }
+            set 
+            {
+                if (value == null) throw new ArgumentNullException("Installer");
+                this.SetValue(InstallerProperty, value);
+                this.IsInstalled = value.IsInstalled;
+                this.Text = value.ToString();
+            }
         }
 
-        public static readonly DependencyProperty ClickProperty =
-            DependencyProperty.Register("Click", typeof(RoutedEventHandler), typeof(CertificateGrid), new UIPropertyMetadata(null));
+        public static readonly DependencyProperty InstallerProperty =
+            DependencyProperty.Register("Installer", typeof(ConnectToEduroam.CertificateInstaller), typeof(CertificateGrid), new UIPropertyMetadata(null));
+
+       private void btnInstall_Click(object sender, RoutedEventArgs e)
+       {
+            Installer.InstallCertificate();
+            IsInstalled = Installer.IsInstalled;
+       }
 
     }
+
+  
 
 }
