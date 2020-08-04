@@ -20,10 +20,12 @@ namespace WpfApp.Menu
 	/// <summary>
 	/// Interaction logic for InstallCertificates.xaml
 	/// </summary>
-	public partial class CertificateOverview : Page
+	public partial class CertificateOverview : Page, IObserver<ConnectToEduroam.CertificateInstaller>
 	{
+		private IDisposable unsubscriber;
 		private MainWindow mainWindow;
 		private EapConfig eapConfig;
+		private List<ConnectToEduroam.CertificateInstaller> installers;
 		public CertificateOverview(MainWindow mainWindow, EapConfig eapConfig)
 		{
 			this.mainWindow = mainWindow;
@@ -35,12 +37,16 @@ namespace WpfApp.Menu
 		private void Load()
 		{
 			tbInfo.Text = "In order to continue you have to install the listed certificates";
-			var certs = ConnectToEduroam.EnumerateCAs(eapConfig).ToList();
-			foreach (ConnectToEduroam.CertificateInstaller installer in certs )
+			installers = ConnectToEduroam.EnumerateCAs(eapConfig).ToList();
+			foreach (ConnectToEduroam.CertificateInstaller installer in installers )
 			{
 				AddSeparator();
 				AddCertGrid(installer);
 			}
+			// remove the first separator
+			stpCerts.Children.RemoveAt(0);
+
+			VerifyNextButton();
 		}
 
 		private void AddCertGrid( ConnectToEduroam.CertificateInstaller installer)
@@ -50,7 +56,7 @@ namespace WpfApp.Menu
 				Margin = new Thickness(5, 5, 5, 5),
 				Installer = installer,
 			};
-
+			unsubscriber = grid.Subscribe(this);
 			AddToStack(grid);
 		}
 
@@ -66,9 +72,42 @@ namespace WpfApp.Menu
 			AddToStack(sep);
 		}
 
+		private void VerifyNextButton()
+		{
+			mainWindow.btnNext.IsEnabled = VerifyInstallers();
+		}
+
+		/// <summary>
+		/// checks if all certificates are installed
+		/// </summary>
+		/// <returns>true if all certs are installed. Else return is false</returns>
+		private bool VerifyInstallers()
+		{
+			foreach (ConnectToEduroam.CertificateInstaller installer in installers)
+			{
+				if (!installer.IsInstalled) return false;
+			}
+			return true;
+		}
+
 		private void AddToStack(Control c)
 		{
 			stpCerts.Children.Add(c);
+		}
+
+		public void OnNext(ConnectToEduroam.CertificateInstaller value)
+		{
+			VerifyNextButton();
+		}
+
+		public void OnError(Exception error)
+		{
+			throw new NotImplementedException();
+		}
+
+		public void OnCompleted()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

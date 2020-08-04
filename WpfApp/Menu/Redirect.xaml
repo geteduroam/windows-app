@@ -1,4 +1,4 @@
-﻿<Page x:Class="WpfApp.Menu.Login"
+﻿<Page x:Class="WpfApp.Menu.Redirect"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -6,10 +6,17 @@
       xmlns:local="clr-namespace:WpfApp.Menu"
       mc:Ignorable="d" 
       d:DesignHeight="345" d:DesignWidth="322"
-      Title="Login">
+      Title="Redirect">
 
     <StackPanel Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
         <StackPanel Background="White"/>
-        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="Login" TextAlignment="Center" Margin="5" FontSize="14"/>
+        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="Redirect" TextAlignment="Center" Margin="5" FontSize="14"/>
+        <TextBlock x:Name="tbRedirect" TextWrapping="Wrap" TextAlignment="Center"  Margin="5">
+            Click 
+            <Hyperlink RequestNavigate="Hyperlink_redirect">
+               here
+            </Hyperlink>
+            to be redirected to the insitutions site for more info on how to connect
+        </TextBlock>
     </StackPanel>
 </Page>

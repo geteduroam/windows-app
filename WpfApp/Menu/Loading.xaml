@@ -9,7 +9,7 @@
       Title="Loading">
 
     <StackPanel Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Label Content="" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="Loading ..." TextAlignment="Center" Margin="5" FontSize="14"/>
 
 
     </StackPanel>
