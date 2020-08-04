@@ -8,7 +8,7 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Threading.Tasks;
 using ManagedNativeWifi;
-using ConfiguredProfile = EduroamConfigure.PersistingStore.ConfiguredProfile;
+using ConfiguredWLANProfile = EduroamConfigure.PersistingStore.ConfiguredWLANProfile;
 
 namespace EduroamConfigure
 {
@@ -24,7 +24,7 @@ namespace EduroamConfigure
         public Guid InterfaceId { get; }
         public AvailableNetworkPack NetworkPack { get; }
         public bool IsAvailable { get => NetworkPack != null; }
-        public ConfiguredProfile? Profile { get; }
+        public ConfiguredWLANProfile? Profile { get; }
 
         // TODO: Add support for Wired 801x
 
@@ -35,7 +35,7 @@ namespace EduroamConfigure
             InterfaceId = interfaceId;
         }
 
-        private EduroamNetwork(AvailableNetworkPack networkPack, ConfiguredProfile? profile = null)
+        private EduroamNetwork(AvailableNetworkPack networkPack, ConfiguredWLANProfile? profile = null)
             : this(networkPack.Interface.Id)
         {
             NetworkPack = networkPack;
@@ -131,8 +131,8 @@ namespace EduroamConfigure
                     (success) ? "succeeded" : "failed");
 
             if (success) {
-                PersistingStore.ConfiguredProfiles = PersistingStore.ConfiguredProfiles
-                    .Add(new ConfiguredProfile(InterfaceId, profileName, isHs2));
+                PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
+                    .Add(new ConfiguredWLANProfile(InterfaceId, profileName, isHs2));
             }
 
 
@@ -157,8 +157,8 @@ namespace EduroamConfigure
 
             PersistingStore.Username = username; // save username
 
-            bool ret = PersistingStore.ConfiguredProfiles.Any();
-            foreach (var configuredProfile in PersistingStore.ConfiguredProfiles.ToList())
+            bool ret = PersistingStore.ConfiguredWLANProfiles.Any();
+            foreach (var configuredProfile in PersistingStore.ConfiguredWLANProfiles.ToList())
             {
                 if (configuredProfile.InterfaceId != InterfaceId) continue;
 
@@ -188,7 +188,7 @@ namespace EduroamConfigure
 
                 if (success && !configuredProfile.HasUserData)
                 {
-                    PersistingStore.ConfiguredProfiles = PersistingStore.ConfiguredProfiles
+                    PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
                         .Remove(configuredProfile)
                         .Add(configuredProfile.WithUserDataSet());
                 }
@@ -205,22 +205,22 @@ namespace EduroamConfigure
         /// </remarks>
         public bool RemoveInstalledProfiles()
         {
-            var n = PersistingStore.ConfiguredProfiles.Count;
+            var n = PersistingStore.ConfiguredWLANProfiles.Count;
 
             Debug.WriteLine("Removing installed profiles on " + InterfaceId);
-            foreach (var configuredProfile in PersistingStore.ConfiguredProfiles.ToList())
+            foreach (var configuredProfile in PersistingStore.ConfiguredWLANProfiles.ToList())
             {
                 if (configuredProfile.InterfaceId == InterfaceId)
                 {
                     if (NativeWifi.DeleteProfile(InterfaceId, configuredProfile.ProfileName))
                     {
-                        PersistingStore.ConfiguredProfiles = PersistingStore.ConfiguredProfiles
+                        PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
                             .Remove(configuredProfile);
                     }
                 }
             }
 
-            return n != PersistingStore.ConfiguredProfiles.Count || n == 0;
+            return n != PersistingStore.ConfiguredWLANProfiles.Count || n == 0;
         }
 
         public async Task<bool> TryToConnect()
@@ -281,7 +281,7 @@ namespace EduroamConfigure
             PruneMissingPersistedProfiles();
             
             return GetAllNetworkPacksWithProfiles()
-                .Join(PersistingStore.ConfiguredProfiles,
+                .Join(PersistingStore.ConfiguredWLANProfiles,
                     network => (network.ProfileName, network.Interface.Id),
                     profile => (profile.ProfileName, profile.InterfaceId),
                     (network, profile) => new EduroamNetwork(network, profile));
@@ -302,7 +302,7 @@ namespace EduroamConfigure
             // look through installed profiles and remove persisted profile configurations which have been uninstalled by user
             // TODO: move to separate function?
             var availableProfiles = GetAllNetworkPacksWithProfiles().ToList();
-            foreach (var configuredProfile in PersistingStore.ConfiguredProfiles)
+            foreach (var configuredProfile in PersistingStore.ConfiguredWLANProfiles)
             {
                 // if still installed
                 if (availableProfiles.Any(network
@@ -313,7 +313,7 @@ namespace EduroamConfigure
                 // else remove
                 Debug.WriteLine("Removing profile from persisting store called {0} on interface {1}",
                     configuredProfile.ProfileName, configuredProfile.InterfaceId);
-                PersistingStore.ConfiguredProfiles = PersistingStore.ConfiguredProfiles
+                PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
                     .Remove(configuredProfile);
             }
         }
