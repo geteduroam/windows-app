@@ -113,7 +113,7 @@ namespace EduroamConfigure
 
 			var tokenFormData = new NameValueCollection() {
 				{ "grant_type", "refresh_token" },
-				{ "code", RefreshToken },
+				{ "refresh_token", RefreshToken },
 				{ "client_id", OAuth.clientId },
 			};
 
