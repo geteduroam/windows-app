@@ -430,15 +430,19 @@ namespace EduroamApp
 		/// <returns>EapConfig object.</returns>
 		public EapConfig DownloadEapConfig(string profileId)
 		{
-			// checks if user has selected an institution and/or profile
 			if (string.IsNullOrEmpty(profileId))
 			{
 				MessageBox.Show("Please select an institution and/or a profile.",
 					"Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				return null; // exits function if no institution/profile selected
-			};
+			}
 			IdentityProviderProfile profile = IdpDownloader.GetProfileFromId(profileId);
-			string redirect = profile.redirect;
+			if (profile == null)
+			{
+				MessageBox.Show("Unable to download profile",
+					"Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return null;
+			}
 
 			EapConfig eapConfig;
 
@@ -468,10 +472,10 @@ namespace EduroamApp
 			}
 
 			// if other redirect
-			else if (!String.IsNullOrEmpty(redirect))
+			else if (!string.IsNullOrEmpty(profile.redirect))
 			{
 				// makes redirect link accessible in parent form
-				RedirectUrl = redirect;
+				RedirectUrl = profile.redirect;
 				return null;
 			}
 			else
