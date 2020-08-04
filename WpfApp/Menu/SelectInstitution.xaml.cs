@@ -35,7 +35,8 @@ namespace WpfApp.Menu
 
 			await Task.Run(() => PopulateInstitutions());
 
-			mainWindow.lblTitle.Content = "Select your institution";
+			//mainWindow.lblTitle.Content = "Select your institution";
+			tbTitle.Text = "Select institution";
 		}
 
 

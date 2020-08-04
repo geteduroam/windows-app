@@ -38,7 +38,7 @@ namespace WpfApp.Menu
 
 			tbDesc.Text = eapConfig.InstitutionInfo.Description;
 			tbDesc.Visibility = string.IsNullOrEmpty(tbDesc.Text) ? Visibility.Collapsed : Visibility.Visible;
-
+			tbName.Text = eapConfig.InstitutionInfo.DisplayName;
 			LoadContactInfo();
 			LoadTOU();
 			LoadAlternate();
