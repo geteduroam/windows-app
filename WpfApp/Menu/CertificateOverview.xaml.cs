@@ -37,12 +37,12 @@ namespace WpfApp.Menu
         private void Load()
         {
             tbInfo.Text = "In order to continue you have to install the listed certificates";
-            installers = ConnectToEduroam.EnumerateCAs(eapConfig).ToList();
+            installers = ConnectToEduroam.EnumerateCAInstallers(eapConfig).ToList();
             foreach (ConnectToEduroam.CertificateInstaller installer in installers )
             {
                 AddSeparator();
                 AddCertGrid(installer);
-            }            
+            }
             // remove the first separator
             stpCerts.Children.RemoveAt(0);
 
@@ -71,7 +71,7 @@ namespace WpfApp.Menu
             };
             AddToStack(sep);
         }
-        
+
         private void VerifyNextButton()
         {
             mainWindow.btnNext.IsEnabled = VerifyInstallers();
