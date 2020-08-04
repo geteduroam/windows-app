@@ -22,7 +22,6 @@ namespace EduroamConfigure
         private const string codeChallengeMethod = "S256";
         private const string scope = "eap-metadata";
         private const string clientId = "app.geteduroam.win";
-        private const string grantType = "authorization_code";
         // instance config
         private readonly string redirectUri;
         private readonly string profileId;
@@ -69,8 +68,7 @@ namespace EduroamConfigure
             // sets non-static authorization uri parameters
             state = Base64UrlEncode(Guid.NewGuid().ToByteArray()); // random alphanumeric string
             codeVerifier = Base64UrlEncode(GenerateCodeChallengeBase()); // generate random byte array, convert to base64url
-            codeChallenge = Base64UrlEncode(HashWithSHA256(codeVerifier)); // hash code verifier with SHA256, convert to base64url
-
+            codeChallenge = Base64UrlEncode(SHA256Hash(codeVerifier)); // hash code verifier with SHA256, convert to base64url
 
             // concatenates parameters into authorization endpoint URI
             string authUri = string.Concat(authEndpoint, "?", ConstructQueryString(new NameValueCollection() {
@@ -86,6 +84,9 @@ namespace EduroamConfigure
             return authUri;
         }
 
+        public string GetRedirectUri()
+            => redirectUri;
+
         /// <summary>
         /// Uses URL containing response after authenticating using authUri from GetAuthUri to get an EAP-config file.
         /// </summary>
@@ -99,7 +100,7 @@ namespace EduroamConfigure
                     userFacingMessage: "HTTP request returned nothing.");
 
             // check if user chose to reject authorization
-            if (responseUrl.Contains("access_denied"))
+            if (responseUrl.Contains("access_denied")) // TODO: this check sucks
                 throw new EduroamAppUserError("oauth access denied",
                     userFacingMessage: "Authorization rejected. Please try again.");
 
@@ -107,8 +108,8 @@ namespace EduroamConfigure
             var responseUrlQueryParams = HttpUtility.ParseQueryString(new Uri(responseUrl).Query);
 
             // get and check state from response url and compares it to original state
-            string newState = responseUrlQueryParams.Get("state");
-            if (newState != state)
+            string responseState = responseUrlQueryParams.Get("state");
+            if (responseState != state)
                 throw new EduroamAppUserError("oauth state mismatch",
                     userFacingMessage: "State from request and response do not match. Aborting operation.");
 
@@ -121,7 +122,7 @@ namespace EduroamConfigure
 
             // concatenates parameters into token endpoint URI
             var tokenPostData = new NameValueCollection() {
-                { "grant_type", grantType },
+                { "grant_type", "authorization_code" },
                 { "code", code },
                 { "redirect_uri", redirectUri },
                 { "client_id", clientId },
@@ -211,7 +212,7 @@ namespace EduroamConfigure
         private static string Base64UrlEncode(byte[] arg)
         {
             string s = Convert.ToBase64String(arg); // regular base64 encoder
-            s = s.Split('=')[0]; // remove any trailing '='s
+            s = s.Split('=')[0]; // remove trailing '='s
             s = s.Replace('+', '-'); // 62nd char of encoding
             s = s.Replace('/', '_'); // 63rd char of encoding
             return s;
@@ -222,12 +223,12 @@ namespace EduroamConfigure
         /// </summary>
         /// <param name="dataString">String.</param>
         /// <returns>Hashed byte array.</returns>
-        private static byte[] HashWithSHA256(string dataString)
+        private static byte[] SHA256Hash(string dataString)
         {
-            // creates a SHA256 context
+            // create a SHA256 context
             using SHA256 sha256Hash = SHA256.Create();
 
-            // ComputeHash - returns byte array
+            // Compute hash and return
             return sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(dataString));
         }
 
@@ -235,7 +236,7 @@ namespace EduroamConfigure
         /// Constructs a QueryString (string).
         /// Consider this method to be the opposite of "System.Web.HttpUtility.ParseQueryString"
         /// </summary>
-        public static string ConstructQueryString(NameValueCollection parameters)
+        private static string ConstructQueryString(NameValueCollection parameters)
         {
             _ = parameters ?? throw new ArgumentNullException(paramName: nameof(parameters));
 
@@ -246,9 +247,5 @@ namespace EduroamConfigure
             );
         }
 
-        public string GetRedirectUri()
-        {
-            return redirectUri;
-        }
     }
 }
