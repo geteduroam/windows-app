@@ -37,7 +37,7 @@ namespace WpfApp
             Redirect,
             SaveAndQuit,
             Loading,
-            InstallCertificates,
+            CertificateOverview,
         }
 
         public enum ProfileStatus
@@ -56,6 +56,7 @@ namespace WpfApp
         private Loading pageLoading;
         private Login pageLogin;
         private CertificateOverview pageCertificateOverview;
+        private Redirect pageRedirect;
         private bool Online;
         private EapConfig eapConfig;
         public ProfileStatus ProfileCondition { get; set; }
@@ -113,13 +114,18 @@ namespace WpfApp
                     // if profile could not be handled then return to form
                     if (!await HandleProfileSelect(profileId)) LoadPageSelectProfile(refresh: false);
                     break;
-               // case FormId.ProfileOverview:
-               //     LoadPageInstallCertificates();
+
                 case FormId.ProfileOverview:
                     LoadPageCertificateOverview();
                     break;
-                case FormId.InstallCertificates:
+
+                case FormId.CertificateOverview:
                     LoadPageLogin();
+                    break;
+
+                case FormId.Login:
+                    break;
+                case FormId.Redirect:
                     break;
             }   
 
@@ -145,7 +151,13 @@ namespace WpfApp
                     LoadPageSelectProfile();
                     break;
                 case FormId.ProfileOverview:
-                    LoadPageProfileOverview(eapConfig);
+                    LoadPageProfileOverview();
+                    break;
+                case FormId.CertificateOverview:
+                    LoadPageCertificateOverview();
+                    break;
+                case FormId.Login:
+                    LoadPageLogin();
                     break;
             }
 
@@ -179,7 +191,12 @@ namespace WpfApp
 
             if (eapConfig != null)
             {
-                LoadPageProfileOverview(eapConfig);
+                if(HasInfo(eapConfig))
+                {
+                    LoadPageProfileOverview();
+                    return true;
+                }
+                LoadPageCertificateOverview();
                 return true;
             }
             else if (!string.IsNullOrEmpty(profile.redirect))
@@ -189,6 +206,16 @@ namespace WpfApp
                 return true;
             }
             return false;
+        }
+
+        private bool HasInfo(EapConfig config)
+        {
+            bool hasWebAddress = !string.IsNullOrEmpty(eapConfig.InstitutionInfo.WebAddress);
+            bool hasEmailAddress = !string.IsNullOrEmpty(eapConfig.InstitutionInfo.EmailAddress);
+            bool hasDescription = !string.IsNullOrEmpty(eapConfig.InstitutionInfo.Description);
+            bool hasPhone = !string.IsNullOrEmpty(eapConfig.InstitutionInfo.Phone);
+            bool hasTou = !string.IsNullOrEmpty(eapConfig.InstitutionInfo.TermsOfUse);
+            return (hasWebAddress || hasEmailAddress || hasDescription || hasPhone || hasTou);
         }
 
         /// <summary>
@@ -325,10 +352,11 @@ namespace WpfApp
             Navigate(pageSelectProfile);
         }
 
-        public void LoadPageProfileOverview(EapConfig eapConfig, bool refresh = true)
+        public void LoadPageProfileOverview(bool refresh = true)
         {
             currentFormId = FormId.ProfileOverview;
             btnNext.Visibility = Visibility.Visible;
+            btnNext.IsEnabled = true;
             btnBack.Visibility = Visibility.Visible;
             btnNext.Content = eapConfig.AuthenticationMethods.First().EapType == EapType.TLS ? "Connect" : "Next";
             if (refresh) pageProfileOverview = new ProfileOverview(this, eapConfig);
@@ -337,7 +365,8 @@ namespace WpfApp
 
         public void LoadPageCertificateOverview(bool refresh = true)
         {
-            currentFormId = FormId.InstallCertificates;
+            // if all certificates are installed then skip to login           
+            currentFormId = FormId.CertificateOverview;
             btnBack.Visibility = Visibility.Visible;
             btnBack.IsEnabled = true;
             if (refresh) pageCertificateOverview = new CertificateOverview(this, eapConfig);
@@ -354,6 +383,10 @@ namespace WpfApp
         public void LoadPageRedirect(bool refresh = true)
         {
             currentFormId = FormId.Redirect;
+            btnBack.IsEnabled = true;
+            btnNext.IsEnabled = false;
+            if (refresh) pageRedirect = new Redirect(this);
+            Navigate(pageRedirect);
         }
 
         public void LoadPageLoading(bool refresh = true)

@@ -20,10 +20,13 @@ namespace WpfApp.Classes
     /// <summary>
     /// Interaction logic for CertificateGrid.xaml
     /// </summary>
-    public partial class CertificateGrid : UserControl
+    public partial class CertificateGrid : UserControl, IObservable<ConnectToEduroam.CertificateInstaller>
     {
+
+        private List<IObserver<ConnectToEduroam.CertificateInstaller>> observers;
         public CertificateGrid()
-        {
+        {;
+            observers = new List<IObserver<ConnectToEduroam.CertificateInstaller>>();
             InitializeComponent();
         }
 
@@ -65,10 +68,45 @@ namespace WpfApp.Classes
 
        private void btnInstall_Click(object sender, RoutedEventArgs e)
        {
-            Installer.InstallCertificate();
-            IsInstalled = Installer.IsInstalled;
+            this.Installer.InstallCertificate();
+            this.IsInstalled = Installer.IsInstalled;
+            NotifySubscribers();
        }
 
+        private void NotifySubscribers()
+        {
+            foreach(IObserver<ConnectToEduroam.CertificateInstaller> observer in observers)
+            {
+                observer.OnNext(Installer);
+            }
+        }
+
+        public IDisposable Subscribe(IObserver<ConnectToEduroam.CertificateInstaller> observer)
+        {
+            if (!observers.Contains(observer))
+            {
+                this.observers.Add(observer);
+            }
+            return new Unsubscriber<ConnectToEduroam.CertificateInstaller>(observers, observer);
+        }
+
+        internal class Unsubscriber<CertificateInstaller> : IDisposable
+        {
+            private List<IObserver<CertificateInstaller>> _observers;
+            private IObserver<CertificateInstaller> _observer;
+
+            internal Unsubscriber(List<IObserver<CertificateInstaller>> observers, IObserver<CertificateInstaller> observer)
+            {
+                this._observers = observers;
+                this._observer = observer;
+            }
+
+            public void Dispose()
+            {
+                if (_observers.Contains(_observer))
+                    _observers.Remove(_observer);
+            }
+        }
     }
 
   
