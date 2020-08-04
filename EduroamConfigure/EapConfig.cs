@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace EduroamConfigure
@@ -89,6 +90,7 @@ namespace EduroamConfigure
             {
                 foreach (var ca in CertificateAuthorities)
                 {
+                    // TODO: find some nice way to ensure these are disposed of
                     var cert = new X509Certificate2(Convert.FromBase64String(ca));
 
                     // sets the friendly name of certificate
@@ -309,19 +311,41 @@ namespace EduroamConfigure
         }
 
         /// <summary>
-        /// TODO
+        /// Container for an entry in the 'CredentialApplicabilitis' section in the EAP config xml.
+        /// Each entry denotes a way to configure this EAP config.
+        /// There are threedifferent cases:
+        /// - WPA with SSID:
+        ///         NetworkType == IEEE80211 and Ssid != null
+        /// - WPA with Hotspot2.0:
+        ///         NetworkType == IEEE80211 and ConsortiumOid != null
+        /// - Wired 801x: 
+        ///         NetworkType == IEEE80211 and NetworkId != null
         /// </summary>
         public readonly struct CredentialApplicability
         {
             public IEEE802x NetworkType { get; }
 
             // IEEE80211 only:
+
+            /// <summary>
+            /// NetworkType == IEEE80211 only. Used to configure WPA with SSID
+            /// </summary>
             public string Ssid { get; } // Wifi SSID, TODO: use
+            /// <summary>
+            /// NetworkType == IEEE80211 only. Used to configure WPA with Hotspot 2.0
+            /// </summary>
             public string ConsortiumOid { get; } // Hotspot2.0
-            public string MinRsnProto { get; } // "TKIP" or "CCMP", TODO: use
+            /// <summary>
+            /// NetworkType == IEEE80211 only, Has either a value of "TKIP" or "CCMP"
+            /// </summary>
+            public string MinRsnProto { get; } // "TKIP" or "CCMP"
 
 
             // IEEE8023 only:
+
+            /// <summary>
+            /// NetworkType == IEEE8023 only
+            /// </summary>
             public string NetworkId { get; }
 
             private CredentialApplicability(
@@ -384,7 +408,18 @@ namespace EduroamConfigure
                 element => element.Name.LocalName == name;
 
             // load the XML file into a XElement object
-            XElement eapConfigXml = XElement.Parse(eapConfigXmlData);
+            XElement eapConfigXml;
+            try
+            {
+                eapConfigXml = XElement.Parse(eapConfigXmlData);
+            }
+            catch (XmlException ex)
+            {
+                throw new EduroamAppUserError("xml parse exception",
+                    "The institution or profile is either not supported or malformed. " +
+                    "Please select a different institution or profile.\n\n" +
+                    "Exception: " + ex.Message);
+            }
             /*
             foreach (XElement eapIdentityProvider in eapConfigXml.Descendants().Where(nameIs("EAPIdentityProvider")))
             {
@@ -418,7 +453,7 @@ namespace EduroamConfigure
 
                 // get list of strings of CA certificates
                 List<string> certAuths = serverSideCredentialXml
-                    .Elements().Where(nameIs("CA")) // TODO: <CA format="X.509" encoding="base64"> is assumed, check schema
+                    .Elements().Where(nameIs("CA")) // TODO: <CA format="X.509" encoding="base64"> is assumed, schema does not enforce this
                     .Select(xElement => (string)xElement)
                     .ToList();
 
@@ -436,7 +471,7 @@ namespace EduroamConfigure
                 var clientPassword = (string)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("Password"));
                 var clientCert = (string)clientSideCredentialXml
-                    ?.Elements().FirstOrDefault(nameIs("ClientCertificate")); // TODO: check schema for supported formats
+                    ?.Elements().FirstOrDefault(nameIs("ClientCertificate")); // TODO: <ClientCertificate format="PKCS12" encoding="base64"> is assumed
                 var clientCertPasswd = (string)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("Passphrase"));
 
@@ -445,17 +480,8 @@ namespace EduroamConfigure
                     ?.Elements().FirstOrDefault(nameIs("OuterIdentity"));
                 var clientInnerIdentitySuffix = (string)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("InnerIdentitySuffix"));
-                var clientInnerIdentityHint = (bool?)clientSideCredentialXml // TODO: will cast to bool work?
+                var clientInnerIdentityHint = (bool?)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("InnerIdentityHint")) ?? false;
-
-
-
-                // Translate erronous data from cat.eduroam.org: https://github.com/GEANT/CAT/pull/191
-                // TODO: remove this when PR is merged and deployed!
-                if ((eapType, innerAuthType) == (EapType.TTLS, InnerAuthType.EAP_MSCHAPv2))
-                {
-                    innerAuthType = InnerAuthType.MSCHAPv2;
-                }
 
                 // create new authentication method object and adds it to list
                 authMethods.Add(new EapConfig.AuthenticationMethod(
@@ -502,7 +528,7 @@ namespace EduroamConfigure
                 .Descendants().FirstOrDefault(nameIs("EAPIdentityProvider")); // TODO: remove
 
             // get institution ID from identity element
-            var instId = (string)eapIdentityElement.Attribute("ID"); // TODO: obsolete?
+            var instId = (string)eapIdentityElement.Attribute("ID");
 
             // get provider's logo as base64 encoded string and its mime-type
             var logoData = Convert.FromBase64String((string)logoElement ?? "");

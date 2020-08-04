@@ -196,21 +196,6 @@ namespace EduroamConfigure
             }
 
             /// <summary>
-            /// Installs the client certificate into the personal
-            /// certificate store of the windows current user
-            /// </summary>
-            private void InstallClientCertificate()
-            {
-                // checks if Authentication method contains a client certificate
-                if (!string.IsNullOrEmpty(AuthMethod.ClientCertificate))
-                {
-                    using var clientCert = AuthMethod.ClientCertificateAsX509Certificate2();
-                    CertificateStore.InstallCertificate(clientCert, userCertStoreName, userCertStoreLocation);
-                }
-                // TODO else throw?
-            }
-
-            /// <summary>
             /// Provide it by TODO
             /// </summary>
             public bool NeedsClientCertificate()
@@ -230,7 +215,7 @@ namespace EduroamConfigure
             /// Call this to check if there are any CAs left to install
             /// </summary>
             /// <returns></returns>
-            [Obsolete]
+            [Obsolete("Use ConnectToEduroam.EnumerateCAs instead")]
             public bool NeedsToInstallCAs()
             {
                 return AuthMethod.CertificateAuthoritiesAsX509Certificate2()
@@ -250,8 +235,6 @@ namespace EduroamConfigure
                 if (NeedsClientCertificate())
                     throw new EduroamAppUserError("no client certificate was provided");
 
-                // TODO: provide a way to remove installed certificates
-
                 // get all CAs from Authentication method
                 foreach (var cert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
                 {
@@ -263,7 +246,12 @@ namespace EduroamConfigure
                     if (!success) return false;
                 }
 
-                InstallClientCertificate(); // TODO: inline this function?
+                // Install client certificate if any
+                if (!string.IsNullOrEmpty(AuthMethod.ClientCertificate))
+                {
+                    using var clientCert = AuthMethod.ClientCertificateAsX509Certificate2();
+                    CertificateStore.InstallCertificate(clientCert, userCertStoreName, userCertStoreLocation);
+                }
 
                 HasInstalledCertificates = true;
                 return true;
@@ -281,34 +269,28 @@ namespace EduroamConfigure
                     throw new EduroamAppUserError("missing certificates",
                         "You must first install certificates with InstallCertificates");
 
-                var eduroamNetworks = EduroamNetwork.GetAll(AuthMethod.EapConfig).ToList();
-                bool anyInstalled = false;
-                bool anyInstalledHs2 = false; // todo: use
-
                 // Install wlan profile
-                foreach (EduroamNetwork network in eduroamNetworks)
-                    anyInstalled |= network.InstallProfiles(AuthMethod);
-
-                // If successfull, try to install Hotspot 2.0 as well:
-                if (anyInstalled && AuthMethod.Hs2AuthMethod != null) // this should be moved into network.InstallProfiles ?
+                bool anyInstalledSsid = false;
+                bool anyInstalledHs2 = false;
+                foreach (EduroamNetwork network in EduroamNetwork.GetAll(AuthMethod.EapConfig))
                 {
-                    foreach (EduroamNetwork network in eduroamNetworks)
-                        anyInstalledHs2 |= network.InstallHs2Profile(AuthMethod.Hs2AuthMethod);
+                    (bool withSsid, bool withHs2) = network.InstallProfiles(AuthMethod);
+                    anyInstalledSsid |= withSsid;
+                    anyInstalledHs2 |= withHs2;
                 }
-                
+
                 // Debug output
-                Debug.WriteLine("any profile installed:        " + anyInstalled);
+                Debug.WriteLine("any profile installed:        " + anyInstalledSsid);
                 Debug.WriteLine("any profile installed (Hs2):  " + anyInstalledHs2);
                 Debug.WriteLine("Installed profile type:       " + AuthMethod?.EapType.ToString() ?? "None");
                 Debug.WriteLine("Installed profile type (Hs2): " + AuthMethod.Hs2AuthMethod?.EapType.ToString() ?? "None");
 
-                if (!AuthMethod.NeedsClientCertificate() && !AuthMethod.NeedsLoginCredentials())
-                {
+                if (!AuthMethod.NeedsLoginCredentials())
                     InstallUserProfile(null, null, AuthMethod);
-                }
 
-                HasInstalledProfile = anyInstalled;
-                return anyInstalled;
+                bool success = anyInstalledSsid || anyInstalledHs2;
+                HasInstalledProfile = success;
+                return success;
             }
 
             /// <summary>

@@ -42,13 +42,11 @@ namespace EduroamConfigure
         public string redirect { get; set; }
 
         /// <summary>
-        /// Represents profile with name of profile to show user
+        /// How the profile is shown to the end user
         /// </summary>
         /// <returns>Name of profile</returns>
         public override string ToString()
-        {
-            return Name;
-        }
+             => Name;
     }
 
     // Stores information found in IdentityProvider json. 
@@ -80,13 +78,11 @@ namespace EduroamConfigure
             return closestGeo.GeoCoordinate;
         }
         /// <summary>
-        /// represents insitutiion with name of institution to show user
+        /// How the institution is shown to the end user
         /// </summary>
         /// <returns>Name of institution</returns>
         public override string ToString()
-        {
-            return Name;
-        } 
+             => Name;
 
     }
 

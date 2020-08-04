@@ -8,7 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace EduroamConfigure
 {
     /// <summary>
-    /// This is a class with static properties which access the persistent storage in the windows registry.
+    /// This is a static class with properties which access the persistent storage, which in this implementation is the windows registry.
     /// All the entries are immutable, to force you to store all your changes properly.
     /// </summary>
     public static class PersistingStore
@@ -34,10 +34,10 @@ namespace EduroamConfigure
         /// <summary>
         /// A set of the configured WLANProfiles
         /// </summary>
-        public static ImmutableHashSet<ConfiguredProfile> ConfiguredProfiles
+        public static ImmutableHashSet<ConfiguredWLANProfile> ConfiguredWLANProfiles
         {
-            get => GetValue<ImmutableHashSet<ConfiguredProfile>>("ConfigureProfiles", "[]");
-            set => SetValue<ImmutableHashSet<ConfiguredProfile>>("ConfigureProfiles", value);
+            get => GetValue<ImmutableHashSet<ConfiguredWLANProfile>>("ConfiguredWLANProfiles", "[]");
+            set => SetValue<ImmutableHashSet<ConfiguredWLANProfile>>("ConfiguredWLANProfiles", value);
         }
 
         /// <summary>
@@ -50,14 +50,35 @@ namespace EduroamConfigure
             set => SetValue<ImmutableHashSet<InstalledCertificate>>("InstalledCertificates", value);
         }
 
-        public readonly struct ConfiguredProfile
+        /// <summary>
+        /// The endpoints to access the lets-wifi
+        /// using the refresh token
+        /// </summary>
+        public static (string profileId, Uri tokenEndpoint, Uri eapEndpoint)? LetsWifiEndpoints
+        {
+            get => GetValue<(string, Uri, Uri)?>("LetsWifiEndpoints");
+            set => SetValue<(string, Uri, Uri)?>("LetsWifiEndpoints", value);
+        }
+
+        /// <summary>
+        /// The single-use refresh token to talk with the lets-wifi API
+        /// </summary>
+        public static string LetsWifiRefreshToken
+        {
+            // TODO: perhaps encrypt this in some fashion?
+            // https://stackoverflow.com/questions/32548714/how-to-store-and-retrieve-credentials-on-windows-using-c-sharp
+            get => GetValue<string>("LetsWifiRefreshToken");
+            set => SetValue<string>("LetsWifiRefreshToken", value);
+        }
+
+        public readonly struct ConfiguredWLANProfile
         {
             public Guid   InterfaceId { get; }
             public string ProfileName { get; }
             public bool   IsHs2       { get; }
             public bool   HasUserData { get; }
 
-            public ConfiguredProfile(Guid interfaceId, string profileName, bool isHs2, bool hasUserData = false)
+            public ConfiguredWLANProfile(Guid interfaceId, string profileName, bool isHs2, bool hasUserData = false)
             {
                 InterfaceId = interfaceId;
                 ProfileName = profileName;
@@ -65,8 +86,8 @@ namespace EduroamConfigure
                 HasUserData = hasUserData;
             }
 
-            public ConfiguredProfile WithUserDataSet()
-                => new ConfiguredProfile(
+            public ConfiguredWLANProfile WithUserDataSet()
+                => new ConfiguredWLANProfile(
                     interfaceId: InterfaceId,
                     profileName: ProfileName,
                     isHs2:       IsHs2,

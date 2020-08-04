@@ -281,20 +281,7 @@ namespace EduroamApp
 
                 return (authMethod, err);
             }
-            catch (ArgumentException argEx) // TODO, handle in ConnectToEduroam or EduroamNetwork
-            {
-                if (argEx.Message == "interfaceId")
-                {
-                    // was this due to Guid.Empty, in that case this should be solved
-                    MessageBox.Show(
-                        "Could not establish a connection through your computer's wireless network interface.\n" +
-                        "Please go to Control Panel -> Network and Internet -> Network Connections to make sure that it is enabled.\n" +
-                        "\n" +
-                        "Exception: " + argEx.Message,
-                        "eduroam", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                throw;
-            }
+            
             catch (CryptographicException cryptEx) // TODO, handle in ConnectToEduroam, thrown by certificate store .add()
             {
                 MessageBox.Show(

@@ -130,7 +130,8 @@ namespace EduroamApp
         }
 
         /// <summary>
-        /// Checks if a config file has been selected, and if the filepath and type extention is valid.
+        /// Checks if a config file has been selected,
+        /// and if the filepath and type extention is valid.
         /// </summary>
         /// <returns>True if valid file, false if not.</returns>
         public static bool ValidateFileSelection(string filePath, List<string> fileTypes)
@@ -141,7 +142,7 @@ namespace EduroamApp
                 MessageBox.Show(
                     "Please select a file.",
                     "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false; // TODO, flow control
+                return false;
             }
 
             // checks if filepath is valid
@@ -149,7 +150,7 @@ namespace EduroamApp
             {
                 MessageBox.Show("The specified file does not exist.",
                     "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false; // TODO, flow control
+                return false;
             }
 
             // checks if file extension is valid
@@ -159,7 +160,7 @@ namespace EduroamApp
             MessageBox.Show(
                 "The file type you chose is not supported.",
                 "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return false; // TODO: flow control
+            return false;
         }
 
 

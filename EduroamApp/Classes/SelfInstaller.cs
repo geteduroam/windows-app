@@ -8,12 +8,7 @@ using System.IO;
 using System.Windows.Forms;
 
 
-// TODO: register uninstall
-// TODO: register run on boot
-// TODO: register start menu entry
-// TODO: support program removing registry entries and uninstalling all profiles and certificates
-// TODO: support program to starting hidden with tray icon
-// TODO: support program to wake already hidden instance instead of creating new instance
+// TODO: test register of run on boot
 
 namespace EduroamApp
 {
@@ -48,7 +43,7 @@ namespace EduroamApp
 			{ get => Version; }
 			public  string Publisher;           // [REQUIRED] Manufacturer
 			private string Version              // [SET AUTOMATICALLY] Derived from ProductVersion
-			{ get => Application.ProductVersion; }
+			{ get => Application.ProductVersion; } // TODO: make sure this is correct, and derive MajorVersion and MinorVersion
 			public  string HelpLink;            // ARPHELPLINK
 			public  string HelpTelephone;       // ARPHELPTELEPHONE
 			private string InstallDate          // [SET AUTOMATICALLY] The last time this product received service. The value of this property is replaced each time a patch is applied or removed from the product or the /v Command-Line Option is used to repair the product. If the product has received no repairs or patches this property contains the time this product was installed on this computer.
@@ -80,10 +75,7 @@ namespace EduroamApp
 				UninstallString = installer.UninstallCommand;
 				EstimatedSize   = (uint)new FileInfo(SelfInstaller.ThisExePath).Length;
 				ModifyPath      = null;
-
-				// TODO: SettingsIdentifier
-				// TODO: InstallLocation
-				// TODO: InstallSource?
+				// TODO: SettingsIdentifier ?
 			}
 
 			public void Write(
@@ -176,13 +168,18 @@ namespace EduroamApp
 		{
 			// avoid uneccesary/illegal updates
 			if (IsRunningFromInstallDir) // sanity check, should never happen
-				throw new EduroamAppUserError("already installed", // TODO: use a more fitting exception
+				throw new EduroamAppUserError("already installed", // TODO: use a more fitting exception?
 					"This application has already been installed. Installing it again won't have any effect.");
 			if (File.Exists(InstallExePath))
 			{
 				var d1 = File.GetLastWriteTime(ThisExePath);
 				var d2 = File.GetLastWriteTime(InstallExePath);
-				if (d1 <= d2) return; // TODO: throw?
+				if (d1 <= d2)
+				{
+					Console.WriteLine(
+						"The date of the currently installed version is equal to or newer than this one.");
+					return;
+				}
 			}
 
 			// Create target install directory
@@ -279,20 +276,22 @@ namespace EduroamApp
 					exceptionOnNotExists: false);
 
 			// Delete myself:
-
-			// this process delays 3 seconds then deletes the exe file
-			var killme = new ProcessStartInfo
+			if (File.Exists(InstallExePath))
 			{
-				FileName = "cmd.exe",
-				Arguments = "/C choice /C Y /N /D Y /T 3 " + // TODO: escape arguments
-					"& Del " + InstallExePath +
-					"& Del /Q " + InstallDir +
-					"& rmdir " + InstallDir,
-				WindowStyle = ProcessWindowStyle.Hidden,
-				CreateNoWindow = true,
-				WorkingDirectory = "C:\\"
-			};
-			Process.Start(killme);
+				// this process delays 3 seconds then deletes the exe file
+				var killme = new ProcessStartInfo
+				{
+					FileName = "cmd.exe",
+					Arguments = "/C choice /C Y /N /D Y /T 3 " + // TODO: escape arguments
+						"& Del " + InstallExePath +
+						"& Del /Q " + InstallDir +
+						"& rmdir " + InstallDir,
+					WindowStyle = ProcessWindowStyle.Hidden,
+					CreateNoWindow = true,
+					WorkingDirectory = "C:\\"
+				};
+				Process.Start(killme);
+			}
 
 			// Quit
 			//https://stackoverflow.com/a/12978034

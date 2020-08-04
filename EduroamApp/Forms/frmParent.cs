@@ -242,7 +242,7 @@ namespace EduroamApp
                     Close();
                     break;
 
-                // TODO: missing case Redirect. sanity is to throw on default
+                // TODO: missing cases? For sanity we should throw on default
 
                 // closes application after saving setup
                 case FormId.SaveAndQuit:
@@ -279,8 +279,8 @@ namespace EduroamApp
             BtnNextEnabled = false;
             BtnNext.Refresh();
             Application.DoEvents();
-            // TODO: remove this, i dont think this should happen anymore? buttons are disabled if nothing is selected
-            if (string.IsNullOrEmpty(profileId))
+            
+            if (string.IsNullOrEmpty(profileId)) // Should not happen, but for sanity
             {
                 MessageBox.Show("Please select a Profile.",
                     "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -293,9 +293,8 @@ namespace EduroamApp
             }
             catch (EduroamAppUserError ex) // TODO: register this in some higher level
             {
-                MessageBox.Show(
-                    ex.UserFacingMessage,
-                    "eduroam - Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(ex.UserFacingMessage,
+                    "geteduroam - Exception", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 eapConfig = null;
             }
             if (eapConfig != null)
@@ -361,7 +360,7 @@ namespace EduroamApp
                 case FormId.Login:
                     LoadFrmLogin();
                     break;
-                // TODO: missing cases? sanity is to throw on default
+                // TODO: missing cases? For sanity we should throw on default
             }
 
             // removes current form from history
@@ -405,39 +404,22 @@ namespace EduroamApp
             }
         }
 
-
+        /// <summary>
+        /// Tries to connect to eduroam
+        /// </summary>
+        /// <returns></returns>
         public async Task<bool> Connect()
         {
             bool connectSuccess;
-            // tries to connect
             try
             {
                 connectSuccess = await Task.Run(ConnectToEduroam.TryToConnect);
             }
             catch (Exception ex)
             {
-                // if an exception is thrown, connection has not succeeded
                 connectSuccess = false;
                 MessageBox.Show("Could not connect. \nException: " + ex.Message);
             }
-
-            // double check to validate wether eduroam really is an active connection
-            //var eduConnected = false;
-            // TODO: update this, name should not always be eduroam
-            /* if (connectSuccess)
-             {
-                 var checkConnected = NativeWifi.EnumerateConnectedNetworkSsids();
-                 foreach (NetworkIdentifier network in checkConnected)
-                 {
-                     if (network.ToString() == "eduroam")
-                     {
-                         eduConnected = true;
-                     }
-                 }
-             }
-
-             Console.WriteLine("educonnected: " + eduConnected.ToString());
-             return eduConnected;*/
             return connectSuccess;
         }
 
@@ -448,17 +430,21 @@ namespace EduroamApp
         /// <returns>EapConfig object.</returns>
         public EapConfig DownloadEapConfig(string profileId)
         {
-            // checks if user has selected an institution and/or profile
             if (string.IsNullOrEmpty(profileId))
             {
                 MessageBox.Show("Please select an institution and/or a profile.",
                     "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null; // exits function if no institution/profile selected
-            };
+            }
             IdentityProviderProfile profile = IdpDownloader.GetProfileFromId(profileId);
-            string redirect = profile.redirect;
-            // eap config file as string
-            string eapXmlString;
+            if (profile == null)
+            {
+                MessageBox.Show("Unable to download profile",
+                    "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
+
+            EapConfig eapConfig;
 
             // if OAuth
             if (profile.oauth)
@@ -466,64 +452,60 @@ namespace EduroamApp
                 // get eap config file from browser authenticate
                 try
                 {
-                    OAuth oauth = new OAuth(profile.authorization_endpoint, profile.token_endpoint, profile.eapconfig_endpoint);
-                    // generate authURI based on redirect
-                    string authUri = oauth.GetAuthUri();
-                    // get local listening uri prefix
-                    string prefix = oauth.GetRedirectUri();
-                    // browser authenticate
-                    string responseUrl = GetResponseUrl(prefix, authUri);
-                    // get eap-config string if available
-                    eapXmlString = oauth.GetEapConfigString(responseUrl);
+                    OAuth oauth = new OAuth(new Uri(profile.authorization_endpoint));
+                    // The url to send the user to
+                    var authUri = oauth.CreateAuthUri();
+                    // The url to listen to for the user to be redirected back to
+                    var prefix = oauth.GetRedirectUri();
+
+                    // Send the user to the url and await the response
+                    var responseUrl = OpenSSOAndAwaitResultRedirect(prefix.ToString(), authUri.ToString());
+
+                    // Parse the result and download the eap config if successfull
+                    (string authorizationCode, string codeVerifier) = oauth.ParseAndExtractAuthorizationCode(responseUrl);
+                    bool success = LetsWifi.RequestAccess(profile, authorizationCode, codeVerifier, prefix);
+
+                    eapConfig = success
+                        ? LetsWifi.DownloadEapConfig()
+                        : null;
                 }
                 catch (EduroamAppUserError ex)
                 {
                     MessageBox.Show(ex.UserFacingMessage);
-                    eapXmlString = "";
+                    eapConfig = null;
                 }
                 // return focus to application
                 Activate();
             }
 
             // if other redirect
-            else if (!String.IsNullOrEmpty(redirect))
+            else if (!string.IsNullOrEmpty(profile.redirect))
             {
                 // makes redirect link accessible in parent form
-                RedirectUrl = redirect;
+                RedirectUrl = profile.redirect;
                 return null;
             }
             else
             {
-                eapXmlString = IdpDownloader.GetEapConfigString(profileId);
+                try
+                {
+                    eapConfig = IdpDownloader.DownloadEapConfig(profileId);
+                }
+                catch (EduroamAppUserError ex)
+                {
+                    MessageBox.Show(ex.UserFacingMessage);
+                    eapConfig = null;
+                }
             }
-
-            // if not empty, creates and returns EapConfig object from Eap string
-
-            if (string.IsNullOrEmpty(eapXmlString))
-            {
-                return null;
-            }
-
-            try
-            {
-                // if not empty, creates and returns EapConfig object from Eap string
-                return EapConfig.FromXmlData(uid: profileId, eapXmlString);
-            }
-            catch (XmlException ex)
-            {
-                MessageBox.Show(
-                    "The selected institution or profile is not supported. " +
-                    "Please select a different institution or profile.\n" +
-                    "Exception: " + ex.Message);
-                return null;
-            }
+            return eapConfig;
         }
+
 
         /// <summary>
         /// Gets a response URL after doing Browser authentication with Oauth authUri.
         /// </summary>
         /// <returns>response Url as string.</returns>
-        public string GetResponseUrl(string redirectUri, string authUri)
+        public string OpenSSOAndAwaitResultRedirect(string redirectUri, string authUri)
         {
             using var waitForm = new frmWaitDialog(redirectUri, authUri);
             DialogResult result = waitForm.ShowDialog();
