@@ -118,20 +118,21 @@ namespace EduroamConfigure
 			};
 
 			// downloads json file from url as string
-			string tokenJsonString = PostFormToUrl(tokenEndpoint, tokenPostData); ;
+			string tokenJsonString = PostFormToUrl(tokenEndpoint, tokenPostData);
 
-			// token for authorizing Oauth request
-			string token;
-			// token type
-			string tokenType;
-
-			// gets JObject containing token information from json string
+			// Parse json response to retrieve authorization tokens
+			string accessToken;
+			string accessTokenType;
+			string refreshToken;
+			int? refreshTokenExpiresIn;
 			try
 			{
 				JObject tokenJson = JObject.Parse(tokenJsonString);
-				// gets token and type strings
-				token = tokenJson["access_token"].ToString();
-				tokenType = tokenJson["token_type"].ToString();
+
+				accessToken = tokenJson["access_token"].ToString(); // token to retrieve EAP config
+				accessTokenType = tokenJson["token_type"].ToString(); // Usually "Bearer", a http authorization scheme
+				refreshToken = tokenJson["refresh_token"].ToString(); // token to refresh access token
+				refreshTokenExpiresIn = tokenJson["expires_in"].ToObject<int?>();
 			}
 			catch (JsonReaderException ex)
 			{
