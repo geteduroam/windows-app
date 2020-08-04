@@ -51,22 +51,22 @@ namespace EduroamConfigure
                     .All(authMethod => authMethod.CertificateAuthorities.Any()))
                 yield return (true, "This configuration is missing Certificate Authorities");
 
+            var CAs = EnumerateCAs(eapConfig).ToList();
 
             DateTime now = DateTime.Now;
-            bool has_expired_ca = eapConfig.AuthenticationMethods
-                .Where(AuthMethodIsSupported)
-                .SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
+            bool has_expired_ca = CAs
                 .Any(caCert => caCert.NotAfter < now);
 
-            bool has_valid_ca = eapConfig.AuthenticationMethods
-                .Where(AuthMethodIsSupported)
-                .SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
+            bool has_a_yet_to_expire_ca = CAs
+                .Any(caCert => now < caCert.NotAfter);
+
+            bool has_valid_ca = CAs
                 .Where(caCert => now < caCert.NotAfter)
                 .Any(caCert => caCert.NotBefore < now);
 
             if (has_expired_ca)
             {
-                yield return has_valid_ca 
+                yield return has_valid_ca
                     ? (false,
                         "One of the provided Certificate Authorities from this institution has expired.\r\n" +
                         "There might be some issues connecting to eduroam.")
@@ -74,11 +74,9 @@ namespace EduroamConfigure
                         "The provided Certificate Authorities from this institution have all expired!\r\n" +
                         "Please contact the institution to have the issue fixed!");
             }
-            else if (!has_valid_ca)
+            else if (!has_valid_ca && has_a_yet_to_expire_ca)
             {
-                DateTime earliest = eapConfig.AuthenticationMethods
-                    .Where(AuthMethodIsSupported)
-                    .SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
+                DateTime earliest = CAs
                     .Where(caCert => now < caCert.NotAfter)
                     .Max(caCert => caCert.NotBefore);
 
@@ -86,6 +84,13 @@ namespace EduroamConfigure
                     "The Certificate Authorities in this configuration has yet to become valid.\r\n" +
                     "This configuration will become valid in " + (earliest - now).TotalMinutes + " minutes.");
             }
+            else if (!has_valid_ca)
+            {
+                yield return (false,
+                    "The Certificate Authorities in this configuration are not valid.");
+            }
+
+            CAs.ForEach(cert => cert.Dispose());
         }
 
         /// <summary>
