@@ -83,27 +83,12 @@ namespace EduroamConfigure
 
             bool installedHs2 = false;
             if (authMethod.Hs2AuthMethod != null)
-                installedHs2 = InstallHs2Profile(authMethod.Hs2AuthMethod, forAllUsers);
+            {
+                (string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, asHs2Profile: true);
+                installedHs2 =  InstallProfile(profileName, profileXml, true, forAllUsers);
+            }
 
             return (installed, installedHs2);
-        }
-
-        /// <summary>
-        /// Installs a Hotspot 2.0 network profile according to selected auth method.
-        /// Auth method must support Hotspot 2.0.
-        /// Will overwrite any profiles with matching names if they exist.
-        /// </summary>
-        /// <param name="authMethod">TODO</param>
-        /// <param name="forAllUsers">TODO</param>
-        /// <returns>True if succeeded, false if failed.</returns>
-        private bool InstallHs2Profile(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
-        {
-            _ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
-
-            PersistingStore.ProfileID = authMethod.EapConfig.Uid;
-            
-            (string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, asHs2Profile: true);
-            return InstallProfile(profileName, profileXml, true, forAllUsers);
         }
 
         private bool InstallProfile(string profileName, string profileXml, bool isHs2, bool forAllUsers)
