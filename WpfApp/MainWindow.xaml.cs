@@ -181,6 +181,9 @@ namespace WpfApp
 				MessageBox.Show(
 					ex.UserFacingMessage,
 					"eduroam - Exception");
+				//pageLoading.tbTitle = "Error";
+				//pageLoading.tbErrorMessage.Text = ex.UserFacingMessage;
+				//btnNext.Content = "OK";
 				eapConfig = null;
 
 			}
@@ -193,8 +196,8 @@ namespace WpfApp
 			{
 				if(HasInfo(eapConfig))
 				{
-					LoadPageProfileOverview();
-					return true;
+					 LoadPageProfileOverview();
+					 return true;
 				}
 				LoadPageCertificateOverview();
 				return true;
@@ -202,7 +205,7 @@ namespace WpfApp
 			else if (!string.IsNullOrEmpty(profile.redirect))
 			{
 				// TODO: add option to go to selectmethod from redirect
-				LoadPageRedirect();
+				LoadPageRedirect(profile.redirect);
 				return true;
 			}
 			return false;
@@ -210,11 +213,11 @@ namespace WpfApp
 
 		private bool HasInfo(EapConfig config)
 		{
-			bool hasWebAddress = !string.IsNullOrEmpty(eapConfig.InstitutionInfo.WebAddress);
-			bool hasEmailAddress = !string.IsNullOrEmpty(eapConfig.InstitutionInfo.EmailAddress);
-			bool hasDescription = !string.IsNullOrEmpty(eapConfig.InstitutionInfo.Description);
-			bool hasPhone = !string.IsNullOrEmpty(eapConfig.InstitutionInfo.Phone);
-			bool hasTou = !string.IsNullOrEmpty(eapConfig.InstitutionInfo.TermsOfUse);
+			bool hasWebAddress = !string.IsNullOrEmpty(config.InstitutionInfo.WebAddress);
+			bool hasEmailAddress = !string.IsNullOrEmpty(config.InstitutionInfo.EmailAddress);
+			bool hasDescription = !string.IsNullOrEmpty(config.InstitutionInfo.Description);
+			bool hasPhone = !string.IsNullOrEmpty(config.InstitutionInfo.Phone);
+			bool hasTou = !string.IsNullOrEmpty(config.InstitutionInfo.TermsOfUse);
 			return (hasWebAddress || hasEmailAddress || hasDescription || hasPhone || hasTou);
 		}
 
@@ -232,6 +235,7 @@ namespace WpfApp
 		/// Prepares for redirect if no EAP-config.
 		/// </summary>
 		/// <returns>EapConfig object.</returns>
+		/// <exception cref="EduroamAppUserError">description</exception>
 		public async Task<EapConfig> DownloadEapConfig(IdentityProviderProfile profile)
 		{
 			if (string.IsNullOrEmpty(profile?.Id))
@@ -243,30 +247,23 @@ namespace WpfApp
 			if (profile.oauth)
 			{
 				// get eap config file from browser authenticate
-				try
-				{
-					OAuth oauth = new OAuth(new Uri(profile.authorization_endpoint));
-					// The url to send the user to
-					var authUri = oauth.CreateAuthUri();
-					// The url to listen to for the user to be redirected back to
-					var prefix = oauth.GetRedirectUri();
 
-					// Send the user to the url and await the response
-					var responseUrl = OpenSSOAndAwaitResultRedirect(prefix.ToString(), authUri.ToString());
+				OAuth oauth = new OAuth(new Uri(profile.authorization_endpoint));
+				// The url to send the user to
+				var authUri = oauth.CreateAuthUri();
+				// The url to listen to for the user to be redirected back to
+				var prefix = oauth.GetRedirectUri();
 
-					// Parse the result and download the eap config if successfull
-					(string authorizationCode, string codeVerifier) = oauth.ParseAndExtractAuthorizationCode(responseUrl);
-					bool success = LetsWifi.RequestAccess(profile, authorizationCode, codeVerifier, prefix);
+				// Send the user to the url and await the response
+				var responseUrl = OpenSSOAndAwaitResultRedirect(prefix.ToString(), authUri.ToString());
 
-					eapConfig = success
-						? LetsWifi.DownloadEapConfig()
-						: null;
-				}
-				catch (EduroamAppUserError ex)
-				{
-					MessageBox.Show(ex.UserFacingMessage);
-					eapConfig = null;
-				}
+				// Parse the result and download the eap config if successfull
+				(string authorizationCode, string codeVerifier) = oauth.ParseAndExtractAuthorizationCode(responseUrl);
+				bool success = LetsWifi.RequestAccess(profile, authorizationCode, codeVerifier, prefix);
+
+				eapConfig = success
+					? LetsWifi.DownloadEapConfig()
+					: null;
 				// return focus to application
 				Activate();
 			}
@@ -279,17 +276,10 @@ namespace WpfApp
 			}
 			else
 			{
-				try
-				{
-					eapConfig = await Task.Run(() =>
-						IdpDownloader.DownloadEapConfig(profile.Id)
-					);
-				}
-				catch (EduroamAppUserError ex)
-				{
-					MessageBox.Show(ex.UserFacingMessage);
-					eapConfig = null;
-				}
+				eapConfig = await Task.Run(() =>
+					IdpDownloader.DownloadEapConfig(profile.Id)
+				);
+
 			}
 			return eapConfig;
 		}
@@ -372,12 +362,12 @@ namespace WpfApp
 			Navigate(pageLogin);
 		}
 
-		public void LoadPageRedirect(bool refresh = true)
+		public void LoadPageRedirect(string redirect, bool refresh = true)
 		{
 			currentFormId = FormId.Redirect;
 			btnBack.IsEnabled = true;
 			btnNext.IsEnabled = false;
-			if (refresh) pageRedirect = new Redirect(this);
+			if (refresh) pageRedirect = new Redirect(this, redirect);
 			Navigate(pageRedirect);
 		}
 
@@ -389,6 +379,7 @@ namespace WpfApp
 			if (refresh) pageLoading = new Loading(this);
 			Navigate(pageLoading);
 		}
+
 
 		private void btnNext_Click(object sender, RoutedEventArgs e)
 		{
