@@ -178,21 +178,23 @@ namespace EduroamConfigure
         /// </summary>
         /// <returns></returns>
         /// <exception cref="EduroamAppUserError">description</exception>
-        public string GetEapConfigString(string profileId)
+        public EapConfig DownloadEapConfig(string profileId)
         {
             // adds profile ID to url containing json file, which in turn contains url to EAP config file download
             // gets url to EAP config file download from GenerateEapConfig object
             string endpoint = GetProfileFromId(profileId).eapconfig_endpoint;
 
             // downloads and returns eap config file as string
+            string eapXml;
             try
             {
-                return DownloadUrlAsString(endpoint);
+                eapXml = DownloadUrlAsString(endpoint);
             }
             catch (WebException ex)
             {
                 throw new EduroamAppUserError("WebException", WebExceptionToString(ex));
             }
+            return EapConfig.FromXmlData(profileId, eapXml);
         }
 
         public IdentityProviderProfile GetProfileFromId(string profileId)

@@ -25,13 +25,22 @@ namespace EduroamConfigure
         private const string grantType = "authorization_code";
         // instance config
         private readonly string redirectUri;
+        private readonly string profileId;
         private readonly string authEndpoint;
         private readonly string tokenEndpoint;
         private readonly string generatorEndpoint;
-        // state created by GetAuthUri
+        // state created by CreateAuthUri
         private string codeVerifier;
         private string codeChallenge;
         private string state;
+
+        public OAuth(IdentityProviderProfile profile) :
+            this(
+                profile?.authorization_endpoint,
+                profile?.token_endpoint,
+                profile?.eapconfig_endpoint,
+                profile?.Id
+            ) { }
 
         /// <summary>
         /// Class used for OAuth process
@@ -39,11 +48,13 @@ namespace EduroamConfigure
         /// <param name="authEndpoint">Authorization Endpoint.</param>
         /// <param name="tokenEndpoint">Token Endpoint.</param>
         /// <param name="generatorEndpoint"> Generator endpoint for eap-config (resource endpoint).</param>
-        public OAuth(string authEndpoint, string tokenEndpoint, string generatorEndpoint)
+        public OAuth(string authEndpoint, string tokenEndpoint, string generatorEndpoint, string profileId)
         {
             this.authEndpoint = authEndpoint;
             this.tokenEndpoint = tokenEndpoint;
             this.generatorEndpoint = generatorEndpoint;
+            this.profileId = profileId;
+
             Random rng = new Random();
             int randomPort = rng.Next(49152, 65535);
             redirectUri = $"http://[::1]:{randomPort}/";
@@ -80,7 +91,7 @@ namespace EduroamConfigure
         /// </summary>
         /// <param name="reponseUrl">URL response from authentication.</param>
         /// <returns>EAP-config file as string.</returns>
-        public string GetEapConfigString(string responseUrl)
+        public EapConfig DownloadEapConfig(string responseUrl)
         {
             // check if url is not empty
             if (string.IsNullOrEmpty(responseUrl))
@@ -118,7 +129,7 @@ namespace EduroamConfigure
             };
 
             // downloads json file from url as string
-            string tokenJsonString = PostFormToUrl(tokenEndpoint, tokenPostData);
+            string tokenJsonString = PostFormGetResponse(tokenEndpoint, tokenPostData);
 
             // Parse json response to retrieve authorization tokens
             string accessToken;
@@ -137,24 +148,26 @@ namespace EduroamConfigure
             catch (JsonReaderException ex)
             {
                 throw new EduroamAppUserError("oauth unprocessable response",
-                    userFacingMessage: "Couldn't read token from JSON file.\n" + "Exception: " + ex.Message);
+                    userFacingMessage: "Couldn't read tokens from JSON file.\n" + "Exception: " + ex.Message);
             }
 
             // gets and returns EAP config file as a string
+            string eapConfigXml;
             try
             {
                 // Setup client with authorization token in header
                 using var client = new WebClient();
-                client.Headers.Add("Authorization", tokenType + " " + token);
+                client.Headers.Add("Authorization", accessTokenType + " " + accessToken);
 
                 // download file
-                return client.DownloadString(generatorEndpoint + "?format=eap-metadata");
+                eapConfigXml = client.DownloadString(generatorEndpoint + "?format=eap-metadata"); // TODO: use a uri builder or something
             }
             catch (WebException ex)
             {
                 throw new EduroamAppUserError("oauth eapconfig get error",
                     userFacingMessage: "Couldn't fetch EAP config file. \nException: " + ex.Message);
             }
+            return EapConfig.FromXmlData(uid: profileId, eapConfigXml);
         }
 
         /// <summary>
@@ -163,7 +176,7 @@ namespace EduroamConfigure
         /// <param name="url">Url to upload to.</param>
         /// <param name="data">Data to post.</param>
         /// <returns>Web page content.</returns>
-        public static string PostFormToUrl(string url, NameValueCollection data)
+        public static string PostFormGetResponse(string url, NameValueCollection data)
         {
             try
             {
