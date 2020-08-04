@@ -305,7 +305,7 @@ namespace EduroamConfigure
                 WebAddress = webAddress;
                 Phone = phone;
                 InstId = instId;
-                TermsOfUse = termsOfUse?.Replace("\r\n", " "); // TODO: n-n-n-nani?
+                TermsOfUse = termsOfUse;
                 Location = location;
             }
         }
@@ -423,7 +423,7 @@ namespace EduroamConfigure
             /*
             foreach (XElement eapIdentityProvider in eapConfigXml.Descendants().Where(nameIs("EAPIdentityProvider")))
             {
-                //TODO: yield return from this
+                // NICE TO HAVE: yield return from this
             }
             */
 
@@ -452,7 +452,7 @@ namespace EduroamConfigure
                 // ServerSideCredential
 
                 // get list of strings of CA certificates
-                List<string> certAuths = serverSideCredentialXml
+                List<string> serverCAs = serverSideCredentialXml
                     .Elements().Where(nameIs("CA")) // TODO: <CA format="X.509" encoding="base64"> is assumed, schema does not enforce this
                     .Select(xElement => (string)xElement)
                     .ToList();
@@ -487,7 +487,7 @@ namespace EduroamConfigure
                 authMethods.Add(new EapConfig.AuthenticationMethod(
                     eapType,
                     innerAuthType,
-                    certAuths,
+                    serverCAs,
                     serverNames,
                     clientUserName,
                     clientPassword,
@@ -525,7 +525,7 @@ namespace EduroamConfigure
             XElement logoElement = eapConfigXml
                 .Descendants().FirstOrDefault(nameIs("ProviderLogo"));
             XElement eapIdentityElement = eapConfigXml
-                .Descendants().FirstOrDefault(nameIs("EAPIdentityProvider")); // TODO: remove
+                .Descendants().FirstOrDefault(nameIs("EAPIdentityProvider")); // NICE TO HAVE: update this if the yield return above gets used
 
             // get institution ID from identity element
             var instId = (string)eapIdentityElement.Attribute("ID");
@@ -606,7 +606,7 @@ namespace EduroamConfigure
         /// </summary>
         public bool NeedsClientCertificatePassphrase()
             => AuthenticationMethods
-                    .Any(authMethod => authMethod.NeedsClientCertificatePassphrase());
+                .Any(authMethod => authMethod.NeedsClientCertificatePassphrase());
 
         /// <summary>
         /// Reads and adds the user certificate to be installed along with the wlan profile
@@ -658,6 +658,10 @@ namespace EduroamConfigure
         MSCHAPv2 = 26,
     }
 
+    /// <summary>
+    /// The type of authentification used in the inner tunnel.
+    /// Also known as stage 2 authentification.
+    /// </summary>
     public enum InnerAuthType
     {
         // For those EAP types with no inner auth method (TLS and MSCHAPv2)

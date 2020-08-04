@@ -18,17 +18,22 @@ namespace EduroamConfigure
     /// </summary>
     public static class ConnectToEduroam
     {
-        // Certificate stores
-        private const StoreName caStoreName = StoreName.Root; // Used to install CAs to verify server certificates with
-        private const StoreLocation caStoreLocation = StoreLocation.CurrentUser; // TODO: make this configurable to LocalMachine
-        private const StoreName interStoreName = StoreName.CertificateAuthority; // Used to install CAs to verify server certificates with
-        private const StoreLocation interStoreLocation = StoreLocation.CurrentUser; // TODO: make this configurable to LocalMachine
-        private const StoreName userCertStoreName = StoreName.My; // Used to install TLS client certificates
+        // Certificate stores:
+
+        // Used to install root CAs to verify server certificates with
+        private const StoreName rootCaStoreName = StoreName.Root; 
+        private const StoreLocation rootCaStoreLocation = StoreLocation.CurrentUser; // NICE TO HAVE: make this configurable to LocalMachine
+        // Used to install CAs to verify server certificates with
+        private const StoreName interCaStoreName = StoreName.CertificateAuthority;
+        private const StoreLocation interCaStoreLocation = StoreLocation.CurrentUser; // NICE TO HAVE: make this configurable to LocalMachine
+        // Used to install TLS client certificates
+        private const StoreName userCertStoreName = StoreName.My;
         private const StoreLocation userCertStoreLocation = StoreLocation.CurrentUser;
 
         /// <summary>
         /// Checks the EAP config to see if there is any issues
         /// TODO: test this
+        /// TODO: use this in ui
         /// </summary>
         /// <returns>A tuple on the form: (bool isCritical, string description)</returns>
         public static IEnumerable<ValueTuple<bool, string>> LookForWarningsInEapConfig(EapConfig eapConfig)
@@ -65,7 +70,7 @@ namespace EduroamConfigure
                     ? (false,
                         "One of the provided Certificate Authorities from this institution has expired.\r\n" +
                         "There might be some issues connecting to eduroam.")
-                    : (true, // TODO: This case means that the ProfileXml will be configured to not expect any fingerprint, meaning no connection can be made
+                    : (true,
                         "The provided Certificate Authorities from this institution have all expired!\r\n" +
                         "Please contact the institution to have the issue fixed!");
             }
@@ -119,7 +124,7 @@ namespace EduroamConfigure
             override public string ToString()
                 => cert.FriendlyName;
 
-            public bool IsCa { get => storeName == caStoreName; }
+            public bool IsCa { get => storeName == rootCaStoreName; }
 
             public bool IsInstalled
             {
@@ -195,17 +200,13 @@ namespace EduroamConfigure
                 AuthMethod = authMethod;
             }
 
-            /// <summary>
-            /// Provide it by TODO
-            /// </summary>
+            [Obsolete("Use EapConfig.NeedsClientCertificate")]
             public bool NeedsClientCertificate()
             {
                 return AuthMethod.NeedsClientCertificate();
             }
 
-            /// <summary>
-            /// Provide it by TODO
-            /// </summary>
+            [Obsolete("Use EapConfig.AddClientCertificate")]
             public bool AddClientCertificate(string certificatePath, string passphrase = null)
             {
                 return AuthMethod.AddClientCertificate(certificatePath, passphrase);
@@ -215,19 +216,19 @@ namespace EduroamConfigure
             /// Call this to check if there are any CAs left to install
             /// </summary>
             /// <returns></returns>
-            [Obsolete("Use ConnectToEduroam.EnumerateCAs instead")]
+            [Obsolete("Use ConnectToEduroam.EnumerateCAInstallers instead")]
             public bool NeedsToInstallCAs()
             {
                 return AuthMethod.CertificateAuthoritiesAsX509Certificate2()
                     .Where(CertificateStore.CertificateIsRootCA) // If not a root CA, no prompt will be made by this cert during install
-                    .Any(cert => !CertificateStore.IsCertificateInstalled(cert, caStoreName, caStoreLocation));
+                    .Any(cert => !CertificateStore.IsCertificateInstalled(cert, rootCaStoreName, rootCaStoreLocation));
             }
 
             /// <summary>
-            /// Will install CAs, intermediate certificates and user certificates provided by the authMethod.
-            /// Installing a CA in windows will produce a dialog box which the user must accept.
+            /// Will install root CAs, intermediate CAs and user certificates provided by the authMethod.
+            /// Installing a root CA in windows will produce a dialog box which the user must accept.
             /// This will quit partway through if the user refuses to install any CA, but it is safe to run again.
-            /// Use EnumerateCAs to have the user install the CAs in a controlled manner before installing the EAP config
+            /// Use EnumerateCAInstallers to have the user install the CAs in a controlled manner before installing the EAP config
             /// </summary>
             /// <returns>Returns true if all certificates has been successfully installed</returns>
             public bool InstallCertificates()
@@ -241,8 +242,8 @@ namespace EduroamConfigure
                     // if this doesn't work, try https://stackoverflow.com/a/34174890
                     bool isRootCA = cert.Subject == cert.Issuer;
                     bool success = CertificateStore.InstallCertificate(cert,
-                        isRootCA ? caStoreName : interStoreName,
-                        isRootCA ? caStoreLocation : interStoreLocation);
+                        isRootCA ? rootCaStoreName : interCaStoreName,
+                        isRootCA ? rootCaStoreLocation : interCaStoreLocation);
                     if (!success) return false;
                 }
 
@@ -263,7 +264,7 @@ namespace EduroamConfigure
             /// If this returns FALSE: It means there is a missing TLS client certificate left to be installed
             /// </summary>
             /// <returns>True if the profile was installed on any interface</returns>
-            public bool InstallProfile()
+            public bool InstallProfile(string username=null, string password=null)
             {
                 if (!HasInstalledCertificates)
                     throw new EduroamAppUserError("missing certificates",
@@ -285,8 +286,8 @@ namespace EduroamConfigure
                 Debug.WriteLine("Installed profile type:       " + AuthMethod?.EapType.ToString() ?? "None");
                 Debug.WriteLine("Installed profile type (Hs2): " + AuthMethod.Hs2AuthMethod?.EapType.ToString() ?? "None");
 
-                if (!AuthMethod.NeedsLoginCredentials())
-                    InstallUserProfile(null, null, AuthMethod);
+                if (!AuthMethod.NeedsLoginCredentials() || (username, password) != (null, null)) // TODO: always run this
+                    InstallUserProfile(username, password, AuthMethod); // TODO: inline this function and delete it
 
                 bool success = anyInstalledSsid || anyInstalledHs2;
                 HasInstalledProfile = success;
@@ -296,6 +297,7 @@ namespace EduroamConfigure
             /// <summary>
             /// Then provide them by either calling InstallUserProfile()
             /// </summary>
+            [Obsolete("Use Eapconfig.NeedsLoginCredentials instead")]
             public bool NeedsLoginCredentials()
             {
                 if (!HasInstalledProfile)
@@ -331,6 +333,7 @@ namespace EduroamConfigure
         /// <param name="username">User's username optionally with realm</param>
         /// <param name="password">User's password.</param>
         /// <param name="authMethod">AuthMethod of installed profile</param>
+        [Obsolete("Pass in the credentials to EapAuthMethodInstaller.InstallProfile instead (when implemented)")]
         public static bool InstallUserProfile(string username, string password, EapConfig.AuthenticationMethod authMethod)
         {
             _ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
@@ -361,8 +364,6 @@ namespace EduroamConfigure
             // gets updated eduroam network packs
             foreach (var network in EduroamNetwork.GetConfigured())
             {
-                // TODO: do in parallel instead of sequentially?
-
                 var success = await network.TryToConnect();
                 if (success) return true;
             }

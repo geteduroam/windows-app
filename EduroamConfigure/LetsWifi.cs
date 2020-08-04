@@ -32,6 +32,8 @@ namespace EduroamConfigure
             set => PersistingStore.LetsWifiRefreshToken = value;
         }
 
+        // interface
+
         public static bool CanRefresh
         {
             get => TokenEndpoint != null
@@ -163,6 +165,8 @@ namespace EduroamConfigure
             return EapConfig.FromXmlData(uid: ProfileID, eapConfigXml);
         }
 
+
+        // internal helpers
 
         /// <summary>
         /// Upload form and return data as a string.

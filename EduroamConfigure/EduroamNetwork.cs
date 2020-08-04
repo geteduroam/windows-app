@@ -166,7 +166,7 @@ namespace EduroamConfigure
                 string userDataXml = UserDataXml.CreateUserDataXml(
                     configuredProfile.IsHs2
                         ? authMethod.Hs2AuthMethod
-                        : authMethod, // TODO: move this logic into UserDataXml?
+                        : authMethod,
                     username,
                     password);
 
@@ -225,12 +225,8 @@ namespace EduroamConfigure
 
         public async Task<bool> TryToConnect()
         {
-            // TODO: check if configured
-
             if (string.IsNullOrEmpty(NetworkPack.ProfileName))
                 return false;
-
-            // TODO: hotspot2.0 support ?
 
             return await NativeWifi.ConnectNetworkAsync(
                 interfaceId: NetworkPack.Interface.Id,
@@ -271,7 +267,7 @@ namespace EduroamConfigure
         }
 
         /// <summary>
-        /// Yields EduroamNetwork instances for each configured profile for each network interface.
+        /// Yields a EduroamNetwork instance for each configured profile for each network interface.
         /// </summary>
         public static IEnumerable<EduroamNetwork> GetConfigured()
         {
@@ -294,13 +290,13 @@ namespace EduroamConfigure
         /// <returns>true if eduroam is available</returns>
         public static bool IsEduroamAvailable(EapConfig eapConfig)
         {
+            // NICE TO HAVE: some way to detect if any Hs2 hotspot is available if no matching ssid are found
             return GetAllAvailableEduroamNetworkPacks(eapConfig?.CredentialApplicabilities).Any();
         }
 
         private static void PruneMissingPersistedProfiles()
         {
             // look through installed profiles and remove persisted profile configurations which have been uninstalled by user
-            // TODO: move to separate function?
             var availableProfiles = GetAllNetworkPacksWithProfiles().ToList();
             foreach (var configuredProfile in PersistingStore.ConfiguredWLANProfiles)
             {
@@ -397,7 +393,7 @@ namespace EduroamConfigure
         private static IEnumerable<Guid> GetAllInterfaceIds()
         {
             return NetworkInterface.GetAllNetworkInterfaces()
-                .Where(nic => nic.NetworkInterfaceType == NetworkInterfaceType.Wireless80211) // TODO: Wired 802.1x
+                .Where(nic => nic.NetworkInterfaceType == NetworkInterfaceType.Wireless80211) // TODO: Wired 802.1x support
                 .Where(nic => nic.Speed != -1) // lol
                 .Select(nic => new Guid(nic.Id));
         }
