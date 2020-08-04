@@ -129,6 +129,13 @@ namespace EduroamConfigure
 					yield return (cert, installedCert);
 					break;
 				}
+#if !DEBUG
+				if (!found && matchingCerts.Count == 1) // fields didn't match, but the fingerprint does
+				{
+					found = true;
+					yield return (matchingCerts[0], installedCert);
+				}
+#endif
 				if (!found)
 				{
 					// warning
