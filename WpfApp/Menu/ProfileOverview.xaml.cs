@@ -51,7 +51,7 @@ namespace WpfApp.Menu
 			string emailAddress = eapConfig.InstitutionInfo.EmailAddress;
 
 			// displays website, email, phone number
-			lblWeb.Content = webAddress != "" ? webAddress : "-";
+			lblWeb.Content = !string.IsNullOrEmpty(webAddress) ? webAddress : "-";
 			lblEmail.Content = emailAddress;
 			lblPhone.Content = eapConfig.InstitutionInfo.Phone;
 /*
