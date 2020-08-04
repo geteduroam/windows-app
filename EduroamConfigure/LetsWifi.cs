@@ -20,6 +20,8 @@ namespace EduroamConfigure
 
 		// Persisted state
 
+		private static string ProfileID
+		{ get => PersistingStore.LetsWifiEndpoints?.profileId; }
 		private static Uri TokenEndpoint // requires either authorization code or refresh token, provides access token
 		{ get => PersistingStore.LetsWifiEndpoints?.tokenEndpoint; }
 		private static Uri EapEndpoint // requires an access token
@@ -40,7 +42,6 @@ namespace EduroamConfigure
 			if (string.IsNullOrEmpty(profile.token_endpoint)) return false;
 			if (string.IsNullOrEmpty(profile.eapconfig_endpoint)) return false;
 
-			string profileId = profile.Id;
 			Uri tokenEndpoint = new Uri(profile.token_endpoint);
 			Uri eapEndpoint = new Uri(profile.eapconfig_endpoint);
 
@@ -147,7 +148,7 @@ namespace EduroamConfigure
 			}
 
 			// parse and return
-			return EapConfig.FromXmlData(uid: "letswifi", eapConfigXml);
+			return EapConfig.FromXmlData(uid: ProfileID, eapConfigXml);
 		}
 
 
