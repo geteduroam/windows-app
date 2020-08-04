@@ -79,7 +79,7 @@
         </Grid>
         <DockPanel x:Name="dpTitlePanel" Grid.RowSpan="1" Grid.Row="1" Margin="0">
             <Label x:Name="lblTitle" Content="Title" VerticalAlignment="Center" HorizontalAlignment="Center" 
-                   Margin="0" FontSize="16"/>
+                   Margin="0" FontSize="14"/>
         </DockPanel>
     </Grid>
 </Window>

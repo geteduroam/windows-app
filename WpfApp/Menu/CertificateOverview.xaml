@@ -12,7 +12,7 @@
 
     <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="5">
         <StackPanel x:Name="stpCerts"  Background="White">
-
+            <TextBlock x:Name="tbInfo" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5" FontSize="14"/>
 
         </StackPanel>
     </ScrollViewer>
