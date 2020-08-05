@@ -43,8 +43,8 @@ namespace WpfApp
 		public enum ProfileStatus
 		{
 			NoneConfigured,
-			Incomplete,
-			Working,
+			Configured,
+			TestedWorking,
 		}
 
 		private readonly List<FormId> historyFormId = new List<FormId>();
