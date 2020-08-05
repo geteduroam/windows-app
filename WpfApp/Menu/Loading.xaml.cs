@@ -20,7 +20,7 @@ namespace WpfApp.Menu
 	/// </summary>
 	public partial class Loading : Page
 	{
-		private MainWindow mainWindow;
+		private readonly MainWindow mainWindow;
 
 		public Loading(MainWindow mainWindow)
 		{
