@@ -201,7 +201,7 @@ namespace WpfApp
 			else if (!string.IsNullOrEmpty(profile.redirect))
 			{
 				// TODO: add option to go to selectmethod from redirect
-				LoadPageRedirect(profile.redirect);
+				LoadPageRedirect(new Uri(profile.redirect));
 				return true;
 			}
 			return false;
@@ -385,7 +385,7 @@ namespace WpfApp
 			Navigate(pageLogin);
 		}
 
-		public void LoadPageRedirect(string redirect, bool refresh = true)
+		public void LoadPageRedirect(Uri redirect, bool refresh = true)
 		{
 			currentFormId = FormId.Redirect;
 			btnBack.IsEnabled = true;
