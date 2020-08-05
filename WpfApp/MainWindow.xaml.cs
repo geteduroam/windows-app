@@ -181,9 +181,6 @@ namespace WpfApp
 				MessageBox.Show(
 					ex.UserFacingMessage,
 					"eduroam - Exception");
-				//pageLoading.tbTitle = "Error";
-				//pageLoading.tbErrorMessage.Text = ex.UserFacingMessage;
-				//btnNext.Content = "OK";
 				eapConfig = null;
 
 			}
@@ -282,6 +279,25 @@ namespace WpfApp
 
 			}
 			return eapConfig;
+		}
+
+		/// <summary>
+		/// Tries to connect to eduroam
+		/// </summary>
+		/// <returns></returns>
+		public async Task<bool> Connect()
+		{
+			bool connectSuccess;
+			try
+			{
+				connectSuccess = await Task.Run(ConnectToEduroam.TryToConnect);
+			}
+			catch (Exception ex)
+			{
+				connectSuccess = false;
+				MessageBox.Show("Could not connect. \nException: " + ex.Message);
+			}
+			return connectSuccess;
 		}
 
 
