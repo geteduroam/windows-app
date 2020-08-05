@@ -24,7 +24,7 @@ namespace WpfApp.Menu
     public partial class ProfileOverview : Page
     {
         private readonly MainWindow mainWindow;
-        private EapConfig eapConfig;
+        private readonly EapConfig eapConfig;
         
         public ProfileOverview(MainWindow mainWindow, EapConfig eapConfig)
         {
