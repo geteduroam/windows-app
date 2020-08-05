@@ -57,10 +57,10 @@ namespace WpfApp
 		private Login pageLogin;
 		private CertificateOverview pageCertificateOverview;
 		private Redirect pageRedirect;
-		private bool Online;
+		private bool Online; // TODO: remove?
 		private EapConfig eapConfig;
 		public ProfileStatus ProfileCondition { get; set; }
-		public IdentityProviderDownloader IdpDownloader;
+		public IdentityProviderDownloader IdpDownloader { get; private set; }
 		public bool EduroamAvailable { get; set; }
 		public MainWindow()
 		{
