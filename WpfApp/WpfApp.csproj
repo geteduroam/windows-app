@@ -239,6 +239,12 @@
   <ItemGroup>
     <Folder Include="Interfaces\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\oauth-accepted.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\oauth-rejected.txt" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
