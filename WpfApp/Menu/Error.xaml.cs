@@ -22,6 +22,7 @@ namespace WpfApp.Menu
 	{
 		private MainWindow mainWindow;
 		private string errorMessage;
+
 		public Error(MainWindow mainWindow, string errorMessage)
 		{
 			this.mainWindow = mainWindow ?? throw new ArgumentNullException(paramName: nameof(mainWindow));
