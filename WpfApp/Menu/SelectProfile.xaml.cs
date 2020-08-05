@@ -60,6 +60,7 @@ namespace WpfApp.Menu
             var idProviderProfiles = mainWindow.IdpDownloader.GetIdentityProviderProfiles(IdProviderId);
             this.Dispatcher.Invoke(() => {
                 lbProfiles.ItemsSource = idProviderProfiles;
+                lbProfiles.SelectedItem = idProviderProfiles.First();
             });
 
         }
