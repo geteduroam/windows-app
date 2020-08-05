@@ -28,8 +28,8 @@ namespace WpfApp.Menu
         private List<ConnectToEduroam.CertificateInstaller> installers;
         public CertificateOverview(MainWindow mainWindow, EapConfig eapConfig)
         {
-            this.mainWindow = mainWindow ?? throw new ArgumentNullException(paramName: nameof(mainWindow)); ;
-            this.eapConfig = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig)); ;
+            this.mainWindow = mainWindow ?? throw new ArgumentNullException(paramName: nameof(mainWindow));
+            this.eapConfig = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
             InitializeComponent();
             Load();
         }

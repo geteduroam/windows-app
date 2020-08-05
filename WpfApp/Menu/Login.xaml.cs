@@ -50,7 +50,7 @@ namespace WpfApp.Menu
         /// Installs certificates from EapConfig and creates wireless profile.
         /// </summary>
         /// <returns>true on success</returns>
-        private static bool InstallEapConfig(EapConfig eapConfig, string username = null, string password = null)
+        private bool InstallEapConfig(EapConfig eapConfig, string username = null, string password = null)
         {
             if (!EduroamNetwork.EapConfigIsSupported(eapConfig))
             {
