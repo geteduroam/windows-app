@@ -73,12 +73,17 @@ namespace EduroamConfigure
         public Uri GetRedirectUri()
             => redirectUri;
 
+        public (string, string) ParseAndExtractAuthorizationCode(Uri responseUrl)
+            => ParseAndExtractAuthorizationCode(responseUrl.ToString());
+
+
         /// <summary>
         /// Extracts the authorization code from the response url.
         /// </summary>
         /// <param name="responseUrl">URL response from authentication.</param>
         /// <returns>(string authorizationCode, string codeVerifier)</returns>
-        public (string, string) ParseAndExtractAuthorizationCode(string responseUrl)
+        [Obsolete("Send in a Uri instead")]
+        public (string, string) ParseAndExtractAuthorizationCode(string responseUrl) // TODO, change to Uri
         {
             // check if url is not empty
             if (string.IsNullOrEmpty(responseUrl))

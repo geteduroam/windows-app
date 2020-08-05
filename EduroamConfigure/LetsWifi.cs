@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace EduroamConfigure
 {
     // https://github.com/geteduroam/lets-wifi
-    public class LetsWifi
+    public static class LetsWifi
     {
         // tokens to access API, valid for a small time window
         private static string AccessToken;

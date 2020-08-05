@@ -54,6 +54,31 @@ namespace EduroamConfigure
         }
 
         /// <summary>
+        /// Checks if eapConfig contains any supported authentification methods.
+        /// If no such method exists, then warn the user before trying to install the config.
+        /// </summary>
+        /// <param name="eapConfig">The EAP config to check</param>
+        /// <returns>True if it contains a supported type</returns>
+        public static bool EapConfigIsSupported(EapConfig eapConfig)
+        {
+            _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
+            return eapConfig.AuthenticationMethods
+                .Where(AuthMethodIsSupported).Any();
+        }
+
+        /// <summary>
+        /// Checks if authMethod is supported.
+        /// </summary>
+        /// <param name="authMethod">The Authentification method to check</param>
+        /// <returns>True if supported</returns>
+        public static bool AuthMethodIsSupported(EapConfig.AuthenticationMethod authMethod)
+        {
+            _ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
+            return ProfileXml.IsSupported(authMethod)
+                && UserDataXml.IsSupported(authMethod);
+        }
+
+        /// <summary>
         /// Installs network profiles according to selected auth method.
         /// Will install multiple profile, one for each supported SSID
         /// Will overwrite any profiles with matching names if they exist.

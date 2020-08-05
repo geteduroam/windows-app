@@ -17,11 +17,11 @@ namespace WpfApp.Menu
         private IdentityProviderDownloader downloader;
         private bool isSearching;
         private bool isNewSearch;
-        public int IdProviderId; // id of selected institution
+        public int IdProviderId { get; private set; } // id of selected institution
 
         public SelectInstitution(MainWindow mainWindow)
         {
-            this.mainWindow = mainWindow;
+            this.mainWindow = mainWindow ?? throw new ArgumentNullException(paramName: nameof(mainWindow));
             InitializeComponent();
             LoadPage();
         }

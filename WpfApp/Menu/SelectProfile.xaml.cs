@@ -26,7 +26,7 @@ namespace WpfApp.Menu
 
         public SelectProfile(MainWindow mainWindow, int providerId)
         {
-            this.mainWindow = mainWindow;
+            this.mainWindow = mainWindow ?? throw new ArgumentNullException(paramName: nameof(mainWindow));
             this.IdProviderId = providerId;
             InitializeComponent();
             LoadPage();
