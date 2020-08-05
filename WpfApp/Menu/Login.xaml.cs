@@ -80,14 +80,14 @@ namespace WpfApp.Menu
                     break;
                 }
 
-                // TODO: move this out
+                // TODO: move this out of function
                 if (!EduroamNetwork.IsEduroamAvailable(eapConfig))
                 {
                     //err = "eduroam not available";
                 }
 
-                // TODO: remove, use return value instead. This function should be static
-                mainWindow.ProfileCondition = MainWindow.ProfileStatus.Incomplete;
+                // TODO: move out of function, use return value. This function should be static
+                mainWindow.ProfileCondition = MainWindow.ProfileStatus.Configured;
 
                 return success;
             }
