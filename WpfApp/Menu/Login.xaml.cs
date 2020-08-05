@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using EduroamConfigure;
 
 namespace WpfApp.Menu
 {
@@ -21,10 +22,17 @@ namespace WpfApp.Menu
 	public partial class Login : Page
 	{
 		private MainWindow mainWindow;
+		private readonly EapConfig.AuthenticationMethod authMethod;
 		public Login(MainWindow mainWindow)
 		{
 			this.mainWindow = mainWindow;
 			InitializeComponent();
+			Load();
+		}
+
+		private void Load()
+		{
+
 		}
 	}
 }
