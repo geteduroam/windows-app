@@ -214,7 +214,7 @@ namespace EduroamApp
 				EapConfig.AuthenticationMethod authMethod = null;
 				string err = "nothing installed"; // TODO: enum?
 
-				if (!ConnectToEduroam.EapConfigIsSupported(eapConfig))
+				if (!EduroamNetwork.EapConfigIsSupported(eapConfig))
 				{
 					MessageBox.Show(
 						"The profile you have selected is not supported by this application.",
