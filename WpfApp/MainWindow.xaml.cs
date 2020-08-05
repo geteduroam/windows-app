@@ -83,7 +83,7 @@ namespace WpfApp
         {
             Main.Content = nextPage;
         }
-        
+
         public async void NextPage()
         {
             // adds current form to history for easy backtracking
@@ -127,12 +127,12 @@ namespace WpfApp
                     break;
                 case FormId.Redirect:
                     break;
-            }   
+            }
 
-            
+
             // removes current form from history if it gets added twice
             if (historyFormId.LastOrDefault() == currentFormId) historyFormId.RemoveAt(historyFormId.Count - 1);
-      
+
         }
 
         public void PreviousPage()
@@ -170,7 +170,7 @@ namespace WpfApp
         // user selecting a profile or a profile being autoselected
         private async Task<bool> HandleProfileSelect(string profileId)
         {
-            LoadPageLoading();           
+            LoadPageLoading();
             IdentityProviderProfile profile = IdpDownloader.GetProfileFromId(profileId);
             try
             {
@@ -182,7 +182,7 @@ namespace WpfApp
                     ex.UserFacingMessage,
                     "eduroam - Exception");
                 eapConfig = null;
-                
+
             }
 
             // reenable buttons after LoadPageLoading() disables them
@@ -244,23 +244,30 @@ namespace WpfApp
             if (profile.oauth)
             {
                 // get eap config file from browser authenticate
+                try
+                {
+                    OAuth oauth = new OAuth(new Uri(profile.authorization_endpoint));
+                    // The url to send the user to
+                    var authUri = oauth.CreateAuthUri();
+                    // The url to listen to for the user to be redirected back to
+                    var prefix = oauth.GetRedirectUri();
 
-                OAuth oauth = new OAuth(new Uri(profile.authorization_endpoint));
-                // The url to send the user to
-                var authUri = oauth.CreateAuthUri();
-                // The url to listen to for the user to be redirected back to
-                var prefix = oauth.GetRedirectUri();
+                    // Send the user to the url and await the response
+                    var responseUrl = OpenSSOAndAwaitResultRedirect(prefix.ToString(), authUri.ToString());
 
-                // Send the user to the url and await the response
-                var responseUrl = OpenSSOAndAwaitResultRedirect(prefix.ToString(), authUri.ToString());
+                    // Parse the result and download the eap config if successfull
+                    (string authorizationCode, string codeVerifier) = oauth.ParseAndExtractAuthorizationCode(responseUrl);
+                    bool success = LetsWifi.AuthorizeAccess(profile, authorizationCode, codeVerifier, prefix);
 
-                // Parse the result and download the eap config if successfull
-                (string authorizationCode, string codeVerifier) = oauth.ParseAndExtractAuthorizationCode(responseUrl);
-                bool success = LetsWifi.RequestAccess(profile, authorizationCode, codeVerifier, prefix);
-
-                eapConfig = success
-                    ? LetsWifi.DownloadEapConfig()
-                    : null;              
+                    eapConfig = success
+                        ? LetsWifi.DownloadEapConfig()
+                        : null;
+                }
+                catch (EduroamAppUserError ex)
+                {
+                    MessageBox.Show(ex.UserFacingMessage);
+                    eapConfig = null;
+                }
                 // return focus to application
                 Activate();
             }
@@ -272,7 +279,7 @@ namespace WpfApp
                 return null;
             }
             else
-            {  
+            {
                 eapConfig = await Task.Run(() =>
                     IdpDownloader.DownloadEapConfig(profile.Id)
                 );
@@ -301,7 +308,7 @@ namespace WpfApp
         }
 
 
-        // TODO: make new responesurl thing to receive 
+        // TODO: make new responesurl thing to receive
 
         /// <summary>
         /// Gets a response URL after doing Browser authentication with Oauth authUri.
@@ -332,7 +339,7 @@ namespace WpfApp
 
         public void LoadPageSelectInstitution(bool refresh = true)
         {
-            currentFormId = FormId.SelectInstitution;      
+            currentFormId = FormId.SelectInstitution;
             btnNext.Visibility = Visibility.Visible;
             btnNext.Content = "Next >";
             btnBack.IsEnabled = true;
@@ -363,7 +370,7 @@ namespace WpfApp
 
         public void LoadPageCertificateOverview(bool refresh = true)
         {
-            // if all certificates are installed then skip to login           
+            // if all certificates are installed then skip to login
             currentFormId = FormId.CertificateOverview;
             btnBack.Visibility = Visibility.Visible;
             btnBack.IsEnabled = true;

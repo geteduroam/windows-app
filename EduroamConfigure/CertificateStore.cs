@@ -113,14 +113,14 @@ namespace EduroamConfigure
                 {
                     certStore.Open(OpenFlags.ReadOnly);
                     matchingCerts = certStore.Certificates
-                        .Find(X509FindType.FindByThumbprint, installedCert.Thumbprint, false);
+                        .Find(X509FindType.FindByThumbprint, installedCert.Thumbprint, validOnly: false);
                 }
 
                 bool found = false;
                 foreach (var cert in matchingCerts)
                 {
                     // thumbprint already found to match
-                    // TODO: is it possible for these attributes to be modified after adding them to their stores?
+                    // TODO: is it possible for these attributes to be modified after adding them to their stores? If not then remove the RELEASE block below
                     if (cert.Issuer != installedCert.Issuer) continue;
                     if (cert.Subject != installedCert.Subject) continue;
                     if (cert.SerialNumber != installedCert.SerialNumber) continue;
@@ -129,9 +129,17 @@ namespace EduroamConfigure
                     yield return (cert, installedCert);
                     break;
                 }
+                #if !DEBUG
+                if (!found && matchingCerts.Count == 1) // fields didn't match, but the fingerprint does
+                {
+                    found = true;
+                    yield return (matchingCerts[0], installedCert);
+                }
+                #endif
                 if (!found)
                 {
                     // warning
+                    // TODO: prime target for metrics
                     if (matchingCerts.Count != 0)
                         Debug.Fail("Unable to find persisted certificate, even when thumbprint matched");
 

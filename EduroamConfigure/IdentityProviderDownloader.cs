@@ -12,7 +12,7 @@ namespace EduroamConfigure
     public class IdentityProviderDownloader
     {
         // constants
-        private const string GeoApiUrl = "https://geo.geteduroam.app/geoip"; // TODO: no access should result in still being able to search among discovery
+        private const string GeoApiUrl = "https://geo.geteduroam.app/geoip";
         #if DEBUG
         private const string ProviderApiUrl = "https://discovery.eduroam.app/v1/discovery.json";
         #else
@@ -21,7 +21,7 @@ namespace EduroamConfigure
 
         // state
         public List<IdentityProvider> Providers { get; }
-        public List<IdentityProvider> ClosestProviders { get; }
+        public List<IdentityProvider> ClosestProviders { get; } // Providers presorted by geo distance
         private GeoCoordinateWatcher GeoWatcher { get; }
 
 
@@ -124,8 +124,6 @@ namespace EduroamConfigure
         {
              return ClosestProviders.Take(limit).ToList();
             // return GetClosestProviders().Take(limit).ToList();
-            
-        
         }
 
         private List<IdentityProvider> GetClosestProviders()

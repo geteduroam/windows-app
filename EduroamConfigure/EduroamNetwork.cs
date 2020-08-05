@@ -83,27 +83,12 @@ namespace EduroamConfigure
 
             bool installedHs2 = false;
             if (authMethod.Hs2AuthMethod != null)
-                installedHs2 = InstallHs2Profile(authMethod.Hs2AuthMethod, forAllUsers);
+            {
+                (string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, asHs2Profile: true);
+                installedHs2 =  InstallProfile(profileName, profileXml, true, forAllUsers);
+            }
 
             return (installed, installedHs2);
-        }
-
-        /// <summary>
-        /// Installs a Hotspot 2.0 network profile according to selected auth method.
-        /// Auth method must support Hotspot 2.0.
-        /// Will overwrite any profiles with matching names if they exist.
-        /// </summary>
-        /// <param name="authMethod">TODO</param>
-        /// <param name="forAllUsers">TODO</param>
-        /// <returns>True if succeeded, false if failed.</returns>
-        private bool InstallHs2Profile(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
-        {
-            _ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
-
-            PersistingStore.ProfileID = authMethod.EapConfig.Uid;
-            
-            (string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, asHs2Profile: true);
-            return InstallProfile(profileName, profileXml, true, forAllUsers);
         }
 
         private bool InstallProfile(string profileName, string profileXml, bool isHs2, bool forAllUsers)
@@ -166,7 +151,7 @@ namespace EduroamConfigure
                 string userDataXml = UserDataXml.CreateUserDataXml(
                     configuredProfile.IsHs2
                         ? authMethod.Hs2AuthMethod
-                        : authMethod, // TODO: move this logic into UserDataXml?
+                        : authMethod,
                     username,
                     password);
 
@@ -225,12 +210,8 @@ namespace EduroamConfigure
 
         public async Task<bool> TryToConnect()
         {
-            // TODO: check if configured
-
             if (string.IsNullOrEmpty(NetworkPack.ProfileName))
                 return false;
-
-            // TODO: hotspot2.0 support ?
 
             return await NativeWifi.ConnectNetworkAsync(
                 interfaceId: NetworkPack.Interface.Id,
@@ -271,7 +252,7 @@ namespace EduroamConfigure
         }
 
         /// <summary>
-        /// Yields EduroamNetwork instances for each configured profile for each network interface.
+        /// Yields a EduroamNetwork instance for each configured profile for each network interface.
         /// </summary>
         public static IEnumerable<EduroamNetwork> GetConfigured()
         {
@@ -294,13 +275,13 @@ namespace EduroamConfigure
         /// <returns>true if eduroam is available</returns>
         public static bool IsEduroamAvailable(EapConfig eapConfig)
         {
+            // NICE TO HAVE: some way to detect if any Hs2 hotspot is available if no matching ssid are found
             return GetAllAvailableEduroamNetworkPacks(eapConfig?.CredentialApplicabilities).Any();
         }
 
         private static void PruneMissingPersistedProfiles()
         {
             // look through installed profiles and remove persisted profile configurations which have been uninstalled by user
-            // TODO: move to separate function?
             var availableProfiles = GetAllNetworkPacksWithProfiles().ToList();
             foreach (var configuredProfile in PersistingStore.ConfiguredWLANProfiles)
             {
@@ -397,7 +378,7 @@ namespace EduroamConfigure
         private static IEnumerable<Guid> GetAllInterfaceIds()
         {
             return NetworkInterface.GetAllNetworkInterfaces()
-                .Where(nic => nic.NetworkInterfaceType == NetworkInterfaceType.Wireless80211) // TODO: Wired 802.1x
+                .Where(nic => nic.NetworkInterfaceType == NetworkInterfaceType.Wireless80211) // TODO: Wired 802.1x support
                 .Where(nic => nic.Speed != -1) // lol
                 .Select(nic => new Guid(nic.Id));
         }

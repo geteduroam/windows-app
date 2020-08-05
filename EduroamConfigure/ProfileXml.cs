@@ -66,7 +66,7 @@ namespace EduroamConfigure
             List<string> ssids = withSsid != null
                 ? new List<string> { withSsid }
                 : authMethod.EapConfig.CredentialApplicabilities
-                    .Where(cred => cred.NetworkType == IEEE802x.IEEE80211) // TODO: Wired 802.1x
+                    .Where(cred => cred.NetworkType == IEEE802x.IEEE80211) // TODO: Wired 802.1x support
                     .Where(cred => cred.MinRsnProto != "TKIP") // too insecure. TODO: test user experience
                     .Where(cred => cred.Ssid != null) // hs2 oid entires has no ssid
                     .Select(cred => cred.Ssid)
@@ -205,8 +205,8 @@ namespace EduroamConfigure
 
                 // adds TLS specific xml elements
                 configElement.Add(
-                    new XElement(nsBECP + "Eap", // TLS
-                        new XElement(nsBECP + "Type", (int)eapType),
+                    new XElement(nsBECP + "Eap",
+                        new XElement(nsBECP + "Type", (int)eapType), // TLS
                         new XElement(nsETCPv1 + "EapType",
                             new XElement(nsETCPv1 + "CredentialsSource",
                                 new XElement(nsETCPv1 + "CertificateStore",
@@ -218,7 +218,7 @@ namespace EduroamConfigure
                                 new XElement(nsETCPv1 + "DisableUserPromptForServerValidation", enableServerValidation ? "true" : "false"),
                                 new XElement(nsETCPv1 + "ServerNames", string.Join(";", serverNames))
                             ),
-                            new XElement(nsETCPv1 + "DifferentUsername", "false"), // TODO: outerIdentity
+                            new XElement(nsETCPv1 + "DifferentUsername", "false"),
                             new XElement(nsETCPv2 + "PerformServerValidation", "true"),
                             new XElement(nsETCPv2 + "AcceptServerName", "false"),
                             new XElement(nsETCPv2 + "TLSExtensions",
@@ -257,8 +257,6 @@ namespace EduroamConfigure
                 // sets namespace and name of thumbprint node
                 nsEapType = nsMPCPv1;
                 thumbprintNodeName = "TrustedRootCA";
-
-                // TODO: outerIdentity
 
                 // adds MSCHAPv2 specific elements (inner eap)
                 configElement.Add(
