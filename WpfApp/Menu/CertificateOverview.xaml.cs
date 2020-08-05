@@ -23,8 +23,8 @@ namespace WpfApp.Menu
     public partial class CertificateOverview : Page, IObserver<ConnectToEduroam.CertificateInstaller>
     {
         private IDisposable unsubscriber;
-        private MainWindow mainWindow;
-        private EapConfig eapConfig;
+        private readonly MainWindow mainWindow;
+        private readonly EapConfig eapConfig;
         private List<ConnectToEduroam.CertificateInstaller> installers;
         public CertificateOverview(MainWindow mainWindow, EapConfig eapConfig)
         {

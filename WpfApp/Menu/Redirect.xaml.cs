@@ -21,9 +21,9 @@ namespace WpfApp.Menu
     /// </summary>
     public partial class Redirect : Page
     {
-        private MainWindow mainWindow;
-        private string redirect;
-        public Redirect(MainWindow mainWindow, string redirect)
+        private readonly MainWindow mainWindow;
+        private readonly Uri redirect;
+        public Redirect(MainWindow mainWindow, Uri redirect)
         {
             this.mainWindow = mainWindow ?? throw new ArgumentNullException(paramName: nameof(mainWindow));
             this.redirect = redirect;
@@ -33,7 +33,7 @@ namespace WpfApp.Menu
 
         private void Load()
         {
-            hlink.NavigateUri = new Uri(redirect);
+            hlink.NavigateUri = redirect;
         }
 
         // TODO: fix hyperlink and open redirect + closing application
