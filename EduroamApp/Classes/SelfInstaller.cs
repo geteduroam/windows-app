@@ -253,6 +253,8 @@ namespace EduroamApp
 
 			CertificateStore.UninstallAllInstalledCertificates();
 
+			LetsWifi.WipeTokens();
+
 			// Remove start menu link
 			Debug.WriteLine("Delete file: " + StartMenuLnkPath);
 			if (!File.Exists(StartMenuLnkPath)) File.Delete(StartMenuLnkPath);

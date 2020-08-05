@@ -32,13 +32,28 @@ namespace EduroamConfigure
 			set => PersistingStore.LetsWifiRefreshToken = value;
 		}
 
-		public static bool RequestAccess(IdentityProviderProfile profile, string authorizationCode, string codeVerifier, Uri redirectUri)
+		// interface
+
+		public static bool CanRefresh
+		{
+			get => TokenEndpoint != null
+				&& RefreshToken != null;
+		}
+
+		public static void WipeTokens()
+		{
+			RefreshToken = null;
+			PersistingStore.LetsWifiEndpoints = null;
+		}
+
+		public static bool AuthorizeAccess(IdentityProviderProfile profile, string authorizationCode, string codeVerifier, Uri redirectUri)
 		{
 			_ = profile ?? throw new ArgumentNullException(paramName: nameof(profile));
 			_ = authorizationCode ?? throw new ArgumentNullException(paramName: nameof(authorizationCode));
 			_ = codeVerifier ?? throw new ArgumentNullException(paramName: nameof(codeVerifier));
-			PersistingStore.LetsWifiEndpoints = null;
-			PersistingStore.LetsWifiRefreshToken = null;
+
+			WipeTokens();
+
 			if (string.IsNullOrEmpty(profile.token_endpoint)) return false;
 			if (string.IsNullOrEmpty(profile.eapconfig_endpoint)) return false;
 
@@ -108,12 +123,11 @@ namespace EduroamConfigure
 
 		public static bool RefreshTokens()
 		{
-			if (TokenEndpoint == null) return false;
-			if (RefreshToken == null) return false;
+			if (!CanRefresh) return false;
 
 			var tokenFormData = new NameValueCollection() {
 				{ "grant_type", "refresh_token" },
-				{ "code", RefreshToken },
+				{ "refresh_token", RefreshToken },
 				{ "client_id", OAuth.clientId },
 			};
 
@@ -151,6 +165,8 @@ namespace EduroamConfigure
 			return EapConfig.FromXmlData(uid: ProfileID, eapConfigXml);
 		}
 
+
+		// internal helpers
 
 		/// <summary>
 		/// Upload form and return data as a string.
