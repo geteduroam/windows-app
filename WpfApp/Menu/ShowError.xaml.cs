@@ -18,12 +18,12 @@ namespace WpfApp.Menu
     /// <summary>
     /// Interaction logic for Error.xaml
     /// </summary>
-    public partial class Error : Page
+    public partial class ShowError : Page
     {
         private MainWindow mainWindow;
         private string errorMessage;
 
-        public Error(MainWindow mainWindow, string errorMessage)
+        public ShowError(MainWindow mainWindow, string errorMessage)
         {
             this.mainWindow = mainWindow ?? throw new ArgumentNullException(paramName: nameof(mainWindow));
             this.errorMessage = errorMessage;

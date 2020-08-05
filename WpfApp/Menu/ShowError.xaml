@@ -1,4 +1,4 @@
-﻿<Page x:Class="WpfApp.Menu.Error"
+﻿<Page x:Class="WpfApp.Menu.ShowError"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
