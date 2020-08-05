@@ -74,6 +74,7 @@ namespace WpfApp.Menu
 
         private void VerifyNextButton()
         {
+            // false if going back from login after failing to log in
             bool isInstalled = VerifyInstallers();
             mainWindow.btnNext.IsEnabled = isInstalled;
             if (isInstalled)

@@ -123,6 +123,7 @@ namespace WpfApp
                     break;
 
                 case FormId.Login:
+                    pageLogin.ConnectClick();
                     break;
                 case FormId.Redirect:
                     break;
