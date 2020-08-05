@@ -208,7 +208,7 @@ namespace WpfApp
             return false;
         }
 
-        private bool HasInfo(EapConfig config)
+        private static bool HasInfo(EapConfig config)
         {
             bool hasWebAddress = !string.IsNullOrEmpty(config.InstitutionInfo.WebAddress);
             bool hasEmailAddress = !string.IsNullOrEmpty(config.InstitutionInfo.EmailAddress);
@@ -292,7 +292,7 @@ namespace WpfApp
         /// Tries to connect to eduroam
         /// </summary>
         /// <returns></returns>
-        public async Task<bool> Connect()
+        public static async Task<bool> Connect()
         {
             bool connectSuccess;
             try
@@ -301,6 +301,7 @@ namespace WpfApp
             }
             catch (Exception ex)
             {
+                // NICE TO HAVE: log the error
                 connectSuccess = false;
                 MessageBox.Show("Could not connect. \nException: " + ex.Message);
             }

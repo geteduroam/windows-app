@@ -28,8 +28,8 @@ namespace WpfApp.Menu
         
         public ProfileOverview(MainWindow mainWindow, EapConfig eapConfig)
         {
-            this.mainWindow = mainWindow;
-            this.eapConfig = eapConfig;
+            this.mainWindow = mainWindow ?? throw new ArgumentNullException(paramName: nameof(mainWindow));
+            this.eapConfig = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
             InitializeComponent();
             Load();
         }

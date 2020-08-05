@@ -21,7 +21,7 @@ namespace EduroamConfigure
 
         // state
         public List<IdentityProvider> Providers { get; }
-        public List<IdentityProvider> ClosestProviders { get; } // Providers presorted by geo distance
+        private List<IdentityProvider> ClosestProviders { get; } // Providers presorted by geo distance
         private GeoCoordinateWatcher GeoWatcher { get; }
 
 
