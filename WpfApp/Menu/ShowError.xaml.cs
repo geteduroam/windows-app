@@ -20,8 +20,8 @@ namespace WpfApp.Menu
 	/// </summary>
 	public partial class ShowError : Page
 	{
-		private MainWindow mainWindow;
-		private string errorMessage;
+		private readonly MainWindow mainWindow;
+		private readonly string errorMessage;
 
 		public ShowError(MainWindow mainWindow, string errorMessage)
 		{

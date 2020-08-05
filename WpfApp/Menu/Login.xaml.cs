@@ -22,8 +22,8 @@ namespace WpfApp.Menu
 	/// </summary>
 	public partial class Login : Page
 	{
-		private MainWindow mainWindow;
-		private EapConfig eapConfig;
+		private readonly MainWindow mainWindow;
+		private readonly EapConfig eapConfig;
 
 		public Login(MainWindow mainWindow, EapConfig eapConfig)
 		{
