@@ -652,6 +652,28 @@ namespace EduroamConfigure
                     .AddClientCertificatePassphrase(certificatePassphrase))
                 .ToList().Any(); // evaluate all
 
+        /// <summary>
+        /// goes through all the AuthentificationMethods in this config and tries to reason about a correct method
+        /// </summary>
+        /// <returns>A ValueTuple with the inner identity suffix and hint</returns>
+        public (string suffix, bool hint) GetClientInnerIdentityRestrictions()
+        {
+            var hint = AuthenticationMethods
+                .All(authMethod => authMethod.ClientInnerIdentityHint);
+            var suffi = AuthenticationMethods
+                .Select(authMethod => authMethod.ClientInnerIdentitySuffix)
+                .ToList();
+
+            string suffix = null;
+            if (suffi.Any())
+            {
+                var first = suffi.First();
+                if (suffi.All(suffix => suffix == first))
+                    suffix = first;
+            }
+            return (suffix, hint);
+        }
+
     }
 
     public enum IEEE802x
