@@ -252,7 +252,7 @@ namespace WpfApp
 					var prefix = oauth.GetRedirectUri();
 
 					// Send the user to the url and await the response
-					var responseUrl = OpenSSOAndAwaitResultRedirect(prefix.ToString(), authUri.ToString());
+					var responseUrl = OpenSSOAndAwaitResultRedirect(prefix, authUri);
 
 					// Parse the result and download the eap config if successfull
 					(string authorizationCode, string codeVerifier) = oauth.ParseAndExtractAuthorizationCode(responseUrl);
@@ -313,8 +313,8 @@ namespace WpfApp
 		/// <summary>
 		/// Gets a response URL after doing Browser authentication with Oauth authUri.
 		/// </summary>
-		/// <returns>response Url as string.</returns>
-		public string OpenSSOAndAwaitResultRedirect(string redirectUri, string authUri)
+		/// <returns>response Url</returns>
+		public Uri OpenSSOAndAwaitResultRedirect(Uri redirectUri, Uri authUri)
 		{
 			/*
 			using var waitForm = new frmWaitDialog(redirectUri, authUri);
@@ -325,7 +325,7 @@ namespace WpfApp
 			}
 			return waitForm.responseUrl;  //= WebServer.NonblockingListener(redirectUri, authUri, parentLocation);
 			*/
-			return "";
+			return new Uri("");
 		}
 
 		public void LoadPageMainMenu(bool refresh = true)
