@@ -74,7 +74,12 @@ namespace WpfApp.Menu
         
         private void VerifyNextButton()
         {
-            mainWindow.btnNext.IsEnabled = VerifyInstallers();
+            bool isInstalled = VerifyInstallers();
+            mainWindow.btnNext.IsEnabled = isInstalled;
+            if (isInstalled)
+            {
+                tbInfo.Text = "All Certificates are installed";
+            }           
         }
 
         /// <summary>
