@@ -23,7 +23,7 @@ namespace WpfApp.Menu
 		private MainWindow mainWindow;
 		public Login(MainWindow mainWindow)
 		{
-			this.mainWindow = mainWindow;
+			this.mainWindow = mainWindow ?? throw new ArgumentNullException(paramName: nameof(mainWindow));
 			InitializeComponent();
 		}
 	}

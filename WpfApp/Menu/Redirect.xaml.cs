@@ -25,7 +25,7 @@ namespace WpfApp.Menu
 		private string redirect;
 		public Redirect(MainWindow mainWindow, string redirect)
 		{
-			this.mainWindow = mainWindow;
+			this.mainWindow = mainWindow ?? throw new ArgumentNullException(paramName: nameof(mainWindow));
 			this.redirect = redirect;
 			InitializeComponent();
 			Load();
