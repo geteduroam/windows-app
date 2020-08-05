@@ -62,7 +62,6 @@ namespace WpfApp
         public ProfileStatus ProfileCondition { get; set; }
         public IdentityProviderDownloader IdpDownloader;
         public bool EduroamAvailable { get; set; }
-        public EapConfig.AuthenticationMethod AuthMethod { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -382,7 +381,7 @@ namespace WpfApp
         public void LoadPageLogin(bool refresh = true)
         {
             currentFormId = FormId.Login;
-            if (refresh) pageLogin = new Login(this);
+            if (refresh) pageLogin = new Login(this, eapConfig);
             Navigate(pageLogin);
         }
 
