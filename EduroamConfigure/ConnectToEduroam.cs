@@ -40,14 +40,14 @@ namespace EduroamConfigure
 		{
 			_ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
 
-			if (!EapConfigIsSupported(eapConfig))
+			if (!EduroamNetwork.EapConfigIsSupported(eapConfig))
 			{
 				yield return (true, "This configuration is not supported");
 				yield break;
 			}
 
 			if (!eapConfig.AuthenticationMethods
-					.Where(AuthMethodIsSupported)
+					.Where(EduroamNetwork.AuthMethodIsSupported)
 					.All(authMethod => authMethod.ServerCertificateAuthorities.Any()))
 				yield return (true, "This configuration is missing Certificate Authorities");
 
@@ -100,7 +100,7 @@ namespace EduroamConfigure
 		{
 			_ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
 			return eapConfig.AuthenticationMethods
-				.Where(AuthMethodIsSupported)
+				.Where(EduroamNetwork.AuthMethodIsSupported)
 				.SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
 				.Where(CertificateStore.CertificateIsRootCA)
 				.GroupBy(cert => cert.Thumbprint, (key, certs) => certs.FirstOrDefault()); // distinct, alternative is to use DistinctBy in MoreLINQ
@@ -161,35 +161,15 @@ namespace EduroamConfigure
 			List<EduroamNetwork> eduroamNetworks = EduroamNetwork.GetAll(eapConfig).ToList();
 			if (!eduroamNetworks.Any())
 				yield break; // TODO: concider throwing, test ux
-			if (!EapConfigIsSupported(eapConfig))
+			if (!EduroamNetwork.EapConfigIsSupported(eapConfig))
 				yield break; // TODO: concider throwing, test ux
 
 			foreach (EapConfig.AuthenticationMethod authMethod in eapConfig.AuthenticationMethods)
 			{
-				if (AuthMethodIsSupported(authMethod))
+				if (EduroamNetwork.AuthMethodIsSupported(authMethod))
 					yield return new EapAuthMethodInstaller(authMethod);
 				// if EAP type is not supported, we skip this authMethod
 			}
-		}
-
-		/// <summary>
-		/// Checks if eapConfig contains any supported authentification methods.
-		/// If no such method exists, then warn the user before trying to install the config.
-		/// </summary>
-		/// <param name="eapConfig">The EAP config to check</param>
-		/// <returns>True if it contains a supported type</returns>
-		public static bool EapConfigIsSupported(EapConfig eapConfig)
-		{
-			_ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
-
-			return eapConfig.AuthenticationMethods
-				.Where(AuthMethodIsSupported).Any();
-		}
-
-		private static bool AuthMethodIsSupported(EapConfig.AuthenticationMethod authMethod)
-		{
-			return ProfileXml.IsSupported(authMethod)
-				&& UserDataXml.IsSupported(authMethod);
 		}
 
 		/// <summary>

@@ -20,8 +20,11 @@ namespace WpfApp.Menu
 	/// </summary>
 	public partial class Loading : Page
 	{
+		private MainWindow mainWindow;
+
 		public Loading(MainWindow mainWindow)
 		{
+			this.mainWindow = mainWindow ?? throw new ArgumentNullException(paramName: nameof(mainWindow));
 			InitializeComponent();
 
 
