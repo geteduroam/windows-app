@@ -50,7 +50,7 @@ namespace WpfApp.Menu
 		/// Installs certificates from EapConfig and creates wireless profile.
 		/// </summary>
 		/// <returns>true on success</returns>
-		private bool InstallEapConfig(EapConfig eapConfig, string username = null, string password = null)
+		private bool InstallEapConfig(EapConfig eapConfig, string username = null, string password = null) // TODO: make static
 		{
 			if (!EduroamNetwork.EapConfigIsSupported(eapConfig))
 			{
@@ -86,33 +86,26 @@ namespace WpfApp.Menu
 					//err = "eduroam not available";
 				}
 
-				// TODO: remove
+				// TODO: remove, use return value instead. This function should be static
 				mainWindow.ProfileCondition = MainWindow.ProfileStatus.Incomplete;
 
 				return success;
 			}
-			catch (CryptographicException cryptEx) // TODO, handle in ConnectToEduroam or EduroamNetwork, thrown by X509Certificate2 constructor or store.add()
-			{
-				MessageBox.Show(
-					"One or more certificates are corrupt. Please select an another file, or try again later.\n" +
-					"\n" +
-					"Exception: " + cryptEx.Message,
-					"eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-			}
 			catch (EduroamAppUserError ex)
 			{
+				// TODO: expand the response with "try something else"
 				MessageBox.Show(
 					ex.UserFacingMessage,
-					"eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+					"geteduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 			}
-			catch (Exception ex) // TODO, handle in ConnectToEduroam or EduroamNetwork
+			catch (Exception ex)
 			{
 				MessageBox.Show(
 					"Something went wrong.\n" +
-					"Please try connecting with another institution, or try again later.\n" +
+					"Please try connecting with another profile or institution, or try again later.\n" +
 					"\n" +
 					"Exception: " + ex.Message,
-					"eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+					"geteduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 			}
 			return false;
 		}

@@ -90,8 +90,17 @@ namespace EduroamConfigure
 			{
 				foreach (var ca in ServerCertificateAuthorities)
 				{
-					// TODO: find some nice way to ensure these are disposed of
-					var cert = new X509Certificate2(Convert.FromBase64String(ca));
+					X509Certificate2 cert;
+					try
+					{
+						// TODO: find some nice way to ensure these are disposed of properly
+						cert = new X509Certificate2(Convert.FromBase64String(ca));
+					}
+					catch (CryptographicException)
+					{
+						throw new EduroamAppUserError("corrupt certificate",
+							"EAP profile has an malformed or corrupted certificate");
+					}
 
 					// sets the friendly name of certificate
 					if (string.IsNullOrEmpty(cert.FriendlyName))
@@ -104,22 +113,33 @@ namespace EduroamConfigure
 			/// <summary>
 			/// Converts the client certificate base64 data to a X509Certificate2 object
 			/// </summary>
-			/// <returns>X509Certificate2 if any, otherwise null</returns>
+			/// <returns>X509Certificate2 if any. Null if non exist or the passphrase is incorrect</returns>
 			public X509Certificate2 ClientCertificateAsX509Certificate2()
 			{
 				if (string.IsNullOrEmpty(ClientCertificate))
 					return null;
 
-				var cert = new X509Certificate2(
-					Convert.FromBase64String(ClientCertificate),
-					ClientCertificatePassphrase,
-					X509KeyStorageFlags.PersistKeySet);
+				try
+				{
+					var cert = new X509Certificate2(
+						Convert.FromBase64String(ClientCertificate),
+						ClientCertificatePassphrase,
+						X509KeyStorageFlags.PersistKeySet);
 
-				// sets the friendly name of certificate
-				if (string.IsNullOrEmpty(cert.FriendlyName))
-					cert.FriendlyName = cert.GetNameInfo(X509NameType.SimpleName, false);
+					// sets the friendly name of certificate
+					if (string.IsNullOrEmpty(cert.FriendlyName))
+						cert.FriendlyName = cert.GetNameInfo(X509NameType.SimpleName, forIssuer: false);
 
-				return cert;
+					return cert;
+				}
+				catch (CryptographicException ex)
+				{
+					if ((ex.HResult & 0xFFFF) == 0x56)
+						return null; // wrong passphrase
+
+					throw new EduroamAppUserError("corrupt client certificate",
+						"EAP profile has an malformed or corrupted client certificate");
+				}
 			}
 
 			/// <summary>
