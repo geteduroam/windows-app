@@ -23,10 +23,14 @@ namespace WpfApp.Menu
 	public partial class Login : Page
 	{
 
-
-		private readonly EapConfig.AuthenticationMethod authMethod;
-
-
+		private enum ConType
+		{
+			Credentials,
+			CertPass,
+			CertAndCertPass,
+			Nothing,
+		}
+		private ConType conType;
 		private bool usernameValid = false;
 		private string realm;
 		private bool hint;
@@ -59,6 +63,7 @@ namespace WpfApp.Menu
 			if (eapConfig.NeedsLoginCredentials())
 			{
 				// TODO: show input fields
+				conType = ConType.Credentials;
 				grpRules.Visibility = Visibility.Hidden;
 				gridCred.Visibility = Visibility.Visible;
 				tbRules.Visibility = Visibility.Visible;
@@ -70,10 +75,11 @@ namespace WpfApp.Menu
 			}
 			else if (eapConfig.NeedsClientCertificate())
 			{
-
+				// button that lets user browser for certificate like on main mneu
 			}
 			else if (eapConfig.NeedsClientCertificatePassphrase())
 			{
+				// can happen with NeedsClientCertificate
 				// TODO: show input field
 				// This field should write to this:
 				gridCred.Visibility = Visibility.Visible;
@@ -81,7 +87,9 @@ namespace WpfApp.Menu
 			}
 			else
 			{
-
+				// just connnect
+				conType = ConType.Nothing;
+				ConnectClick();
 			}
 		}
 
@@ -102,7 +110,6 @@ namespace WpfApp.Menu
 				username += "@" + realm;
 			}
 
-
 			var brokenRules = IdentityProviderParser.GetRulesBroken(username, realm, hint).ToList();
 			usernameValid = !brokenRules.Any();
 			tbRules.Text = "";
@@ -118,74 +125,95 @@ namespace WpfApp.Menu
 
 		public void ConnectClick()
 		{
-			if (ValidateFields())
+			mainWindow.btnNext.IsEnabled = false;
+			tbStatus.Text = "Connecting...";
+			tbStatus.Visibility = Visibility.Visible;
+
+			if (conType == ConType.Credentials)
 			{
-				if ((!tbUsername.Text.Contains('@') && !string.IsNullOrEmpty(realm)) || hint)
-				{
-					tbRealm.Visibility = Visibility.Visible;
-				}
 				ConnectWithLogin();
-				return;
 			}
-			grpRules.Visibility = string.IsNullOrEmpty(tbRules.Text) ? Visibility.Hidden : Visibility.Visible;
+			else if (conType == ConType.Nothing)
+			{
+				ConnectWithNothing();
+			}
 		}
 
 
 		public async void ConnectWithLogin()
 		{
-			string username = tbUsername.Text;
-			if (tbRealm.Visibility == Visibility.Visible)
+			if (ValidateFields())
 			{
-				username += tbRealm.Text;
-			}
-			string password = pbCredPassword.Password;
+				string username = tbUsername.Text;
+				if ((!username.Contains('@') && !string.IsNullOrEmpty(realm)) || hint)
+				{
+					tbRealm.Visibility = Visibility.Visible;
+				}
 
-			mainWindow.btnNext.IsEnabled = false;
-			tbStatus.Text = "Connecting...";
-			tbStatus.Visibility = Visibility.Visible;
-			pbCredPassword.IsEnabled = false;
-			tbUsername.IsEnabled = false;
-			bool installed = await Task.Run(() => InstallEapConfig(eapConfig, username, password));
-			if (installed)
-			{
-				Connect();
-			}
-			else
-			{
-				tbStatus.Text = "Connection to eduroam failed.";
+				if (tbRealm.Visibility == Visibility.Visible)
+				{
+					username += tbRealm.Text;
+				}
+				string password = pbCredPassword.Password;
+
+				pbCredPassword.IsEnabled = false;
+				tbUsername.IsEnabled = false;
+				bool installed = await Task.Run(() => InstallEapConfig(eapConfig, username, password));
+				if (installed)
+				{
+					bool connected = await Connect();
+					if (connected)
+					{
+						tbStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
+						mainWindow.btnNext.Content = "Close";
+					}
+					else
+					{
+						tbStatus.Text = "Connection to eduroam failed.";
+					}
+				}
+				else
+				{
+					tbStatus.Text = "Could not install EAP-configuration.";
+				}
 				pbCredPassword.IsEnabled = true;
 				tbUsername.IsEnabled = true;
 				mainWindow.btnNext.IsEnabled = true;
-				focused.Focus();
-			}
-
-
-
-		}
-
-		private async void Connect()
-		{
-
-			bool eduConnected = await Task.Run(AsyncConnect);
-
-			if (eduConnected)
-			{
-				tbStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
-				mainWindow.btnNext.Content = "Close";
+				if (focused != null) focused.Focus();
 			}
 			else
 			{
-				tbStatus.Text = "Connection to eduroam failed.";
+				grpRules.Visibility = string.IsNullOrEmpty(tbRules.Text) ? Visibility.Hidden : Visibility.Visible;
 			}
-			IsConnected = eduConnected;
-
-			pbCredPassword.IsEnabled = true;
-			tbUsername.IsEnabled = true;
-			mainWindow.btnNext.IsEnabled = true;
-			focused.Focus();
 		}
 
-		public async Task<bool> AsyncConnect()
+		public async void ConnectWithNothing()
+		{
+			bool installed = await Task.Run(() => InstallEapConfig(eapConfig));
+			if (installed)
+			{
+				bool connected = await Connect();
+				if (connected)
+				{
+					tbStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
+					mainWindow.btnNext.Content = "Close";
+				}
+				else
+				{
+					tbStatus.Text = "Connection to eduroam failed.";
+					mainWindow.btnNext.Content = "Connect";
+				}
+			}
+			else
+			{
+				tbStatus.Text = "Could not install config";
+				mainWindow.btnNext.Content = "Connect";
+			}
+			mainWindow.btnNext.IsEnabled = true;
+		}
+
+
+		public async Task<bool> Connect()
 		{
 			bool connectSuccess;
 			try
@@ -197,6 +225,7 @@ namespace WpfApp.Menu
 				connectSuccess = false;
 				MessageBox.Show("Could not connect. \nException: " + ex.Message);
 			}
+			IsConnected = connectSuccess;
 			return connectSuccess;
 		}
 

@@ -359,7 +359,7 @@ namespace WpfApp
 		{
 			currentFormId = FormId.SelectInstitution;
 			btnNext.Visibility = Visibility.Visible;
-			btnNext.Content = "Next >";
+			btnNext.Content = "Next";
 			btnBack.IsEnabled = true;
 			btnBack.Visibility = Visibility.Visible;
 			if (refresh) pageSelectInstitution = new SelectInstitution(this);
@@ -371,6 +371,7 @@ namespace WpfApp
 		{
 			currentFormId = FormId.SelectProfile;
 			btnNext.Visibility = Visibility.Visible;
+			btnNext.Content = "Next";
 			if (refresh) pageSelectProfile = new SelectProfile(this, pageSelectInstitution.IdProviderId);
 			Navigate(pageSelectProfile);
 		}
@@ -381,7 +382,7 @@ namespace WpfApp
 			btnNext.Visibility = Visibility.Visible;
 			btnNext.IsEnabled = true;
 			btnBack.Visibility = Visibility.Visible;
-			btnNext.Content = eapConfig.AuthenticationMethods.First().EapType == EapType.TLS ? "Connect" : "Next";
+			btnNext.Content = "Next";
 			if (refresh) pageProfileOverview = new ProfileOverview(this, eapConfig);
 			Navigate(pageProfileOverview);
 		}
