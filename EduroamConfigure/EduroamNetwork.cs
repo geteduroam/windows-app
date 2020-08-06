@@ -21,36 +21,41 @@ namespace EduroamConfigure
         public const string DefaultSsid = "eduroam";
 
         // Properties
+        private AvailableNetworkPack NetworkPack { get; }
+        private ProfilePack ProfilePack { get; }
+        private ConfiguredWLANProfile? PersistedProfile { get; }
+
         public Guid InterfaceId { get; }
-        public AvailableNetworkPack NetworkPack { get; }
-        public bool IsAvailable { get => NetworkPack != null; }
-        public ConfiguredWLANProfile? Profile { get; }
+        public string ProfileName
+        { get => ProfilePack?.Name ?? NetworkPack?.ProfileName; }
+        public bool IsAvailable
+        { get => NetworkPack != null; }
 
         // TODO: Add support for Wired 801x
 
         private EduroamNetwork(Guid interfaceId)
         {
             NetworkPack = null;
-            Profile = null;
-            InterfaceId = interfaceId;
+            PersistedProfile = null;
+            ProfilePack = null;
+            InterfaceId = interfaceId; // non-nullable
         }
 
-        private EduroamNetwork(AvailableNetworkPack networkPack, ConfiguredWLANProfile? profile = null)
-            : this(networkPack.Interface.Id)
+        private EduroamNetwork(
+            AvailableNetworkPack networkPack,
+            ProfilePack profilePack,
+            ConfiguredWLANProfile? persistedProfile = null)
+            : this(profilePack?.Interface.Id ?? networkPack.Interface.Id)
         {
+            Debug.Assert((networkPack, profilePack) != (null, null));
+            Debug.Assert(
+                networkPack == null
+                || profilePack == null
+                || networkPack.Interface.Id == profilePack.Interface.Id);
+
             NetworkPack = networkPack;
-            Profile = profile;
-
-            /*
-            if (!string.IsNullOrEmpty(networkPack.ProfileName))
-            {
-                ProfilePack profilePack = NativeWifi.EnumerateProfiles()
-                   .Where(pp => pp.Interface.Id == networkPack.Interface.Id)
-                   .First(pp => pp.Name == networkPack.ProfileName);
-
-                profilePack.Document.Xml
-            }
-            */
+            ProfilePack = profilePack;
+            PersistedProfile = persistedProfile;
         }
 
         /// <summary>
@@ -196,7 +201,7 @@ namespace EduroamConfigure
                         configuredProfile.IsHs2 ? "Hs2 " : "", 
                         success ? "succeeded" : "failed");
 
-                if (success && !configuredProfile.HasUserData)
+                if (success && !configuredProfile.HasUserData) // ommit uneccesary writes
                 {
                     PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
                         .Remove(configuredProfile)
@@ -235,8 +240,7 @@ namespace EduroamConfigure
 
         public async Task<bool> TryToConnect()
         {
-            if (string.IsNullOrEmpty(NetworkPack.ProfileName))
-                return false;
+            if (!IsAvailable) return false;
 
             return await NativeWifi.ConnectNetworkAsync(
                 interfaceId: NetworkPack.Interface.Id,
@@ -244,6 +248,7 @@ namespace EduroamConfigure
                 bssType: NetworkPack.BssType,
                 timeout: TimeSpan.FromSeconds(8));
         }
+
 
         // static interface:
 
@@ -261,7 +266,7 @@ namespace EduroamConfigure
             // TODO: multiple profiles on a single interface creates duplicate work further down
             //       perhaps group by InterfaceId and have a list of ProfileName in each EduroamNetwork?
             var availableNetworks = GetAllAvailableEduroamNetworkPacks(eapConfig?.CredentialApplicabilities)
-                .Select(networkPack => new EduroamNetwork(networkPack))
+                .Select(networkPack => new EduroamNetwork(networkPack, null))
                 .ToList();
 
             var configuredInterfaces = availableNetworks
@@ -286,11 +291,13 @@ namespace EduroamConfigure
                 return Enumerable.Empty<EduroamNetwork>();
             PruneMissingPersistedProfiles();
             
-            return GetAllNetworkPacksWithProfiles()
+            // join configured profiles
+            return GetAllInstalledProfilePacksWithNetworkPacks()
                 .Join(PersistingStore.ConfiguredWLANProfiles,
-                    network => (network.ProfileName, network.Interface.Id),
-                    profile => (profile.ProfileName, profile.InterfaceId),
-                    (network, profile) => new EduroamNetwork(network, profile));
+                    networkPPack => (networkPPack.ppack.Name, networkPPack.ppack.Interface.Id),
+                    persitedProfile => (persitedProfile.ProfileName, persitedProfile.InterfaceId),
+                    (networkPPack, persitedProfile) => 
+                        new EduroamNetwork(networkPPack.network, networkPPack.ppack, persitedProfile));
         }
 
         /// <summary>
@@ -307,13 +314,13 @@ namespace EduroamConfigure
         private static void PruneMissingPersistedProfiles()
         {
             // look through installed profiles and remove persisted profile configurations which have been uninstalled by user
-            var availableProfiles = GetAllNetworkPacksWithProfiles().ToList();
+            var installedProfiles = GetAllInstalledProfilePacks().ToList();
             foreach (var configuredProfile in PersistingStore.ConfiguredWLANProfiles)
             {
                 // if still installed
-                if (availableProfiles.Any(network
-                        => configuredProfile.InterfaceId == network.Interface.Id
-                        && configuredProfile.ProfileName == network.ProfileName))
+                if (installedProfiles.Any(ppack
+                        => configuredProfile.InterfaceId == ppack.Interface.Id
+                        && configuredProfile.ProfileName == ppack.Name))
                     continue; // ignore
 
                 // else remove
@@ -351,18 +358,68 @@ namespace EduroamConfigure
             return true;
         }
 
+
         /// <summary>
-        /// Gets all network packs containing information about an eduroam network, if any.
+        /// Gets all available network packs with a profile configured
         /// </summary>
         /// <returns>Network packs</returns>
-        private static List<AvailableNetworkPack> GetAllNetworkPacksWithProfiles()
+        private static List<AvailableNetworkPack> GetAllAvailableNetworkPacksWithProfiles()
         {
             if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
                 return new List<AvailableNetworkPack>();
 
+            // TODO, maybe join in the profile pack?
+
             return NativeWifi.EnumerateAvailableNetworks()
                 .Where(network => !string.IsNullOrEmpty(network.ProfileName))
                 .ToList();
+        }
+
+
+        /// <summary>
+        /// Gets all installed profile packs on the machine
+        /// </summary>
+        /// <returns>Profile packs</returns>
+        private static IEnumerable<ProfilePack> GetAllInstalledProfilePacks()
+        {
+            if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
+                return Enumerable.Empty<ProfilePack>();
+
+            // List all WLAN profiles installed on machine
+            return NativeWifi.EnumerateProfiles();
+        }
+
+        /// <summary>
+        /// Gets all installed profile packs on the machine along with their network packs if available
+        /// </summary>
+        /// <returns>Profile packs with optional network pack</returns>
+        private static List<(ProfilePack ppack, AvailableNetworkPack network)> GetAllInstalledProfilePacksWithNetworkPacks()
+        {
+            if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
+                return new List<(ProfilePack, AvailableNetworkPack)>();
+
+            // List all WLAN profiles installed on machine
+            var allProfilePacks = NativeWifi.EnumerateProfiles().ToList();
+
+            // inner join with available networks (in range)
+            var availableProfileNetworks = allProfilePacks
+                .Join(GetAllAvailableNetworkPacksWithProfiles(),
+                    ppack => (ppack.Name, ppack.Interface.Id),
+                    network => (network.ProfileName, network.Interface.Id),
+                    (ppack, network) => (ppack, network))
+                .ToList();
+
+            // create intermediate hash set of available profile packs, for quick lookups
+            var availableProfilePacks = availableProfileNetworks
+                .Select(item => item.ppack)
+                .ToImmutableHashSet();
+
+            // filter out the available profile packs from all profile packs
+            var unavailableProfiles = allProfilePacks
+                .Where(ppack => !availableProfilePacks.Contains(ppack))
+                .Select(ppack => (ppack, (AvailableNetworkPack)null));
+
+            return availableProfileNetworks.Concat(unavailableProfiles).ToList();
         }
 
         /// <summary>
