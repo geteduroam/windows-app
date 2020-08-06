@@ -379,6 +379,7 @@ namespace WpfApp
             currentFormId = FormId.CertificateOverview;
             btnBack.Visibility = Visibility.Visible;
             btnBack.IsEnabled = true;
+            btnNext.Content = "Next";
             if (refresh) pageCertificateOverview = new CertificateOverview(this, eapConfig);
             Navigate(pageCertificateOverview);
         }

@@ -59,7 +59,9 @@ namespace WpfApp.Menu
             if (eapConfig.NeedsLoginCredentials())
             {
                 // TODO: show input fields
+                grpRules.Visibility = Visibility.Hidden;
                 gridCred.Visibility = Visibility.Visible;
+                tbRules.Visibility = Visibility.Visible;
                 (realm, hint) = eapConfig.GetClientInnerIdentityRestrictions();
                 tbRealm.Text = '@' + realm;
                 tbRealm.Visibility = !string.IsNullOrEmpty(realm) && hint ? Visibility.Visible : Visibility.Hidden;
@@ -121,7 +123,7 @@ namespace WpfApp.Menu
                 ConnectWithLogin();
                 return;
             }
-            tbRules.Visibility = Visibility.Visible;
+            grpRules.Visibility = string.IsNullOrEmpty(tbRules.Text) ? Visibility.Hidden : Visibility.Visible;
         }
 
 
@@ -135,11 +137,8 @@ namespace WpfApp.Menu
             string password = pbCredPassword.Password;
 
             mainWindow.btnNext.IsEnabled = false;
-            // displays loading animation while attempt to connect
             tbStatus.Text = "Connecting...";
-            // pbxStatus.Image = Properties.Resources.loading_gif;
             tbStatus.Visibility = Visibility.Visible;
-            // pbxStatus.Visible = true;
             pbCredPassword.IsEnabled = false;
             tbUsername.IsEnabled = false;
             bool installed = await Task.Run(() => InstallEapConfig(eapConfig, username, password));
@@ -168,21 +167,12 @@ namespace WpfApp.Menu
             if (eduConnected)
             {
                 tbStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
-                //pbxStatus.Image = Properties.Resources.green_checkmark;
                 mainWindow.btnNext.Content = "Close";
-                //frmParent.BtnBackVisible = false;
-                //frmParent.ProfileCondition = frmParent.ProfileStatus.Working;
             }
             else
             {
                 tbStatus.Text = "Connection to eduroam failed.";
-                //pbxStatus.Image = Properties.Resources.red_x;
-                //lblConnectFailed.Visible = true;
-                //frmParent.BtnBackEnabled = true;
-                //frmParent.ProfileCondition = frmParent.ProfileStatus.Incomplete;
             }
-            //txtPassword.ReadOnly = false;
-            //txtUsername.ReadOnly = false;
             connected = eduConnected;
 
             pbCredPassword.IsEnabled = true;
@@ -280,16 +270,14 @@ namespace WpfApp.Menu
         private void tbUsername_TextChanged(object sender, TextChangedEventArgs e)
         {
             tbStatus.Visibility = Visibility.Hidden;
-            //pbxStatus.Visible = false;
-            tbRules.Visibility = Visibility.Hidden;
-            //tbRules.Visibility = Visibility.Visible;
+            grpRules.Visibility = Visibility.Hidden;
             if (!hint) tbRealm.Visibility = Visibility.Hidden;
             ValidateFields();
         }
 
         private void tbUsername_LostFocus(object sender, RoutedEventArgs e)
         {
-            tbRules.Visibility = Visibility.Visible;
+            grpRules.Visibility = string.IsNullOrEmpty(tbRules.Text) ? Visibility.Hidden : Visibility.Visible;
             if (!tbUsername.Text.Contains('@') && !string.IsNullOrEmpty(realm) && !string.IsNullOrEmpty(tbUsername.Text))
             {
                 tbRealm.Visibility = Visibility.Visible;
@@ -314,12 +302,6 @@ namespace WpfApp.Menu
         private void pbCredPassword_GotFocus(object sender, RoutedEventArgs e)
         {
             focused = pbCredPassword;
-        }
-
-        private void tbCredPassword_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            //tbStatus.Visibility = Visibility.Hidden;
-            //ValidateFields();
         }
 
     }
