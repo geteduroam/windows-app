@@ -121,7 +121,6 @@ namespace EduroamConfigure
 		/// </summary>
 		public class CertificateInstaller
 		{
-
 			private readonly X509Certificate2 cert;
 			private readonly StoreName storeName;
 			private readonly StoreLocation storeLocation;
@@ -192,7 +191,7 @@ namespace EduroamConfigure
 			/// <param name="authMethod">The authentification method to attempt to install</param>
 			public EapAuthMethodInstaller(EapConfig.AuthenticationMethod authMethod)
 			{
-				AuthMethod = authMethod;
+				AuthMethod = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
 			}
 
 			[Obsolete("Use EapConfig.NeedsClientCertificate")]
@@ -228,7 +227,7 @@ namespace EduroamConfigure
 			/// <returns>Returns true if all certificates has been successfully installed</returns>
 			public bool InstallCertificates()
 			{
-				if (NeedsClientCertificate())
+				if (AuthMethod.NeedsClientCertificate())
 					throw new EduroamAppUserError("no client certificate was provided");
 
 				// get all CAs from Authentication method
@@ -270,16 +269,16 @@ namespace EduroamConfigure
 				bool anyInstalledHs2 = false;
 				foreach (EduroamNetwork network in EduroamNetwork.GetAll(AuthMethod.EapConfig))
 				{
-					(bool withSsid, bool withHs2) = network.InstallProfiles(AuthMethod);
-					anyInstalledSsid |= withSsid;
-					anyInstalledHs2 |= withHs2;
+					(bool installedSsid, bool installedHs2) = network.InstallProfiles(AuthMethod);
+					anyInstalledSsid |= installedSsid;
+					anyInstalledHs2 |= installedHs2;
 				}
 
 				// Debug output
-				Debug.WriteLine("any profile installed:        " + anyInstalledSsid);
-				Debug.WriteLine("any profile installed (Hs2):  " + anyInstalledHs2);
-				Debug.WriteLine("Installed profile type:       " + AuthMethod?.EapType.ToString() ?? "None");
-				Debug.WriteLine("Installed profile type (Hs2): " + AuthMethod.Hs2AuthMethod?.EapType.ToString() ?? "None");
+				Debug.WriteLine("any ssid profile installed:  " + anyInstalledSsid);
+				Debug.WriteLine("any hs2  profile installed:  " + anyInstalledHs2);
+				Debug.WriteLine("Ssid profile eap type: " + AuthMethod.EapType.ToString() ?? "None");
+				Debug.WriteLine("Hs2  profile eap type: " + AuthMethod.Hs2AuthMethod?.EapType.ToString() ?? "None");
 
 				if (!AuthMethod.NeedsLoginCredentials() || (username, password) != (null, null)) // TODO: always run this
 					InstallUserProfile(username, password, AuthMethod); // TODO: inline this function and delete it
@@ -328,7 +327,7 @@ namespace EduroamConfigure
 		/// <param name="username">User's username optionally with realm</param>
 		/// <param name="password">User's password.</param>
 		/// <param name="authMethod">AuthMethod of installed profile</param>
-		[Obsolete("Pass in the credentials to EapAuthMethodInstaller.InstallProfile instead (when implemented)")]
+		[Obsolete("Pass in the credentials to EapAuthMethodInstaller.InstallProfile instead")]
 		public static bool InstallUserProfile(string username, string password, EapConfig.AuthenticationMethod authMethod)
 		{
 			_ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
