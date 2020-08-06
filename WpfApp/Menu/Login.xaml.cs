@@ -31,7 +31,7 @@ namespace WpfApp.Menu
         private string realm;
         private bool hint;
         private Control focused;
-        public bool connected;
+        public bool IsConnected { get; set; }
         public bool IgnorePasswordChange { get; set; }
 
 
@@ -67,6 +67,10 @@ namespace WpfApp.Menu
                 tbRealm.Visibility = !string.IsNullOrEmpty(realm) && hint ? Visibility.Visible : Visibility.Hidden;
                 tbUsername.Focus();              
                 ValidateFields();
+            }
+            else if (eapConfig.NeedsClientCertificate())
+            {
+
             }
             else if (eapConfig.NeedsClientCertificatePassphrase())
             {
@@ -107,7 +111,7 @@ namespace WpfApp.Menu
                 tbRules.Text = string.Join("\n", brokenRules); ;
             }
 
-            bool fieldsValid = (!string.IsNullOrEmpty(pbCredPassword.Password) && usernameValid) || connected;
+            bool fieldsValid = (!string.IsNullOrEmpty(pbCredPassword.Password) && usernameValid) || IsConnected;
             mainWindow.btnNext.IsEnabled = fieldsValid;
             return fieldsValid;
         }
@@ -173,7 +177,7 @@ namespace WpfApp.Menu
             {
                 tbStatus.Text = "Connection to eduroam failed.";
             }
-            connected = eduConnected;
+            IsConnected = eduConnected;
 
             pbCredPassword.IsEnabled = true;
             tbUsername.IsEnabled = true;
