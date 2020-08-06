@@ -105,6 +105,14 @@ namespace WpfApp.Menu
 
 			mainWindow.btnNext.IsEnabled = true;
 		}
+
+		private void lbInstitutions_MouseDoubleClick(object sender, RoutedEventArgs e)
+		{
+			if (lbInstitutions.SelectedItem != null)
+			{
+				mainWindow.NextPage();
+			}
+		}
 	}
 
 }

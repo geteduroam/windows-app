@@ -68,7 +68,7 @@ namespace WpfApp.Menu
 		/// <summary>
 		/// Called when user selects a profile
 		/// </summary>
-		private void LbProfiles_SelectionChanged(object sender, EventArgs e)
+		private void lbProfiles_SelectionChanged(object sender, EventArgs e)
 		{
 			// if user clicks on empty area of the listbox it will cause event but no item is selected
 			if (lbProfiles.SelectedItem == null) return;
@@ -77,6 +77,14 @@ namespace WpfApp.Menu
 			var selectedProfile = (IdentityProviderProfile) lbProfiles.SelectedItem;
 			ProfileId = selectedProfile.Id;
 			mainWindow.btnNext.IsEnabled = true;
+		}
+
+		private void lbProfiles_MouseDoubleClick(object sender, RoutedEventArgs e)
+		{
+			if (lbProfiles.SelectedItem != null)
+			{
+				mainWindow.NextPage();
+			}
 		}
 
 
