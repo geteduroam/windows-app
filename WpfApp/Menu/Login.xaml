@@ -9,11 +9,11 @@
       d:DesignHeight="345" d:DesignWidth="322"
       Title="Login">
 
-    <StackPanel Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center" KeyboardNavigation.TabNavigation="None" >
+    <StackPanel Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
         <StackPanel Background="White"/>
 
         <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="Login" TextAlignment="Center" Margin="5" FontSize="14"/>
-        <Grid x:Name="gridCred" Margin="5">
+        <Grid x:Name="gridCred" Margin="5" KeyboardNavigation.IsTabStop="False">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -27,7 +27,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="tbCredInfo" TextWrapping="Wrap" Text="Enter your username and password" TextAlignment="Center" Margin="5" Grid.ColumnSpan="3"/>
 
-            <TextBox x:Name="tbUsername" Margin="5" Grid.ColumnSpan="1" Grid.Column="1" Grid.Row="1" TextChanged="tbUsername_TextChanged" LostFocus="tbUsername_LostFocus"/>
+            <TextBox x:Name="tbUsername" Margin="5" Grid.ColumnSpan="1" Grid.Column="1" Grid.Row="1" TextChanged="tbUsername_TextChanged" LostFocus="tbUsername_LostFocus" GotFocus="tbUsername_GotFocus"/>
             <TextBlock IsHitTestVisible="False" Text="Username" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="DarkGray" Grid.Column="1" Grid.Row="1" >
                 <TextBlock.Style>
                     <Style TargetType="{x:Type TextBlock}">
@@ -40,9 +40,22 @@
                     </Style>
                 </TextBlock.Style>
             </TextBlock>
-            
 
-            <PasswordBox x:Name="pbCredPassword"  Margin="5" Grid.Row="2" Grid.Column="1" Grid.RowSpan="1" Height="18" PasswordChanged="pbCredPassword_PasswordChanged"/>
+
+            <PasswordBox x:Name="pbCredPassword"  Margin="5" Grid.Row="2" Grid.Column="1" Height="18" PasswordChanged="pbCredPassword_PasswordChanged" GotFocus="pbCredPassword_GotFocus"/>
+            <TextBox x:Name="tbCredPassword" Margin="5" Grid.Row="2" Grid.Column="1"  TextChanged="tbCredPassword_TextChanged" Visibility="Hidden"/>
+            <TextBlock IsHitTestVisible="False" Text="Password" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="DarkGray" Grid.Row="2" Grid.Column="1">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Text, ElementName=tbCredPassword}" Value="">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
 
             <TextBlock x:Name="tbRealm" TextWrapping="Wrap" Text="" TextAlignment="Left" Margin="0,5,5,5" Grid.Column="2" Grid.RowSpan="3" Grid.Row="1"/>
             <TextBlock x:Name="tbRules" TextWrapping="Wrap" Text="" TextAlignment="Left" Margin="5" Grid.Row="3" Grid.ColumnSpan="3" HorizontalAlignment="Left"/>
