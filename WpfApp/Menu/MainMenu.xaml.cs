@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using EduroamConfigure;
+using WpfApp.Classes;
 
 namespace WpfApp.Menu
 {
@@ -21,7 +23,9 @@ namespace WpfApp.Menu
 	public partial class MainMenu : Page
 	{
 		private readonly MainWindow mainWindow;
+		public EapConfig LocalEapConfig { get; set; }
 		public MainMenu(MainWindow mainWindow)
+
 		{
 			this.mainWindow = mainWindow;
 			InitializeComponent();
@@ -48,6 +52,12 @@ namespace WpfApp.Menu
 		private void btnExisting_Click(object sender, RoutedEventArgs e)
 		{
 
+		}
+
+		private void btnFile_Click(object sender, RoutedEventArgs e)
+		{
+			LocalEapConfig = FileDialog.AskUserForEapConfig();
+			mainWindow.NextPage();
 		}
 	}
 }

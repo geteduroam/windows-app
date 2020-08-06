@@ -81,6 +81,7 @@
     <Compile Include="Classes\CertificateGrid.xaml.cs">
       <DependentUpon>CertificateGrid.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Classes\FileDialog.cs" />
     <Compile Include="Classes\InverseBooleanConverter.cs" />
     <Compile Include="Classes\ImageFunctions.cs" />
     <Compile Include="Menu\CertificateOverview.xaml.cs">

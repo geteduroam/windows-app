@@ -16,8 +16,8 @@
                 Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="68,5" Width="186" Click="btnExisting_Click"/>
         <Button x:Name="BtnNewProfile" Style="{StaticResource BlueButtonStyle}" Content="Connect to eduroam"
                 Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5" Width="186" Click="btnNewProfile_Click"/>
-        <Button Style="{StaticResource WhiteButtonStyle}" Content="Use eap-config file" 
-                Height="23" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5" Width="110"/>
+        <Button x:Name="btnFile" Style="{StaticResource WhiteButtonStyle}" Content="Use eap-config file" 
+                Height="23" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5" Width="110" Click="btnFile_Click"/>
 
     </StackPanel>
 
