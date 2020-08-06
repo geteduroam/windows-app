@@ -14,7 +14,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using EduroamConfigure;
 
 namespace WpfApp.Menu
 {
@@ -61,6 +60,8 @@ namespace WpfApp.Menu
                 hint = false ;
                 tbRealm.Text = '@' + realm;
                 tbRealm.Visibility = !string.IsNullOrEmpty(realm) && hint ? Visibility.Visible : Visibility.Hidden;
+                tbUsername.Focus();
+                ValidateFields();
             }
             else if (eapConfig.NeedsClientCertificatePassphrase())
             {
@@ -204,6 +205,12 @@ namespace WpfApp.Menu
                 return false;
             }
 
+
+            // test
+            ConnectToEduroam.RemoveAllProfiles();
+            mainWindow.ProfileCondition = MainWindow.ProfileStatus.NoneConfigured;
+
+
             bool success = false;
 
             try
@@ -275,8 +282,11 @@ namespace WpfApp.Menu
 
         private void pbCredPassword_PasswordChanged(object sender, RoutedEventArgs e)
         {
+            // passwordbox password field cleared when navigating out of form
+            if (mainWindow.Main.Content == this) return;
             tbStatus.Visibility = Visibility.Hidden;
             ValidateFields();
         }
+
     }
 }

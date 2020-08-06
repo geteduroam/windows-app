@@ -80,7 +80,7 @@ namespace WpfApp.Menu
             if (isInstalled)
             {
                 tbInfo.Text = "All Certificates are installed";
-            }           
+            }
         }
 
         /// <summary>

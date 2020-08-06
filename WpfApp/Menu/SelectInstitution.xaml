@@ -27,7 +27,7 @@
                 </TextBlock.Style>
             </TextBlock>
         </Grid>
-        <ListBox x:Name="lbInstitutions" ItemContainerStyle="{StaticResource ListBoxItemStyle}"  Height="200" Margin="5,0" SelectionChanged="lbInstitutions_SelectionChanged" FontSize="10"/>
+        <ListBox x:Name="lbInstitutions" ItemContainerStyle="{StaticResource ListBoxItemStyle}"  Height="200" Margin="5,0" SelectionChanged="lbInstitutions_SelectionChanged" MouseDoubleClick="lbInstitutions_MouseDoubleClick" FontSize="10"/>
 
     </StackPanel>
 </Page>

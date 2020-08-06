@@ -23,7 +23,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="50*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="btnBack"  Style="{StaticResource WhiteButtonStyle}" Content="Back" Margin="0" RenderTransformOrigin="0.494,0.001" VerticalAlignment="Top" HorizontalAlignment="Left" Height="20" Width="37" Click="btnBack_Click"/>
+            <Button x:Name="btnBack"  Style="{StaticResource WhiteButtonStyle}" KeyboardNavigation.IsTabStop="False" Content="Back" Margin="0" RenderTransformOrigin="0.494,0.001" VerticalAlignment="Top" HorizontalAlignment="Left" Height="20" Width="37" Click="btnBack_Click"/>
             <Image x:Name="imgTop" Grid.Column="1" Margin="0">
                 <Image.Source>
                     <DrawingImage>
@@ -66,7 +66,7 @@
             </Image>
         </Grid>
 
-        <Frame x:Name="Main" NavigationUIVisibility="Hidden" Margin="0,5" Grid.RowSpan="1" Grid.Row="1"/>
+        <Frame x:Name="Main" NavigationUIVisibility="Hidden" Margin="0,5" Grid.RowSpan="1" Grid.Row="1" KeyboardNavigation.IsTabStop="False" FocusVisualStyle="{x:Null}"/>
 
         <Grid x:Name="gridBotBar" Grid.Row="2" Margin="0,5,0,0">
             <Grid.ColumnDefinitions>
@@ -74,7 +74,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="50*"/>
             </Grid.ColumnDefinitions>
-            <Button Style="{StaticResource BlueButtonStyle}" x:Name="btnNext" Content="Next" HorizontalAlignment="Center" VerticalAlignment="Center" Width="131" Grid.Column="1" Margin="0" Height="37" Click="btnNext_Click"/>
+            <Button Style="{StaticResource BlueButtonStyle}" KeyboardNavigation.IsTabStop="False" IsDefault="true" x:Name="btnNext" Content="Next" HorizontalAlignment="Center" VerticalAlignment="Center" Width="131" Grid.Column="1" Margin="0" Height="37" Click="btnNext_Click"/>
         </Grid>
 
     </Grid>
