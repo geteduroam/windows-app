@@ -30,10 +30,13 @@ namespace WpfApp.Menu
         private bool usernameValid = false;
         private string realm;
         private bool hint;
+        private Control focused;
         public bool connected;
+
 
         private readonly MainWindow mainWindow;
         private readonly EapConfig eapConfig;
+
 
 
         public Login(MainWindow mainWindow, EapConfig eapConfig)
@@ -56,11 +59,10 @@ namespace WpfApp.Menu
             {
                 // TODO: show input fields
                 gridCred.Visibility = Visibility.Visible;
-                realm = "uninett.no";
-                hint = false ;
+                (realm, hint) = eapConfig.GetClientInnerIdentityRestrictions();
                 tbRealm.Text = '@' + realm;
                 tbRealm.Visibility = !string.IsNullOrEmpty(realm) && hint ? Visibility.Visible : Visibility.Hidden;
-                tbUsername.Focus();
+                tbUsername.Focus();              
                 ValidateFields();
             }
             else if (eapConfig.NeedsClientCertificatePassphrase())
@@ -140,7 +142,20 @@ namespace WpfApp.Menu
             pbCredPassword.IsEnabled = false;
             tbUsername.IsEnabled = false;
             bool installed = await Task.Run(() => InstallEapConfig(eapConfig, username, password));
-            if (installed) Connect();
+            if (installed)
+            {
+                Connect();
+            }
+            else
+            {
+                tbStatus.Text = "Connection to eduroam failed.";
+                pbCredPassword.IsEnabled = true;
+                tbUsername.IsEnabled = true;
+                mainWindow.btnNext.IsEnabled = true;
+                focused.Focus();
+            }
+
+
 
         }
 
@@ -168,11 +183,11 @@ namespace WpfApp.Menu
             //txtPassword.ReadOnly = false;
             //txtUsername.ReadOnly = false;
             connected = eduConnected;
-            mainWindow.btnNext.IsEnabled = true;
 
             pbCredPassword.IsEnabled = true;
             tbUsername.IsEnabled = true;
             mainWindow.btnNext.IsEnabled = true;
+            focused.Focus();
         }
 
         public async Task<bool> AsyncConnect()
@@ -280,12 +295,30 @@ namespace WpfApp.Menu
             }
         }
 
+        private void tbUsername_GotFocus(object sender, RoutedEventArgs e)
+        {
+            focused = tbUsername;
+        }
+
         private void pbCredPassword_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            // passwordbox password field cleared when navigating out of form
-            if (mainWindow.Main.Content != this) return;
+            // show placeholder if no password, hide placeholder if password set.
+            // in XAML a textblock is bound to tbCredPassword so when the textbox is blank a placeholder is shown
+            tbCredPassword.Text = string.IsNullOrEmpty(pbCredPassword.Password) ? "" : "something";
+
             tbStatus.Visibility = Visibility.Hidden;
-            ValidateFields();
+           ValidateFields();
+        }
+
+        private void pbCredPassword_GotFocus(object sender, RoutedEventArgs e)
+        {
+            focused = pbCredPassword;
+        }
+
+        private void tbCredPassword_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            //tbStatus.Visibility = Visibility.Hidden;
+            //ValidateFields();
         }
 
     }
