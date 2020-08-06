@@ -29,19 +29,15 @@ namespace WpfApp.Menu
 		{
 			this.mainWindow = mainWindow;
 			InitializeComponent();
-			//btnExisting.Visibility = Visibility.Collapsed;
-			LoadPage();
+			Load();
 		}
 
-		private void LoadPage()
+		private void Load()
 		{
-			// mainWindow.lblTitle.Content = "Connect to Eduroam";
 			mainWindow.btnNext.Visibility = Visibility.Hidden;
 			mainWindow.btnBack.Visibility = Visibility.Hidden;
-			//lblInfo.Visibility = Visibility.Collapsed;
 			tbInfo.Visibility = Visibility.Hidden;
-			//mainWindow.lblTitle.Visibility = Visibility.Hidden;
-			//btnExisting.IsEnabled = true;
+
 		}
 
 		private void btnNewProfile_Click(object sender, RoutedEventArgs e)
@@ -57,6 +53,7 @@ namespace WpfApp.Menu
 		private void btnFile_Click(object sender, RoutedEventArgs e)
 		{
 			LocalEapConfig = FileDialog.AskUserForEapConfig();
+			if (LocalEapConfig == null) return;
 			mainWindow.NextPage();
 		}
 	}

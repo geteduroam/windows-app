@@ -129,6 +129,11 @@ namespace WpfApp
 					break;
 
 				case FormId.Login:
+					if(pageLogin.IsConnected)
+					{
+						System.Windows.Application.Current.Shutdown();
+						break;
+					}
 					pageLogin.ConnectClick();
 					break;
 				case FormId.Redirect:
