@@ -108,14 +108,14 @@ namespace EduroamConfigure
 			foreach (var ssid in ssids)
 			{
 				(string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, ssid);
-				installed |= InstallProfile(profileName, profileXml, false, forAllUsers);
+				installed |= InstallProfile(profileName, profileXml, isHs2: false, forAllUsers);
 			}
 
 			bool installedHs2 = false;
 			if (authMethod.Hs2AuthMethod != null)
 			{
-				(string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, asHs2Profile: true);
-				installedHs2 =  InstallProfile(profileName, profileXml, true, forAllUsers);
+				(string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod.Hs2AuthMethod, asHs2Profile: true);
+				installedHs2 =  InstallProfile(profileName, profileXml, isHs2: true, forAllUsers);
 			}
 
 			return (installed, installedHs2);
