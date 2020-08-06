@@ -43,7 +43,7 @@
 
 
             <PasswordBox x:Name="pbCredPassword"  Margin="5" Grid.Row="2" Grid.Column="1" Height="18" PasswordChanged="pbCredPassword_PasswordChanged" GotFocus="pbCredPassword_GotFocus"/>
-            <TextBox x:Name="tbCredPassword" Margin="5" Grid.Row="2" Grid.Column="1"  TextChanged="tbCredPassword_TextChanged" Visibility="Hidden"/>
+            <TextBox x:Name="tbCredPassword" Margin="5" Grid.Row="2" Grid.Column="1" Visibility="Hidden"/>
             <TextBlock IsHitTestVisible="False" Text="Password" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="DarkGray" Grid.Row="2" Grid.Column="1">
                 <TextBlock.Style>
                     <Style TargetType="{x:Type TextBlock}">
@@ -58,7 +58,9 @@
             </TextBlock>
 
             <TextBlock x:Name="tbRealm" TextWrapping="Wrap" Text="" TextAlignment="Left" Margin="0,5,5,5" Grid.Column="2" Grid.RowSpan="3" Grid.Row="1"/>
-            <TextBlock x:Name="tbRules" TextWrapping="Wrap" Text="" TextAlignment="Left" Margin="5" Grid.Row="3" Grid.ColumnSpan="3" HorizontalAlignment="Left"/>
+            <GroupBox x:Name="grpRules" Header="Rules" Margin="5" Grid.Row="3" Grid.ColumnSpan="3" BorderBrush="Red">
+                <TextBlock x:Name="tbRules" TextWrapping="Wrap" Text="" TextAlignment="Left"/>
+            </GroupBox>
         </Grid>
         <Grid x:Name="gridCert" Margin="5">
             <Grid.ColumnDefinitions>
