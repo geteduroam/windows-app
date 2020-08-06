@@ -90,6 +90,12 @@ namespace WpfApp
             switch (currentFormId)
             {
                 case FormId.MainMenu:
+                    if (pageMainMenu.LocalEapConfig != null)
+                    {
+                        eapConfig = pageMainMenu.LocalEapConfig;
+                        LoadPageProfileOverview();
+                        break;
+                    }
                     LoadPageSelectInstitution();
                     break;
 
@@ -291,6 +297,8 @@ namespace WpfApp
             }
             return eapConfig;
         }
+
+
 
         /// <summary>
         /// Tries to connect to eduroam
