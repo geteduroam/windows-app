@@ -283,7 +283,7 @@ namespace WpfApp.Menu
         private void pbCredPassword_PasswordChanged(object sender, RoutedEventArgs e)
         {
             // passwordbox password field cleared when navigating out of form
-            if (mainWindow.Main.Content == this) return;
+            if (mainWindow.Main.Content != this) return;
             tbStatus.Visibility = Visibility.Hidden;
             ValidateFields();
         }
