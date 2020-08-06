@@ -39,8 +39,7 @@
                        <TextBlock x:Name="tbEmailLink" Text="" TextWrapping="Wrap" />
                     </Hyperlink>    
                 </TextBlock>
-                
-                <Label x:Name="lblPhone" Content="" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2"  Grid.Column="1"/>
+                <TextBlock x:Name="tbPhoneText" Grid.Row="2" Grid.Column="1" Text="" TextWrapping="Wrap"  VerticalAlignment="Center"/>
 
 
             </Grid>
