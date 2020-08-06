@@ -48,14 +48,26 @@ namespace WpfApp.Menu
 
 		private void LoadContactInfo()
 		{
+			if (!hasContactInfo(eapConfig.InstitutionInfo))
+			{
+				grpInfo.Visibility = Visibility.Collapsed;
+				return;
+			}
+
+			LoadWeb();
+			LoadEmail();
+			LoadPhone();
+		}
+
+		private void LoadWeb()
+		{
 			string webAddress = eapConfig.InstitutionInfo.WebAddress;
-			string emailAddress = eapConfig.InstitutionInfo.EmailAddress;
-			string phone = eapConfig.InstitutionInfo.Phone;
-
-			// displays website, email, phone number
-			lblPhone.Content = phone;
-
-			// checks if website url is valid
+			if (string.IsNullOrEmpty(webAddress))
+			{
+				tbWebText.Visibility = Visibility.Collapsed;
+				lblWebTitle.Visibility = Visibility.Collapsed;
+				return;
+			}
 			bool isValidUrl = Uri.TryCreate(webAddress, UriKind.Absolute, out Uri uriResult)
 								  && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
 			// show url as link
@@ -72,39 +84,56 @@ namespace WpfApp.Menu
 			{
 				tbWebText.Text = webAddress;
 			}
+		}
 
-			// checks if email address is valid
+		private void LoadEmail()
+		{
+			string emailAddress = eapConfig.InstitutionInfo.EmailAddress;
+			if (string.IsNullOrEmpty(emailAddress))
+			{
+				tbEmailText.Visibility = Visibility.Collapsed;
+				lblEmailTitle.Visibility = Visibility.Collapsed;
+				return;
+			}
 			bool isValidEmail = !(emailAddress.Contains(" ") || !emailAddress.Contains("@"));
 			// show url as link
 			if (isValidEmail)
 			{
 				tbEmailLink.Text = emailAddress;
-				hlinkEmail.NavigateUri = new Uri("mailto:"+emailAddress);
+				hlinkEmail.NavigateUri = new Uri("mailto:" + emailAddress);
 				hlinkEmail.TextDecorations = null;
 
-			 /*   if (emailAddress.Contains("******"))
-				{
-					lblEmail.Texst = "-";
-				}*/
+				/*   if (emailAddress.Contains("******"))
+					{
+						lblEmail.Texst = "-";
+					}*/
 			}
 			// show url but not as link
 			else
 			{
 				tbEmailText.Text = emailAddress;
 			}
+		}
 
-			// checks if phone number has numbers, disables label if not
-		  /*  if (!lblPhone.Text.Any(char.IsDigit)) lblPhone.Enabled = false;
-
-			// replaces empty fields with a dash
-			foreach (Control cntrl in tblContactInfo.Controls)
+		private void LoadPhone()
+		{
+			string phone = eapConfig.InstitutionInfo.Phone;
+			if (string.IsNullOrEmpty(phone))
 			{
-				if (string.IsNullOrEmpty(cntrl.Text))
-				{
-					cntrl.Text = "-";
-				}
+				tbPhoneText.Visibility = Visibility.Collapsed;
+				lblPhoneTitle.Visibility = Visibility.Collapsed;
+				return;
 			}
-			*/
+			tbPhoneText.Text = phone;
+		}
+
+
+		private bool hasContactInfo(EapConfig.ProviderInfo info)
+		{
+			bool hasWebAddress = !string.IsNullOrEmpty(info.WebAddress);
+			bool hasEmailAddress = !string.IsNullOrEmpty(info.EmailAddress);
+			bool hasPhone = !string.IsNullOrEmpty(info.Phone);
+			return (hasWebAddress || hasEmailAddress || hasPhone);
 		}
 
 		private void LoadTOU()
