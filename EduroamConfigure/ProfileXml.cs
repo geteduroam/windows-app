@@ -83,12 +83,12 @@ namespace EduroamConfigure
                 .Select(cred => cred.ConsortiumOid)
                 .ToList();
 
-            // Decide the profile name
+            // Decide the profile name, which is the unique identifier for this profile
             var profileName = asHs2Profile
                 ? (authMethod.EapConfig.InstitutionInfo.DisplayName)
-                : ssids.First();
+                : ssids.First(); // TODO: change into 'InstitutionInfo.DisplayName + ssids.First()' ? Will then make way for installing eduroam for multiple institutions
             if (asHs2Profile && ssids.Contains(profileName))
-                profileName += " via Passpoint"; // GEANT convention sa fallback
+                profileName += " via Passpoint"; // GEANT convention as fallback
 
             // Construct XML document
             XElement ssidConfigElement;
