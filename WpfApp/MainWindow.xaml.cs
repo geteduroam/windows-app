@@ -154,6 +154,10 @@ namespace WpfApp
                     LoadPageProfileOverview();
                     break;
                 case FormId.CertificateOverview:
+                    if (Main.Content == pageLogin)
+                    {
+                        pageLogin.IgnorePasswordChange = true;
+                    }
                     LoadPageCertificateOverview();
                     break;
                 case FormId.Login:

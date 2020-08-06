@@ -32,6 +32,7 @@ namespace WpfApp.Menu
         private bool hint;
         private Control focused;
         public bool connected;
+        public bool IgnorePasswordChange { get; set; }
 
 
         private readonly MainWindow mainWindow;
@@ -304,10 +305,10 @@ namespace WpfApp.Menu
         {
             // show placeholder if no password, hide placeholder if password set.
             // in XAML a textblock is bound to tbCredPassword so when the textbox is blank a placeholder is shown
+            if (IgnorePasswordChange) return;
             tbCredPassword.Text = string.IsNullOrEmpty(pbCredPassword.Password) ? "" : "something";
-
             tbStatus.Visibility = Visibility.Hidden;
-           ValidateFields();
+            ValidateFields();
         }
 
         private void pbCredPassword_GotFocus(object sender, RoutedEventArgs e)
