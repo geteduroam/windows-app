@@ -433,5 +433,17 @@ namespace WpfApp
         {
             PreviousPage();
         }
+
+
+        /// <summary>
+        /// Logic to minimize to tray
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnClose(object sender, CancelEventArgs e)
+        {
+            Debug.WriteLine("spismeg");
+        }
+
     }
 }
