@@ -1,14 +1,12 @@
+using Newtonsoft.Json;
 using SingleInstanceApp;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Data;
 
 namespace WpfApp
 {
@@ -67,7 +65,7 @@ namespace WpfApp
 		{
 			// shorthand
 			bool contains(string check) =>
-				e.Args.Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase));
+				e.Args.Skip(1).Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase));
 
 			if (contains("/close"))
 				Shutdown();
@@ -82,8 +80,15 @@ namespace WpfApp
 		/// </summary>
 		public bool SignalExternalCommandLineArgs(IList<string> args)
 		{
-			System.Diagnostics.Debug.WriteLine("second!");
-			System.Diagnostics.Debug.WriteLine(string.Join("\n", args));
+			// shorthand
+			bool contains(string check) =>
+				args.Skip(1).Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase));
+
+			Debug.WriteLine("Got external cli args: {0} from {1}",
+				JsonConvert.SerializeObject(args.Skip(1).ToList()), args.FirstOrDefault());
+
+			if (contains("/close"))
+				Shutdown();
 
 			// Return value has no effect:
 			// https://github.com/taylorjonl/SingleInstanceApp/blob/master/SingleInstance.cs#L261
