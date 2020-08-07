@@ -14,6 +14,26 @@ namespace WpfApp.Classes
     {
 
         /// <summary>
+        /// Asks the user to supply a user certificate bundle along with a valid password.
+        /// Returns null if user aborted.
+        /// </summary>
+        /// <returns>(filepath, passphrase) or null</returns>
+        public static string AskUserForClientCertificateBundle()
+        {
+            string filepath;
+            do
+            {
+                filepath = GetFileFromDialog(
+                    "Select a Client Certificate bundle",
+                    "Certificate files (*.PFX, *.P12)|*.pfx;*.p12|All files (*.*)|*.*");
+
+                if (filepath == null) return null; // the user canelled
+            }
+            while (!ValidateFileSelection(filepath, new List<string> { ".pfx", ".p12" }));
+            return filepath;
+        }
+
+        /// <summary>
         /// Asks the user to supply a .eap-config file.
         /// Returns null if user aborted.
         /// </summary>

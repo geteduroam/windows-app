@@ -232,6 +232,7 @@ namespace EduroamConfigure
                 try
                 {
                     using var testCertificate = new X509Certificate2(rawCertificateData, passphrase);
+                    _ = testCertificate.PrivateKey;
                 }
                 catch (CryptographicException ex)
                 {
@@ -636,7 +637,7 @@ namespace EduroamConfigure
         /// <returns>true if valid and installed</returns>
         public bool AddClientCertificate(string certificatePath, string certificatePassphrase = null)
             => AuthenticationMethods
-                .Select(authMethod => authMethod
+                .Where(authMethod => authMethod
                     .AddClientCertificate(certificatePath, certificatePassphrase))
                 .ToList().Any(); // evaluate all
 

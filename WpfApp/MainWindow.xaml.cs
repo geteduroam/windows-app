@@ -551,7 +551,7 @@ namespace WpfApp
                 message: "message",
                 symbol: BalloonIcon.Error);
 
-            TaskbarIcon.HideBalloonTip();
+
 
             Hide();
         }
