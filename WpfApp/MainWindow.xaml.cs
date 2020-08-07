@@ -224,17 +224,12 @@ namespace WpfApp
 
             ValidateBackButton();
         }
-
+        /// <summary>
+        /// Hide back button if theres no page to go back to
+        /// </summary>
         private void ValidateBackButton()
         {
-            if (historyFormId.Count < 1)
-            {
-                btnBack.Visibility = Visibility.Hidden;
-            }
-            else
-            {
-                btnBack.Visibility = Visibility.Visible;
-            }
+            if (historyFormId.Count < 1) btnBack.Visibility = Visibility.Hidden;
         }
 
         // downloads eap config based on profileId
@@ -463,7 +458,7 @@ namespace WpfApp
             btnNext.Visibility = Visibility.Visible;
             btnNext.IsEnabled = true;
             btnNext.Content = "Next";
-            
+            btnBack.Visibility = Visibility.Visible;
             if (refresh) pageProfileOverview = new ProfileOverview(this, eapConfig);
             Navigate(pageProfileOverview);
         }
