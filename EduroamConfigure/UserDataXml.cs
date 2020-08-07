@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
@@ -197,17 +198,19 @@ namespace EduroamConfigure
 
 		public static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
 		{
+			var isWin64 = IntPtr.Size >= 8;
+			Debug.Assert(isWin64);
 			//bool at_least_win10 = System.Environment.OSVersion.Version.Major >= 10; // TODO: make this work, requires some application manifest
 			var at_least_win10 = true;
 			return (eapType, innerAuthType) switch
 			{
 				(EapType.TLS, _) => true,
 				(EapType.PEAP, InnerAuthType.EAP_MSCHAPv2) => true,
-				(EapType.TTLS, InnerAuthType.PAP) => true,
-				(EapType.TTLS, InnerAuthType.MSCHAP) => true, // not tested
-				(EapType.TTLS, InnerAuthType.MSCHAPv2) => true,
-				//(EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => at_least_win10, // TODO: xml matches the schema, but win32 throws an error.
-				//(EapType.TTLS, InnerAuthType.EAP_PEAP_MSCHAPv2) => at_least_win10, // TODO: xml matches the schema, but win32 throws an error.
+				(EapType.TTLS, InnerAuthType.PAP) => isWin64,
+				(EapType.TTLS, InnerAuthType.MSCHAP) => isWin64, // not tested, but matches schema
+				(EapType.TTLS, InnerAuthType.MSCHAPv2) => isWin64,
+				//(EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => at_least_win10 && geWin64, // TODO: xml matches the schema, but win32 throws an error.
+				//(EapType.TTLS, InnerAuthType.EAP_PEAP_MSCHAPv2) => at_least_win10 && geWin64, // TODO: xml matches the schema, but win32 throws an error.
 				_ => false,
 			};
 		}
