@@ -74,16 +74,17 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <Page Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </ApplicationDefinition>
+    </Page>
     <Compile Include="Classes\CertificateGrid.xaml.cs">
       <DependentUpon>CertificateGrid.xaml</DependentUpon>
     </Compile>
     <Compile Include="Classes\FileDialog.cs" />
     <Compile Include="Classes\InverseBooleanConverter.cs" />
     <Compile Include="Classes\ImageFunctions.cs" />
+    <Compile Include="Classes\SelfInstaller.cs" />
     <Compile Include="Menu\CertificateOverview.xaml.cs">
       <DependentUpon>CertificateOverview.xaml</DependentUpon>
     </Compile>
@@ -238,6 +239,9 @@
       <Version>2.9.6</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="SingleInstanceApp">
+      <Version>0.1.0</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
