@@ -49,7 +49,13 @@ namespace WpfApp
             bool contains(string check) =>
                 args.Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase));
 
-            return false;
+            if (contains("/install")) // todo: dialog stuff
+                Installer.InstallToUserLocal();
+            else if (contains("/uninstall")) // todo: prompt user for confirmation
+                Installer.ExitAndUninstallSelf();
+            else
+                return false;
+            return true;
         }
 
         /// <summary>
@@ -83,6 +89,35 @@ namespace WpfApp
             // https://github.com/taylorjonl/SingleInstanceApp/blob/master/SingleInstance.cs#L261
             return true;
         }
+
+
+        private static AssemblyName AssemblyName
+        { get => Assembly.GetExecutingAssembly().GetName(); }
+
+        private static readonly SelfInstaller Installer = new SelfInstaller(
+            applicationIdentifier: "GetEduroam",
+            applicationMetadata: new SelfInstaller.ApplicationMeta()
+            {
+                DisplayName = "GetEduroam",  // [REQUIRED] ProductName
+                Publisher = "Uninett",  // [REQUIRED] Manufacturer
+                Version = AssemblyName.Version.ToString(),
+                VersionMajor = AssemblyName.Version.Major.ToString(CultureInfo.InvariantCulture),
+                VersionMinor = AssemblyName.Version.Minor.ToString(CultureInfo.InvariantCulture),
+                HelpLink = null,  // ARPHELPLINK
+                HelpTelephone = null,  // ARPHELPTELEPHONE
+                InstallSource = null,  // SourceDir
+                URLInfoAbout = null,  // ARPURLINFOABOUT
+                URLUpdateInfo = null,  // ARPURLUPDATEINFO
+                AuthorizedCDFPrefix = null,  // ARPAUTHORIZEDCDFPREFIX
+                Comments = null,  // [NICE TO HAVE] ARPCOMMENTS. Comments provided to the Add or Remove Programs control panel.
+                Contact = null,  // [NICE TO HAVE] ARPCONTACT. Contact provided to the Add or Remove Programs control panel.
+                Language = null,  // ProductLanguage
+                Readme = null,  // [NICE TO HAVE] ARPREADME. Readme provided to the Add or Remove Programs control panel.
+                SettingsIdentifier = null,  // MSIARPSETTINGSIDENTIFIER. contains a semi-colon delimited list of the registry locations where the application stores a user's settings and preferences.
+                NoRepair = true,
+                NoModify = true,
+            }
+        );
 
     }
 }
