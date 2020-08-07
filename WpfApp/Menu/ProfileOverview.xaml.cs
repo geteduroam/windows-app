@@ -25,11 +25,13 @@ namespace WpfApp.Menu
 	{
 		private readonly MainWindow mainWindow;
 		private readonly EapConfig eapConfig;
+		private readonly bool extractFlag;
 
 		public ProfileOverview(MainWindow mainWindow, EapConfig eapConfig)
 		{
 			this.mainWindow = mainWindow ?? throw new ArgumentNullException(paramName: nameof(mainWindow));
 			this.eapConfig = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
+			this.extractFlag = mainWindow.ExtractFlag;
 			InitializeComponent();
 			Load();
 		}
@@ -156,9 +158,9 @@ namespace WpfApp.Menu
 
 		private void LoadAlternate()
 		{
-			gridAlt.Visibility = Visibility.Collapsed;
-			if (true)
+			if (extractFlag)
 			{
+				gridAlt.Visibility = Visibility.Visible;
 				tbAlt.Text = $"Not affiliated with {eapConfig.InstitutionInfo.DisplayName}?";
 			}
 			else
@@ -184,5 +186,9 @@ namespace WpfApp.Menu
 			e.Handled = true;
 		}
 
+		private void btnAlt_Click(object sender, RoutedEventArgs e)
+		{
+			mainWindow.LoadPageMainMenu();
+		}
 	}
 }

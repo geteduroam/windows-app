@@ -24,6 +24,7 @@ namespace WpfApp.Menu
 	{
 		private readonly MainWindow mainWindow;
 		public EapConfig LocalEapConfig { get; set; }
+		public bool UseExtracted { get; set; }
 		public MainMenu(MainWindow mainWindow)
 
 		{
@@ -38,6 +39,16 @@ namespace WpfApp.Menu
 			mainWindow.btnBack.Visibility = Visibility.Hidden;
 			tbInfo.Visibility = Visibility.Hidden;
 
+			if(mainWindow.ExtractedEapConfig == null)
+			{
+				btnExisting.Visibility = Visibility.Collapsed;
+			}
+			else
+			{
+				btnExisting.Visibility = Visibility.Visible;
+				tbExisting.Text = "Connect with " + mainWindow.ExtractedEapConfig.InstitutionInfo.DisplayName;
+			}
+
 		}
 
 		private void btnNewProfile_Click(object sender, RoutedEventArgs e)
@@ -47,7 +58,8 @@ namespace WpfApp.Menu
 
 		private void btnExisting_Click(object sender, RoutedEventArgs e)
 		{
-
+			UseExtracted = true;
+			mainWindow.NextPage();
 		}
 
 		private void btnFile_Click(object sender, RoutedEventArgs e)

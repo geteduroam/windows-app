@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
+using System.IO;
+using System.Reflection;
 using WpfApp.Menu;
 using EduroamConfigure;
 
@@ -57,14 +59,26 @@ namespace WpfApp
 		private Login pageLogin;
 		private CertificateOverview pageCertificateOverview;
 		private Redirect pageRedirect;
-		private bool Online; // TODO: remove?
+		public bool Online { get; set; } // TODO: remove?
+		// this contains the 'active' eapConfig that is being used
 		private EapConfig eapConfig;
+		// If theres is a bundled config file then it is stored in this variable
+		public EapConfig ExtractedEapConfig { get; set; }
+		//ExtractFlag decides if the "Not affiliated with this institution? choose another one" text and button shows up on ProfileOverview or not
+		public bool ExtractFlag { get; set; }
+
 		public ProfileStatus ProfileCondition { get; set; }
 		public IdentityProviderDownloader IdpDownloader { get; private set; }
 		public bool EduroamAvailable { get; set; }
 		public MainWindow()
 		{
 			InitializeComponent();
+			Load();
+
+		}
+
+		private void Load()
+		{
 			try
 			{
 				IdpDownloader = new IdentityProviderDownloader();
@@ -75,12 +89,32 @@ namespace WpfApp
 				Online = false;
 			}
 
-			LoadPageMainMenu();
+
+			ExtractedEapConfig = GetSelfExtractingEap();
+			if (ExtractedEapConfig != null)
+			{
+				// sets flags
+				//ComesFromSelfExtract = true;
+				//SelfExtractFlag = true;
+				// reset web logo or else it won't load
+				//ResetLogo();
+				// loads summary form so user can confirm installation
+				eapConfig = ExtractedEapConfig;
+				ExtractFlag = true;
+				LoadPageProfileOverview();
+			}
+			else
+			{
+				LoadPageMainMenu();
+			}
 		}
 
 		public void Navigate(Page nextPage)
 		{
+			// if nothing to go back to, hide back button
+
 			Main.Content = nextPage;
+			ValidateBackButton();
 		}
 
 		public async void NextPage()
@@ -96,6 +130,13 @@ namespace WpfApp
 						LoadPageProfileOverview();
 						break;
 					}
+					if (pageMainMenu.UseExtracted)
+					{
+						eapConfig = ExtractedEapConfig;
+						LoadPageProfileOverview();
+						break;
+					}
+
 					LoadPageSelectInstitution();
 					break;
 
@@ -144,6 +185,8 @@ namespace WpfApp
 			// removes current form from history if it gets added twice
 			if (historyFormId.LastOrDefault() == currentFormId) historyFormId.RemoveAt(historyFormId.Count - 1);
 
+			ValidateBackButton();
+
 		}
 
 		public void PreviousPage()
@@ -178,6 +221,20 @@ namespace WpfApp
 
 			// removes current form from history
 			historyFormId.RemoveAt(historyFormId.Count - 1);
+
+			ValidateBackButton();
+		}
+
+		private void ValidateBackButton()
+		{
+			if (historyFormId.Count < 1)
+			{
+				btnBack.Visibility = Visibility.Hidden;
+			}
+			else
+			{
+				btnBack.Visibility = Visibility.Visible;
+			}
 		}
 
 		// downloads eap config based on profileId
@@ -325,6 +382,29 @@ namespace WpfApp
 			return connectSuccess;
 		}
 
+		/// <summary>
+		/// Checks if an EAP-config file exists in the same folder as the executable
+		/// </summary>
+		/// <returns>EapConfig object if file exists, null if not.</returns>
+		public EapConfig GetSelfExtractingEap()
+		{
+			string exeLocation = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+			string[] files = Directory.GetFiles(exeLocation, "*.eap-config");
+
+			if (files.Length <= 0) return null;
+			try
+			{
+				string eapPath = files.First(); // TODO: although correct, this seems smelly
+				string eapString = File.ReadAllText(eapPath);
+				//eapConfig = EapConfig.FromXmlData(uid: "bundled file", eapString);
+				return EapConfig.FromXmlData(uid: "bundled file", eapString);
+			}
+			catch (Exception)
+			{
+				return null;
+			}
+		}
+
 
 		// TODO: make new responesurl thing to receive
 
@@ -348,6 +428,7 @@ namespace WpfApp
 
 		public void LoadPageMainMenu(bool refresh = true)
 		{
+			ExtractFlag = false;
 			currentFormId = FormId.MainMenu;
 			btnNext.Visibility = Visibility.Hidden;
 			btnBack.Visibility = Visibility.Hidden;
@@ -381,8 +462,8 @@ namespace WpfApp
 			currentFormId = FormId.ProfileOverview;
 			btnNext.Visibility = Visibility.Visible;
 			btnNext.IsEnabled = true;
-			btnBack.Visibility = Visibility.Visible;
 			btnNext.Content = "Next";
+
 			if (refresh) pageProfileOverview = new ProfileOverview(this, eapConfig);
 			Navigate(pageProfileOverview);
 		}

@@ -51,7 +51,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <TextBlock x:Name="tbAlt" TextWrapping="Wrap" Text="Not affiliated with institution?" TextAlignment="Center"  Margin="5"/>
-            <Button Style="{StaticResource WhiteButtonStyle}" x:Name="btnAlt" Content="Select other institution" HorizontalAlignment="Center" VerticalAlignment="Top" Width="141" Grid.Row="1" Margin="0,5" Height="34"/>
+            <Button Style="{StaticResource WhiteButtonStyle}" x:Name="btnAlt" Content="Select other institution" HorizontalAlignment="Center" VerticalAlignment="Top" Width="141" Grid.Row="1" Margin="0,5" Height="34" Click="btnAlt_Click"/>
 
 
         </Grid>
