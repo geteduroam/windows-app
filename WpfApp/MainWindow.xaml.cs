@@ -17,6 +17,9 @@ using System.IO;
 using System.Reflection;
 using WpfApp.Menu;
 using EduroamConfigure;
+using System.Diagnostics;
+using System.ComponentModel;
+using Hardcodet.Wpf.TaskbarNotification;
 
 namespace WpfApp
 {
@@ -529,6 +532,54 @@ namespace WpfApp
 		private void btnBack_Click(object sender, RoutedEventArgs e)
 		{
 			PreviousPage();
+		}
+
+
+		/// <summary>
+		/// Logic to minimize to tray
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnWindowClose(object sender, CancelEventArgs e)
+		{
+			Debug.WriteLine("Event: OnClose");
+			e.Cancel = true; // don't shutdown
+			//WindowState = WindowState.Minimized;
+
+			TaskbarIcon.ShowBalloonTip(
+				title: "title",
+				message: "message",
+				symbol: BalloonIcon.Error);
+
+			TaskbarIcon.HideBalloonTip();
+
+			Hide();
+		}
+
+		private void tb_TrayLeftMouseDown(object sender, RoutedEventArgs e)
+		{
+			Debug.WriteLine("Event: TrayLeftMouseDown");
+			if (!IsVisible)
+			{
+				Show();
+				Activate();
+			}
+			else
+			{
+				Hide();
+			}
+		}
+
+		private void MenuItem_Click_Show(object sender, RoutedEventArgs e)
+		{
+			Debug.WriteLine("Event: MenuItem_Click_Show");
+			Show();
+			Activate();
+		}
+
+		private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
+		{
+			Application.Current.Shutdown();
 		}
 	}
 }
