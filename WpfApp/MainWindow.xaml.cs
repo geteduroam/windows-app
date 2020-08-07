@@ -426,6 +426,13 @@ namespace WpfApp
             Navigate(pageLoading);
         }
 
+        private bool IsShuttingDown = false;
+        public void Shutdown(int exitCode = 0)
+        {
+            IsShuttingDown = true;
+            Application.Current.Shutdown(exitCode);
+        }
+
 
         private void btnNext_Click(object sender, RoutedEventArgs e)
         {
@@ -448,10 +455,10 @@ namespace WpfApp
             Debug.WriteLine("Event: OnClose");
             Debug.WriteLine("Sender: " + sender.ToString());
             Debug.WriteLine("IsShuttingDown: " + IsShuttingDown);
+            if (IsShuttingDown) return;
 
             e.Cancel = true; // Cancels Window.Close(), but not Application.Shutdown()
 
-            // TODO: dont do this on Application.Shutdown()
             TaskbarIcon.ShowBalloonTip( // TODO: doesn't show for me, but does show for simon, RDP might be the culprit
                 title: "geteduroam",
                 message: "geteduroam is still running here in the tray!",
@@ -485,8 +492,6 @@ namespace WpfApp
         }
 
         private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
-		{
-            Application.Current.Shutdown();
-        }
+            => Shutdown();
     }
 }
