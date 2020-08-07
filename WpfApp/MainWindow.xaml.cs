@@ -186,7 +186,7 @@ namespace WpfApp
                 case FormId.Login:
                     if(pageLogin.IsConnected)
                     {
-                        System.Windows.Application.Current.Shutdown();
+                        Shutdown();
                         break;
                     }
                     pageLogin.ConnectClick();
@@ -513,6 +513,7 @@ namespace WpfApp
             Navigate(pageLoading);
         }
 
+
         public void LoadPageTermsOfUse(bool refresh = true)
         {
             currentFormId = FormId.TermsOfUse;
@@ -521,6 +522,13 @@ namespace WpfApp
             btnNext.Visibility = Visibility.Visible;
             if (refresh) pageTermsOfUse = new TermsOfUse(this, eapConfig.InstitutionInfo.TermsOfUse);
             Navigate(pageTermsOfUse);
+        }
+
+        private bool IsShuttingDown = false;
+        public void Shutdown(int exitCode = 0)
+        {
+            IsShuttingDown = true;
+            Application.Current.Shutdown(exitCode);
         }
 
 
@@ -543,43 +551,45 @@ namespace WpfApp
         private void OnWindowClose(object sender, CancelEventArgs e)
         {
             Debug.WriteLine("Event: OnClose");
-            e.Cancel = true; // don't shutdown
-            //WindowState = WindowState.Minimized;
+            Debug.WriteLine("Sender: " + sender.ToString());
+            Debug.WriteLine("IsShuttingDown: " + IsShuttingDown);
+            if (IsShuttingDown) return;
 
-            TaskbarIcon.ShowBalloonTip(
-                title: "title",
-                message: "message",
-                symbol: BalloonIcon.Error);
+            e.Cancel = true; // Cancels Window.Close(), but not Application.Shutdown()
 
+            TaskbarIcon.ShowBalloonTip( // TODO: doesn't show for me, but does show for simon, RDP might be the culprit
+                title: "geteduroam",
+                message: "geteduroam is still running here in the tray!",
+                symbol: BalloonIcon.Info);
 
-
-            Hide();
+            Hide(); // window
         }
+
+        private void TaskbarIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
+            => tb_TrayLeftMouseDown(sender, e);
 
         private void tb_TrayLeftMouseDown(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("Event: TrayLeftMouseDown");
             if (!IsVisible)
             {
-                Show();
-                Activate();
+                Show(); // window
+                Activate(); // focus window
             }
             else
             {
-                Hide();
+                Hide(); // window
             }
         }
 
         private void MenuItem_Click_Show(object sender, RoutedEventArgs e)
 		{
             Debug.WriteLine("Event: MenuItem_Click_Show");
-            Show();
-            Activate();
+            Show(); // window
+            Activate(); // focus window
         }
 
         private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
-		{
-            Application.Current.Shutdown();
-        }
+            => Shutdown();
     }
 }
