@@ -74,7 +74,7 @@ namespace EduroamConfigure
 			=> redirectUri;
 
 		public (string, string) ParseAndExtractAuthorizationCode(Uri responseUrl)
-			=> ParseAndExtractAuthorizationCode(responseUrl.ToString());
+			=> ParseAndExtractAuthorizationCode(responseUrl?.ToString());
 
 
 		/// <summary>
