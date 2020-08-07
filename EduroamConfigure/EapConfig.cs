@@ -302,7 +302,7 @@ namespace EduroamConfigure
             public string Phone { get; }
             public string InstId { get; }
             public string TermsOfUse { get; }
-            public ValueTuple<double, double>? Location { get; } // nullable coordinates on the form (Latitude, Longitude)
+            public (double Latitude, double Longitude)? Location { get; } // nullable coordinates on the form (Latitude, Longitude)
 
             // Constructor
             public ProviderInfo(
