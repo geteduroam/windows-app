@@ -460,6 +460,9 @@ namespace WpfApp
             Hide(); // window
         }
 
+        private void TaskbarIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
+            => tb_TrayLeftMouseDown(sender, e);
+
         private void tb_TrayLeftMouseDown(object sender, RoutedEventArgs e)
         {
             Debug.WriteLine("Event: TrayLeftMouseDown");
