@@ -13,7 +13,7 @@
         <StackPanel Background="White"/>
         <TextBlock x:Name="tbInfo" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5" FontSize="14"/>
         <Button x:Name="btnExisting" Style="{StaticResource BlueButtonStyle}"
-                Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="68,5" Width="186" Click="btnExisting_Click">
+                MinHeight="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="68,5" Width="186" Click="btnExisting_Click">
             <TextBlock x:Name="tbExisting" TextWrapping="Wrap" Text="Connect with [bundled config]" TextAlignment="Center" Margin="5" />
         </Button>
         <Button x:Name="BtnNewProfile" Style="{StaticResource BlueButtonStyle}" Content="Connect to eduroam"

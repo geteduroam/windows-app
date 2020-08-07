@@ -59,6 +59,7 @@ namespace WpfApp.Menu
 		private void btnExisting_Click(object sender, RoutedEventArgs e)
 		{
 			UseExtracted = true;
+			mainWindow.ExtractFlag = true;
 			mainWindow.NextPage();
 		}
 

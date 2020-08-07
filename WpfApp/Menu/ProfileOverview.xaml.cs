@@ -160,6 +160,7 @@ namespace WpfApp.Menu
 		{
 			if (extractFlag)
 			{
+				mainWindow.btnBack.Visibility = Visibility.Hidden;
 				gridAlt.Visibility = Visibility.Visible;
 				tbAlt.Text = $"Not affiliated with {eapConfig.InstitutionInfo.DisplayName}?";
 			}
