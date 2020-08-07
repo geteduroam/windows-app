@@ -81,17 +81,12 @@ namespace WpfApp.Menu
 			{
 				gridCertBrowser.Visibility = Visibility.Visible;
 				conType = ConType.CertAndCertPass;
-				//eapConfig.AddClientCertificate();
-				// button that lets user browser for certificate like on main mneu
 			}
 			else if (eapConfig.NeedsClientCertificatePassphrase())
 			{
 				conType = ConType.CertPass;
-				// can happen with NeedsClientCertificate
-				// TODO: show input field
-				// This field should write to this:
-				// gridCred.Visibility = Visibility.Visible;
 				gridCertPassword.Visibility = Visibility.Visible;
+				mainWindow.btnNext.IsEnabled = true;
 				//var success = eapConfig.AddClientCertificatePassphrase("asd");
 			}
 			else
@@ -148,23 +143,58 @@ namespace WpfApp.Menu
 			tbStatus.Text = "Connecting...";
 			tbStatus.Visibility = Visibility.Visible;
 
-			if (conType == ConType.Credentials)
+			switch (conType)
 			{
-				ConnectWithLogin();
-			}
-			else if (conType == ConType.Nothing)
-			{
-				ConnectWithNothing();
-			}
-			else if (conType == ConType.CertAndCertPass)
-			{
-				ConnectWithCertAndPass();
+				case ConType.Credentials:
+					ConnectWithLogin();
+					break;
+				case ConType.Nothing:
+					ConnectWithNothing();
+					break;
+				case ConType.CertAndCertPass:
+					ConnectWithCertAndPass();
+					break;
+				case ConType.CertPass:
+					ConnectWithCertPass();
+					break;
 			}
 		}
 
 		public async void ConnectWithCertAndPass()
 		{
 			var success = eapConfig.AddClientCertificate(filepath, pbCertBrowserPassword.Password);
+
+			if (success)
+			{
+				bool installed = await Task.Run(() => InstallEapConfig(eapConfig));
+				if (installed)
+				{
+					bool connected = await Connect();
+					if (connected)
+					{
+						tbStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
+						mainWindow.btnNext.Content = "Close";
+					}
+					else
+					{
+						tbStatus.Text = "Connection to eduroam failed.";
+					}
+				}
+				else
+				{
+					tbStatus.Text = "Could not install EAP-configuration.";
+				}
+			}
+			else
+			{
+				tbStatus.Text = "Incorrect password";
+			}
+			mainWindow.btnNext.IsEnabled = true;
+		}
+
+		public async void ConnectWithCertPass()
+		{
+			var success = eapConfig.AddClientCertificatePassphrase(pbCertPassword.Password);
 
 			if (success)
 			{

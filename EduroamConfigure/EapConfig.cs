@@ -649,7 +649,7 @@ namespace EduroamConfigure
 		/// <returns>true if the passphrase was valid and has been stored</returns>
 		public bool AddClientCertificatePassphrase(string certificatePassphrase)
 			=> AuthenticationMethods
-				.Select(authMethod => authMethod
+				.Where(authMethod => authMethod
 					.AddClientCertificatePassphrase(certificatePassphrase))
 				.ToList().Any(); // evaluate all
 
