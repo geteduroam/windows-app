@@ -220,10 +220,10 @@ namespace WpfApp.Menu
             {
                 connectSuccess = await Task.Run(ConnectToEduroam.TryToConnect);
             }
-            catch (Exception ex)
+            catch (EduroamAppUserError ex)
             {
                 connectSuccess = false;
-                MessageBox.Show("Could not connect. \nException: " + ex.Message);
+                MessageBox.Show("Could not connect. \nException: " + ex.UserFacingMessage);
             }
             IsConnected = connectSuccess;
             return connectSuccess;
