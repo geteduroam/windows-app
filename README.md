@@ -70,6 +70,7 @@ These dependencies are managed with `NuGet`, native to Visual Studio. The except
  * Costura (https://github.com/Fody/Costura) ~ [LICENSE](Licenses/Costura_LICENSE.md)
  * DuoVia.FuzzyString by Tyler Jensen (https://www.nuget.org/packages/System.Collections.Immutable/) ~ Apache-2.0
  * System.Collections.Immutable (https://www.nuget.org/packages/System.Collections.Immutable/) ~ MIT LICENSE
+ * SingleInstanceApp (https://github.com/taylorjonl/SingleInstanceApp)
 
 ## License
 
