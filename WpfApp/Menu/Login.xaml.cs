@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using WpfApp.Classes;
 
 namespace WpfApp.Menu
 {
@@ -35,8 +36,10 @@ namespace WpfApp.Menu
 		private string realm;
 		private bool hint;
 		private Control focused;
+		private string filepath;
 		public bool IsConnected { get; set; }
 		public bool IgnorePasswordChange { get; set; }
+
 
 
 		private readonly MainWindow mainWindow;
@@ -55,9 +58,10 @@ namespace WpfApp.Menu
 		private void Load()
 		{
 			gridCred.Visibility = Visibility.Collapsed;
-			gridCert.Visibility = Visibility.Collapsed;
+			gridCertPassword.Visibility = Visibility.Collapsed;
+			gridCertBrowser.Visibility = Visibility.Collapsed;
 			eapConfig.AuthenticationMethods.First();
-
+			mainWindow.btnNext.IsEnabled = false;
 			mainWindow.btnNext.Content = "Connect";
 
 			if (eapConfig.NeedsLoginCredentials())
@@ -71,19 +75,24 @@ namespace WpfApp.Menu
 				tbRealm.Text = '@' + realm;
 				tbRealm.Visibility = !string.IsNullOrEmpty(realm) && hint ? Visibility.Visible : Visibility.Hidden;
 				tbUsername.Focus();
-				ValidateFields();
+				ValidateCredFields();
 			}
 			else if (eapConfig.NeedsClientCertificate())
 			{
+				gridCertBrowser.Visibility = Visibility.Visible;
+				conType = ConType.CertAndCertPass;
+				//eapConfig.AddClientCertificate();
 				// button that lets user browser for certificate like on main mneu
 			}
 			else if (eapConfig.NeedsClientCertificatePassphrase())
 			{
+				conType = ConType.CertPass;
 				// can happen with NeedsClientCertificate
 				// TODO: show input field
 				// This field should write to this:
-				gridCred.Visibility = Visibility.Visible;
-				var success = eapConfig.AddClientCertificatePassphrase("asd");
+				// gridCred.Visibility = Visibility.Visible;
+				gridCertPassword.Visibility = Visibility.Visible;
+				//var success = eapConfig.AddClientCertificatePassphrase("asd");
 			}
 			else
 			{
@@ -93,7 +102,7 @@ namespace WpfApp.Menu
 			}
 		}
 
-		public bool ValidateFields()
+		public bool ValidateCredFields()
 		{
 			string username = tbUsername.Text;
 			if (string.IsNullOrEmpty(username))
@@ -122,6 +131,16 @@ namespace WpfApp.Menu
 			mainWindow.btnNext.IsEnabled = fieldsValid;
 			return fieldsValid;
 		}
+		/// <summary>
+		/// Decides if user is allowed to attempt to connect.
+		/// Based on if filepath and password is set
+		/// </summary>
+		/// <returns>True if filepath and password is set</returns>
+		public void ValidateCertBrowserFields()
+		{
+			// mainWindow.btnNext.IsEnabled = !string.IsNullOrEmpty(filepath) && !string.IsNullOrEmpty(pbCertBrowserPassword.Password);
+			mainWindow.btnNext.IsEnabled = !string.IsNullOrEmpty(filepath);
+		}
 
 		public void ConnectClick()
 		{
@@ -137,12 +156,47 @@ namespace WpfApp.Menu
 			{
 				ConnectWithNothing();
 			}
+			else if (conType == ConType.CertAndCertPass)
+			{
+				ConnectWithCertAndPass();
+			}
 		}
 
+		public async void ConnectWithCertAndPass()
+		{
+			var success = eapConfig.AddClientCertificate(filepath, pbCertBrowserPassword.Password);
+
+			if (success)
+			{
+				bool installed = await Task.Run(() => InstallEapConfig(eapConfig));
+				if (installed)
+				{
+					bool connected = await Connect();
+					if (connected)
+					{
+						tbStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
+						mainWindow.btnNext.Content = "Close";
+					}
+					else
+					{
+						tbStatus.Text = "Connection to eduroam failed.";
+					}
+				}
+				else
+				{
+					tbStatus.Text = "Could not install EAP-configuration.";
+				}
+			}
+			else
+			{
+				tbStatus.Text = "Incorrect password";
+			}
+			mainWindow.btnNext.IsEnabled = true;
+		}
 
 		public async void ConnectWithLogin()
 		{
-			if (ValidateFields())
+			if (ValidateCredFields())
 			{
 				string username = tbUsername.Text;
 				if ((!username.Contains('@') && !string.IsNullOrEmpty(realm)) || hint)
@@ -305,7 +359,7 @@ namespace WpfApp.Menu
 			tbStatus.Visibility = Visibility.Hidden;
 			grpRules.Visibility = Visibility.Hidden;
 			if (!hint) tbRealm.Visibility = Visibility.Hidden;
-			ValidateFields();
+			ValidateCredFields();
 		}
 
 		private void tbUsername_LostFocus(object sender, RoutedEventArgs e)
@@ -329,12 +383,51 @@ namespace WpfApp.Menu
 			if (IgnorePasswordChange) return;
 			tbCredPassword.Text = string.IsNullOrEmpty(pbCredPassword.Password) ? "" : "something";
 			tbStatus.Visibility = Visibility.Hidden;
-			ValidateFields();
+			ValidateCredFields();
 		}
 
 		private void pbCredPassword_GotFocus(object sender, RoutedEventArgs e)
 		{
 			focused = pbCredPassword;
+		}
+
+		private void pbCertPassword_PasswordChanged(object sender, RoutedEventArgs e)
+		{
+			// show placeholder if no password, hide placeholder if password set.
+			// in XAML a textblock is bound to tbCredPassword so when the textbox is blank a placeholder is shown
+			if (IgnorePasswordChange) return;
+			tbCertPassword.Text = string.IsNullOrEmpty(pbCertPassword.Password) ? "" : "something";
+			tbStatus.Visibility = Visibility.Hidden;
+		}
+
+		private void pbCertPassword_GotFocus(object sender, RoutedEventArgs e)
+		{
+			focused = pbCertPassword;
+		}
+
+		private void pbCertBrowserPassword_PasswordChanged(object sender, RoutedEventArgs e)
+		{
+			// show placeholder if no password, hide placeholder if password set.
+			// in XAML a textblock is bound to tbCredPassword so when the textbox is blank a placeholder is shown
+			if (IgnorePasswordChange) return;
+			tbCertBrowserPassword.Text = string.IsNullOrEmpty(pbCertBrowserPassword.Password) ? "" : "something";
+			tbStatus.Visibility = Visibility.Hidden;
+			ValidateCertBrowserFields();
+		}
+
+		private void pbCertBrowserPassword_GotFocus(object sender, RoutedEventArgs e)
+		{
+			focused = pbCertBrowserPassword;
+
+		}
+
+		private void btnFile_Click(object sender, RoutedEventArgs e)
+		{
+			//browse for certificate and add to eapconfig
+			//eapConfig.AddClientCertificate();
+			filepath = FileDialog.AskUserForClientCertificateBundle();
+			tbCertBrowser.Text = filepath;
+			ValidateCertBrowserFields();
 		}
 
 	}
