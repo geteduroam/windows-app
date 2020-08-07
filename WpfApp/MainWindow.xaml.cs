@@ -40,6 +40,7 @@ namespace WpfApp
             SaveAndQuit,
             Loading,
             CertificateOverview,
+            TermsOfUse,
         }
 
         public enum ProfileStatus
@@ -57,6 +58,7 @@ namespace WpfApp
         private ProfileOverview pageProfileOverview;
         private Loading pageLoading;
         private Login pageLogin;
+        private TermsOfUse pageTermsOfUse;
         private CertificateOverview pageCertificateOverview;
         private Redirect pageRedirect;
         public bool Online { get; set; } // TODO: remove?
@@ -162,7 +164,16 @@ namespace WpfApp
                     break;
 
                 case FormId.ProfileOverview:
+                    if(pageProfileOverview.ShowTou)
+                    {
+                        LoadPageTermsOfUse();
+                        break;
+                    }
                     LoadPageCertificateOverview();
+                    break;
+                case FormId.TermsOfUse:
+                    historyFormId.Remove(currentFormId);
+                    PreviousPage();
                     break;
 
                 case FormId.CertificateOverview:
@@ -497,6 +508,16 @@ namespace WpfApp
             btnNext.IsEnabled = false;
             if (refresh) pageLoading = new Loading(this);
             Navigate(pageLoading);
+        }
+
+        public void LoadPageTermsOfUse(bool refresh = true)
+        {
+            currentFormId = FormId.TermsOfUse;
+            btnBack.IsEnabled = true;
+            btnNext.Content = "OK";
+            btnNext.Visibility = Visibility.Visible;
+            if (refresh) pageTermsOfUse = new TermsOfUse(this, eapConfig.InstitutionInfo.TermsOfUse);
+            Navigate(pageTermsOfUse);
         }
 
 

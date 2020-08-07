@@ -48,6 +48,11 @@ namespace WpfApp.Menu
                 btnExisting.Visibility = Visibility.Visible;
                 tbExisting.Text = "Connect with " + mainWindow.ExtractedEapConfig.InstitutionInfo.DisplayName;
             }
+            if(!mainWindow.Online)
+            {
+                BtnNewProfile.Content = "No internet connection";
+                BtnNewProfile.IsEnabled = false;
+            }
 
         }
 

@@ -26,6 +26,7 @@ namespace WpfApp.Menu
         private readonly MainWindow mainWindow;
         private readonly EapConfig eapConfig;
         private readonly bool extractFlag;
+        public bool ShowTou { get; set; }
         
         public ProfileOverview(MainWindow mainWindow, EapConfig eapConfig)
         {
@@ -181,9 +182,11 @@ namespace WpfApp.Menu
         }
         private void Hyperlink_TOU(object sender, RequestNavigateEventArgs e)
         {
-            Hyperlink hl = (Hyperlink)sender;
-            string navigateUri = hl.NavigateUri.ToString();
-            Process.Start(new ProcessStartInfo(navigateUri));
+            //Hyperlink hl = (Hyperlink)sender;
+            //string navigateUri = hl.NavigateUri.ToString();
+            //Process.Start(new ProcessStartInfo(navigateUri));
+            ShowTou = true;
+            mainWindow.NextPage();
             e.Handled = true;
         }
 

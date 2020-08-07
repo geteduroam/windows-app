@@ -151,6 +151,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Menu\TermsOfUse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Menu\ProfileOverview.xaml.cs">
@@ -164,6 +168,9 @@
     </Compile>
     <Compile Include="Menu\SelectProfile.xaml.cs">
       <DependentUpon>SelectProfile.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Menu\TermsOfUse.xaml.cs">
+      <DependentUpon>TermsOfUse.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

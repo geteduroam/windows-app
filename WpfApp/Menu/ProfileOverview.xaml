@@ -8,12 +8,18 @@
       d:DesignHeight="345" d:DesignWidth="322"
       Title="ProfileOverview">
 
-    <StackPanel Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <StackPanel Background="White"/>
+    <Grid Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
         <TextBlock x:Name="tbName" TextWrapping="Wrap" Text="Profile name" TextAlignment="Center" Margin="5" FontSize="14"/>
-        <TextBlock x:Name="tbDesc" TextWrapping="Wrap" Text="Profile info" TextAlignment="Center" Margin="5"/>
+        <TextBlock x:Name="tbDesc" TextWrapping="Wrap" Text="Profile info" TextAlignment="Center" Margin="5" Grid.Row="1"/>
 
-        <GroupBox x:Name="grpInfo" Header="Contact info" Margin="5">
+        <GroupBox x:Name="grpInfo" Header="Contact info" Margin="5" Grid.Row="2">
             <Grid Margin="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -43,9 +49,17 @@
 
 
             </Grid>
-
         </GroupBox>
-        <Grid x:Name="gridAlt" Margin="5">
+
+        <TextBlock x:Name="tbTou" TextWrapping="Wrap" TextAlignment="Center"  Margin="5" Grid.Row="3">
+            By clicking 'Next' you agree to the 
+            <Hyperlink RequestNavigate="Hyperlink_TOU" NavigateUri="www.google.com">
+               Terms of Use
+            </Hyperlink>
+            of the institution
+        </TextBlock>
+
+        <Grid x:Name="gridAlt" Margin="5" Grid.Row="4" VerticalAlignment="Bottom">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -55,14 +69,7 @@
 
 
         </Grid>
-        <TextBlock x:Name="tbTou" TextWrapping="Wrap" TextAlignment="Center"  Margin="5">
-            By clicking 'Next' you agree to the 
-            <Hyperlink RequestNavigate="Hyperlink_TOU" NavigateUri="www.google.com">
-               Terms of Use
-            </Hyperlink>
-            of the institution
-        </TextBlock>
 
 
-    </StackPanel>
+    </Grid>
 </Page>
