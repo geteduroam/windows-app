@@ -446,17 +446,18 @@ namespace WpfApp
         private void OnWindowClose(object sender, CancelEventArgs e)
         {
             Debug.WriteLine("Event: OnClose");
-            e.Cancel = true; // don't shutdown
-            //WindowState = WindowState.Minimized;
+            Debug.WriteLine("Sender: " + sender.ToString());
+            Debug.WriteLine("IsShuttingDown: " + IsShuttingDown);
 
-            TaskbarIcon.ShowBalloonTip(
-                title: "title",
-                message: "message",
-                symbol: BalloonIcon.Error);
+            e.Cancel = true; // Cancels Window.Close(), but not Application.Shutdown()
 
-            TaskbarIcon.HideBalloonTip();
+            // TODO: dont do this on Application.Shutdown()
+            TaskbarIcon.ShowBalloonTip( // TODO: doesn't show for me, but does show for simon, RDP might be the culprit
+                title: "geteduroam",
+                message: "geteduroam is still running here in the tray!",
+                symbol: BalloonIcon.Info);
 
-            Hide();
+            Hide(); // window
         }
 
         private void tb_TrayLeftMouseDown(object sender, RoutedEventArgs e)
@@ -464,20 +465,20 @@ namespace WpfApp
             Debug.WriteLine("Event: TrayLeftMouseDown");
             if (!IsVisible)
             {
-                Show();
-                Activate();
+                Show(); // window
+                Activate(); // focus window
             }
             else
             {
-                Hide();
+                Hide(); // window
             }
         }
 
         private void MenuItem_Click_Show(object sender, RoutedEventArgs e)
 		{
             Debug.WriteLine("Event: MenuItem_Click_Show");
-            Show();
-            Activate();
+            Show(); // window
+            Activate(); // focus window
         }
 
         private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
