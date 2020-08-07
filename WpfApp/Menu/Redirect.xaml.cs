@@ -43,7 +43,7 @@ namespace WpfApp.Menu
 			string navigateUri = hl.NavigateUri.ToString();
 			Process.Start(new ProcessStartInfo(navigateUri));
 			e.Handled = true;
-			System.Windows.Application.Current.Shutdown();
+			mainWindow.Shutdown();
 		}
 	}
 }
