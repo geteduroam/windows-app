@@ -24,6 +24,7 @@
         <tb:TaskbarIcon x:Name="TaskbarIcon"
                 ToolTipText="geteduroam"
                 TrayLeftMouseDown="tb_TrayLeftMouseDown"
+                TrayMouseDoubleClick="TaskbarIcon_TrayMouseDoubleClick"
                 Visibility="Visible"
                 IconSource="geteduroam.ico">
             <tb:TaskbarIcon.ContextMenu>
