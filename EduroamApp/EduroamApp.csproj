@@ -78,9 +78,98 @@
   <PropertyGroup>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\x86\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>8.0</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\Release\x86\</OutputPath>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>8.0</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\Debug\x64\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\Release\x64\</OutputPath>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v141</PlatformToolset>
     <OutputPath>bin\Debug\</OutputPath>
+    <WindowsSDKDesktopARMSupport>true</WindowsSDKDesktopARMSupport>
+    <RuntimeIdentifiers>win-arm</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v141</PlatformToolset>
+    <OutputPath>bin\Debug\</OutputPath>
+    <WindowsSDKDesktopARMSupport>true</WindowsSDKDesktopARMSupport>
+    <RuntimeIdentifiers>win-arm</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v141</PlatformToolset>
+    <OutputPath>bin\Debug\</OutputPath>
+    <WindowsSDKDesktopARM64Support>true</WindowsSDKDesktopARM64Support>
+    <RuntimeIdentifiers>win-arm64</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v141</PlatformToolset>
+    <OutputPath>bin\Debug\</OutputPath>
+    <WindowsSDKDesktopARM64Support>true</WindowsSDKDesktopARM64Support>
+    <RuntimeIdentifiers>win-arm64</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <OutputPath>bin\Debug\ARM64\</OutputPath>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <RuntimeIdentifiers>win-arm64</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <OutputPath>bin\Debug\ARM\</OutputPath>
+    <PlatformTarget>ARM</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <RuntimeIdentifiers>win-arm</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <OutputPath>bin\Release\ARM64\</OutputPath>
+    <Optimize>true</Optimize>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <RuntimeIdentifiers>win-arm64</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <OutputPath>bin\Release\ARM\</OutputPath>
+    <Optimize>true</Optimize>
+    <PlatformTarget>ARM</PlatformTarget>
+    <Prefer32Bit>true</Prefer32Bit>
+    <RuntimeIdentifiers>win-arm</RuntimeIdentifiers>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\geteduroam.ico</ApplicationIcon>
