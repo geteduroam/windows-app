@@ -91,6 +91,7 @@ namespace EduroamConfigure
                     userFacingMessage: "HTTP request returned nothing.");
 
             // check if user chose to reject authorization
+            // responseUrlQueryParams.Get("error") == "access_denied"
             if (responseUrl.Contains("access_denied")) // TODO: this check sucks
                 throw new EduroamAppUserError("oauth access denied",
                     userFacingMessage: "Authorization rejected. Please try again.");

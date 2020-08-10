@@ -152,7 +152,7 @@ namespace WpfApp.Menu
                     ConnectWithNothing();
                     break;
                 case ConType.CertAndCertPass:
-                    ConnectWithCertAndPass();
+                    ConnectWithCertAndCertPass();
                     break;
                 case ConType.CertPass:
                     ConnectWithCertPass();
@@ -160,7 +160,7 @@ namespace WpfApp.Menu
             }
         }
 
-        public async void ConnectWithCertAndPass()
+        public async void ConnectWithCertAndCertPass()
         {
             var success = eapConfig.AddClientCertificate(filepath, pbCertBrowserPassword.Password);
 
