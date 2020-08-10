@@ -81,7 +81,7 @@ namespace WpfApp
 		{
 			InitializeComponent();
 			Load();
-
+			if (App.StartHiddenInTray) Hide();
 		}
 
 		private void Load()
@@ -423,6 +423,8 @@ namespace WpfApp
 				return null;
 			}
 		}
+
+		private static App App { get => (App)Application.Current; }
 
 
 		// TODO: make new responesurl thing to receive
