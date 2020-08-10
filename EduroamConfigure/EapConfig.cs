@@ -232,7 +232,6 @@ namespace EduroamConfigure
                 try
                 {
                     using var testCertificate = new X509Certificate2(rawCertificateData, passphrase);
-                    //_ = testCertificate.PrivateKey; // bad test. Unable to parse some formats...
                 }
                 catch (CryptographicException ex)
                 {

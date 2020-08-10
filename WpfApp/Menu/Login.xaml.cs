@@ -206,24 +206,7 @@ namespace WpfApp.Menu
 
             if (success)
             {
-                bool installed = await Task.Run(() => InstallEapConfig(eapConfig));
-                if (installed)
-                {
-                    bool connected = await Connect();
-                    if (connected)
-                    {
-                        tbStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
-                        mainWindow.btnNext.Content = "Close";
-                    }
-                    else
-                    {
-                        tbStatus.Text = "Connection to eduroam failed.";
-                    }
-                }
-                else
-                {
-                    tbStatus.Text = "Could not install EAP-configuration.";
-                }
+                _ = await ConnectAndUpdateUI();
             }
             else
             {
@@ -241,24 +224,7 @@ namespace WpfApp.Menu
 
             if (success)
             {
-                bool installed = await Task.Run(() => InstallEapConfig(eapConfig));
-                if (installed)
-                {
-                    bool connected = await Connect();
-                    if (connected)
-                    {
-                        tbStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
-                        mainWindow.btnNext.Content = "Close";
-                    }
-                    else
-                    {
-                        tbStatus.Text = "Connection to eduroam failed.";
-                    }
-                }
-                else
-                {
-                    tbStatus.Text = "Could not install EAP-configuration.";
-                }
+                _ = await ConnectAndUpdateUI();
             }
             else
             {
@@ -269,7 +235,7 @@ namespace WpfApp.Menu
                 mainWindow.btnNext.IsEnabled = true;
             }
         }
-        
+
         public async void ConnectWithLogin()
         {
             if (credentialsValid())
@@ -288,24 +254,9 @@ namespace WpfApp.Menu
 
                 pbCredPassword.IsEnabled = false;
                 tbUsername.IsEnabled = false;
-                bool installed = await Task.Run(() => InstallEapConfig(eapConfig, username, password));
-                if (installed)
-                {
-                    bool connected = await Connect(); 
-                    if (connected)
-                    {
-                        tbStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
-                        mainWindow.btnNext.Content = "Close";
-                    }
-                    else
-                    {
-                        tbStatus.Text = "Connection to eduroam failed.";
-                    }
-                }
-                else
-                {
-                    tbStatus.Text = "Could not install EAP-configuration.";         
-                }
+
+                _ = await ConnectAndUpdateUI(username, password);
+
                 pbCredPassword.IsEnabled = true;
                 tbUsername.IsEnabled = true;
                 if (!dispatcherTimer.IsEnabled)
@@ -317,12 +268,17 @@ namespace WpfApp.Menu
             else
             {
                 grpRules.Visibility = string.IsNullOrEmpty(tbRules.Text) ? Visibility.Hidden : Visibility.Visible;
-            }         
+            }
         }
 
-        public async void ConnectWithNothing()
+        public void ConnectWithNothing()
         {
-            bool installed = await Task.Run(() => InstallEapConfig(eapConfig));
+            _ = ConnectAndUpdateUI();
+        }
+
+        public async Task<bool> ConnectAndUpdateUI(string username = null, string password = null)
+        {
+            bool installed = await Task.Run(() => InstallEapConfig(eapConfig, username, password));
             if (installed)
             {
                 bool connected = await Connect();
@@ -334,18 +290,19 @@ namespace WpfApp.Menu
                 else
                 {
                     tbStatus.Text = "Connection to eduroam failed.";
-                    mainWindow.btnNext.Content = "Connect";
                 }
             }
             else
             {
-                tbStatus.Text = "Could not install config";
+                tbStatus.Text = "Could not install EAP-configuration";
                 mainWindow.btnNext.Content = "Connect";
             }
             if (!dispatcherTimer.IsEnabled)
             {
                 mainWindow.btnNext.IsEnabled = true;
             }
+
+            return true; // to make it await-able
         }
 
 
@@ -467,7 +424,7 @@ namespace WpfApp.Menu
                 this.Dispatcher.Invoke(() => {
                     mainWindow.btnNext.IsEnabled = false;
                     stpTime.Visibility = Visibility.Visible;
-                    tbStatus.Visibility = Visibility.Collapsed;                    
+                    tbStatus.Visibility = Visibility.Collapsed;
                 });
             }
         }
@@ -536,7 +493,7 @@ namespace WpfApp.Menu
         private void pbCertBrowserPassword_GotFocus(object sender, RoutedEventArgs e)
         {
             focused = pbCertBrowserPassword;
-            
+
         }
 
         private void btnFile_Click(object sender, RoutedEventArgs e)

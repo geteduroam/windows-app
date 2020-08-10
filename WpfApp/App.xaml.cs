@@ -17,6 +17,8 @@ namespace WpfApp
     {
         private const string SingleInstanceUid = "7aab8621-df45-4eb5-85c3-c70c06e8a22e";
 
+        public bool StartHiddenInTray { get; private set; } = false;
+
         [STAThread]
         public static void Main(string[] args)
         {
@@ -53,7 +55,7 @@ namespace WpfApp
                 Installer.ExitAndUninstallSelf();
             else
                 return false;
-            return true;
+            return contains("/close");
         }
 
         /// <summary>
@@ -65,13 +67,16 @@ namespace WpfApp
         {
             // shorthand
             bool contains(string check) =>
-                e.Args.Skip(1).Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase));
+                e == null ? false :
+                e.Args.Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase));
 
-            if (contains("/close"))
-                Shutdown();
-            // TODO
-            //if (contains("/background")) 
+            if (contains("/background")) // TODO && Installer.IsRunningFromInstallLocation)
+            {
+                Debug.WriteLine("Starting hidden in tray");
+                StartHiddenInTray = true;
+            }
 
+            base.OnStartup(e);
         }
 
         /// <summary>
