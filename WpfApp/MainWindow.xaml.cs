@@ -579,7 +579,6 @@ namespace WpfApp
 			PreviousPage();
 		}
 
-
 		/// <summary>
 		/// Logic to minimize to tray
 		/// </summary>
