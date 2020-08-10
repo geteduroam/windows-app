@@ -132,7 +132,38 @@ namespace WpfApp.Menu
 			}
 
 			bool fieldsValid = (!string.IsNullOrEmpty(pbCredPassword.Password) && usernameValid) || IsConnected;
-			mainWindow.btnNext.IsEnabled = fieldsValid;
+			bool isvalid = credentialsValid();
+			mainWindow.btnNext.IsEnabled = isvalid;
+			return isvalid;
+		}
+
+		private bool credentialsValid()
+		{
+
+			string username = tbUsername.Text;
+			if (string.IsNullOrEmpty(username))
+			{
+				usernameValid = false;
+				tbRules.Text = "";
+				mainWindow.btnNext.IsEnabled = false;
+				return false;
+			}
+
+			// if username does not contain '@' and realm is given then show realm added to end
+			if ((!username.Contains('@') && !string.IsNullOrEmpty(realm)) || hint)
+			{
+				username += "@" + realm;
+			}
+
+			var brokenRules = IdentityProviderParser.GetRulesBroken(username, realm, hint).ToList();
+			usernameValid = !brokenRules.Any();
+			tbRules.Text = "";
+			if (!usernameValid)
+			{
+				tbRules.Text = string.Join("\n", brokenRules); ;
+			}
+
+			bool fieldsValid = (!string.IsNullOrEmpty(pbCredPassword.Password) && usernameValid) || IsConnected;
 			return fieldsValid;
 		}
 		/// <summary>
@@ -241,7 +272,7 @@ namespace WpfApp.Menu
 
 		public async void ConnectWithLogin()
 		{
-			if (ValidateCredFields())
+			if (credentialsValid())
 			{
 				string username = tbUsername.Text;
 				if ((!username.Contains('@') && !string.IsNullOrEmpty(realm)) || hint)
