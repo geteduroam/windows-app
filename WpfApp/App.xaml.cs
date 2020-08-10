@@ -67,7 +67,8 @@ namespace WpfApp
 		{
 			// shorthand
 			bool contains(string check) =>
-				e.Args.Skip(1).Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase));
+				e == null ? false :
+				e.Args.Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase));
 
 			if (contains("/background")) // TODO && Installer.IsRunningFromInstallLocation)
 			{

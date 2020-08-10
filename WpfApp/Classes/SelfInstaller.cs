@@ -278,6 +278,8 @@ namespace WpfApp
 		/// </summary>
 		public T ExitAndUninstallSelf<T>(Func<bool, T> shutdown, bool doDeleteSelf = false)
 		{
+			_ = shutdown ?? throw new ArgumentNullException(paramName: nameof(shutdown));
+
 			if (!EduroamConfigure.ConnectToEduroam.RemoveAllProfiles())
 				return shutdown(false);
 			if (!EduroamConfigure.CertificateStore.UninstallAllInstalledCertificates())
@@ -313,7 +315,8 @@ namespace WpfApp
 				var extinguishMe = new ProcessStartInfo
 				{
 					FileName = "cmd.exe",
-					Arguments = "/C choice /C Y /N /D Y /T 3 " + // TODO: escape the following arguments
+					Arguments = "/C choice /C Y /N /D Y /T 5 " +
+						// TODO: escape the following arguments
 						"& Del " + InstallExePath +
 						"& Del /Q " + InstallDir +
 						"& rmdir " + InstallDir,

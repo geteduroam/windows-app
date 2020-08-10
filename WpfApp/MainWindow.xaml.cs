@@ -581,11 +581,8 @@ namespace WpfApp
 			PreviousPage();
 		}
 
-		/// <summary>
-		/// Logic to minimize to tray
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
+		// Logic to minimize to tray:
+
 		private void OnWindowClose(object sender, CancelEventArgs e)
 		{
 			Debug.WriteLine("Event: OnClose");
@@ -627,6 +624,8 @@ namespace WpfApp
 			if (!IsVisible)
 			{
 				Show(); // window
+				if (WindowState == WindowState.Minimized)
+					WindowState = WindowState.Normal;
 				Activate(); // focus window
 			}
 			else
@@ -639,10 +638,13 @@ namespace WpfApp
 		{
 			Debug.WriteLine("Event: MenuItem_Click_Show");
 			Show(); // window
+			if (WindowState == WindowState.Minimized)
+				WindowState = WindowState.Normal;
 			Activate(); // focus window
 		}
 
 		private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
 			=> Shutdown();
+
 	}
 }
