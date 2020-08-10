@@ -1,6 +1,7 @@
 using Microsoft.Win32;
 using Microsoft.Win32.TaskScheduler;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -171,7 +172,7 @@ namespace WpfApp
 		/// <summary>
 		/// If false, it is probably running from %HOME%/Downloads or something
 		/// </summary>
-		public bool IsRunningFromInstallDir
+		public bool IsRunningFromInstallLocation
 		{ get => InstallExePath == ThisExePath; }
 
 		/// <summary>
@@ -181,7 +182,7 @@ namespace WpfApp
 		public void InstallToUserLocal()
 		{
 			// avoid uneccesary/illegal updates
-			if (IsRunningFromInstallDir) // sanity check, should never happen
+			if (IsRunningFromInstallLocation) // sanity check, should never happen
 				throw new EduroamConfigure.EduroamAppUserError("already installed", // TODO: use a more fitting exception?
 					"This application has already been installed. " +
 					"Installing it again won't have any effect.");
@@ -309,7 +310,7 @@ namespace WpfApp
 			if (File.Exists(InstallExePath) && doDeleteSelf)
 			{
 				// this process delays 3 seconds then deletes the exe file
-				var killme = new ProcessStartInfo
+				var extinguishMe = new ProcessStartInfo
 				{
 					FileName = "cmd.exe",
 					Arguments = "/C choice /C Y /N /D Y /T 3 " + // TODO: escape the following arguments
@@ -320,11 +321,27 @@ namespace WpfApp
 					CreateNoWindow = true,
 					WorkingDirectory = "C:\\"
 				};
-				Process.Start(killme);
+				Process.Start(extinguishMe);
 			}
 
 			// Quit
 			return shutdown(true);
+		}
+
+		public static void DelayedStart(string command, List<string> args, int delay = 5)
+		{
+			// TODO: escape the command and args. Escaping in CMD is not trivial
+
+			Process.Start(new ProcessStartInfo
+				{
+					FileName = "cmd.exe",
+					Arguments = "/C choice /C Y /N /D Y /T " + delay.ToString(CultureInfo.InvariantCulture) +
+						" & " + command + " " + string.Join(" ", args),
+					WindowStyle = ProcessWindowStyle.Hidden,
+					CreateNoWindow = true,
+					WorkingDirectory = "C:\\"
+				}
+			);
 		}
 	}
 }
