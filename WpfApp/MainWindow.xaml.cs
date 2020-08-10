@@ -540,12 +540,12 @@ namespace WpfApp
             Debug.WriteLine("Sender: " + sender.ToString());
             Debug.WriteLine("{0}: {1}", nameof(IsShuttingDown), IsShuttingDown);
             Debug.WriteLine("{0}: {1}", nameof(App.Installer.IsInstalled), App.Installer.IsInstalled);
-            Debug.WriteLine("{0}: {1}", nameof(App.Installer.IsRunningFromInstallLocation), App.Installer.IsRunningFromInstallLocation);
+            Debug.WriteLine("{0}: {1}", nameof(App.Installer.IsRunningInInstallLocation), App.Installer.IsRunningInInstallLocation);
 
             if (!App.Installer.IsInstalled)
                 return; // do not cancel the Closing event
 
-            if (App.Installer.IsInstalled && !App.Installer.IsRunningFromInstallLocation)
+            if (App.Installer.IsInstalled && !App.Installer.IsRunningInInstallLocation)
             {
                 // this happens after the first time setup
                 SelfInstaller.DelayedStart(App.Installer.StartMinimizedCommand);

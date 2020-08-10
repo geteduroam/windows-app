@@ -172,7 +172,7 @@ namespace WpfApp
 		/// <summary>
 		/// If false, it is probably running from %HOME%/Downloads or something
 		/// </summary>
-		public bool IsRunningFromInstallLocation
+		public bool IsRunningInInstallLocation
 		{ get => InstallExePath == ThisExePath; }
 
 		/// <summary>
@@ -182,7 +182,7 @@ namespace WpfApp
 		public void InstallToUserLocal()
 		{
 			// avoid uneccesary/illegal updates
-			if (IsRunningFromInstallLocation) // sanity check, should never happen
+			if (IsRunningInInstallLocation) // sanity check, should never happen
 				throw new EduroamConfigure.EduroamAppUserError("already installed", // TODO: use a more fitting exception?
 					"This application has already been installed. " +
 					"Installing it again won't have any effect.");
