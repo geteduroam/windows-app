@@ -99,7 +99,7 @@ namespace WpfApp
 		private static AssemblyName AssemblyName
 		{ get => Assembly.GetExecutingAssembly().GetName(); }
 
-		private static readonly SelfInstaller Installer = new SelfInstaller(
+		public static readonly SelfInstaller Installer = new SelfInstaller(
 			applicationIdentifier: "GetEduroam",
 			applicationMetadata: new SelfInstaller.ApplicationMeta()
 			{

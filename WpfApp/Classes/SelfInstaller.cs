@@ -14,7 +14,7 @@ namespace WpfApp
 	/// Because reinventing the wheel is fun.
 	/// This is probably not achievable with the provided installer?
 	/// </summary>
-	class SelfInstaller
+	public class SelfInstaller
 	{
 		private readonly string ApplicationIdentifier;
 		private ApplicationMeta ApplicationMetadata;
@@ -34,33 +34,31 @@ namespace WpfApp
 		public struct ApplicationMeta
 		{
 			// See https://docs.microsoft.com/en-us/windows/win32/msi/uninstall-registry-key
-			private string DisplayIcon;         // [SET AUTOMATICALLY]
-			public  string DisplayName;         // ProductName
-			private string DisplayVersion       // [SET AUTOMATICALLY] Derived from ProductVersion
-			{ get => Version; }
-			public  string Publisher;           // Manufacturer
-			public  string Version;             // Derived from ProductVersion
-			public  string VersionMajor;        // Derived from ProductVersion
-			public  string VersionMinor;        // Derived from ProductVersion
-			public  string HelpLink;            // ARPHELPLINK
-			public  string HelpTelephone;       // ARPHELPTELEPHONE
-			private string InstallDate          // [SET AUTOMATICALLY] The last time this product received service.
-			{ get => DateTime.Today.ToString("yyyyMMdd", CultureInfo.InvariantCulture); }
-			private string InstallLocation;     // [SET AUTOMATICALLY] ARPINSTALLLOCATION
-			public  string InstallSource;       // SourceDir
-			public  string URLInfoAbout;        // ARPURLINFOABOUT
-			public  string URLUpdateInfo;       // ARPURLUPDATEINFO
-			public  string AuthorizedCDFPrefix; // ARPAUTHORIZEDCDFPREFIX
-			public  string Comments;            // [NICE TO HAVE] ARPCOMMENTS. Comments provided to the Add or Remove Programs control panel.
-			public  string Contact;             // [NICE TO HAVE] ARPCONTACT. Contact provided to the Add or Remove Programs control panel.
-			public  uint?  Language;            // ProductLanguage
-			private string ModifyPath;          // [SET AUTOMATICALLY] "Determined and set by the Windows Installer."
-			public  string Readme;              // [NICE TO HAVE] ARPREADME. Readme provided to the Add or Remove Programs control panel.
-			private string UninstallString;     // [SET AUTOMATICALLY] "Determined and set by Windows Installer."
-			public  string SettingsIdentifier;  // MSIARPSETTINGSIDENTIFIER. contains a semi-colon delimited list of the registry locations where the application stores a user's settings and preferences.
-			public  bool?  NoRepair;            // REG_DWORD
-			public  bool?  NoModify;            // REG_DWORD
-			private uint?  EstimatedSize;       // [SET AUTOMATICALLY] REG_DWORD
+			private string DisplayIcon;                       // [SET AUTOMATICALLY]
+			public  string DisplayName          { get; set; } // ProductName
+			private string DisplayVersion       { get => Version; } // [SET AUTOMATICALLY] Derived from ProductVersion
+			public  string Publisher            { get; set; } // Manufacturer
+			public  string Version              { get; set; } // Derived from ProductVersion
+			public  string VersionMajor         { get; set; } // Derived from ProductVersion
+			public  string VersionMinor         { get; set; } // Derived from ProductVersion
+			public  string HelpLink             { get; set; } // ARPHELPLINK
+			public  string HelpTelephone        { get; set; } // ARPHELPTELEPHONE
+			private string InstallDate;                       // [SET AUTOMATICALLY] The last time this product received service.
+			private string InstallLocation;                   // [SET AUTOMATICALLY] ARPINSTALLLOCATION
+			public  string InstallSource        { get; set; } // SourceDir
+			public  string URLInfoAbout         { get; set; } // ARPURLINFOABOUT
+			public  string URLUpdateInfo        { get; set; } // ARPURLUPDATEINFO
+			public  string AuthorizedCDFPrefix  { get; set; } // ARPAUTHORIZEDCDFPREFIX
+			public  string Comments             { get; set; } // [NICE TO HAVE] ARPCOMMENTS. Comments provided to the Add or Remove Programs control panel.
+			public  string Contact              { get; set; } // [NICE TO HAVE] ARPCONTACT. Contact provided to the Add or Remove Programs control panel.
+			public  uint?  Language             { get; set; } // ProductLanguage
+			private string ModifyPath;                        // [SET AUTOMATICALLY] "Determined and set by the Windows Installer."
+			public  string Readme               { get; set; } // [NICE TO HAVE] ARPREADME. Readme provided to the Add or Remove Programs control panel.
+			private string UninstallString;                   // [SET AUTOMATICALLY] "Determined and set by Windows Installer."
+			public  string SettingsIdentifier   { get; set; } // MSIARPSETTINGSIDENTIFIER. contains a semi-colon delimited list of the registry locations where the application stores a user's settings and preferences.
+			public  bool?  NoRepair             { get; set; } // REG_DWORD
+			public  bool?  NoModify             { get; set; } // REG_DWORD
+			private uint?  EstimatedSize;                     // [SET AUTOMATICALLY] REG_DWORD
 
 
 			// for SelfInstaller to use:
@@ -68,8 +66,10 @@ namespace WpfApp
 			public void SetRequired(
 				SelfInstaller installer)
 			{
+				_ = installer ?? throw new ArgumentNullException(paramName: nameof(installer));
 				DisplayIcon     = installer.InstallExePath;
 				InstallLocation = installer.InstallDir;
+				InstallDate     = DateTime.Today.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
 				UninstallString = installer.UninstallCommand;
 				EstimatedSize   = (uint)new FileInfo(SelfInstaller.ThisExePath).Length;
 				ModifyPath      = null;
@@ -121,7 +121,7 @@ namespace WpfApp
 		}
 
 
-		// Shorhands
+		// Shorthands
 
 		public static string AppdataLocalDir
 		{ get => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData); }
