@@ -229,6 +229,7 @@ namespace WpfApp
 					if (Main.Content == pageLogin)
 					{
 						pageLogin.IgnorePasswordChange = true;
+						pageLogin.dispatcherTimer.Stop();
 					}
 					LoadPageCertificateOverview();
 					break;
