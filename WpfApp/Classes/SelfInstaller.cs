@@ -328,15 +328,17 @@ namespace WpfApp
 			return shutdown(true);
 		}
 
-		public static void DelayedStart(string command, List<string> args, int delay = 5)
+		public static void DelayedStart(string command, int delay = 5)
 		{
-			// TODO: escape the command and args. Escaping in CMD is not trivial
+			_ = command ?? throw new ArgumentNullException(paramName: nameof(command));
 
+			// TODO: escape the command. Escaping in CMD is not trivial
+			Debug.WriteLine("START: {0}", command, "");
 			Process.Start(new ProcessStartInfo
 				{
 					FileName = "cmd.exe",
 					Arguments = "/C choice /C Y /N /D Y /T " + delay.ToString(CultureInfo.InvariantCulture) +
-						" & " + command + " " + string.Join(" ", args),
+						" & " + command,
 					WindowStyle = ProcessWindowStyle.Hidden,
 					CreateNoWindow = true,
 					WorkingDirectory = "C:\\"
