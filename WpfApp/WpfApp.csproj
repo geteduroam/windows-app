@@ -7,7 +7,7 @@
     <ProjectGuid>{88939F1B-5677-49B1-BC07-71605598494A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>WpfApp</RootNamespace>
-    <AssemblyName>WpfApp</AssemblyName>
+    <AssemblyName>geteduroam</AssemblyName>
     <LangVersion>8.0</LangVersion>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
