@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -15,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using WpfApp.Classes;
+using System.Globalization;
 
 namespace WpfApp.Menu
 {
@@ -37,6 +39,8 @@ namespace WpfApp.Menu
         private bool hint;
         private Control focused;
         private string filepath;
+        private DateTime certValid;
+        public DispatcherTimer dispatcherTimer { get; set; }
         public bool IsConnected { get; set; }
         public bool IgnorePasswordChange { get; set; }
 
@@ -60,9 +64,14 @@ namespace WpfApp.Menu
             gridCred.Visibility = Visibility.Collapsed;
             gridCertPassword.Visibility = Visibility.Collapsed;
             gridCertBrowser.Visibility = Visibility.Collapsed;
+            stpTime.Visibility = Visibility.Collapsed;
             eapConfig.AuthenticationMethods.First();
             mainWindow.btnNext.IsEnabled = false;
             mainWindow.btnNext.Content = "Connect";
+
+            dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
 
             if (eapConfig.NeedsLoginCredentials())
             {
@@ -189,7 +198,10 @@ namespace WpfApp.Menu
             {
                 tbStatus.Text = "Incorrect password";
             }
-            mainWindow.btnNext.IsEnabled = true;
+            if (!dispatcherTimer.IsEnabled)
+            {
+                mainWindow.btnNext.IsEnabled = true;
+            }
         }
 
         public async void ConnectWithCertPass()
@@ -221,7 +233,10 @@ namespace WpfApp.Menu
             {
                 tbStatus.Text = "Incorrect password";
             }
-            mainWindow.btnNext.IsEnabled = true;
+            if (!dispatcherTimer.IsEnabled)
+            {
+                mainWindow.btnNext.IsEnabled = true;
+            }
         }
         
         public async void ConnectWithLogin()
@@ -262,7 +277,10 @@ namespace WpfApp.Menu
                 }
                 pbCredPassword.IsEnabled = true;
                 tbUsername.IsEnabled = true;
-                mainWindow.btnNext.IsEnabled = true;
+                if (!dispatcherTimer.IsEnabled)
+                {
+                    mainWindow.btnNext.IsEnabled = true;
+                }
                 if (focused != null) focused.Focus();
             }
             else
@@ -293,7 +311,10 @@ namespace WpfApp.Menu
                 tbStatus.Text = "Could not install config";
                 mainWindow.btnNext.Content = "Connect";
             }
-            mainWindow.btnNext.IsEnabled = true;
+            if (!dispatcherTimer.IsEnabled)
+            {
+                mainWindow.btnNext.IsEnabled = true;
+            }
         }
 
 
@@ -350,6 +371,16 @@ namespace WpfApp.Menu
                     if (!authMethodInstaller.InstallProfile(username, password))
                         continue; // failed, try the next method
 
+                    certValid = authMethodInstaller.GetTimeWhenValid().From;
+                    if (DateTime.Now <= certValid)
+                    {
+                        dispatcherTimer_Tick(dispatcherTimer, new EventArgs());
+                        dispatcherTimer.Start();
+                        return false;
+                    }
+
+
+
                     success = true;
                     break;
                 }
@@ -384,10 +415,36 @@ namespace WpfApp.Menu
             return false;
         }
 
+
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            this.Dispatcher.Invoke(() => {
+                tbLocalTime.Text = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+                tbValidTime.Text = certValid.ToString(CultureInfo.InvariantCulture);
+            });
+
+            if (DateTime.Now > certValid)
+            {
+                dispatcherTimer.Stop();
+                this.Dispatcher.Invoke(() => {
+                    stpTime.Visibility = Visibility.Collapsed;
+                    ConnectClick();
+                });
+            }
+            else
+            {
+                this.Dispatcher.Invoke(() => {
+                    mainWindow.btnNext.IsEnabled = false;
+                    stpTime.Visibility = Visibility.Visible;
+                    tbStatus.Visibility = Visibility.Collapsed;                    
+                });
+            }
+        }
+
         private void tbUsername_TextChanged(object sender, TextChangedEventArgs e)
         {
-            tbStatus.Visibility = Visibility.Hidden;
-            grpRules.Visibility = Visibility.Hidden;
+            tbStatus.Visibility = Visibility.Collapsed;
+            grpRules.Visibility = Visibility.Collapsed;
             if (!hint) tbRealm.Visibility = Visibility.Hidden;
             ValidateCredFields();
         }
@@ -460,5 +517,13 @@ namespace WpfApp.Menu
             ValidateCertBrowserFields();
         }
 
+        private void btnCancelWait_Click(object sender, RoutedEventArgs e)
+        {
+            dispatcherTimer.Stop();
+            stpTime.Visibility = Visibility.Collapsed;
+            tbStatus.Visibility = Visibility.Visible;
+            tbStatus.Text = "Connecting process was cancelled";
+            mainWindow.btnNext.IsEnabled = true;
+        }
     }
 }

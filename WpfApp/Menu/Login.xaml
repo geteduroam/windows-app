@@ -126,7 +126,16 @@
                 </TextBlock.Style>
             </TextBlock>
         </Grid>
-
         <TextBlock x:Name="tbStatus" TextWrapping="Wrap" Text="" TextAlignment="Center" Margin="5" />
+
+        <StackPanel x:Name="stpTime">
+            <TextBlock TextWrapping="Wrap" Text="Your computers time is" TextAlignment="Center" Margin="5"/>
+            <TextBlock x:Name="tbLocalTime" TextWrapping="Wrap" Text="localtime" TextAlignment="Center" Margin="5"/>
+            <TextBlock TextWrapping="Wrap" Text="The certificate is not valid until" TextAlignment="Center" Margin="5"/>
+            <TextBlock x:Name="tbValidTime" TextWrapping="Wrap" Text="localtime" TextAlignment="Center" Margin="5"/>
+            <TextBlock  TextWrapping="Wrap" Text="Change your computers time or wait for it to catch up" TextAlignment="Center" Margin="5"/>
+            <Button x:Name="btnCancelWait" Style="{StaticResource WhiteButtonStyle}" Content="Cancel" 
+                Height="23" VerticalAlignment="Center" Margin="5" Click="btnCancelWait_Click" HorizontalAlignment="Center" Width="60"/>
+        </StackPanel>
     </StackPanel>
 </Page>
