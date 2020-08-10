@@ -24,6 +24,7 @@ namespace WpfApp
 		{
 			if (SingleInstance<App>.InitializeAsFirstInstance(SingleInstanceUid))
 			{
+				// making it this far means that we are THE single instance
 				try
 				{
 					if (PreGuiCommandLineArgs(args))
