@@ -69,8 +69,9 @@ namespace EduroamConfigure
 		public Uri GetRedirectUri()
 			=> redirectUri;
 
-		public (string, string) ParseAndExtractAuthorizationCode(Uri responseUrl)
-			=> ParseAndExtractAuthorizationCode(responseUrl?.ToString());
+		[Obsolete("Send in a Uri instead")]
+		public (string, string) ParseAndExtractAuthorizationCode(string responseUrl)
+			=> ParseAndExtractAuthorizationCode(new Uri(responseUrl));
 
 
 		/// <summary>
@@ -78,31 +79,30 @@ namespace EduroamConfigure
 		/// </summary>
 		/// <param name="responseUrl">URL response from authentication.</param>
 		/// <returns>(string authorizationCode, string codeVerifier)</returns>
-		[Obsolete("Send in a Uri instead")]
-		public (string, string) ParseAndExtractAuthorizationCode(string responseUrl) // TODO, change to Uri
+		public (string, string) ParseAndExtractAuthorizationCode(Uri responseUrl) // TODO, change to Uri
 		{
-			// check if url is not empty
-			if (string.IsNullOrEmpty(responseUrl))
+			// check if url is valid
+			if (!(responseUrl?.IsWellFormedOriginalString() ?? false)
+					|| string.IsNullOrEmpty(responseUrl?.ToString()))
 				throw new EduroamAppUserError("oauth empty reponse url",
-					userFacingMessage: "HTTP request returned nothing.");
+					userFacingMessage: "HTTP request returned nothing valid.");
+
+			// Extract query parameters from response url
+			var queryParams = HttpUtility.ParseQueryString(responseUrl.Query);
 
 			// check if user chose to reject authorization
-			// responseUrlQueryParams.Get("error") == "access_denied"
-			if (responseUrl.Contains("access_denied")) // TODO: this check sucks
+			if (queryParams.Get("error") == "access_denied")
 				throw new EduroamAppUserError("oauth access denied",
 					userFacingMessage: "Authorization rejected. Please try again.");
 
-			// Extract query parameters from response url
-			var responseUrlQueryParams = HttpUtility.ParseQueryString(new Uri(responseUrl).Query);
-
 			// get and check state from response url and compares it to original state
-			string responseState = responseUrlQueryParams.Get("state");
-			if (responseState != state)
+			var state = queryParams.Get("state");
+			if (state != this.state)
 				throw new EduroamAppUserError("oauth state mismatch",
 					userFacingMessage: "State from request and response do not match. Aborting operation.");
 
 			// get and check code from response url
-			string code = responseUrlQueryParams.Get("code");
+			var code = queryParams.Get("code");
 			if (string.IsNullOrEmpty(code))
 				throw new EduroamAppUserError("oauth code missing",
 					userFacingMessage: "Response string doesn't contain code. Aborting operation.");
