@@ -342,15 +342,14 @@ namespace WpfApp.Menu
             {
                 MessageBox.Show(
                     "The profile you have selected is not supported by this application.",
-                    "No supported authentification method ws found.", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    "No supported authentification method was found.", 
+                    MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 return false;
             }
-
 
             // test
             ConnectToEduroam.RemoveAllProfiles();
             mainWindow.ProfileCondition = MainWindow.ProfileStatus.NoneConfigured;
-
 
             bool success = false;
 
@@ -376,16 +375,8 @@ namespace WpfApp.Menu
                         return false;
                     }
 
-
-
                     success = true;
                     break;
-                }
-
-                // TODO: move this out of function
-                if (!EduroamNetwork.IsEduroamAvailable(eapConfig))
-                {
-                    //err = "eduroam not available";
                 }
 
                 // TODO: move out of function, use return value. This function should be static

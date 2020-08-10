@@ -276,6 +276,10 @@ namespace WpfApp
 		/// <summary>
 		/// Uninstalls the program.
 		/// </summary>
+		/// <typeparam name="T">return value</typeparam>
+		/// <param name="shutdown">a action which will shut down the application in the way you want, recieves true on successfull uninstall</param>
+		/// <param name="doDeleteSelf">whether to schedule a deletion of InstallExePath</param>
+		/// <returns>T</returns>
 		public T ExitAndUninstallSelf<T>(Func<bool, T> shutdown, bool doDeleteSelf = false)
 		{
 			_ = shutdown ?? throw new ArgumentNullException(paramName: nameof(shutdown));
