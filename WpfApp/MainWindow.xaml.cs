@@ -588,14 +588,29 @@ namespace WpfApp
 		{
 			Debug.WriteLine("Event: OnClose");
 			Debug.WriteLine("Sender: " + sender.ToString());
-			Debug.WriteLine("IsShuttingDown: " + IsShuttingDown);
-			if (IsShuttingDown) return;
+			Debug.WriteLine("{0}: {1}", nameof(IsShuttingDown), IsShuttingDown);
+			Debug.WriteLine("{0}: {1}", nameof(App.Installer.IsInstalled), App.Installer.IsInstalled);
+			Debug.WriteLine("{0}: {1}", nameof(App.Installer.IsRunningFromInstallLocation), App.Installer.IsRunningFromInstallLocation);
 
-			e.Cancel = true; // Cancels Window.Close(), but not Application.Shutdown()
+			if (!App.Installer.IsInstalled)
+				return; // do not cancel the Closing event
 
-			TaskbarIcon.ShowBalloonTip( // TODO: doesn't show for me, but does show for simon, RDP might be the culprit
+			if (App.Installer.IsInstalled && !App.Installer.IsRunningFromInstallLocation)
+			{
+				// this happens after the first time setup
+				SelfInstaller.DelayedStart(App.Installer.StartMinimizedCommand);
+				return; // do not cancel the Closing event
+			}
+
+			if (IsShuttingDown)
+				return; // closed in tray icon, unable to cancel. avoid creating the balloon
+
+			// Cancels the Window.Close(), but unable to cancel Application.Shutdown()
+			e.Cancel = true;
+
+			TaskbarIcon.ShowBalloonTip( // TODO: doesn't show for peder, but does show for simon. RDP might be the culprit
 				title: "geteduroam",
-				message: "geteduroam is still running here in the tray!",
+				message: "geteduroam is still running in the background",
 				symbol: BalloonIcon.Info);
 
 			Hide(); // window
