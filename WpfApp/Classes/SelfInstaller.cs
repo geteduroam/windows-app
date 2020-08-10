@@ -165,6 +165,12 @@ namespace WpfApp
 		/// <summary>
 		/// If false, it is probably running from %HOME%/Downloads or something
 		/// </summary>
+		public bool IsInstalled
+		{ get => File.Exists(InstallExePath); }
+
+		/// <summary>
+		/// If false, it is probably running from %HOME%/Downloads or something
+		/// </summary>
 		public bool IsRunningFromInstallDir
 		{ get => InstallExePath == ThisExePath; }
 
