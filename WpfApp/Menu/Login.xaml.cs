@@ -281,7 +281,7 @@ namespace WpfApp.Menu
 			bool installed = await Task.Run(() => InstallEapConfig(eapConfig, username, password));
 			if (installed)
 			{
-				bool connected = await Connect();
+				bool connected = await TryToConnect();
 				if (connected)
 				{
 					tbStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
@@ -289,7 +289,16 @@ namespace WpfApp.Menu
 				}
 				else
 				{
-					tbStatus.Text = "Connection to eduroam failed.";
+					if (EduroamNetwork.IsEduroamAvailable(eapConfig))
+					{
+						tbStatus.Text = "Everything is configured!\nUnable to connect to Eduroam.";
+					}
+					else
+					{
+						// Hs2 is not enumerable
+						tbStatus.Text = "Everything is configured!\nUnable to connect to Eduroam, you're probably out of coverage.";
+					}
+					mainWindow.btnNext.Content = "Connect";
 				}
 			}
 			else
@@ -306,7 +315,7 @@ namespace WpfApp.Menu
 		}
 
 
-		public async Task<bool> Connect()
+		public async Task<bool> TryToConnect()
 		{
 			bool connectSuccess;
 			try
