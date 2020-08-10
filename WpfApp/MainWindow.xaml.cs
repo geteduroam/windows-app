@@ -81,7 +81,7 @@ namespace WpfApp
 		{
 			InitializeComponent();
 			Load();
-
+			if (App.StartHiddenInTray) Hide();
 		}
 
 		private void Load()
@@ -395,6 +395,8 @@ namespace WpfApp
 			}
 		}
 
+		private static App App { get => (App)Application.Current; }
+
 
 		public void OAuthComplete(EapConfig eapConfig)
 		{
@@ -530,12 +532,8 @@ namespace WpfApp
 			PreviousPage();
 		}
 
+		// Logic to minimize to tray:
 
-		/// <summary>
-		/// Logic to minimize to tray
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
 		private void OnWindowClose(object sender, CancelEventArgs e)
 		{
 			Debug.WriteLine("Event: OnClose");
@@ -577,6 +575,8 @@ namespace WpfApp
 			if (!IsVisible)
 			{
 				Show(); // window
+				if (WindowState == WindowState.Minimized)
+					WindowState = WindowState.Normal;
 				Activate(); // focus window
 			}
 			else
@@ -589,10 +589,13 @@ namespace WpfApp
 		{
 			Debug.WriteLine("Event: MenuItem_Click_Show");
 			Show(); // window
+			if (WindowState == WindowState.Minimized)
+				WindowState = WindowState.Normal;
 			Activate(); // focus window
 		}
 
 		private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
 			=> Shutdown();
+
 	}
 }

@@ -16,7 +16,7 @@ namespace EduroamConfigure
 #if DEBUG
 		private const string ProviderApiUrl = "https://discovery.eduroam.app/v1/discovery.json";
 #else
-		private const string ProviderApiUrl = "https://discovery.geteduroam.app/v1/discovery.json";
+		private const string ProviderApiUrl = "https://discovery.eduroam.app/v1/discovery.json";
 #endif
 
 		// state

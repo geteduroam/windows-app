@@ -101,7 +101,7 @@ namespace EduroamConfigure
 			}
 			catch (JsonReaderException)
 			{
-				return false;
+				return false; // malformed
 			}
 
 			if (string.IsNullOrEmpty(accessToken)) return false;
@@ -110,7 +110,7 @@ namespace EduroamConfigure
 
 			// if we have enough headroom, have our token expire earlier
 			if (accessTokenExpiresIn.Value > 60)
-				accessTokenExpiresIn -= 10; // reduces change for error
+				accessTokenExpiresIn -= 10; // reduces chance of error
 
 			AccessToken = accessToken;
 			AccessTokenType = accessTokenType;
