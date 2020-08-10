@@ -288,6 +288,14 @@ namespace EduroamConfigure
 				return success;
 			}
 
+			public (DateTime From, DateTime? To) GetTimeWhenValid()
+			{
+				using var cert = AuthMethod.ClientCertificateAsX509Certificate2();
+				return cert == null
+					? (DateTime.Now.AddSeconds(-30), (DateTime?)null)
+					: (cert.NotBefore, cert.NotAfter);
+			}
+
 			/// <summary>
 			/// Then provide them by either calling InstallUserProfile()
 			/// </summary>
