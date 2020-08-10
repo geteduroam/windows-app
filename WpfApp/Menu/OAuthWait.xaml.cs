@@ -74,7 +74,7 @@ namespace WpfApp.Menu
             cancelToken = cancelTokenSource.Token;
             // wait until oauth done and continue process
             await Task.Run(listenerThread.Join);
-            mainWindow.OAuthComplete(eapConfig);
+            //mainWindow.OAuthComplete(eapConfig);
         }
 
         private void btnCancel_Click(object sender, EventArgs e)
@@ -169,10 +169,10 @@ namespace WpfApp.Menu
             }
             catch (EduroamAppUserError ex)
             {
-               /* this.Dispatcher.Invoke(() => {
+                /*this.Dispatcher.Invoke(() => {
                     mainWindow.Activate();
-                }); */
-                MessageBox.Show(ex.UserFacingMessage);
+                }); 
+                MessageBox.Show(ex.UserFacingMessage); */
                 eapConfig = null;
             }
 
@@ -198,6 +198,9 @@ namespace WpfApp.Menu
 
 
             mainThread.Set();
+            this.Dispatcher.Invoke(() => {
+                mainWindow.OAuthComplete(eapConfig);
+            });
         }
     }
 }
