@@ -44,6 +44,7 @@ namespace WpfApp
 			Loading,
 			CertificateOverview,
 			TermsOfUse,
+			OAuthWait
 		}
 
 		public enum ProfileStatus
@@ -64,6 +65,7 @@ namespace WpfApp
 		private TermsOfUse pageTermsOfUse;
 		private CertificateOverview pageCertificateOverview;
 		private Redirect pageRedirect;
+		private OAuthWait pageOAuthWait;
 		public bool Online { get; set; } // TODO: remove?
 		// this contains the 'active' eapConfig that is being used
 		private EapConfig eapConfig;
@@ -213,9 +215,11 @@ namespace WpfApp
 					LoadPageMainMenu();
 					break;
 				case FormId.SelectInstitution:
+					if (currentFormId == FormId.OAuthWait) pageOAuthWait.CancelThread();
 					LoadPageSelectInstitution();
 					break;
 				case FormId.SelectProfile:
+					if (currentFormId == FormId.OAuthWait) pageOAuthWait.CancelThread();
 					LoadPageSelectProfile();
 					break;
 				case FormId.ProfileOverview:
@@ -231,6 +235,7 @@ namespace WpfApp
 				case FormId.Login:
 					LoadPageLogin();
 					break;
+
 			}
 
 			// removes current form from history
@@ -286,6 +291,11 @@ namespace WpfApp
 				LoadPageRedirect(new Uri(profile.redirect));
 				return true;
 			}
+			else if (profile.oauth)
+			{
+
+				LoadPageOAuthWait(profile);
+			}
 			return false;
 		}
 
@@ -322,8 +332,9 @@ namespace WpfApp
 			EapConfig eapConfig; // return value
 
 			// if OAuth
-			if (profile.oauth)
+			if (profile.oauth || !string.IsNullOrEmpty(profile.redirect))
 			{
+				return null;
 				// get eap config file from browser authenticate
 				try
 				{
@@ -340,9 +351,7 @@ namespace WpfApp
 					(string authorizationCode, string codeVerifier) = oauth.ParseAndExtractAuthorizationCode(responseUrl);
 					bool success = LetsWifi.AuthorizeAccess(profile, authorizationCode, codeVerifier, prefix);
 
-					eapConfig = success
-						? LetsWifi.DownloadEapConfig()
-						: null;
+					eapConfig = success ? LetsWifi.DownloadEapConfig() : null;
 				}
 				catch (EduroamAppUserError ex)
 				{
@@ -423,8 +432,8 @@ namespace WpfApp
 		/// <returns>response Url</returns>
 		public Uri OpenSSOAndAwaitResultRedirect(Uri redirectUri, Uri authUri)
 		{
-			/*
-			using var waitForm = new frmWaitDialog(redirectUri, authUri);
+
+			/* using var waitForm = new frmWaitDialog(redirectUri, authUri);
 			DialogResult result = waitForm.ShowDialog();
 			if (result != DialogResult.OK)
 			{
@@ -433,6 +442,24 @@ namespace WpfApp
 			return waitForm.responseUrl;  //= WebServer.NonblockingListener(redirectUri, authUri, parentLocation);
 			*/
 			return new Uri("");
+		}
+
+		public void OAuthComplete(EapConfig eapConfig)
+		{
+			Activate();
+			this.eapConfig = eapConfig;
+			if (eapConfig != null)
+			{
+				if (HasInfo(eapConfig))
+				{
+					LoadPageProfileOverview();
+				}
+				LoadPageCertificateOverview();
+			}
+			else
+			{
+				PreviousPage();
+			}
 		}
 
 		public void LoadPageMainMenu(bool refresh = true)
@@ -522,6 +549,15 @@ namespace WpfApp
 			btnNext.Visibility = Visibility.Visible;
 			if (refresh) pageTermsOfUse = new TermsOfUse(this, eapConfig.InstitutionInfo.TermsOfUse);
 			Navigate(pageTermsOfUse);
+		}
+
+		public void LoadPageOAuthWait(IdentityProviderProfile profile)
+		{
+			currentFormId = FormId.OAuthWait;
+			btnBack.IsEnabled = true;
+			btnNext.IsEnabled = false;
+			pageOAuthWait = new OAuthWait(this, profile);
+			Navigate(pageOAuthWait);
 		}
 
 		private bool IsShuttingDown = false;

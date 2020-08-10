@@ -94,10 +94,10 @@ namespace EduroamConfigure
 			{
 				JObject tokenJson = JObject.Parse(jsonResponse);
 
-				accessToken = tokenJson["access_token"].ToString(); // token to retrieve EAP config
-				accessTokenType = tokenJson["token_type"].ToString(); // Usually "Bearer", a http authorization scheme
-				accessTokenExpiresIn = tokenJson["expires_in"].ToObject<int?>();
-				refreshToken = tokenJson["refresh_token"].ToString();
+				accessToken = tokenJson["access_token"]?.ToString(); // token to retrieve EAP config
+				accessTokenType = tokenJson["token_type"]?.ToString(); // Usually "Bearer", a http authorization scheme
+				accessTokenExpiresIn = tokenJson["expires_in"]?.ToObject<int?>();
+				refreshToken = tokenJson["refresh_token"]?.ToString();
 			}
 			catch (JsonReaderException)
 			{
@@ -106,7 +106,6 @@ namespace EduroamConfigure
 
 			if (string.IsNullOrEmpty(accessToken)) return false;
 			if (string.IsNullOrEmpty(accessTokenType)) return false;
-			if (string.IsNullOrEmpty(refreshToken)) return false;
 			if (accessTokenExpiresIn == null) return false;
 
 			// if we have enough headroom, have our token expire earlier
