@@ -91,6 +91,7 @@ namespace WpfApp
 				IdpDownloader = new IdentityProviderDownloader();
 				Online = true;
 			}
+			// TODO differentiate between API being down and no internet (
 			catch (ApiException)
 			{
 				Online = false;
@@ -296,6 +297,7 @@ namespace WpfApp
 			{
 
 				LoadPageOAuthWait(profile);
+				return true;
 			}
 			return false;
 		}
@@ -336,39 +338,8 @@ namespace WpfApp
 			if (profile.oauth || !string.IsNullOrEmpty(profile.redirect))
 			{
 				return null;
-				// get eap config file from browser authenticate
-				try
-				{
-					OAuth oauth = new OAuth(new Uri(profile.authorization_endpoint));
-					// The url to send the user to
-					var authUri = oauth.CreateAuthUri();
-					// The url to listen to for the user to be redirected back to
-					var prefix = oauth.GetRedirectUri();
-
-					// Send the user to the url and await the response
-					var responseUrl = OpenSSOAndAwaitResultRedirect(prefix, authUri);
-
-					// Parse the result and download the eap config if successfull
-					(string authorizationCode, string codeVerifier) = oauth.ParseAndExtractAuthorizationCode(responseUrl);
-					bool success = LetsWifi.AuthorizeAccess(profile, authorizationCode, codeVerifier, prefix);
-
-					eapConfig = success ? LetsWifi.DownloadEapConfig() : null;
-				}
-				catch (EduroamAppUserError ex)
-				{
-					MessageBox.Show(ex.UserFacingMessage);
-					eapConfig = null;
-				}
-				// return focus to application
-				Activate();
 			}
-			else if (!string.IsNullOrEmpty(profile.redirect))
-			{
-				//TODO handle redirect
-				// makes redirect link accessible in parent form
-				//RedirectUrl = redirect;
-				return null;
-			}
+
 			else
 			{
 				eapConfig = await Task.Run(() =>
@@ -424,26 +395,6 @@ namespace WpfApp
 			}
 		}
 
-
-		// TODO: make new responesurl thing to receive
-
-		/// <summary>
-		/// Gets a response URL after doing Browser authentication with Oauth authUri.
-		/// </summary>
-		/// <returns>response Url</returns>
-		public Uri OpenSSOAndAwaitResultRedirect(Uri redirectUri, Uri authUri)
-		{
-
-			/* using var waitForm = new frmWaitDialog(redirectUri, authUri);
-			DialogResult result = waitForm.ShowDialog();
-			if (result != DialogResult.OK)
-			{
-				return "";
-			}
-			return waitForm.responseUrl;  //= WebServer.NonblockingListener(redirectUri, authUri, parentLocation);
-			*/
-			return new Uri("");
-		}
 
 		public void OAuthComplete(EapConfig eapConfig)
 		{
