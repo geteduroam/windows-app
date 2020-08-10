@@ -55,7 +55,7 @@
             <Setter Property="OverridesDefaultStyle" Value="True"/>
             <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-            <Setter Property="Content" Value="Install ❌"/>
+            <Setter Property="Content" Value="Install"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
