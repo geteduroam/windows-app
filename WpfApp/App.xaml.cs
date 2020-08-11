@@ -105,11 +105,12 @@ namespace WpfApp
         private static AssemblyName AssemblyName
         { get => Assembly.GetExecutingAssembly().GetName(); }
 
+        // TODO: can we populate with from AssemblyName?
         public static readonly SelfInstaller Installer = new SelfInstaller(
-            applicationIdentifier: "GetEduroam",
+            applicationIdentifier: "geteduroam",
             applicationMetadata: new SelfInstaller.ApplicationMeta()
             {
-                DisplayName = "GetEduroam",  // [REQUIRED] ProductName
+                DisplayName = "geteduroam",  // [REQUIRED] ProductName
                 Publisher = "Uninett",  // [REQUIRED] Manufacturer
                 Version = AssemblyName.Version.ToString(),
                 VersionMajor = AssemblyName.Version.Major.ToString(CultureInfo.InvariantCulture),
