@@ -17,6 +17,20 @@ namespace EduroamConfigure
 		}
 	}
 
+
+
+	[Serializable]
+	public class InternetConnectionException : Exception
+	{
+		private const string DefaultMessage = "Error with internet connection";
+
+		public InternetConnectionException() : base(DefaultMessage) { }
+		public InternetConnectionException(string message) : base(message) { }
+		public InternetConnectionException(string message, Exception innerException) : base(message, innerException) { }
+		protected InternetConnectionException(SerializationInfo info, StreamingContext context) : base(info, context) { }
+
+	}
+
 	[Serializable]
 	public class ApiException : Exception
 	{

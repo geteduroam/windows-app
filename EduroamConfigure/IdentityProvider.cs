@@ -54,7 +54,7 @@ namespace EduroamConfigure
 	{
 		public string Country { get; set; } // ISO2
 		public string Name { get; set; }
-		public List<IdpCoordinates> Geo { get; set; }
+		public List<IdpCoordinates> Geo { get; set; } = new List<IdpCoordinates>();
 		public int cat_idp { get; set; }
 		public List<IdentityProviderProfile> Profiles { get; set; }
 

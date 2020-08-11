@@ -37,7 +37,10 @@ namespace WpfApp.Menu
 		{
 			mainWindow.btnNext.Visibility = Visibility.Hidden;
 			mainWindow.btnBack.Visibility = Visibility.Hidden;
+
 			tbInfo.Visibility = Visibility.Hidden;
+
+
 
 			if(mainWindow.ExtractedEapConfig == null)
 			{
@@ -48,17 +51,66 @@ namespace WpfApp.Menu
 				btnExisting.Visibility = Visibility.Visible;
 				tbExisting.Text = "Connect with " + mainWindow.ExtractedEapConfig.InstitutionInfo.DisplayName;
 			}
-			if(!mainWindow.Online)
+			LoadProviders();
+			/*if (!mainWindow.IdpDownloader.Online)
 			{
-				BtnNewProfile.Content = "No internet connection";
-				BtnNewProfile.IsEnabled = false;
-			}
+				try
+				{
+					// this will make the window pop up a little bit faster and disable the discovery button until institutions are loaded
+					//BtnNewProfile.IsEnabled = false;
+					//BtnNewProfile.Content = "Loading ...";
+					//await Task.Run(() => mainWindow.IdpDownloader.LoadProviders());
+					//BtnNewProfile.IsEnabled = true;
+					//BtnNewProfile.Content = "Connect to eduroam";
+					mainWindow.IdpDownloader.LoadProviders();
+				}
+				catch (ApiException)
+				{
+					BtnNewProfile.Content = "No internet connection";
+					BtnNewProfile.IsEnabled = false;
+				}
+			}*/
 
+		}
+		/// <summary>
+		/// If no providers available try to download them
+		/// </summary>
+		private async void LoadProviders()
+		{
+			if (!mainWindow.IdpDownloader.Online)
+			{
+				try
+				{
+					// this will make the window pop up a little bit faster and disable the discovery button until institutions are loaded
+					BtnNewProfile.IsEnabled = false;
+					tbNewProfile.Text = "Loading ...";
+					await Task.Run(() => mainWindow.IdpDownloader.LoadProviders());
+					BtnNewProfile.IsEnabled = true;
+					tbNewProfile.Text = "Connect to eduroam";
+				}
+				catch (ApiException)
+				{
+					tbNewProfile.Text = "Discovery service down";
+					BtnNewProfile.IsEnabled = false;
+				}
+				catch (InternetConnectionException)
+				{
+					tbNewProfile.Text = "No internet connection";
+					BtnNewProfile.IsEnabled = false;
+				}
+			}
 		}
 
 		private void btnNewProfile_Click(object sender, RoutedEventArgs e)
 		{
-			mainWindow.NextPage();
+			if (!mainWindow.IdpDownloader.Online)
+			{
+				LoadProviders();
+			}
+			else
+			{
+				mainWindow.NextPage();
+			}
 		}
 
 		private void btnExisting_Click(object sender, RoutedEventArgs e)
