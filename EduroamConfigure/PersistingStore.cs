@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
 namespace EduroamConfigure
@@ -38,6 +39,14 @@ namespace EduroamConfigure
         {
             get => GetValue<ImmutableHashSet<ConfiguredWLANProfile>>("ConfiguredWLANProfiles", "[]");
             set => SetValue<ImmutableHashSet<ConfiguredWLANProfile>>("ConfiguredWLANProfiles", value);
+        }
+
+        /// <summary>
+        /// Check if there is installed any valid (not neccesarily tested) connection
+        /// </summary>
+        public static bool AnyValidWLANProfile
+        {
+            get => ConfiguredWLANProfiles.Any(p => p.HasUserData);
         }
 
         /// <summary>
@@ -142,7 +151,7 @@ namespace EduroamConfigure
 
         // Inner workings:
 
-        private const string ns = "HKEY_CURRENT_USER\\Software\\GetEduroam"; // Namespace in Registry
+        private const string ns = "HKEY_CURRENT_USER\\Software\\geteduroam"; // Namespace in Registry
         private static T GetValue<T>(string key, string defaultJson = "null")
         {
             try

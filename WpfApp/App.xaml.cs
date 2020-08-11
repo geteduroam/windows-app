@@ -24,6 +24,7 @@ namespace WpfApp
         {
             if (SingleInstance<App>.InitializeAsFirstInstance(SingleInstanceUid))
             {
+                // making it this far means that we are THE single instance
                 try
                 {
                     if (PreGuiCommandLineArgs(args))
@@ -49,8 +50,11 @@ namespace WpfApp
             bool contains(string check) =>
                 args.Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase));
 
-            if (contains("/install")) // todo: dialog stuff
-                Installer.InstallToUserLocal();
+
+            if (contains("/?") || contains("/help"))
+                ShowHelpText();
+            else if (contains("/install")) // todo: dialog stuff
+                Installer.EnsureIsInstalled();
             else if (contains("/uninstall")) // todo: prompt user for confirmation
                 Installer.ExitAndUninstallSelf();
             else
@@ -92,23 +96,80 @@ namespace WpfApp
             Debug.WriteLine("Got external cli args: {0} from {1}",
                 JsonConvert.SerializeObject(args.Skip(1).ToList()), args.FirstOrDefault());
 
-            if (contains("/close"))
-                Shutdown();
+            bool showMainWindow = true;
 
-            // Return value has no effect:
-            // https://github.com/taylorjonl/SingleInstanceApp/blob/master/SingleInstance.cs#L261
-            return true;
+            if (contains("/?") || contains("/help"))
+            {
+                showMainWindow = false;
+                ShowHelpText();
+            }
+
+            if (contains("/close"))
+            {
+                showMainWindow = false;
+                ((MainWindow)MainWindow).Shutdown();
+            }
+
+            if (contains("/refresh"))
+            {
+                showMainWindow = false;
+                throw new NotImplementedException(); // TODO
+            }
+
+            if (contains("/uninstall"))
+                Installer.ExitAndUninstallSelf(
+                    success =>
+                    {
+                        ((MainWindow)MainWindow).Shutdown();
+                        return 0; // not used
+                    },
+                    doDeleteSelf: true);
+
+            // TODO: this should be made into a method in MainWindow.
+            if (showMainWindow)
+            {
+                var window = ((MainWindow)MainWindow);
+                window.Show();
+                if (window.WindowState == WindowState.Minimized)
+                    window.WindowState = WindowState.Normal;
+                window.Activate();
+            }
+
+            return false; // dont have the library show the window for us
         }
+
+        public static void ShowHelpText()
+            => MessageBox.Show(string.Join("\n", new List<string> {
+                    "Supported CLI commands:",
+                    "",
+                    "    /? : ",
+                    "            Show this help text",
+                    "    /help : ",
+                    "            Show this help text",
+                    "    /install : ",
+                    "            Install this binary to %USER%/AppData/Local",
+                    "    /uninstall : ",
+                    "            Uninstall this binary from %USER%/AppData/Local along",
+                    "            with any configured data",
+                    "    /background : ",
+                    "            Start this application hidden to the tray",
+                    "            (works only if run from install directory)",
+                    "    /close : ",
+                    "            Close the current running instance",
+                    "    /refresh : ",
+                    "            Refresh the user certificate using the refresh token",
+                }), caption: "geteduroam");
 
 
         private static AssemblyName AssemblyName
         { get => Assembly.GetExecutingAssembly().GetName(); }
 
+        // TODO: can we populate with from AssemblyName?
         public static readonly SelfInstaller Installer = new SelfInstaller(
-            applicationIdentifier: "GetEduroam",
+            applicationIdentifier: "geteduroam",
             applicationMetadata: new SelfInstaller.ApplicationMeta()
             {
-                DisplayName = "GetEduroam",  // [REQUIRED] ProductName
+                DisplayName = "geteduroam",  // [REQUIRED] ProductName
                 Publisher = "Uninett",  // [REQUIRED] Manufacturer
                 Version = AssemblyName.Version.ToString(),
                 VersionMajor = AssemblyName.Version.Major.ToString(CultureInfo.InvariantCulture),

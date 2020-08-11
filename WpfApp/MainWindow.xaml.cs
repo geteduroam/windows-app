@@ -72,8 +72,8 @@ namespace WpfApp
         public EapConfig ExtractedEapConfig { get; set; }
         //ExtractFlag decides if the "Not affiliated with this institution? choose another one" text and button shows up on ProfileOverview or not
         public bool ExtractFlag { get; set; }
-       
-        public ProfileStatus ProfileCondition { get; set; }
+
+        public ProfileStatus ProfileCondition { get; set; } // TODO: use this to determine if we need to clean up after a failed setup, together with SelfInstaller.IsInstalled
         public IdentityProviderDownloader IdpDownloader { get; private set; }
         public bool EduroamAvailable { get; set; }
         public MainWindow()
@@ -238,9 +238,10 @@ namespace WpfApp
         /// <summary>
         /// Hide back button if theres no page to go back to
         /// </summary>
-        private void ValidateBackButton()
+        private void ValidateBackButton() // TODO: rename this function
         {
-            if (historyFormId.Count < 1) btnBack.Visibility = Visibility.Hidden;
+            if (historyFormId.Count < 1)
+                btnBack.Visibility = Visibility.Hidden;
         }
 
         // downloads eap config based on profileId
@@ -285,7 +286,7 @@ namespace WpfApp
             }
             else if (profile.oauth)
             {
-                
+
                 LoadPageOAuthWait(profile);
                 return true;
             }
@@ -293,23 +294,17 @@ namespace WpfApp
         }
 
         private static bool HasInfo(EapConfig config)
-        {
-            bool hasWebAddress = !string.IsNullOrEmpty(config.InstitutionInfo.WebAddress);
-            bool hasEmailAddress = !string.IsNullOrEmpty(config.InstitutionInfo.EmailAddress);
-            bool hasDescription = !string.IsNullOrEmpty(config.InstitutionInfo.Description);
-            bool hasPhone = !string.IsNullOrEmpty(config.InstitutionInfo.Phone);
-            bool hasTou = !string.IsNullOrEmpty(config.InstitutionInfo.TermsOfUse);
-            return (hasWebAddress || hasEmailAddress || hasDescription || hasPhone || hasTou);
-        }
+            => !string.IsNullOrEmpty(config.InstitutionInfo.WebAddress)
+            || !string.IsNullOrEmpty(config.InstitutionInfo.EmailAddress)
+            || !string.IsNullOrEmpty(config.InstitutionInfo.Description)
+            || !string.IsNullOrEmpty(config.InstitutionInfo.Phone)
+            || !string.IsNullOrEmpty(config.InstitutionInfo.TermsOfUse);
 
         /// <summary>
         /// Fetches a list of all eduroam institutions from https://cat.eduroam.org.
         /// </summary>
         private List<IdentityProviderProfile> GetProfiles(int providerId)
-        {
-            return IdpDownloader.GetIdentityProviderProfiles(providerId);
-
-        }
+            => IdpDownloader.GetIdentityProviderProfiles(providerId);
 
         /// <summary>
         /// Gets EAP-config file, either directly or after browser authentication.
@@ -322,22 +317,13 @@ namespace WpfApp
             if (string.IsNullOrEmpty(profile?.Id))
                 return null;
 
-            EapConfig eapConfig; // return value
-
             // if OAuth
             if (profile.oauth || !string.IsNullOrEmpty(profile.redirect))
-            {
                 return null;
-            }
 
-            else
-            {
-                eapConfig = await Task.Run(() =>
-                    IdpDownloader.DownloadEapConfig(profile.Id)
-                );
-
-            }
-            return eapConfig;
+            return await Task.Run(()
+                => IdpDownloader.DownloadEapConfig(profile.Id)
+            );
         }
 
 
@@ -513,14 +499,10 @@ namespace WpfApp
 
 
         private void btnNext_Click(object sender, RoutedEventArgs e)
-        {
-            NextPage();
-        }
+            => NextPage();
 
         private void btnBack_Click(object sender, RoutedEventArgs e)
-        {
-            PreviousPage();
-        }
+            => PreviousPage();
 
         // Logic to minimize to tray:
 
@@ -530,12 +512,12 @@ namespace WpfApp
             Debug.WriteLine("Sender: " + sender.ToString());
             Debug.WriteLine("{0}: {1}", nameof(IsShuttingDown), IsShuttingDown);
             Debug.WriteLine("{0}: {1}", nameof(App.Installer.IsInstalled), App.Installer.IsInstalled);
-            Debug.WriteLine("{0}: {1}", nameof(App.Installer.IsRunningFromInstallLocation), App.Installer.IsRunningFromInstallLocation);
+            Debug.WriteLine("{0}: {1}", nameof(App.Installer.IsRunningInInstallLocation), App.Installer.IsRunningInInstallLocation);
 
             if (!App.Installer.IsInstalled)
                 return; // do not cancel the Closing event
 
-            if (App.Installer.IsInstalled && !App.Installer.IsRunningFromInstallLocation)
+            if (App.Installer.IsInstalled && !App.Installer.IsRunningInInstallLocation)
             {
                 // this happens after the first time setup
                 SelfInstaller.DelayedStart(App.Installer.StartMinimizedCommand);
