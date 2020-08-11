@@ -50,7 +50,10 @@ namespace WpfApp
             bool contains(string check) =>
                 args.Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase));
 
-            if (contains("/install")) // todo: dialog stuff
+
+            if (contains("/?") || contains("/help"))
+                ShowHelpText();
+            else if (contains("/install")) // todo: dialog stuff
                 Installer.EnsureIsInstalled();
             else if (contains("/uninstall")) // todo: prompt user for confirmation
                 Installer.ExitAndUninstallSelf();
@@ -93,13 +96,50 @@ namespace WpfApp
             Debug.WriteLine("Got external cli args: {0} from {1}",
                 JsonConvert.SerializeObject(args.Skip(1).ToList()), args.FirstOrDefault());
 
+            if (contains("/?") || contains("/help"))
+                ShowHelpText();
+
             if (contains("/close"))
-                Shutdown();
+                ((MainWindow)MainWindow).Shutdown();
+
+            if (contains("/refresh"))
+                throw new NotImplementedException(); // TODO
+
+            if (contains("/uninstall"))
+                Installer.ExitAndUninstallSelf(
+                    success =>
+                    {
+                        ((MainWindow)MainWindow).Shutdown();
+                        return 0; // not used
+                    },
+                    doDeleteSelf: true);
 
             // Return value has no effect:
             // https://github.com/taylorjonl/SingleInstanceApp/blob/master/SingleInstance.cs#L261
             return true;
         }
+
+        public static void ShowHelpText()
+            => MessageBox.Show(string.Join("\n", new List<string> {
+                    "Supported CLI commands:",
+                    "",
+                    "    /? : ",
+                    "            Show this help text",
+                    "    /help : ",
+                    "            Show this help text",
+                    "    /install : ",
+                    "            Install this binary to %USER%/AppData/Local",
+                    "    /uninstall : ",
+                    "            Uninstall this binary from %USER%/AppData/Local along",
+                    "            with any configured data",
+                    "    /background : ",
+                    "            Start this application hidden to the tray",
+                    "            (works only if run from install directory)",
+                    "    /close : ",
+                    "            Close the current running instance",
+                    "    /refresh : ",
+                    "            Refresh the user certificate using the refresh token",
+                }), caption: "geteduroam");
 
 
         private static AssemblyName AssemblyName
