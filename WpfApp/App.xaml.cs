@@ -50,15 +50,29 @@ namespace WpfApp
             bool contains(string check) =>
                 args.Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase));
 
-
             if (contains("/?") || contains("/help"))
+            {
                 ShowHelpText();
-            else if (contains("/install")) // todo: dialog stuff
+                return true;
+            }
+
+            if (contains("/install")) // todo: dialog stuff
+            {
                 Installer.EnsureIsInstalled();
-            else if (contains("/uninstall")) // todo: prompt user for confirmation
-                Installer.ExitAndUninstallSelf();
-            else
-                return false;
+                return true;
+            }
+
+            if (contains("/uninstall")) // todo: prompt user for confirmation
+            {
+                PromptAndUninstallSelf(success =>
+                    {
+                        Environment.Exit(0);
+                        return success;
+                    }
+                );
+                return true;
+            }
+
             return contains("/close");
         }
 
@@ -117,13 +131,15 @@ namespace WpfApp
             }
 
             if (contains("/uninstall"))
-                Installer.ExitAndUninstallSelf(
-                    success =>
+            {
+                showMainWindow = false;
+                PromptAndUninstallSelf(success =>
                     {
                         ((MainWindow)MainWindow).Shutdown();
-                        return 0; // not used
-                    },
-                    doDeleteSelf: true);
+                        return "foo";
+                    }
+                );
+            }
 
             // TODO: this should be made into a method in MainWindow.
             if (showMainWindow)
@@ -136,6 +152,33 @@ namespace WpfApp
             }
 
             return false; // dont have the library show the window for us
+        }
+
+        private static void PromptAndUninstallSelf<T>(Func<bool, T> shutdown)
+        {
+            var choice = MessageBox.Show(
+                "You are currently in the process of completly uninstalling geteduroam.\n" +
+                "This means uninstalling all the trusted root certificatesrequired by this application.\n\n"+
+                "Are you sure you want to continue?",
+                caption: "geteduroam",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning);
+
+            if (choice != MessageBoxResult.Yes) return;
+
+            Installer.ExitAndUninstallSelf(
+                success =>
+                {
+                    // we cannot show a message box on success,
+                    // since we've dispatched a job to delete the running binary at this point
+                    if (!success) MessageBox.Show(
+                        "The uninstallation was aborted. geteduraom is not yet uninstalled!",
+                        caption: "geteduroam",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                    return shutdown(success);
+                },
+                doDeleteSelf: true);
         }
 
         public static void ShowHelpText()
