@@ -340,7 +340,7 @@ namespace EduroamConfigure
 		/// If this returns false, then no interfaces nor packs will be available to configure
 		/// </summary>
 		/// <returns>True if wireless service is available</returns>
-		private static bool IsWlanServiceApiAvailable()
+		public static bool IsWlanServiceApiAvailable()
 		{
 			try
 			{
