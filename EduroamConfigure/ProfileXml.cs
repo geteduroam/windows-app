@@ -71,7 +71,8 @@ namespace EduroamConfigure
                     .Where(cred => cred.Ssid != null) // hs2 oid entires has no ssid
                     .Select(cred => cred.Ssid)
                     .ToList();
-
+            if (!ssids.Any() && asHs2Profile) // Schema has a minOccurances=1 for SSIDs (at least in the v1 namespace)
+                ssids = new List<string> { "#Passpoint" }; // hs2 profiles ignore SSIDs anyway
             if (!ssids.Any())
                 throw new EduroamAppUserError("no valid ssids in config");
             if (asHs2Profile && !SupportsHs2(authMethod))
