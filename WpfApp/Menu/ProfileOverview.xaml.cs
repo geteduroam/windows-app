@@ -46,6 +46,7 @@ namespace WpfApp.Menu
             LoadContactInfo();
             LoadTOU();
             LoadAlternate();
+            mainWindow.LoadProviderLogo();
 
         }
 

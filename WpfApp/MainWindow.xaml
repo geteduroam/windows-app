@@ -42,7 +42,10 @@
                 <ColumnDefinition Width="50*"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="btnBack"  Style="{StaticResource WhiteButtonStyle}" KeyboardNavigation.IsTabStop="False"  Content="Back" Margin="0" RenderTransformOrigin="0.494,0.001" VerticalAlignment="Top" HorizontalAlignment="Left" Height="20" Width="37" Click="btnBack_Click"/>
-            <Image x:Name="imgTop" Grid.Column="1" Margin="0">
+            <WebBrowser x:Name="webLogo" Grid.Column="1" Margin="0"  Visibility="Hidden"/>
+
+            <Image x:Name="imgLogo" Grid.Column="1" Margin="0" Visibility="Hidden" VerticalAlignment="Center" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+            <Image x:Name="imgEduroamLogo" Grid.Column="1" Margin="0">
                 <Image.Source>
                     <DrawingImage>
                         <DrawingImage.Drawing>
