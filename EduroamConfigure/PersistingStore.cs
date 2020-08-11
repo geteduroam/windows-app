@@ -170,6 +170,8 @@ namespace EduroamConfigure
 			public string                               InstId       { get; }
 			public (EapType outer, InnerAuthType inner) EapTypeSsid  { get; }
 			public (EapType outer, InnerAuthType inner) EapTypeHs2   { get; }
+			public DateTime?                            NotBefore    { get; }
+			public DateTime?                            NotAfter     { get; }
 
 			public IdentityProviderInfo(
 				string                               displayName,
@@ -178,7 +180,9 @@ namespace EduroamConfigure
 				string                               phone,
 				string                               instId,
 				(EapType outer, InnerAuthType inner) eapTypeSsid,
-				(EapType outer, InnerAuthType inner) eapTypeHs2)
+				(EapType outer, InnerAuthType inner) eapTypeHs2,
+				DateTime?                            notBefore,
+				DateTime?                            notAfter)
 			{
 				DisplayName  = displayName;
 				EmailAddress = emailAddress;
@@ -187,6 +191,8 @@ namespace EduroamConfigure
 				InstId       = instId;
 				EapTypeSsid  = eapTypeSsid;
 				EapTypeHs2   = eapTypeHs2;
+				NotBefore    = notBefore;
+				NotAfter     = notAfter;
 			}
 
 			public static IdentityProviderInfo From(EapConfig.AuthenticationMethod authMethod)
@@ -199,7 +205,9 @@ namespace EduroamConfigure
 						authMethod.EapConfig.InstitutionInfo.Phone,
 						authMethod.EapConfig.InstitutionInfo.InstId,
 						(authMethod.EapType, authMethod.InnerAuthType),
-						(authMethod.Hs2AuthMethod.EapType, authMethod.Hs2AuthMethod.InnerAuthType));
+						(authMethod.Hs2AuthMethod.EapType, authMethod.Hs2AuthMethod.InnerAuthType),
+						authMethod.ClientCertificateAsX509Certificate2()?.NotBefore,
+						authMethod.ClientCertificateAsX509Certificate2()?.NotAfter);
 		}
 
 		// Inner workings:
