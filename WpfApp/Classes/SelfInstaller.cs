@@ -180,6 +180,7 @@ namespace WpfApp
 			if (IsRunningInInstallLocation) return; // TODO: some flow to update itself
 			if (IsInstalled)
 			{
+				// TODO: assemblyversion instad of file date
 				var d1 = File.GetLastWriteTime(ThisExePath);
 				var d2 = File.GetLastWriteTime(InstallExePath);
 				if (d1 <= d2)
