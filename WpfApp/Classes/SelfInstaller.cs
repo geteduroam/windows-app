@@ -72,7 +72,7 @@ namespace WpfApp
 				InstallLocation = installer.InstallDir;
 				InstallDate     = DateTime.Today.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
 				UninstallString = installer.UninstallCommand;
-				EstimatedSize   = (uint)new FileInfo(SelfInstaller.ThisExePath).Length;
+				EstimatedSize   = (uint)new FileInfo(SelfInstaller.ThisExePath).Length / 1024;
 				ModifyPath      = null;
 				// TODO: SettingsIdentifier ?
 			}
@@ -177,7 +177,7 @@ namespace WpfApp
 
 		public void EnsureIsInstalled()
 		{
-			if (IsRunningInInstallLocation) return;
+			if (IsRunningInInstallLocation) return; // TODO: some flow to update itself
 			if (IsInstalled)
 			{
 				var d1 = File.GetLastWriteTime(ThisExePath);
@@ -300,7 +300,7 @@ namespace WpfApp
 
 			// Remove start menu link
 			Debug.WriteLine("Delete file: " + StartMenuLnkPath);
-			if (!File.Exists(StartMenuLnkPath)) File.Delete(StartMenuLnkPath);
+			if (File.Exists(StartMenuLnkPath)) File.Delete(StartMenuLnkPath);
 
 			// remove registry entries
 			Debug.WriteLine("Delete registry subkey: " + rnsUninstall); ;
