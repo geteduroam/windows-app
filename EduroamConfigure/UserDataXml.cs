@@ -172,7 +172,7 @@ namespace EduroamConfigure
                             password,
                             outerIdentity,
                             EapType.PEAP,
-                            InnerAuthType.MSCHAPv2
+                            InnerAuthType.EAP_MSCHAPv2
                         )
                     ),
 
