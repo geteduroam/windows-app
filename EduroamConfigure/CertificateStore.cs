@@ -77,6 +77,12 @@ namespace EduroamConfigure
 			return matchingCerts.Count >= 1;
 		}
 
+		public static bool IsCertificateInstalledByUs(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation)
+			=> IsCertificateInstalled(cert, storeName, storeLocation)
+			&& PersistingStore.InstalledCertificates
+				.Contains(InstalledCertificate.FromCertificate(cert, storeName, storeLocation));
+
+
 		/// <summary>
 		/// Checks if the certificate is installed into the chosen store
 		/// </summary>
