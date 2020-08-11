@@ -86,6 +86,13 @@ namespace EduroamConfigure
 			set => SetValue<string>("LetsWifiRefreshToken", value);
 		}
 
+		public static bool IsRefreshable
+		{
+			get => LetsWifiEndpoints?.profileId == ProfileID
+				&& !string.IsNullOrEmpty(ProfileID)
+				&& !string.IsNullOrEmpty(LetsWifiRefreshToken);
+		}
+
 		public readonly struct ConfiguredWLANProfile
 		{
 			public Guid   InterfaceId { get; }
