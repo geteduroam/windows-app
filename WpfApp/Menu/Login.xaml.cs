@@ -367,9 +367,11 @@ namespace WpfApp.Menu
 					if (!authMethodInstaller.InstallProfile(username, password))
 						continue; // failed, try the next method
 
+					// check if we need to wait for the certificate to become valid
 					certValid = authMethodInstaller.GetTimeWhenValid().From;
 					if (DateTime.Now <= certValid)
 					{
+						// dispatch the event which creates the clock the end user sees
 						dispatcherTimer_Tick(dispatcherTimer, new EventArgs());
 						dispatcherTimer.Start();
 						return false;
@@ -381,6 +383,8 @@ namespace WpfApp.Menu
 
 				// TODO: move out of function, use return value. This function should be static
 				mainWindow.ProfileCondition = MainWindow.ProfileStatus.Configured;
+
+				App.Installer.EnsureIsInstalled(); // TODO: run in backround?
 
 				return success;
 			}

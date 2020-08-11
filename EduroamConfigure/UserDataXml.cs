@@ -187,14 +187,10 @@ namespace EduroamConfigure
 		/// <param name="authMethod">the authentificsation method to check</param>
 		/// <returns></returns>
 		public static bool NeedsLoginCredentials(EapConfig.AuthenticationMethod authMethod)
-		{
-			return authMethod.EapType != EapType.TLS;
-		}
+			 => authMethod.EapType != EapType.TLS;
 
 		public static bool IsSupported(EapConfig.AuthenticationMethod authMethod)
-		{
-			return IsSupported(authMethod.EapType, authMethod.InnerAuthType);
-		}
+			=> IsSupported(authMethod.EapType, authMethod.InnerAuthType);
 
 		public static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
 		{

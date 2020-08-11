@@ -175,6 +175,26 @@ namespace WpfApp
 		public bool IsRunningInInstallLocation
 		{ get => InstallExePath == ThisExePath; }
 
+		public void EnsureIsInstalled()
+		{
+			if (IsRunningInInstallLocation) return;
+			if (IsInstalled)
+			{
+				var d1 = File.GetLastWriteTime(ThisExePath);
+				var d2 = File.GetLastWriteTime(InstallExePath);
+				if (d1 <= d2)
+				{
+					// TODO: console no work
+					Console.WriteLine(
+						"The date of the currently installed version " +
+						"is equal to or newer than this one.");
+					return;
+				}
+			}
+
+			InstallToUserLocal();
+		}
+
 		/// <summary>
 		/// Installs the running EXE to %USER%/AppData/Local,
 		/// registering it to the registry for the current user
@@ -186,18 +206,6 @@ namespace WpfApp
 				throw new EduroamConfigure.EduroamAppUserError("already installed", // TODO: use a more fitting exception?
 					"This application has already been installed. " +
 					"Installing it again won't have any effect.");
-			if (File.Exists(InstallExePath))
-			{
-				var d1 = File.GetLastWriteTime(ThisExePath);
-				var d2 = File.GetLastWriteTime(InstallExePath);
-				if (d1 <= d2)
-				{
-					Console.WriteLine(
-						"The date of the currently installed version " +
-						"is equal to or newer than this one.");
-					return;
-				}
-			}
 
 			// Create target install directory
 			if (!Directory.Exists(InstallDir))
