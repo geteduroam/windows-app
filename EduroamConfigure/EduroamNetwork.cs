@@ -195,6 +195,8 @@ namespace EduroamConfigure
                     userDataXml);
                 ret &= success;
 
+                // TODO: Of intrest: ProfilePack.Document.IsAutoConnectEnabled
+
                 Debug.WriteLine("Installed {2}UserProfile {3} for '{0}' on {1}",
                         configuredProfile.ProfileName, 
                         InterfaceId, 

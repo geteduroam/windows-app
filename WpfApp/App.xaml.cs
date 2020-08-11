@@ -51,7 +51,7 @@ namespace WpfApp
                 args.Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase));
 
             if (contains("/install")) // todo: dialog stuff
-                Installer.InstallToUserLocal();
+                Installer.EnsureIsInstalled();
             else if (contains("/uninstall")) // todo: prompt user for confirmation
                 Installer.ExitAndUninstallSelf();
             else
