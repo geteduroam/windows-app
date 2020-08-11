@@ -303,7 +303,10 @@ namespace WpfApp.Menu
             }
             else
             {
-                tbStatus.Text = "Could not install EAP-configuration";
+                tbStatus.Text = EduroamNetwork.IsWlanServiceApiAvailable()
+                    ? "Could not install any profile due to there not seemingly being any wireless interfaces on this host." // TODO: update this message when wireless x802 is a thing
+                    : "Could not install EAP-configuration";
+
                 mainWindow.btnNext.Content = "Connect";
             }
             if (!dispatcherTimer.IsEnabled)
