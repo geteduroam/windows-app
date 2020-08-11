@@ -66,7 +66,6 @@ namespace WpfApp
         private CertificateOverview pageCertificateOverview;
         private Redirect pageRedirect;
         private OAuthWait pageOAuthWait;
-        public bool Online { get; set; } // TODO: remove?
         // this contains the 'active' eapConfig that is being used
         private EapConfig eapConfig;
         // If theres is a bundled config file then it is stored in this variable
@@ -79,6 +78,7 @@ namespace WpfApp
         public bool EduroamAvailable { get; set; }
         public MainWindow()
         {
+            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
             InitializeComponent();
             Load();
             if (App.StartHiddenInTray) Hide();
@@ -86,17 +86,7 @@ namespace WpfApp
 
         private void Load()
         {
-            try
-            {
-                IdpDownloader = new IdentityProviderDownloader();
-                Online = true;
-            }
-            // TODO differentiate between API being down and no internet (
-            catch (ApiException)
-            {
-                Online = false;
-            }
-
+            IdpDownloader = new IdentityProviderDownloader();
 
             ExtractedEapConfig = GetSelfExtractingEap();
             if (ExtractedEapConfig != null)

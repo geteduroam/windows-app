@@ -44,7 +44,7 @@ namespace WpfApp.Menu
         /// </summary>
         private void PopulateInstitutions()
         {
-            UpdateInstitutions(downloader.GetClosestProviders(limit: 10));
+            UpdateInstitutions(downloader.ClosestProviders);
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace WpfApp.Menu
             // async to hinder UI from freezing
             await Task.Run(() => UpdateInstitutions(
                     IdentityProviderParser.SortByQuery(
-                        downloader.Providers,
+                        downloader.ClosestProviders,
                         searchString,
                         limit: 100)));
             isSearching = false;

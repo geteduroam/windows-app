@@ -14,31 +14,39 @@ namespace EduroamConfigure
         // constants
         private const string GeoApiUrl = "https://geo.geteduroam.app/geoip";
         #if DEBUG
-        private const string ProviderApiUrl = "https://discovery.eduroam.app/v1/discovery.json";
+        private const string ProviderApiUrl = "https://discovery.geteduroam.app/v1/discovery.json";
         #else
         private const string ProviderApiUrl = "https://discovery.eduroam.app/v1/discovery.json";
         #endif
 
         // state
-        public List<IdentityProvider> Providers { get; }
-        private List<IdentityProvider> ClosestProviders { get; } // Providers presorted by geo distance
-        private GeoCoordinateWatcher GeoWatcher { get; }
+        public List<IdentityProvider> Providers { get; set; }
+        public List<IdentityProvider> ClosestProviders { get; set; } // Providers presorted by geo distance
+        private GeoCoordinateWatcher geoWatcher;
+        public bool Online { get; set; }
 
 
         /// <summary>
         /// The constructor for this class.
         /// Will download the list of all providers
         /// </summary>
-        /// <exception cref="ApiUnreachableException">description</exception>
-        /// <exception cref="ApiParsingException">description</exception>
         public IdentityProviderDownloader()
         {
-            GeoWatcher = new GeoCoordinateWatcher();
-            GeoWatcher.TryStart(false, TimeSpan.FromMilliseconds(3000));
+            geoWatcher = new GeoCoordinateWatcher();
+            geoWatcher.TryStart(false, TimeSpan.FromMilliseconds(3000));
+        }
+
+        /// <exception cref="ApiUnreachableException">description</exception>
+        /// <exception cref="ApiParsingException">description</exception>
+        public void LoadProviders()
+        {
             Providers = DownloadAllIdProviders();
             // turns out just running this once, even without saving it and caching makes subsequent calls much faster
             ClosestProviders = GetClosestProviders();
+            Online = true;
         }
+
+
 
         /// <summary>
         /// Will return the current coordinates of the users.
@@ -46,9 +54,9 @@ namespace EduroamConfigure
         /// </summary>
         private GeoCoordinate GetCoordinates()
         {
-            if (!GeoWatcher.Position.Location.IsUnknown)
+            if (!geoWatcher.Position.Location.IsUnknown)
             {
-                return GeoWatcher.Position.Location;
+                return geoWatcher.Position.Location;
             } 
             return DownloadCoordinates();
         }
@@ -69,9 +77,16 @@ namespace EduroamConfigure
                 DiscoveryApi apiInstance = JsonConvert.DeserializeObject<DiscoveryApi>(apiJson);
                 return apiInstance;
             }
-            catch (WebException ex)
+            catch (WebException e)
             {
-                throw new ApiUnreachableException($"Api for discovering Identity providers could not be reached. {ProviderApiUrl}", ex);
+                if (e.Status == WebExceptionStatus.ProtocolError)
+                {
+                    throw new ApiUnreachableException($"Api for discovering Identity providers could not be reached. {ProviderApiUrl}", e);
+                }
+                else
+                {
+                    throw new InternetConnectionException($"Could not connect to the internet when trying to access API. {ProviderApiUrl}", e);
+                }
             }
             catch (JsonReaderException ex)
             {
@@ -101,7 +116,8 @@ namespace EduroamConfigure
         /// <summary>
         /// Downloads a list of all eduroam institutions
         /// </summary>
-        /// <exception cref="EduroamAppUserError">description</exception>
+        /// <exception cref="ApiUnreachableException">description</exception>
+        /// <exception cref="ApiParsingException">description</exception>
         private static List<IdentityProvider> DownloadAllIdProviders()
         {
             return DownloadDiscoveryApi().Instances;
@@ -120,9 +136,12 @@ namespace EduroamConfigure
         /// Returns the n closest providers
         /// </summary>
         /// <param name="limit">number of providers to return</param>
-        public List<IdentityProvider> GetClosestProviders(int limit)
+        public List<IdentityProvider> GetClosestProviders(int? limit)
         {
-             return ClosestProviders.Take(limit).ToList();
+
+             return limit == null 
+                ? ClosestProviders
+                : ClosestProviders.Take(limit.Value).ToList();
             // return GetClosestProviders().Take(limit).ToList();
         }
 
@@ -154,14 +173,15 @@ namespace EduroamConfigure
 
                 // sort and return n closest
                 return Providers
-                    .Where(p => p.Country == closestCountryCode)
+                    //.Where(p => p.Country == closestCountryCode)
                     .OrderBy(p => userCoords.GetDistanceTo(p.GetClosestGeoCoordinate(userCoords)))
                     .ToList();
             }
             catch (ApiUnreachableException)
             {
                 return Providers
-                   .Where(p => p.Country == closestCountryCode)
+                   //.Where(p => p.Country == closestCountryCode)
+                   .OrderByDescending(p => p.Country == closestCountryCode)
                    .ToList();
             }
         }

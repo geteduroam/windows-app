@@ -19,6 +19,10 @@ namespace EduroamConfigure
         /// <returns>List of providers ordered by match coefficient</returns>
         public static List<IdentityProvider> SortByQuery(List<IdentityProvider> providers, string searchString, int limit)
         {
+            if (string.IsNullOrEmpty(searchString))
+            {
+                return providers;
+            }
             var query = NormalizeString(searchString);
 
             bool startsWithInv(string str, string query) =>
