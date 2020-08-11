@@ -37,6 +37,10 @@ namespace WpfApp.Menu
         private void Load()
         {
             tbInfo.Text = "In order to continue you have to install the listed certificates";
+
+            ConnectToEduroam.EnumerateCAInstallers(eapConfig)
+                .Any(installer => installer.IsInstalledByUs || !installer.IsInstalled);
+
             installers = ConnectToEduroam.EnumerateCAInstallers(eapConfig).ToList();
             foreach (ConnectToEduroam.CertificateInstaller installer in installers )
             {

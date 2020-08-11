@@ -173,7 +173,14 @@ namespace WpfApp
                         LoadPageTermsOfUse();
                         break;
                     }
-                    LoadPageCertificateOverview();
+                    if(ConnectToEduroam.EnumerateCAInstallers(eapConfig)
+                        .Any(installer => installer.IsInstalledByUs || !installer.IsInstalled))
+                    {
+                        LoadPageCertificateOverview();
+                        break;
+                    }
+
+                    LoadPageLogin();
                     break;
                 case FormId.TermsOfUse:
                     historyFormId.Remove(currentFormId);
@@ -299,7 +306,14 @@ namespace WpfApp
                      LoadPageProfileOverview();
                      return true;
                 }
-                LoadPageCertificateOverview();
+                if (ConnectToEduroam.EnumerateCAInstallers(eapConfig)
+                        .Any(installer => installer.IsInstalledByUs || !installer.IsInstalled))
+                {
+                    LoadPageCertificateOverview();
+                    return true;
+                }
+
+                LoadPageLogin();
                 return true;
             }
             else if (!string.IsNullOrEmpty(profile.redirect))
