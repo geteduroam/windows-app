@@ -96,6 +96,7 @@ namespace EduroamConfigure
 			_ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
 
 			PersistingStore.ProfileID = authMethod.EapConfig.Uid;
+			PersistingStore.IdentityProvider = PersistingStore.IdentityProviderInfo.From(authMethod);
 
 			var ssids = authMethod.EapConfig.CredentialApplicabilities
 				.Where(cred => cred.NetworkType == IEEE802x.IEEE80211) // TODO: add support for Wired 802.1x

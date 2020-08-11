@@ -32,6 +32,12 @@ namespace EduroamConfigure
 			set => SetValue<string>("ProfileID", value);
 		}
 
+		public static IdentityProviderInfo? IdentityProvider
+		{
+			get => GetValue<IdentityProviderInfo?>("IdentityProvider");
+			set => SetValue<IdentityProviderInfo?>("IdentityProvider", value);
+		}
+
 		/// <summary>
 		/// A set of the configured WLANProfiles
 		/// </summary>
@@ -148,6 +154,46 @@ namespace EduroamConfigure
 						notAfter:      cert.NotAfter);
 		}
 
+		public readonly struct IdentityProviderInfo
+		{
+			public string                               DisplayName  { get; }
+			public string                               EmailAddress { get; }
+			public string           /* hello */         WebAddress   { get; }
+			public string                               Phone        { get; }
+			public string                               InstId       { get; }
+			public (EapType outer, InnerAuthType inner) EapTypeSsid  { get; }
+			public (EapType outer, InnerAuthType inner) EapTypeHs2   { get; }
+
+			public IdentityProviderInfo(
+				string                               displayName,
+				string                               emailAddress,
+				string        /* how are you? */     webAddress,
+				string                               phone,
+				string                               instId,
+				(EapType outer, InnerAuthType inner) eapTypeSsid,
+				(EapType outer, InnerAuthType inner) eapTypeHs2)
+			{
+				DisplayName  = displayName;
+				EmailAddress = emailAddress;
+				WebAddress   = webAddress;
+				Phone        = phone;
+				InstId       = instId;
+				EapTypeSsid  = eapTypeSsid;
+				EapTypeHs2   = eapTypeHs2;
+			}
+
+			public static IdentityProviderInfo From(EapConfig.AuthenticationMethod authMethod)
+				=> authMethod == null
+					? throw new ArgumentNullException(paramName: nameof(authMethod))
+					: new IdentityProviderInfo(
+						authMethod.EapConfig.InstitutionInfo.DisplayName,
+						authMethod.EapConfig.InstitutionInfo.EmailAddress,
+						authMethod.EapConfig.InstitutionInfo.WebAddress,
+						authMethod.EapConfig.InstitutionInfo.Phone,
+						authMethod.EapConfig.InstitutionInfo.InstId,
+						(authMethod.EapType, authMethod.InnerAuthType),
+						(authMethod.Hs2AuthMethod.EapType, authMethod.Hs2AuthMethod.InnerAuthType));
+		}
 
 		// Inner workings:
 
