@@ -177,7 +177,7 @@ namespace WpfApp
 					break;
 
 				case FormId.ProfileOverview:
-					if(pageProfileOverview.ShowTou)
+					if (pageProfileOverview.ShowTou)
 					{
 						LoadPageTermsOfUse();
 						break;
@@ -261,6 +261,19 @@ namespace WpfApp
 				btnBack.Visibility = Visibility.Hidden;
 		}
 
+		public static bool CheckIfEapConfigIsSupported(EapConfig eapConfig)
+		{
+			if (!EduroamNetwork.EapConfigIsSupported(eapConfig))
+			{
+				MessageBox.Show(
+					"The profile you have selected is not supported by this application.",
+					"No supported authentification method was found.",
+					MessageBoxButton.OK, MessageBoxImage.Exclamation);
+				return false;
+			}
+			return true;
+		}
+
 		// downloads eap config based on profileId
 		// seperated into its own function as this can happen either through
 		// user selecting a profile or a profile being autoselected
@@ -287,7 +300,10 @@ namespace WpfApp
 
 			if (eapConfig != null)
 			{
-				if(HasInfo(eapConfig))
+				if (!CheckIfEapConfigIsSupported(eapConfig))
+					return false;
+
+				if (HasInfo(eapConfig))
 				{
 					 LoadPageProfileOverview();
 					 return true;
@@ -379,8 +395,11 @@ namespace WpfApp
 			{
 				string eapPath = files.First(); // TODO: although correct, this seems smelly
 				string eapString = File.ReadAllText(eapPath);
-				//eapConfig = EapConfig.FromXmlData(uid: "bundled file", eapString);
-				return EapConfig.FromXmlData(uid: "bundled file", eapString);
+				var eapconfig = EapConfig.FromXmlData(uid: "bundled file", eapString);
+
+				return EduroamNetwork.EapConfigIsSupported(eapconfig)
+					? eapconfig
+					: null;
 			}
 			catch (Exception)
 			{
@@ -394,7 +413,11 @@ namespace WpfApp
 		public void OAuthComplete(EapConfig eapConfig)
 		{
 			Activate();
+			if (!CheckIfEapConfigIsSupported(eapConfig))
+				eapConfig = null;
+
 			this.eapConfig = eapConfig;
+
 			if (eapConfig != null)
 			{
 				if (HasInfo(eapConfig))
