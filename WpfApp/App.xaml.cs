@@ -96,14 +96,25 @@ namespace WpfApp
 			Debug.WriteLine("Got external cli args: {0} from {1}",
 				JsonConvert.SerializeObject(args.Skip(1).ToList()), args.FirstOrDefault());
 
+			bool showMainWindow = true;
+
 			if (contains("/?") || contains("/help"))
+			{
+				showMainWindow = false;
 				ShowHelpText();
+			}
 
 			if (contains("/close"))
+			{
+				showMainWindow = false;
 				((MainWindow)MainWindow).Shutdown();
+			}
 
 			if (contains("/refresh"))
+			{
+				showMainWindow = false;
 				throw new NotImplementedException(); // TODO
+			}
 
 			if (contains("/uninstall"))
 				Installer.ExitAndUninstallSelf(
@@ -114,9 +125,17 @@ namespace WpfApp
 					},
 					doDeleteSelf: true);
 
-			// Return value has no effect:
-			// https://github.com/taylorjonl/SingleInstanceApp/blob/master/SingleInstance.cs#L261
-			return true;
+			// TODO: this should be made into a method in MainWindow.
+			if (showMainWindow)
+			{
+				var window = ((MainWindow)MainWindow);
+				window.Show();
+				if (window.WindowState == WindowState.Minimized)
+					window.WindowState = WindowState.Normal;
+				window.Activate();
+			}
+
+			return false; // dont have the library show the window for us
 		}
 
 		public static void ShowHelpText()
