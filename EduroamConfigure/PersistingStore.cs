@@ -148,7 +148,7 @@ namespace EduroamConfigure
 			}
 
 			public static InstalledCertificate FromCertificate(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation)
-				 => cert == null
+				=> cert == null
 					? throw new ArgumentNullException(paramName: nameof(cert))
 					: new InstalledCertificate(
 						storeName:     storeName,
