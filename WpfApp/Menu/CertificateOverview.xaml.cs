@@ -44,7 +44,8 @@ namespace WpfApp.Menu
 				AddCertGrid(installer);
 			}
 			// remove the first separator
-			stpCerts.Children.RemoveAt(0);
+			if (stpCerts.Children.Count != 0)
+				stpCerts.Children.RemoveAt(0);
 
 			VerifyNextButton();
 		}

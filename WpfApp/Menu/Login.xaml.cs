@@ -338,14 +338,8 @@ namespace WpfApp.Menu
 		/// <returns>true on success</returns>
 		private bool InstallEapConfig(EapConfig eapConfig, string username = null, string password = null) // TODO: make static
 		{
-			if (!EduroamNetwork.EapConfigIsSupported(eapConfig))
-			{
-				MessageBox.Show(
-					"The profile you have selected is not supported by this application.",
-					"No supported authentification method was found.",
-					MessageBoxButton.OK, MessageBoxImage.Exclamation);
+			if (!MainWindow.CheckIfEapConfigIsSupported(eapConfig)) // should have been caught earlier, but check here too for sanity
 				return false;
-			}
 
 			// test
 			ConnectToEduroam.RemoveAllProfiles();

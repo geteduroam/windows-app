@@ -123,6 +123,8 @@ namespace WpfApp.Menu
 		private void btnFile_Click(object sender, RoutedEventArgs e)
 		{
 			LocalEapConfig = FileDialog.AskUserForEapConfig();
+			if (!MainWindow.CheckIfEapConfigIsSupported(LocalEapConfig))
+				LocalEapConfig = null;
 			if (LocalEapConfig == null) return;
 			mainWindow.NextPage();
 		}

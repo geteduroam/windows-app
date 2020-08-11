@@ -72,7 +72,7 @@ namespace WpfApp
 				InstallLocation = installer.InstallDir;
 				InstallDate     = DateTime.Today.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
 				UninstallString = installer.UninstallCommand;
-				EstimatedSize   = (uint)new FileInfo(SelfInstaller.ThisExePath).Length;
+				EstimatedSize   = (uint)new FileInfo(SelfInstaller.ThisExePath).Length / 1024;
 				ModifyPath      = null;
 				// TODO: SettingsIdentifier ?
 			}
@@ -177,7 +177,7 @@ namespace WpfApp
 
 		public void EnsureIsInstalled()
 		{
-			if (IsRunningInInstallLocation) return;
+			if (IsRunningInInstallLocation) return; // TODO: some flow to update itself
 			if (IsInstalled)
 			{
 				var d1 = File.GetLastWriteTime(ThisExePath);
@@ -271,43 +271,31 @@ namespace WpfApp
 
 		/// <summary>
 		/// Uninstalls the program.
-		/// Will cause the program to exit.
-		/// </summary>
-		public bool ExitAndUninstallSelf()
-			=> ExitAndUninstallSelf<bool>(
-				success => {
-					Environment.Exit(0);
-					return success;
-				},
-				doDeleteSelf: true);
-
-		/// <summary>
-		/// Uninstalls the program.
 		/// </summary>
 		/// <typeparam name="T">return value</typeparam>
-		/// <param name="shutdown">a action which will shut down the application in the way you want, recieves true on successfull uninstall</param>
+		/// <param name="shutdownAction">a action which will shut down the application in the way you want, recieves true on successfull uninstall</param>
 		/// <param name="doDeleteSelf">whether to schedule a deletion of InstallExePath</param>
 		/// <returns>T</returns>
-		public T ExitAndUninstallSelf<T>(Func<bool, T> shutdown, bool doDeleteSelf = false)
+		public T ExitAndUninstallSelf<T>(Func<bool, T> shutdownAction, bool doDeleteSelf = false)
 		{
-			_ = shutdown ?? throw new ArgumentNullException(paramName: nameof(shutdown));
+			_ = shutdownAction ?? throw new ArgumentNullException(paramName: nameof(shutdownAction));
 
 			if (!EduroamConfigure.ConnectToEduroam.RemoveAllProfiles())
-				return shutdown(false);
+				return shutdownAction(false);
 			if (!EduroamConfigure.CertificateStore.UninstallAllInstalledCertificates())
-				return shutdown(false);
+				return shutdownAction(false);
 			EduroamConfigure.LetsWifi.WipeTokens();
 
 			// Remove start menu link
 			Debug.WriteLine("Delete file: " + StartMenuLnkPath);
-			if (!File.Exists(StartMenuLnkPath)) File.Delete(StartMenuLnkPath);
+			if (File.Exists(StartMenuLnkPath)) File.Delete(StartMenuLnkPath);
 
 			// remove registry entries
 			Debug.WriteLine("Delete registry subkey: " + rnsUninstall); ;
 			using (RegistryKey key = Registry.CurrentUser
 					.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall", writable: true))
 				if (key?.OpenSubKey(ApplicationIdentifier) != null)
-					key.DeleteSubKey(ApplicationIdentifier);
+					key.DeleteSubKeyTree(ApplicationIdentifier); // TODO: for some reason this doesn't seem to work
 			Debug.WriteLine("Delete registry value: " + rnsRun + "\\" + ApplicationIdentifier);
 			using (RegistryKey key = Registry.CurrentUser
 					.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run", writable: true))
@@ -340,7 +328,7 @@ namespace WpfApp
 			}
 
 			// Quit
-			return shutdown(true);
+			return shutdownAction(true);
 		}
 
 		public static void DelayedStart(string command, int delay = 5)

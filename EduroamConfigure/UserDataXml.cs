@@ -172,7 +172,7 @@ namespace EduroamConfigure
 							password,
 							outerIdentity,
 							EapType.PEAP,
-							InnerAuthType.MSCHAPv2
+							InnerAuthType.EAP_MSCHAPv2
 						)
 					),
 
@@ -201,12 +201,13 @@ namespace EduroamConfigure
 			return (eapType, innerAuthType) switch
 			{
 				(EapType.TLS, _) => true,
+				//(EapType.MSCHAPv2, InnerAuthType.None) => true,
 				(EapType.PEAP, InnerAuthType.EAP_MSCHAPv2) => true,
 				(EapType.TTLS, InnerAuthType.PAP) => !isX86,
 				(EapType.TTLS, InnerAuthType.MSCHAP) => !isX86, // not tested, but matches schema
 				(EapType.TTLS, InnerAuthType.MSCHAPv2) => !isX86,
-				//(EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => at_least_win10 && geWin64, // TODO: xml matches the schema, but win32 throws an error.
-				//(EapType.TTLS, InnerAuthType.EAP_PEAP_MSCHAPv2) => at_least_win10 && geWin64, // TODO: xml matches the schema, but win32 throws an error.
+				//(EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => at_least_win10 && !isX86, // TODO: xml matches the schema, but win32 throws an error.
+				//(EapType.TTLS, InnerAuthType.EAP_PEAP_MSCHAPv2) => at_least_win10 && !isX86, // TODO: xml matches the schema, but win32 throws an error.
 				_ => false,
 			};
 		}

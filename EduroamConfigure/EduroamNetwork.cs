@@ -104,21 +104,21 @@ namespace EduroamConfigure
 				.Select(cred => cred.Ssid)
 				.ToList();
 
-			bool installed = false;
+			bool installedSsid = false;
 			foreach (var ssid in ssids)
 			{
-				(string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, ssid);
-				installed |= InstallProfile(profileName, profileXml, isHs2: false, forAllUsers);
+				(string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, withSsid: ssid);
+				installedSsid |= InstallProfile(profileName, profileXml, isHs2: false, forAllUsers);
 			}
 
 			bool installedHs2 = false;
 			if (authMethod.Hs2AuthMethod != null)
 			{
 				(string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod.Hs2AuthMethod, asHs2Profile: true);
-				installedHs2 =  InstallProfile(profileName, profileXml, isHs2: true, forAllUsers);
+				installedHs2 = InstallProfile(profileName, profileXml, isHs2: true, forAllUsers);
 			}
 
-			return (installed, installedHs2);
+			return (installedSsid, installedHs2);
 		}
 
 		private bool InstallProfile(string profileName, string profileXml, bool isHs2, bool forAllUsers)
@@ -299,7 +299,8 @@ namespace EduroamConfigure
 					networkPPack => (networkPPack.ppack.Name, networkPPack.ppack.Interface.Id),
 					persitedProfile => (persitedProfile.ProfileName, persitedProfile.InterfaceId),
 					(networkPPack, persitedProfile) =>
-						new EduroamNetwork(networkPPack.network, networkPPack.ppack, persitedProfile));
+						new EduroamNetwork(networkPPack.network, networkPPack.ppack, persitedProfile))
+				.OrderByDescending(network => network.IsAvailable);
 		}
 
 		/// <summary>
