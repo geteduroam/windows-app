@@ -86,6 +86,7 @@ namespace WpfApp
 
 		private void Load()
 		{
+			//webEduroamLogo.NavigateToString(ImageFunctions.GenerateSvgLogoHtml(Properties.Resources.eduroam_logo, (int)webEduroamLogo.Width, (int)webEduroamLogo.Height));
 			IdpDownloader = new IdentityProviderDownloader();
 
 			ExtractedEapConfig = GetSelfExtractingEap();
@@ -392,12 +393,84 @@ namespace WpfApp
 			}
 		}
 
+
+		public void LoadProviderLogo()
+		{
+			ResetLogo();
+			// gets institution logo encoded to base64
+			byte[] logoBytes = eapConfig.InstitutionInfo.LogoData;
+			string logoMimeType = eapConfig.InstitutionInfo.LogoMimeType;
+			// adds logo to form if exists
+			if (logoBytes.Length > 0)
+			{
+				// deactivate eduroam logo if institute has its own logo
+				imgEduroamLogo.Visibility = Visibility.Hidden;
+				// gets size of container
+				int cWidth = (int)webLogo.Width;
+				int cHeight = (int)webLogo.Height;
+
+				if (logoMimeType == "image/svg+xml")
+				{
+					imgEduroamLogo.Visibility = Visibility.Visible;
+					imgLogo.Visibility = Visibility.Hidden;
+					//webLogo.Visibility = Visibility.Visible;
+					//webLogo.NavigateToString(ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight));
+
+				}
+				else // other filetypes (jpg, png etc.)
+				{
+					try
+					{
+						// converts from base64 to image
+						/* Image logo = ImageFunctions.BytesToImage(logoBytes);
+						 decimal hScale = decimal.Divide(cWidth, logo.Width);
+						 decimal vScale = decimal.Divide(cHeight, logo.Height);
+						 decimal pScale = vScale < hScale ? vScale : hScale;
+						 // resizes image to fit container
+						 Bitmap resizedLogo = ImageFunctions.ResizeImage(logo, (int)(logo.Width * pScale), (int)(logo.Height * pScale));
+						 frmParent.PbxLogo.Image = resizedLogo;
+						 // centers image in container
+						 int lPad = cWidth - frmParent.PbxLogo.Image.Width;
+						 frmParent.PbxLogo.Padding = new Padding(lPad / 2, 0, 0, 0);
+						 frmParent.PbxLogo.Visible = true;*/
+						BitmapImage bitMapImage = ImageFunctions.LoadImage(logoBytes);
+						imgLogo.Source = bitMapImage;
+						imgLogo.Visibility = Visibility.Visible;
+					}
+					catch (System.FormatException)
+					{
+						// ignore
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Empties both logo controls and makes them invisible.
+		/// </summary>
+		public void ResetLogo()
+		{
+			// reset pbxLogo
+			//imgLogo.Source = null;
+			imgLogo.Visibility = Visibility.Hidden;
+
+			// reset webLogo
+			//webLogo.Navigate("about:blank");
+			//if (webLogo.Document != null)
+			//{
+			//    webLogo.NavigateToString(string.Empty);
+			//}
+			webLogo.Visibility = Visibility.Hidden;
+			imgEduroamLogo.Visibility = Visibility.Visible;
+		}
+
 		public void LoadPageMainMenu(bool refresh = true)
 		{
 			ExtractFlag = false;
 			currentFormId = FormId.MainMenu;
 			btnNext.Visibility = Visibility.Hidden;
 			btnBack.Visibility = Visibility.Hidden;
+			// ResetLogo();
 			if (refresh) pageMainMenu = new MainMenu(this);
 			Navigate(pageMainMenu);
 		}
@@ -409,6 +482,7 @@ namespace WpfApp
 			btnNext.Content = "Next";
 			btnBack.IsEnabled = true;
 			btnBack.Visibility = Visibility.Visible;
+			ResetLogo();
 			if (refresh) pageSelectInstitution = new SelectInstitution(this);
 
 			Navigate(pageSelectInstitution);
@@ -419,6 +493,7 @@ namespace WpfApp
 			currentFormId = FormId.SelectProfile;
 			btnNext.Visibility = Visibility.Visible;
 			btnNext.Content = "Next";
+			ResetLogo();
 			if (refresh) pageSelectProfile = new SelectProfile(this, pageSelectInstitution.IdProviderId);
 			Navigate(pageSelectProfile);
 		}

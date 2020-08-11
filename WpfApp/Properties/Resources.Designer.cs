@@ -61,6 +61,16 @@ namespace WpfApp.Properties {
 		}
 
 		/// <summary>
+		///   Looks up a localized resource of type System.Byte[].
+		/// </summary>
+		internal static byte[] eduroam_logo {
+			get {
+				object obj = ResourceManager.GetObject("eduroam_logo", resourceCulture);
+				return ((byte[])(obj));
+			}
+		}
+
+		/// <summary>
 		///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
 		///&lt;html lang=&quot;en&quot; class=&quot;dialog&quot;&gt;
 		///&lt;!--TODO: embed the css--&gt;
