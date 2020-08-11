@@ -142,7 +142,7 @@ namespace EduroamConfigure
 
 		// Inner workings:
 
-		private const string ns = "HKEY_CURRENT_USER\\Software\\GetEduroam"; // Namespace in Registry
+		private const string ns = "HKEY_CURRENT_USER\\Software\\geteduroam"; // Namespace in Registry
 		private static T GetValue<T>(string key, string defaultJson = "null")
 		{
 			try
