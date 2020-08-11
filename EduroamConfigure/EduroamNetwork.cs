@@ -299,7 +299,8 @@ namespace EduroamConfigure
                     networkPPack => (networkPPack.ppack.Name, networkPPack.ppack.Interface.Id),
                     persitedProfile => (persitedProfile.ProfileName, persitedProfile.InterfaceId),
                     (networkPPack, persitedProfile) => 
-                        new EduroamNetwork(networkPPack.network, networkPPack.ppack, persitedProfile));
+                        new EduroamNetwork(networkPPack.network, networkPPack.ppack, persitedProfile))
+                .OrderByDescending(network => network.IsAvailable);
         }
 
         /// <summary>
