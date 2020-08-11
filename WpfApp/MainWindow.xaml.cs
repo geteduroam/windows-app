@@ -20,6 +20,7 @@ using EduroamConfigure;
 using System.Diagnostics;
 using System.ComponentModel;
 using Hardcodet.Wpf.TaskbarNotification;
+using Hardcodet.Wpf.TaskbarNotification.Interop;
 
 namespace WpfApp
 {
@@ -80,8 +81,14 @@ namespace WpfApp
         public MainWindow()
         {
             InitializeComponent();
+
+            if (!App.Installer.IsRunningInInstallLocation)
+                TaskbarIcon.Visibility = Visibility.Hidden;
+
+            if (App.StartHiddenInTray && App.Installer.IsRunningInInstallLocation)
+                Hide();
+
             Load();
-            if (App.StartHiddenInTray) Hide();
         }
 
         private void Load()
