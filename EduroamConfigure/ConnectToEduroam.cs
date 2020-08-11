@@ -144,6 +144,10 @@ namespace EduroamConfigure
 			{
 				get => CertificateStore.IsCertificateInstalled(cert, storeName, storeLocation);
 			}
+			public bool IsInstalledByUs
+			{
+				get => CertificateStore.IsCertificateInstalledByUs(cert, storeName, storeLocation);
+			}
 
 			public bool InstallCertificate()
 				=> CertificateStore.InstallCertificate(cert, storeName, storeLocation);
