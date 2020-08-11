@@ -87,7 +87,7 @@ namespace EduroamConfigure
 			var profileName = asHs2Profile
 				? (authMethod.EapConfig.InstitutionInfo.DisplayName)
 				: ssids.First(); // TODO: change into 'InstitutionInfo.DisplayName + ssids.First()' ? Will then make way for installing eduroam for multiple institutions
-			if (asHs2Profile && ssids.Contains(profileName))
+			if (asHs2Profile && ssids.Contains(profileName)) // since profileName is the unique identifier of the profile. avoid collisions with the profiles per ssid
 				profileName += " via Passpoint"; // GEANT convention as fallback
 
 			// Construct XML document
@@ -140,27 +140,23 @@ namespace EduroamConfigure
 
 
 			// Add all the supported SSIDs
-			foreach (var ssid in ssids) // xml schema allows for 256 occurrances max
-			{
+			ssids.ForEach(ssid => // This element supports up to 25 SSIDs in the v1 namespace and up to additional 10000 SSIDs in the v2 namespace.
 				ssidConfigElement.Add(
 					new XElement(nsWLAN + "SSID",
-						//new XElement(nsWLAN + "hex", ),
+						//new XElement(nsWLAN + "hex", ssidHex),
 						new XElement(nsWLAN + "name", ssid)
 					)
-				);
-			}
+				));
 			ssidConfigElement.Add(
 				new XElement(nsWLAN + "nonBroadcast", "true")
 			);
 
 			// Populate the Hs2 field
-			foreach (string oui in consortiumOids)
-			{
+			consortiumOids.ForEach(oui =>
 				roamingConsortiumElement.Add(
 					new XElement(nsWLAN + "OUI", oui)
-				);
-			}
-			// or remove it if it shouldn't be there
+				));
+			// ... or remove it if it shouldn't be there
 			if (!asHs2Profile) hs2Element.Remove();
 
 			// return xml as string
@@ -383,7 +379,7 @@ namespace EduroamConfigure
 			bool hasOID = authMethod.EapConfig.CredentialApplicabilities
 				.Any(cred => cred.ConsortiumOid != null);
 			bool isPEAP = authMethod.EapType == EapType.PEAP;
-			return hasOID && !isPEAP;
+			return hasOID && !isPEAP; // Hotstpo2.0 does not support PEAP
 		}
 
 		/// <summary>
