@@ -172,8 +172,28 @@ namespace WpfApp
 		/// <summary>
 		/// If false, it is probably running from %HOME%/Downloads or something
 		/// </summary>
-		public bool IsRunningFromInstallLocation
+		public bool IsRunningInInstallLocation
 		{ get => InstallExePath == ThisExePath; }
+
+		public void EnsureIsInstalled()
+		{
+			if (IsRunningInInstallLocation) return;
+			if (IsInstalled)
+			{
+				var d1 = File.GetLastWriteTime(ThisExePath);
+				var d2 = File.GetLastWriteTime(InstallExePath);
+				if (d1 <= d2)
+				{
+					// TODO: console no work
+					Console.WriteLine(
+						"The date of the currently installed version " +
+						"is equal to or newer than this one.");
+					return;
+				}
+			}
+
+			InstallToUserLocal();
+		}
 
 		/// <summary>
 		/// Installs the running EXE to %USER%/AppData/Local,
@@ -182,22 +202,10 @@ namespace WpfApp
 		public void InstallToUserLocal()
 		{
 			// avoid uneccesary/illegal updates
-			if (IsRunningFromInstallLocation) // sanity check, should never happen
+			if (IsRunningInInstallLocation) // sanity check, should never happen
 				throw new EduroamConfigure.EduroamAppUserError("already installed", // TODO: use a more fitting exception?
 					"This application has already been installed. " +
 					"Installing it again won't have any effect.");
-			if (File.Exists(InstallExePath))
-			{
-				var d1 = File.GetLastWriteTime(ThisExePath);
-				var d2 = File.GetLastWriteTime(InstallExePath);
-				if (d1 <= d2)
-				{
-					Console.WriteLine(
-						"The date of the currently installed version " +
-						"is equal to or newer than this one.");
-					return;
-				}
-			}
 
 			// Create target install directory
 			if (!Directory.Exists(InstallDir))
@@ -276,6 +284,10 @@ namespace WpfApp
 		/// <summary>
 		/// Uninstalls the program.
 		/// </summary>
+		/// <typeparam name="T">return value</typeparam>
+		/// <param name="shutdown">a action which will shut down the application in the way you want, recieves true on successfull uninstall</param>
+		/// <param name="doDeleteSelf">whether to schedule a deletion of InstallExePath</param>
+		/// <returns>T</returns>
 		public T ExitAndUninstallSelf<T>(Func<bool, T> shutdown, bool doDeleteSelf = false)
 		{
 			_ = shutdown ?? throw new ArgumentNullException(paramName: nameof(shutdown));

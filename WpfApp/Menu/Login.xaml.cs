@@ -281,7 +281,7 @@ namespace WpfApp.Menu
 			bool installed = await Task.Run(() => InstallEapConfig(eapConfig, username, password));
 			if (installed)
 			{
-				bool connected = await Connect();
+				bool connected = await TryToConnect();
 				if (connected)
 				{
 					tbStatus.Text = "You are now connected to eduroam.\n\nPress Close to exit the wizard.";
@@ -289,7 +289,16 @@ namespace WpfApp.Menu
 				}
 				else
 				{
-					tbStatus.Text = "Connection to eduroam failed.";
+					if (EduroamNetwork.IsEduroamAvailable(eapConfig))
+					{
+						tbStatus.Text = "Everything is configured!\nUnable to connect to Eduroam.";
+					}
+					else
+					{
+						// Hs2 is not enumerable
+						tbStatus.Text = "Everything is configured!\nUnable to connect to Eduroam, you're probably out of coverage.";
+					}
+					mainWindow.btnNext.Content = "Connect";
 				}
 			}
 			else
@@ -306,7 +315,7 @@ namespace WpfApp.Menu
 		}
 
 
-		public async Task<bool> Connect()
+		public async Task<bool> TryToConnect()
 		{
 			bool connectSuccess;
 			try
@@ -333,15 +342,14 @@ namespace WpfApp.Menu
 			{
 				MessageBox.Show(
 					"The profile you have selected is not supported by this application.",
-					"No supported authentification method ws found.", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+					"No supported authentification method was found.",
+					MessageBoxButton.OK, MessageBoxImage.Exclamation);
 				return false;
 			}
-
 
 			// test
 			ConnectToEduroam.RemoveAllProfiles();
 			mainWindow.ProfileCondition = MainWindow.ProfileStatus.NoneConfigured;
-
 
 			bool success = false;
 
@@ -359,28 +367,24 @@ namespace WpfApp.Menu
 					if (!authMethodInstaller.InstallProfile(username, password))
 						continue; // failed, try the next method
 
+					// check if we need to wait for the certificate to become valid
 					certValid = authMethodInstaller.GetTimeWhenValid().From;
 					if (DateTime.Now <= certValid)
 					{
+						// dispatch the event which creates the clock the end user sees
 						dispatcherTimer_Tick(dispatcherTimer, new EventArgs());
 						dispatcherTimer.Start();
 						return false;
 					}
 
-
-
 					success = true;
 					break;
 				}
 
-				// TODO: move this out of function
-				if (!EduroamNetwork.IsEduroamAvailable(eapConfig))
-				{
-					//err = "eduroam not available";
-				}
-
 				// TODO: move out of function, use return value. This function should be static
 				mainWindow.ProfileCondition = MainWindow.ProfileStatus.Configured;
+
+				App.Installer.EnsureIsInstalled(); // TODO: run in backround?
 
 				return success;
 			}

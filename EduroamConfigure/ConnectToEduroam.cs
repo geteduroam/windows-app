@@ -280,8 +280,8 @@ namespace EduroamConfigure
 				Debug.WriteLine("Ssid profile eap type: " + AuthMethod.EapType.ToString() ?? "None");
 				Debug.WriteLine("Hs2  profile eap type: " + AuthMethod.Hs2AuthMethod?.EapType.ToString() ?? "None");
 
-				if (!AuthMethod.NeedsLoginCredentials() || (username, password) != (null, null)) // TODO: always run this
-					InstallUserProfile(username, password, AuthMethod); // TODO: inline this function and delete it
+				if (!AuthMethod.NeedsLoginCredentials() || (username, password) != (null, null)) // TODO: always run this. EduroamApp depends in this behavior
+					InstallUserProfile(username, password, AuthMethod); // TODO: inline this obsolete function and delete it
 
 				bool success = anyInstalledSsid || anyInstalledHs2;
 				HasInstalledProfile = success;
