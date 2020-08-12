@@ -82,6 +82,11 @@ namespace EduroamConfigure
             return success;
         }
 
+        /// <summary>
+        /// Parse a json response and store the tokens provided
+        /// </summary>
+        /// <param name="jsonResponse"></param>
+        /// <returns>True if the json was valid</returns>
         private static bool SetAccessTokensFromJson(string jsonResponse)
         {
             // Parse json response to retrieve authorization tokens
@@ -120,6 +125,10 @@ namespace EduroamConfigure
             return true;
         }
 
+        /// <summary>
+        /// Will use the refresh token to request a new access token.
+        /// </summary>
+        /// <returns></returns>
         public static bool RefreshTokens()
         {
             if (!CanRefresh) return false;
@@ -137,6 +146,10 @@ namespace EduroamConfigure
             return SetAccessTokensFromJson(tokenJson);
         }
 
+        /// <summary>
+        /// Will usually request the LetsWifi endpoint to issue a client certificate
+        /// </summary>
+        /// <returns>EapConfig with client</returns>
         public static EapConfig DownloadEapConfig()
         {
             if (EapEndpoint == null) return null;
