@@ -95,7 +95,6 @@ namespace EduroamConfigure
 		{
 			_ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
 
-			PersistingStore.ProfileID = authMethod.EapConfig.Uid;
 			PersistingStore.IdentityProvider = PersistingStore.IdentityProviderInfo.From(authMethod);
 
 			var ssids = authMethod.EapConfig.CredentialApplicabilities
