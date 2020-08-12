@@ -286,6 +286,7 @@ namespace WpfApp
 			if (!EduroamConfigure.CertificateStore.UninstallAllInstalledCertificates())
 				return shutdownAction(false);
 			EduroamConfigure.LetsWifi.WipeTokens();
+			EduroamConfigure.PersistingStore.IdentityProvider = null;
 
 			// Remove start menu link
 			Debug.WriteLine("Delete file: " + StartMenuLnkPath);
