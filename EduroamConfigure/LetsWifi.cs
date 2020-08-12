@@ -177,6 +177,96 @@ namespace EduroamConfigure
 			return EapConfig.FromXmlData(uid: ProfileID, eapConfigXml, isOauth: true);
 		}
 
+		/// <summary>
+		/// TODO
+		/// </summary>
+		/// <param name="force">Wether to force a reinstall even if the current certificate still is valid for quote some time</param>
+		/// <returns>An enum describing the result</returns>
+		public static RefreshResponse RefreshAndInstallEapConfig(bool force = false)
+		{
+			if (!PersistingStore.IsRefreshable)
+				return RefreshResponse.NotRefreshable;
+
+			// should never be null since the check above was successfull
+			var profileInfo = PersistingStore.IdentityProvider
+				?? throw new NullReferenceException(nameof(PersistingStore.IdentityProvider) + " was null");
+
+			// check if within 2/3 of the client certificate lifespan
+			if (profileInfo.NotBefore != null && profileInfo.NotAfter != null)
+			{
+				var d1 = profileInfo.NotBefore.Value;
+				var d2 = DateTime.Now;
+				var d3 = profileInfo.NotAfter.Value;
+
+				// if we are not a least 2/3 into the validity period (let's encrypt convention)
+				if (d1.Add(TimeSpan.FromTicks((d3 - d1).Ticks * 2 / 3)) > d2)
+					if (!force)
+						return RefreshResponse.StillValid; // prefer not to issue a new cert
+			}
+
+			// this is done automatically by RequestAndDownloadEapConfig, but we do it here for the result code.
+			if (!RefreshTokens())
+				return RefreshResponse.AccessDenied;
+
+			var eapConfig = RequestAndDownloadEapConfig();
+			if (eapConfig == null)
+				return RefreshResponse.NewCARequired;
+
+			foreach (var rootCA in ConnectToEduroam.EnumerateCAInstallers(eapConfig))
+				if (!rootCA.IsInstalled)
+					return RefreshResponse.NewCARequired; // TODO: requires user intervention
+
+			// reinstall the same authmethod as last time
+			var installer = ConnectToEduroam
+				.InstallEapConfig(eapConfig)
+				.Where(installer => profileInfo.EapTypeSsid.outer == installer.AuthMethod.EapType)
+				.Where(installer => profileInfo.EapTypeSsid.inner == installer.AuthMethod.InnerAuthType)
+				.FirstOrDefault();
+
+			// should never happen, since we abort if CA installations are needed
+			if (!installer.InstallCertificates())
+				return RefreshResponse.Failed;
+
+			// Should only fail if the WLAN service is unavailable (no wireless NIC)
+			if (!installer.InstallProfile())
+				return RefreshResponse.Failed;
+
+			return RefreshResponse.Success;
+		}
+
+		public enum RefreshResponse
+		{
+			/// <summary>
+			/// All is good chief
+			/// </summary>
+			Success,
+
+			/// <summary>
+			/// The user has to install some new root certificates.
+			/// User intevention is required
+			/// </summary>
+			NewCARequired,
+
+			/// <summary>
+			/// The refresh token was denied. the user has to reauthenticate
+			/// </summary>
+			AccessDenied,
+
+			/// <summary>
+			/// There is no need to refresh the EAP profile, since it is still valid for quite some time
+			/// </summary>
+			StillValid,
+
+			/// <summary>
+			/// The installed profile is not refreshable
+			/// </summary>
+			NotRefreshable,
+
+			/// <summary>
+			/// Something failed
+			/// </summary>
+			Failed,
+		}
 
 		// internal helpers
 
