@@ -136,17 +136,10 @@ namespace WpfApp
 			switch (currentFormId)
 			{
 				case FormId.InstalledProfile:
-					if (pageInstalledProfile.Profile != null)
+					if (pageInstalledProfile.ProfileId != null)
 					{
-						LoadPageLoading();
-						eapConfig = await DownloadEapConfig(pageInstalledProfile.Profile);
-						if (ConnectToEduroam.EnumerateCAInstallers(eapConfig)
-						.Any(installer => installer.IsInstalledByUs || !installer.IsInstalled))
-						{
-							LoadPageCertificateOverview();
-							break;
-						}
-						LoadPageLogin();
+						var profile = pageInstalledProfile.ProfileId;
+						await HandleProfileSelect(profile, skipOverview: true);
 					}
 					//LoadPageMainMenu();
 					break;
@@ -299,7 +292,7 @@ namespace WpfApp
 		// downloads eap config based on profileId
 		// seperated into its own function as this can happen either through
 		// user selecting a profile or a profile being autoselected
-		private async Task<bool> HandleProfileSelect(string profileId)
+		private async Task<bool> HandleProfileSelect(string profileId, bool skipOverview = false)
 		{
 			LoadPageLoading();
 			IdentityProviderProfile profile = IdpDownloader.GetProfileFromId(profileId);
@@ -325,7 +318,7 @@ namespace WpfApp
 				if (!CheckIfEapConfigIsSupported(eapConfig))
 					return false;
 
-				if (HasInfo(eapConfig))
+				if (HasInfo(eapConfig) && !skipOverview)
 				{
 					 LoadPageProfileOverview();
 					 return true;
@@ -441,7 +434,6 @@ namespace WpfApp
 
 		public void OAuthComplete(EapConfig eapConfig)
 		{
-			Activate();
 			if (!CheckIfEapConfigIsSupported(eapConfig))
 				eapConfig = null;
 
@@ -459,6 +451,7 @@ namespace WpfApp
 			{
 				PreviousPage();
 			}
+			Activate();
 		}
 
 
