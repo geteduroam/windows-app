@@ -58,6 +58,26 @@ namespace EduroamConfigure
 			public string ClientInnerIdentitySuffix { get; } // realm
 			public bool ClientInnerIdentityHint { get; } // Wether to disallow subrealms or not (see https://github.com/GEANT/CAT/issues/190)
 
+			// helpers:
+
+			public DateTime? ClientCertificateNotBefore
+			{
+				get
+				{
+					using var cert = ClientCertificateAsX509Certificate2();
+					return cert?.NotBefore;
+				}
+			}
+			public DateTime? ClientCertificateNotAfter
+			{
+				get
+				{
+					using var cert = ClientCertificateAsX509Certificate2();
+					return cert?.NotAfter;
+				}
+			}
+
+
 			private byte[] ClientCertificateRaw
 			{ get => Convert.FromBase64String(ClientCertificate); }
 			private bool CertificateIsValid
