@@ -538,7 +538,7 @@ namespace WpfApp
 			currentFormId = FormId.MainMenu;
 			btnNext.Visibility = Visibility.Hidden;
 			btnBack.Visibility = Visibility.Hidden;
-			// ResetLogo();
+			ResetLogo();
 			if (refresh) pageMainMenu = new MainMenu(this);
 			Navigate(pageMainMenu);
 		}
@@ -640,7 +640,7 @@ namespace WpfApp
 			currentFormId = FormId.InstalledProfile;
 			btnBack.IsEnabled = false;
 			btnNext.IsEnabled = true;
-			btnNext.Content = "Main Menu";
+			btnNext.Content = "No profile id";
 			pageInstalledProfile = new InstalledProfile(this);
 			Navigate(pageInstalledProfile);
 		}

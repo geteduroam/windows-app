@@ -57,21 +57,28 @@ namespace WpfApp.Menu
 
 		private async void LoadProfile()
 		{
+			mainWindow.btnNext.IsEnabled = false;
 			if (PersistingStore.IdentityProvider.Value.ProfileId != null)
 			{
-				mainWindow.btnNext.IsEnabled = false;
 				mainWindow.btnNext.Content = "Loading ...";
 				if (!mainWindow.IdpDownloader.Online) await Task.Run(() => mainWindow.IdpDownloader.LoadProviders());
 				ProfileId = PersistingStore.IdentityProvider.Value.ProfileId;
-				if (!string.IsNullOrEmpty(ProfileId))
+				var profile = await Task.Run(() => mainWindow.IdpDownloader.GetProfileFromId(ProfileId));
+				if (profile != null)
 				{
 					mainWindow.btnNext.IsEnabled = true;
 					mainWindow.btnNext.Content = "Reconnect";
 				}
 				else
 				{
-					mainWindow.btnNext.Content = "Profile id not found";
+					mainWindow.btnNext.Content = "Cant reconnect";
+					//btnMainMenu.Style = FindResource("BlueButtonStyle") as Style;
+
 				}
+			}
+			else
+			{
+				mainWindow.btnNext.Visibility = Visibility.Hidden;
 			}
 		}
 
@@ -199,6 +206,21 @@ namespace WpfApp.Menu
 		private void btnMainMenu_Click(object sender, RoutedEventArgs e)
 		{
 			mainWindow.LoadPageMainMenu();
+		}
+
+		private async void btnLogout_Click(object sender, RoutedEventArgs e)
+		{
+			btnLogout.Content = "Logging out ..";
+			await Task.Run(() => Logout());
+			mainWindow.LoadPageMainMenu();
+		}
+
+		//todo check if uninstall success
+		private void Logout()
+		{
+			EduroamConfigure.ConnectToEduroam.RemoveAllProfiles();
+			EduroamConfigure.LetsWifi.WipeTokens();
+			EduroamConfigure.PersistingStore.IdentityProvider = null;
 		}
 	}
 
