@@ -159,7 +159,7 @@ namespace EduroamConfigure
 			public string           /* hello */         WebAddress   { get; }
 			public string                               Phone        { get; }
 			public string                               InstId       { get; }
-			public string                               ProfileId    { get; }
+			public string                               ProfileId    { get; } // may be null
 			public bool                                 IsOauth      { get; }
 			public DateTime?                            NotBefore    { get; }
 			public DateTime?                            NotAfter     { get; }

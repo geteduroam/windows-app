@@ -15,7 +15,7 @@ namespace EduroamConfigure
 	public class EapConfig
 	{
 		// Properties
-		public string Uid { get; }
+		public string Uid { get; } // May be null, in the case of a bundled eap config file
 		public List<AuthenticationMethod> AuthenticationMethods { get; }
 		public List<CredentialApplicability> CredentialApplicabilities { get; }
 		public ProviderInfo InstitutionInfo { get; }

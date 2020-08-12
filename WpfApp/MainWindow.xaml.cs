@@ -417,7 +417,7 @@ namespace WpfApp
 			{
 				string eapPath = files.First(); // TODO: although correct, this seems smelly
 				string eapString = File.ReadAllText(eapPath);
-				var eapconfig = EapConfig.FromXmlData(uid: "bundled file", eapString);
+				var eapconfig = EapConfig.FromXmlData(uid: null, eapString);
 
 				return EduroamNetwork.EapConfigIsSupported(eapconfig)
 					? eapconfig
