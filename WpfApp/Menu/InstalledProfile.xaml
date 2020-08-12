@@ -17,9 +17,12 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBlock x:Name="tbName" TextWrapping="Wrap" Text="Profile name" TextAlignment="Center" Margin="5" FontSize="14"/>
-        <StackPanel x:Name="stpCert" Grid.Row="1" Margin="5">
-            <TextBlock x:Name="tbExpires" TextWrapping="Wrap" Text="Exp" TextAlignment="Center" Margin="5" />
-        </StackPanel>
+        <GroupBox x:Name="grpCert" Header="Certificate info"  Grid.Row="1" Margin="5">
+            <StackPanel x:Name="stpCert">
+                <TextBlock x:Name="tbTimeLeft" TextWrapping="Wrap" Text="time left" TextAlignment="Center" Margin="5" />
+                <TextBlock x:Name="tbExpires" TextWrapping="Wrap" Text="Exp" TextAlignment="Center" Margin="5" />
+            </StackPanel>
+        </GroupBox>
         <GroupBox x:Name="grpInfo" Header="Contact info" Margin="5" Grid.Row="2">
             <Grid Margin="0">
                 <Grid.RowDefinitions>
@@ -51,5 +54,8 @@
 
             </Grid>
         </GroupBox>
+        <Button x:Name="btnMainMenu" Style="{StaticResource WhiteButtonStyle}" Content="Main Menu" 
+                MinHeight="37"  Width="131" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,5"  Click="btnMainMenu_Click" Grid.Row="4"/>
+
     </Grid>
 </Page>
