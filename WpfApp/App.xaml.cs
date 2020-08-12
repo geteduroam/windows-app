@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+using LetsWifi = EduroamConfigure.LetsWifi;
 
 namespace WpfApp
 {
@@ -50,7 +51,8 @@ namespace WpfApp
             bool contains(string check) =>
                 args.Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase));
 
-            if (contains("/?") || contains("/help"))
+            if (contains("/?")
+                || contains("/help"))
             {
                 ShowHelpText();
                 return true;
@@ -88,7 +90,16 @@ namespace WpfApp
                 e == null ? false :
                 e.Args.Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase));
 
-            if (contains("/background")) // TODO && Installer.IsRunningFromInstallLocation)
+            if (contains("/refresh")
+                || contains("/refresh-force"))
+            {
+                // TODO: check if ((MainWindow)MainWindow).ShowNotification works at this point during startup
+                RefreshInstalledProfile(force: contains("/refresh-force"));
+            }
+
+            if (contains("/background")
+                || contains("/refresh")
+                || contains("/refresh-force"))
             {
                 Debug.WriteLine("Starting hidden in tray");
                 StartHiddenInTray = true;
@@ -112,7 +123,8 @@ namespace WpfApp
 
             bool showMainWindow = true;
 
-            if (contains("/?") || contains("/help"))
+            if (contains("/?")
+                || contains("/help"))
             {
                 showMainWindow = false;
                 ShowHelpText();
@@ -124,10 +136,11 @@ namespace WpfApp
                 ((MainWindow)MainWindow).Shutdown();
             }
 
-            if (contains("/refresh"))
+            if (contains("/refresh")
+                || contains("/refresh-force"))
             {
                 showMainWindow = false;
-                throw new NotImplementedException(); // TODO
+                RefreshInstalledProfile(force: contains("/refresh-force"));
             }
 
             if (contains("/uninstall"))
@@ -152,6 +165,35 @@ namespace WpfApp
             }
 
             return false; // dont have the library show the window for us
+        }
+
+        private void RefreshInstalledProfile(bool force)
+        {
+            _ = LetsWifi.RefreshAndInstallEapConfig(force) switch
+			{
+				LetsWifi.RefreshResponse.Success => true, // nice!
+				LetsWifi.RefreshResponse.StillValid => true, // no work needed
+				LetsWifi.RefreshResponse.NotRefreshable => false, // ignore, since we currently always schedule the task in windows
+
+				// TODO: reword these into something better
+				LetsWifi.RefreshResponse.NewCARequired =>
+					((MainWindow)MainWindow).ShowNotification(
+						"Your geteduroam setup should be reconfigured"),
+
+				LetsWifi.RefreshResponse.AccessDenied =>
+					((MainWindow)MainWindow).ShowNotification(
+						"Your geteduroam setup should be reconfigured"),
+
+				LetsWifi.RefreshResponse.Failed =>
+					((MainWindow)MainWindow).ShowNotification(
+						"Your geteduroam setup should be reconfigured"),
+
+                #if DEBUG
+                _ => throw new NotImplementedException(nameof(RefreshInstalledProfile))
+                #else
+                _ => false
+                #endif
+            };
         }
 
         private static void PromptAndUninstallSelf<T>(Func<bool, T> shutdown)
@@ -200,7 +242,12 @@ namespace WpfApp
                     "    /close : ",
                     "            Close the current running instance",
                     "    /refresh : ",
-                    "            Refresh the user certificate using the refresh token",
+                    "            Refresh the user certificate using the refresh token.",
+                    "            Is called automatically by a scheduled task in windows.",
+                    "    /refresh-force : ",
+                    "            Refresh the user certificate using the refresh token.",
+                    "            Will refresh the profile even if the validity period",
+                    "            of the current client certificate has more than a 3rd left",
                 }), caption: "geteduroam");
 
 
