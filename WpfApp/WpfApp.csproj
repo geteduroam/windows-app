@@ -89,6 +89,9 @@
     <Compile Include="Menu\CertificateOverview.xaml.cs">
       <DependentUpon>CertificateOverview.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Menu\InstalledProfile.xaml.cs">
+      <DependentUpon>InstalledProfile.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Menu\OAuthWait.xaml.cs">
       <DependentUpon>OAuthWait.xaml</DependentUpon>
     </Compile>
@@ -109,6 +112,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Menu\CertificateOverview.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Menu\InstalledProfile.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

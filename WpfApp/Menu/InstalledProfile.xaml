@@ -1,0 +1,55 @@
+﻿<Page x:Class="WpfApp.Menu.InstalledProfile"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:WpfApp.Menu"
+      mc:Ignorable="d" 
+      d:DesignHeight="345" d:DesignWidth="322"
+      Title="InstalledProfile">
+
+    <Grid Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="tbName" TextWrapping="Wrap" Text="Profile name" TextAlignment="Center" Margin="5" FontSize="14"/>
+        <StackPanel x:Name="stpCert" Grid.Row="1" Margin="5">
+            <TextBlock x:Name="tbExpires" TextWrapping="Wrap" Text="Exp" TextAlignment="Center" Margin="5" />
+        </StackPanel>
+        <GroupBox x:Name="grpInfo" Header="Contact info" Margin="5" Grid.Row="2">
+            <Grid Margin="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+                <Label x:Name="lblWebTitle" Content="Web:" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0"/>
+                <Label x:Name="lblEmailTitle" Content="Email:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="1" Margin="0"/>
+                <Label x:Name="lblPhoneTitle" Content="Phone:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2"/>
+
+                <TextBlock x:Name="tbWebText" Grid.Row="0" Grid.Column="1" Text="" TextWrapping="Wrap"  VerticalAlignment="Center" >
+                    <Hyperlink x:Name="hlinkWeb" RequestNavigate="LinkClick">
+                       <TextBlock x:Name="tbWebLink" Text="" TextWrapping="Wrap" />
+                    </Hyperlink>    
+                </TextBlock>
+
+                <TextBlock x:Name="tbEmailText" Grid.Row="1" Grid.Column="1" Text="" TextWrapping="Wrap"  VerticalAlignment="Center" >
+                    <Hyperlink x:Name="hlinkEmail" RequestNavigate="LinkClick">
+                       <TextBlock x:Name="tbEmailLink" Text="" TextWrapping="Wrap" />
+                    </Hyperlink>    
+                </TextBlock>
+                <TextBlock x:Name="tbPhoneText" Grid.Row="2" Grid.Column="1" Text="" TextWrapping="Wrap"  VerticalAlignment="Center"/>
+
+
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Page>
