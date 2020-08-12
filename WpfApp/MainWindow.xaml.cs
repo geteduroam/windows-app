@@ -431,6 +431,12 @@ namespace WpfApp
 
 		private static App App { get => (App)Application.Current; }
 
+		public bool ShowNotification(string message, string title = "geteduroam", BalloonIcon icon = BalloonIcon.Info)
+		{
+			// TODO: doesn't show for peder, but does show for simon. RDP might be the culprit
+			TaskbarIcon.ShowBalloonTip(title, message, icon);
+			return true; // to be able to use it inside an expression
+		}
 
 		public void OAuthComplete(EapConfig eapConfig)
 		{
@@ -678,10 +684,7 @@ namespace WpfApp
 			// Cancels the Window.Close(), but unable to cancel Application.Shutdown()
 			e.Cancel = true;
 
-			TaskbarIcon.ShowBalloonTip( // TODO: doesn't show for peder, but does show for simon. RDP might be the culprit
-				title: "geteduroam",
-				message: "geteduroam is still running in the background",
-				symbol: BalloonIcon.Info);
+			ShowNotification("geteduroam is still running in the background");
 
 			Hide(); // window
 		}
