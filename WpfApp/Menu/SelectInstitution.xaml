@@ -13,8 +13,8 @@
         <StackPanel Background="White"/>
         <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5" FontSize="14"/>
         <Grid>
-            <TextBox x:Name="tbSearch" Text="" Margin="5" Grid.ColumnSpan="1" Grid.Column="1"  Grid.Row="1" TextChanged="tbSearch_TextChanged"/>
-            <TextBlock IsHitTestVisible="False" Text="Search" VerticalAlignment="Center" HorizontalAlignment="Left" TextAlignment="Center" Margin="8,0,0,0" Foreground="DarkGray" Grid.Column="1" Grid.Row="1" >
+            <TextBox x:Name="tbSearch" Padding="2,3,2,3" Height="Auto" MinHeight="24" Text="" Margin="5" Grid.ColumnSpan="1" Grid.Column="1"  Grid.Row="1" TextChanged="tbSearch_TextChanged"/>
+            <TextBlock IsHitTestVisible="False" Text="Search" VerticalAlignment="Center" HorizontalAlignment="Left" TextAlignment="Center" Margin="10,0,0,0" Foreground="DarkGray" Grid.Column="1" Grid.Row="1" >
                 <TextBlock.Style>
                     <Style TargetType="{x:Type TextBlock}">
                         <Setter Property="Visibility" Value="Collapsed"/>
