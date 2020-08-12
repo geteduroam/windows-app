@@ -165,7 +165,7 @@ namespace WpfApp.Menu
 				(string authorizationCode, string codeVerifier) = oauth.ParseAndExtractAuthorizationCode(responseUrl);
 				bool success = LetsWifi.AuthorizeAccess(profile, authorizationCode, codeVerifier, prefix);
 
-				eapConfig = success ? LetsWifi.DownloadEapConfig() : null;
+				eapConfig = success ? LetsWifi.RequestAndDownloadEapConfig() : null;
 			}
 			catch (EduroamAppUserError ex)
 			{

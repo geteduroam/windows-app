@@ -83,7 +83,7 @@ namespace EduroamApp
 				string eapConfigXml = File.ReadAllText(filepath);
 
 				// create and return EapConfig object
-				return EduroamConfigure.EapConfig.FromXmlData(uid: filepath, eapConfigXml);
+				return EduroamConfigure.EapConfig.FromXmlData(profileId: filepath, eapConfigXml);
 			}
 			catch (System.Xml.XmlException xmlEx)
 			{

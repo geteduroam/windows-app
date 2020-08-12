@@ -212,7 +212,7 @@ namespace EduroamConfigure
 			{
 				throw new EduroamAppUserError("WebException", WebExceptionToString(ex));
 			}
-			return EapConfig.FromXmlData(uid: profileId, eapXml);
+			return EapConfig.FromXmlData(profileId: profileId, eapXml);
 		}
 
 		public IdentityProviderProfile GetProfileFromId(string profileId)

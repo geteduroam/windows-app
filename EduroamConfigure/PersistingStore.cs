@@ -77,6 +77,9 @@ namespace EduroamConfigure
 			set => SetValue<string>("LetsWifiRefreshToken", value);
 		}
 
+		/// <summary>
+		/// True if the currently installed wlanprofile is the one we have stored refresh credentials for
+		/// </summary>
 		public static bool IsRefreshable
 		{
 			get => LetsWifiEndpoints?.profileId == IdentityProvider?.ProfileId

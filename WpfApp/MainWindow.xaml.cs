@@ -98,7 +98,7 @@ namespace WpfApp
 			//webEduroamLogo.NavigateToString(ImageFunctions.GenerateSvgLogoHtml(Properties.Resources.eduroam_logo, (int)webEduroamLogo.Width, (int)webEduroamLogo.Height));
 			IdpDownloader = new IdentityProviderDownloader();
 
-			ExtractedEapConfig = GetSelfExtractingEap();
+			ExtractedEapConfig = GetBundledEapConfig();
 			if (ExtractedEapConfig != null)
 			{
 				// sets flags
@@ -168,7 +168,7 @@ namespace WpfApp
 						if (!string.IsNullOrEmpty(autoProfileId))
 						{
 							// if profile could not be handled then return to form
-							if(! await HandleProfileSelect(autoProfileId)) LoadPageSelectInstitution(refresh: false);
+							if (!await HandleProfileSelect(autoProfileId)) LoadPageSelectInstitution(refresh: false);
 							break;
 						}
 					}
@@ -187,7 +187,7 @@ namespace WpfApp
 						LoadPageTermsOfUse();
 						break;
 					}
-					if(ConnectToEduroam.EnumerateCAInstallers(eapConfig)
+					if (ConnectToEduroam.EnumerateCAInstallers(eapConfig)
 						.Any(installer => installer.IsInstalledByUs || !installer.IsInstalled))
 					{
 						LoadPageCertificateOverview();
@@ -206,7 +206,7 @@ namespace WpfApp
 					break;
 
 				case FormId.Login:
-					if(pageLogin.IsConnected)
+					if (pageLogin.IsConnected)
 					{
 						Shutdown();
 						break;
@@ -320,8 +320,8 @@ namespace WpfApp
 
 				if (HasInfo(eapConfig) && !skipOverview)
 				{
-					 LoadPageProfileOverview();
-					 return true;
+					LoadPageProfileOverview();
+					return true;
 				}
 				if (ConnectToEduroam.EnumerateCAInstallers(eapConfig)
 						.Any(installer => installer.IsInstalledByUs || !installer.IsInstalled))
@@ -404,10 +404,11 @@ namespace WpfApp
 		}
 
 		/// <summary>
-		/// Checks if an EAP-config file exists in the same folder as the executable
+		/// Checks if an EAP-config file exists in the same folder as the executable.
+		/// If the installed and a EAP-config was bundled in a EXE using 7z, then this case will trigger
 		/// </summary>
-		/// <returns>EapConfig object if file exists, null if not.</returns>
-		public EapConfig GetSelfExtractingEap()
+		/// <returns>EapConfig or null</returns>
+		public static EapConfig GetBundledEapConfig()
 		{
 			string exeLocation = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			string[] files = Directory.GetFiles(exeLocation, "*.eap-config");
@@ -417,7 +418,7 @@ namespace WpfApp
 			{
 				string eapPath = files.First(); // TODO: although correct, this seems smelly
 				string eapString = File.ReadAllText(eapPath);
-				var eapconfig = EapConfig.FromXmlData(uid: null, eapString);
+				var eapconfig = EapConfig.FromXmlData(profileId: null, eapString);
 
 				return EduroamNetwork.EapConfigIsSupported(eapconfig)
 					? eapconfig

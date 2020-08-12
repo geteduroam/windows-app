@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Linq;
 using System.Diagnostics;
-using InstalledCertificate = EduroamConfigure.PersistingStore.InstalledCertificate;
 
 namespace EduroamConfigure
 {
@@ -160,20 +158,11 @@ namespace EduroamConfigure
 		/// <param name="eapConfig">EapConfig object</param>
 		/// <returns>Enumeration of EapAuthMethodInstaller intances for each supported authentification method in eapConfig</returns>
 		public static IEnumerable<EapAuthMethodInstaller> InstallEapConfig(EapConfig eapConfig)
-		{
-			List<EduroamNetwork> eduroamNetworks = EduroamNetwork.GetAll(eapConfig).ToList();
-			if (!eduroamNetworks.Any())
-				yield break; // TODO: concider throwing, test ux
-			if (!EduroamNetwork.EapConfigIsSupported(eapConfig))
-				yield break; // TODO: concider throwing, test ux
-
-			foreach (EapConfig.AuthenticationMethod authMethod in eapConfig.AuthenticationMethods)
-			{
-				if (EduroamNetwork.AuthMethodIsSupported(authMethod))
-					yield return new EapAuthMethodInstaller(authMethod);
-				// if EAP type is not supported, we skip this authMethod
-			}
-		}
+			=> eapConfig == null
+				? throw new ArgumentNullException(paramName: nameof(eapConfig))
+				: eapConfig.AuthenticationMethods
+					.Where(EduroamNetwork.AuthMethodIsSupported)
+					.Select(authMethod => new EapAuthMethodInstaller(authMethod));
 
 		/// <summary>
 		/// A class which helps you install one of the authMethods

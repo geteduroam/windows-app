@@ -16,6 +16,7 @@ namespace EduroamConfigure
 	{
 		// Properties
 		public string Uid { get; } // May be null, in the case of a bundled eap config file
+		// TODO: rename ^ to 'ProfileId' after we have merged everything
 		public List<AuthenticationMethod> AuthenticationMethods { get; }
 		public List<CredentialApplicability> CredentialApplicabilities { get; }
 		public ProviderInfo InstitutionInfo { get; }
@@ -23,13 +24,13 @@ namespace EduroamConfigure
 
 		// Constructor
 		private EapConfig(
-			string uid,
+			string profileId,
 			List<AuthenticationMethod> authenticationMethods,
 			List<CredentialApplicability> credentialApplicabilities,
 			ProviderInfo institutionInfo,
 			bool isOauth = false)
 		{
-			Uid = uid;
+			Uid = profileId;
 			AuthenticationMethods = authenticationMethods;
 			CredentialApplicabilities = credentialApplicabilities;
 			InstitutionInfo = institutionInfo;
@@ -438,7 +439,7 @@ namespace EduroamConfigure
 		/// </summary>
 		/// <param name="eapConfigXmlData">EAP config XML as string</param>
 		/// <returns>EapConfig object</returns>
-		public static EapConfig FromXmlData(string uid, string eapConfigXmlData, bool isOauth = false)
+		public static EapConfig FromXmlData(string profileId, string eapConfigXmlData, bool isOauth = false)
 		{
 			// XML format Documentation:
 			// Current:  https://github.com/GEANT/CAT/blob/master/devices/eap_config/eap-metadata.xsd
@@ -610,7 +611,7 @@ namespace EduroamConfigure
 
 			// create EapConfig object and adds the info
 			return new EapConfig(
-				uid,
+				profileId,
 				authMethods,
 				credentialApplicabilities,
 				new EapConfig.ProviderInfo(
