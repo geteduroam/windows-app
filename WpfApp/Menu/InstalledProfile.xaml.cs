@@ -27,6 +27,7 @@ namespace WpfApp.Menu
 	public partial class InstalledProfile : Page
 	{
 		private MainWindow mainWindow;
+		public IdentityProviderProfile Profile { get; set; }
 		private string webAddress;
 		private string phone;
 		private string emailAddress;
@@ -42,6 +43,8 @@ namespace WpfApp.Menu
 			tbName.Text = PersistingStore.IdentityProvider.Value.DisplayName;
 			LoadContactInfo();
 			LoadCertInfo();
+			LoadProfile();
+
 		}
 
 		private void LinkClick(object sender, RequestNavigateEventArgs e)
@@ -52,10 +55,53 @@ namespace WpfApp.Menu
 			e.Handled = true;
 		}
 
+		private async void LoadProfile()
+		{
+			if (PersistingStore.IdentityProvider.Value.ProfileId != null)
+			{
+				mainWindow.btnNext.IsEnabled = false;
+				mainWindow.btnNext.Content = "Loading ...";
+				if (!mainWindow.IdpDownloader.Online) await Task.Run(() => mainWindow.IdpDownloader.LoadProviders());
+				Profile = await Task.Run(() => mainWindow.IdpDownloader.GetProfileFromId(PersistingStore.IdentityProvider.Value.ProfileId));
+				if (Profile != null)
+				{
+					mainWindow.btnNext.IsEnabled = true;
+					mainWindow.btnNext.Content = "Reconnect";
+				}
+				else
+				{
+					mainWindow.btnNext.Content = "Profile not found";
+				}
+			}
+		}
+
 		private void LoadCertInfo()
 		{
-			var cert = PersistingStore.InstalledCertificates.FirstOrDefault();
-			tbExpires.Text = cert.NotAfter.ToString(CultureInfo.InvariantCulture);
+			if (PersistingStore.IdentityProvider.Value.NotAfter != null)
+			{
+				var expireDate = PersistingStore.IdentityProvider.Value.NotAfter;
+				var nowDate = DateTime.Now;
+				var diffDate = expireDate - nowDate;
+				tbExpires.Text = "Exp: " +  expireDate?.ToString(CultureInfo.InvariantCulture);
+
+				if(diffDate.Value.Days > 0)
+				{
+					tbTimeLeft.Text = diffDate.Value.Days.ToString(CultureInfo.InvariantCulture) + " Days left";
+				}
+				else if (diffDate.Value.Hours > 0)
+				{
+					tbTimeLeft.Text = diffDate.Value.Hours.ToString(CultureInfo.InvariantCulture) + " Hours left";
+				}
+				else
+				{
+					tbTimeLeft.Text = diffDate.Value.Minutes.ToString(CultureInfo.InvariantCulture) + " Minutes left";
+				}
+			}
+			else
+			{
+				grpCert.Visibility = Visibility.Collapsed;
+			}
+			//tbExpires.Text = PersistingStore.IdentityProvider.Value.NotAfter?.ToString(CultureInfo.InvariantCulture);
 
 		}
 
@@ -148,6 +194,11 @@ namespace WpfApp.Menu
 			bool hasEmailAddress = !string.IsNullOrEmpty(emailAddress);
 			bool hasPhone = !string.IsNullOrEmpty(phone);
 			return (hasWebAddress || hasEmailAddress || hasPhone);
+		}
+
+		private void btnMainMenu_Click(object sender, RoutedEventArgs e)
+		{
+			mainWindow.LoadPageMainMenu();
 		}
 	}
 

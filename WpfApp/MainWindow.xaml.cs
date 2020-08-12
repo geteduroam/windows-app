@@ -111,6 +111,10 @@ namespace WpfApp
 				ExtractFlag = true;
 				LoadPageProfileOverview();
 			}
+			else if (PersistingStore.IdentityProvider != null)
+			{
+				LoadPageInstalledProfile();
+			}
 			else
 			{
 				LoadPageMainMenu();
@@ -131,6 +135,21 @@ namespace WpfApp
 			historyFormId.Add(currentFormId);
 			switch (currentFormId)
 			{
+				case FormId.InstalledProfile:
+					if (pageInstalledProfile.Profile != null)
+					{
+						LoadPageLoading();
+						eapConfig = await DownloadEapConfig(pageInstalledProfile.Profile);
+						if (ConnectToEduroam.EnumerateCAInstallers(eapConfig)
+						.Any(installer => installer.IsInstalledByUs || !installer.IsInstalled))
+						{
+							LoadPageCertificateOverview();
+							break;
+						}
+						LoadPageLogin();
+					}
+					//LoadPageMainMenu();
+					break;
 				case FormId.MainMenu:
 					if (pageMainMenu.LocalEapConfig != null)
 					{
@@ -219,6 +238,9 @@ namespace WpfApp
 			//if (currentFormId == FormId.Summary) ResetLogo();
 			switch (historyFormId.Last())
 			{
+				case FormId.InstalledProfile:
+					LoadPageInstalledProfile();
+					break;
 				case FormId.MainMenu:
 					LoadPageMainMenu();
 					break;
@@ -569,6 +591,8 @@ namespace WpfApp
 		public void LoadPageLogin(bool refresh = true)
 		{
 			currentFormId = FormId.Login;
+			btnBack.IsEnabled = true;
+			btnBack.Visibility = Visibility.Visible;
 			if (refresh) pageLogin = new Login(this, eapConfig);
 			Navigate(pageLogin);
 		}
