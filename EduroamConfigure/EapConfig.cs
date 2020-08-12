@@ -19,18 +19,21 @@ namespace EduroamConfigure
         public List<AuthenticationMethod> AuthenticationMethods { get; }
         public List<CredentialApplicability> CredentialApplicabilities { get; }
         public ProviderInfo InstitutionInfo { get; }
+        public bool IsOauth { get; }
 
         // Constructor
         private EapConfig(
             string uid,
             List<AuthenticationMethod> authenticationMethods,
             List<CredentialApplicability> credentialApplicabilities,
-            ProviderInfo institutionInfo)
+            ProviderInfo institutionInfo,
+            bool isOauth = false)
         {
             Uid = uid;
             AuthenticationMethods = authenticationMethods;
             CredentialApplicabilities = credentialApplicabilities;
             InstitutionInfo = institutionInfo;
+            IsOauth = isOauth;
 
             AuthenticationMethods.ForEach(authMethod =>
             {
@@ -435,7 +438,7 @@ namespace EduroamConfigure
         /// </summary>
         /// <param name="eapConfigXmlData">EAP config XML as string</param>
         /// <returns>EapConfig object</returns>
-        public static EapConfig FromXmlData(string uid, string eapConfigXmlData)
+        public static EapConfig FromXmlData(string uid, string eapConfigXmlData, bool isOauth = false)
         {
             // XML format Documentation:
             // Current:  https://github.com/GEANT/CAT/blob/master/devices/eap_config/eap-metadata.xsd
@@ -620,7 +623,8 @@ namespace EduroamConfigure
                     phone ?? string.Empty,
                     instId ?? string.Empty,
                     termsOfUse ?? string.Empty,
-                    location)
+                    location),
+                isOauth
             );
         }
 
