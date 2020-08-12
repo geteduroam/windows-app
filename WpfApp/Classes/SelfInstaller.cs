@@ -139,6 +139,8 @@ namespace WpfApp
 		public string InstallExePath
 		{ get => InstallDir + Path.DirectorySeparatorChar + ApplicationIdentifier + ".exe"; }
 
+		// TODO: add /Refresh as a property
+
 		public string StartMinimizedCommand
 		{ get => InstallExePath + " /Background"; }
 
@@ -262,12 +264,23 @@ namespace WpfApp
 
 				task.Actions.Add(new ExecAction(InstallExePath, arguments: "/Refresh"));
 
+				/*
 				task.Triggers.Add(new DailyTrigger(daysInterval: 3) { // every 3 days
 					StartBoundary = DateTime.Today.AddHours(12) }); // around noon
+				*/
+
+				// TODO: switch from the schedule below to the schedule above when certificate lifetime is extended for production
+
+				// Every day, three times
+				task.Triggers.Add(new DailyTrigger(daysInterval: 1)
+				{ StartBoundary = DateTime.Today.AddHours(0) });
+				task.Triggers.Add(new DailyTrigger(daysInterval: 1)
+				{ StartBoundary = DateTime.Today.AddHours(8) });
+				task.Triggers.Add(new DailyTrigger(daysInterval: 1)
+				{ StartBoundary = DateTime.Today.AddHours(16) });
 
 				ts.RootFolder.RegisterTaskDefinition(ScheduledTaskName, task);
 			}
-
 		}
 
 		/// <summary>
