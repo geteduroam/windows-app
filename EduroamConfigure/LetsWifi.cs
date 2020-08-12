@@ -150,7 +150,7 @@ namespace EduroamConfigure
         /// Will usually request the LetsWifi endpoint to issue a client certificate
         /// </summary>
         /// <returns>EapConfig with client</returns>
-        public static EapConfig DownloadEapConfig()
+        public static EapConfig RequestAndDownloadEapConfig()
         {
             if (EapEndpoint == null) return null;
             if (DateTime.Now > AccessTokenValidUntill)
@@ -174,7 +174,7 @@ namespace EduroamConfigure
             }
 
             // parse and return
-            return EapConfig.FromXmlData(uid: ProfileID, eapConfigXml, isOauth: true);
+            return EapConfig.FromXmlData(profileId: ProfileID, eapConfigXml, isOauth: true);
         }
 
         /// <summary>

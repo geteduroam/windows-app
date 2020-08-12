@@ -395,7 +395,7 @@ namespace EduroamApp
             {
                 string eapPath = files.First(); // TODO: although correct, this seems smelly
                 string eapString = File.ReadAllText(eapPath);
-                eapConfig = EapConfig.FromXmlData(uid: "bundled file", eapString);
+                eapConfig = EapConfig.FromXmlData(profileId: null, eapString);
                 return eapConfig;
             }
             catch (Exception)
@@ -466,7 +466,7 @@ namespace EduroamApp
                     bool success = LetsWifi.AuthorizeAccess(profile, authorizationCode, codeVerifier, prefix);
 
                     eapConfig = success
-                        ? LetsWifi.DownloadEapConfig()
+                        ? LetsWifi.RequestAndDownloadEapConfig()
                         : null;
                 }
                 catch (EduroamAppUserError ex)

@@ -121,31 +121,31 @@ namespace WpfApp
             Debug.WriteLine("Got external cli args: {0} from {1}",
                 JsonConvert.SerializeObject(args.Skip(1).ToList()), args.FirstOrDefault());
 
-            bool showMainWindow = true;
+            bool activateMainWindow = true;
 
             if (contains("/?")
                 || contains("/help"))
             {
-                showMainWindow = false;
+                activateMainWindow = false;
                 ShowHelpText();
             }
 
             if (contains("/close"))
             {
-                showMainWindow = false;
+                activateMainWindow = false;
                 ((MainWindow)MainWindow).Shutdown();
             }
 
             if (contains("/refresh")
                 || contains("/refresh-force"))
             {
-                showMainWindow = false;
+                activateMainWindow = false;
                 RefreshInstalledProfile(force: contains("/refresh-force"));
             }
 
             if (contains("/uninstall"))
             {
-                showMainWindow = false;
+                activateMainWindow = false;
                 PromptAndUninstallSelf(success =>
                     {
                         ((MainWindow)MainWindow).Shutdown();
@@ -155,7 +155,7 @@ namespace WpfApp
             }
 
             // TODO: this should be made into a method in MainWindow.
-            if (showMainWindow)
+            if (activateMainWindow)
             {
                 var window = ((MainWindow)MainWindow);
                 window.Show();
