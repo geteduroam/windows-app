@@ -161,7 +161,7 @@ namespace EduroamConfigure
 			}
 
 			// parse and return
-			return EapConfig.FromXmlData(uid: ProfileID, eapConfigXml);
+			return EapConfig.FromXmlData(uid: ProfileID, eapConfigXml, isOauth: true);
 		}
 
 

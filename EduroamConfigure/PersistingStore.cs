@@ -168,10 +168,11 @@ namespace EduroamConfigure
 			public string           /* hello */         WebAddress   { get; }
 			public string                               Phone        { get; }
 			public string                               InstId       { get; }
-			public (EapType outer, InnerAuthType inner) EapTypeSsid  { get; }
-			public (EapType outer, InnerAuthType inner) EapTypeHs2   { get; }
+			public bool                                 IsOauth      { get; }
 			public DateTime?                            NotBefore    { get; }
 			public DateTime?                            NotAfter     { get; }
+			public (EapType outer, InnerAuthType inner) EapTypeSsid  { get; }
+			public (EapType outer, InnerAuthType inner) EapTypeHs2   { get; }
 
 			public IdentityProviderInfo(
 				string                               displayName,
@@ -179,20 +180,22 @@ namespace EduroamConfigure
 				string        /* how are you? */     webAddress,
 				string                               phone,
 				string                               instId,
-				(EapType outer, InnerAuthType inner) eapTypeSsid,
-				(EapType outer, InnerAuthType inner) eapTypeHs2,
+				bool                                 isOauth,
 				DateTime?                            notBefore,
-				DateTime?                            notAfter)
+				DateTime?                            notAfter,
+				(EapType outer, InnerAuthType inner) eapTypeSsid,
+				(EapType outer, InnerAuthType inner) eapTypeHs2)
 			{
 				DisplayName  = displayName;
 				EmailAddress = emailAddress;
 				WebAddress   = webAddress;
 				Phone        = phone;
 				InstId       = instId;
-				EapTypeSsid  = eapTypeSsid;
-				EapTypeHs2   = eapTypeHs2;
+				IsOauth      = isOauth;
 				NotBefore    = notBefore;
 				NotAfter     = notAfter;
+				EapTypeSsid  = eapTypeSsid;
+				EapTypeHs2   = eapTypeHs2;
 			}
 
 			public static IdentityProviderInfo From(EapConfig.AuthenticationMethod authMethod)
@@ -204,10 +207,11 @@ namespace EduroamConfigure
 						authMethod.EapConfig.InstitutionInfo.WebAddress,
 						authMethod.EapConfig.InstitutionInfo.Phone,
 						authMethod.EapConfig.InstitutionInfo.InstId,
-						(authMethod.EapType, authMethod.InnerAuthType),
-						(authMethod.Hs2AuthMethod.EapType, authMethod.Hs2AuthMethod.InnerAuthType),
+						authMethod.EapConfig.IsOauth,
 						authMethod.ClientCertificateNotBefore,
-						authMethod.ClientCertificateNotAfter);
+						authMethod.ClientCertificateNotAfter,
+						(authMethod.EapType, authMethod.InnerAuthType),
+						(authMethod.Hs2AuthMethod.EapType, authMethod.Hs2AuthMethod.InnerAuthType));
 		}
 
 		// Inner workings:
