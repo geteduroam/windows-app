@@ -65,9 +65,16 @@ namespace WpfApp.Menu
             gridCertPassword.Visibility = Visibility.Collapsed;
             gridCertBrowser.Visibility = Visibility.Collapsed;
             stpTime.Visibility = Visibility.Collapsed;
-            eapConfig.AuthenticationMethods.First();
+
+            //eapConfig.AuthenticationMethods.First();
             mainWindow.btnNext.IsEnabled = false;
             mainWindow.btnNext.Content = "Connect";
+
+            //show institution/prpfie name instead of "login"
+            /*if (!string.IsNullOrEmpty(eapConfig.InstitutionInfo.DisplayName))
+            {
+                tbTitle.Text = eapConfig.InstitutionInfo.DisplayName;
+            }*/
 
             dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);

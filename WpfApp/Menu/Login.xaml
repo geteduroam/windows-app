@@ -27,8 +27,8 @@
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="tbCredInfo" TextWrapping="Wrap" Text="Enter your username and password" TextAlignment="Center" Margin="5" Grid.ColumnSpan="3"/>
 
-            <TextBox x:Name="tbUsername" Margin="5" Grid.ColumnSpan="1" Grid.Column="1" Grid.Row="1" TextChanged="tbUsername_TextChanged" LostFocus="tbUsername_LostFocus" GotFocus="tbUsername_GotFocus"/>
-            <TextBlock IsHitTestVisible="False" Text="Username" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="DarkGray" Grid.Column="1" Grid.Row="1" >
+            <TextBox x:Name="tbUsername" Text="" Padding="2,3,2,3" Height="Auto" MinHeight="24" Margin="5" Grid.ColumnSpan="1" Grid.Column="1" Grid.Row="1" TextChanged="tbUsername_TextChanged" LostFocus="tbUsername_LostFocus" GotFocus="tbUsername_GotFocus"/>
+            <TextBlock IsHitTestVisible="False" Text="Username" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray" Grid.Column="1" Grid.Row="1" >
                 <TextBlock.Style>
                     <Style TargetType="{x:Type TextBlock}">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -42,9 +42,9 @@
             </TextBlock>
 
 
-            <PasswordBox x:Name="pbCredPassword"  Margin="5" Grid.Row="2" Grid.Column="1" Height="18" PasswordChanged="pbCredPassword_PasswordChanged" GotFocus="pbCredPassword_GotFocus"/>
+            <PasswordBox x:Name="pbCredPassword" Padding="2,3,2,3" Height="Auto" MinHeight="24"  Margin="5" Grid.Row="2" Grid.Column="1"  PasswordChanged="pbCredPassword_PasswordChanged" GotFocus="pbCredPassword_GotFocus"/>
             <TextBox x:Name="tbCredPassword" Margin="5" Grid.Row="2" Grid.Column="1" Visibility="Hidden"/>
-            <TextBlock IsHitTestVisible="False" Text="Password" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="DarkGray" Grid.Row="2" Grid.Column="1">
+            <TextBlock IsHitTestVisible="False" Text="Password" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray" Grid.Row="2" Grid.Column="1">
                 <TextBlock.Style>
                     <Style TargetType="{x:Type TextBlock}">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -76,16 +76,16 @@
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <TextBlock Text="This profile requires a local certificate" TextWrapping="Wrap" TextAlignment="Center" Margin="5" Grid.ColumnSpan="3"/>
-            
-            <TextBox x:Name="tbCertBrowser" Margin="5" Grid.ColumnSpan="1" Grid.Column="1" Grid.Row="1" IsEnabled="False"/>
+
+            <TextBox x:Name="tbCertBrowser" Padding="2,3,2,3" Height="Auto" MinHeight="24"  Margin="5" Grid.ColumnSpan="1" Grid.Column="1" Grid.Row="1" IsEnabled="False"/>
             <Button x:Name="btnFile" Style="{StaticResource WhiteButtonStyle}" Content="..." 
-                Height="23" VerticalAlignment="Center" Margin="0,5" Click="btnFile_Click" Grid.ColumnSpan="1" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" Width="60"/>
-            
+                Height="24" VerticalAlignment="Center" Margin="0,5" Click="btnFile_Click" Grid.ColumnSpan="1" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" Width="60"/>
 
 
-            <PasswordBox x:Name="pbCertBrowserPassword"  Margin="5" Grid.ColumnSpan="1" Grid.Row="2" Grid.Column="1" Height="18" PasswordChanged="pbCertBrowserPassword_PasswordChanged" GotFocus="pbCertBrowserPassword_GotFocus"/>
+
+            <PasswordBox x:Name="pbCertBrowserPassword" Padding="2,3,2,3" Height="Auto" MinHeight="24"  Margin="5" Grid.ColumnSpan="1" Grid.Row="2" Grid.Column="1"  PasswordChanged="pbCertBrowserPassword_PasswordChanged" GotFocus="pbCertBrowserPassword_GotFocus"/>
             <TextBox x:Name="tbCertBrowserPassword" Margin="5" Visibility="Hidden" Grid.ColumnSpan="1" Grid.Row="2" Grid.Column="1"/>
-            <TextBlock IsHitTestVisible="False" Text="Password" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="DarkGray" Grid.ColumnSpan="1" Grid.Row="2" Grid.Column="1">
+            <TextBlock IsHitTestVisible="False" Text="Password" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray" Grid.ColumnSpan="1" Grid.Row="2" Grid.Column="1">
                 <TextBlock.Style>
                     <Style TargetType="{x:Type TextBlock}">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -111,9 +111,9 @@
             </Grid.RowDefinitions>
             <TextBlock Text="Enter password for the certificate" TextWrapping="Wrap" TextAlignment="Center" Margin="5" Grid.ColumnSpan="3"/>
 
-            <PasswordBox x:Name="pbCertPassword"  Margin="5" Password="" Grid.ColumnSpan="1" Grid.Row="1" Grid.Column="1" PasswordChanged="pbCertPassword_PasswordChanged" GotFocus="pbCertPassword_GotFocus"/>
+            <PasswordBox x:Name="pbCertPassword" Padding="2,3,2,3" Height="Auto" MinHeight="24"  Margin="5" Password="" Grid.ColumnSpan="1" Grid.Row="1" Grid.Column="1" PasswordChanged="pbCertPassword_PasswordChanged" GotFocus="pbCertPassword_GotFocus"/>
             <TextBox x:Name="tbCertPassword" Margin="5" Visibility="Hidden" Grid.ColumnSpan="1" Grid.Row="1" Grid.Column="1"/>
-            <TextBlock IsHitTestVisible="False" Text="Password" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="DarkGray" Grid.ColumnSpan="1" Grid.Row="1" Grid.Column="1">
+            <TextBlock IsHitTestVisible="False" Text="Password" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray" Grid.ColumnSpan="1" Grid.Row="1" Grid.Column="1">
                 <TextBlock.Style>
                     <Style TargetType="{x:Type TextBlock}">
                         <Setter Property="Visibility" Value="Collapsed"/>
