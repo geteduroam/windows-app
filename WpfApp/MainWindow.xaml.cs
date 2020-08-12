@@ -45,7 +45,8 @@ namespace WpfApp
 			Loading,
 			CertificateOverview,
 			TermsOfUse,
-			OAuthWait
+			OAuthWait,
+			InstalledProfile,
 		}
 
 		public enum ProfileStatus
@@ -67,6 +68,7 @@ namespace WpfApp
 		private CertificateOverview pageCertificateOverview;
 		private Redirect pageRedirect;
 		private OAuthWait pageOAuthWait;
+		private InstalledProfile pageInstalledProfile;
 		// this contains the 'active' eapConfig that is being used
 		private EapConfig eapConfig;
 		// If theres is a bundled config file then it is stored in this variable
@@ -607,6 +609,16 @@ namespace WpfApp
 			btnNext.IsEnabled = false;
 			pageOAuthWait = new OAuthWait(this, profile);
 			Navigate(pageOAuthWait);
+		}
+
+		public void LoadPageInstalledProfile()
+		{
+			currentFormId = FormId.InstalledProfile;
+			btnBack.IsEnabled = false;
+			btnNext.IsEnabled = true;
+			btnNext.Content = "Main Menu";
+			pageInstalledProfile = new InstalledProfile(this);
+			Navigate(pageInstalledProfile);
 		}
 
 		private bool IsShuttingDown = false;
