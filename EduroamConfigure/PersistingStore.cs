@@ -23,15 +23,6 @@ namespace EduroamConfigure
             set => SetValue<string>("Username", value);
         }
 
-        /// <summary>
-        /// The ID of the eap-config profile as assigned by discovery.geteduroam.*
-        /// </summary>
-        public static string ProfileID
-        {
-            get => GetValue<string>("ProfileID");
-            set => SetValue<string>("ProfileID", value);
-        }
-
         public static IdentityProviderInfo? IdentityProvider
         {
             get => GetValue<IdentityProviderInfo?>("IdentityProvider");
@@ -88,8 +79,8 @@ namespace EduroamConfigure
 
         public static bool IsRefreshable
         {
-            get => LetsWifiEndpoints?.profileId == ProfileID
-                && !string.IsNullOrEmpty(ProfileID)
+            get => LetsWifiEndpoints?.profileId == IdentityProvider?.ProfileId
+                && !string.IsNullOrEmpty(IdentityProvider?.ProfileId)
                 && !string.IsNullOrEmpty(LetsWifiRefreshToken);
         }
 
@@ -168,6 +159,10 @@ namespace EduroamConfigure
             public string           /* hello */         WebAddress   { get; }
             public string                               Phone        { get; }
             public string                               InstId       { get; }
+            public string                               ProfileId    { get; }
+            public bool                                 IsOauth      { get; }
+            public DateTime?                            NotBefore    { get; }
+            public DateTime?                            NotAfter     { get; }
             public (EapType outer, InnerAuthType inner) EapTypeSsid  { get; }
             public (EapType outer, InnerAuthType inner) EapTypeHs2   { get; }
 
@@ -177,6 +172,10 @@ namespace EduroamConfigure
                 string        /* how are you? */     webAddress,
                 string                               phone,
                 string                               instId,
+                string                               profileId,
+                bool                                 isOauth,
+                DateTime?                            notBefore,
+                DateTime?                            notAfter,
                 (EapType outer, InnerAuthType inner) eapTypeSsid,
                 (EapType outer, InnerAuthType inner) eapTypeHs2)
             {
@@ -185,6 +184,10 @@ namespace EduroamConfigure
                 WebAddress   = webAddress;
                 Phone        = phone;
                 InstId       = instId;
+                ProfileId    = profileId;
+                IsOauth      = isOauth;
+                NotBefore    = notBefore;
+                NotAfter     = notAfter;
                 EapTypeSsid  = eapTypeSsid;
                 EapTypeHs2   = eapTypeHs2;
             }
@@ -198,6 +201,10 @@ namespace EduroamConfigure
                         authMethod.EapConfig.InstitutionInfo.WebAddress,
                         authMethod.EapConfig.InstitutionInfo.Phone,
                         authMethod.EapConfig.InstitutionInfo.InstId,
+                        authMethod.EapConfig.Uid,
+                        authMethod.EapConfig.IsOauth,
+                        authMethod.ClientCertificateNotBefore,
+                        authMethod.ClientCertificateNotAfter,
                         (authMethod.EapType, authMethod.InnerAuthType),
                         (authMethod.Hs2AuthMethod.EapType, authMethod.Hs2AuthMethod.InnerAuthType));
         }
