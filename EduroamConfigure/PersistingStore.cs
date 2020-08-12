@@ -206,8 +206,8 @@ namespace EduroamConfigure
                         authMethod.EapConfig.InstitutionInfo.InstId,
                         (authMethod.EapType, authMethod.InnerAuthType),
                         (authMethod.Hs2AuthMethod.EapType, authMethod.Hs2AuthMethod.InnerAuthType),
-                        authMethod.ClientCertificateAsX509Certificate2()?.NotBefore,
-                        authMethod.ClientCertificateAsX509Certificate2()?.NotAfter);
+                        authMethod.ClientCertificateNotBefore,
+                        authMethod.ClientCertificateNotAfter);
         }
 
         // Inner workings:
