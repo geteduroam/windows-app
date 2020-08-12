@@ -27,7 +27,7 @@ namespace WpfApp.Menu
     public partial class InstalledProfile : Page
     {
         private MainWindow mainWindow;
-        public IdentityProviderProfile Profile { get; set; }
+        public string ProfileId { get; set; }
         private string webAddress;
         private string phone;
         private string emailAddress;
@@ -62,15 +62,15 @@ namespace WpfApp.Menu
                 mainWindow.btnNext.IsEnabled = false;
                 mainWindow.btnNext.Content = "Loading ...";
                 if (!mainWindow.IdpDownloader.Online) await Task.Run(() => mainWindow.IdpDownloader.LoadProviders());
-                Profile = await Task.Run(() => mainWindow.IdpDownloader.GetProfileFromId(PersistingStore.IdentityProvider.Value.ProfileId));
-                if (Profile != null)
+                ProfileId = PersistingStore.IdentityProvider.Value.ProfileId;
+                if (!string.IsNullOrEmpty(ProfileId))
                 {
                     mainWindow.btnNext.IsEnabled = true;
                     mainWindow.btnNext.Content = "Reconnect";
                 }
                 else
                 {
-                    mainWindow.btnNext.Content = "Profile not found";
+                    mainWindow.btnNext.Content = "Profile id not found";
                 }
             }
         }
