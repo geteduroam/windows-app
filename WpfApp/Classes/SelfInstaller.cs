@@ -81,6 +81,8 @@ namespace WpfApp
 				Action<string, string> strWriter,
 				Action<string, uint?> intWriter)
 			{
+				_ = strWriter ?? throw new ArgumentNullException(paramName: nameof(strWriter));
+				_ = intWriter ?? throw new ArgumentNullException(paramName: nameof(intWriter));
 				strWriter(nameof(DisplayIcon),         DisplayIcon);
 				strWriter(nameof(DisplayName),         DisplayName);
 				strWriter(nameof(DisplayVersion),      DisplayVersion);

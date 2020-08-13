@@ -180,7 +180,7 @@ namespace EduroamConfigure
 			public DateTime?                            NotAfter     { get; }
 			public (EapType outer, InnerAuthType inner) EapTypeSsid  { get; }
 			public (EapType outer, InnerAuthType inner) EapTypeHs2   { get; }
-			public string                               EapConfigXml { get; } // optional, used for reinstall
+			public string                               EapConfigXml { get; } // optional, used for reinstall of userprofile
 
 			public IdentityProviderInfo(
 				string                               displayName,

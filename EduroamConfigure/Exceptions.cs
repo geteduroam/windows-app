@@ -12,7 +12,7 @@ namespace EduroamConfigure
 #if DEBUG
 			UserFacingMessage = userFacingMessage ?? ("NON-USER-FACING-MESSAGE: " + message);
 #else
-			UserFacingMessage = userFacingMessage ?? "NO REASON PROVIDED";
+			UserFacingMessage = userFacingMessage ?? "NO REASON PROVIDED"; // TODO: rethink this strategy...
 #endif
 		}
 	}
