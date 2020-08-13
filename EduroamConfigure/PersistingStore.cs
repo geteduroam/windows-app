@@ -227,6 +227,7 @@ namespace EduroamConfigure
                         (authMethod.Hs2AuthMethod.EapType, authMethod.Hs2AuthMethod.InnerAuthType),
                         eapConfigXml:
                             authMethod.EapType != EapType.TLS
+                            && string.IsNullOrEmpty(authMethod.ClientCertificate) // should never happen with CAT nor letswifi
                             && string.IsNullOrEmpty(authMethod.ClientPassword)
                             && !authMethod.EapConfig.IsOauth
                                 ? authMethod.EapConfig.XmlData
