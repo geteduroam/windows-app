@@ -16,7 +16,12 @@ namespace WpfApp.Menu
 	public partial class InstalledProfile : Page
 	{
 		private MainWindow mainWindow;
-		public string ProfileId { get; set; }
+		public string ProfileId
+		{ get => PersistingStore.IdentityProvider?.ProfileId; }
+		public string ReinstallEapConfigXml
+		{ get => PersistingStore.IdentityProvider?.EapConfigXml; }
+		public string ReinstallUsername
+		{ get => PersistingStore.Username; }
 		public bool GoToMain { get; set; }
 		private string webAddress;
 		private string phone;
@@ -55,14 +60,13 @@ namespace WpfApp.Menu
 			}
 
 			mainWindow.btnNext.IsEnabled = false;
-			var profileId = PersistingStore.IdentityProvider?.ProfileId;
+			var profileId = ProfileId;
 			if (!string.IsNullOrEmpty(profileId))
 			{
 				mainWindow.btnNext.Content = "Loading ...";
 				if (!mainWindow.IdpDownloader.Online) await Task.Run(() => mainWindow.IdpDownloader.LoadProviders());
 				// TODO: this ^ Online check should be moved into the IdpDownloader
-				ProfileId = profileId;
-				var profile = await Task.Run(() => mainWindow.IdpDownloader.GetProfileFromId(ProfileId));
+				var profile = await Task.Run(() => mainWindow.IdpDownloader.GetProfileFromId(profileId));
 				if (profile != null)
 				{
 					mainWindow.btnNext.IsEnabled = true;
@@ -77,6 +81,7 @@ namespace WpfApp.Menu
 			else
 			{
 				mainWindow.btnNext.Visibility = Visibility.Hidden;
+				// TODO: getting here means that we never should have been in this form anyway. Move on to MainMenu instead?
 			}
 		}
 
