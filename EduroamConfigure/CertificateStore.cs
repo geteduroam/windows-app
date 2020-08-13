@@ -109,7 +109,7 @@ namespace EduroamConfigure
 			return !IsCertificateInstalled(cert, storeName, storeLocation);
 		}
 
-		public static IEnumerable<(X509Certificate2, InstalledCertificate)> EnumerateInstalledCertificates()
+		public static IEnumerable<(X509Certificate2 cert, InstalledCertificate installedCert)> EnumerateInstalledCertificates()
 		{
 			foreach (var installedCert in PersistingStore.InstalledCertificates.ToList())
 			{
