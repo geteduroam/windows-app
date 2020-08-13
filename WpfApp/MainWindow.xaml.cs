@@ -151,7 +151,7 @@ namespace WpfApp
 
                 case FormId.SelectInstitution:
                     var profiles = GetProfiles((int)pageSelectInstitution.IdProviderId);
-                    if (profiles.Count == 1)
+                    if (profiles.Count == 1) // skip the profile select and go with the first one
                     {
                         string autoProfileId = profiles.FirstOrDefault().Id;
                         if (!string.IsNullOrEmpty(autoProfileId))

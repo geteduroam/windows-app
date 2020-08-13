@@ -48,11 +48,13 @@ namespace WpfApp.Menu
         private async void LoadProfile()
         {
             mainWindow.btnNext.IsEnabled = false;
-            if (PersistingStore.IdentityProvider.Value.ProfileId != null)
+            var profileId = PersistingStore.IdentityProvider?.ProfileId;
+            if (!string.IsNullOrEmpty(profileId))
             {
                 mainWindow.btnNext.Content = "Loading ...";
                 if (!mainWindow.IdpDownloader.Online) await Task.Run(() => mainWindow.IdpDownloader.LoadProviders());
-                ProfileId = PersistingStore.IdentityProvider.Value.ProfileId;
+                // TODO: this ^ Online check should be moved into the IdpDownloader
+                ProfileId = profileId;
                 var profile = await Task.Run(() => mainWindow.IdpDownloader.GetProfileFromId(ProfileId));
                 if (profile != null)
                 {
