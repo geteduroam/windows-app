@@ -714,8 +714,10 @@ namespace WpfApp
 
             if (App.Installer.IsInstalled && !App.Installer.IsRunningInInstallLocation)
             {
+                #if !DEBUG
                 // this happens after the first time setup
                 SelfInstaller.DelayedStart(App.Installer.StartMinimizedCommand);
+                #endif
                 return; // do not cancel the Closing event
             }
 

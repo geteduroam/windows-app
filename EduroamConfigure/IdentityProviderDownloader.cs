@@ -273,12 +273,19 @@ namespace EduroamConfigure
             public int Seq { get; set; }
             public List<IdentityProvider> Instances { get; set; }
         }
+        #pragma warning restore CA2227 // Collection properties should be read only
 
-        public void Dispose()
+
+        // Protected implementation of Dispose pattern.
+        private bool _disposed = false;
+        public void Dispose() => Dispose(true);
+        protected virtual void Dispose(bool disposing)
         {
-            throw new NotImplementedException();
+            if (_disposed) return;
+            if (disposing) geoWatcher?.Dispose();
+            _disposed = true;
         }
-#pragma warning restore CA2227 // Collection properties should be read only
+
     }
 
 }

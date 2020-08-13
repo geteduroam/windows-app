@@ -69,10 +69,6 @@ namespace EduroamConfigure
         public Uri GetRedirectUri()
             => redirectUri;
 
-        [Obsolete("Send in a Uri instead")]
-        public (string, string) ParseAndExtractAuthorizationCode(string responseUrl)
-            => ParseAndExtractAuthorizationCode(new Uri(responseUrl));
-
 
         /// <summary>
         /// Extracts the authorization code from the response url.
