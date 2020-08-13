@@ -20,8 +20,8 @@ namespace EduroamConfigure
 #endif
 
 		// state
-		public List<IdentityProvider> Providers { get; set; }
-		public List<IdentityProvider> ClosestProviders { get; set; } // Providers presorted by geo distance
+		public List<IdentityProvider> Providers { get; private set; }
+		public List<IdentityProvider> ClosestProviders { get; private set; } // Providers presorted by geo distance
 		private GeoCoordinateWatcher geoWatcher;
 		public bool Online { get; set; }
 
@@ -132,18 +132,6 @@ namespace EduroamConfigure
 			return Providers.Where(p => p.cat_idp == idProviderId).First().Profiles;
 		}
 
-		/// <summary>
-		/// Returns the n closest providers
-		/// </summary>
-		/// <param name="limit">number of providers to return</param>
-		public List<IdentityProvider> GetClosestProviders(int? limit)
-		{
-
-			 return limit == null
-				? ClosestProviders
-				: ClosestProviders.Take(limit.Value).ToList();
-			// return GetClosestProviders().Take(limit).ToList();
-		}
 
 		private List<IdentityProvider> GetClosestProviders()
 		{
