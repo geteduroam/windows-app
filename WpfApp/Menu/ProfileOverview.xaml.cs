@@ -1,20 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Security.Cryptography;
-using EduroamConfigure;
 using System.Diagnostics;
+using EduroamConfigure;
 
 namespace WpfApp.Menu
 {
@@ -106,11 +96,6 @@ namespace WpfApp.Menu
                 tbEmailLink.Text = emailAddress;
                 hlinkEmail.NavigateUri = new Uri("mailto:" + emailAddress);
                 hlinkEmail.TextDecorations = null;
-
-                /*   if (emailAddress.Contains("******"))
-                   {
-                       lblEmail.Texst = "-";
-                   }*/
             }
             // show url but not as link
             else
@@ -150,8 +135,7 @@ namespace WpfApp.Menu
             }
             else
             {
-               // termsOfUse = tou;
-               // lnkToU.Visible = true;
+
 
 
             }
@@ -183,9 +167,6 @@ namespace WpfApp.Menu
         }
         private void Hyperlink_TOU(object sender, RequestNavigateEventArgs e)
         {
-            //Hyperlink hl = (Hyperlink)sender;
-            //string navigateUri = hl.NavigateUri.ToString();
-            //Process.Start(new ProcessStartInfo(navigateUri));
             ShowTou = true;
             mainWindow.NextPage();
             e.Handled = true;

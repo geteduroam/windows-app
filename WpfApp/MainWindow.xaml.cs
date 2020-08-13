@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml;
 using System.IO;
 using System.Reflection;
-using WpfApp.Menu;
-using EduroamConfigure;
 using System.Diagnostics;
 using System.ComponentModel;
 using Hardcodet.Wpf.TaskbarNotification;
+using EduroamConfigure;
+using WpfApp.Menu;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
 
 namespace WpfApp
@@ -95,25 +87,18 @@ namespace WpfApp
 
         private void Load()
         {
-            //webEduroamLogo.NavigateToString(ImageFunctions.GenerateSvgLogoHtml(Properties.Resources.eduroam_logo, (int)webEduroamLogo.Width, (int)webEduroamLogo.Height));
             IdpDownloader = new IdentityProviderDownloader();
-
             ExtractedEapConfig = GetBundledEapConfig();
-            if (ExtractedEapConfig != null)
+            if (PersistingStore.IdentityProvider != null)
             {
-                // sets flags
-                //ComesFromSelfExtract = true;
-                //SelfExtractFlag = true;
-                // reset web logo or else it won't load
-                //ResetLogo();
+                LoadPageInstalledProfile();
+            }
+            else if (ExtractedEapConfig != null)
+            {
                 // loads summary form so user can confirm installation
                 eapConfig = ExtractedEapConfig;
                 ExtractFlag = true;
                 LoadPageProfileOverview();
-            }
-            else if (PersistingStore.IdentityProvider != null)
-            {
-                LoadPageInstalledProfile();
             }
             else
             {
@@ -136,7 +121,11 @@ namespace WpfApp
             switch (currentFormId)
             {
                 case FormId.InstalledProfile:
-                    if (pageInstalledProfile.ProfileId != null)
+                    if(pageInstalledProfile.GoToMain)
+                    {
+                        LoadPageMainMenu();
+                    }
+                    else if (pageInstalledProfile.ProfileId != null)
                     {
                         var profile = pageInstalledProfile.ProfileId;
                         await HandleProfileSelect(profile, skipOverview: true);
@@ -229,6 +218,14 @@ namespace WpfApp
         {
             // clears logo if going back from summary page
             //if (currentFormId == FormId.Summary) ResetLogo();
+            // stops timer and makes it so next button is not disabled when leaving Login page
+            // this happens when you have written something in a password field, and when you leave
+            // the password field is automatically cleared, triggering a PasswordChanged event
+            if (currentFormId == FormId.Login)
+            {
+                    pageLogin.IgnorePasswordChange = true;
+                    pageLogin.dispatcherTimer.Stop();                
+            }
             switch (historyFormId.Last())
             {
                 case FormId.InstalledProfile:
@@ -532,6 +529,18 @@ namespace WpfApp
             imgEduroamLogo.Visibility = Visibility.Visible;
         }
 
+        public void LoadPageInstalledProfile()
+        {
+            currentFormId = FormId.InstalledProfile;
+            btnBack.IsEnabled = false;
+            btnBack.Visibility = Visibility.Hidden;
+            btnNext.IsEnabled = true;
+            btnNext.Visibility = Visibility.Visible;
+            btnNext.Content = "No profile id";
+            pageInstalledProfile = new InstalledProfile(this);
+            Navigate(pageInstalledProfile);
+        }
+
         public void LoadPageMainMenu(bool refresh = true)
         {
             ExtractFlag = false;
@@ -630,20 +639,13 @@ namespace WpfApp
         {
             currentFormId = FormId.OAuthWait;
             btnBack.IsEnabled = true;
+            btnBack.Visibility = Visibility.Visible;
             btnNext.IsEnabled = false;
             pageOAuthWait = new OAuthWait(this, profile);
             Navigate(pageOAuthWait);
         }
 
-        public void LoadPageInstalledProfile()
-        {
-            currentFormId = FormId.InstalledProfile;
-            btnBack.IsEnabled = false;
-            btnNext.IsEnabled = true;
-            btnNext.Content = "No profile id";
-            pageInstalledProfile = new InstalledProfile(this);
-            Navigate(pageInstalledProfile);
-        }
+        
 
         private bool IsShuttingDown = false;
         public void Shutdown(int exitCode = 0)
