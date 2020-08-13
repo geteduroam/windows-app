@@ -73,7 +73,7 @@ namespace WpfApp.Menu
                 if (!string.IsNullOrEmpty(mainWindow.PresetUsername))
                     tbUsername.Text = mainWindow.PresetUsername;
                 tbUsername.Focus();
-                ValidateConnectBtn();
+                EnableConnectBtnBasedOnCredentials();
             }
             // case where eapconfig needs a certificate and password
             else if (eapConfig.NeedsClientCertificate())
@@ -121,7 +121,7 @@ namespace WpfApp.Menu
                 tbRealm.Visibility = Visibility.Visible;
             }
 
-            var brokenRules = IdentityProviderParser.GetRulesBroken(username, realm, hint).ToList();
+            var brokenRules = IdentityProviderParser.GetRulesBrokenOnUsername(username, realm, hint).ToList();
             bool usernameValid = !brokenRules.Any();
             tbRules.Text = "";
             if (!usernameValid)
@@ -230,7 +230,7 @@ namespace WpfApp.Menu
             if (credentialsValid())
             {
                 string username = tbUsername.Text;
-                
+
 
                 if (tbRealm.Visibility == Visibility.Visible)
                 {
@@ -278,7 +278,7 @@ namespace WpfApp.Menu
             bool installed = await Task.Run(() => InstallEapConfig(eapConfig, username, password));
             if (installed)
             {
-                
+
                 bool connected = await TryToConnect();
                 if (connected)
                 {
@@ -338,13 +338,12 @@ namespace WpfApp.Menu
         /// Installs certificates from EapConfig and creates wireless profile.
         /// </summary>
         /// <returns>true on success</returns>
-        private bool InstallEapConfig(EapConfig eapConfig, string username = null, string password = null) // TODO: make static
+        private bool InstallEapConfig(EapConfig eapConfig, string username = null, string password = null)
         {
             if (!MainWindow.CheckIfEapConfigIsSupported(eapConfig)) // should have been caught earlier, but check here too for sanity
                 return false;
 
-            // test
-            ConnectToEduroam.RemoveAllProfiles();
+            ConnectToEduroam.RemoveAllWLANProfiles();
             mainWindow.ProfileCondition = MainWindow.ProfileStatus.NoneConfigured;
 
             bool success = false;
@@ -360,7 +359,7 @@ namespace WpfApp.Menu
                         break;
 
                     // Everything is now in order, install the profile!
-                    if (!authMethodInstaller.InstallProfile(username, password))
+                    if (!authMethodInstaller.InstallWLANProfile(username, password))
                         continue; // failed, try the next method
 
                     // check if we need to wait for the certificate to become valid
@@ -377,10 +376,9 @@ namespace WpfApp.Menu
                     break;
                 }
 
-                // TODO: move out of function, use return value. This function should be static
                 mainWindow.ProfileCondition = MainWindow.ProfileStatus.Configured;
 
-                App.Installer.EnsureIsInstalled(); // TODO: run in backround?
+                App.Installer.EnsureIsInstalled(); // TODO: run in background? must be ensured to complete before the user exits
 
                 return success;
             }
@@ -442,17 +440,18 @@ namespace WpfApp.Menu
             tbStatus.Visibility = Visibility.Collapsed;
             grpRules.Visibility = Visibility.Collapsed;
             if (!hint) tbRealm.Visibility = Visibility.Hidden;
-            ValidateConnectBtn();
+            EnableConnectBtnBasedOnCredentials();
         }
 
-        // TODO rename function
         /// <summary>
         /// Enables Connect button if username and password set, this should only be used
         /// for the case where username and password is needed
         /// </summary>
-        private void ValidateConnectBtn()
+        private void EnableConnectBtnBasedOnCredentials()
         {
-            mainWindow.btnNext.IsEnabled = !string.IsNullOrEmpty(tbUsername.Text) && !string.IsNullOrEmpty(pbCredPassword.Password);
+            mainWindow.btnNext.IsEnabled =
+                !string.IsNullOrEmpty(tbUsername.Text) &&
+                !string.IsNullOrEmpty(pbCredPassword.Password);
         }
 
         private void tbUsername_LostFocus(object sender, RoutedEventArgs e)
@@ -478,7 +477,7 @@ namespace WpfApp.Menu
             // ignore unwanted PasswordChanged event
             if (IgnorePasswordChange) return;
             tbStatus.Visibility = Visibility.Hidden;
-            ValidateConnectBtn();
+            EnableConnectBtnBasedOnCredentials();
         }
 
         private void pbCredPassword_GotFocus(object sender, RoutedEventArgs e)

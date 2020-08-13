@@ -208,7 +208,7 @@ namespace EduroamConfigure
             /// If this is true, then the user must provide a passphrase to the bundled certificate bundle.
             /// Add this passphrase with this.AddClientCertificatePassphrase
             /// </summary>
-            public bool NeedsClientCertificatePassphrase() // TODO: use this
+            public bool NeedsClientCertificatePassphrase()
                 => !UserDataXml.NeedsLoginCredentials(this)
                 && !string.IsNullOrEmpty(ClientCertificate)
                 && !CertificateIsValid;
@@ -709,7 +709,7 @@ namespace EduroamConfigure
         /// <summary>
         /// Wired LAN
         /// </summary>
-        IEEE8023, // TODO: add full support for this
+        IEEE8023, // TODO: add full support for this (wired x802)
 
         /// <summary>
         /// Wireless LAN

@@ -75,7 +75,7 @@ namespace EduroamConfigure
         /// </summary>
         /// <param name="responseUrl">URL response from authentication.</param>
         /// <returns>(string authorizationCode, string codeVerifier)</returns>
-        public (string, string) ParseAndExtractAuthorizationCode(Uri responseUrl) // TODO, change to Uri
+        public (string, string) ParseAndExtractAuthorizationCode(Uri responseUrl)
         {
             // check if url is valid
             if (!(responseUrl?.IsWellFormedOriginalString() ?? false)

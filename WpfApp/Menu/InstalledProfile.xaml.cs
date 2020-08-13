@@ -55,7 +55,7 @@ namespace WpfApp.Menu
         }
 
         /// <summary>
-        /// Loads information from PersistingStore 
+        /// Loads information from PersistingStore
         /// </summary>
         private async void LoadProfile()
         {
@@ -84,13 +84,13 @@ namespace WpfApp.Menu
                 else
                 {
                     mainWindow.btnNext.Content = "Cant reconnect";
-                    //btnMainMenu.Style = FindResource("BlueButtonStyle") as Style;                   
+                    //btnMainMenu.Style = FindResource("BlueButtonStyle") as Style;
                 }
             }
             else
             {
                 mainWindow.btnNext.Visibility = Visibility.Hidden;
-                // TODO: getting here means that we never should have been in this form anyway. Move on to MainMenu instead?
+                // TODO: getting here means that we never should have been in this Form anyway. Move on to MainMenu instead?
             }
         }
 
@@ -250,17 +250,19 @@ namespace WpfApp.Menu
             mainWindow.LoadPageMainMenu();
         }
 
-        //todo check if uninstall success
         /// <summary>
-        /// Uninstalls the installed profile
+        /// Uninstalls the installed WLAN profile
         /// </summary>
         private void Logout()
         {
-            EduroamConfigure.ConnectToEduroam.RemoveAllProfiles();
-            EduroamConfigure.LetsWifi.WipeTokens();
-            EduroamConfigure.PersistingStore.IdentityProvider = null;
+            LetsWifi.WipeTokens();
+            ConnectToEduroam.RemoveAllWLANProfiles();
+            CertificateStore.UninstallAllInstalledCertificates(ommitRootCa: true);
+            PersistingStore.IdentityProvider = null;
+
+            // TODO: remove root CAs aswell in some nice way
         }
     }
 
-    
+
 }

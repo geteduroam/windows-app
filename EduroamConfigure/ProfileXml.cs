@@ -87,7 +87,7 @@ namespace EduroamConfigure
             // Decide the profile name, which is the unique identifier for this profile
             var profileName = asHs2Profile
                 ? (authMethod.EapConfig.InstitutionInfo.DisplayName)
-                : ssids.First(); // TODO: change into 'InstitutionInfo.DisplayName + ssids.First()' ? Will then make way for installing eduroam for multiple institutions
+                : ssids.First(); // TODO: perhaps change into 'InstitutionInfo.DisplayName + ssids.First()' ? Will then make way for installing eduroam for multiple institutions
             if (asHs2Profile && ssids.Contains(profileName)) // since profileName is the unique identifier of the profile. avoid collisions with the profiles per ssid
                 profileName += " via Passpoint"; // GEANT convention as fallback
 
@@ -335,7 +335,7 @@ namespace EduroamConfigure
                             }
                         ),
                         new XElement(nsTTLS + "Phase1Identity",
-                            new XElement(nsTTLS + "IdentityPrivacy", "true"), // TODO, based on outerIdentity being null?
+                            new XElement(nsTTLS + "IdentityPrivacy", "true"),
                             new XElement(nsTTLS + "AnonymousIdentity", outerIdentity ?? "")
                         )
                     )
@@ -380,7 +380,7 @@ namespace EduroamConfigure
             bool hasOID = authMethod.EapConfig.CredentialApplicabilities
                 .Any(cred => cred.ConsortiumOid != null);
             bool isPEAP = authMethod.EapType == EapType.PEAP;
-            return hasOID && !isPEAP; // Hotstpo2.0 does not support PEAP
+            return hasOID && !isPEAP; // Hotstpot2.0 does not support PEAP
         }
 
         /// <summary>
