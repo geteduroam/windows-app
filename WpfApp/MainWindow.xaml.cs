@@ -113,7 +113,7 @@ namespace WpfApp
 			// if nothing to go back to, hide back button
 
 			Main.Content = nextPage;
-			ValidateBackButton();
+			UpdateBackButton();
 		}
 
 		public async void NextPage()
@@ -226,7 +226,7 @@ namespace WpfApp
 			// removes current form from history if it gets added twice
 			if (historyFormId.LastOrDefault() == currentFormId) historyFormId.RemoveAt(historyFormId.Count - 1);
 
-			ValidateBackButton();
+			UpdateBackButton();
 
 		}
 
@@ -273,12 +273,12 @@ namespace WpfApp
 			// removes current form from history
 			historyFormId.RemoveAt(historyFormId.Count - 1);
 
-			ValidateBackButton();
+			UpdateBackButton();
 		}
 		/// <summary>
 		/// Hide back button if theres no page to go back to
 		/// </summary>
-		private void ValidateBackButton() // TODO: rename this function
+		private void UpdateBackButton()
 		{
 			if (historyFormId.Count < 1)
 				btnBack.Visibility = Visibility.Hidden;

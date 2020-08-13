@@ -219,7 +219,7 @@ namespace EduroamConfigure
 						authMethod.EapConfig.InstitutionInfo.WebAddress,
 						authMethod.EapConfig.InstitutionInfo.Phone,
 						authMethod.EapConfig.InstitutionInfo.InstId,
-						authMethod.EapConfig.Uid,
+						authMethod.EapConfig.ProfileId,
 						authMethod.EapConfig.IsOauth,
 						authMethod.ClientCertificateNotBefore,
 						authMethod.ClientCertificateNotAfter,

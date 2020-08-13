@@ -296,7 +296,7 @@ namespace WpfApp
 		{
 			_ = shutdownAction ?? throw new ArgumentNullException(paramName: nameof(shutdownAction));
 
-			if (!EduroamConfigure.ConnectToEduroam.RemoveAllProfiles())
+			if (!EduroamConfigure.ConnectToEduroam.RemoveAllWLANProfiles())
 				return shutdownAction(false);
 			if (!EduroamConfigure.CertificateStore.UninstallAllInstalledCertificates())
 				return shutdownAction(false);

@@ -246,7 +246,7 @@ namespace EduroamConfigure
 				return RefreshResponse.Failed;
 
 			// Should only fail if the WLAN service is unavailable (no wireless NIC)
-			if (!installer.InstallProfile())
+			if (!installer.InstallWLANProfile())
 				return RefreshResponse.Failed;
 
 			return RefreshResponse.Success;
