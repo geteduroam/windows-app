@@ -72,6 +72,8 @@ namespace WpfApp.Menu
                 (realm, hint) = eapConfig.GetClientInnerIdentityRestrictions();
                 tbRealm.Text = '@' + realm;
                 tbRealm.Visibility = !string.IsNullOrEmpty(realm) && hint ? Visibility.Visible : Visibility.Hidden;
+                if (!string.IsNullOrEmpty(mainWindow.PresetUsername))
+                    tbUsername.Text = mainWindow.PresetUsername;
                 tbUsername.Focus();
                 ValidateCredFields();
             }

@@ -67,6 +67,7 @@ namespace WpfApp
         public EapConfig ExtractedEapConfig { get; set; }
         //ExtractFlag decides if the "Not affiliated with this institution? choose another one" text and button shows up on ProfileOverview or not
         public bool ExtractFlag { get; set; }
+        public string PresetUsername { get; private set; }
 
         public ProfileStatus ProfileCondition { get; set; } // TODO: use this to determine if we need to clean up after a failed setup, together with SelfInstaller.IsInstalled
         public IdentityProviderDownloader IdpDownloader { get; private set; }
@@ -121,15 +122,16 @@ namespace WpfApp
             switch (currentFormId)
             {
                 case FormId.InstalledProfile:
-                    if(pageInstalledProfile.GoToMain)
+                    if (pageInstalledProfile.GoToMain)
                     {
                         LoadPageMainMenu();
                     }
                     else if (pageInstalledProfile.ProfileId != null)
                     {
+                        PresetUsername = pageInstalledProfile.ReinstallUsername;
                         await HandleProfileSelect(
                             pageInstalledProfile.ProfileId,
-                            PersistingStore.IdentityProvider?.EapConfigXml,
+                            pageInstalledProfile.ReinstallEapConfigXml,
                             skipOverview: true);
                     }
                     //LoadPageMainMenu();
@@ -568,6 +570,7 @@ namespace WpfApp
 
         public void LoadPageMainMenu(bool refresh = true)
         {
+            PresetUsername = null;
             ExtractFlag = false;
             currentFormId = FormId.MainMenu;
             btnNext.Visibility = Visibility.Hidden;
@@ -579,6 +582,7 @@ namespace WpfApp
 
         public void LoadPageSelectInstitution(bool refresh = true)
         {
+            PresetUsername = null;
             currentFormId = FormId.SelectInstitution;
             btnNext.Visibility = Visibility.Visible;
             btnNext.Content = "Next";
@@ -592,6 +596,7 @@ namespace WpfApp
 
         public void LoadPageSelectProfile(bool refresh = true)
         {
+            PresetUsername = null;
             currentFormId = FormId.SelectProfile;
             btnNext.Visibility = Visibility.Visible;
             btnNext.Content = "Next";
