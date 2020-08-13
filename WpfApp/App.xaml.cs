@@ -171,6 +171,8 @@ namespace WpfApp
         {
             _ = LetsWifi.RefreshAndInstallEapConfig(force) switch
 			{
+				LetsWifi.RefreshResponse.UpdatedEapXml => true, // fine
+
 				LetsWifi.RefreshResponse.Success => true, // nice!
 				LetsWifi.RefreshResponse.StillValid => true, // no work needed
 				LetsWifi.RefreshResponse.NotRefreshable => false, // ignore, since we currently always schedule the task in windows

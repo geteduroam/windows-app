@@ -72,6 +72,8 @@ namespace WpfApp.Menu
                 (realm, hint) = eapConfig.GetClientInnerIdentityRestrictions();
                 tbRealm.Text = '@' + realm;
                 tbRealm.Visibility = !string.IsNullOrEmpty(realm) && hint ? Visibility.Visible : Visibility.Hidden;
+                if (!string.IsNullOrEmpty(mainWindow.PresetUsername))
+                    tbUsername.Text = mainWindow.PresetUsername;
                 tbUsername.Focus();
                 ValidateConnectBtn();
             }
@@ -248,12 +250,12 @@ namespace WpfApp.Menu
                 {
                     if (EduroamNetwork.IsEduroamAvailable(eapConfig))
                     {
-                        tbStatus.Text = "Everything is configured!\nUnable to connect to Eduroam.";
+                        tbStatus.Text = "Everything is configured!\nUnable to connect to eduroam.";
                     }
                     else
                     {
                         // Hs2 is not enumerable
-                        tbStatus.Text = "Everything is configured!\nUnable to connect to Eduroam, you're probably out of coverage.";
+                        tbStatus.Text = "Everything is configured!\nUnable to connect to eduroam, you're probably out of coverage.";
                     }
                     mainWindow.btnNext.Content = "Connect";
                 }
