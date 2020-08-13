@@ -15,8 +15,7 @@ namespace EduroamConfigure
     public class EapConfig
     {
         // Properties
-        public string Uid { get; } // May be null, in the case of a bundled eap config file
-        // TODO: rename ^ to 'ProfileId' after we have merged everything
+        public string ProfileId { get; } // May be null, in the case of a bundled eap config file
         public List<AuthenticationMethod> AuthenticationMethods { get; }
         public List<CredentialApplicability> CredentialApplicabilities { get; }
         public ProviderInfo InstitutionInfo { get; }
@@ -32,7 +31,7 @@ namespace EduroamConfigure
             string xmlData,
             bool isOauth = false)
         {
-            Uid = profileId;
+            ProfileId = profileId;
             AuthenticationMethods = authenticationMethods;
             CredentialApplicabilities = credentialApplicabilities;
             InstitutionInfo = institutionInfo;
