@@ -47,6 +47,13 @@ namespace WpfApp.Menu
 
         private async void LoadProfile()
         {
+            if (PersistingStore.IsReinstallable)
+            {
+                mainWindow.btnNext.IsEnabled = true;
+                mainWindow.btnNext.Content = "Reconnect";
+                return;
+            }
+
             mainWindow.btnNext.IsEnabled = false;
             var profileId = PersistingStore.IdentityProvider?.ProfileId;
             if (!string.IsNullOrEmpty(profileId))
