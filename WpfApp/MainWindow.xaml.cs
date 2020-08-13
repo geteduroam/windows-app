@@ -134,7 +134,9 @@ namespace WpfApp
 							pageInstalledProfile.ReinstallEapConfigXml,
 							skipOverview: true);
 					}
-					//LoadPageMainMenu();
+					else {
+						LoadPageMainMenu(); // sanity
+					}
 					break;
 				case FormId.MainMenu:
 					if (pageMainMenu.LocalEapConfig != null)
@@ -720,6 +722,13 @@ namespace WpfApp
 			ShowNotification("geteduroam is still running in the background");
 
 			Hide(); // window
+
+			if (PersistingStore.IdentityProvider != null)
+				LoadPageInstalledProfile();
+			else
+				LoadPageMainMenu();
+
+			historyFormId.Clear();
 		}
 
 		private void TaskbarIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)

@@ -59,6 +59,8 @@ namespace WpfApp.Menu
 				return;
 			}
 
+			// check if profile id exists in discovery
+
 			mainWindow.btnNext.IsEnabled = false;
 			var profileId = ProfileId;
 			if (!string.IsNullOrEmpty(profileId))
