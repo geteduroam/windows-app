@@ -166,6 +166,7 @@ namespace WpfApp.Menu
 
 		public void ConnectClick()
 		{
+			mainWindow.btnBack.IsEnabled = false;
 			mainWindow.btnNext.IsEnabled = false;
 			tbStatus.Text = "Connecting...";
 			tbStatus.Visibility = Visibility.Visible;
@@ -202,6 +203,7 @@ namespace WpfApp.Menu
 			if (!dispatcherTimer.IsEnabled)
 			{
 				mainWindow.btnNext.IsEnabled = true;
+				mainWindow.btnBack.IsEnabled = true;
 			}
 		}
 
@@ -220,6 +222,7 @@ namespace WpfApp.Menu
 			if (!dispatcherTimer.IsEnabled)
 			{
 				mainWindow.btnNext.IsEnabled = true;
+				mainWindow.btnBack.IsEnabled = true;
 			}
 		}
 
@@ -249,6 +252,7 @@ namespace WpfApp.Menu
 				if (!dispatcherTimer.IsEnabled)
 				{
 					mainWindow.btnNext.IsEnabled = true;
+					mainWindow.btnBack.IsEnabled = true;
 				}
 				if (focused != null) focused.Focus();
 			}
