@@ -1,17 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using EduroamConfigure;
 using WpfApp.Classes;
 
@@ -38,11 +27,17 @@ namespace WpfApp.Menu
 			mainWindow.btnNext.Visibility = Visibility.Hidden;
 			mainWindow.btnBack.Visibility = Visibility.Hidden;
 
+			grdInstalledProfile.Visibility = Visibility.Collapsed;
+
 			tbInfo.Visibility = Visibility.Hidden;
 
+			if (PersistingStore.IdentityProvider != null)
+			{
+				tbInstalledProfile.Text = PersistingStore.IdentityProvider.Value.DisplayName;
+				grdInstalledProfile.Visibility = Visibility.Visible;
+			}
 
-
-			if(mainWindow.ExtractedEapConfig == null)
+			if (mainWindow.ExtractedEapConfig == null)
 			{
 				btnExisting.Visibility = Visibility.Collapsed;
 			}
@@ -52,24 +47,7 @@ namespace WpfApp.Menu
 				tbExisting.Text = "Connect with " + mainWindow.ExtractedEapConfig.InstitutionInfo.DisplayName;
 			}
 			LoadProviders();
-			/*if (!mainWindow.IdpDownloader.Online)
-			{
-				try
-				{
-					// this will make the window pop up a little bit faster and disable the discovery button until institutions are loaded
-					//BtnNewProfile.IsEnabled = false;
-					//BtnNewProfile.Content = "Loading ...";
-					//await Task.Run(() => mainWindow.IdpDownloader.LoadProviders());
-					//BtnNewProfile.IsEnabled = true;
-					//BtnNewProfile.Content = "Connect to eduroam";
-					mainWindow.IdpDownloader.LoadProviders();
-				}
-				catch (ApiException)
-				{
-					BtnNewProfile.Content = "No internet connection";
-					BtnNewProfile.IsEnabled = false;
-				}
-			}*/
+
 
 		}
 		/// <summary>
@@ -127,6 +105,11 @@ namespace WpfApp.Menu
 				LocalEapConfig = null;
 			if (LocalEapConfig == null) return;
 			mainWindow.NextPage();
+		}
+
+		private void btnInstalledProfile_Click(object sender, RoutedEventArgs e)
+		{
+			mainWindow.LoadPageInstalledProfile();
 		}
 	}
 }

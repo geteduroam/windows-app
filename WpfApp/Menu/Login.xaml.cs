@@ -1,22 +1,12 @@
-using EduroamConfigure;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using WpfApp.Classes;
 using System.Globalization;
+using EduroamConfigure;
+using WpfApp.Classes;
 
 namespace WpfApp.Menu
 {
@@ -66,15 +56,8 @@ namespace WpfApp.Menu
 			gridCertBrowser.Visibility = Visibility.Collapsed;
 			stpTime.Visibility = Visibility.Collapsed;
 
-			//eapConfig.AuthenticationMethods.First();
 			mainWindow.btnNext.IsEnabled = false;
 			mainWindow.btnNext.Content = "Connect";
-
-			//show institution/prpfie name instead of "login"
-			/*if (!string.IsNullOrEmpty(eapConfig.InstitutionInfo.DisplayName))
-			{
-				tbTitle.Text = eapConfig.InstitutionInfo.DisplayName;
-			}*/
 
 			dispatcherTimer = new DispatcherTimer();
 			dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
@@ -82,7 +65,6 @@ namespace WpfApp.Menu
 
 			if (eapConfig.NeedsLoginCredentials())
 			{
-				// TODO: show input fields
 				conType = ConType.Credentials;
 				grpRules.Visibility = Visibility.Hidden;
 				gridCred.Visibility = Visibility.Visible;
@@ -103,7 +85,6 @@ namespace WpfApp.Menu
 				conType = ConType.CertPass;
 				gridCertPassword.Visibility = Visibility.Visible;
 				mainWindow.btnNext.IsEnabled = true;
-				//var success = eapConfig.AddClientCertificatePassphrase("asd");
 			}
 			else
 			{
@@ -180,7 +161,6 @@ namespace WpfApp.Menu
 		/// <returns>True if filepath and password is set</returns>
 		public void ValidateCertBrowserFields()
 		{
-			// mainWindow.btnNext.IsEnabled = !string.IsNullOrEmpty(filepath) && !string.IsNullOrEmpty(pbCertBrowserPassword.Password);
 			mainWindow.btnNext.IsEnabled = !string.IsNullOrEmpty(filepath);
 		}
 
@@ -507,7 +487,6 @@ namespace WpfApp.Menu
 		private void btnFile_Click(object sender, RoutedEventArgs e)
 		{
 			//browse for certificate and add to eapconfig
-			//eapConfig.AddClientCertificate();
 			filepath = FileDialog.AskUserForClientCertificateBundle();
 			tbCertBrowser.Text = filepath;
 			ValidateCertBrowserFields();

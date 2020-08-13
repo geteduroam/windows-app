@@ -9,22 +9,42 @@
       Title="MainMenu">
 
 
-    <StackPanel Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <StackPanel Background="White"/>
+    <Grid Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+
+        </Grid.RowDefinitions>
+        <StackPanel Background="White" Grid.RowSpan="6"/>
         <TextBlock x:Name="tbInfo" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5" FontSize="14"/>
         <Button x:Name="BtnNewProfile" Style="{StaticResource BlueButtonStyle}"
-                Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5" Width="186" Click="btnNewProfile_Click">
+                Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Width="186" Click="btnNewProfile_Click" Grid.Row="1">
             <TextBlock x:Name="tbNewProfile" TextWrapping="Wrap" Text="Connect to eduroam" TextAlignment="Center" Margin="5" />
         </Button>
         <Button x:Name="btnExisting" Style="{StaticResource BlueButtonStyle}"
-                MinHeight="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="68,5" Width="186" Click="btnExisting_Click">
+                MinHeight="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Width="186" Click="btnExisting_Click" Grid.Row="2">
             <TextBlock x:Name="tbExisting" TextWrapping="Wrap" Text="Connect with [bundled config]" TextAlignment="Center" Margin="5" />
         </Button>
 
         <Button x:Name="btnFile" Style="{StaticResource WhiteButtonStyle}" Content="Use eap-config file" 
-                Height="23" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,5" Width="110" Click="btnFile_Click"/>
+                Height="23" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Width="110" Click="btnFile_Click" Grid.Row="3"/>
+        <Grid x:Name="grdInstalledProfile" Grid.Row="4" Margin="5" VerticalAlignment="Bottom">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="tbConfiguredInfo" TextWrapping="Wrap" Text="Already configured account" TextAlignment="Center" Margin="5"/>
+            <Button x:Name="btnInstalledProfile" Style="{StaticResource WhiteButtonStyle}" 
+                MinHeight="37"  Width="130" HorizontalAlignment="Center"  Margin="5"  Click="btnInstalledProfile_Click" Grid.Row="1" >
+                <TextBlock x:Name="tbInstalledProfile" TextWrapping="Wrap" Text="Already configured account" TextAlignment="Center" Margin="5" />
+            </Button>
+        </Grid>
 
-    </StackPanel>
+
+    </Grid>
 
 
 </Page>

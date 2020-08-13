@@ -1,18 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using EduroamConfigure;
+
 namespace WpfApp.Menu
 {
 	/// <summary>
@@ -34,21 +26,17 @@ namespace WpfApp.Menu
 
 		private async void LoadPage()
 		{
-			//  frmParent.WebEduroamLogo.Visible = true;
 			tbTitle.Text = "Select profile";
 			mainWindow.btnNext.IsEnabled = false;
 
 
-
-			//  frmParent.RedirectUrl = "";
 			lbProfiles.IsEnabled = false;
 
 			await Task.Run(() => PopulateProfiles());
 
 			lbProfiles.IsEnabled = true;
 
-			// autoselect first profile
-			// LbProfiles.SetSelected(0, true);
+
 
 		}
 
