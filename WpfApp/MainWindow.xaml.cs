@@ -232,11 +232,6 @@ namespace WpfApp
 
 		public void PreviousPage()
 		{
-			// clears logo if going back from summary page
-			//if (currentFormId == FormId.Summary) ResetLogo();
-			// stops timer and makes it so next button is not disabled when leaving Login page
-			// this happens when you have written something in a password field, and when you leave
-			// the password field is automatically cleared, triggering a PasswordChanged event
 			if (currentFormId == FormId.Login)
 			{
 					pageLogin.IgnorePasswordChange = true;
@@ -302,9 +297,15 @@ namespace WpfApp
 			return true;
 		}
 
-		// downloads eap config based on profileId
-		// seperated into its own function as this can happen either through
-		// user selecting a profile or a profile being autoselected
+		/// <summary>
+		/// downloads eap config based on profileId
+		/// seperated into its own function as this can happen either through
+		/// user selecting a profile or a profile being autoselected
+		/// </summary>
+		/// <param name="profileId"></param>
+		/// <param name="eapConfigXml"></param>
+		/// <param name="skipOverview"></param>
+		/// <returns>True if function navigated somewhere</returns>
 		private async Task<bool> HandleProfileSelect(string profileId, string eapConfigXml = null, bool skipOverview = false)
 		{
 			LoadPageLoading();
@@ -375,6 +376,12 @@ namespace WpfApp
 			return false;
 		}
 
+		/// <summary>
+		/// Used to determine if an eapconfig has enough info
+		/// for the ProfileOverview page to show
+		/// </summary>
+		/// <param name="config"></param>
+		/// <returns></returns>
 		private static bool HasInfo(EapConfig config)
 			=> !string.IsNullOrEmpty(config.InstitutionInfo.WebAddress)
 			|| !string.IsNullOrEmpty(config.InstitutionInfo.EmailAddress)
@@ -466,6 +473,11 @@ namespace WpfApp
 			return true; // to be able to use it inside an expression
 		}
 
+		/// <summary>
+		/// Called by the Menu.OAuthWait page when the OAuth process is done.
+		/// Gives the EapConfig it got from the oauth session as param
+		/// </summary>
+		/// <param name="eapConfig"></param>
 		public void OAuthComplete(EapConfig eapConfig)
 		{
 			if (!CheckIfEapConfigIsSupported(eapConfig))
@@ -488,7 +500,11 @@ namespace WpfApp
 			Activate();
 		}
 
-
+		/// <summary>
+		/// Loads the logo form the curent eapconfig if it exists.
+		/// Else display Eduroam logo.
+		/// SVG not currently supported
+		/// </summary>
 		public void LoadProviderLogo()
 		{
 			ResetLogo();
@@ -517,17 +533,6 @@ namespace WpfApp
 					try
 					{
 						// converts from base64 to image
-						/* Image logo = ImageFunctions.BytesToImage(logoBytes);
-						 decimal hScale = decimal.Divide(cWidth, logo.Width);
-						 decimal vScale = decimal.Divide(cHeight, logo.Height);
-						 decimal pScale = vScale < hScale ? vScale : hScale;
-						 // resizes image to fit container
-						 Bitmap resizedLogo = ImageFunctions.ResizeImage(logo, (int)(logo.Width * pScale), (int)(logo.Height * pScale));
-						 frmParent.PbxLogo.Image = resizedLogo;
-						 // centers image in container
-						 int lPad = cWidth - frmParent.PbxLogo.Image.Width;
-						 frmParent.PbxLogo.Padding = new Padding(lPad / 2, 0, 0, 0);
-						 frmParent.PbxLogo.Visible = true;*/
 						BitmapImage bitMapImage = ImageFunctions.LoadImage(logoBytes);
 						imgLogo.Source = bitMapImage;
 						imgLogo.Visibility = Visibility.Visible;

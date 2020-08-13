@@ -24,7 +24,6 @@ namespace WpfApp.Menu
 			Nothing,
 		}
 		private ConType conType;
-		private bool usernameValid = false;
 		private string realm;
 		private bool hint;
 		private Control focused;
@@ -33,9 +32,6 @@ namespace WpfApp.Menu
 		public DispatcherTimer dispatcherTimer { get; set; }
 		public bool IsConnected { get; set; }
 		public bool IgnorePasswordChange { get; set; }
-
-
-
 		private readonly MainWindow mainWindow;
 		private readonly EapConfig eapConfig;
 
@@ -51,6 +47,7 @@ namespace WpfApp.Menu
 
 		private void Load()
 		{
+			/// Collaps everything before deciding what to show
 			gridCred.Visibility = Visibility.Collapsed;
 			gridCertPassword.Visibility = Visibility.Collapsed;
 			gridCertBrowser.Visibility = Visibility.Collapsed;
@@ -59,10 +56,11 @@ namespace WpfApp.Menu
 			mainWindow.btnNext.IsEnabled = false;
 			mainWindow.btnNext.Content = "Connect";
 
+			// create dispatcherTimer used for counting up cerst if not active yet
 			dispatcherTimer = new DispatcherTimer();
 			dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
 			dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
-
+			// Case where eapconfig needs username+passwprd
 			if (eapConfig.NeedsLoginCredentials())
 			{
 				conType = ConType.Credentials;
@@ -77,17 +75,20 @@ namespace WpfApp.Menu
 				tbUsername.Focus();
 				ValidateConnectBtn();
 			}
+			// case where eapconfig needs a certificate and password
 			else if (eapConfig.NeedsClientCertificate())
 			{
 				gridCertBrowser.Visibility = Visibility.Visible;
 				conType = ConType.CertAndCertPass;
 			}
+			// case where eapconfig needs only cert password
 			else if (eapConfig.NeedsClientCertificatePassphrase())
 			{
 				conType = ConType.CertPass;
 				gridCertPassword.Visibility = Visibility.Visible;
 				mainWindow.btnNext.IsEnabled = true;
 			}
+			// case where no extra info is needed to connect
 			else
 			{
 				// just connnect
@@ -96,13 +97,18 @@ namespace WpfApp.Menu
 			}
 		}
 
+		/// <summary>
+		/// Determines if the entered username/password is valid
+		/// for the case where username/password is needed.
+		/// Also saves any brokenrules to the tbRules textblock
+		/// </summary>
+		/// <returns>true if username/password legal</returns>
 		private bool credentialsValid()
 		{
 
 			string username = tbUsername.Text;
 			if (string.IsNullOrEmpty(username))
 			{
-				usernameValid = false;
 				tbRules.Text = "";
 				mainWindow.btnNext.IsEnabled = false;
 				return false;
@@ -116,7 +122,7 @@ namespace WpfApp.Menu
 			}
 
 			var brokenRules = IdentityProviderParser.GetRulesBroken(username, realm, hint).ToList();
-			usernameValid = !brokenRules.Any();
+			bool usernameValid = !brokenRules.Any();
 			tbRules.Text = "";
 			if (!usernameValid)
 			{
@@ -136,6 +142,10 @@ namespace WpfApp.Menu
 			mainWindow.btnNext.IsEnabled = !string.IsNullOrEmpty(filepath);
 		}
 
+		/// <summary>
+		/// Function used to attempt to connect to eduroam. This is the 'entry' point and decides what logic
+		/// to use next based on the current case
+		/// </summary>
 		public async void ConnectClick()
 		{
 			mainWindow.btnBack.IsEnabled = false;
@@ -168,6 +178,10 @@ namespace WpfApp.Menu
 
 		}
 
+		/// <summary>
+		/// Used if both certificate and certificate password is needed
+		/// </summary>
+		/// <returns>truereturns>
 		public async Task<bool> ConnectWithCertAndCertPass()
 		{
 			var success = eapConfig.AddClientCertificate(filepath, pbCertBrowserPassword.Password);
@@ -184,6 +198,10 @@ namespace WpfApp.Menu
 
 		}
 
+		/// <summary>
+		/// Used if only a certificate password is needed
+		/// </summary>
+		/// <returns>true</returns>
 		public async Task<bool> ConnectWithCertPass()
 		{
 			var success = eapConfig.AddClientCertificatePassphrase(pbCertPassword.Password);
@@ -203,6 +221,10 @@ namespace WpfApp.Menu
 
 		}
 
+		/// <summary>
+		/// Used if username and password is needed
+		/// </summary>
+		/// <returns>true</returns>
 		public async Task<bool> ConnectWithLogin()
 		{
 			if (credentialsValid())
@@ -234,12 +256,22 @@ namespace WpfApp.Menu
 			return true;
 		}
 
+		/// <summary>
+		/// Used if no extra credentials are needed to connect
+		/// </summary>
+		/// <returns></returns>
 		public async Task<bool> ConnectWithNothing()
 		{
 			_ = await ConnectAndUpdateUI();
 			return true;
 		}
 
+		/// <summary>
+		/// Common function used by all the various connection cases to install the eap config and actually connect
+		/// </summary>
+		/// <param name="username"></param>
+		/// <param name="password"></param>
+		/// <returns></returns>
 		public async Task<bool> ConnectAndUpdateUI(string username = null, string password = null)
 		{
 			pbCertBrowserPassword.IsEnabled = false;
@@ -281,7 +313,10 @@ namespace WpfApp.Menu
 			return true; // to make it await-able
 		}
 
-
+		/// <summary>
+		/// Tries to connect to eduroam with profiles registered previously with InstallEapConfig
+		/// </summary>
+		/// <returns></returns>
 		public async Task<bool> TryToConnect()
 		{
 			bool connectSuccess;
@@ -368,14 +403,21 @@ namespace WpfApp.Menu
 			return false;
 		}
 
-
+		/// <summary>
+		/// Called once every second as long as the current certificate is not yet active.
+		/// The timer counts the time to when the cert is valid, and disables the connect button
+		/// as long as the cert is not active
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
 		private void dispatcherTimer_Tick(object sender, EventArgs e)
 		{
+			// update time on screen
 			this.Dispatcher.Invoke(() => {
 				tbLocalTime.Text = DateTime.Now.ToString(CultureInfo.InvariantCulture);
 				tbValidTime.Text = certValid.ToString(CultureInfo.InvariantCulture);
 			});
-
+			// if certificate has become valid then try to connect
 			if (DateTime.Now > certValid)
 			{
 				dispatcherTimer.Stop();
@@ -384,6 +426,7 @@ namespace WpfApp.Menu
 					ConnectClick();
 				});
 			}
+			// if still not vaid yet
 			else
 			{
 				this.Dispatcher.Invoke(() => {
@@ -432,6 +475,7 @@ namespace WpfApp.Menu
 			// show placeholder if no password, hide placeholder if password set.
 			// in XAML a textblock is bound to tbCredPassword so when the textbox is blank a placeholder is shown
 			tbCredPassword.Text = string.IsNullOrEmpty(pbCredPassword.Password) ? "" : "something";
+			// ignore unwanted PasswordChanged event
 			if (IgnorePasswordChange) return;
 			tbStatus.Visibility = Visibility.Hidden;
 			ValidateConnectBtn();
@@ -445,8 +489,9 @@ namespace WpfApp.Menu
 		private void pbCertPassword_PasswordChanged(object sender, RoutedEventArgs e)
 		{
 			// show placeholder if no password, hide placeholder if password set.
-			// in XAML a textblock is bound to tbCredPassword so when the textbox is blank a placeholder is shown
+			// in XAML a textblock is bound to tbCertPassword so when the textbox is blank a placeholder is shown
 			tbCertPassword.Text = string.IsNullOrEmpty(pbCertPassword.Password) ? "" : "something";
+			// ignore unwanted PasswordChanged event
 			if (IgnorePasswordChange) return;
 			tbStatus.Visibility = Visibility.Hidden;
 		}
@@ -459,8 +504,9 @@ namespace WpfApp.Menu
 		private void pbCertBrowserPassword_PasswordChanged(object sender, RoutedEventArgs e)
 		{
 			// show placeholder if no password, hide placeholder if password set.
-			// in XAML a textblock is bound to tbCredPassword so when the textbox is blank a placeholder is shown
+			// in XAML a textblock is bound to tbCertBrowserPassword so when the textbox is blank a placeholder is shown
 			tbCertBrowserPassword.Text = string.IsNullOrEmpty(pbCertBrowserPassword.Password) ? "" : "something";
+			// ignore unwanted PasswordChanged event
 			if (IgnorePasswordChange) return;
 			tbStatus.Visibility = Visibility.Hidden;
 			ValidateCertBrowserFields();
@@ -472,6 +518,7 @@ namespace WpfApp.Menu
 
 		}
 
+		// opens file browser for choosing a certificate
 		private void btnFile_Click(object sender, RoutedEventArgs e)
 		{
 			//browse for certificate and add to eapconfig
