@@ -197,7 +197,16 @@ namespace WpfApp
 				case FormId.Login:
 					if (pageLogin.IsConnected)
 					{
-						Shutdown();
+						if (!App.Installer.IsRunningInInstallLocation)
+						{
+							Shutdown();
+						}
+						else
+						{
+							Hide();
+							LoadPageInstalledProfile();
+							historyFormId.Clear();
+						}
 						break;
 					}
 					pageLogin.ConnectClick();
