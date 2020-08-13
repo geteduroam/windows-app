@@ -4,7 +4,7 @@ This application helps set up eduroam on end-users' computers by automatically f
 
 ## Structure
 
-* **EduroamApp**:       The graphical user interface and UX logic.
+* **WpfApp**:           The graphical user interface and UX logic.
 * **EduroamConfigure**: The logic interfacing with the discovery api, and the logic to parse and configure the various profiles into windows.
 
 ## Supported authentification modes
@@ -25,9 +25,17 @@ There is currently also partial support for:
 These modes can be configured as a WLAN profile, but is currently unable to
 configure a user profile. (username and password)
 
-For all modes other that PEAP-MSCHAPv2, you can also install Hotspot 2.0.
+For all modes, other than PEAP-MSCHAPv2, you can also install Hotspot 2.0.
 If PEAP-MSCHAPv2 is the preffered method listed in the chosen eap-config, then
 Hotspot 2.0 will be installed alongside using some other EAP method listed in the eap-config.
+
+
+## Background process
+
+After a profile has been fully configured, geteduroam will install itself to `%HOME%\AppData\Local\geteduroam`.
+It will add itself to the registry to be run on startup, how to uninstall it, and a task will be registered with
+the task scheduler, which will prompt geteduroam check for updates on the profile.
+When running in the background, it will show a icon in the tray.
 
 
 ## Getting started
@@ -39,7 +47,7 @@ Hotspot 2.0 will be installed alongside using some other EAP method listed in th
 
 ### Running the app
 
- * Compile the project to create EduroamApp.exe (in EduroamApp\EduroamApp\bin\Release).
+ * Compile the project to create geteduroam.exe (in WpfApp\bin\Release).
 	* This executable can be run independently from the rest of the solution, so you can move it to any desired directory.
 
 
