@@ -76,6 +76,9 @@ namespace WpfApp.Menu
             cancelThread.Set();
         }
 
+        /// <summary>
+        /// Tells the http server to turn off
+        /// </summary>
         public static void CancelThread()
         {
             // sets cancellation token to cancel

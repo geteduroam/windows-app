@@ -78,7 +78,7 @@
             <TextBlock Text="This profile requires a local certificate" TextWrapping="Wrap" TextAlignment="Center" Margin="5" Grid.ColumnSpan="3"/>
 
             <TextBox x:Name="tbCertBrowser" Padding="2,3,2,3" Height="Auto" MinHeight="24"  Margin="5" Grid.ColumnSpan="1" Grid.Column="1" Grid.Row="1" IsEnabled="False"/>
-            <Button x:Name="btnFile" Style="{StaticResource WhiteButtonStyle}" Content="..." 
+            <Button x:Name="btnFile" Style="{StaticResource WhiteButtonStyle}" Content="Browse" 
                 Height="24" VerticalAlignment="Center" Margin="0,5" Click="btnFile_Click" Grid.ColumnSpan="1" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" Width="60"/>
 
 

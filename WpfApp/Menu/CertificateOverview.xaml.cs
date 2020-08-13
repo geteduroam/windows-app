@@ -33,7 +33,9 @@ namespace WpfApp.Menu
             InitializeComponent();
             Load();
         }
-
+        /// <summary>
+        /// Loads relevant elements of the page
+        /// </summary>
         private void Load()
         {
             tbInfo.Text = "In order to continue you have to install the listed certificates";
@@ -54,6 +56,10 @@ namespace WpfApp.Menu
             VerifyNextButton();
         }
 
+        /// <summary>
+        /// Adds a CertificateGrid controller to the stpCerts stackpanel
+        /// </summary>
+        /// <param name="installer"></param>
         private void AddCertGrid( ConnectToEduroam.CertificateInstaller installer)
         {
             CertificateGrid grid = new CertificateGrid
@@ -65,6 +71,9 @@ namespace WpfApp.Menu
             AddToStack(grid);
         }
 
+        /// <summary>
+        /// Adds a Seperator ( a straight, gray horizontal line) to the stpCerts stackpanel
+        /// </summary>
         private void AddSeparator()
         {
             Separator sep = new Separator
@@ -77,6 +86,9 @@ namespace WpfApp.Menu
             AddToStack(sep);
         }
 
+        /// <summary>
+        /// Decides if the Next button should be clickable
+        /// </summary>
         private void VerifyNextButton()
         {
             // false if going back from login after failing to log in
@@ -101,11 +113,20 @@ namespace WpfApp.Menu
             return true;
         }
 
+        /// <summary>
+        /// adds a Control object to the stpCerts stackpanel
+        /// </summary>
+        /// <param name="c"></param>
         private void AddToStack(Control c)
         {
             stpCerts.Children.Add(c);
         }
 
+        /// <summary>
+        /// Triggered by CertificateGrid objects that the page object subscribes to.
+        /// Lets the page know a 'Install' button has been pressed.
+        /// </summary>
+        /// <param name="value"></param>
         public void OnNext(ConnectToEduroam.CertificateInstaller value)
         {
             VerifyNextButton();

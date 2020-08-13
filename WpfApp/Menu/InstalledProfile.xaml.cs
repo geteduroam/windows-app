@@ -41,7 +41,11 @@ namespace WpfApp.Menu
             LoadProfile();
 
         }
-
+        /// <summary>
+        /// Used for Institution Info links to websites / mail
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LinkClick(object sender, RequestNavigateEventArgs e)
         {
             Hyperlink hl = (Hyperlink)sender;
@@ -50,6 +54,9 @@ namespace WpfApp.Menu
             e.Handled = true;
         }
 
+        /// <summary>
+        /// Loads information from PersistingStore 
+        /// </summary>
         private async void LoadProfile()
         {
             if (PersistingStore.IsReinstallable)
@@ -87,6 +94,9 @@ namespace WpfApp.Menu
             }
         }
 
+        /// <summary>
+        /// Loads info regarding the certficate of the persising store and displays it to the usr
+        /// </summary>
         private void LoadCertInfo()
         {
             if (PersistingStore.IdentityProvider.Value.NotAfter != null)
@@ -117,6 +127,9 @@ namespace WpfApp.Menu
 
         }
 
+        /// <summary>
+        /// Loads contact info from persisingstore
+        /// </summary>
         private void LoadContactInfo()
         {
             webAddress = PersistingStore.IdentityProvider.Value.WebAddress;
@@ -134,6 +147,9 @@ namespace WpfApp.Menu
             LoadPhone();
         }
 
+        /// <summary>
+        /// displays web address information
+        /// </summary>
         private void LoadWeb()
         {
             if (string.IsNullOrEmpty(webAddress))
@@ -159,7 +175,9 @@ namespace WpfApp.Menu
                 tbWebText.Text = webAddress;
             }
         }
-
+        /// <summary>
+        /// Displays Email info
+        /// </summary>
         private void LoadEmail()
         {
             if (string.IsNullOrEmpty(emailAddress))
@@ -182,7 +200,9 @@ namespace WpfApp.Menu
                 tbEmailText.Text = emailAddress;
             }
         }
-
+        /// <summary>
+        /// displays phone info
+        /// </summary>
         private void LoadPhone()
         {
             if (string.IsNullOrEmpty(phone))
@@ -194,7 +214,10 @@ namespace WpfApp.Menu
             tbPhoneText.Text = phone;
         }
 
-
+        /// <summary>
+        ///  Checks if there is any contact info
+        /// </summary>
+        /// <returns></returns>
         private bool hasContactInfo()
         {
             bool hasWebAddress = !string.IsNullOrEmpty(webAddress);
@@ -203,6 +226,11 @@ namespace WpfApp.Menu
             return (hasWebAddress || hasEmailAddress || hasPhone);
         }
 
+        /// <summary>
+        /// Button for going to the page MainMenu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnMainMenu_Click(object sender, RoutedEventArgs e)
         {
             GoToMain = true;
@@ -210,6 +238,11 @@ namespace WpfApp.Menu
             //mainWindow.LoadPageMainMenu();
         }
 
+        /// <summary>
+        /// Clickable button for user to delete the installed profile
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void btnLogout_Click(object sender, RoutedEventArgs e)
         {
             btnLogout.Content = "Logging out ..";
@@ -218,6 +251,9 @@ namespace WpfApp.Menu
         }
 
         //todo check if uninstall success
+        /// <summary>
+        /// Uninstalls the installed profile
+        /// </summary>
         private void Logout()
         {
             EduroamConfigure.ConnectToEduroam.RemoveAllProfiles();

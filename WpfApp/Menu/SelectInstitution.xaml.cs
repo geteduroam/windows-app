@@ -67,6 +67,11 @@ namespace WpfApp.Menu
             Search();
         }
 
+        /// <summary>
+        /// Search function called when the search box is changed.
+        /// Does a search through all institutions and sorts it 
+        /// to best match the search terms
+        /// </summary>
         private async void Search()
         {
             // flag so only one search is done at a time
@@ -91,7 +96,6 @@ namespace WpfApp.Menu
             if (isNewSearch) Search();
         }
 
-        // TODO: add doubleclick
         private void lbInstitutions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // if user clicks on empty area of the listbox it will cause event but no item is selected
