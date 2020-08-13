@@ -191,7 +191,7 @@ namespace EduroamConfigure
                 && PersistingStore.IsReinstallable
                 && !string.IsNullOrEmpty(profileId))
             {
-                var discovery = new IdentityProviderDownloader();
+                using var discovery = new IdentityProviderDownloader();
                 discovery.LoadProviders(useGeodata: false);
                 var xml = discovery.DownloadEapConfig(profileId).XmlData;
                 PersistingStore.IdentityProvider = PersistingStore.IdentityProvider
