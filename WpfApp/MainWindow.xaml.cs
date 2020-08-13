@@ -127,8 +127,10 @@ namespace WpfApp
 					}
 					else if (pageInstalledProfile.ProfileId != null)
 					{
-						var profile = pageInstalledProfile.ProfileId;
-						await HandleProfileSelect(profile, skipOverview: true);
+						await HandleProfileSelect(
+							pageInstalledProfile.ProfileId,
+							PersistingStore.IdentityProvider?.EapConfigXml,
+							skipOverview: true);
 					}
 					//LoadPageMainMenu();
 					break;
@@ -298,21 +300,35 @@ namespace WpfApp
 		// downloads eap config based on profileId
 		// seperated into its own function as this can happen either through
 		// user selecting a profile or a profile being autoselected
-		private async Task<bool> HandleProfileSelect(string profileId, bool skipOverview = false)
+		private async Task<bool> HandleProfileSelect(string profileId, string eapConfigXml = null, bool skipOverview = false)
 		{
 			LoadPageLoading();
-			IdentityProviderProfile profile = IdpDownloader.GetProfileFromId(profileId);
-			try
-			{
-				eapConfig = await DownloadEapConfig(profile);
-			}
-			catch (EduroamAppUserError ex) // TODO: register this in some higher level
-			{
-				MessageBox.Show(
-					ex.UserFacingMessage,
-					"eduroam - Exception");
-				eapConfig = null;
+			IdentityProviderProfile profile = null;
 
+			if (!string.IsNullOrEmpty(profileId)
+				&& !string.IsNullOrEmpty(eapConfigXml))
+			{
+				// TODO: ^perhaps reuse logic from PersistingStore.IsReinstallable
+				Debug.WriteLine(nameof(eapConfigXml) + " was set", category: nameof(HandleProfileSelect));
+
+				eapConfig = EapConfig.FromXmlData(profileId, eapConfigXml);
+			}
+			else
+			{
+				Debug.WriteLine(nameof(eapConfigXml) + " was not set", category: nameof(HandleProfileSelect));
+
+				profile = IdpDownloader.GetProfileFromId(profileId);
+				try
+				{
+					eapConfig = await DownloadEapConfig(profile);
+				}
+				catch (EduroamAppUserError ex) // TODO: register this in some higher level
+				{
+					MessageBox.Show(
+						ex.UserFacingMessage,
+						caption: "geteduroam - Exception");
+					eapConfig = null;
+				}
 			}
 
 			// reenable buttons after LoadPageLoading() disables them
@@ -339,13 +355,13 @@ namespace WpfApp
 				LoadPageLogin();
 				return true;
 			}
-			else if (!string.IsNullOrEmpty(profile.redirect))
+			else if (!string.IsNullOrEmpty(profile?.redirect))
 			{
 				// TODO: add option to go to selectmethod from redirect
 				LoadPageRedirect(new Uri(profile.redirect));
 				return true;
 			}
-			else if (profile.oauth)
+			else if (profile?.oauth ?? false)
 			{
 
 				LoadPageOAuthWait(profile);
