@@ -9,7 +9,7 @@ using System.Globalization;
 
 namespace EduroamConfigure
 {
-    public class IdentityProviderDownloader
+    public class IdentityProviderDownloader : IDisposable
     {
         // constants
         private const string GeoApiUrl = "https://geo.geteduroam.app/geoip";
@@ -273,7 +273,12 @@ namespace EduroamConfigure
             public int Seq { get; set; }
             public List<IdentityProvider> Instances { get; set; }
         }
-        #pragma warning restore CA2227 // Collection properties should be read only
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+#pragma warning restore CA2227 // Collection properties should be read only
     }
 
 }
