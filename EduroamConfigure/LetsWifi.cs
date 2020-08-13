@@ -184,6 +184,24 @@ namespace EduroamConfigure
         /// <returns>An enum describing the result</returns>
         public static RefreshResponse RefreshAndInstallEapConfig(bool force = false)
         {
+            // if LetsWifi is not set up:
+            // Download a new EapConfig xml if we already have one stored
+            var profileId = PersistingStore.IdentityProvider?.ProfileId;
+            if (!PersistingStore.IsRefreshable
+                && PersistingStore.IsReinstallable
+                && !string.IsNullOrEmpty(profileId))
+            {
+                var discovery = new IdentityProviderDownloader();
+                discovery.LoadProviders(useGeodata: false);
+                var xml = discovery.DownloadEapConfig(profileId).XmlData;
+                PersistingStore.IdentityProvider = PersistingStore.IdentityProvider
+                    ?.WithEapConfigXml(xml);
+                return RefreshResponse.UpdatedEapXml;
+            }
+
+            // otherwise, we try to refresh through LetsWifi
+
+            // Check if we can, at all:
             if (!PersistingStore.IsRefreshable)
                 return RefreshResponse.NotRefreshable;
 
@@ -240,6 +258,12 @@ namespace EduroamConfigure
             /// All is good chief
             /// </summary>
             Success,
+
+            /// <summary>
+            /// If the profile was not refreshibly through LetsWifi, but
+            /// instead managed to update the profile for a Reinstall
+            /// </summary>
+            UpdatedEapXml,
 
             /// <summary>
             /// The user has to install some new root certificates.
