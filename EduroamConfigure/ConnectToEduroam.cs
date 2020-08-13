@@ -187,30 +187,6 @@ namespace EduroamConfigure
                 AuthMethod = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
             }
 
-            [Obsolete("Use EapConfig.NeedsClientCertificate")]
-            public bool NeedsClientCertificate()
-            {
-                return AuthMethod.NeedsClientCertificate();
-            }
-
-            [Obsolete("Use EapConfig.AddClientCertificate")]
-            public bool AddClientCertificate(string certificatePath, string passphrase = null)
-            {
-                return AuthMethod.AddClientCertificate(certificatePath, passphrase);
-            }
-
-            /// <summary>
-            /// Call this to check if there are any CAs left to install
-            /// </summary>
-            /// <returns></returns>
-            [Obsolete("Use ConnectToEduroam.EnumerateCAInstallers instead")]
-            public bool NeedsToInstallCAs()
-            {
-                return AuthMethod.CertificateAuthoritiesAsX509Certificate2()
-                    .Where(CertificateStore.CertificateIsRootCA) // If not a root CA, no prompt will be made by this cert during install
-                    .Any(cert => !CertificateStore.IsCertificateInstalled(cert, rootCaStoreName, rootCaStoreLocation));
-            }
-
             /// <summary>
             /// Will install root CAs, intermediate CAs and user certificates provided by the authMethod.
             /// Installing a root CA in windows will produce a dialog box which the user must accept.
@@ -260,7 +236,7 @@ namespace EduroamConfigure
                 // Install wlan profile
                 bool anyInstalledSsid = false;
                 bool anyInstalledHs2 = false;
-                foreach (EduroamNetwork network in EduroamNetwork.GetAll(AuthMethod.EapConfig))
+                foreach (var network in EduroamNetwork.GetAll(AuthMethod.EapConfig))
                 {
                     (bool installedSsid, bool installedHs2) = network.InstallProfiles(AuthMethod);
                     anyInstalledSsid |= installedSsid;
@@ -273,8 +249,18 @@ namespace EduroamConfigure
                 Debug.WriteLine("Ssid profile eap type: " + AuthMethod.EapType.ToString() ?? "None");
                 Debug.WriteLine("Hs2  profile eap type: " + AuthMethod.Hs2AuthMethod?.EapType.ToString() ?? "None");
 
-                if (!AuthMethod.NeedsLoginCredentials() || (username, password) != (null, null)) // TODO: always run this. EduroamApp depends in this behavior
-                    InstallUserProfile(username, password, AuthMethod); // TODO: inline this obsolete function and delete it
+                // sets user data
+                Debug.WriteLine("Install user profiles for user {0}", username);
+                bool anyInstalledUserData = false;
+                foreach (var network in EduroamNetwork.GetAll(AuthMethod.EapConfig))
+                {
+                    bool installed = network.InstallUserData(username, password, AuthMethod);
+                    anyInstalledUserData |= installed;
+                }
+                
+                Debug.WriteLine("Install of user profile for user {0}: {1}",
+                    username ?? "NULL", anyInstalledUserData ? "success" : "failed");
+                Debug.WriteLine("");
 
                 bool success = anyInstalledSsid || anyInstalledHs2;
                 HasInstalledProfile = success;
@@ -287,18 +273,6 @@ namespace EduroamConfigure
                 return cert == null 
                     ? (DateTime.Now.AddSeconds(-30), (DateTime?)null)
                     : (cert.NotBefore, cert.NotAfter);
-            }
-
-            /// <summary>
-            /// Then provide them by either calling InstallUserProfile()
-            /// </summary>
-            [Obsolete("Use Eapconfig.NeedsLoginCredentials instead")]
-            public bool NeedsLoginCredentials()
-            {
-                if (!HasInstalledProfile)
-                    throw new EduroamAppUserError("profile not installed",
-                        "You must first install the profile with InstallProfile");
-                return AuthMethod.NeedsLoginCredentials();
             }
 
         }
@@ -322,33 +296,6 @@ namespace EduroamConfigure
             return ret;
         }
 
-        /// <summary>
-        /// Creates and installs user data xml into all network interfaces
-        /// </summary>
-        /// <param name="username">User's username optionally with realm</param>
-        /// <param name="password">User's password.</param>
-        /// <param name="authMethod">AuthMethod of installed profile</param>
-        [Obsolete("Pass in the credentials to EapAuthMethodInstaller.InstallProfile instead")]
-        public static bool InstallUserProfile(string username, string password, EapConfig.AuthenticationMethod authMethod)
-        {
-            _ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
-            // TODO: move this into EapAuthMethodInstaller?
-
-            Debug.WriteLine("Install user profile for user {0}", username);
-
-            // sets user data
-            bool anyInstalled = false;
-            foreach (EduroamNetwork network in EduroamNetwork.GetAll(authMethod.EapConfig))
-            {
-                anyInstalled |= network.InstallUserData(username, password, authMethod);
-            }
-
-            Debug.WriteLine("Install of user profile for user {1}: {0}",
-                anyInstalled ? "success" : "failed", username ?? "NULL");
-            Debug.WriteLine("");
-
-            return anyInstalled;
-        }
 
         /// <summary>
         /// Attempts to connects to any eduroam wireless LAN, in succession
