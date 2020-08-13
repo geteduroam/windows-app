@@ -156,8 +156,6 @@ namespace WpfApp.Menu
 			}
 		}
 
-		// TODO: fix hyperlink and show ToU to user
-
 		private void LinkClick(object sender, RequestNavigateEventArgs e)
 		{
 			Hyperlink hl = (Hyperlink)sender;

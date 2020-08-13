@@ -58,13 +58,13 @@ namespace WpfApp
 				return true;
 			}
 
-			if (contains("/install")) // todo: dialog stuff
+			if (contains("/install")) // todo: MessageBox.Show(yes/no)
 			{
 				Installer.EnsureIsInstalled();
 				return true;
 			}
 
-			if (contains("/uninstall")) // todo: prompt user for confirmation
+			if (contains("/uninstall"))
 			{
 				PromptAndUninstallSelf(success =>
 					{
@@ -178,7 +178,7 @@ namespace WpfApp
 				LetsWifi.RefreshResponse.NotRefreshable => false, // ignore, since we currently always schedule the task in windows
 
 				// TODO: reword these into something better
-				LetsWifi.RefreshResponse.NewCARequired =>
+				LetsWifi.RefreshResponse.NewRootCaRequired =>
 					((MainWindow)MainWindow).ShowNotification(
 						"Your geteduroam setup should be reconfigured"),
 
@@ -256,7 +256,7 @@ namespace WpfApp
 		private static AssemblyName AssemblyName
 		{ get => Assembly.GetExecutingAssembly().GetName(); }
 
-		// TODO: can we populate with from AssemblyName?
+		// TODO: can we populate with from AssemblyName? in general, all mentions of "eduroam" and "geteduroam" should be configurable
 		public static readonly SelfInstaller Installer = new SelfInstaller(
 			applicationIdentifier: "geteduroam",
 			applicationMetadata: new SelfInstaller.ApplicationMeta()

@@ -23,7 +23,6 @@ namespace WpfApp
 	public partial class MainWindow : Window
 	{
 
-		// TODO: Make Title contain more words / wrap around
 		private enum FormId
 		{
 			MainMenu,
@@ -70,7 +69,7 @@ namespace WpfApp
 		public bool ExtractFlag { get; set; }
 		public string PresetUsername { get; private set; }
 
-		public ProfileStatus ProfileCondition { get; set; } // TODO: use this to determine if we need to clean up after a failed setup, together with SelfInstaller.IsInstalled
+		public ProfileStatus ProfileCondition { get; set; } // TODO: use this to determine if we need to clean up after a failed setup, negated by App.Installer.IsInstalled
 		public IdentityProviderDownloader IdpDownloader { get; private set; }
 		public bool EduroamAvailable { get; set; }
 		public MainWindow()
@@ -328,7 +327,7 @@ namespace WpfApp
 				{
 					eapConfig = await DownloadEapConfig(profile);
 				}
-				catch (EduroamAppUserError ex) // TODO: register this in some higher level
+				catch (EduroamAppUserError ex) // TODO: catch this on some higher level
 				{
 					MessageBox.Show(
 						ex.UserFacingMessage,
@@ -447,10 +446,10 @@ namespace WpfApp
 			string exeLocation = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			string[] files = Directory.GetFiles(exeLocation, "*.eap-config");
 
-			if (files.Length <= 0) return null;
+			if (!files.Any()) return null;
 			try
 			{
-				string eapPath = files.First(); // TODO: although correct, this seems smelly
+				string eapPath = files.First();
 				string eapString = File.ReadAllText(eapPath);
 				var eapconfig = EapConfig.FromXmlData(profileId: null, eapString);
 

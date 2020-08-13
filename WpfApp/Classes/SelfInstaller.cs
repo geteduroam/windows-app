@@ -7,8 +7,6 @@ using System.Globalization;
 using System.IO;
 
 
-// TODO: test register of run on boot
-
 namespace WpfApp
 {
 	/// <summary>
@@ -74,7 +72,7 @@ namespace WpfApp
 				UninstallString = installer.UninstallCommand;
 				EstimatedSize   = (uint)new FileInfo(SelfInstaller.ThisExePath).Length / 1024;
 				ModifyPath      = null;
-				// TODO: SettingsIdentifier ?
+				// TODO: SettingsIdentifier = ?
 			}
 
 			public void Write(
@@ -197,6 +195,8 @@ namespace WpfApp
 				}
 			}
 
+			// TODO: user downloads new geteduroam -> runs the file -> single-instance running from install folder starts -> no update of binary
+
 			InstallToUserLocal();
 		}
 
@@ -215,9 +215,6 @@ namespace WpfApp
 			// Create target install directory
 			if (!Directory.Exists(InstallDir))
 				Directory.CreateDirectory(InstallDir);
-
-			// close running instance, to allow for overwriting it.
-			// TODO, then relaunch it when complete
 
 			// write executable
 			File.Copy(ThisExePath, InstallExePath, overwrite: true);
@@ -251,6 +248,8 @@ namespace WpfApp
 			Debug.WriteLine("Write str to {0}\\{1}: {2}",
 				rnsRun, ApplicationIdentifier, StartMinimizedCommand);
 			Registry.SetValue(rnsRun, ApplicationIdentifier, StartMinimizedCommand);
+			// TODO: test if run on boot works ^
+
 
 			// Register scheduled task to check for updates
 			Debug.WriteLine("Create scheduled task: " + ScheduledTaskName);
@@ -273,13 +272,19 @@ namespace WpfApp
 
 				// TODO: switch from the schedule below to the schedule above when certificate lifetime is extended for production
 
-				// Every day, three times
+				// Every day, six times
 				task.Triggers.Add(new DailyTrigger(daysInterval: 1)
 				{ StartBoundary = DateTime.Today.AddHours(0) });
 				task.Triggers.Add(new DailyTrigger(daysInterval: 1)
+				{ StartBoundary = DateTime.Today.AddHours(4) });
+				task.Triggers.Add(new DailyTrigger(daysInterval: 1)
 				{ StartBoundary = DateTime.Today.AddHours(8) });
 				task.Triggers.Add(new DailyTrigger(daysInterval: 1)
+				{ StartBoundary = DateTime.Today.AddHours(12) });
+				task.Triggers.Add(new DailyTrigger(daysInterval: 1)
 				{ StartBoundary = DateTime.Today.AddHours(16) });
+				task.Triggers.Add(new DailyTrigger(daysInterval: 1)
+				{ StartBoundary = DateTime.Today.AddHours(20) });
 
 				ts.RootFolder.RegisterTaskDefinition(ScheduledTaskName, task);
 			}
@@ -333,7 +338,7 @@ namespace WpfApp
 				{
 					FileName = "cmd.exe",
 					Arguments = "/C choice /C Y /N /D Y /T 5 " +
-						// TODO: escape the following arguments
+						// TODO: escape the following arguments (they're currently set to be safe, but this is a footgun)
 						"& Del " + InstallExePath +
 						"& Del /Q " + InstallDir +
 						"& rmdir " + InstallDir,
