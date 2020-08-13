@@ -42,7 +42,7 @@ namespace WpfApp.Menu
 		{
 			this.mainWindow = mainWindow;
 			this.profile = profile;
-			this.oauth = new OAuth(new Uri(profile.authorization_endpoint));
+			this.oauth = new OAuth(new Uri(profile?.authorization_endpoint));
 			// The url to send the user to
 			authUri = oauth.CreateAuthUri();
 			// The url to listen to for the user to be redirected back to
