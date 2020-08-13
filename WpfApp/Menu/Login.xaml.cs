@@ -280,12 +280,12 @@ namespace WpfApp.Menu
                 {
                     if (EduroamNetwork.IsEduroamAvailable(eapConfig))
                     {
-                        tbStatus.Text = "Everything is configured!\nUnable to connect to Eduroam.";
+                        tbStatus.Text = "Everything is configured!\nUnable to connect to eduroam.";
                     }
                     else
                     {
                         // Hs2 is not enumerable
-                        tbStatus.Text = "Everything is configured!\nUnable to connect to Eduroam, you're probably out of coverage.";
+                        tbStatus.Text = "Everything is configured!\nUnable to connect to eduroam, you're probably out of coverage.";
                     }
                     mainWindow.btnNext.Content = "Connect";
                 }
