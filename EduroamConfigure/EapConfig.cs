@@ -21,6 +21,7 @@ namespace EduroamConfigure
 		public List<CredentialApplicability> CredentialApplicabilities { get; }
 		public ProviderInfo InstitutionInfo { get; }
 		public bool IsOauth { get; }
+		public string XmlData { get; }
 
 		// Constructor
 		private EapConfig(
@@ -28,12 +29,14 @@ namespace EduroamConfigure
 			List<AuthenticationMethod> authenticationMethods,
 			List<CredentialApplicability> credentialApplicabilities,
 			ProviderInfo institutionInfo,
+			string xmlData,
 			bool isOauth = false)
 		{
 			Uid = profileId;
 			AuthenticationMethods = authenticationMethods;
 			CredentialApplicabilities = credentialApplicabilities;
 			InstitutionInfo = institutionInfo;
+			XmlData = xmlData;
 			IsOauth = isOauth;
 
 			AuthenticationMethods.ForEach(authMethod =>
@@ -625,6 +628,7 @@ namespace EduroamConfigure
 					instId ?? string.Empty,
 					termsOfUse ?? string.Empty,
 					location),
+				eapConfigXmlData,
 				isOauth
 			);
 		}

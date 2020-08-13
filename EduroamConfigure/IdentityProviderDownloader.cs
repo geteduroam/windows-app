@@ -38,11 +38,11 @@ namespace EduroamConfigure
 
 		/// <exception cref="ApiUnreachableException">description</exception>
 		/// <exception cref="ApiParsingException">description</exception>
-		public void LoadProviders()
+		public void LoadProviders(bool useGeodata = true)
 		{
 			Providers = DownloadAllIdProviders();
 			// turns out just running this once, even without saving it and caching makes subsequent calls much faster
-			ClosestProviders = GetClosestProviders();
+			ClosestProviders = useGeodata ? GetClosestProviders() : Providers;
 			Online = true;
 		}
 

@@ -67,6 +67,7 @@ namespace WpfApp
 		public EapConfig ExtractedEapConfig { get; set; }
 		//ExtractFlag decides if the "Not affiliated with this institution? choose another one" text and button shows up on ProfileOverview or not
 		public bool ExtractFlag { get; set; }
+		public string PresetUsername { get; private set; }
 
 		public ProfileStatus ProfileCondition { get; set; } // TODO: use this to determine if we need to clean up after a failed setup, together with SelfInstaller.IsInstalled
 		public IdentityProviderDownloader IdpDownloader { get; private set; }
@@ -121,16 +122,21 @@ namespace WpfApp
 			switch (currentFormId)
 			{
 				case FormId.InstalledProfile:
-					if(pageInstalledProfile.GoToMain)
+					if (pageInstalledProfile.GoToMain)
 					{
 						LoadPageMainMenu();
 					}
 					else if (pageInstalledProfile.ProfileId != null)
 					{
-						var profile = pageInstalledProfile.ProfileId;
-						await HandleProfileSelect(profile, skipOverview: true);
+						PresetUsername = pageInstalledProfile.ReinstallUsername;
+						await HandleProfileSelect(
+							pageInstalledProfile.ProfileId,
+							pageInstalledProfile.ReinstallEapConfigXml,
+							skipOverview: true);
 					}
-					//LoadPageMainMenu();
+					else {
+						LoadPageMainMenu(); // sanity
+					}
 					break;
 				case FormId.MainMenu:
 					if (pageMainMenu.LocalEapConfig != null)
@@ -151,7 +157,7 @@ namespace WpfApp
 
 				case FormId.SelectInstitution:
 					var profiles = GetProfiles((int)pageSelectInstitution.IdProviderId);
-					if (profiles.Count == 1)
+					if (profiles.Count == 1) // skip the profile select and go with the first one
 					{
 						string autoProfileId = profiles.FirstOrDefault().Id;
 						if (!string.IsNullOrEmpty(autoProfileId))
@@ -197,7 +203,16 @@ namespace WpfApp
 				case FormId.Login:
 					if (pageLogin.IsConnected)
 					{
-						Shutdown();
+						if (!App.Installer.IsRunningInInstallLocation)
+						{
+							Shutdown();
+						}
+						else
+						{
+							Hide();
+							LoadPageInstalledProfile();
+							historyFormId.Clear();
+						}
 						break;
 					}
 					pageLogin.ConnectClick();
@@ -289,21 +304,35 @@ namespace WpfApp
 		// downloads eap config based on profileId
 		// seperated into its own function as this can happen either through
 		// user selecting a profile or a profile being autoselected
-		private async Task<bool> HandleProfileSelect(string profileId, bool skipOverview = false)
+		private async Task<bool> HandleProfileSelect(string profileId, string eapConfigXml = null, bool skipOverview = false)
 		{
 			LoadPageLoading();
-			IdentityProviderProfile profile = IdpDownloader.GetProfileFromId(profileId);
-			try
-			{
-				eapConfig = await DownloadEapConfig(profile);
-			}
-			catch (EduroamAppUserError ex) // TODO: register this in some higher level
-			{
-				MessageBox.Show(
-					ex.UserFacingMessage,
-					"eduroam - Exception");
-				eapConfig = null;
+			IdentityProviderProfile profile = null;
 
+			if (!string.IsNullOrEmpty(profileId)
+				&& !string.IsNullOrEmpty(eapConfigXml))
+			{
+				// TODO: ^perhaps reuse logic from PersistingStore.IsReinstallable
+				Debug.WriteLine(nameof(eapConfigXml) + " was set", category: nameof(HandleProfileSelect));
+
+				eapConfig = EapConfig.FromXmlData(profileId, eapConfigXml);
+			}
+			else
+			{
+				Debug.WriteLine(nameof(eapConfigXml) + " was not set", category: nameof(HandleProfileSelect));
+
+				profile = IdpDownloader.GetProfileFromId(profileId);
+				try
+				{
+					eapConfig = await DownloadEapConfig(profile);
+				}
+				catch (EduroamAppUserError ex) // TODO: register this in some higher level
+				{
+					MessageBox.Show(
+						ex.UserFacingMessage,
+						caption: "geteduroam - Exception");
+					eapConfig = null;
+				}
 			}
 
 			// reenable buttons after LoadPageLoading() disables them
@@ -330,13 +359,13 @@ namespace WpfApp
 				LoadPageLogin();
 				return true;
 			}
-			else if (!string.IsNullOrEmpty(profile.redirect))
+			else if (!string.IsNullOrEmpty(profile?.redirect))
 			{
 				// TODO: add option to go to selectmethod from redirect
 				LoadPageRedirect(new Uri(profile.redirect));
 				return true;
 			}
-			else if (profile.oauth)
+			else if (profile?.oauth ?? false)
 			{
 
 				LoadPageOAuthWait(profile);
@@ -543,6 +572,7 @@ namespace WpfApp
 
 		public void LoadPageMainMenu(bool refresh = true)
 		{
+			PresetUsername = null;
 			ExtractFlag = false;
 			currentFormId = FormId.MainMenu;
 			btnNext.Visibility = Visibility.Hidden;
@@ -554,6 +584,7 @@ namespace WpfApp
 
 		public void LoadPageSelectInstitution(bool refresh = true)
 		{
+			PresetUsername = null;
 			currentFormId = FormId.SelectInstitution;
 			btnNext.Visibility = Visibility.Visible;
 			btnNext.Content = "Next";
@@ -567,6 +598,7 @@ namespace WpfApp
 
 		public void LoadPageSelectProfile(bool refresh = true)
 		{
+			PresetUsername = null;
 			currentFormId = FormId.SelectProfile;
 			btnNext.Visibility = Visibility.Visible;
 			btnNext.Content = "Next";
@@ -690,6 +722,13 @@ namespace WpfApp
 			ShowNotification("geteduroam is still running in the background");
 
 			Hide(); // window
+
+			if (PersistingStore.IdentityProvider != null)
+				LoadPageInstalledProfile();
+			else
+				LoadPageMainMenu();
+
+			historyFormId.Clear();
 		}
 
 		private void TaskbarIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
