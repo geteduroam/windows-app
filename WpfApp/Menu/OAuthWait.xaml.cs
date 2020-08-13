@@ -76,7 +76,7 @@ namespace WpfApp.Menu
 			cancelThread.Set();
 		}
 
-		public void CancelThread()
+		public static void CancelThread()
 		{
 			// sets cancellation token to cancel
 			cancelTokenSource.Cancel();

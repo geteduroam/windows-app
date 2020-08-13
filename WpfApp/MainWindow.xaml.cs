@@ -235,11 +235,11 @@ namespace WpfApp
 					LoadPageMainMenu();
 					break;
 				case FormId.SelectInstitution:
-					if (currentFormId == FormId.OAuthWait) pageOAuthWait.CancelThread();
+					if (currentFormId == FormId.OAuthWait) OAuthWait.CancelThread();
 					LoadPageSelectInstitution();
 					break;
 				case FormId.SelectProfile:
-					if (currentFormId == FormId.OAuthWait) pageOAuthWait.CancelThread();
+					if (currentFormId == FormId.OAuthWait) OAuthWait.CancelThread();
 					LoadPageSelectProfile();
 					break;
 				case FormId.ProfileOverview:
