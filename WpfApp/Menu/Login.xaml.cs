@@ -141,6 +141,7 @@ namespace WpfApp.Menu
 			mainWindow.btnBack.IsEnabled = false;
 			mainWindow.btnNext.IsEnabled = false;
 			tbStatus.Text = "Connecting...";
+			IgnorePasswordChange = true;
 			tbStatus.Visibility = Visibility.Visible;
 
 			switch (conType)
@@ -163,6 +164,7 @@ namespace WpfApp.Menu
 				mainWindow.btnNext.IsEnabled = true;
 			}
 			mainWindow.btnBack.IsEnabled = true;
+			IgnorePasswordChange = false;
 
 		}
 
@@ -188,7 +190,10 @@ namespace WpfApp.Menu
 
 			if (success)
 			{
+				pbCertPassword.IsEnabled = false;
+
 				_ = await ConnectAndUpdateUI();
+				pbCertPassword.IsEnabled = true;
 			}
 			else
 			{
@@ -237,9 +242,11 @@ namespace WpfApp.Menu
 
 		public async Task<bool> ConnectAndUpdateUI(string username = null, string password = null)
 		{
+			pbCertBrowserPassword.IsEnabled = false;
 			bool installed = await Task.Run(() => InstallEapConfig(eapConfig, username, password));
 			if (installed)
 			{
+
 				bool connected = await TryToConnect();
 				if (connected)
 				{
@@ -268,6 +275,7 @@ namespace WpfApp.Menu
 
 				mainWindow.btnNext.Content = "Connect";
 			}
+			pbCertBrowserPassword.IsEnabled = true;
 
 
 			return true; // to make it await-able
@@ -423,8 +431,8 @@ namespace WpfApp.Menu
 		{
 			// show placeholder if no password, hide placeholder if password set.
 			// in XAML a textblock is bound to tbCredPassword so when the textbox is blank a placeholder is shown
-			if (IgnorePasswordChange) return;
 			tbCredPassword.Text = string.IsNullOrEmpty(pbCredPassword.Password) ? "" : "something";
+			if (IgnorePasswordChange) return;
 			tbStatus.Visibility = Visibility.Hidden;
 			ValidateConnectBtn();
 		}
@@ -438,8 +446,8 @@ namespace WpfApp.Menu
 		{
 			// show placeholder if no password, hide placeholder if password set.
 			// in XAML a textblock is bound to tbCredPassword so when the textbox is blank a placeholder is shown
-			if (IgnorePasswordChange) return;
 			tbCertPassword.Text = string.IsNullOrEmpty(pbCertPassword.Password) ? "" : "something";
+			if (IgnorePasswordChange) return;
 			tbStatus.Visibility = Visibility.Hidden;
 		}
 
@@ -452,8 +460,8 @@ namespace WpfApp.Menu
 		{
 			// show placeholder if no password, hide placeholder if password set.
 			// in XAML a textblock is bound to tbCredPassword so when the textbox is blank a placeholder is shown
-			if (IgnorePasswordChange) return;
 			tbCertBrowserPassword.Text = string.IsNullOrEmpty(pbCertBrowserPassword.Password) ? "" : "something";
+			if (IgnorePasswordChange) return;
 			tbStatus.Visibility = Visibility.Hidden;
 			ValidateCertBrowserFields();
 		}
