@@ -73,7 +73,7 @@ namespace WpfApp.Menu
                 tbRealm.Text = '@' + realm;
                 tbRealm.Visibility = !string.IsNullOrEmpty(realm) && hint ? Visibility.Visible : Visibility.Hidden;
                 tbUsername.Focus();
-                ValidateCredFields();
+                ValidateConnectBtn();
             }
             else if (eapConfig.NeedsClientCertificate())
             {
@@ -94,36 +94,12 @@ namespace WpfApp.Menu
             }
         }
 
-        public bool ValidateCredFields()
+       /* public bool ValidateCredFields()
         {
-            string username = tbUsername.Text;
-            if (string.IsNullOrEmpty(username))
-            {
-                usernameValid = false;
-                tbRules.Text = "";
-                mainWindow.btnNext.IsEnabled = false;
-                return false;
-            }
-
-            // if username does not contain '@' and realm is given then show realm added to end
-            if ((!username.Contains('@') && !string.IsNullOrEmpty(realm)) || hint)
-            {
-                username += "@" + realm;
-            }
-
-            var brokenRules = IdentityProviderParser.GetRulesBroken(username, realm, hint).ToList();
-            usernameValid = !brokenRules.Any();
-            tbRules.Text = "";
-            if (!usernameValid)
-            {
-                tbRules.Text = string.Join("\n", brokenRules); ;
-            }
-
-            //bool fieldsValid = (!string.IsNullOrEmpty(pbCredPassword.Password) && usernameValid) || IsConnected;
             bool isvalid = credentialsValid();
-            mainWindow.btnNext.IsEnabled = isvalid;
+            //mainWindow.btnNext.IsEnabled = isvalid;
             return isvalid;
-        }
+        }*/
 
         private bool credentialsValid()
         {
@@ -141,6 +117,7 @@ namespace WpfApp.Menu
             if ((!username.Contains('@') && !string.IsNullOrEmpty(realm)) || hint)
             {
                 username += "@" + realm;
+                tbRealm.Visibility = Visibility.Visible;
             }
 
             var brokenRules = IdentityProviderParser.GetRulesBroken(username, realm, hint).ToList();
@@ -231,10 +208,7 @@ namespace WpfApp.Menu
             if (credentialsValid())
             {
                 string username = tbUsername.Text;
-                if ((!username.Contains('@') && !string.IsNullOrEmpty(realm)) || hint)
-                {
-                    tbRealm.Visibility = Visibility.Visible;
-                }
+                
 
                 if (tbRealm.Visibility == Visibility.Visible)
                 {
@@ -254,7 +228,8 @@ namespace WpfApp.Menu
             }
             else
             {
-                grpRules.Visibility = string.IsNullOrEmpty(tbRules.Text) ? Visibility.Hidden : Visibility.Visible;
+                grpRules.Visibility = string.IsNullOrEmpty(tbRules.Text) ? Visibility.Collapsed : Visibility.Visible;
+                tbStatus.Text = "";
             }
             return true;
         }
@@ -421,11 +396,19 @@ namespace WpfApp.Menu
             tbStatus.Visibility = Visibility.Collapsed;
             grpRules.Visibility = Visibility.Collapsed;
             if (!hint) tbRealm.Visibility = Visibility.Hidden;
-            ValidateCredFields();
+            //ValidateCredFields();
+            grpRules.Visibility = Visibility.Collapsed;
+            ValidateConnectBtn();
+        }
+
+        private void ValidateConnectBtn()
+        {
+            mainWindow.btnNext.IsEnabled = !string.IsNullOrEmpty(tbUsername.Text) && !string.IsNullOrEmpty(pbCredPassword.Password);
         }
 
         private void tbUsername_LostFocus(object sender, RoutedEventArgs e)
         {
+            credentialsValid();
             grpRules.Visibility = string.IsNullOrEmpty(tbRules.Text) ? Visibility.Hidden : Visibility.Visible;
             if (!tbUsername.Text.Contains('@') && !string.IsNullOrEmpty(realm) && !string.IsNullOrEmpty(tbUsername.Text))
             {
@@ -445,7 +428,7 @@ namespace WpfApp.Menu
             if (IgnorePasswordChange) return;
             tbCredPassword.Text = string.IsNullOrEmpty(pbCredPassword.Password) ? "" : "something";
             tbStatus.Visibility = Visibility.Hidden;
-            ValidateCredFields();
+            ValidateConnectBtn();
         }
 
         private void pbCredPassword_GotFocus(object sender, RoutedEventArgs e)
