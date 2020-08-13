@@ -394,11 +394,11 @@ namespace WpfApp
             {
                 connectSuccess = await Task.Run(ConnectToEduroam.TryToConnect);
             }
-            catch (Exception ex)
+            catch (EduroamAppUserError ex)
             {
                 // NICE TO HAVE: log the error
                 connectSuccess = false;
-                MessageBox.Show("Could not connect. \nException: " + ex.Message);
+                MessageBox.Show("Could not connect. \nException: " + ex.UserFacingMessage);
             }
             return connectSuccess;
         }
@@ -424,7 +424,7 @@ namespace WpfApp
                     ? eapconfig
                     : null;
             }
-            catch (Exception)
+            catch (EduroamAppUserError)
             {
                 return null;
             }
