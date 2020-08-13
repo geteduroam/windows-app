@@ -119,7 +119,7 @@ namespace WpfApp.Menu
 				tbRules.Text = string.Join("\n", brokenRules); ;
 			}
 
-			bool fieldsValid = (!string.IsNullOrEmpty(pbCredPassword.Password) && usernameValid) || IsConnected;
+			//bool fieldsValid = (!string.IsNullOrEmpty(pbCredPassword.Password) && usernameValid) || IsConnected;
 			bool isvalid = credentialsValid();
 			mainWindow.btnNext.IsEnabled = isvalid;
 			return isvalid;
@@ -164,7 +164,7 @@ namespace WpfApp.Menu
 			mainWindow.btnNext.IsEnabled = !string.IsNullOrEmpty(filepath);
 		}
 
-		public void ConnectClick()
+		public async void ConnectClick()
 		{
 			mainWindow.btnBack.IsEnabled = false;
 			mainWindow.btnNext.IsEnabled = false;
@@ -174,21 +174,27 @@ namespace WpfApp.Menu
 			switch (conType)
 			{
 				case ConType.Credentials:
-					ConnectWithLogin();
+					await ConnectWithLogin();
 					break;
 				case ConType.Nothing:
-					ConnectWithNothing();
+					await ConnectWithNothing();
 					break;
 				case ConType.CertAndCertPass:
-					ConnectWithCertAndCertPass();
+					await ConnectWithCertAndCertPass();
 					break;
 				case ConType.CertPass:
-					ConnectWithCertPass();
+					await ConnectWithCertPass();
 					break;
 			}
+			if (!dispatcherTimer.IsEnabled)
+			{
+				mainWindow.btnNext.IsEnabled = true;
+			}
+			mainWindow.btnBack.IsEnabled = true;
+
 		}
 
-		public async void ConnectWithCertAndCertPass()
+		public async Task<bool> ConnectWithCertAndCertPass()
 		{
 			var success = eapConfig.AddClientCertificate(filepath, pbCertBrowserPassword.Password);
 
@@ -200,14 +206,11 @@ namespace WpfApp.Menu
 			{
 				tbStatus.Text = "Incorrect password";
 			}
-			if (!dispatcherTimer.IsEnabled)
-			{
-				mainWindow.btnNext.IsEnabled = true;
-				mainWindow.btnBack.IsEnabled = true;
-			}
+			return true;
+
 		}
 
-		public async void ConnectWithCertPass()
+		public async Task<bool> ConnectWithCertPass()
 		{
 			var success = eapConfig.AddClientCertificatePassphrase(pbCertPassword.Password);
 
@@ -219,14 +222,11 @@ namespace WpfApp.Menu
 			{
 				tbStatus.Text = "Incorrect password";
 			}
-			if (!dispatcherTimer.IsEnabled)
-			{
-				mainWindow.btnNext.IsEnabled = true;
-				mainWindow.btnBack.IsEnabled = true;
-			}
+			return true;
+
 		}
 
-		public async void ConnectWithLogin()
+		public async Task<bool> ConnectWithLogin()
 		{
 			if (credentialsValid())
 			{
@@ -249,22 +249,20 @@ namespace WpfApp.Menu
 
 				pbCredPassword.IsEnabled = true;
 				tbUsername.IsEnabled = true;
-				if (!dispatcherTimer.IsEnabled)
-				{
-					mainWindow.btnNext.IsEnabled = true;
-					mainWindow.btnBack.IsEnabled = true;
-				}
+
 				if (focused != null) focused.Focus();
 			}
 			else
 			{
 				grpRules.Visibility = string.IsNullOrEmpty(tbRules.Text) ? Visibility.Hidden : Visibility.Visible;
 			}
+			return true;
 		}
 
-		public void ConnectWithNothing()
+		public async Task<bool> ConnectWithNothing()
 		{
-			_ = ConnectAndUpdateUI();
+			_ = await ConnectAndUpdateUI();
+			return true;
 		}
 
 		public async Task<bool> ConnectAndUpdateUI(string username = null, string password = null)
@@ -300,10 +298,7 @@ namespace WpfApp.Menu
 
 				mainWindow.btnNext.Content = "Connect";
 			}
-			if (!dispatcherTimer.IsEnabled)
-			{
-				mainWindow.btnNext.IsEnabled = true;
-			}
+
 
 			return true; // to make it await-able
 		}
