@@ -13,6 +13,7 @@ using Hardcodet.Wpf.TaskbarNotification;
 using EduroamConfigure;
 using WpfApp.Menu;
 using Hardcodet.Wpf.TaskbarNotification.Interop;
+using System.Windows.Navigation;
 
 namespace WpfApp
 {
@@ -762,5 +763,14 @@ namespace WpfApp
 		private void MenuItem_Click_Exit(object sender, RoutedEventArgs e)
 			=> Shutdown();
 
+
+		/// <summary>
+		/// Disables WPF history nagivation.
+		/// </summary>
+		private void Main_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
+		{
+			if (e.NavigationMode != NavigationMode.New)
+				e.Cancel = true;
+		}
 	}
 }
