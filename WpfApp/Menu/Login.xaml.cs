@@ -94,13 +94,6 @@ namespace WpfApp.Menu
 			}
 		}
 
-		/* public bool ValidateCredFields()
-		{
-			bool isvalid = credentialsValid();
-			//mainWindow.btnNext.IsEnabled = isvalid;
-			return isvalid;
-		}*/
-
 		private bool credentialsValid()
 		{
 
@@ -396,11 +389,14 @@ namespace WpfApp.Menu
 			tbStatus.Visibility = Visibility.Collapsed;
 			grpRules.Visibility = Visibility.Collapsed;
 			if (!hint) tbRealm.Visibility = Visibility.Hidden;
-			//ValidateCredFields();
-			grpRules.Visibility = Visibility.Collapsed;
 			ValidateConnectBtn();
 		}
 
+		// TODO rename function
+		/// <summary>
+		/// Enables Connect button if username and password set, this should only be used
+		/// for the case where username and password is needed
+		/// </summary>
 		private void ValidateConnectBtn()
 		{
 			mainWindow.btnNext.IsEnabled = !string.IsNullOrEmpty(tbUsername.Text) && !string.IsNullOrEmpty(pbCredPassword.Password);
