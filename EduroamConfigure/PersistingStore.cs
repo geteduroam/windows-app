@@ -87,6 +87,18 @@ namespace EduroamConfigure
                 && !string.IsNullOrEmpty(LetsWifiRefreshToken);
         }
 
+        /// <summary>
+        /// True if we have a eapconfig xml file stored.
+        /// Usually only applies for PEAP and TTLS gotten from either a file or from discovery.
+        /// This allows the user to reinstall the profile without having to redownload the config file.
+        /// </summary>
+        public static bool IsReinstallable
+        {
+            get => !string.IsNullOrEmpty(IdentityProvider?.ProfileId)
+                && !string.IsNullOrEmpty(IdentityProvider?.EapConfigXml);
+        }
+
+
         public readonly struct ConfiguredWLANProfile
         {
             public Guid   InterfaceId { get; }
@@ -168,6 +180,7 @@ namespace EduroamConfigure
             public DateTime?                            NotAfter     { get; }
             public (EapType outer, InnerAuthType inner) EapTypeSsid  { get; }
             public (EapType outer, InnerAuthType inner) EapTypeHs2   { get; }
+            public string                               EapConfigXml { get; } // optional, used for reinstall
 
             public IdentityProviderInfo(
                 string                               displayName,
@@ -180,7 +193,8 @@ namespace EduroamConfigure
                 DateTime?                            notBefore,
                 DateTime?                            notAfter,
                 (EapType outer, InnerAuthType inner) eapTypeSsid,
-                (EapType outer, InnerAuthType inner) eapTypeHs2)
+                (EapType outer, InnerAuthType inner) eapTypeHs2,
+                string                               eapConfigXml)
             {
                 DisplayName  = displayName;
                 EmailAddress = emailAddress;
@@ -193,6 +207,7 @@ namespace EduroamConfigure
                 NotAfter     = notAfter;
                 EapTypeSsid  = eapTypeSsid;
                 EapTypeHs2   = eapTypeHs2;
+                EapConfigXml = eapConfigXml;
             }
 
             public static IdentityProviderInfo From(EapConfig.AuthenticationMethod authMethod)
@@ -209,7 +224,18 @@ namespace EduroamConfigure
                         authMethod.ClientCertificateNotBefore,
                         authMethod.ClientCertificateNotAfter,
                         (authMethod.EapType, authMethod.InnerAuthType),
-                        (authMethod.Hs2AuthMethod.EapType, authMethod.Hs2AuthMethod.InnerAuthType));
+                        (authMethod.Hs2AuthMethod.EapType, authMethod.Hs2AuthMethod.InnerAuthType),
+                        eapConfigXml:
+                            authMethod.EapType != EapType.TLS
+                            && string.IsNullOrEmpty(authMethod.ClientPassword)
+                            && !authMethod.EapConfig.IsOauth
+                                ? authMethod.EapConfig.XmlData
+                                : null);
+
+            public IdentityProviderInfo WithEapConfigXml(string eapConfigXml)
+                => new IdentityProviderInfo( DisplayName, EmailAddress, WebAddress,
+                    Phone, InstId, ProfileId, IsOauth, NotBefore, NotAfter,
+                    EapTypeSsid, EapTypeHs2, eapConfigXml);
         }
 
         // Inner workings:
