@@ -187,7 +187,7 @@ namespace WpfApp
 				// TODO: assemblyversion instad of file date
 				var d1 = File.GetLastWriteTime(ThisExePath);
 				var d2 = File.GetLastWriteTime(InstallExePath);
-				if (d1 <= d2)
+				if (DateTime.Compare(d1, d2) <= 0)
 				{
 					// TODO: console no work
 					Console.WriteLine(
