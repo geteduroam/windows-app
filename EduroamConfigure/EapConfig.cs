@@ -15,8 +15,7 @@ namespace EduroamConfigure
 	public class EapConfig
 	{
 		// Properties
-		public string Uid { get; } // May be null, in the case of a bundled eap config file
-		// TODO: rename ^ to 'ProfileId' after we have merged everything
+		public string ProfileId { get; } // May be null, in the case of a bundled eap config file
 		public List<AuthenticationMethod> AuthenticationMethods { get; }
 		public List<CredentialApplicability> CredentialApplicabilities { get; }
 		public ProviderInfo InstitutionInfo { get; }
@@ -32,7 +31,7 @@ namespace EduroamConfigure
 			string xmlData,
 			bool isOauth = false)
 		{
-			Uid = profileId;
+			ProfileId = profileId;
 			AuthenticationMethods = authenticationMethods;
 			CredentialApplicabilities = credentialApplicabilities;
 			InstitutionInfo = institutionInfo;
@@ -209,7 +208,7 @@ namespace EduroamConfigure
 			/// If this is true, then the user must provide a passphrase to the bundled certificate bundle.
 			/// Add this passphrase with this.AddClientCertificatePassphrase
 			/// </summary>
-			public bool NeedsClientCertificatePassphrase() // TODO: use this
+			public bool NeedsClientCertificatePassphrase()
 				=> !UserDataXml.NeedsLoginCredentials(this)
 				&& !string.IsNullOrEmpty(ClientCertificate)
 				&& !CertificateIsValid;
@@ -710,7 +709,7 @@ namespace EduroamConfigure
 		/// <summary>
 		/// Wired LAN
 		/// </summary>
-		IEEE8023, // TODO: add full support for this
+		IEEE8023, // TODO: add full support for this (wired x802)
 
 		/// <summary>
 		/// Wireless LAN

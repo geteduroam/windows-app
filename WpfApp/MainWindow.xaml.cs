@@ -23,7 +23,6 @@ namespace WpfApp
 	public partial class MainWindow : Window
 	{
 
-		// TODO: Make Title contain more words / wrap around
 		private enum FormId
 		{
 			MainMenu,
@@ -70,7 +69,7 @@ namespace WpfApp
 		public bool ExtractFlag { get; set; }
 		public string PresetUsername { get; private set; }
 
-		public ProfileStatus ProfileCondition { get; set; } // TODO: use this to determine if we need to clean up after a failed setup, together with SelfInstaller.IsInstalled
+		public ProfileStatus ProfileCondition { get; set; } // TODO: use this to determine if we need to clean up after a failed setup, negated by App.Installer.IsInstalled
 		public IdentityProviderDownloader IdpDownloader { get; private set; }
 		public bool EduroamAvailable { get; set; }
 		public MainWindow()
@@ -113,7 +112,7 @@ namespace WpfApp
 			// if nothing to go back to, hide back button
 
 			Main.Content = nextPage;
-			ValidateBackButton();
+			UpdateBackButton();
 		}
 
 		/// <summary>
@@ -229,7 +228,7 @@ namespace WpfApp
 			// removes current form from history if it gets added twice
 			if (historyFormId.LastOrDefault() == currentFormId) historyFormId.RemoveAt(historyFormId.Count - 1);
 
-			ValidateBackButton();
+			UpdateBackButton();
 
 		}
 		/// <summary>
@@ -280,12 +279,12 @@ namespace WpfApp
 			// removes current form from history
 			historyFormId.RemoveAt(historyFormId.Count - 1);
 
-			ValidateBackButton();
+			UpdateBackButton();
 		}
 		/// <summary>
 		/// Hide back button if theres no page to go back to
 		/// </summary>
-		private void ValidateBackButton() // TODO: rename this function
+		private void UpdateBackButton()
 		{
 			if (historyFormId.Count < 1)
 				btnBack.Visibility = Visibility.Hidden;
@@ -335,7 +334,7 @@ namespace WpfApp
 				{
 					eapConfig = await DownloadEapConfig(profile);
 				}
-				catch (EduroamAppUserError ex) // TODO: register this in some higher level
+				catch (EduroamAppUserError ex) // TODO: catch this on some higher level
 				{
 					MessageBox.Show(
 						ex.UserFacingMessage,
@@ -454,10 +453,10 @@ namespace WpfApp
 			string exeLocation = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			string[] files = Directory.GetFiles(exeLocation, "*.eap-config");
 
-			if (files.Length <= 0) return null;
+			if (!files.Any()) return null;
 			try
 			{
-				string eapPath = files.First(); // TODO: although correct, this seems smelly
+				string eapPath = files.First();
 				string eapString = File.ReadAllText(eapPath);
 				var eapconfig = EapConfig.FromXmlData(profileId: null, eapString);
 

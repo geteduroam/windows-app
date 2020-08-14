@@ -100,7 +100,7 @@ namespace EduroamConfigure
 		/// <param name="requiredRealm">the realm required for the username</param>
 		/// <param name="noSubdomanInRealm">Wether to allow subdomains in the realm</param>
 		/// <returns>nothing if no rules are broken, otherwise descriptions of rulse being broken</returns>
-		public static IEnumerable<string> GetRulesBroken(string username, string requiredRealm, bool noSubdomanInRealm)
+		public static IEnumerable<string> GetRulesBrokenOnUsername(string username, string requiredRealm, bool noSubdomanInRealm)
 		{
 			// TODO: perhaps move this function?
 

@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
+
 namespace EduroamConfigure
 {
 	/// <summary>
@@ -181,6 +182,7 @@ namespace EduroamConfigure
 			public (EapType outer, InnerAuthType inner) EapTypeSsid  { get; }
 			public (EapType outer, InnerAuthType inner) EapTypeHs2   { get; }
 			public string                               EapConfigXml { get; } // optional, used for reinstall of userprofile
+			// TODO: registry might have a max-size limit. ^ include institution image
 
 			public IdentityProviderInfo(
 				string                               displayName,
@@ -219,7 +221,7 @@ namespace EduroamConfigure
 						authMethod.EapConfig.InstitutionInfo.WebAddress,
 						authMethod.EapConfig.InstitutionInfo.Phone,
 						authMethod.EapConfig.InstitutionInfo.InstId,
-						authMethod.EapConfig.Uid,
+						authMethod.EapConfig.ProfileId,
 						authMethod.EapConfig.IsOauth,
 						authMethod.ClientCertificateNotBefore,
 						authMethod.ClientCertificateNotAfter,
