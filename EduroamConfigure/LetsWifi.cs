@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Net;
+using System.Runtime.ConstrainedExecution;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -248,8 +250,19 @@ namespace EduroamConfigure
                 return RefreshResponse.Failed;
 
             // Should only fail if the WLAN service is unavailable (no wireless NIC)
-            if (!installer.InstallWLANProfile())
+            if (!installer.InstallWLANProfile()) // TODO: currently does not remove the old ones. in the case where ssid was removed, it will be left stale with an invalid client certificate fingerprint
                 return RefreshResponse.Failed;
+
+            // remove the old client certificates installed by us
+            using var clientCert = installer.AuthMethod.ClientCertificateAsX509Certificate2();
+            var oldClientCerts = CertificateStore.EnumerateInstalledCertificates()
+                .Where(cert => cert.installedCert.StoreName == StoreName.My)
+                .Where(cert => cert.cert.Thumbprint != clientCert.Thumbprint);
+            foreach ((var cert, var installedCert) in oldClientCerts)
+                CertificateStore.UninstallCertificate(cert, installedCert.StoreName, installedCert.StoreLocation);
+
+            // TODO: handle the case where the new installed certificate is not valid yet
+            // possible solution is to only automatically refresh at night /shrug
 
             return RefreshResponse.Success;
         }
