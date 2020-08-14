@@ -180,7 +180,7 @@ namespace EduroamConfigure
             public DateTime?                            NotBefore    { get; }
             public DateTime?                            NotAfter     { get; }
             public (EapType outer, InnerAuthType inner) EapTypeSsid  { get; }
-            public (EapType? outer, InnerAuthType? inner) EapTypeHs2   { get; }
+            public (EapType outer, InnerAuthType inner)?EapTypeHs2   { get; }
             public string                               EapConfigXml { get; } // optional, used for reinstall of userprofile
             // TODO: registry might have a max-size limit. ^ include institution image
 
@@ -195,7 +195,7 @@ namespace EduroamConfigure
                 DateTime?                            notBefore,
                 DateTime?                            notAfter,
                 (EapType outer, InnerAuthType inner) eapTypeSsid,
-                (EapType? outer, InnerAuthType? inner) eapTypeHs2,
+                (EapType outer, InnerAuthType inner)?eapTypeHs2,
                 string                               eapConfigXml)
             {
                 DisplayName  = displayName;
@@ -225,8 +225,10 @@ namespace EduroamConfigure
                         authMethod.EapConfig.IsOauth,
                         authMethod.ClientCertificateNotBefore,
                         authMethod.ClientCertificateNotAfter,
-                        (authMethod.EapType, authMethod.InnerAuthType),
-                        (authMethod.Hs2AuthMethod?.EapType, authMethod.Hs2AuthMethod?.InnerAuthType),
+                        eapTypeSsid: (authMethod.EapType, authMethod.InnerAuthType),
+                        eapTypeHs2: authMethod.Hs2AuthMethod != null
+                            ? (authMethod.Hs2AuthMethod.EapType, authMethod.Hs2AuthMethod.InnerAuthType)
+                            : ((EapType, InnerAuthType)?)null,
                         eapConfigXml:
                             authMethod.EapType != EapType.TLS
                             && string.IsNullOrEmpty(authMethod.ClientCertificate) // should never happen with CAT nor letswifi
