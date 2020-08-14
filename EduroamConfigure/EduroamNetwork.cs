@@ -66,9 +66,9 @@ namespace EduroamConfigure
         /// <returns>True if it contains a supported type</returns>
         public static bool EapConfigIsSupported(EapConfig eapConfig)
         {
-            _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
-            return eapConfig.AuthenticationMethods
-                .Where(AuthMethodIsSupported).Any();
+            return eapConfig?.AuthenticationMethods
+                .Where(AuthMethodIsSupported).Any()
+                ?? false;
         }
 
         /// <summary>
