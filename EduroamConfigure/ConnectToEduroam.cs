@@ -227,7 +227,7 @@ namespace EduroamConfigure
             /// If this returns FALSE: It means there is a missing TLS client certificate left to be installed
             /// </summary>
             /// <returns>True if the profile was installed on any interface</returns>
-            public bool InstallProfile(string username=null, string password=null)
+            public bool InstallWLANProfile(string username=null, string password=null)
             {
                 if (!HasInstalledCertificates)
                     throw new EduroamAppUserError("missing certificates",
@@ -282,7 +282,7 @@ namespace EduroamConfigure
         /// Deletes all network profile matching ssid, which is "eduroam" by default
         /// </summary>
         /// <returns>True if any profile deletion was succesful</returns>
-        public static bool RemoveAllProfiles()
+        public static bool RemoveAllWLANProfiles()
         {
             Debug.WriteLine("Remove all installed profiles");
 

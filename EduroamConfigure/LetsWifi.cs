@@ -178,7 +178,8 @@ namespace EduroamConfigure
         }
 
         /// <summary>
-        /// TODO
+        /// Either refreshes the stored Eapconfig XML (for TTLS and PEAP), or requests
+        /// a new EAP config (TLS) from LetsWifi using the refresh token, then installs it.
         /// </summary>
         /// <param name="force">Wether to force a reinstall even if the current certificate still is valid for quote some time</param>
         /// <returns>An enum describing the result</returns>
@@ -224,15 +225,15 @@ namespace EduroamConfigure
 
             // this is done automatically by RequestAndDownloadEapConfig, but we do it here for the result code.
             if (!RefreshTokens())
-                return RefreshResponse.AccessDenied;
+                return RefreshResponse.AccessDenied; // TODO: requires user intervention, make user reconnect
 
             var eapConfig = RequestAndDownloadEapConfig();
             if (eapConfig == null)
-                return RefreshResponse.NewCARequired;
+                return RefreshResponse.Failed;
 
             foreach (var rootCA in ConnectToEduroam.EnumerateCAInstallers(eapConfig))
                 if (!rootCA.IsInstalled)
-                    return RefreshResponse.NewCARequired; // TODO: requires user intervention
+                    return RefreshResponse.NewRootCaRequired; // TODO: requires user intervention, make user reconnect
 
             // reinstall the same authmethod as last time
             var installer = ConnectToEduroam
@@ -241,12 +242,12 @@ namespace EduroamConfigure
                 .Where(installer => profileInfo.EapTypeSsid.inner == installer.AuthMethod.InnerAuthType)
                 .FirstOrDefault();
 
-            // should never happen, since we abort if CA installations are needed
+            // should never fail, since we abort if CA installations are needed
             if (!installer.InstallCertificates())
                 return RefreshResponse.Failed;
 
             // Should only fail if the WLAN service is unavailable (no wireless NIC)
-            if (!installer.InstallProfile())
+            if (!installer.InstallWLANProfile())
                 return RefreshResponse.Failed;
 
             return RefreshResponse.Success;
@@ -269,7 +270,7 @@ namespace EduroamConfigure
             /// The user has to install some new root certificates.
             /// User intevention is required
             /// </summary>
-            NewCARequired,
+            NewRootCaRequired,
 
             /// <summary>
             /// The refresh token was denied. the user has to reauthenticate
