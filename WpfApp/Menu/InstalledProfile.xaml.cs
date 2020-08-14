@@ -124,6 +124,7 @@ namespace WpfApp.Menu
 				}
 				btnRefresh.Visibility = IsRefreshable ? Visibility.Visible : Visibility.Collapsed;
 				btnRefresh.Content = "Refresh";
+				btnRefresh.IsEnabled = true;
 			}
 			else
 			{
@@ -272,6 +273,7 @@ namespace WpfApp.Menu
 		private async void btnRefresh_Click(object sender, RoutedEventArgs e)
 		{
 			btnRefresh.Content = "Refreshing ...";
+			btnRefresh.IsEnabled = false;
 			var response = await Task.Run(() => LetsWifi.RefreshAndInstallEapConfig(force: true, onlyLetsWifi: true));
 			switch (response)
 			{
