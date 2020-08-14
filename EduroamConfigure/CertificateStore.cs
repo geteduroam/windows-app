@@ -82,6 +82,10 @@ namespace EduroamConfigure
 			&& PersistingStore.InstalledCertificates
 				.Contains(InstalledCertificate.FromCertificate(cert, storeName, storeLocation));
 
+		public static bool AnyRootCaInstalledByUs()
+			=> EnumerateInstalledCertificates()
+				.Where(cert => IsCertificateInstalledByUs(cert.cert, cert.installedCert.StoreName, cert.installedCert.StoreLocation))
+				.Any(cert => cert.installedCert.StoreName == StoreName.Root);
 
 		/// <summary>
 		/// Checks if the certificate is installed into the chosen store

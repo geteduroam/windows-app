@@ -1,3 +1,4 @@
+using EduroamConfigure;
 using Newtonsoft.Json;
 using SingleInstanceApp;
 using System;
@@ -200,15 +201,26 @@ namespace WpfApp
 
 		private static void PromptAndUninstallSelf<T>(Func<bool, T> shutdown)
 		{
+
 			var choice = MessageBox.Show(
 				"You are currently in the process of completly uninstalling geteduroam.\n" +
-				"This means uninstalling all the trusted root certificatesrequired by this application.\n\n"+
+				(CertificateStore.AnyRootCaInstalledByUs()
+					? "This means uninstalling all the trusted root certificates installed by this application.\n\n"
+					: "\n") +
 				"Are you sure you want to continue?",
 				caption: "geteduroam",
 				MessageBoxButton.YesNo,
 				MessageBoxImage.Warning);
 
-			if (choice != MessageBoxResult.Yes) return;
+			if (choice != MessageBoxResult.Yes)
+			{
+				MessageBox.Show(
+					"geteduraom has not been uninstalled.",
+					caption: "geteduroam",
+					MessageBoxButton.OK,
+					MessageBoxImage.Information);
+				return;
+			}
 
 			Installer.ExitAndUninstallSelf(
 				success =>
@@ -216,7 +228,7 @@ namespace WpfApp
 					// we cannot show a message box on success,
 					// since we've dispatched a job to delete the running binary at this point
 					if (!success) MessageBox.Show(
-						"The uninstallation was aborted. geteduraom is not yet uninstalled!",
+						"geteduraom is not yet uninstalled! The uninstallation was aborted.",
 						caption: "geteduroam",
 						MessageBoxButton.OK,
 						MessageBoxImage.Error);
