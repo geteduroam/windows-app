@@ -86,6 +86,7 @@
     <Compile Include="Classes\InverseBooleanConverter.cs" />
     <Compile Include="Classes\ImageFunctions.cs" />
     <Compile Include="Classes\SelfInstaller.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Menu\CertificateOverview.xaml.cs">
       <DependentUpon>CertificateOverview.xaml</DependentUpon>
     </Compile>

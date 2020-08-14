@@ -172,7 +172,6 @@ namespace EduroamConfigure
 		{
 			// To track proper order of operations
 			private bool HasInstalledCertificates = false;
-			private bool HasInstalledProfile = false;
 
 			// reference to the EAP config
 			public EapConfig.AuthenticationMethod AuthMethod { get; }
@@ -263,7 +262,6 @@ namespace EduroamConfigure
 				Debug.WriteLine("");
 
 				bool success = anyInstalledSsid || anyInstalledHs2;
-				HasInstalledProfile = success;
 				return success;
 			}
 

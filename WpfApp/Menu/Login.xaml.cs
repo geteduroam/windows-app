@@ -121,7 +121,7 @@ namespace WpfApp.Menu
 		/// Also saves any brokenrules to the tbRules textblock
 		/// </summary>
 		/// <returns>true if username/password legal</returns>
-		private bool credentialsValid()
+		private bool IsCredentialsValid()
 		{
 
 			string username = tbUsername.Text;
@@ -245,7 +245,7 @@ namespace WpfApp.Menu
 		/// <returns>true</returns>
 		public async Task<bool> ConnectWithLogin()
 		{
-			if (credentialsValid())
+			if (IsCredentialsValid())
 			{
 				string username = tbUsername.Text;
 
@@ -474,7 +474,7 @@ namespace WpfApp.Menu
 
 		private void tbUsername_LostFocus(object sender, RoutedEventArgs e)
 		{
-			credentialsValid();
+			IsCredentialsValid();
 			grpRules.Visibility = string.IsNullOrEmpty(tbRules.Text) ? Visibility.Hidden : Visibility.Visible;
 			if (!tbUsername.Text.Contains('@') && !string.IsNullOrEmpty(realm) && !string.IsNullOrEmpty(tbUsername.Text))
 			{

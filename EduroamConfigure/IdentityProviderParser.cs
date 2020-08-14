@@ -25,7 +25,7 @@ namespace EduroamConfigure
 			}
 			var query = NormalizeString(searchString);
 
-			bool startsWithInv(string str, string query) =>
+			static bool startsWithInv(string str, string query) =>
 				str.StartsWith(query, StringComparison.InvariantCultureIgnoreCase);
 
 			// NICE TO HAVE: add realms/domain as possible match
