@@ -303,7 +303,7 @@ namespace WpfApp
 
 			if (!EduroamConfigure.ConnectToEduroam.RemoveAllWLANProfiles())
 				return shutdownAction(false);
-			if (!EduroamConfigure.CertificateStore.UninstallAllInstalledCertificates())
+			if (!EduroamConfigure.CertificateStore.UninstallAllInstalledCertificates(abortOnFail: true))
 				return shutdownAction(false);
 			EduroamConfigure.LetsWifi.WipeTokens();
 			EduroamConfigure.PersistingStore.IdentityProvider = null;

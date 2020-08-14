@@ -260,7 +260,7 @@ namespace EduroamConfigure
 			protected override WebRequest GetWebRequest(Uri uri)
 			{
 				HttpWebRequest w = base.GetWebRequest(uri) as HttpWebRequest;
-				w.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+				w.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip; // TODO: no brotly support
 				w.Timeout = Timeout;
 				return w;
 			}
