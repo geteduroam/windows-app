@@ -123,6 +123,7 @@ namespace WpfApp.Menu
                     tbTimeLeft.Text = diffDate.Value.Minutes.ToString(CultureInfo.InvariantCulture) + " Minutes left";
                 }
                 btnRefresh.Visibility = IsRefreshable ? Visibility.Visible : Visibility.Collapsed;
+                btnRefresh.Content = "Refresh";
             }
             else
             {
@@ -268,9 +269,25 @@ namespace WpfApp.Menu
             // TODO: remove root CAs aswell in some nice way
         }
 
-        private void btnRefresh_Click(object sender, RoutedEventArgs e)
+        private async void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
-
+            btnRefresh.Content = "Refreshing ...";
+            var response = await Task.Run(() => LetsWifi.RefreshAndInstallEapConfig(force: true, onlyLetsWifi: true));
+            switch (response)
+            {
+                case LetsWifi.RefreshResponse.Success:
+                case LetsWifi.RefreshResponse.UpdatedEapXml: // Should never happen due to onlyLetsWifi=true
+                    LoadCertInfo();
+                    break;
+                case LetsWifi.RefreshResponse.StillValid: // should never happend due to force=true
+                case LetsWifi.RefreshResponse.AccessDenied:
+                case LetsWifi.RefreshResponse.NewRootCaRequired:
+                case LetsWifi.RefreshResponse.NotRefreshable:
+                case LetsWifi.RefreshResponse.Failed:
+                    btnRefresh.Content = "Cant refresh";
+                    btnRefresh.IsEnabled = false;
+                    break;
+            }
         }
     }
 
