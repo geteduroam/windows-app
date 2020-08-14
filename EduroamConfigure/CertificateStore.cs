@@ -82,6 +82,10 @@ namespace EduroamConfigure
             && PersistingStore.InstalledCertificates
                 .Contains(InstalledCertificate.FromCertificate(cert, storeName, storeLocation));
 
+        public static bool AnyRootCaInstalledByUs()
+            => EnumerateInstalledCertificates()
+                .Where(cert => IsCertificateInstalledByUs(cert.cert, cert.installedCert.StoreName, cert.installedCert.StoreLocation))
+                .Any(cert => cert.installedCert.StoreName == StoreName.Root);
 
         /// <summary>
         /// Checks if the certificate is installed into the chosen store
@@ -98,12 +102,26 @@ namespace EduroamConfigure
             Debug.WriteLine("Removing '{0}' from cert store {1}:{2}",
                 cert.FriendlyName, storeName.ToString(), storeLocation.ToString());
 
-            using (var certStore = new X509Store(storeName, storeLocation))
+            using var certStore = new X509Store(storeName, storeLocation);
+            certStore.Open(OpenFlags.ReadWrite);
+
+            try
             {
-                certStore.Open(OpenFlags.ReadWrite);
-                certStore.Remove(cert); // may produce a user prompt if the certstore in question is the root store
-                certStore.Close();
+                // remove from certificate store
+                certStore.Remove(cert);
+                // ^ Will produce a popup prompt when installing to the root store
+                // if the certificate is not already installed
+                // There fore you should predict this
+                // and warn+instruct the user
             }
+            catch (CryptographicException ex)
+            {
+                // if user selects No when prompted to remove the CA
+                if ((uint)ex.HResult == 0x800704C7) return false;
+
+                throw; // unknown exception
+            }
+
 
             // if we're still able to find it, then it probably wasn't removed.
             return !IsCertificateInstalled(cert, storeName, storeLocation);
@@ -160,7 +178,7 @@ namespace EduroamConfigure
         /// Uses the persistant storage to uninstall all known installed certificates
         /// </summary>
         /// <returns>true on success</returns>
-        public static bool UninstallAllInstalledCertificates(bool ommitRootCa = false, bool ommitNotInstalledByUs = true)
+        public static bool UninstallAllInstalledCertificates(bool abortOnFail = false, bool ommitRootCa = false, bool ommitNotInstalledByUs = true)
         {
             Debug.WriteLine("Uninstalling all installed certificates...");
 
@@ -179,6 +197,9 @@ namespace EduroamConfigure
                         .Remove(installedCert);
 
                 all_removed &= success;
+
+                if (!success && abortOnFail)
+                    break;
             }
 
             // not transactionally secure, probably also not needed
