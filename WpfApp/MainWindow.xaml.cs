@@ -566,9 +566,7 @@ namespace WpfApp
 			currentFormId = FormId.InstalledProfile;
 			btnBack.IsEnabled = false;
 			btnBack.Visibility = Visibility.Hidden;
-			btnNext.IsEnabled = true;
 			btnNext.Visibility = Visibility.Visible;
-			btnNext.Content = "No profile id";
 			pageInstalledProfile = new InstalledProfile(this);
 			Navigate(pageInstalledProfile);
 		}

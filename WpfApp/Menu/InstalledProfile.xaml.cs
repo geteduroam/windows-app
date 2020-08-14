@@ -68,7 +68,7 @@ namespace WpfApp.Menu
 
 			// check if profile id exists in discovery
 
-			mainWindow.btnNext.IsEnabled = false;
+			//mainWindow.btnNext.IsEnabled = false;
 			var profileId = ProfileId;
 			if (!string.IsNullOrEmpty(profileId))
 			{
@@ -83,13 +83,15 @@ namespace WpfApp.Menu
 				}
 				else
 				{
+					mainWindow.btnNext.IsEnabled = false;
 					mainWindow.btnNext.Content = "Cant reconnect";
 					//btnMainMenu.Style = FindResource("BlueButtonStyle") as Style;
 				}
 			}
 			else
 			{
-				mainWindow.btnNext.Visibility = Visibility.Hidden;
+				mainWindow.btnNext.IsEnabled = false;
+				mainWindow.btnNext.Content = "Cant reconnect";
 				// TODO: getting here means that we never should have been in this Form anyway. Move on to MainMenu instead?
 			}
 		}

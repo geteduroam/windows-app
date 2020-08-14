@@ -47,7 +47,7 @@ namespace WpfApp.Menu
 
 		private void Load()
 		{
-			/// Collaps everything before deciding what to show
+			// Collaps everything before deciding what to show
 			gridCred.Visibility = Visibility.Collapsed;
 			gridCertPassword.Visibility = Visibility.Collapsed;
 			gridCertBrowser.Visibility = Visibility.Collapsed;
