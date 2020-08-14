@@ -80,6 +80,7 @@ namespace WpfApp.Menu
             {
                 gridCertBrowser.Visibility = Visibility.Visible;
                 conType = ConType.CertAndCertPass;
+                
             }
             // case where eapconfig needs only cert password
             else if (eapConfig.NeedsClientCertificatePassphrase())
@@ -520,9 +521,15 @@ namespace WpfApp.Menu
         // opens file browser for choosing a certificate
         private void btnFile_Click(object sender, RoutedEventArgs e)
         {
-            //browse for certificate and add to eapconfig
-            filepath = FileDialog.AskUserForClientCertificateBundle();
+            // browse for certificate and add to eapconfig
+            var filepath = FileDialog.AskUserForClientCertificateBundle();
+            if (string.IsNullOrEmpty(filepath)) return;
+            this.filepath = filepath;
             tbCertBrowser.Text = filepath;
+            // scroll to end of textbox
+            tbCertBrowser.CaretIndex = tbCertBrowser.Text.Length;
+            var rect = tbCertBrowser.GetRectFromCharacterIndex(tbCertBrowser.CaretIndex);
+            tbCertBrowser.ScrollToHorizontalOffset(rect.Right);
             ValidateCertBrowserFields();
         }
 
