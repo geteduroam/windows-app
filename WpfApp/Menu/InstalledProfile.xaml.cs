@@ -123,7 +123,7 @@ namespace WpfApp.Menu
                     tbTimeLeft.Text = diffDate.Value.Minutes.ToString(CultureInfo.InvariantCulture) + " Minutes left";
                 }
                 btnRefresh.Visibility = IsRefreshable ? Visibility.Visible : Visibility.Collapsed;
-                btnRefresh.Content = "Refresh";
+                btnRefresh.Content = "Refresh now";
             }
             else
             {
