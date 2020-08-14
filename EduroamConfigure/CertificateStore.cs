@@ -174,7 +174,7 @@ namespace EduroamConfigure
 		/// Uses the persistant storage to uninstall all known installed certificates
 		/// </summary>
 		/// <returns>true on success</returns>
-		public static bool UninstallAllInstalledCertificates(bool ommitRootCa = false, bool ommitNotInstalledByUs = true)
+		public static bool UninstallAllInstalledCertificates(bool abortOnFail = false, bool ommitRootCa = false, bool ommitNotInstalledByUs = true)
 		{
 			Debug.WriteLine("Uninstalling all installed certificates...");
 
@@ -193,6 +193,9 @@ namespace EduroamConfigure
 						.Remove(installedCert);
 
 				all_removed &= success;
+
+				if (!success && abortOnFail)
+					break;
 			}
 
 			// not transactionally secure, probably also not needed
