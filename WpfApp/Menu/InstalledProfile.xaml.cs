@@ -122,6 +122,7 @@ namespace WpfApp.Menu
 				{
 					tbTimeLeft.Text = diffDate.Value.Minutes.ToString(CultureInfo.InvariantCulture) + " Minutes left";
 				}
+				btnRefresh.Visibility = IsRefreshable ? Visibility.Visible : Visibility.Collapsed;
 			}
 			else
 			{
@@ -265,6 +266,11 @@ namespace WpfApp.Menu
 			PersistingStore.IdentityProvider = null;
 
 			// TODO: remove root CAs aswell in some nice way
+		}
+
+		private void btnRefresh_Click(object sender, RoutedEventArgs e)
+		{
+
 		}
 	}
 
