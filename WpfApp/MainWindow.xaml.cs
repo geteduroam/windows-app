@@ -116,6 +116,9 @@ namespace WpfApp
 			ValidateBackButton();
 		}
 
+		/// <summary>
+		/// Logic for navigating to forward
+		/// </summary>
 		public async void NextPage()
 		{
 			// adds current form to history for easy backtracking
@@ -229,7 +232,9 @@ namespace WpfApp
 			ValidateBackButton();
 
 		}
-
+		/// <summary>
+		/// Logic for navigating backwards
+		/// </summary>
 		public void PreviousPage()
 		{
 			if (currentFormId == FormId.Login)
@@ -246,10 +251,12 @@ namespace WpfApp
 					LoadPageMainMenu();
 					break;
 				case FormId.SelectInstitution:
+					// shut down http server
 					if (currentFormId == FormId.OAuthWait) OAuthWait.CancelThread();
 					LoadPageSelectInstitution();
 					break;
 				case FormId.SelectProfile:
+					// shut down http server
 					if (currentFormId == FormId.OAuthWait) OAuthWait.CancelThread();
 					LoadPageSelectProfile();
 					break;
@@ -546,20 +553,11 @@ namespace WpfApp
 		}
 
 		/// <summary>
-		/// Empties both logo controls and makes them invisible.
+		/// Hides insstitution logos and show geteduroam logo
 		/// </summary>
 		public void ResetLogo()
 		{
-			// reset pbxLogo
-			//imgLogo.Source = null;
 			imgLogo.Visibility = Visibility.Hidden;
-
-			// reset webLogo
-			//webLogo.Navigate("about:blank");
-			//if (webLogo.Document != null)
-			//{
-			//    webLogo.NavigateToString(string.Empty);
-			//}
 			webLogo.Visibility = Visibility.Hidden;
 			imgEduroamLogo.Visibility = Visibility.Visible;
 		}

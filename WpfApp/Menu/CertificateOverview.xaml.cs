@@ -67,6 +67,9 @@ namespace WpfApp.Menu
 				Margin = new Thickness(5, 5, 5, 5),
 				Installer = installer,
 			};
+			// Subscribe to CertificateGrid so 'Install certificate' events gets noticed by this page.
+			// TODO: Pass function to CertificateGrid that can notify the page instead of using
+			// subcription for obesrver/observable stuff.
 			unsubscriber = grid.Subscribe(this);
 			AddToStack(grid);
 		}
