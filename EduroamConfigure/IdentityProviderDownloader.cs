@@ -13,16 +13,16 @@ namespace EduroamConfigure
     {
         // constants
         private const string GeoApiUrl = "https://geo.geteduroam.app/geoip";
-        #if DEBUG
+#if DEBUG
         private const string ProviderApiUrl = "https://discovery.geteduroam.app/v1/discovery.json";
-        #else
+#else
         private const string ProviderApiUrl = "https://discovery.eduroam.app/v1/discovery.json";
-        #endif
+#endif
 
         // state
         public List<IdentityProvider> Providers { get; private set; }
         public List<IdentityProvider> ClosestProviders { get; private set; } // Providers presorted by geo distance
-        private GeoCoordinateWatcher geoWatcher;
+        private GeoCoordinateWatcher GeoWatcher { get; }
         public bool Online { get; set; }
 
 
@@ -32,8 +32,8 @@ namespace EduroamConfigure
         /// </summary>
         public IdentityProviderDownloader()
         {
-            geoWatcher = new GeoCoordinateWatcher();
-            geoWatcher.TryStart(false, TimeSpan.FromMilliseconds(3000));
+            GeoWatcher = new GeoCoordinateWatcher();
+            GeoWatcher.TryStart(false, TimeSpan.FromMilliseconds(3000));
         }
 
         /// <exception cref="ApiUnreachableException">description</exception>
@@ -54,9 +54,9 @@ namespace EduroamConfigure
         /// </summary>
         private GeoCoordinate GetCoordinates()
         {
-            if (!geoWatcher.Position.Location.IsUnknown)
+            if (!GeoWatcher.Position.Location.IsUnknown)
             {
-                return geoWatcher.Position.Location;
+                return GeoWatcher.Position.Location;
             } 
             return DownloadCoordinates();
         }
@@ -282,7 +282,7 @@ namespace EduroamConfigure
         protected virtual void Dispose(bool disposing)
         {
             if (_disposed) return;
-            if (disposing) geoWatcher?.Dispose();
+            if (disposing) GeoWatcher?.Dispose();
             _disposed = true;
         }
 

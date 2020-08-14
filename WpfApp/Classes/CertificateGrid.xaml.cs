@@ -23,7 +23,7 @@ namespace WpfApp.Classes
     public partial class CertificateGrid : UserControl, IObservable<ConnectToEduroam.CertificateInstaller>
     {
 
-        private List<IObserver<ConnectToEduroam.CertificateInstaller>> observers;
+        private readonly List<IObserver<ConnectToEduroam.CertificateInstaller>> observers;
         public CertificateGrid()
         {;
             observers = new List<IObserver<ConnectToEduroam.CertificateInstaller>>();
@@ -92,8 +92,8 @@ namespace WpfApp.Classes
 
         internal class Unsubscriber<CertificateInstaller> : IDisposable
         {
-            private List<IObserver<CertificateInstaller>> _observers;
-            private IObserver<CertificateInstaller> _observer;
+            private readonly List<IObserver<CertificateInstaller>> _observers;
+            private readonly IObserver<CertificateInstaller> _observer;
 
             internal Unsubscriber(List<IObserver<CertificateInstaller>> observers, IObserver<CertificateInstaller> observer)
             {

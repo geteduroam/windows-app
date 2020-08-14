@@ -15,7 +15,7 @@ namespace WpfApp.Menu
     /// </summary>
     public partial class InstalledProfile : Page
     {
-        private MainWindow mainWindow;
+        private readonly MainWindow mainWindow;
         public string ProfileId
         { get => PersistingStore.IdentityProvider?.ProfileId; }
         public string ReinstallEapConfigXml
@@ -138,7 +138,7 @@ namespace WpfApp.Menu
             phone = PersistingStore.IdentityProvider.Value.Phone;
             emailAddress = PersistingStore.IdentityProvider.Value.EmailAddress;
 
-            if (!hasContactInfo())
+            if (!HasContactInfo())
             {
                 grpInfo.Visibility = Visibility.Collapsed;
                 return;
@@ -220,7 +220,7 @@ namespace WpfApp.Menu
         ///  Checks if there is any contact info
         /// </summary>
         /// <returns></returns>
-        private bool hasContactInfo()
+        private bool HasContactInfo()
         {
             bool hasWebAddress = !string.IsNullOrEmpty(webAddress);
             bool hasEmailAddress = !string.IsNullOrEmpty(emailAddress);

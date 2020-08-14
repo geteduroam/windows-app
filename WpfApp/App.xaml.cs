@@ -88,8 +88,7 @@ namespace WpfApp
         {
             // shorthand
             bool contains(string check) =>
-                e == null ? false :
-                e.Args.Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase));
+                e?.Args.Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase)) ?? false;
 
             if (contains("/refresh")
                 || contains("/refresh-force"))
