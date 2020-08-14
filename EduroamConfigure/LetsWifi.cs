@@ -183,12 +183,13 @@ namespace EduroamConfigure
         /// </summary>
         /// <param name="force">Wether to force a reinstall even if the current certificate still is valid for quote some time</param>
         /// <returns>An enum describing the result</returns>
-        public static RefreshResponse RefreshAndInstallEapConfig(bool force = false)
+        public static RefreshResponse RefreshAndInstallEapConfig(bool force = false, bool onlyLetsWifi = false)
         {
             // if LetsWifi is not set up:
             // Download a new EapConfig xml if we already have one stored
             var profileId = PersistingStore.IdentityProvider?.ProfileId;
-            if (!PersistingStore.IsRefreshable
+            if (!onlyLetsWifi
+                && !PersistingStore.IsRefreshable
                 && PersistingStore.IsReinstallable
                 && !string.IsNullOrEmpty(profileId))
             {
