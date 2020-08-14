@@ -250,7 +250,7 @@ namespace EduroamConfigure
                 return RefreshResponse.Failed;
 
             // Should only fail if the WLAN service is unavailable (no wireless NIC)
-            if (!installer.InstallWLANProfile()) // TODO: currently does not remove the old ones. in the case where ssid was removed, it will be left stale with an invalid client certificate fingerprint
+            if (!installer.InstallWLANProfile()) // TODO: currently does not remove the old ones. in the case where ssid was removed from eap config, it will be left stale with an invalid client certificate thumbprint
                 return RefreshResponse.Failed;
 
             // remove the old client certificates installed by us
@@ -260,6 +260,7 @@ namespace EduroamConfigure
                 .Where(cert => cert.cert.Thumbprint != clientCert.Thumbprint);
             foreach ((var cert, var installedCert) in oldClientCerts)
                 CertificateStore.UninstallCertificate(cert, installedCert.StoreName, installedCert.StoreLocation);
+            // TODO: This codeblob above could be reworked into uninstalling only expired certificates, such a helper functiong in CertificateStore would be nice
 
             // TODO: handle the case where the new installed certificate is not valid yet
             // possible solution is to only automatically refresh at night /shrug
