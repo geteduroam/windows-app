@@ -486,7 +486,7 @@ namespace WpfApp
 		/// <param name="eapConfig"></param>
 		public void OAuthComplete(EapConfig eapConfig)
 		{
-			if (!CheckIfEapConfigIsSupported(eapConfig))
+			if (eapConfig == null || !CheckIfEapConfigIsSupported(eapConfig))
 				eapConfig = null;
 
 			this.eapConfig = eapConfig;
