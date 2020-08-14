@@ -83,8 +83,13 @@ namespace WpfApp.Menu
 							tbUsername.Text = mainWindow.PresetUsername.Split('@').FirstOrDefault() ?? "";
 						}
 					}
+					pbCredPassword.Focus();
 				}
-				tbUsername.Focus();
+				else
+				{
+					tbUsername.Focus();
+				}
+
 				EnableConnectBtnBasedOnCredentials();
 			}
 			// case where eapconfig needs a certificate and password
