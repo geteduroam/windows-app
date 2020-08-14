@@ -22,6 +22,8 @@ namespace WpfApp.Menu
         { get => PersistingStore.IdentityProvider?.EapConfigXml; }
         public string ReinstallUsername
         { get => PersistingStore.Username; }
+        public bool IsRefreshable
+        { get => PersistingStore.IsRefreshable; }
         public bool GoToMain { get; set; }
         private string webAddress;
         private string phone;
