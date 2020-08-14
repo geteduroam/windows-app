@@ -216,8 +216,15 @@ namespace WpfApp
 			if (!Directory.Exists(InstallDir))
 				Directory.CreateDirectory(InstallDir);
 
-			// write executable
-			File.Copy(ThisExePath, InstallExePath, overwrite: true);
+			// write executable, not retaining Zone.Identifier NTFS stream
+			/*
+			File.Copy(ThisExePath, InstallExePath, overwrite: true); // BAD: keeps NTFS streams which we don't want
+			*/
+			//
+			// Reading and writing manually works better, because then the resulting .exe can be openend
+			// at startup or by the scheduler without the user getting "Are you sure you want to run this software?"
+			var binaryExe = File.ReadAllBytes(ThisExePath);
+			File.WriteAllBytes(InstallExePath, binaryExe);
 
 			// Register the application in Windows
 			ApplicationMetadata.Write(
