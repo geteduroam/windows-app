@@ -141,6 +141,7 @@ namespace WpfApp
 						LoadPageMainMenu(); // sanity
 					}
 					break;
+
 				case FormId.MainMenu:
 					if (pageMainMenu.LocalEapConfig != null)
 					{

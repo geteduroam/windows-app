@@ -125,6 +125,7 @@ namespace EduroamConfigure
 
 			// if we're still able to find it, then it probably wasn't removed.
 			return !IsCertificateInstalled(cert, storeName, storeLocation);
+			// TODO: ^ might cause false negatives in the case where the cert came from LOCAL MACHINE, more testing needed
 		}
 
 		public static IEnumerable<(X509Certificate2 cert, InstalledCertificate installedCert)> EnumerateInstalledCertificates()
