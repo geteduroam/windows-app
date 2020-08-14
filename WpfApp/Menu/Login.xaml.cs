@@ -71,7 +71,19 @@ namespace WpfApp.Menu
 				tbRealm.Text = '@' + realm;
 				tbRealm.Visibility = !string.IsNullOrEmpty(realm) && hint ? Visibility.Visible : Visibility.Hidden;
 				if (!string.IsNullOrEmpty(mainWindow.PresetUsername))
+				{
+					// take username@realm in its entirety
 					tbUsername.Text = mainWindow.PresetUsername;
+					// if no subrealms allowed so login screen will always have @realm added to whatever is written in username textbox
+					if (hint)
+					{
+						if (mainWindow.PresetUsername.EndsWith(realm, StringComparison.InvariantCulture) && mainWindow.PresetUsername.Contains('@'))
+						{
+							//take username before realm and put in textbox
+							tbUsername.Text = mainWindow.PresetUsername.Split('@').FirstOrDefault() ?? "";
+						}
+					}
+				}
 				tbUsername.Focus();
 				EnableConnectBtnBasedOnCredentials();
 			}
