@@ -21,6 +21,8 @@
             <StackPanel x:Name="stpCert">
                 <TextBlock x:Name="tbTimeLeft" TextWrapping="Wrap" Text="time left" TextAlignment="Center" Margin="5" />
                 <TextBlock x:Name="tbExpires" TextWrapping="Wrap" Text="Exp" TextAlignment="Center" Margin="5" />
+                <Button x:Name="btnRefresh" Style="{StaticResource WhiteButtonStyle}" Content="Refresh" 
+                MinHeight="37"  Width="130" HorizontalAlignment="Center"  Margin="5"  Click="btnRefresh_Click" />
             </StackPanel>
         </GroupBox>
         <GroupBox x:Name="grpInfo" Header="Contact info" Margin="5" Grid.Row="2">
