@@ -214,7 +214,7 @@ namespace WpfApp
             if (choice != MessageBoxResult.Yes)
             {
                 MessageBox.Show(
-                    "geteduraom has not been uninstalled.",
+                    "geteduroam has not been uninstalled.",
                     caption: "geteduroam",
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
@@ -227,8 +227,8 @@ namespace WpfApp
                     // we cannot show a message box on success,
                     // since we've dispatched a job to delete the running binary at this point
                     if (!success) MessageBox.Show(
-                        "geteduraom is not yet uninstalled! The uninstallation was aborted.",
-                        caption: "geteduroam",
+                        "geteduroam is not yet uninstalled! The uninstallation was aborted.",
+                        caption: "Uninstall geteduroam",
                         MessageBoxButton.OK,
                         MessageBoxImage.Error);
                     return shutdown(success);
@@ -273,7 +273,7 @@ namespace WpfApp
             applicationMetadata: new SelfInstaller.ApplicationMeta()
             {
                 DisplayName = "geteduroam",  // [REQUIRED] ProductName
-                Publisher = "Uninett",  // [REQUIRED] Manufacturer
+                Publisher = "Uninett AS",  // [REQUIRED] Manufacturer
                 Version = AssemblyName.Version.ToString(),
                 VersionMajor = AssemblyName.Version.Major.ToString(CultureInfo.InvariantCulture),
                 VersionMinor = AssemblyName.Version.Minor.ToString(CultureInfo.InvariantCulture),
