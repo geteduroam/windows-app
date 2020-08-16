@@ -505,6 +505,14 @@ namespace WpfApp
 				PreviousPage();
 			}
 			Activate();
+
+			// Set the window always on top, so that the user can continue the flow
+			// without closing the web browser
+			// - the user may not understand that they have to close the browser
+
+			// Will be set to false again in OnActivated,
+			// which will run at some point but apparently not directly on click
+			this.Topmost = true;
 		}
 
 		/// <summary>
@@ -695,8 +703,13 @@ namespace WpfApp
 		private void btnBack_Click(object sender, RoutedEventArgs e)
 			=> PreviousPage();
 
-		// Logic to minimize to tray:
+		private void OnActivated(object sender, EventArgs e)
+		{
+			// Disable always on top if it was set in OAuthComplete
+			this.Topmost = false;
+		}
 
+		// Logic to minimize to tray:
 		private void OnWindowClose(object sender, CancelEventArgs e)
 		{
 			Debug.WriteLine("Event: OnClose");
