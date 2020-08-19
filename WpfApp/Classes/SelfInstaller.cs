@@ -251,11 +251,13 @@ namespace WpfApp
 			lnk.WorkingDirectory = InstallDir;
 			lnk.Save();
 
+#if RUN_PERSISTENT
 			// Register the application to run on boot
 			Debug.WriteLine("Write str to {0}\\{1}: {2}",
 				rnsRun, ApplicationIdentifier, StartMinimizedCommand);
 			Registry.SetValue(rnsRun, ApplicationIdentifier, StartMinimizedCommand);
 			// TODO: test if run on boot works ^
+#endif
 
 
 			// Register scheduled task to check for updates
@@ -360,6 +362,7 @@ namespace WpfApp
 			return shutdownAction(true);
 		}
 
+#if RUN_PERSISTENT
 		public static void DelayedStart(string command, int delay = 5)
 		{
 			_ = command ?? throw new ArgumentNullException(paramName: nameof(command));
@@ -377,5 +380,6 @@ namespace WpfApp
 				}
 			);
 		}
+#endif
 	}
 }

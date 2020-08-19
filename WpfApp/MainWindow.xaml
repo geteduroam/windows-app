@@ -21,11 +21,11 @@
             <RowDefinition Height="56*"/>
         </Grid.RowDefinitions>
 
-        <tb:TaskbarIcon x:Name="TaskbarIcon"
+        <tb:TaskbarIcon x:Name="TrayIcon"
                 ToolTipText="geteduroam"
                 TrayLeftMouseDown="tb_TrayLeftMouseDown"
                 TrayMouseDoubleClick="TaskbarIcon_TrayMouseDoubleClick"
-                Visibility="Visible"
+                Visibility="Hidden"
                 IconSource="geteduroam.ico">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
