@@ -77,11 +77,13 @@ namespace WpfApp
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
             InitializeComponent();
 
-            if (!App.Installer.IsRunningInInstallLocation)
-                TaskbarIcon.Visibility = Visibility.Hidden;
-
+#if RUN_PERSISTENT
             if (App.StartHiddenInTray && App.Installer.IsRunningInInstallLocation)
                 Hide();
+
+            if (App.Installer.IsRunningInInstallLocation)
+                TrayIcon.Visibility = Visibility.Visible;
+#endif
 
             Load();
         }
@@ -473,12 +475,14 @@ namespace WpfApp
 
         private static App App { get => (App)Application.Current; }
 
+#if RUN_PERSISTENT
         public bool ShowNotification(string message, string title = "geteduroam", BalloonIcon icon = BalloonIcon.Info)
         {
             // TODO: doesn't show for peder, but does show for simon. RDP might be the culprit
-            TaskbarIcon.ShowBalloonTip(title, message, icon);
+            TrayIcon.ShowBalloonTip(title, message, icon);
             return true; // to be able to use it inside an expression
         }
+#endif
 
         /// <summary>
         /// Called by the Menu.OAuthWait page when the OAuth process is done.
@@ -718,15 +722,16 @@ namespace WpfApp
             Debug.WriteLine("{0}: {1}", nameof(App.Installer.IsInstalled), App.Installer.IsInstalled);
             Debug.WriteLine("{0}: {1}", nameof(App.Installer.IsRunningInInstallLocation), App.Installer.IsRunningInInstallLocation);
 
+#if RUN_PERSISTENT
             if (!App.Installer.IsInstalled)
                 return; // do not cancel the Closing event
 
             if (App.Installer.IsInstalled && !App.Installer.IsRunningInInstallLocation)
             {
-                #if !DEBUG
+#if !DEBUG
                 // this happens after the first time setup
                 SelfInstaller.DelayedStart(App.Installer.StartMinimizedCommand);
-                #endif
+#endif
                 return; // do not cancel the Closing event
             }
 
@@ -746,6 +751,7 @@ namespace WpfApp
                 LoadPageMainMenu();
 
             historyFormId.Clear();
+#endif
         }
 
         private void TaskbarIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
