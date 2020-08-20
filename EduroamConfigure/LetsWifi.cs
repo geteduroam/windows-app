@@ -142,10 +142,19 @@ namespace EduroamConfigure
 			};
 
 			// downloads json file from url as string
-			var tokenJson = PostForm(TokenEndpoint, tokenFormData);
+			// TODO on background refresh, internet may be offline, but be back in a few seconds; smart retry needed
+			try
+			{
+				var tokenJson = PostForm(TokenEndpoint, tokenFormData);
 
-			// process response
-			return SetAccessTokensFromJson(tokenJson);
+				// process response
+				return SetAccessTokensFromJson(tokenJson);
+			}
+			catch (EduroamAppUserError)
+			{
+				// TODO log the error somewhere
+				return false;
+			}
 		}
 
 		/// <summary>
