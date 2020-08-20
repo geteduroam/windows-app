@@ -793,5 +793,16 @@ namespace WpfApp
 			if (e.NavigationMode != NavigationMode.New)
 				e.Cancel = true;
 		}
+
+		private void btnClose_Click(object sender, RoutedEventArgs e)
+		{
+			this.Close();
+		}
+
+		private void MouseStartWindowDrag(object sender, System.Windows.Input.MouseButtonEventArgs e)
+		{
+			base.OnMouseLeftButtonDown(e);
+			this.DragMove();
+		}
 	}
 }
