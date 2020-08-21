@@ -13,6 +13,7 @@ using Hardcodet.Wpf.TaskbarNotification;
 using EduroamConfigure;
 using WpfApp.Menu;
 using System.Windows.Navigation;
+using System.Windows.Input;
 
 namespace WpfApp
 {
@@ -238,6 +239,7 @@ namespace WpfApp
 		/// </summary>
 		public void PreviousPage()
 		{
+			if (historyFormId.Count == 0) return;
 			if (currentFormId == FormId.Login)
 			{
 					pageLogin.IgnorePasswordChange = true;
@@ -286,10 +288,15 @@ namespace WpfApp
 		/// <summary>
 		/// Hide back button if theres no page to go back to
 		/// </summary>
-		private void UpdateBackButton()
+		private async void UpdateBackButton()
 		{
 			if (historyFormId.Count < 1)
 				btnBack.Visibility = Visibility.Hidden;
+			// If the user pressed backspace, the button style is now blue
+			// Let it stay blue for 100 milliseconds so the user sees the button flash
+			// so it is clear which button was activated by pressing backspace
+			await Task.Delay(100);
+			btnBack.Style = (Style)App.Resources["HeaderButtonStyle"];
 		}
 
 		public static bool CheckIfEapConfigIsSupported(EapConfig eapConfig)
@@ -538,13 +545,13 @@ namespace WpfApp
 				int cWidth = (int)webLogo.Width;
 				int cHeight = (int)webLogo.Height;
 
+				// TODO SVG not currently supported
 				if (logoMimeType == "image/svg+xml")
 				{
 					imgEduroamLogo.Visibility = Visibility.Visible;
 					imgLogo.Visibility = Visibility.Hidden;
-					//webLogo.Visibility = Visibility.Visible;
 					//webLogo.NavigateToString(ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight));
-
+					//webLogo.Visibility = Visibility.Visible;
 				}
 				else // other filetypes (jpg, png etc.)
 				{
@@ -557,7 +564,8 @@ namespace WpfApp
 					}
 					catch (System.FormatException)
 					{
-						// ignore
+						imgEduroamLogo.Visibility = Visibility.Visible;
+						imgLogo.Visibility = Visibility.Hidden;
 					}
 				}
 			}
@@ -705,6 +713,20 @@ namespace WpfApp
 
 		private void btnBack_Click(object sender, RoutedEventArgs e)
 			=> PreviousPage();
+		private void Window_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			var focused = FocusManager.GetFocusedElement(this);
+			if (e.Key == System.Windows.Input.Key.BrowserBack || e.Key == System.Windows.Input.Key.Escape)
+			{
+				btnBack.Style = (Style)App.Resources["BlueButtonStyle"];
+				PreviousPage();
+			}
+			else if (e.Key == System.Windows.Input.Key.Back && !(focused is TextBox || focused is PasswordBox))
+			{
+				btnBack.Style = (Style)App.Resources["BlueButtonStyle"];
+				PreviousPage();
+			}
+		}
 
 		private void OnActivated(object sender, EventArgs e)
 		{

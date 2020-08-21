@@ -91,7 +91,7 @@ namespace WpfApp.Menu
 			mainWindow.btnNext.IsEnabled = isInstalled;
 			if (isInstalled)
 			{
-				tbInfo.Text = "All Certificates are installed";
+				tbInfo.Text = "All certificates are installed";
 			}
 		}
 

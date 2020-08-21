@@ -5,11 +5,11 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WpfApp.Menu"
       mc:Ignorable="d" 
-      d:DesignHeight="345" d:DesignWidth="322"
+      FontSize="14"
       Title="OAuthWait">
 
     <StackPanel Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="Waiting ..." TextAlignment="Center" Margin="5" FontSize="14"/>
+        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="Waiting ..." TextAlignment="Center" Margin="5" FontSize="24"/>
         <TextBlock x:Name="tbError" TextWrapping="Wrap" Text="To continue you need to authenticate in your browser, a window should have opened automatically." TextAlignment="Center" Margin="5"/>
       
 
