@@ -1,7 +1,6 @@
 using DuoVia.FuzzyStrings;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -95,58 +94,56 @@ namespace EduroamConfigure
 		/// if noSubdomanInRealm is set then there can be no subrealms
 		/// otherwise: requiredRealm = 'eduroam.no' will allow @pedkek.eduroam.no
 		/// if noSubdomanInRealm: must be exactly @eduroam.no
+		///
+		/// Rules from https://github.com/GEANT/CAT/blob/master/tutorials/MappingCATOptionsIntoSupplicantConfig.md#verify-user-input-to-contain-realm-suffix-checkbox
 		/// </summary>
 		/// <param name="username">user[@realm]</param>
-		/// <param name="requiredRealm">the realm required for the username</param>
-		/// <param name="noSubdomanInRealm">Wether to allow subdomains in the realm</param>
+		/// <param name="requiredRealm">the realm required for the username, empty for any realm, null for no realm needed</param>
+		/// <param name="noSubDomainInRealm">Wether to allow subdomains in the realm</param>
 		/// <returns>nothing if no rules are broken, otherwise descriptions of rulse being broken</returns>
-		public static IEnumerable<string> GetRulesBrokenOnUsername(string username, string requiredRealm, bool noSubdomanInRealm)
+		public static IEnumerable<string> GetRulesBrokenOnUsername(string username, string requiredRealm, bool noSubDomainInRealm)
 		{
 			// TODO: perhaps move this function?
 
-			//checks that there is exactly one @ sign
-			// positive lookahead required to find one @. Negative lookahead denies if string contains two (or more) @.
-			Regex hasOneAt = new Regex(@"^(?=.*@.*)(?!.*@.*@).*$");
-			if (!hasOneAt.Match(username).Success)
-				yield return "Username must contain exactly one @";
-
-			// if realm is specified
-			if (!string.IsNullOrEmpty(requiredRealm))
-			{
-				/*
-				Regex hasOneAt = new Regex(@"^(?=.*@.*)(?!.*@.*@).*$");
-				if (!hasOneAt.Match(username).Success)
-					yield return "Username must contain exactly one @";
-				*/
-
-				if (noSubdomanInRealm)
-				{
-					Regex endsWithRealm = new Regex($@"^.*@{requiredRealm}$");
-					if (!endsWithRealm.Match(username).Success)
-						yield return $"Username must end with @{requiredRealm}";
-				}
-				else
-				{
-					Regex endsWithRealm = new Regex($@"^.*[._\-@]{requiredRealm}$");
-					if (!endsWithRealm.Match(username).Success)
-						yield return $"Username must end with {requiredRealm}";
-				}
-			}
+			// If no username given, or no realm is required, do no sanity check
+			if (string.IsNullOrWhiteSpace(username) || requiredRealm == null) yield break;
 
 			// checks that special characters are not adjacent to each other
-			Regex noAdjacentSpecialChars = new Regex(@"^(?!.*[._\-@]{2}.*).*$");
-			if (!noAdjacentSpecialChars.Match(username).Success)
-				yield return "Characters such as [-.@_] can not be adjacent to each other";
+			Regex noAdjacentSpecialChars = new Regex("[.@]{2}");
+			if (noAdjacentSpecialChars.Match(username).Success)
+			{
+				yield return "Characters such as . and @ can not be adjacent to each other";
+			}
+			else
+			{
+				// there a no two @@ adjacent, but there should be only one @ at all
+				var index = username.IndexOf('@');
+				if (index == -1 || index != username.LastIndexOf('@'))
+					yield return "Username must contain @ exactly once";
+			}
 
-			//checks that username begins with a vald alue
-			Regex validStart = new Regex(@"^[a-zA-Z0-9].*$");
-			if (!validStart.Match(username).Success)
-				yield return "Username must begin with aphanumeric char";
-
-			//checks that username ends with a vald alue
-			Regex validEnd = new Regex(@"^.*[a-zA-Z0-9]$");
-			if (!validEnd.Match(username).Success)
-				yield return "Username must end with aphanumeric char";
+			// if realm is specified
+			if (string.IsNullOrEmpty(requiredRealm))
+			{
+				// no specific realm set, only check that the username does not end with dot or whitespace
+				if (username[username.Length - 1] == '.' || username[username.Length - 1] == ' ')
+				{
+					yield return "Username cannot end with a period or whitespace";
+				}
+			}
+			else
+			{
+				// check that username ends with the specified realm
+				if (
+					!username.EndsWith("@" + requiredRealm, StringComparison.Ordinal)
+					&& (noSubDomainInRealm || !username.EndsWith("." + requiredRealm, StringComparison.Ordinal)))
+				{
+					yield return noSubDomainInRealm
+						? $"Username must end with @{requiredRealm}"
+						: $"Username must end with .{requiredRealm} or @{requiredRealm}"
+						;
+				}
+			}
 		}
 	}
 }

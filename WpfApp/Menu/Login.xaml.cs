@@ -144,7 +144,7 @@ namespace WpfApp.Menu
 			tbRules.Text = "";
 			if (!usernameValid)
 			{
-				tbRules.Text = string.Join("\n", brokenRules); ;
+				tbRules.Text = string.Join("\n", brokenRules);
 			}
 
 			bool fieldsValid = (!string.IsNullOrEmpty(pbCredPassword.Password) && usernameValid) || IsConnected;

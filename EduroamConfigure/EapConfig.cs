@@ -681,7 +681,10 @@ namespace EduroamConfigure
 				.ToList().Any(); // evaluate all
 
 		/// <summary>
-		/// goes through all the AuthentificationMethods in this config and tries to reason about a correct method
+		/// goes through all the AuthenticationMethods in this config and tries to reason about a correct method
+		/// the suffix may be null or empty, null means no realm check must be done,
+		/// empty means that any realm is valid but a realm must be provided
+		/// https://github.com/GEANT/CAT/blob/master/tutorials/MappingCATOptionsIntoSupplicantConfig.md#verify-user-input-to-contain-realm-suffix-checkbox
 		/// </summary>
 		/// <returns>A ValueTuple with the inner identity suffix and hint</returns>
 		public (string suffix, bool hint) GetClientInnerIdentityRestrictions()
