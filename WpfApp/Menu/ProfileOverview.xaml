@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WpfApp.Menu"
       mc:Ignorable="d" 
-      d:DesignHeight="345" d:DesignWidth="322"
+      FontSize="14"
       Title="ProfileOverview">
 
     <Grid Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -16,7 +16,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="tbName" TextWrapping="Wrap" Text="Profile name" TextAlignment="Center" Margin="5" FontSize="14"/>
+        <TextBlock x:Name="tbName" TextWrapping="Wrap" Text="Profile name" TextAlignment="Center" Margin="5" Grid.Row="0" FontSize="24"/>
         <TextBlock x:Name="tbDesc" TextWrapping="Wrap" Text="Profile info" TextAlignment="Center" Margin="5" Grid.Row="1"/>
 
         <GroupBox x:Name="grpInfo" Header="Contact info" Margin="5" Grid.Row="2">
@@ -35,17 +35,35 @@
                 <Label x:Name="lblPhoneTitle" Content="Phone:" HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="2"/>
 
                 <TextBlock x:Name="tbWebText" Grid.Row="0" Grid.Column="1" Text="" TextWrapping="Wrap"  VerticalAlignment="Center" >
+                    <TextBlock.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Open" Click="MenuItem_Click_OpenLink"/>
+                            <MenuItem Header="Copy" Click="MenuItem_Click_CopyLink"/>
+                        </ContextMenu>
+                    </TextBlock.ContextMenu>
                     <Hyperlink x:Name="hlinkWeb" RequestNavigate="LinkClick">
                        <TextBlock x:Name="tbWebLink" Text="" TextWrapping="Wrap" />
                     </Hyperlink>    
                 </TextBlock>
 
                 <TextBlock x:Name="tbEmailText" Grid.Row="1" Grid.Column="1" Text="" TextWrapping="Wrap"  VerticalAlignment="Center" >
+                    <TextBlock.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Open" Click="MenuItem_Click_OpenEMail"/>
+                            <MenuItem Header="Copy" Click="MenuItem_Click_CopyEMail"/>
+                        </ContextMenu>
+                    </TextBlock.ContextMenu>
                     <Hyperlink x:Name="hlinkEmail" RequestNavigate="LinkClick">
                        <TextBlock x:Name="tbEmailLink" Text="" TextWrapping="Wrap" />
                     </Hyperlink>    
                 </TextBlock>
-                <TextBlock x:Name="tbPhoneText" Grid.Row="2" Grid.Column="1" Text="" TextWrapping="Wrap"  VerticalAlignment="Center"/>
+                <TextBlock x:Name="tbPhoneText" Grid.Row="2" Grid.Column="1" Text="" TextWrapping="Wrap"  VerticalAlignment="Center">
+                    <TextBlock.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Copy" Click="MenuItem_Click_CopyPhone"/>
+                        </ContextMenu>
+                    </TextBlock.ContextMenu>
+                </TextBlock>
 
 
             </Grid>
@@ -65,7 +83,7 @@
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <TextBlock x:Name="tbAlt" TextWrapping="Wrap" Text="Not affiliated with institution?" TextAlignment="Center"  Margin="5"/>
-            <Button Style="{StaticResource WhiteButtonStyle}" x:Name="btnAlt" Content="Select other institution" HorizontalAlignment="Center" VerticalAlignment="Top" Width="141" Grid.Row="1" Margin="0,5" Height="34" Click="btnAlt_Click"/>
+            <Button Style="{StaticResource WhiteButtonStyle}" x:Name="btnAlt" Content="Select other institution" HorizontalAlignment="Center" VerticalAlignment="Top" Width="160" Grid.Row="1" Margin="0,5" Height="34" Click="btnAlt_Click"/>
 
 
         </Grid>

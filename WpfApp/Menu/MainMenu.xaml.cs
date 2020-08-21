@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using EduroamConfigure;
 using WpfApp.Classes;
 
@@ -47,8 +48,6 @@ namespace WpfApp.Menu
                 tbExisting.Text = "Connect with " + mainWindow.ExtractedEapConfig.InstitutionInfo.DisplayName;
             }
             LoadProviders();
-          
-
         }
         /// <summary>
         /// If no providers available try to download them
@@ -64,7 +63,9 @@ namespace WpfApp.Menu
                     tbNewProfile.Text = "Loading ...";
                     await Task.Run(() => mainWindow.IdpDownloader.LoadProviders());
                     BtnNewProfile.IsEnabled = true;
-                    tbNewProfile.Text = "Connect to eduroam"; 
+                    tbNewProfile.Text = "Connect to eduroam";
+                    if (!tbInstalledProfile.IsVisible && !btnExisting.IsVisible)
+                        FocusManager.SetFocusedElement(this, tbNewProfile);
                 }
                 catch (ApiException)
                 {
@@ -112,6 +113,18 @@ namespace WpfApp.Menu
         private void btnInstalledProfile_Click(object sender, RoutedEventArgs e)
         {
             mainWindow.LoadPageInstalledProfile();
+        }
+
+        private void Page_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
+        {
+            foreach (FrameworkElement fwe in new FrameworkElement[] { tbInstalledProfile, btnExisting, BtnNewProfile })
+            {
+                if (fwe.IsVisible && fwe.IsEnabled)
+                {
+                    FocusManager.SetFocusedElement(this, fwe);
+                    return;
+                }
+            }
         }
     }
 }

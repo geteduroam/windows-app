@@ -5,10 +5,10 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WpfApp.Menu"
       mc:Ignorable="d" 
-      d:DesignHeight="345" d:DesignWidth="322"
+      FontSize="14"
       Title="InstalledProfile">
 
-    <Grid Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -16,7 +16,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="tbName" TextWrapping="Wrap" Text="Profile name" TextAlignment="Center" Margin="5" FontSize="14"/>
+        <TextBlock x:Name="tbName" TextWrapping="Wrap" Text="Profile name" TextAlignment="Center" Margin="5" FontSize="24"/>
         <GroupBox x:Name="grpCert" Header="Certificate info"  Grid.Row="1" Margin="5">
             <StackPanel x:Name="stpCert">
                 <TextBlock x:Name="tbTimeLeft" TextWrapping="Wrap" Text="time left" TextAlignment="Center" Margin="5" />

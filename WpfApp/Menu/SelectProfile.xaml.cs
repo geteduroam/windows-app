@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using EduroamConfigure;
 
 namespace WpfApp.Menu
@@ -50,7 +51,6 @@ namespace WpfApp.Menu
                 lbProfiles.ItemsSource = idProviderProfiles;
                 lbProfiles.SelectedItem = idProviderProfiles.First();
             });
-
         }
 
         /// <summary>
@@ -75,6 +75,10 @@ namespace WpfApp.Menu
             }           
         }
 
-
+        private void Page_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
+        {
+            ListBoxItem item = (ListBoxItem)lbProfiles.ItemContainerGenerator.ContainerFromIndex(0);
+            FocusManager.SetFocusedElement(this, item);
+        }
     }
 }

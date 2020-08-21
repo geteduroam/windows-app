@@ -6,13 +6,13 @@
       xmlns:local="clr-namespace:WpfApp.Menu"
       xmlns:c="clr-namespace:WpfApp.Classes"
       mc:Ignorable="d" 
-      d:DesignHeight="345" d:DesignWidth="322"
+      d:DesignHeight="345" d:DesignWidth="322" FontSize="14"
       Title="Login">
 
     <StackPanel Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <StackPanel Background="White"/>
+        <StackPanel/>
 
-        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="Login" TextAlignment="Center" Margin="5" FontSize="14"/>
+        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="Login" TextAlignment="Center" Margin="5" FontSize="24"/>
         <Grid x:Name="gridCred" Margin="5" KeyboardNavigation.IsTabStop="False">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
