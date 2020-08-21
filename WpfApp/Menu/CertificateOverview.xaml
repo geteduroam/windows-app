@@ -5,10 +5,10 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WpfApp.Menu"
       xmlns:c="clr-namespace:WpfApp.Classes"
-      mc:Ignorable="d" FontSize="14"
-      d:DesignHeight="345" d:DesignWidth="322"
+      mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="360"
+      FontSize="14" SnapsToDevicePixels="True"
       Title="CertificateOverview">
-    <Grid Background="White" ScrollViewer.CanContentScroll="True">
+    <Grid ScrollViewer.CanContentScroll="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
