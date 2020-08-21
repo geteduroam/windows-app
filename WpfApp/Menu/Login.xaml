@@ -27,7 +27,7 @@
             </Grid.ColumnDefinitions>
             <TextBlock x:Name="tbCredInfo" TextWrapping="Wrap" Text="Enter your username and password" TextAlignment="Center" Margin="5" Grid.ColumnSpan="3"/>
 
-            <TextBox x:Name="tbUsername" Text="" Padding="2,3,2,3" Height="Auto" MinHeight="24" Margin="5" Grid.ColumnSpan="1" Grid.Column="1" Grid.Row="1" TextChanged="tbUsername_TextChanged" LostFocus="tbUsername_LostFocus" GotFocus="tbUsername_GotFocus"/>
+            <TextBox x:Name="tbUsername" Text="" Padding="2,3,2,3" Height="Auto" MinHeight="24" Margin="5" Grid.ColumnSpan="1" Grid.Column="1" Grid.Row="1" TextChanged="tbUsername_TextChanged" LostFocus="tbUsername_LostFocus" GotFocus="tbUsername_GotFocus" KeyUp="tbUsername_KeyUp"/>
             <TextBlock IsHitTestVisible="False" Text="Username" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray" Grid.Column="1" Grid.Row="1" >
                 <TextBlock.Style>
                     <Style TargetType="{x:Type TextBlock}">

@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Globalization;
 using EduroamConfigure;
 using WpfApp.Classes;
+using System.Windows.Input;
 
 namespace WpfApp.Menu
 {
@@ -559,6 +560,14 @@ namespace WpfApp.Menu
 			tbStatus.Visibility = Visibility.Visible;
 			tbStatus.Text = "Connecting process was cancelled";
 			mainWindow.btnNext.IsEnabled = true;
+		}
+
+		private void tbUsername_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if (e.Key == System.Windows.Input.Key.Enter && tbUsername.Text.Length != 0)
+			{
+				FocusManager.SetFocusedElement(this, pbCredPassword);
+			}
 		}
 	}
 }
