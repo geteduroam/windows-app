@@ -7,15 +7,15 @@
         xmlns:local="clr-namespace:WpfApp"
         mc:Ignorable="d"
         Title="geteduroam" Height="600" Width="400"
+        MinHeight="260" MinWidth="200"
         Closing="OnWindowClose"
         Activated="OnActivated"
-        WindowStyle="None" ResizeMode="NoResize" MouseLeftButtonDown="MouseStartWindowDrag"
-        FontSize="14" BorderThickness="1" KeyUp="Window_KeyUp"
+        WindowStyle="None" ResizeMode="CanResize" BorderThickness="1" MouseLeftButtonDown="MouseStartWindowDrag"
+        FontSize="14" SnapsToDevicePixels="True" KeyUp="Window_KeyUp"
     >
-    <Window.BorderBrush>
-        <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.WindowFrameColorKey}}"/>
-    </Window.BorderBrush>
-
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="8"/>
+    </WindowChrome.WindowChrome>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="49"/>
