@@ -70,6 +70,12 @@ namespace WpfApp.Classes
 		{
 			this.Installer.InstallCertificate();
 			this.IsInstalled = Installer.IsInstalled;
+			if (Installer.IsInstalledByUs)
+			{
+				// Any CA that we have installed must also be removed by us when it is not needed anymore
+				// so install the geteduroam app when we have installed a CA
+				_ = Task.Run(App.Installer.EnsureIsInstalled);
+			}
 			NotifySubscribers();
 		}
 

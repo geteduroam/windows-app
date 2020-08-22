@@ -296,6 +296,9 @@ namespace WpfApp.Menu
 			bool installed = await Task.Run(() => InstallEapConfig(eapConfig, username, password));
 			if (installed)
 			{
+				// Any profile installed by us must also be removed by us when it is not needed anymore
+				// so install the geteduroam app when we have installed a profile
+				_ = Task.Run(App.Installer.EnsureIsInstalled); // TODO: must be ensured to complete before the user exits
 
 				bool connected = await TryToConnect();
 				if (connected)
@@ -356,6 +359,7 @@ namespace WpfApp.Menu
 		/// Installs certificates from EapConfig and creates wireless profile.
 		/// </summary>
 		/// <returns>true on success</returns>
+		[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Catch-all to not let the application crash")]
 		private bool InstallEapConfig(EapConfig eapConfig, string username = null, string password = null)
 		{
 			if (!MainWindow.CheckIfEapConfigIsSupported(eapConfig)) // should have been caught earlier, but check here too for sanity
@@ -395,8 +399,6 @@ namespace WpfApp.Menu
 				}
 
 				mainWindow.ProfileCondition = MainWindow.ProfileStatus.Configured;
-
-				App.Installer.EnsureIsInstalled(); // TODO: run in background? must be ensured to complete before the user exits
 
 				return success;
 			}
