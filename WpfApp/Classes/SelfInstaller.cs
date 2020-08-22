@@ -321,23 +321,27 @@ namespace WpfApp
 			Debug.WriteLine("Delete file: " + StartMenuLnkPath);
 			if (File.Exists(StartMenuLnkPath)) File.Delete(StartMenuLnkPath);
 
-			// remove registry entries
-			Debug.WriteLine("Delete registry subkey: " + rnsUninstall); ;
-			using (RegistryKey key = Registry.CurrentUser
-					.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall", writable: true))
-				if (key?.OpenSubKey(ApplicationIdentifier) != null)
-					key.DeleteSubKeyTree(ApplicationIdentifier); // TODO: for some reason this doesn't seem to work
-			Debug.WriteLine("Delete registry value: " + rnsRun + "\\" + ApplicationIdentifier);
-			using (RegistryKey key = Registry.CurrentUser
-					.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run", writable: true))
-				if (key?.GetValue(ApplicationIdentifier) != null)
-					key.DeleteValue(ApplicationIdentifier);
-
 			// remove update task
 			Debug.WriteLine("Delete scheduled task: " + ScheduledTaskName);
 			using (var ts = new TaskService())
 				ts.RootFolder.DeleteTask(ScheduledTaskName,
 					exceptionOnNotExists: false);
+
+			// remove registry entries
+#if RUN_PERSISTENT
+			// Still gonna delete the Run registry key even if not being persistent,
+			// in case the older version did install it
+#endif
+			Debug.WriteLine("Delete registry value: " + rnsRun + "\\" + ApplicationIdentifier);
+			using (RegistryKey key = Registry.CurrentUser
+					.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run", writable: true))
+				if (key?.GetValue(ApplicationIdentifier) != null)
+					key.DeleteValue(ApplicationIdentifier);
+			Debug.WriteLine("Delete registry subkey: " + rnsUninstall); ;
+			using (RegistryKey key = Registry.CurrentUser
+					.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall", writable: true))
+				if (key?.OpenSubKey(ApplicationIdentifier) != null)
+					key.DeleteSubKeyTree(ApplicationIdentifier); // TODO: for some reason this doesn't seem to work
 
 			// Delete myself:
 			if (File.Exists(InstallExePath) && doDeleteSelf)

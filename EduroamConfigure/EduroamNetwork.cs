@@ -227,11 +227,11 @@ namespace EduroamConfigure
             {
                 if (configuredProfile.InterfaceId == InterfaceId)
                 {
-                    if (NativeWifi.DeleteProfile(InterfaceId, configuredProfile.ProfileName))
-                    {
-                        PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
-                            .Remove(configuredProfile);
-                    }
+                    // We explicitly ignore errors from NativeWifi,
+                    // as any failures probably mean that our info and the info in the OS is out of sync
+                    NativeWifi.DeleteProfile(InterfaceId, configuredProfile.ProfileName); // May return false
+                    PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
+                        .Remove(configuredProfile);
                 }
             }
 
