@@ -345,7 +345,7 @@ namespace WpfApp.Menu
 			{
 				connectSuccess = await Task.Run(ConnectToEduroam.TryToConnect);
 			}
-			catch (EduroamAppUserError ex)
+			catch (EduroamAppUserException ex)
 			{
 				connectSuccess = false;
 				MessageBox.Show("Could not connect. \nException: " + ex.UserFacingMessage);
@@ -402,7 +402,7 @@ namespace WpfApp.Menu
 
 				return success;
 			}
-			catch (EduroamAppUserError ex)
+			catch (EduroamAppUserException ex)
 			{
 				// TODO: expand the response with "try something else"
 				MessageBox.Show(

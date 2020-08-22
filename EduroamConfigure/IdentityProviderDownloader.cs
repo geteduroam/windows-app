@@ -183,7 +183,7 @@ namespace EduroamConfigure
 		/// Gets download link for EAP config from json and downloads it.
 		/// </summary>
 		/// <returns></returns>
-		/// <exception cref="EduroamAppUserError">description</exception>
+		/// <exception cref="EduroamAppUserException">description</exception>
 		public EapConfig DownloadEapConfig(string profileId)
 		{
 			// adds profile ID to url containing json file, which in turn contains url to EAP config file download
@@ -198,7 +198,7 @@ namespace EduroamConfigure
 			}
 			catch (WebException ex)
 			{
-				throw new EduroamAppUserError("WebException", WebExceptionToString(ex));
+				throw new EduroamAppUserException("WebException", WebExceptionToString(ex));
 			}
 			return EapConfig.FromXmlData(profileId: profileId, eapXml);
 		}

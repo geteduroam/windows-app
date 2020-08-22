@@ -3,11 +3,11 @@ using System.Runtime.Serialization;
 
 namespace EduroamConfigure
 {
-	public class EduroamAppUserError : Exception
+	public class EduroamAppUserException : Exception
 	{
 		public string UserFacingMessage { get; }
 
-		public EduroamAppUserError(string message, string userFacingMessage = null) : base(message)
+		public EduroamAppUserException(string message, string userFacingMessage = null) : base(message)
 		{
 #if DEBUG
 			UserFacingMessage = userFacingMessage ?? ("NON-USER-FACING-MESSAGE: " + message);

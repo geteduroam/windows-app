@@ -74,9 +74,9 @@ namespace EduroamConfigure
 			if (!ssids.Any() && asHs2Profile) // Schema has a minOccurances=1 for SSIDs (at least in the v1 namespace)
 				ssids = new List<string> { "#Passpoint" }; // hs2 profiles ignore SSIDs anyway
 			if (!ssids.Any())
-				throw new EduroamAppUserError("no valid ssids in config");
+				throw new EduroamAppUserException("no valid ssids in config");
 			if (asHs2Profile && !SupportsHs2(authMethod))
-				throw new EduroamAppUserError("hotspot2.0 not supported by this authentication method");
+				throw new EduroamAppUserException("hotspot2.0 not supported by this authentication method");
 
 			// Get list of ConsortiumOIDs
 			List<string> consortiumOids = authMethod.EapConfig.CredentialApplicabilities
@@ -233,7 +233,7 @@ namespace EduroamConfigure
 				// MSCHAPv2 as outer EAP type should only be used in a TTLS tunnel
 				// It does not support server validation
 				if (enableServerValidation)
-					throw new EduroamAppUserError("not supported",
+					throw new EduroamAppUserException("not supported",
 						"MSCHAPv2 as outer EAP does bit support server validation");
 				nsEapType = null;
 				thumbprintNodeName = null;
@@ -331,7 +331,7 @@ namespace EduroamConfigure
 										strictMode
 									),
 								_ =>
-									throw new EduroamAppUserError("unsupported auth method"),
+									throw new EduroamAppUserException("unsupported auth method"),
 							}
 						),
 						new XElement(nsTTLS + "Phase1Identity",
@@ -343,7 +343,7 @@ namespace EduroamConfigure
 			}
 			else
 			{
-				throw new EduroamAppUserError("unsupported auth method");
+				throw new EduroamAppUserException("unsupported auth method");
 			}
 
 			// Server validation

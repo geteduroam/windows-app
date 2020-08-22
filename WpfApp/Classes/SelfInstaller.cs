@@ -208,7 +208,7 @@ namespace WpfApp
 		{
 			// avoid uneccesary/illegal updates
 			if (IsRunningInInstallLocation) // sanity check, should never happen
-				throw new EduroamConfigure.EduroamAppUserError("already installed", // TODO: use a more fitting exception?
+				throw new EduroamConfigure.EduroamAppUserException("already installed", // TODO: use a more fitting exception?
 					"This application has already been installed. " +
 					"Installing it again won't have any effect.");
 

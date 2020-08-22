@@ -150,7 +150,7 @@ namespace EduroamConfigure
 				// process response
 				return SetAccessTokensFromJson(tokenJson);
 			}
-			catch (EduroamAppUserError)
+			catch (EduroamAppUserException)
 			{
 				// TODO log the error somewhere
 				return false;
@@ -180,7 +180,7 @@ namespace EduroamConfigure
 			}
 			catch (WebException ex)
 			{
-				throw new EduroamAppUserError("oauth eapconfig get error",
+				throw new EduroamAppUserException("oauth eapconfig get error",
 					userFacingMessage: "Couldn't fetch EAP config file. \nException: " + ex.Message);
 			}
 
@@ -334,7 +334,7 @@ namespace EduroamConfigure
 			}
 			catch (WebException ex)
 			{
-				throw new EduroamAppUserError("oauth post error",
+				throw new EduroamAppUserException("oauth post error",
 					userFacingMessage: "Couldn't fetch token json.\nException: " + ex.Message);
 			}
 		}

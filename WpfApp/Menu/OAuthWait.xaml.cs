@@ -161,7 +161,7 @@ namespace WpfApp.Menu
 
 				eapConfig = success ? LetsWifi.RequestAndDownloadEapConfig() : null;
 			}
-			catch (EduroamAppUserError) // TODO: BAD
+			catch (EduroamAppUserException) // TODO: BAD
 			{
 				eapConfig = null;
 			}
