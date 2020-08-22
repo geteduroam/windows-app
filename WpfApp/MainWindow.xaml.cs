@@ -288,14 +288,10 @@ namespace WpfApp
 		/// <summary>
 		/// Hide back button if theres no page to go back to
 		/// </summary>
-		private async void UpdateBackButton()
+		private void UpdateBackButton()
 		{
 			if (historyFormId.Count < 1)
 				btnBack.Visibility = Visibility.Hidden;
-			// If the user pressed backspace, the button style is now blue
-			// Let it stay blue for 100 milliseconds so the user sees the button flash
-			// so it is clear which button was activated by pressing backspace
-			await Task.Delay(100);
 			btnBack.Style = (Style)App.Resources["HeaderButtonStyle"];
 		}
 
@@ -713,17 +709,18 @@ namespace WpfApp
 
 		private void btnBack_Click(object sender, RoutedEventArgs e)
 			=> PreviousPage();
-		private void Window_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+		private async void Window_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
 		{
 			var focused = FocusManager.GetFocusedElement(this);
-			if (e.Key == System.Windows.Input.Key.BrowserBack || e.Key == System.Windows.Input.Key.Escape)
+			if (e.Key == System.Windows.Input.Key.BrowserBack
+				|| e.Key == System.Windows.Input.Key.Escape
+				|| (e.Key == System.Windows.Input.Key.Back && !(focused is TextBox || focused is PasswordBox)))
 			{
 				btnBack.Style = (Style)App.Resources["BlueButtonStyle"];
-				PreviousPage();
-			}
-			else if (e.Key == System.Windows.Input.Key.Back && !(focused is TextBox || focused is PasswordBox))
-			{
-				btnBack.Style = (Style)App.Resources["BlueButtonStyle"];
+				// the button style is now blue
+				// Let it stay blue for 100 milliseconds so the user sees the button flash
+				// so it is clear which button was activated by pressing backspace
+				await Task.Delay(100);
 				PreviousPage();
 			}
 		}
