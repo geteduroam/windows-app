@@ -128,7 +128,7 @@ namespace WpfApp.Menu
 
 		private void Page_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
 		{
-			FocusManager.SetFocusedElement(this, tbSearch);
+			tbSearch.Focus();
 		}
 	}
 }
