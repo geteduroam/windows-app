@@ -4,11 +4,11 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WpfApp.Menu"
-      mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="360"
+      mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="640"
       FontSize="14" SnapsToDevicePixels="True"
       Title="InstalledProfile">
 
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -17,12 +17,12 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBlock x:Name="tbName" TextWrapping="Wrap" Text="Profile name" TextAlignment="Center" Margin="5" FontSize="24"/>
-        <GroupBox x:Name="grpCert" Header="Certificate info"  Grid.Row="1" Margin="5">
+        <GroupBox x:Name="grpCert" Header="Validity" Grid.Row="1" Margin="5">
             <StackPanel x:Name="stpCert">
                 <TextBlock x:Name="tbTimeLeft" TextWrapping="Wrap" Text="time left" TextAlignment="Center" Margin="5" />
                 <TextBlock x:Name="tbExpires" TextWrapping="Wrap" Text="Exp" TextAlignment="Center" Margin="5" />
-                <Button x:Name="btnRefresh" Style="{StaticResource WhiteButtonStyle}" Content="Refresh now" 
-                MinHeight="37"  Width="130" HorizontalAlignment="Center"  Margin="5"  Click="btnRefresh_Click" />
+                <Button x:Name="btnRefresh" Style="{StaticResource BlueButtonStyle}" Content="Refresh now"
+                MinHeight="25" MinWidth="100" HorizontalAlignment="Center" Margin="5" Click="btnRefresh_Click" />
             </StackPanel>
         </GroupBox>
         <GroupBox x:Name="grpInfo" Header="Contact info" Margin="5" Grid.Row="2">
@@ -56,15 +56,15 @@
 
             </Grid>
         </GroupBox>
-        <Grid Grid.Row="4" VerticalAlignment="Bottom">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
-            <Button x:Name="btnLogout" Style="{StaticResource WhiteButtonStyle}" Content="Logout" 
-                MinHeight="37"  Width="130" HorizontalAlignment="Center"  Margin="5"  Click="btnLogout_Click" />
+        <Grid Grid.Row="4" VerticalAlignment="Top" Margin="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
             <Button x:Name="btnMainMenu" Style="{StaticResource WhiteButtonStyle}" Content="Use a different profile" 
-                MinHeight="37"  Width="130" HorizontalAlignment="Center"  Margin="17,5,14,5" Grid.Column="1"  Click="btnMainMenu_Click" />
+                MinHeight="37" MinWidth="160" HorizontalAlignment="Center" Grid.Row="0" Click="btnMainMenu_Click"/>
+            <Button x:Name="btnLogout" Style="{StaticResource DangerousButtonStyle}" Content="Logout"
+                MinHeight="25" MinWidth="100" HorizontalAlignment="Center" Margin="5" Grid.Row="1" Click="btnLogout_Click"/>
         </Grid>
 
 
