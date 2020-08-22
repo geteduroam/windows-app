@@ -204,7 +204,7 @@ namespace WpfApp
 		/// Installs the running EXE to %USER%/AppData/Local,
 		/// registering it to the registry for the current user
 		/// </summary>
-		public void InstallToUserLocal()
+		private void InstallToUserLocal()
 		{
 			// avoid uneccesary/illegal updates
 			if (IsRunningInInstallLocation) // sanity check, should never happen
