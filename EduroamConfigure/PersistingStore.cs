@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
-
 namespace EduroamConfigure
 {
     /// <summary>

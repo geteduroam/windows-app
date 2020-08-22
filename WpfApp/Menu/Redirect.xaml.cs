@@ -4,7 +4,6 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Navigation;
 
-
 namespace WpfApp.Menu
 {
     /// <summary>

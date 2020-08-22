@@ -12,7 +12,6 @@ using System.ComponentModel;
 using Hardcodet.Wpf.TaskbarNotification;
 using EduroamConfigure;
 using WpfApp.Menu;
-using Hardcodet.Wpf.TaskbarNotification.Interop;
 using System.Windows.Navigation;
 
 namespace WpfApp

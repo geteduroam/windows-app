@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ManagedNativeWifi
+﻿namespace ManagedNativeWifi
 {
 	/// <summary>
 	/// Data encryption type to be used to connect to wireless LAN
