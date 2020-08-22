@@ -130,5 +130,31 @@ namespace WpfApp.Menu
 		{
 			tbSearch.Focus();
 		}
+
+		private void tbSearch_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Up)
+			{
+				lbInstitutions.SelectedIndex = Math.Max(0, lbInstitutions.SelectedIndex - 1);
+				lbInstitutions.ScrollIntoView(lbInstitutions.SelectedItem);
+			}
+			if (e.Key == Key.Down)
+			{
+				lbInstitutions.SelectedIndex = Math.Min(lbInstitutions.Items.Count - 1, lbInstitutions.SelectedIndex + 1);
+				lbInstitutions.ScrollIntoView(lbInstitutions.SelectedItem);
+			}
+			if (e.Key == Key.PageUp)
+			{
+				// 25 is estimated item height
+				lbInstitutions.SelectedIndex = Math.Max(0, lbInstitutions.SelectedIndex - (int)(lbInstitutions.ActualHeight / 25));
+				lbInstitutions.ScrollIntoView(lbInstitutions.SelectedItem);
+			}
+			if (e.Key == Key.PageDown)
+			{
+				// 25 is estimated item height
+				lbInstitutions.SelectedIndex = Math.Min(lbInstitutions.Items.Count - 1, lbInstitutions.SelectedIndex + (int)(lbInstitutions.ActualHeight / 25));
+				lbInstitutions.ScrollIntoView(lbInstitutions.SelectedItem);
+			}
+		}
 	}
 }
