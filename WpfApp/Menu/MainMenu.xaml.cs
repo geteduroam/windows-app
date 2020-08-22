@@ -65,7 +65,7 @@ namespace WpfApp.Menu
                     BtnNewProfile.IsEnabled = true;
                     tbNewProfile.Text = "Connect to eduroam";
                     if (!tbInstalledProfile.IsVisible && !btnExisting.IsVisible)
-                        FocusManager.SetFocusedElement(this, tbNewProfile);
+                        tbNewProfile.Focus();
                 }
                 catch (ApiException)
                 {
@@ -121,7 +121,7 @@ namespace WpfApp.Menu
             {
                 if (fwe.IsVisible && fwe.IsEnabled)
                 {
-                    FocusManager.SetFocusedElement(this, fwe);
+                    fwe.Focus();
                     return;
                 }
             }

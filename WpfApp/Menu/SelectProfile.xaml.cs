@@ -30,15 +30,14 @@ namespace WpfApp.Menu
             tbTitle.Text = "Select profile";
             mainWindow.btnNext.IsEnabled = false;
 
+            FocusManager.SetIsFocusScope(this, true);
+            FocusManager.SetFocusedElement(this, lbProfiles);
 
             lbProfiles.IsEnabled = false;
 
             await Task.Run(() => PopulateProfiles());
 
             lbProfiles.IsEnabled = true;
-
-
-
         }
 
         /// <summary>
@@ -64,7 +63,7 @@ namespace WpfApp.Menu
             // gets id of selected profile
             var selectedProfile = (IdentityProviderProfile) lbProfiles.SelectedItem;
             ProfileId = selectedProfile.Id;
-            mainWindow.btnNext.IsEnabled = true;
+            mainWindow.btnNext.IsEnabled = lbProfiles.SelectedIndex != -1;
         }
 
         private void lbProfiles_MouseDoubleClick(object sender, RoutedEventArgs e)
@@ -73,12 +72,6 @@ namespace WpfApp.Menu
             {
                 mainWindow.NextPage();
             }           
-        }
-
-        private void Page_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
-        {
-            ListBoxItem item = (ListBoxItem)lbProfiles.ItemContainerGenerator.ContainerFromIndex(0);
-            FocusManager.SetFocusedElement(this, item);
         }
     }
 }

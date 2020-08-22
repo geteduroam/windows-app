@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:WpfApp.Menu"
       mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="360"
       FontSize="14" SnapsToDevicePixels="True"
-      Title="SelectProfile" RequestBringIntoView="Page_RequestBringIntoView">
+      Title="SelectProfile">
 
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
