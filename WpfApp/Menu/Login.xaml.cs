@@ -563,9 +563,6 @@ namespace WpfApp.Menu
 
         private void pbCertBrowserPassword_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            // show placeholder if no password, hide placeholder if password set.
-            // in XAML a textblock is bound to tbCertBrowserPassword so when the textbox is blank a placeholder is shown
-            tbCertBrowserPassword.Text = string.IsNullOrEmpty(pbCertBrowserPassword.Password) ? "" : "something";
             // ignore unwanted PasswordChanged event
             if (IgnorePasswordChange) return;
             tbStatus.Visibility = Visibility.Hidden;
