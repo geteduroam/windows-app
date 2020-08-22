@@ -11,7 +11,7 @@
         Closing="OnWindowClose"
         Activated="OnActivated"
         WindowStyle="None" ResizeMode="CanResize" BorderThickness="1" MouseLeftButtonDown="MouseStartWindowDrag"
-        FontSize="14" SnapsToDevicePixels="True" KeyUp="Window_KeyUp"
+        FontSize="14" SnapsToDevicePixels="True" KeyDown="Window_KeyDown"
     >
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0" ResizeBorderThickness="8"/>

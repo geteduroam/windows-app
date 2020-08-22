@@ -709,7 +709,7 @@ namespace WpfApp
 
         private void btnBack_Click(object sender, RoutedEventArgs e)
             => PreviousPage();
-        private async void Window_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        private async void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             var focused = FocusManager.GetFocusedElement(this);
             if (e.Key == System.Windows.Input.Key.BrowserBack
