@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:WpfApp"
         mc:Ignorable="d"
         Title="geteduroam" Height="600" Width="400"
-        MinHeight="260" MinWidth="200"
+        MinHeight="420" MinWidth="400" MaxWidth="400"
         Closing="OnWindowClose"
         Activated="OnActivated"
         WindowStyle="None" ResizeMode="CanResize" BorderThickness="1" MouseLeftButtonDown="MouseStartWindowDrag"
