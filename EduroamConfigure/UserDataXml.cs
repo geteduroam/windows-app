@@ -177,7 +177,7 @@ namespace EduroamConfigure
                     ),
 
                 // not supported
-                _ => throw new EduroamAppUserError("unsupported auth method"),
+                _ => throw new EduroamAppUserException("unsupported auth method"),
             };
         }
 

@@ -124,7 +124,7 @@ namespace EduroamConfigure
                     }
                     catch (CryptographicException)
                     {
-                        throw new EduroamAppUserError("corrupt certificate",
+                        throw new EduroamAppUserException("corrupt certificate",
                             "EAP profile has an malformed or corrupted certificate");
                     }
 
@@ -163,7 +163,7 @@ namespace EduroamConfigure
                     if ((ex.HResult & 0xFFFF) == 0x56)
                         return null; // wrong passphrase
 
-                    throw new EduroamAppUserError("corrupt client certificate",
+                    throw new EduroamAppUserException("corrupt client certificate",
                         "EAP profile has an malformed or corrupted client certificate");
                 }
             }
@@ -461,7 +461,7 @@ namespace EduroamConfigure
             }
             catch (XmlException ex)
             {
-                throw new EduroamAppUserError("xml parse exception",
+                throw new EduroamAppUserException("xml parse exception",
                     "The institution or profile is either not supported or malformed. " +
                     "Please select a different institution or profile.\n\n" +
                     "Exception: " + ex.Message);

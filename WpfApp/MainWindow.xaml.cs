@@ -337,7 +337,7 @@ namespace WpfApp
                 {
                     eapConfig = await DownloadEapConfig(profile);
                 }
-                catch (EduroamAppUserError ex) // TODO: catch this on some higher level
+                catch (EduroamAppUserException ex) // TODO: catch this on some higher level
                 {
                     MessageBox.Show(
                         ex.UserFacingMessage,
@@ -409,7 +409,7 @@ namespace WpfApp
         /// Prepares for redirect if no EAP-config.
         /// </summary>
         /// <returns>EapConfig object.</returns>
-        /// <exception cref="EduroamAppUserError">description</exception>
+        /// <exception cref="EduroamAppUserException">description</exception>
         public async Task<EapConfig> DownloadEapConfig(IdentityProviderProfile profile)
         {
             if (string.IsNullOrEmpty(profile?.Id))
@@ -437,7 +437,7 @@ namespace WpfApp
             {
                 connectSuccess = await Task.Run(ConnectToEduroam.TryToConnect);
             }
-            catch (EduroamAppUserError ex)
+            catch (EduroamAppUserException ex)
             {
                 // NICE TO HAVE: log the error
                 connectSuccess = false;
@@ -467,7 +467,7 @@ namespace WpfApp
                     ? eapconfig
                     : null;
             }
-            catch (EduroamAppUserError)
+            catch (EduroamAppUserException)
             {
                 return null;
             }

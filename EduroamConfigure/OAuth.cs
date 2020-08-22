@@ -80,7 +80,7 @@ namespace EduroamConfigure
             // check if url is valid
             if (!(responseUrl?.IsWellFormedOriginalString() ?? false)
                     || string.IsNullOrEmpty(responseUrl?.ToString()))
-                throw new EduroamAppUserError("oauth empty reponse url",
+                throw new EduroamAppUserException("oauth empty reponse url",
                     userFacingMessage: "HTTP request returned nothing valid.");
 
             // Extract query parameters from response url
@@ -88,19 +88,19 @@ namespace EduroamConfigure
 
             // check if user chose to reject authorization
             if (queryParams.Get("error") == "access_denied")
-                throw new EduroamAppUserError("oauth access denied",
+                throw new EduroamAppUserException("oauth access denied",
                     userFacingMessage: "Authorization rejected. Please try again.");
 
             // get and check state from response url and compares it to original state
             var state = queryParams.Get("state");
             if (state != this.state)
-                throw new EduroamAppUserError("oauth state mismatch",
+                throw new EduroamAppUserException("oauth state mismatch",
                     userFacingMessage: "State from request and response do not match. Aborting operation.");
 
             // get and check code from response url
             var code = queryParams.Get("code");
             if (string.IsNullOrEmpty(code))
-                throw new EduroamAppUserError("oauth code missing",
+                throw new EduroamAppUserException("oauth code missing",
                     userFacingMessage: "Response string doesn't contain code. Aborting operation.");
 
             return (code, codeVerifier);

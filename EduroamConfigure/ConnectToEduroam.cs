@@ -196,7 +196,7 @@ namespace EduroamConfigure
             public bool InstallCertificates()
             {
                 if (AuthMethod.NeedsClientCertificate())
-                    throw new EduroamAppUserError("no client certificate was provided");
+                    throw new EduroamAppUserException("no client certificate was provided");
 
                 // get all CAs from Authentication method
                 foreach (var cert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
@@ -229,7 +229,7 @@ namespace EduroamConfigure
             public bool InstallWLANProfile(string username=null, string password=null)
             {
                 if (!HasInstalledCertificates)
-                    throw new EduroamAppUserError("missing certificates",
+                    throw new EduroamAppUserException("missing certificates",
                         "You must first install certificates with InstallCertificates");
 
                 // Install wlan profile
