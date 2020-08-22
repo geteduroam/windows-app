@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
+
 using LetsWifi = EduroamConfigure.LetsWifi;
 
 namespace WpfApp

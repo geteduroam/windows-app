@@ -8,6 +8,7 @@ using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Threading.Tasks;
 using ManagedNativeWifi;
+
 using ConfiguredWLANProfile = EduroamConfigure.PersistingStore.ConfiguredWLANProfile;
 
 namespace EduroamConfigure
