@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace EduroamConfigure
 {
@@ -109,8 +108,7 @@ namespace EduroamConfigure
 			if (string.IsNullOrWhiteSpace(username) || requiredRealm == null) yield break;
 
 			// checks that special characters are not adjacent to each other
-			Regex noAdjacentSpecialChars = new Regex("[.@]{2}");
-			if (noAdjacentSpecialChars.Match(username).Success)
+			if (username.Contains("..") || username.Contains(".@") || username.Contains("@."))
 			{
 				yield return "Characters such as . and @ can not be adjacent to each other";
 			}
