@@ -279,15 +279,15 @@ namespace EduroamConfigure
 		/// <summary>
 		/// Deletes all network profile matching ssid, which is "eduroam" by default
 		/// </summary>
-		/// <returns>True if any profile deletion was succesful</returns>
+		/// <returns>True if all profile deletions were succesful</returns>
 		public static bool RemoveAllWLANProfiles()
 		{
 			Debug.WriteLine("Remove all installed profiles");
 
-			bool ret = false;
+			bool ret = true;
 			foreach (EduroamNetwork network in EduroamNetwork.GetAll(null))
 			{
-				ret |= network.RemoveInstalledProfiles();
+				ret &= network.RemoveInstalledProfiles();
 			}
 
 			Debug.WriteLine("Remove all installed profiles: " + ((ret) ? "success" : "failed"));
