@@ -7,6 +7,8 @@ using System.Windows.Controls;
 using System.Globalization;
 using EduroamConfigure;
 using WpfApp.Classes;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace WpfApp.Menu
 {
@@ -69,7 +71,7 @@ namespace WpfApp.Menu
 				tbRules.Visibility = Visibility.Visible;
 				(realm, hint) = eapConfig.GetClientInnerIdentityRestrictions();
 				tbRealm.Text = '@' + realm;
-				tbRealm.Visibility = !string.IsNullOrEmpty(realm) && hint ? Visibility.Visible : Visibility.Hidden;
+				SetRealmHintVisibility(!string.IsNullOrEmpty(realm) && hint ? Visibility.Visible : Visibility.Hidden);
 				if (!string.IsNullOrEmpty(mainWindow.PresetUsername))
 				{
 					// take username@realm in its entirety
@@ -115,6 +117,32 @@ namespace WpfApp.Menu
 			}
 		}
 
+		private void SetRealmHintVisibility(Visibility visibility)
+		{
+			tbRealm.Visibility = visibility;
+			var padding = tbUsername.Padding;
+
+			padding.Right = visibility == Visibility.Visible
+				? padding.Left + measureTextBlockWidth(tbRealm)
+				: padding.Left
+				;
+			tbUsername.Padding = padding;
+		}
+
+		private static double measureTextBlockWidth(TextBlock textBlock)
+		{
+			var formattedText = new FormattedText(
+				textBlock.Text,
+				CultureInfo.CurrentCulture,
+				FlowDirection.LeftToRight,
+				new Typeface(textBlock.FontFamily, textBlock.FontStyle, textBlock.FontWeight, textBlock.FontStretch),
+				textBlock.FontSize,
+				textBlock.Foreground,
+				new NumberSubstitution(),
+				1);
+
+			return formattedText.Width;
+		}
 		/// <summary>
 		/// Determines if the entered username/password is valid
 		/// for the case where username/password is needed.
@@ -128,15 +156,29 @@ namespace WpfApp.Menu
 			if (string.IsNullOrEmpty(username))
 			{
 				tbRules.Text = "";
+				// TODO BAD This function has side effects!!
+				SetRealmHintVisibility(!string.IsNullOrEmpty(realm) && hint ? Visibility.Visible : Visibility.Hidden);
+				// TODO BAD This function has side effects!!
 				mainWindow.btnNext.IsEnabled = false;
+				grpRules.Visibility = Visibility.Hidden;
 				return false;
 			}
 
 			// if username does not contain '@' and realm is given then show realm added to end
-			if ((!username.Contains('@') && !string.IsNullOrEmpty(realm)) || hint)
+			// right now only make the realm visible if we must show the hint or the username is not focused,
+			// otherwise we may inadvertedly prevent the user from remembering to use a subdomain
+			// however, if the hint is already visible, we may as well keep it visible if the conditions still match
+			if (realm != null && !username.Contains('@') &&
+				(hint || !tbUsername.IsFocused || tbRealm.Visibility == Visibility.Visible))
 			{
 				username += "@" + realm;
-				tbRealm.Visibility = Visibility.Visible;
+				// TODO BAD This function has side effects!!
+				SetRealmHintVisibility(Visibility.Visible);
+			}
+			else
+			{
+				// TODO BAD This function has side effects!!
+				SetRealmHintVisibility(Visibility.Hidden);
 			}
 
 			var brokenRules = IdentityProviderParser.GetRulesBrokenOnUsername(username, realm, hint).ToList();
@@ -459,7 +501,6 @@ namespace WpfApp.Menu
 		{
 			tbStatus.Visibility = Visibility.Collapsed;
 			grpRules.Visibility = Visibility.Collapsed;
-			if (!hint) tbRealm.Visibility = Visibility.Hidden;
 			EnableConnectBtnBasedOnCredentials();
 		}
 
@@ -470,20 +511,20 @@ namespace WpfApp.Menu
 		private void EnableConnectBtnBasedOnCredentials()
 		{
 			mainWindow.btnNext.IsEnabled =
+				IsCredentialsValid() &&
 				!string.IsNullOrEmpty(tbUsername.Text) &&
 				!string.IsNullOrEmpty(pbCredPassword.Password);
 		}
 
 		private void tbUsername_LostFocus(object sender, RoutedEventArgs e)
 		{
+			if (!string.IsNullOrEmpty(realm) && !tbUsername.Text.Contains('@'))
+			{
+				SetRealmHintVisibility(Visibility.Visible);
+			}
 			IsCredentialsValid();
 			grpRules.Visibility = string.IsNullOrEmpty(tbRules.Text) ? Visibility.Hidden : Visibility.Visible;
-			if (!tbUsername.Text.Contains('@') && !string.IsNullOrEmpty(realm) && !string.IsNullOrEmpty(tbUsername.Text))
-			{
-				tbRealm.Visibility = Visibility.Visible;
-			}
 		}
-
 		private void tbUsername_GotFocus(object sender, RoutedEventArgs e)
 		{
 			focused = tbUsername;
@@ -522,9 +563,6 @@ namespace WpfApp.Menu
 
 		private void pbCertBrowserPassword_PasswordChanged(object sender, RoutedEventArgs e)
 		{
-			// show placeholder if no password, hide placeholder if password set.
-			// in XAML a textblock is bound to tbCertBrowserPassword so when the textbox is blank a placeholder is shown
-			tbCertBrowserPassword.Text = string.IsNullOrEmpty(pbCertBrowserPassword.Password) ? "" : "something";
 			// ignore unwanted PasswordChanged event
 			if (IgnorePasswordChange) return;
 			tbStatus.Visibility = Visibility.Hidden;
@@ -559,6 +597,30 @@ namespace WpfApp.Menu
 			tbStatus.Visibility = Visibility.Visible;
 			tbStatus.Text = "Connecting process was cancelled";
 			mainWindow.btnNext.IsEnabled = true;
+		}
+
+		private void tbUsername_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if ((e.Key == Key.Enter && tbUsername.Text.Length != 0))
+			{
+				pbCredPassword.Focus();
+			}
+		}
+
+		private void pbCredPassword_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Up)
+			{
+				tbUsername.Focus();
+			}
+		}
+
+		private void tbUsername_PreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Down)
+			{
+				pbCredPassword.Focus();
+			}
 		}
 	}
 }

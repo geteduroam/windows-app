@@ -5,15 +5,15 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WpfApp.Menu"
       xmlns:c="clr-namespace:WpfApp.Classes"
-      mc:Ignorable="d" 
-      d:DesignHeight="345" d:DesignWidth="322"
+      mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="360"
+      FontSize="14" SnapsToDevicePixels="True"
       Title="CertificateOverview">
-    <Grid Background="White" ScrollViewer.CanContentScroll="True">
+    <Grid ScrollViewer.CanContentScroll="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="tbInfo" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5" FontSize="14"/>
+        <TextBlock x:Name="tbInfo" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5" FontSize="24"/>
         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0" Grid.Row="1">
             <StackPanel x:Name="stpCerts">
 

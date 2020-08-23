@@ -42,7 +42,7 @@ namespace WpfApp.Menu
 
 		private void LoadContactInfo()
 		{
-			if (!hasContactInfo(eapConfig.InstitutionInfo))
+			if (!HasContactInfo(eapConfig.InstitutionInfo))
 			{
 				grpInfo.Visibility = Visibility.Collapsed;
 				return;
@@ -117,7 +117,7 @@ namespace WpfApp.Menu
 		}
 
 
-		private bool hasContactInfo(EapConfig.ProviderInfo info)
+		private static bool HasContactInfo(EapConfig.ProviderInfo info)
 		{
 			bool hasWebAddress = !string.IsNullOrEmpty(info.WebAddress);
 			bool hasEmailAddress = !string.IsNullOrEmpty(info.EmailAddress);
@@ -135,9 +135,7 @@ namespace WpfApp.Menu
 			}
 			else
 			{
-
-
-
+				// TODO ...what to do here?
 			}
 
 		}
@@ -173,6 +171,37 @@ namespace WpfApp.Menu
 		private void btnAlt_Click(object sender, RoutedEventArgs e)
 		{
 			mainWindow.LoadPageMainMenu();
+		}
+		private static void OpenBrowser(string url)
+		{
+			System.Diagnostics.Process.Start(url);
+		}
+		private static void CopyToClipboard(string url)
+		{
+			Clipboard.SetText(url);
+		}
+		private void MenuItem_Click_OpenLink(object sender, RoutedEventArgs e)
+		{
+			OpenBrowser(eapConfig.InstitutionInfo.WebAddress);
+		}
+
+		private void MenuItem_Click_CopyLink(object sender, RoutedEventArgs e)
+		{
+			CopyToClipboard(eapConfig.InstitutionInfo.WebAddress);
+		}
+		private void MenuItem_Click_OpenEMail(object sender, RoutedEventArgs e)
+		{
+			OpenBrowser("mailto:" + Uri.EscapeDataString(eapConfig.InstitutionInfo.EmailAddress));
+		}
+
+		private void MenuItem_Click_CopyEMail(object sender, RoutedEventArgs e)
+		{
+			CopyToClipboard(eapConfig.InstitutionInfo.EmailAddress);
+		}
+
+		private void MenuItem_Click_CopyPhone(object sender, RoutedEventArgs e)
+		{
+			CopyToClipboard(eapConfig.InstitutionInfo.Phone);
 		}
 	}
 }

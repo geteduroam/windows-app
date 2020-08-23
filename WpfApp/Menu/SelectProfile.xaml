@@ -4,13 +4,16 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WpfApp.Menu"
-      mc:Ignorable="d" 
-      d:DesignHeight="345" d:DesignWidth="322"
+      mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="360"
+      FontSize="14" SnapsToDevicePixels="True"
       Title="SelectProfile">
 
-    <StackPanel Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <StackPanel Background="White"/>
-        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5" FontSize="14"/>
-        <ListBox x:Name="lbProfiles" ItemContainerStyle="{StaticResource ListBoxItemStyle}"  Height="200" Margin="5,5,5,0" SelectionChanged="lbProfiles_SelectionChanged" MouseDoubleClick="lbProfiles_MouseDoubleClick" FontSize="10"/>
-    </StackPanel>
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5" Grid.Row="0" FontSize="24"/>
+        <ListBox x:Name="lbProfiles" ItemContainerStyle="{StaticResource ListBoxItemStyle}" Grid.Row="1" Margin="5" SelectionChanged="lbProfiles_SelectionChanged" MouseDoubleClick="lbProfiles_MouseDoubleClick"/>
+    </Grid>
 </Page>
