@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using EduroamConfigure;
 
 namespace WpfApp.Menu
@@ -29,15 +30,14 @@ namespace WpfApp.Menu
             tbTitle.Text = "Select profile";
             mainWindow.btnNext.IsEnabled = false;
 
+            FocusManager.SetIsFocusScope(this, true);
+            FocusManager.SetFocusedElement(this, lbProfiles);
 
             lbProfiles.IsEnabled = false;
 
             await Task.Run(() => PopulateProfiles());
 
             lbProfiles.IsEnabled = true;
-
-
-
         }
 
         /// <summary>
@@ -50,7 +50,6 @@ namespace WpfApp.Menu
                 lbProfiles.ItemsSource = idProviderProfiles;
                 lbProfiles.SelectedItem = idProviderProfiles.First();
             });
-
         }
 
         /// <summary>
@@ -64,7 +63,7 @@ namespace WpfApp.Menu
             // gets id of selected profile
             var selectedProfile = (IdentityProviderProfile) lbProfiles.SelectedItem;
             ProfileId = selectedProfile.Id;
-            mainWindow.btnNext.IsEnabled = true;
+            mainWindow.btnNext.IsEnabled = lbProfiles.SelectedIndex != -1;
         }
 
         private void lbProfiles_MouseDoubleClick(object sender, RoutedEventArgs e)
@@ -74,7 +73,5 @@ namespace WpfApp.Menu
                 mainWindow.NextPage();
             }           
         }
-
-
     }
 }

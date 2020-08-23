@@ -13,6 +13,7 @@ using Hardcodet.Wpf.TaskbarNotification;
 using EduroamConfigure;
 using WpfApp.Menu;
 using System.Windows.Navigation;
+using System.Windows.Input;
 
 namespace WpfApp
 {
@@ -238,6 +239,7 @@ namespace WpfApp
         /// </summary>
         public void PreviousPage()
         {
+            if (historyFormId.Count == 0) return;
             if (currentFormId == FormId.Login)
             {
                     pageLogin.IgnorePasswordChange = true;
@@ -290,6 +292,7 @@ namespace WpfApp
         {
             if (historyFormId.Count < 1)
                 btnBack.Visibility = Visibility.Hidden;
+            btnBack.Style = (Style)App.Resources["HeaderButtonStyle"];
         }
 
         public static bool CheckIfEapConfigIsSupported(EapConfig eapConfig)
@@ -538,13 +541,13 @@ namespace WpfApp
                 int cWidth = (int)webLogo.Width;
                 int cHeight = (int)webLogo.Height;
 
+                // TODO SVG not currently supported
                 if (logoMimeType == "image/svg+xml")
                 {
                     imgEduroamLogo.Visibility = Visibility.Visible;
                     imgLogo.Visibility = Visibility.Hidden;
-                    //webLogo.Visibility = Visibility.Visible;
                     //webLogo.NavigateToString(ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight));
-
+                    //webLogo.Visibility = Visibility.Visible;
                 }
                 else // other filetypes (jpg, png etc.)
                 {
@@ -557,7 +560,8 @@ namespace WpfApp
                     }
                     catch (System.FormatException)
                     {
-                        // ignore
+                        imgEduroamLogo.Visibility = Visibility.Visible;
+                        imgLogo.Visibility = Visibility.Hidden;
                     }
                 }
             }
@@ -705,6 +709,21 @@ namespace WpfApp
 
         private void btnBack_Click(object sender, RoutedEventArgs e)
             => PreviousPage();
+        private async void Window_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            var focused = FocusManager.GetFocusedElement(this);
+            if (e.Key == System.Windows.Input.Key.BrowserBack
+                || e.Key == System.Windows.Input.Key.Escape
+                || (e.Key == System.Windows.Input.Key.Back && !(focused is TextBox || focused is PasswordBox)))
+            {
+                btnBack.Style = (Style)App.Resources["BlueButtonStyle"];
+                // the button style is now blue
+                // Let it stay blue for 100 milliseconds so the user sees the button flash
+                // so it is clear which button was activated by pressing backspace
+                await Task.Delay(100);
+                PreviousPage();
+            }
+        }
 
         private void OnActivated(object sender, EventArgs e)
         {
@@ -793,5 +812,16 @@ namespace WpfApp
             if (e.NavigationMode != NavigationMode.New)
                 e.Cancel = true;
 		}
-	}
+
+		private void btnClose_Click(object sender, RoutedEventArgs e)
+		{
+            this.Close();
+        }
+
+		private void MouseStartWindowDrag(object sender, System.Windows.Input.MouseButtonEventArgs e)
+		{
+            base.OnMouseLeftButtonDown(e);
+            this.DragMove();
+        }
+    }
 }

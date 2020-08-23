@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using EduroamConfigure;
 
 namespace WpfApp.Menu
@@ -22,6 +23,7 @@ namespace WpfApp.Menu
         public SelectInstitution(MainWindow mainWindow)
         {
             this.mainWindow = mainWindow ?? throw new ArgumentNullException(paramName: nameof(mainWindow));
+            this.IdProviderId = -1;
             InitializeComponent();
             LoadPage();
         }
@@ -29,7 +31,6 @@ namespace WpfApp.Menu
         // TODO: add loading image
         private async void LoadPage()
         {
-
             mainWindow.btnNext.IsEnabled = false;
             downloader = mainWindow.IdpDownloader;
 
@@ -94,6 +95,7 @@ namespace WpfApp.Menu
                         downloader.ClosestProviders,
                         searchString,
                         limit: 100)));
+            lbInstitutions.SelectedIndex = searchString.Length == 0 ? -1 : 0;
             isSearching = false;
             // if search text has changed during await then run the newest search string so its not lost
             if (isNewSearch) Search();
@@ -101,15 +103,19 @@ namespace WpfApp.Menu
 
         private void lbInstitutions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // if user clicks on empty area of the listbox it will cause event but no item is selected
-            // this is legacy from winforms, unknown if this is true for wpf
-            if (lbInstitutions.SelectedItem == null) return;
+            if (lbInstitutions.SelectedIndex == -1)
+            {
+                IdProviderId = -1;
+                mainWindow.btnNext.IsEnabled = false;
+            }
+            else
+            {
+                // select provider ID from selected provider
+                IdentityProvider selectedProvider = (IdentityProvider)lbInstitutions.SelectedItem;
+                IdProviderId = selectedProvider.cat_idp;
 
-            // select provider ID from selected provider
-            IdentityProvider selectedProvider = (IdentityProvider)lbInstitutions.SelectedItem;
-            IdProviderId = selectedProvider.cat_idp;
-
-            mainWindow.btnNext.IsEnabled = true;
+                mainWindow.btnNext.IsEnabled = true;
+            }
         }
 
         private void lbInstitutions_MouseDoubleClick(object sender, RoutedEventArgs e)
@@ -119,6 +125,36 @@ namespace WpfApp.Menu
                 mainWindow.NextPage();
             }
         }
-    }       
-    
+
+		private void Page_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
+		{
+            tbSearch.Focus();
+        }
+
+        private void tbSearch_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Up)
+            {
+                lbInstitutions.SelectedIndex = Math.Max(0, lbInstitutions.SelectedIndex - 1);
+                lbInstitutions.ScrollIntoView(lbInstitutions.SelectedItem);
+            }
+            if (e.Key == Key.Down)
+            {
+                lbInstitutions.SelectedIndex = Math.Min(lbInstitutions.Items.Count - 1, lbInstitutions.SelectedIndex + 1);
+                lbInstitutions.ScrollIntoView(lbInstitutions.SelectedItem);
+            }
+            if (e.Key == Key.PageUp)
+            {
+                // 25 is estimated item height
+                lbInstitutions.SelectedIndex = Math.Max(0, lbInstitutions.SelectedIndex - (int)(lbInstitutions.ActualHeight / 25));
+                lbInstitutions.ScrollIntoView(lbInstitutions.SelectedItem);
+            }
+            if (e.Key == Key.PageDown)
+            {
+                // 25 is estimated item height
+                lbInstitutions.SelectedIndex = Math.Min(lbInstitutions.Items.Count - 1, lbInstitutions.SelectedIndex + (int)(lbInstitutions.ActualHeight / 25));
+                lbInstitutions.ScrollIntoView(lbInstitutions.SelectedItem);
+            }
+        }
+    }
 }

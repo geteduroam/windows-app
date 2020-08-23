@@ -4,12 +4,11 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:WpfApp.Menu"
-      mc:Ignorable="d" 
-      d:DesignHeight="345" d:DesignWidth="322"
-      Title="MainMenu">
+      mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="360"
+      FontSize="14" SnapsToDevicePixels="True"
+      Title="MainMenu" RequestBringIntoView="Page_RequestBringIntoView">
 
-
-    <Grid Height="345" Width="322" Background="White" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -19,7 +18,7 @@
 
         </Grid.RowDefinitions>
         <StackPanel Background="White" Grid.RowSpan="6"/>
-        <TextBlock x:Name="tbInfo" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5" FontSize="14"/>
+        <TextBlock x:Name="tbInfo" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5" FontSize="24"/>
         <Button x:Name="BtnNewProfile" Style="{StaticResource BlueButtonStyle}"
                 Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Width="186" Click="btnNewProfile_Click" Grid.Row="1">
             <TextBlock x:Name="tbNewProfile" TextWrapping="Wrap" Text="Connect to eduroam" TextAlignment="Center" Margin="5" />
@@ -30,7 +29,7 @@
         </Button>
 
         <Button x:Name="btnFile" Style="{StaticResource WhiteButtonStyle}" Content="Use eap-config file" 
-                Height="23" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Width="110" Click="btnFile_Click" Grid.Row="3"/>
+                Height="23" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20" Click="btnFile_Click" Grid.Row="3" FontSize="12" Width="112"/>
         <Grid x:Name="grdInstalledProfile" Grid.Row="4" Margin="5" VerticalAlignment="Bottom">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
