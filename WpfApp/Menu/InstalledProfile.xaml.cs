@@ -74,28 +74,38 @@ namespace WpfApp.Menu
             var profileId = ProfileId;
             if (!string.IsNullOrEmpty(profileId))
             {
-                mainWindow.btnNext.Content = "Loading ...";
-                if (!mainWindow.IdpDownloader.Online) await Task.Run(() => mainWindow.IdpDownloader.LoadProviders());
+                try
+                {
+                    mainWindow.btnNext.Content = "Loading ...";
+                    if (!mainWindow.IdpDownloader.Online) await Task.Run(() => mainWindow.IdpDownloader.LoadProviders());
+                }
+                catch (InternetConnectionException)
+                {
+                    mainWindow.btnNext.IsEnabled = false;
+                    mainWindow.btnNext.Content = "Offline";
+                    return;
+                }
+
                 // TODO: this ^ Online check should be moved into the IdpDownloader
                 var profile = await Task.Run(() => mainWindow.IdpDownloader.GetProfileFromId(profileId));
                 if (profile != null)
                 {
                     mainWindow.btnNext.IsEnabled = true;
                     mainWindow.btnNext.Content = "Reconnect";
+                    return;
                 }
                 else
                 {
                     mainWindow.btnNext.IsEnabled = false;
-                    mainWindow.btnNext.Content = "Cant reconnect";
+                    mainWindow.btnNext.Content = "Can't reconnect";
                     //btnMainMenu.Style = FindResource("BlueButtonStyle") as Style;
+                    return;
                 }
             }
-            else
-            {
-                mainWindow.btnNext.IsEnabled = false;
-                mainWindow.btnNext.Content = "Cant reconnect";
-                // TODO: getting here means that we never should have been in this Form anyway. Move on to MainMenu instead?
-            }
+
+            mainWindow.btnNext.IsEnabled = false;
+            mainWindow.btnNext.Content = "Can't reconnect";
+            // TODO: getting here means that we never should have been in this Form anyway. Move on to MainMenu instead?
         }
 
         /// <summary>

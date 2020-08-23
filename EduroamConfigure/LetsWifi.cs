@@ -201,12 +201,18 @@ namespace EduroamConfigure
                 && PersistingStore.IsReinstallable
                 && !string.IsNullOrEmpty(profileId))
             {
-                using var discovery = new IdentityProviderDownloader();
-                discovery.LoadProviders(useGeodata: false);
-                var xml = discovery.DownloadEapConfig(profileId).XmlData;
-                PersistingStore.IdentityProvider = PersistingStore.IdentityProvider
-                    ?.WithEapConfigXml(xml);
-                return RefreshResponse.UpdatedEapXml;
+                try
+                {
+                    using var discovery = new IdentityProviderDownloader();
+                    discovery.LoadProviders(useGeodata: false);
+                    var xml = discovery.DownloadEapConfig(profileId).XmlData;
+                    PersistingStore.IdentityProvider = PersistingStore.IdentityProvider
+                        ?.WithEapConfigXml(xml);
+                    return RefreshResponse.UpdatedEapXml;
+                } catch (InternetConnectionException)
+                {
+                    return RefreshResponse.Failed;
+                }
             }
 
             // otherwise, we try to refresh through LetsWifi

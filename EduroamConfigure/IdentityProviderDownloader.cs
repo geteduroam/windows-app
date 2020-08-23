@@ -38,8 +38,10 @@ namespace EduroamConfigure
 
         /// <exception cref="ApiUnreachableException">description</exception>
         /// <exception cref="ApiParsingException">description</exception>
+        /// <exception cref="InternetConnectionException">When internet is offline</exception>
         public void LoadProviders(bool useGeodata = true)
         {
+            Online = false;
             Providers = DownloadAllIdProviders();
             // turns out just running this once, even without saving it and caching makes subsequent calls much faster
             ClosestProviders = useGeodata ? GetClosestProviders() : Providers;
@@ -203,6 +205,12 @@ namespace EduroamConfigure
             return EapConfig.FromXmlData(profileId: profileId, eapXml);
         }
 
+        /// <summary>
+        /// Find IdentityProviderProfile by profileId string
+        /// </summary>
+        /// <exception cref="NullReferenceException">If LoadProviders() was not called or threw an exception</exception>
+        /// <param name="profileId"></param>
+        /// <returns>The IdentityProviderProfile with the given profileId</returns>
         public IdentityProviderProfile GetProfileFromId(string profileId)
         {
             foreach (IdentityProvider provider in Providers)
