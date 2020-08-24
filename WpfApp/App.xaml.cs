@@ -80,13 +80,18 @@ namespace WpfApp
 			}
 
 			if (contains("/refresh")
-				|| contains("/refresh-force"))
+				|| contains("/force-refresh") || contains("/refresh-force"))
 			{
 				RefreshInstalledProfile(s => false, force: contains("/refresh-force"));
 				return true;
 			}
 
-			return contains("/close");
+			return contains("/close")
+#if !RUN_PERSISTENT
+				// Just quit when being started with /background
+				|| contains("/background")
+#endif
+				;
 		}
 
 #if RUN_PERSISTENT
