@@ -524,6 +524,10 @@ namespace WpfApp.Menu
 			}
 			IsCredentialsValid();
 			grpRules.Visibility = string.IsNullOrEmpty(tbRules.Text) ? Visibility.Hidden : Visibility.Visible;
+
+			// Recheck even though TextChanged also was fired,
+			// since we may have added the realm after that event
+			EnableConnectBtnBasedOnCredentials();
 		}
 		private void tbUsername_GotFocus(object sender, RoutedEventArgs e)
 		{
