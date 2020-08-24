@@ -168,7 +168,7 @@ namespace WpfApp.Menu
 			// right now only make the realm visible if we must show the hint or the username is not focused,
 			// otherwise we may inadvertedly prevent the user from remembering to use a subdomain
 			// however, if the hint is already visible, we may as well keep it visible if the conditions still match
-			if (realm != null && !username.Contains('@') &&
+			if (!String.IsNullOrEmpty(realm) && !username.Contains('@') &&
 				(hint || !tbUsername.IsFocused || tbRealm.Visibility == Visibility.Visible))
 			{
 				username += "@" + realm;
