@@ -772,7 +772,7 @@ namespace WpfApp
 #endif
         }
 
-        private void TaskbarIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
+        private void TrayIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
             => tb_TrayLeftMouseDown(sender, e);
 
         private void tb_TrayLeftMouseDown(object sender, RoutedEventArgs e)
