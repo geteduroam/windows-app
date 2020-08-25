@@ -248,7 +248,16 @@ namespace WpfApp
             switch (historyFormId.Last())
             {
                 case FormId.InstalledProfile:
-                    LoadPageInstalledProfile();
+                    try
+                    {
+                        LoadPageInstalledProfile();
+                    } catch (InvalidOperationException)
+                    {
+                        // Do not crash, but still remove this item
+                        // This can happen when logging out and during logout doing to the main menu,
+                        // and then triggering a back operation, which would go back to the installed profile page,
+                        // but it cannot load anymore since you've logged out
+                    }
                     break;
                 case FormId.MainMenu:
                     LoadPageMainMenu();
