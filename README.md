@@ -7,27 +7,25 @@ This application helps set up eduroam on end-users' computers by automatically f
 * **WpfApp**:           The graphical user interface and UX logic.
 * **EduroamConfigure**: The logic interfacing with the discovery api, and the logic to parse and configure the various profiles into windows.
 
-## Supported authentification modes
+## Supported authentication modes
 
 The following EAP modes can be fully configured:
 
 * PEAP-MSCHAPv2
 * TLS
-* TTLS-PAP
-* TTLS-MSCHAP
-* TTLS-MSCHAPv2
+* TTLS-PAP (x86\_64 only)
+* TTLS-MSCHAP (x86\_64 only)
+* TTLS-MSCHAPv2 (x86\_64 only)
 
-There is currently also partial support for:
+There is currently also partial (though disabled) support for:
 
 * TTLS-EAP-MSCHAPv2
 * TTLS-EAP-PEAP-MSCHAPv2
 
-These modes can be configured as a WLAN profile, but is currently unable to
-configure a user profile. (username and password)
+These modes could be configured as a WLAN profile, but cannot be configured with
+a user profile. (username and password)
 
-For all modes, other than PEAP-MSCHAPv2, you can also install Hotspot 2.0.
-If PEAP-MSCHAPv2 is the preffered method listed in the chosen eap-config, then
-Hotspot 2.0 will be installed alongside using some other EAP method listed in the eap-config.
+For all modes, you can also install Hotspot 2.0.
 
 
 ## Installation
