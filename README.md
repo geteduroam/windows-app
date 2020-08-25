@@ -30,12 +30,12 @@ If PEAP-MSCHAPv2 is the preffered method listed in the chosen eap-config, then
 Hotspot 2.0 will be installed alongside using some other EAP method listed in the eap-config.
 
 
-## Background process
+## Installation
 
-After a profile has been fully configured, geteduroam will install itself to `%HOME%\AppData\Local\geteduroam`.
-It will add itself to the registry to be run on startup, how to uninstall it, and a task will be registered with
+After a change to the system has been made, geteduroam will install itself to `%HOME%\AppData\Local\geteduroam`.
+It will add itself to the registry to be listed in installed programs, how to uninstall it, and a task will be registered with
 the task scheduler, which will prompt geteduroam check for updates on the profile.
-When running in the background, it will show a icon in the tray.
+A tray icon for running in the background can be enabled through a project flag, but it is disabled by default.
 
 
 ## Getting started
@@ -45,10 +45,11 @@ When running in the background, it will show a icon in the tray.
  * Visual Studio 2019 (https://visualstudio.microsoft.com/downloads/) with C# 8.0
  * .NET Framework 4.7.1
 
+
 ### Running the app
 
  * Compile the project to create geteduroam.exe (in WpfApp\bin\Release).
-	* This executable can be run independently from the rest of the solution, so you can move it to any desired directory.
+ * This executable can be run independently from the rest of the solution, so you can move it to any desired directory.
 
 
 ## Signing
@@ -60,9 +61,13 @@ When you have a hardware token, you can sign the application
  * Go to **C:\Program Files (x86)\Windows Kits\10\bin** and find the latest **10.x** version, at the time of writing it's **10.0.18362.0**
  * Inside the **10.x** folder, there's a folder **x64** and in there is a file **signtool.exe**
 
+(actually, just go to **C:\Program Files(x86)** and search for **signtool.exe** and use the one that's in an **x64** directory)
+
 Sign by running
 
 	"C:\Program Files (x86)\Windows Kits\10\bin\10.x\x64\signtool.exe" sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /a C:\Users\jornane\Source\Repos\EduroamApp\EduroamApp\obj\Release\geteduroam.exe
+
+You can drag files to the command window to write their whole paths.
 
 The timestamp is needed so that the signature remains valid even when the code signing certificate expires
 
