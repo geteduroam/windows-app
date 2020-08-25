@@ -190,7 +190,11 @@ namespace EduroamConfigure
 		{
 			// adds profile ID to url containing json file, which in turn contains url to EAP config file download
 			// gets url to EAP config file download from GenerateEapConfig object
-			string endpoint = GetProfileFromId(profileId).eapconfig_endpoint;
+			string endpoint = GetProfileFromId(profileId)?.eapconfig_endpoint;
+
+			if (String.IsNullOrEmpty(endpoint)) {
+				throw new EduroamAppUserException("Requested profile not listed in discovery");
+			}
 
 			// downloads and returns eap config file as string
 			string eapXml;
