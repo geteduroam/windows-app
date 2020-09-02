@@ -212,6 +212,9 @@ namespace EduroamConfigure
                 } catch (InternetConnectionException)
                 {
                     return RefreshResponse.Failed;
+                } catch (EduroamAppUserException)
+                {
+                    return RefreshResponse.Failed;
                 }
             }
 
