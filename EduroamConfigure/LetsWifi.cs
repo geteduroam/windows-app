@@ -25,7 +25,7 @@ namespace EduroamConfigure
         { get => PersistingStore.LetsWifiEndpoints?.tokenEndpoint; }
         private static Uri EapEndpoint // requires an access token
         { get => PersistingStore.LetsWifiEndpoints?.eapEndpoint; }
-        private static string RefreshToken // single-use token to refresh the access token (assume Bearer?)
+        private static string RefreshToken // single-use token to refresh the access token (Bearer header)
         {
             get => PersistingStore.LetsWifiRefreshToken;
             set => PersistingStore.LetsWifiRefreshToken = value;
@@ -173,7 +173,7 @@ namespace EduroamConfigure
                 client.Headers.Add("Authorization", AccessTokenType + " " + AccessToken);
 
                 // download eap config
-                eapConfigXml = client.DownloadString(EapEndpoint.ToString() + "?format=eap-metadata"); // TODO: use a uri builder or something
+                eapConfigXml = client.UploadString(EapEndpoint.ToString(), "");
             }
             catch (WebException ex)
             {
