@@ -554,7 +554,6 @@ namespace WpfApp
         /// <summary>
         /// Loads the logo form the curent eapconfig if it exists.
         /// Else display Eduroam logo.
-        /// SVG not currently supported
         /// </summary>
         public void LoadProviderLogo()
         {
@@ -571,7 +570,7 @@ namespace WpfApp
                 int cWidth = (int)webLogo.Width;
                 int cHeight = (int)webLogo.Height;
 
-                // TODO SVG not currently supported
+                // SVG
                 if (logoMimeType == "image/svg+xml")
                 {
                     imgEduroamLogo.Visibility = Visibility.Visible;
