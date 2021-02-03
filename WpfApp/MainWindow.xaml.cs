@@ -555,8 +555,8 @@ namespace WpfApp
                 {
                     imgEduroamLogo.Visibility = Visibility.Visible;
                     imgLogo.Visibility = Visibility.Hidden;
-                    //webLogo.NavigateToString(ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight));
-                    //webLogo.Visibility = Visibility.Visible;
+                    webLogo.NavigateToString(ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight));
+                    webLogo.Visibility = Visibility.Visible;
                 }
                 else // other filetypes (jpg, png etc.)
                 {
