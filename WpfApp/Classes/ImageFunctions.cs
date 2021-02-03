@@ -85,11 +85,14 @@ namespace WpfApp
 						"<head>" +
 							"<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" +
 							"<style>" +
+								"html,body {" +
+									"margin: 2.5px 0 0 0;" +
+									"padding: 0;" +
+									"overflow: hidden;" +
+									"display: flex;" +
+									"justify-content: center;" +
+								"}" +
 								"img {" +
-									"position: absolute;" +
-									"top: 0;" +
-									"left: 0;" +
-									"display: block;" +
 									"max-width:" + maxWidth + "px;" +
 									"max-height:" + maxHeight + "px;" +
 									"width: auto;" +
