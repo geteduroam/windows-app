@@ -38,14 +38,14 @@ namespace EduroamConfigure
         {
             _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
 
-            if (!EduroamNetwork.EapConfigIsSupported(eapConfig))
+            if (!EduroamNetwork.IsEapConfigSupported(eapConfig))
             {
                 yield return (true, "This configuration is not supported");
                 yield break;
             }
 
             if (!eapConfig.AuthenticationMethods
-                    .Where(EduroamNetwork.AuthMethodIsSupported)
+                    .Where(EduroamNetwork.IsAuthMethodSupported)
                     .All(authMethod => authMethod.ServerCertificateAuthorities.Any()))
                 yield return (true, "This configuration is missing Certificate Authorities");
 
@@ -98,7 +98,7 @@ namespace EduroamConfigure
         {
             _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
             return eapConfig.AuthenticationMethods
-                .Where(EduroamNetwork.AuthMethodIsSupported)
+                .Where(EduroamNetwork.IsAuthMethodSupported)
                 .SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
                 .Where(CertificateStore.CertificateIsRootCA)
                 .GroupBy(cert => cert.Thumbprint, (key, certs) => certs.FirstOrDefault()); // distinct, alternative is to use DistinctBy in MoreLINQ
@@ -147,7 +147,7 @@ namespace EduroamConfigure
                 get => CertificateStore.IsCertificateInstalledByUs(cert, storeName, storeLocation);
             }
 
-            public bool InstallCertificate()
+            public void InstallCertificate()
                 => CertificateStore.InstallCertificate(cert, storeName, storeLocation);
         }
 
@@ -161,7 +161,7 @@ namespace EduroamConfigure
             => eapConfig == null
                 ? throw new ArgumentNullException(paramName: nameof(eapConfig))
                 : eapConfig.AuthenticationMethods
-                    .Where(EduroamNetwork.AuthMethodIsSupported)
+                    .Where(EduroamNetwork.IsAuthMethodSupported)
                     .Select(authMethod => new EapAuthMethodInstaller(authMethod));
 
         /// <summary>
@@ -193,7 +193,7 @@ namespace EduroamConfigure
             /// Use EnumerateCAInstallers to have the user install the CAs in a controlled manner before installing the EAP config
             /// </summary>
             /// <returns>Returns true if all certificates has been successfully installed</returns>
-            public bool InstallCertificates()
+            public void InstallCertificates()
             {
                 if (AuthMethod.NeedsClientCertificate())
                     throw new EduroamAppUserException("no client certificate was provided");
@@ -203,10 +203,9 @@ namespace EduroamConfigure
                 {
                     // if this doesn't work, try https://stackoverflow.com/a/34174890
                     bool isRootCA = cert.Subject == cert.Issuer;
-                    bool success = CertificateStore.InstallCertificate(cert,
+                    CertificateStore.InstallCertificate(cert,
                         isRootCA ? rootCaStoreName : interCaStoreName,
                         isRootCA ? rootCaStoreLocation : interCaStoreLocation);
-                    if (!success) return false;
                 }
 
                 // Install client certificate if any
@@ -217,7 +216,6 @@ namespace EduroamConfigure
                 }
 
                 HasInstalledCertificates = true;
-                return true;
             }
 
             /// <summary>
@@ -226,43 +224,28 @@ namespace EduroamConfigure
             /// If this returns FALSE: It means there is a missing TLS client certificate left to be installed
             /// </summary>
             /// <returns>True if the profile was installed on any interface</returns>
-            public bool InstallWLANProfile(string username=null, string password=null)
+            public void InstallWLANProfile(string username=null, string password=null)
             {
                 if (!HasInstalledCertificates)
                     throw new EduroamAppUserException("missing certificates",
                         "You must first install certificates with InstallCertificates");
 
                 // Install wlan profile
-                bool anyInstalledSsid = false;
-                bool anyInstalledHs2 = false;
                 foreach (var network in EduroamNetwork.GetAll(AuthMethod.EapConfig))
                 {
-                    (bool installedSsid, bool installedHs2) = network.InstallProfiles(AuthMethod);
-                    anyInstalledSsid |= installedSsid;
-                    anyInstalledHs2 |= installedHs2;
+                    network.InstallProfiles(AuthMethod);
                 }
 
                 // Debug output
-                Debug.WriteLine("any ssid profile installed:  " + anyInstalledSsid);
-                Debug.WriteLine("any hs2  profile installed:  " + anyInstalledHs2);
                 Debug.WriteLine("Ssid profile eap type: " + AuthMethod.EapType.ToString() ?? "None");
                 Debug.WriteLine("Hs2  profile eap type: " + AuthMethod.Hs2AuthMethod?.EapType.ToString() ?? "None");
 
                 // sets user data
                 Debug.WriteLine("Install user profiles for user {0}", username);
-                bool anyInstalledUserData = false;
                 foreach (var network in EduroamNetwork.GetAll(AuthMethod.EapConfig))
                 {
-                    bool installed = network.InstallUserData(username, password, AuthMethod);
-                    anyInstalledUserData |= installed;
+                    network.InstallUserData(username, password, AuthMethod);
                 }
-                
-                Debug.WriteLine("Install of user profile for user {0}: {1}",
-                    username ?? "NULL", anyInstalledUserData ? "success" : "failed");
-                Debug.WriteLine("");
-
-                bool success = anyInstalledSsid || anyInstalledHs2;
-                return success;
             }
 
             public (DateTime From, DateTime? To) GetTimeWhenValid()
@@ -280,18 +263,21 @@ namespace EduroamConfigure
         /// Deletes all network profile matching ssid, which is "eduroam" by default
         /// </summary>
         /// <returns>True if all profile deletions were succesful</returns>
-        public static bool RemoveAllWLANProfiles()
+        public static void RemoveAllWLANProfiles()
         {
-            Debug.WriteLine("Remove all installed profiles");
-
-            bool ret = true;
+            Exception ex = null;
             foreach (EduroamNetwork network in EduroamNetwork.GetAll(null))
             {
-                ret &= network.RemoveInstalledProfiles();
+                try
+                {
+                    network.RemoveInstalledProfiles();
+                } catch (Exception e)
+                {
+                    ex = e;
+                }
             }
 
-            Debug.WriteLine("Remove all installed profiles: " + ((ret) ? "success" : "failed"));
-            return ret;
+            if (ex != null) throw ex;
         }
 
 

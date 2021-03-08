@@ -19,12 +19,12 @@ namespace EduroamConfigure
         /// <param name="storeName">The certificate store to use</param>
         /// <param name="storeLocation">The location within the certificate store to use</param>
         /// <returns>False if the user declined</returns>
-        public static bool InstallCertificate(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation)
+        public static void InstallCertificate(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation)
         {
             _ = cert ?? throw new ArgumentNullException(paramName: nameof(cert));
 
             if (IsCertificateInstalled(cert, storeName, storeLocation))
-                return true;
+                return;
 
             using var certStore = new X509Store(storeName, storeLocation);
             certStore.Open(OpenFlags.ReadWrite);
@@ -44,7 +44,8 @@ namespace EduroamConfigure
             catch (CryptographicException ex)
             {
                 // if user selects No when prompted to install the CA
-                if ((uint)ex.HResult == 0x800704C7) return false;
+                if ((uint)ex.HResult == 0x800704C7)
+                    throw new UserAbortException("User selected No when prompted for certificate");
 
                 throw; // unknown exception
             }
@@ -52,8 +53,6 @@ namespace EduroamConfigure
             // keep track of that we've installed it
             PersistingStore.InstalledCertificates = PersistingStore.InstalledCertificates
                 .Add(InstalledCertificate.FromCertificate(cert, storeName, storeLocation));
-            
-            return true;
         }
 
         /// <summary>

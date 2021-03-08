@@ -306,7 +306,7 @@ namespace WpfApp
 
         public static bool CheckIfEapConfigIsSupported(EapConfig eapConfig)
         {
-            if (!EduroamNetwork.EapConfigIsSupported(eapConfig))
+            if (!EduroamNetwork.IsEapConfigSupported(eapConfig))
             {
                 MessageBox.Show(
                     "The profile you have selected is not supported by this application.",
@@ -474,7 +474,7 @@ namespace WpfApp
                 string eapString = File.ReadAllText(eapPath);
                 var eapconfig = EapConfig.FromXmlData(profileId: null, eapString);
 
-                return EduroamNetwork.EapConfigIsSupported(eapconfig)
+                return EduroamNetwork.IsEapConfigSupported(eapconfig)
                     ? eapconfig
                     : null;
             }

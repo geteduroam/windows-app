@@ -310,10 +310,13 @@ namespace WpfApp
 		{
 			_ = shutdownAction ?? throw new ArgumentNullException(paramName: nameof(shutdownAction));
 
-			if (!EduroamConfigure.ConnectToEduroam.RemoveAllWLANProfiles())
+			try
+			{
+				EduroamConfigure.ConnectToEduroam.RemoveAllWLANProfiles();
+				EduroamConfigure.CertificateStore.UninstallAllInstalledCertificates(abortOnFail: true);
+			} catch (Exception) {
 				return shutdownAction(false);
-			if (!EduroamConfigure.CertificateStore.UninstallAllInstalledCertificates(abortOnFail: true))
-				return shutdownAction(false);
+			}
 			EduroamConfigure.LetsWifi.WipeTokens();
 			EduroamConfigure.PersistingStore.IdentityProvider = null;
 

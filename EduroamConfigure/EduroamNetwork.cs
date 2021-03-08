@@ -65,10 +65,10 @@ namespace EduroamConfigure
         /// </summary>
         /// <param name="eapConfig">The EAP config to check</param>
         /// <returns>True if it contains a supported type</returns>
-        public static bool EapConfigIsSupported(EapConfig eapConfig)
+        public static bool IsEapConfigSupported(EapConfig eapConfig)
         {
             return eapConfig?.AuthenticationMethods
-                .Where(AuthMethodIsSupported).Any()
+                .Where(IsAuthMethodSupported).Any()
                 ?? false;
         }
 
@@ -77,7 +77,7 @@ namespace EduroamConfigure
         /// </summary>
         /// <param name="authMethod">The Authentification method to check</param>
         /// <returns>True if supported</returns>
-        public static bool AuthMethodIsSupported(EapConfig.AuthenticationMethod authMethod)
+        public static bool IsAuthMethodSupported(EapConfig.AuthenticationMethod authMethod)
         {
             _ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
             return ProfileXml.IsSupported(authMethod)
@@ -92,9 +92,15 @@ namespace EduroamConfigure
         /// <param name="authMethod">TODO</param>
         /// <param name="forAllUsers">TODO</param>
         /// <returns>(success with ssid, success with hotspot2)</returns>
-        public (bool, bool) InstallProfiles(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
+        public void InstallProfiles(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
+        {
+            LinkedList<Exception> exceptions = InstallProfilesInternal(authMethod, forAllUsers);
+            if (exceptions.Count != 0) throw exceptions.First();
+        }
+        private LinkedList<Exception> InstallProfilesInternal(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
         {
             _ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
+            LinkedList<Exception> exceptions = new LinkedList<Exception>();
 
             PersistingStore.IdentityProvider = PersistingStore.IdentityProviderInfo.From(authMethod);
 
@@ -105,24 +111,32 @@ namespace EduroamConfigure
                 .Select(cred => cred.Ssid)
                 .ToList();
 
-            bool installedSsid = false;
             foreach (var ssid in ssids)
             {
                 (string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, withSsid: ssid);
-                installedSsid |= InstallProfile(profileName, profileXml, isHs2: false, forAllUsers);
+                try
+                {
+                    InstallProfile(profileName, profileXml, isHs2: false, forAllUsers);
+                } catch (Exception e) {
+                    exceptions.AddLast(e);
+                }
             }
 
-            bool installedHs2 = false;
             if (authMethod.Hs2AuthMethod != null)
             {
                 (string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod.Hs2AuthMethod, asHs2Profile: true);
-                installedHs2 = InstallProfile(profileName, profileXml, isHs2: true, forAllUsers);
+                try
+                {
+                    InstallProfile(profileName, profileXml, isHs2: true, forAllUsers);
+                } catch (Exception e) {
+                    exceptions.AddLast(e);
+                }
             }
 
-            return (installedSsid, installedHs2);
+            return exceptions;
         }
 
-        private bool InstallProfile(string profileName, string profileXml, bool isHs2, bool forAllUsers)
+        private void InstallProfile(string profileName, string profileXml, bool isHs2, bool forAllUsers)
         {
             // security type not required
             const string securityType = null; // TODO: document why
@@ -131,28 +145,20 @@ namespace EduroamConfigure
             const bool overwrite = true;
 
             // https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/nf-wlanapi-wlansetprofile
-            bool success = NativeWifi.SetProfile(
+            if (!NativeWifi.SetProfile(
                 InterfaceId,
                 forAllUsers
                     ? ProfileType.AllUser
                     : ProfileType.PerUser, // TODO: make this option work and set as default
                 profileXml,
                 securityType,
-                overwrite);
+                overwrite)) throw new EduroamAppUserException(
+                    "Unable to install " + (isHs2 ? "Passpoint " : "SSID ") + profileName,
+                    "Unable to install " + (isHs2 ? "Passpoint " : "SSID ") + profileName
+                );
 
-            Debug.WriteLine("Install {2}WLANProfile {3} for '{0}' on {1}",
-                    profileName, 
-                    InterfaceId, 
-                    (isHs2) ? "Hs2 " : "", 
-                    (success) ? "succeeded" : "failed");
-
-            if (success) {
-                PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
-                    .Add(new ConfiguredWLANProfile(InterfaceId, profileName, isHs2));
-            }
-
-
-            return success;
+            PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
+                .Add(new ConfiguredWLANProfile(InterfaceId, profileName, isHs2));
         }
 
         /// <summary>
@@ -163,7 +169,7 @@ namespace EduroamConfigure
         /// <param name="authMethod">AuthMethod of installed profile</param>
         /// <param name="forAllUsers">TODO - mention the cert store thing</param>
         /// <returns>True if all succeeded, false if any failed or none was configured</returns>
-        public bool InstallUserData(string username, string password, EapConfig.AuthenticationMethod authMethod, bool forAllUsers = false)
+        public void InstallUserData(string username, string password, EapConfig.AuthenticationMethod authMethod, bool forAllUsers = false)
         {
             _ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
 
@@ -173,7 +179,10 @@ namespace EduroamConfigure
 
             PersistingStore.Username = username; // save username
 
-            bool ret = PersistingStore.ConfiguredWLANProfiles.Any();
+            if (!PersistingStore.ConfiguredWLANProfiles.Any())
+            {
+                throw new Exception("No configured WLAN profiles");
+            }
             foreach (var configuredProfile in PersistingStore.ConfiguredWLANProfiles.ToList())
             {
                 if (configuredProfile.InterfaceId != InterfaceId) continue;
@@ -187,29 +196,24 @@ namespace EduroamConfigure
                     password);
 
                 // install it
-                var success = NativeWifi.SetProfileUserData(
+                if (!NativeWifi.SetProfileUserData(
                     InterfaceId,
                     configuredProfile.ProfileName,
                     forAllUsers
                         ? profileUserTypeAllUSers
                         : profileUserTypeCurrentUsers,
-                    userDataXml);
-                ret &= success;
+                    userDataXml))
+				{
+                    throw new Exception("Unable to install UserProfile " + configuredProfile.ProfileName);
+				}
 
-                Debug.WriteLine("Installed {2}UserProfile {3} for '{0}' on {1}",
-                        configuredProfile.ProfileName, 
-                        InterfaceId, 
-                        configuredProfile.IsHs2 ? "Hs2 " : "", 
-                        success ? "succeeded" : "failed");
-
-                if (success && !configuredProfile.HasUserData) // ommit uneccesary writes
+                if (!configuredProfile.HasUserData) // ommit uneccesary writes
                 {
                     PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
                         .Remove(configuredProfile)
                         .Add(configuredProfile.WithUserDataSet());
                 }
             }
-            return ret;
         }
 
         /// <summary>
@@ -219,10 +223,8 @@ namespace EduroamConfigure
         /// <remarks>
         /// True does not mean all the profiles has been deleted. Check IsConfigured ot verify this.
         /// </remarks>
-        public bool RemoveInstalledProfiles()
+        public void RemoveInstalledProfiles()
         {
-            var n = PersistingStore.ConfiguredWLANProfiles.Count;
-
             Debug.WriteLine("Removing installed profiles on " + InterfaceId);
             foreach (var configuredProfile in PersistingStore.ConfiguredWLANProfiles.ToList())
             {
@@ -236,7 +238,10 @@ namespace EduroamConfigure
                 }
             }
 
-            return n != PersistingStore.ConfiguredWLANProfiles.Count || n == 0;
+            if (0 != PersistingStore.ConfiguredWLANProfiles.Count)
+            {
+                throw new Exception("Some WLAN profile could not be removed");
+            }
         }
 
         public async Task<bool> TryToConnect()
@@ -342,7 +347,7 @@ namespace EduroamConfigure
         {
             try
             {
-                NativeWifi.EnumerateInterfaces().ToList();
+                NativeWifi.EnumerateInterfaces().ToList(); // TODO: why ToList?
             }
             catch (TargetInvocationException ex) // we don't know why it gets wrapped
             {
