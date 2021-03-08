@@ -17,7 +17,13 @@ namespace EduroamConfigure
 		}
 	}
 
+	[Serializable]
+	public class UserAbortException : Exception
+	{
+		public UserAbortException(string message) : base(message) { }
 
+		public UserAbortException(string message, Exception innerException) : base(message, innerException) { }
+	}
 
 	[Serializable]
 	public class InternetConnectionException : Exception

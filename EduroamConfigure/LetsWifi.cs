@@ -261,12 +261,16 @@ namespace EduroamConfigure
 				.FirstOrDefault();
 
 			// should never fail, since we abort if CA installations are needed
-			if (!installer.InstallCertificates())
+			try { installer.InstallCertificates(); } catch (Exception) {
 				return RefreshResponse.Failed;
+			}
 
 			// Should only fail if the WLAN service is unavailable (no wireless NIC)
-			if (!installer.InstallWLANProfile()) // TODO: currently does not remove the old ones. in the case where ssid was removed from eap config, it will be left stale with an invalid client certificate thumbprint
-				return RefreshResponse.Failed;
+			try
+			{
+				installer.InstallWLANProfile(); // TODO: currently does not remove the old ones. in the case where ssid was removed from eap config, it will be left stale with an invalid client certificate thumbprint
+					} catch (Exception) {
+				return RefreshResponse.Failed; }
 
 			// remove the old client certificates installed by us
 			using var clientCert = installer.AuthMethod.ClientCertificateAsX509Certificate2();

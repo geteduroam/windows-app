@@ -431,12 +431,22 @@ namespace WpfApp.Menu
 				{
 					// install intermediate CAs and client certificates
 					// if user refuses to install a root CA (should never be prompted to at this stage), abort
-					if (!authMethodInstaller.InstallCertificates())
-						break;
+					try
+					{
+						authMethodInstaller.InstallCertificates();
+					}
+					catch (UserAbortException) { break; }
 
 					// Everything is now in order, install the profile!
-					if (!authMethodInstaller.InstallWLANProfile(username, password))
-						continue; // failed, try the next method
+					try
+					{
+						authMethodInstaller.InstallWLANProfile(username, password);
+					}
+					catch (Exception)
+					{
+						// failed, try the next method
+						continue;
+					}
 
 					// check if we need to wait for the certificate to become valid
 					certValid = authMethodInstaller.GetTimeWhenValid().From;
