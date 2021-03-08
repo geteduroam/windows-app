@@ -334,6 +334,15 @@ namespace WpfApp.Menu
 		/// <returns></returns>
 		public async Task<bool> ConnectAndUpdateUI(string username = null, string password = null)
 		{
+			if (!EduroamNetwork.IsWlanServiceApiAvailable())
+			{
+				// TODO: update this when wired x802 is a thing
+				tbStatus.Text = "Wireless is unavailable on this computer";
+
+				mainWindow.btnNext.Content = "Connect";
+
+				return true;
+			}
 			pbCertBrowserPassword.IsEnabled = false;
 			bool installed = await Task.Run(() => InstallEapConfig(eapConfig, username, password));
 			if (installed)
@@ -364,9 +373,7 @@ namespace WpfApp.Menu
 			}
 			else
 			{
-				tbStatus.Text = EduroamNetwork.IsWlanServiceApiAvailable()
-					? "Could not install any profile due to there not seemingly being any wireless interfaces on this host." // TODO: update this message when wireless x802 is a thing
-					: "Could not install EAP-configuration";
+				tbStatus.Text = "Unknown error while installing profile";
 
 				mainWindow.btnNext.Content = "Connect";
 			}
@@ -405,7 +412,12 @@ namespace WpfApp.Menu
 		private bool InstallEapConfig(EapConfig eapConfig, string username = null, string password = null)
 		{
 			if (!MainWindow.CheckIfEapConfigIsSupported(eapConfig)) // should have been caught earlier, but check here too for sanity
+			{
+				MessageBox.Show(
+					"Invalid eap config provided, this should not happen, please report a bug.",
+					"Internal error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
 				return false;
+			}
 
 			ConnectToEduroam.RemoveAllWLANProfiles();
 			mainWindow.ProfileCondition = MainWindow.ProfileStatus.NoneConfigured;
@@ -440,7 +452,15 @@ namespace WpfApp.Menu
 					break;
 				}
 
-				mainWindow.ProfileCondition = MainWindow.ProfileStatus.Configured;
+				if (success)
+				{
+					mainWindow.ProfileCondition = MainWindow.ProfileStatus.Configured;
+				} else
+				{
+					MessageBox.Show(
+						"No supported authentication method found in current profile, this might be a bug.",
+						"Internal error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+				}
 
 				return success;
 			}
