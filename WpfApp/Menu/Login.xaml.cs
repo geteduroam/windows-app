@@ -344,9 +344,9 @@ namespace WpfApp.Menu
                 return true;
             }
             pbCertBrowserPassword.IsEnabled = false;
-            bool installed = await Task.Run(() => InstallEapConfig(eapConfig, username, password));
-            if (installed)
-            {
+            try {
+                InstallEapConfig(eapConfig, username, password);
+
                 // Any profile installed by us must also be removed by us when it is not needed anymore
                 // so install the geteduroam app when we have installed a profile
                 _ = Task.Run(App.Installer.EnsureIsInstalled); // TODO: must be ensured to complete before the user exits
@@ -371,9 +371,13 @@ namespace WpfApp.Menu
                     mainWindow.btnNext.Content = "Connect";
                 }
             }
-            else
-            {
-                tbStatus.Text = "Unknown error while installing profile";
+            catch (EduroamAppUserException ex) {
+                tbStatus.Text = "Unknown error while installing profile\n\n" + ex.UserFacingMessage;
+
+                mainWindow.btnNext.Content = "Connect";
+            }
+            catch (Exception ex) {
+                tbStatus.Text = "Unknown error while installing profile\n\n" + ex.Message;
 
                 mainWindow.btnNext.Content = "Connect";
             }
@@ -409,88 +413,64 @@ namespace WpfApp.Menu
         /// </summary>
         /// <returns>true on success</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Catch-all to not let the application crash")]
-        private bool InstallEapConfig(EapConfig eapConfig, string username = null, string password = null)
+        private void InstallEapConfig(EapConfig eapConfig, string username = null, string password = null)
         {
             if (!MainWindow.CheckIfEapConfigIsSupported(eapConfig)) // should have been caught earlier, but check here too for sanity
             {
-                MessageBox.Show(
-                    "Invalid eap config provided, this should not happen, please report a bug.",
-                    "Internal error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return false;
+                throw new Exception("Invalid eap config provided, this should not happen, please report a bug.");
             }
 
             ConnectToEduroam.RemoveAllWLANProfiles();
             mainWindow.ProfileCondition = MainWindow.ProfileStatus.NoneConfigured;
 
             bool success = false;
-
-            try
+            Exception lastException = null;
+            // Install EAP config as a profile
+            foreach (var authMethodInstaller in ConnectToEduroam.InstallEapConfig(eapConfig))
             {
-                // Install EAP config as a profile
-                foreach (var authMethodInstaller in ConnectToEduroam.InstallEapConfig(eapConfig))
+                // install intermediate CAs and client certificates
+                // if user refuses to install a root CA (should never be prompted to at this stage), abort
+                try
                 {
-                    // install intermediate CAs and client certificates
-                    // if user refuses to install a root CA (should never be prompted to at this stage), abort
-                    try
-                    {
-                        authMethodInstaller.InstallCertificates();
-                    }
-                    catch (UserAbortException) { break; }
+                    authMethodInstaller.InstallCertificates();
+                }
+                catch (UserAbortException) { break; }
 
-                    // Everything is now in order, install the profile!
-                    try
-                    {
-                        authMethodInstaller.InstallWLANProfile(username, password);
-                    }
-                    catch (Exception)
-                    {
-                        // failed, try the next method
-                        continue;
-                    }
-
-                    // check if we need to wait for the certificate to become valid
-                    certValid = authMethodInstaller.GetTimeWhenValid().From;
-                    if (DateTime.Now <= certValid)
-                    {
-                        // dispatch the event which creates the clock the end user sees
-                        dispatcherTimer_Tick(dispatcherTimer, new EventArgs());
-                        dispatcherTimer.Start();
-                        return false;
-                    }
-
-                    success = true;
-                    break;
+                // Everything is now in order, install the profile!
+                try
+                {
+                    authMethodInstaller.InstallWLANProfile(username, password);
+                }
+                catch (Exception e)
+                {
+                    // failed, try the next method
+                    lastException = e;
+                    continue;
                 }
 
-                if (success)
+                // check if we need to wait for the certificate to become valid
+                certValid = authMethodInstaller.GetTimeWhenValid().From;
+                if (DateTime.Now <= certValid)
                 {
-                    mainWindow.ProfileCondition = MainWindow.ProfileStatus.Configured;
-                } else
-				{
-                    MessageBox.Show(
-                        "No supported authentication method found in current profile, this might be a bug.",
-                        "Internal error", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    // dispatch the event which creates the clock the end user sees
+                    dispatcherTimer_Tick(dispatcherTimer, new EventArgs());
+                    dispatcherTimer.Start();
+                    throw new Exception("Client credential is not valid yet");
                 }
 
-                return success;
+                success = true;
+                break;
             }
-            catch (EduroamAppUserException ex)
+
+            if (success)
             {
-                // TODO: expand the response with "try something else"
-                MessageBox.Show(
-                    ex.UserFacingMessage,
-                    "geteduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                mainWindow.ProfileCondition = MainWindow.ProfileStatus.Configured;
+            } else if (lastException != null) {
+                throw lastException;
+            } else {
+                throw new Exception(
+                    "No supported authentication method found in current profile, please report a bug.");
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    "Something went wrong.\n" +
-                    "Please try connecting with another profile or institution, or try again later.\n" +
-                    "\n" +
-                    "Exception: " + ex.Message,
-                    "geteduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Exclamation);
-            }
-            return false;
         }
 
         /// <summary>
