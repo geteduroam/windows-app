@@ -434,7 +434,17 @@ namespace WpfApp.Menu
 				{
 					authMethodInstaller.InstallCertificates();
 				}
-				catch (UserAbortException) { break; }
+				catch (UserAbortException ex) {
+					lastException = new Exception("Required CA certificate was not installed, this should not happen, please report a bug", ex);
+					// failed, try the next method
+					continue;
+				}
+				catch (Exception e)
+				{
+					lastException = e;
+					// failed, try the next method
+					continue;
+				}
 
 				// Everything is now in order, install the profile!
 				try
@@ -443,8 +453,8 @@ namespace WpfApp.Menu
 				}
 				catch (Exception e)
 				{
-					// failed, try the next method
 					lastException = e;
+					// failed, try the next method
 					continue;
 				}
 
