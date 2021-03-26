@@ -295,7 +295,14 @@ namespace WpfApp
 				task.Triggers.Add(new DailyTrigger(daysInterval: 1)
 				{ StartBoundary = DateTime.Today.AddHours(20) });
 
-				ts.RootFolder.RegisterTaskDefinition(ScheduledTaskName, task);
+				try
+				{
+					ts.RootFolder.RegisterTaskDefinition(ScheduledTaskName, task);
+				}
+				catch (UnauthorizedAccessException)
+				{
+					// TODO: we were not allowed to create the scheduled task
+				}
 			}
 		}
 
