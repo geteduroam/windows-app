@@ -94,11 +94,6 @@ namespace EduroamConfigure
 		/// <returns>(success with ssid, success with hotspot2)</returns>
 		public void InstallProfiles(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
 		{
-			LinkedList<Exception> exceptions = InstallProfilesInternal(authMethod, forAllUsers);
-			if (exceptions.Count != 0) throw exceptions.First();
-		}
-		private LinkedList<Exception> InstallProfilesInternal(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
-		{
 			_ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
 			LinkedList<Exception> exceptions = new LinkedList<Exception>();
 
@@ -117,8 +112,10 @@ namespace EduroamConfigure
 				try
 				{
 					InstallProfile(profileName, profileXml, isHs2: false, forAllUsers);
-				} catch (Exception e) {
-					exceptions.AddLast(e);
+				}
+				catch (Win32Exception e)
+				{
+					throw;
 				}
 			}
 
@@ -128,12 +125,17 @@ namespace EduroamConfigure
 				try
 				{
 					InstallProfile(profileName, profileXml, isHs2: true, forAllUsers);
-				} catch (Exception e) {
-					exceptions.AddLast(e);
+				}
+				catch (Win32Exception e)
+				{
+					// When HS20 is not supported, an exception is thrown with these values
+					// We ignore the error, except if no SSID was configured
+					if (ssids.Count == 0 || e.ErrorCode != -2147467259 || e.NativeErrorCode != 1206)
+					{
+						throw;
+					}
 				}
 			}
-
-			return exceptions;
 		}
 
 		private void InstallProfile(string profileName, string profileXml, bool isHs2, bool forAllUsers)
