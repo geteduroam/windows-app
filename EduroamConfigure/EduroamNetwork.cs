@@ -128,12 +128,37 @@ namespace EduroamConfigure
                 }
                 catch (Win32Exception e)
                 {
-                    // When HS20 is not supported, an exception is thrown with these values
-                    // We ignore the error, except if no SSID was configured
-                    if (ssids.Count == 0 || e.ErrorCode != -2147467259 || e.NativeErrorCode != 1206)
+                    // If any errors occur but no SSIDs were configured,
+                    // we throw an exception, even if it was ignored otherwise
+                    if (ssids.Count == 0)
                     {
                         throw;
                     }
+
+                    Debug.WriteLine(e.Message);
+
+                    // Accept any error when ssids.Count > 0
+                    // We still are not sure what kind of errors are to be expected
+                    // when configuring HS20, so this gives the best user experience
+                    #if !DEBUG
+                    return;
+                    #endif
+
+                    // When HS20 is not supported, an exception is thrown with these values
+                    // We ignore the error, except if no SSID was configured
+                    if (e.ErrorCode == -2147467259 || e.NativeErrorCode == 1206)
+                    {
+                        return;
+                    }
+
+                    // Observed by an institution in The Netherlands, via Paul Dekkers
+                    if (e.ErrorCode == -2147467259 || e.NativeErrorCode == 183)
+                    {
+                        return;
+                    }
+
+                    // Not ignored, so throw
+                    throw;
                 }
             }
         }
