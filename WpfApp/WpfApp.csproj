@@ -40,7 +40,8 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;RUN_PERSISTENT</DefineConstants>
+    <!-- <DefineConstants>DEBUG;TRACE;RUN_PERSISTENT</DefineConstants> -->
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
