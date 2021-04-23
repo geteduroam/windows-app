@@ -274,6 +274,11 @@ namespace EduroamConfigure
                 HttpWebRequest w = base.GetWebRequest(uri) as HttpWebRequest;
                 w.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip; // TODO: no brotly support
                 w.Timeout = Timeout;
+#if DEBUG
+                w.UserAgent = "geteduroam-win/" + LetsWifi.VersionNumber + "+DEBUG WebClientWithTimeoutAndGzip";
+#else
+                w.UserAgent = "geteduroam-win/" + LetsWifi.VersionNumber + " WebClientWithTimeoutAndGzip";
+#endif
                 return w;
             }
         }
