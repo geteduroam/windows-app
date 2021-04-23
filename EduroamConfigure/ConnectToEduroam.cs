@@ -233,18 +233,8 @@ namespace EduroamConfigure
                 // Install wlan profile
                 foreach (var network in EduroamNetwork.GetAll(AuthMethod.EapConfig))
                 {
-                    network.InstallProfiles(AuthMethod);
-                }
-
-                // Debug output
-                Debug.WriteLine("Ssid profile eap type: " + AuthMethod.EapType.ToString() ?? "None");
-                Debug.WriteLine("Hs2  profile eap type: " + AuthMethod.Hs2AuthMethod?.EapType.ToString() ?? "None");
-
-                // sets user data
-                Debug.WriteLine("Install user profiles for user {0}", username);
-                foreach (var network in EduroamNetwork.GetAll(AuthMethod.EapConfig))
-                {
-                    network.InstallUserData(username, password, AuthMethod);
+                    Debug.WriteLine("Install profile {0}", network.ProfileName);
+                    network.InstallProfiles(AuthMethod, username, password, forAllUsers: true);
                 }
             }
 
