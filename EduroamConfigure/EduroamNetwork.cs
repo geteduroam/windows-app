@@ -89,15 +89,17 @@ namespace EduroamConfigure
 		/// Will install multiple profile, one for each supported SSID
 		/// Will overwrite any profiles with matching names if they exist.
 		/// </summary>
-		/// <param name="authMethod">TODO</param>
+		/// <param name="username">User's username optionally with realm</param>
+		/// <param name="password">User's password.</param>
+		/// <param name="authMethod">AuthMethod of profiles to be installed</param>
 		/// <param name="forAllUsers">TODO</param>
 		/// <returns>(success with ssid, success with hotspot2)</returns>
-		public void InstallProfiles(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
+		public void InstallProfiles(EapConfig.AuthenticationMethod authMethod, string username = null, string password = null, bool forAllUsers = true)
 		{
 			_ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
-			LinkedList<Exception> exceptions = new LinkedList<Exception>();
 
 			PersistingStore.IdentityProvider = PersistingStore.IdentityProviderInfo.From(authMethod);
+			PersistingStore.Username = username; // save username
 
 			var ssids = authMethod.EapConfig.CredentialApplicabilities
 				.Where(cred => cred.NetworkType == IEEE802x.IEEE80211) // TODO: add support for Wired 802.1x
@@ -106,12 +108,15 @@ namespace EduroamConfigure
 				.Select(cred => cred.Ssid)
 				.ToList();
 
+			ConfiguredWLANProfile profile;
 			foreach (var ssid in ssids)
 			{
 				(string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, withSsid: ssid);
+				string userDataXml = UserDataXml.CreateUserDataXml(authMethod, username, password);
 				try
 				{
-					InstallProfile(profileName, profileXml, isHs2: false, forAllUsers);
+					profile = InstallProfile(profileName, profileXml, isHs2: false, forAllUsers);
+					InstallUserData(profile, userDataXml, forAllUsers);
 				}
 				catch (Win32Exception e)
 				{
@@ -122,9 +127,11 @@ namespace EduroamConfigure
 			if (authMethod.Hs2AuthMethod != null)
 			{
 				(string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod.Hs2AuthMethod, asHs2Profile: true);
+				string userDataXml = UserDataXml.CreateUserDataXml(authMethod.Hs2AuthMethod, username, password);
 				try
 				{
-					InstallProfile(profileName, profileXml, isHs2: true, forAllUsers);
+					profile = InstallProfile(profileName, profileXml, isHs2: true, forAllUsers);
+					InstallUserData(profile, userDataXml, forAllUsers);
 				}
 				catch (Win32Exception e)
 				{
@@ -163,7 +170,7 @@ namespace EduroamConfigure
 			}
 		}
 
-		private void InstallProfile(string profileName, string profileXml, bool isHs2, bool forAllUsers)
+		private ConfiguredWLANProfile InstallProfile(string profileName, string profileXml, bool isHs2, bool forAllUsers)
 		{
 			// security type not required
 			const string securityType = null; // TODO: document why
@@ -179,67 +186,47 @@ namespace EduroamConfigure
 					: ProfileType.PerUser, // TODO: make this option work and set as default
 				profileXml,
 				securityType,
-				overwrite)) throw new EduroamAppUserException(
-					"Unable to install " + (isHs2 ? "Passpoint " : "SSID ") + profileName,
+				overwrite)) throw new Exception(
 					"Unable to install " + (isHs2 ? "Passpoint " : "SSID ") + profileName
 				);
 
+			ConfiguredWLANProfile configuredWLANProfile = new ConfiguredWLANProfile(InterfaceId, profileName, isHs2);
 			PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
-				.Add(new ConfiguredWLANProfile(InterfaceId, profileName, isHs2));
+				.Add(configuredWLANProfile);
+			return configuredWLANProfile;
 		}
 
 		/// <summary>
 		/// Sets user data (credentials) for a network profile.
 		/// </summary>
-		/// <param name="username">User's username optionally with realm</param>
-		/// <param name="password">User's password.</param>
-		/// <param name="authMethod">AuthMethod of installed profile</param>
+		/// <param name="profile">The profile to add user data to</param>
+		/// <param name="userDataXml">The user data XML</param>
 		/// <param name="forAllUsers">TODO - mention the cert store thing</param>
-		/// <returns>True if all succeeded, false if any failed or none was configured</returns>
-		public void InstallUserData(string username, string password, EapConfig.AuthenticationMethod authMethod, bool forAllUsers = false)
+		public void InstallUserData(ConfiguredWLANProfile profile, string userDataXml, bool forAllUsers = false)
 		{
-			_ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
+			if (profile.InterfaceId != InterfaceId)
+				throw new ArgumentException("Provided profile is not for the same interface as this network");
 
 			// See 'dwFlags' at: https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/nf-wlanapi-wlansetprofileeapxmluserdata
 			const uint profileUserTypeCurrentUsers = 0x00000000; // "current user" - https://github.com/rozmansi/WLANSetEAPUserData
 			const uint profileUserTypeAllUSers = 0x00000001; // WLAN_SET_EAPHOST_DATA_ALL_USERS
 
-			PersistingStore.Username = username; // save username
-
-			if (!PersistingStore.ConfiguredWLANProfiles.Any())
+			if (NativeWifi.SetProfileUserData(
+				profile.InterfaceId,
+				profile.ProfileName,
+				forAllUsers
+					? profileUserTypeAllUSers
+					: profileUserTypeCurrentUsers,
+				userDataXml))
 			{
-				throw new Exception("No configured WLAN profiles");
-			}
-			foreach (var configuredProfile in PersistingStore.ConfiguredWLANProfiles.ToList())
-			{
-				if (configuredProfile.InterfaceId != InterfaceId) continue;
-
-				// generate user data xml file
-				string userDataXml = UserDataXml.CreateUserDataXml(
-					configuredProfile.IsHs2
-						? authMethod.Hs2AuthMethod
-						: authMethod,
-					username,
-					password);
-
-				// install it
-				if (!NativeWifi.SetProfileUserData(
-					InterfaceId,
-					configuredProfile.ProfileName,
-					forAllUsers
-						? profileUserTypeAllUSers
-						: profileUserTypeCurrentUsers,
-					userDataXml))
-				{
-					throw new Exception("Unable to install UserProfile " + configuredProfile.ProfileName);
-				}
-
-				if (!configuredProfile.HasUserData) // ommit uneccesary writes
+				if (!profile.HasUserData) // ommit uneccesary writes
 				{
 					PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
-						.Remove(configuredProfile)
-						.Add(configuredProfile.WithUserDataSet());
+						.Remove(profile)
+						.Add(profile.WithUserDataSet());
 				}
+			} else {
+				throw new Exception("Unable to install UserProfile " + profile.ProfileName);
 			}
 		}
 
