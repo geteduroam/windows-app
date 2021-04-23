@@ -379,8 +379,15 @@ namespace EduroamConfigure
             // TODO: hotspot2.0 requires Windows 10
             bool hasOID = authMethod.EapConfig.CredentialApplicabilities
                 .Any(cred => cred.ConsortiumOid != null);
-            bool isPEAP = authMethod.EapType == EapType.PEAP;
-            return hasOID && !isPEAP; // Hotstpot2.0 does not support PEAP
+            // HS20 with TTLS-EAP-MSCHAPv2 on Windows fails user configuration with error 57893
+            // TODO: see if a change in the userdata XML generator can fix this somehow
+            // TTLS-PAP is supported
+            // PEAP-MSCHAPv2 is supported
+            // TODO: is TTLS-MSCHAPv2 supported? (probably yes)
+            bool isTTLS_EAP_MSCHAPv2 = authMethod.EapType == EapType.TTLS
+                && authMethod.InnerAuthType == InnerAuthType.EAP_MSCHAPv2;
+            //bool isPEAP = authMethod.EapType == EapType.PEAP;
+            return hasOID && !isTTLS_EAP_MSCHAPv2 && IsSupported(authMethod);
         }
 
         /// <summary>
