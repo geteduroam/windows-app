@@ -275,9 +275,9 @@ namespace EduroamConfigure
 				w.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip; // TODO: no brotly support
 				w.Timeout = Timeout;
 #if DEBUG
-				w.UserAgent = "geteduroam-win/" + LetsWifi.VersionNumber + "+DEBUG WebClientWithTimeoutAndGzip";
+				w.UserAgent = "geteduroam-win/" + LetsWifi.VersionNumber + "+DEBUG WebClientWithTimeoutAndGzip (Windows NT 10.0; Win64; x64)";
 #else
-				w.UserAgent = "geteduroam-win/" + LetsWifi.VersionNumber + " WebClientWithTimeoutAndGzip";
+				w.UserAgent = "geteduroam-win/" + LetsWifi.VersionNumber + " WebClientWithTimeoutAndGzip (Windows NT 10.0; Win64; x64)";
 #endif
 				return w;
 			}
