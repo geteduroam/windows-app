@@ -76,6 +76,23 @@ namespace WpfApp
 		{
 			WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
 			InitializeComponent();
+			string versionNumber = LetsWifi.VersionNumber;
+			if (versionNumber == null)
+			{
+#if DEBUG
+				lblVersion.Content = "DEBUG";
+#else
+				lblVersion.Content = "VERSIONLESS";
+#endif
+			}
+			else
+			{
+#if DEBUG
+				lblVersion.Content = LetsWifi.VersionNumber + "+DEBUG";
+#else
+				lblVersion.Content = LetsWifi.VersionNumber;
+#endif
+			}
 
 #if RUN_PERSISTENT
 			if (App.StartHiddenInTray && App.Installer.IsRunningInInstallLocation)
