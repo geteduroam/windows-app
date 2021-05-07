@@ -179,7 +179,7 @@ namespace WpfApp
 					break;
 
 				case FormId.SelectInstitution:
-					var profiles = GetProfiles((int)pageSelectInstitution.IdProviderId);
+					var profiles = IdpDownloader.GetIdentityProviderProfiles(pageSelectInstitution.IdProviderId);
 					if (profiles.Count == 1) // skip the profile select and go with the first one
 					{
 						string autoProfileId = profiles.FirstOrDefault().Id;
@@ -425,12 +425,6 @@ namespace WpfApp
 			|| !string.IsNullOrEmpty(config.InstitutionInfo.Description)
 			|| !string.IsNullOrEmpty(config.InstitutionInfo.Phone)
 			|| !string.IsNullOrEmpty(config.InstitutionInfo.TermsOfUse);
-
-		/// <summary>
-		/// Fetches a list of all eduroam institutions from https://cat.eduroam.org.
-		/// </summary>
-		private List<IdentityProviderProfile> GetProfiles(int providerId)
-			=> IdpDownloader.GetIdentityProviderProfiles(providerId);
 
 		/// <summary>
 		/// Gets EAP-config file, either directly or after browser authentication.
