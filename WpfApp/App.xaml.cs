@@ -189,9 +189,9 @@ namespace WpfApp
 			return false; // dont have the library show the window for us
 		}
 
-		private static void RefreshInstalledProfile(Func<string, bool> f, bool force)
+		private static async void RefreshInstalledProfile(Func<string, bool> f, bool force)
 		{
-			_ = LetsWifi.RefreshAndInstallEapConfig(force) switch
+			_ = await LetsWifi.RefreshAndInstallEapConfig(force) switch
 			{
 				LetsWifi.RefreshResponse.UpdatedEapXml => true, // fine
 

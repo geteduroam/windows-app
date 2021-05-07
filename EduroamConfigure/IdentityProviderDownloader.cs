@@ -6,6 +6,9 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Device.Location;
 using System.Globalization;
+using System.Net.Http;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace EduroamConfigure
 {
@@ -34,33 +37,32 @@ namespace EduroamConfigure
 		{
 			GeoWatcher = new GeoCoordinateWatcher();
 			GeoWatcher.TryStart(false, TimeSpan.FromMilliseconds(3000));
+			Task.Run(GetClosestProviders);
 		}
 
 		/// <exception cref="ApiUnreachableException">description</exception>
 		/// <exception cref="ApiParsingException">description</exception>
 		/// <exception cref="InternetConnectionException">When internet is offline</exception>
-		public void LoadProviders(bool useGeodata = true)
+		public async void LoadProviders(bool useGeodata = true)
 		{
 			Online = false;
-			Providers = DownloadAllIdProviders();
+			Providers = await DownloadAllIdProviders();
 			// turns out just running this once, even without saving it and caching makes subsequent calls much faster
-			ClosestProviders = useGeodata ? GetClosestProviders() : Providers;
+			ClosestProviders = useGeodata ? await GetClosestProviders() : Providers;
 			Online = true;
 		}
-
-
 
 		/// <summary>
 		/// Will return the current coordinates of the users.
 		/// It may download them if not cached
 		/// </summary>
-		private GeoCoordinate GetCoordinates()
+		private async Task<GeoCoordinate> GetCoordinates()
 		{
 			if (!GeoWatcher.Position.Location.IsUnknown)
 			{
 				return GeoWatcher.Position.Location;
 			}
-			return DownloadCoordinates();
+			return await DownloadCoordinates();
 		}
 
 		/// <summary>
@@ -69,12 +71,12 @@ namespace EduroamConfigure
 		/// <returns>DiscoveryApi object with the ata fetched</returns>
 		/// <exception cref="ApiUnreachableException">description</exception>
 		/// <exception cref="ApiParsingException">description</exception>
-		private static DiscoveryApi DownloadDiscoveryApi()
+		private async static Task<DiscoveryApi> DownloadDiscoveryApi()
 		{
 			try
 			{
 				// downloads json file as string
-				string apiJson = DownloadUrlAsString(ProviderApiUrl);
+				string apiJson = await DownloadUrlAsString(ProviderApiUrl);
 				// gets api instance from json
 				DiscoveryApi apiInstance = JsonConvert.DeserializeObject<DiscoveryApi>(apiJson);
 				return apiInstance;
@@ -98,11 +100,11 @@ namespace EduroamConfigure
 
 		/// <exception cref="ApiUnreachableException">description</exception>
 		/// <exception cref="ApiParsingException">description</exception>
-		private static IdpLocation GetCurrentLocationFromGeoApi()
+		private async static Task<IdpLocation> GetCurrentLocationFromGeoApi()
 		{
 			try
 			{
-				string apiJson = DownloadUrlAsString(GeoApiUrl);
+				string apiJson = await DownloadUrlAsString(GeoApiUrl);
 				return JsonConvert.DeserializeObject<IdpLocation>(apiJson);
 			}
 			catch (WebException ex)
@@ -120,9 +122,9 @@ namespace EduroamConfigure
 		/// </summary>
 		/// <exception cref="ApiUnreachableException">description</exception>
 		/// <exception cref="ApiParsingException">description</exception>
-		private static List<IdentityProvider> DownloadAllIdProviders()
+		private async static Task<List<IdentityProvider>> DownloadAllIdProviders()
 		{
-			return DownloadDiscoveryApi().Instances;
+			return (await DownloadDiscoveryApi()).Instances;
 		}
 
 		/// <summary>
@@ -135,14 +137,14 @@ namespace EduroamConfigure
 		}
 
 
-		private List<IdentityProvider> GetClosestProviders()
+		private async Task<List<IdentityProvider>> GetClosestProviders()
 		{
 			// find country code
 			string closestCountryCode;
 			try
 			{
 				// find country code from api
-				closestCountryCode = GetCurrentLocationFromGeoApi().Country;
+				closestCountryCode = (await GetCurrentLocationFromGeoApi()).Country;
 			}
 			catch (ApiUnreachableException)
 			{
@@ -159,7 +161,7 @@ namespace EduroamConfigure
 
 			try
 			{
-				var userCoords = GetCoordinates();
+				var userCoords = await GetCoordinates();
 
 				// sort and return n closest
 				return Providers
@@ -176,9 +178,9 @@ namespace EduroamConfigure
 			}
 		}
 
-		private static GeoCoordinate DownloadCoordinates()
+		private async static Task<GeoCoordinate> DownloadCoordinates()
 		{
-			return GetCurrentLocationFromGeoApi().Geo.GeoCoordinate;
+			return (await GetCurrentLocationFromGeoApi()).Geo.GeoCoordinate;
 		}
 
 		/// <summary>
@@ -186,7 +188,7 @@ namespace EduroamConfigure
 		/// </summary>
 		/// <returns></returns>
 		/// <exception cref="EduroamAppUserException">description</exception>
-		public EapConfig DownloadEapConfig(string profileId)
+		public async Task<EapConfig> DownloadEapConfig(string profileId)
 		{
 			// adds profile ID to url containing json file, which in turn contains url to EAP config file download
 			// gets url to EAP config file download from GenerateEapConfig object
@@ -200,7 +202,7 @@ namespace EduroamConfigure
 			string eapXml;
 			try
 			{
-				eapXml = DownloadUrlAsString(endpoint);
+				eapXml = await DownloadUrlAsString(endpoint);
 			}
 			catch (WebException ex)
 			{
@@ -236,11 +238,26 @@ namespace EduroamConfigure
 		/// </summary>
 		/// <param name="url">Url containing json file.</param>
 		/// <returns>Json string.</returns>
-		private static string DownloadUrlAsString(string url)
+		private async static Task<string> DownloadUrlAsString(string url)
 		{
 			// download json file from url as string
-			using var client = new WebClientWithTimeoutAndGzip();
-			return client.DownloadString(url);
+			HttpClientHandler handler = new HttpClientHandler();
+			handler.AutomaticDecompression = System.Net.DecompressionMethods.GZip | DecompressionMethods.Deflate;
+			handler.AllowAutoRedirect = true;
+			var client = new HttpClient(handler);
+#if DEBUG
+			client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
+#else
+			client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
+#endif
+			HttpResponseMessage response = await client.GetAsync(url);
+
+			HttpContent responseContent = response.Content;
+
+			using (var reader = new StreamReader(await responseContent.ReadAsStreamAsync()))
+			{
+				return await reader.ReadToEndAsync();
+			}
 		}
 
 
@@ -255,32 +272,6 @@ namespace EduroamConfigure
 				"Couldn't connect to the server.\n\n" +
 				"Make sure that you are connected to the internet, then try again.\n" +
 				"Exception: " + ex.Message;
-		}
-
-
-		/// <summary>
-		/// WebClient with support for timeouts
-		/// </summary>
-		private class WebClientWithTimeoutAndGzip : WebClient
-		{
-			public int Timeout = 3000; // ms
-
-			public WebClientWithTimeoutAndGzip() : base() {
-				Encoding = Encoding.UTF8;
-			}
-
-			protected override WebRequest GetWebRequest(Uri uri)
-			{
-				HttpWebRequest w = base.GetWebRequest(uri) as HttpWebRequest;
-				w.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip; // TODO: no brotly support
-				w.Timeout = Timeout;
-#if DEBUG
-				w.UserAgent = "geteduroam-win/" + LetsWifi.VersionNumber + "+DEBUG WebClientWithTimeoutAndGzip (Windows NT 10.0; Win64; x64)";
-#else
-				w.UserAgent = "geteduroam-win/" + LetsWifi.VersionNumber + " WebClientWithTimeoutAndGzip (Windows NT 10.0; Win64; x64)";
-#endif
-				return w;
-			}
 		}
 
 #pragma warning disable CA2227 // Collection properties should be read only
