@@ -14,10 +14,10 @@ namespace WpfApp.Menu
     public partial class SelectProfile : Page
     {
         private readonly MainWindow mainWindow; // makes parent form accessible from this class
-        private readonly int IdProviderId; // id of selected institution
+        private readonly string IdProviderId; // id of selected institution
         public string ProfileId { get; set; } // id of selected institution profile
 
-        public SelectProfile(MainWindow mainWindow, int providerId)
+        public SelectProfile(MainWindow mainWindow, string providerId)
         {
             this.mainWindow = mainWindow ?? throw new ArgumentNullException(paramName: nameof(mainWindow));
             this.IdProviderId = providerId;

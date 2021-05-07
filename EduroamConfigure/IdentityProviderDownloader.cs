@@ -139,6 +139,8 @@ namespace EduroamConfigure
 
         private async Task<List<IdentityProvider>> GetClosestProviders()
         {
+            if (Providers == null) return null;
+
             // find country code
             string closestCountryCode;
             try
