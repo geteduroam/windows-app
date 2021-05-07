@@ -38,8 +38,20 @@ namespace EduroamConfigure
         {
             get {
                 Assembly assembly = Assembly.GetExecutingAssembly();
-                FileVersionInfo fileVersionInfo = FileVersionInfo.GetVersionInfo(assembly.Location);
-                return fileVersionInfo.ProductVersion;
+                foreach(CustomAttributeData attrs in assembly.CustomAttributes)
+                {
+                    if (attrs.AttributeType.Name == "AssemblyFileVersionAttribute")
+                    {
+                        foreach (CustomAttributeTypedArgument attr in attrs.ConstructorArguments)
+                        {
+                            if (attr.Value is string)
+                            {
+                                return (string)attr.Value;
+                            }
+                        }
+                    }
+                }
+                return null;
             }
         }
 
