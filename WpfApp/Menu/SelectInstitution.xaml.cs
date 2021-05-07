@@ -18,12 +18,11 @@ namespace WpfApp.Menu
 		private IdentityProviderDownloader downloader;
 		private bool isSearching;
 		private bool isNewSearch;
-		public int IdProviderId { get; private set; } // id of selected institution
+		public string IdProviderId { get; private set; } // id of selected institution
 
 		public SelectInstitution(MainWindow mainWindow)
 		{
 			this.mainWindow = mainWindow ?? throw new ArgumentNullException(paramName: nameof(mainWindow));
-			this.IdProviderId = -1;
 			InitializeComponent();
 			LoadPage();
 		}
@@ -105,16 +104,16 @@ namespace WpfApp.Menu
 		{
 			if (lbInstitutions.SelectedIndex == -1)
 			{
-				IdProviderId = -1;
+				IdProviderId = null;
 				mainWindow.btnNext.IsEnabled = false;
 			}
 			else
 			{
 				// select provider ID from selected provider
 				IdentityProvider selectedProvider = (IdentityProvider)lbInstitutions.SelectedItem;
-				IdProviderId = selectedProvider.cat_idp;
+				IdProviderId = selectedProvider.Id;
 
-				mainWindow.btnNext.IsEnabled = selectedProvider.cat_idp > 0;
+				mainWindow.btnNext.IsEnabled = selectedProvider.Id != null;
 			}
 		}
 
