@@ -8,6 +8,7 @@ using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace EduroamConfigure
 {
@@ -213,7 +214,7 @@ namespace EduroamConfigure
         /// </summary>
         /// <param name="force">Wether to force a reinstall even if the current certificate still is valid for quote some time</param>
         /// <returns>An enum describing the result</returns>
-        public static RefreshResponse RefreshAndInstallEapConfig(bool force = false, bool onlyLetsWifi = false)
+        public static async Task<RefreshResponse> RefreshAndInstallEapConfig(bool force = false, bool onlyLetsWifi = false)
         {
             // if LetsWifi is not set up:
             // Download a new EapConfig xml if we already have one stored
@@ -227,7 +228,7 @@ namespace EduroamConfigure
                 {
                     using var discovery = new IdentityProviderDownloader();
                     discovery.LoadProviders(useGeodata: false);
-                    var xml = discovery.DownloadEapConfig(profileId).XmlData;
+                    var xml = (await discovery.DownloadEapConfig(profileId)).XmlData;
                     PersistingStore.IdentityProvider = PersistingStore.IdentityProvider
                         ?.WithEapConfigXml(xml);
                     return RefreshResponse.UpdatedEapXml;
