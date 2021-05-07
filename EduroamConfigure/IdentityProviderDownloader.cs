@@ -131,11 +131,11 @@ namespace EduroamConfigure
         /// Gets all profiles associated with a identity provider ID.
         /// </summary>
         /// <returns>identity provider profile object containing all profiles for given provider</returns>
-        public List<IdentityProviderProfile> GetIdentityProviderProfiles(int idProviderId)
-        {
-            return Providers.Where(p => p.cat_idp == idProviderId).First().Profiles;
-        }
-
+        public List<IdentityProviderProfile> GetIdentityProviderProfiles(string idProviderId)
+            => idProviderId == null
+                ? Enumerable.Empty<IdentityProviderProfile>().ToList()
+                : Providers.Where(p => p.Id == idProviderId).First().Profiles
+                ;
 
         private async Task<List<IdentityProvider>> GetClosestProviders()
         {

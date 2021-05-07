@@ -114,13 +114,13 @@ namespace WpfApp.Menu
                 IdentityProvider selectedProvider = (IdentityProvider)lbInstitutions.SelectedItem;
                 IdProviderId = selectedProvider.cat_idp;
 
-                mainWindow.btnNext.IsEnabled = true;
+                mainWindow.btnNext.IsEnabled = selectedProvider.cat_idp > 0;
             }
         }
 
         private void lbInstitutions_MouseDoubleClick(object sender, RoutedEventArgs e)
         {
-            if (lbInstitutions.SelectedItem != null)
+            if (mainWindow.btnNext.IsEnabled)
             {
                 mainWindow.NextPage();
             }
