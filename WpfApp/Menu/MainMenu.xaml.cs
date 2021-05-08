@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using EduroamConfigure;
 using WpfApp.Classes;
 
@@ -70,7 +70,9 @@ namespace WpfApp.Menu
             {
                 // Must never happen, because if the discovery is reached,
                 // it must be parseable. If it happens anyway, SCREAM!
-                throw;
+                Debug.Print(e.ToString());
+                tbNewProfile.Text = "API error";
+                MessageBox.Show(e.Message, e.GetType().ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (ApiUnreachableException)
             {

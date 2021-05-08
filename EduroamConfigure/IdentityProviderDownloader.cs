@@ -12,6 +12,7 @@ using System.Threading;
 using System.Xml;
 using System.Collections.Specialized;
 using System.Text;
+using System.Diagnostics;
 
 namespace EduroamConfigure
 {
@@ -179,7 +180,9 @@ namespace EduroamConfigure
                 // find country code from api
                 closestCountryCode = (await GetCurrentLocationFromGeoApi()).Country;
             }
-            catch (ApiException) { }
+            catch (Exception e) {
+                Debug.Print(e.ToString());
+            }
 
             if (null == closestCountryCode) {
                 // gets country code as set in Settings

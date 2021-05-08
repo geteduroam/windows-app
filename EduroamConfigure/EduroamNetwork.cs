@@ -120,6 +120,7 @@ namespace EduroamConfigure
                 }
                 catch (Win32Exception e)
                 {
+                    Debug.Print(e.ToString());
                     throw;
                 }
             }
