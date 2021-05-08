@@ -181,6 +181,7 @@ namespace EduroamConfigure
         /// Will usually request the LetsWifi endpoint to issue a client certificate
         /// </summary>
         /// <returns>EapConfig with client</returns>
+        /// <exception cref="XmlException"></exception>
         public static EapConfig RequestAndDownloadEapConfig()
         {
             if (EapEndpoint == null) return null;
@@ -214,6 +215,7 @@ namespace EduroamConfigure
         /// </summary>
         /// <param name="force">Wether to force a reinstall even if the current certificate still is valid for quote some time</param>
         /// <returns>An enum describing the result</returns>
+        /// <exception cref="ApiParsingException">JSON cannot be deserialized</exception>
         public static async Task<RefreshResponse> RefreshAndInstallEapConfig(bool force = false, bool onlyLetsWifi = false)
         {
             // if LetsWifi is not set up:
@@ -232,10 +234,14 @@ namespace EduroamConfigure
                     PersistingStore.IdentityProvider = PersistingStore.IdentityProvider
                         ?.WithEapConfigXml(xml);
                     return RefreshResponse.UpdatedEapXml;
-                } catch (InternetConnectionException)
+                }
+                catch (ApiParsingException e)
                 {
-                    return RefreshResponse.Failed;
-                } catch (EduroamAppUserException)
+                    // Must never happen, because if the discovery is reached,
+                    // it must be parseable. If it happens anyway, SCREAM!
+                    throw;
+                }
+                catch (ApiUnreachableException)
                 {
                     return RefreshResponse.Failed;
                 }

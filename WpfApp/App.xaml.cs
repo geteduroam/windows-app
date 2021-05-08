@@ -189,6 +189,12 @@ namespace WpfApp
             return false; // dont have the library show the window for us
         }
 
+        /// <summary>
+        /// Refresh the profile if needed and report to the user if running persistent
+        /// </summary>
+        /// <param name="f">Function to show user a message in the tray icon</param>
+        /// <param name="force">Wether to force a reinstall even if the current certificate still is valid for quote some time</param>
+        /// <exception cref="ApiException">The API did something unexpected</exception>
         private static async void RefreshInstalledProfile(Func<string, bool> f, bool force)
         {
             _ = await LetsWifi.RefreshAndInstallEapConfig(force) switch

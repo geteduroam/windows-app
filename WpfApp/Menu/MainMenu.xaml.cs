@@ -47,46 +47,49 @@ namespace WpfApp.Menu
                 btnExisting.Visibility = Visibility.Visible;
                 tbExisting.Text = "Connect with " + mainWindow.ExtractedEapConfig.InstitutionInfo.DisplayName;
             }
-            LoadProviders();
+
+            Task.Run(() => mainWindow.IdpDownloader.LoadProviders());
+            if (!tbInstalledProfile.IsVisible && !btnExisting.IsVisible)
+                tbNewProfile.Focus();
         }
         /// <summary>
         /// If no providers available try to download them
         /// </summary>
-        private async void LoadProviders()
+        private async Task<bool> LoadProviders()
         {
-            if (!mainWindow.IdpDownloader.Online)
+            bool online = false;
+            // disable the discovery button until we are done
+            btnNewProfile.IsEnabled = false;
+            tbNewProfile.Text = "Loading ...";
+            try
             {
-                try
-                {
-                    // this will make the window pop up a little bit faster and disable the discovery button until institutions are loaded
-                    BtnNewProfile.IsEnabled = false;
-                    tbNewProfile.Text = "Loading ...";
-                    await Task.Run(() => mainWindow.IdpDownloader.LoadProviders());
-                    BtnNewProfile.IsEnabled = true;
-                    tbNewProfile.Text = "Connect to eduroam";
-                    if (!tbInstalledProfile.IsVisible && !btnExisting.IsVisible)
-                        tbNewProfile.Focus();
-                }
-                catch (ApiException)
-                {
-                    tbNewProfile.Text = "Discovery service down";
-                    BtnNewProfile.IsEnabled = false;
-                }
-                catch (InternetConnectionException)
-                {
-                    tbNewProfile.Text = "No internet connection";
-                    BtnNewProfile.IsEnabled = false;
-                }
+                online = await mainWindow.IdpDownloader.LoadProviders();
+                tbNewProfile.Text = "Connect to eduroam";
             }
+            catch (ApiParsingException e)
+            {
+                // Must never happen, because if the discovery is reached,
+                // it must be parseable. If it happens anyway, SCREAM!
+                throw;
+            }
+            catch (ApiUnreachableException)
+            {
+                tbNewProfile.Text = "No internet connection";
+            }
+            btnNewProfile.IsEnabled = true;
+
+            return online;
         }
 
-        private void btnNewProfile_Click(object sender, RoutedEventArgs e)
+        private async void btnNewProfile_Click(object sender, RoutedEventArgs e)
         {
             if (!mainWindow.IdpDownloader.Online)
             {
-                LoadProviders();
+                await LoadProviders();
             }
-            else
+
+            // The value may have changed, so check again
+            if (mainWindow.IdpDownloader.Online)
             {
                 mainWindow.NextPage();
             }
@@ -117,7 +120,7 @@ namespace WpfApp.Menu
 
         private void Page_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
         {
-            foreach (FrameworkElement fwe in new FrameworkElement[] { tbInstalledProfile, btnExisting, BtnNewProfile })
+            foreach (FrameworkElement fwe in new FrameworkElement[] { tbInstalledProfile, btnExisting, btnNewProfile })
             {
                 if (fwe.IsVisible && fwe.IsEnabled)
                 {

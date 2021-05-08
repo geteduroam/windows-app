@@ -79,11 +79,17 @@ namespace WpfApp.Menu
                     mainWindow.btnNext.Content = "Loading ...";
                     if (!mainWindow.IdpDownloader.Online) await Task.Run(() => mainWindow.IdpDownloader.LoadProviders());
                 }
-                catch (InternetConnectionException)
+                catch (ApiUnreachableException)
                 {
                     mainWindow.btnNext.IsEnabled = false;
                     mainWindow.btnNext.Content = "Offline";
                     return;
+                }
+                catch (ApiParsingException e)
+                {
+                    // Must never happen, because if the discovery is reached,
+                    // it must be parseable. If it happens anyway, SCREAM!
+                    throw;
                 }
 
                 // TODO: this ^ Online check should be moved into the IdpDownloader
