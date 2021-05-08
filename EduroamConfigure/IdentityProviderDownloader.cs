@@ -20,7 +20,7 @@ namespace EduroamConfigure
 #if DEBUG
 		private static readonly Uri ProviderApiUrl = new Uri("https://discovery.eduroam.app/v1/discovery.json");
 #else
-		private static readonly Uri ProviderApiUrl = new Uri(""https://discovery.eduroam.app/v1/discovery.json");
+		private static readonly Uri ProviderApiUrl = new Uri("https://discovery.eduroam.app/v1/discovery.json");
 #endif
 
 		// http objects
