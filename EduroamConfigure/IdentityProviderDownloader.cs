@@ -387,18 +387,18 @@ namespace EduroamConfigure
                 throw new ArgumentNullException("Cannot create a client without access_token");
             }
 
-            client = new HttpClient(handler);
+            HttpClient newClient = new HttpClient(handler);
 #if DEBUG
-            client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
+            newClient.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
 #else
-            client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
+            newClient.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
 #endif
-            client.Timeout = new TimeSpan(0, 0, 3);
+            newClient.Timeout = new TimeSpan(0, 0, 3);
             if (accessToken != null)
             {
-                client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
+                newClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
             }
-            return client;
+            return newClient;
         }
 
         #pragma warning disable CA2227 // Collection properties should be read only
