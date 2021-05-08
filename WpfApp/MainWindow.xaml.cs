@@ -14,6 +14,7 @@ using EduroamConfigure;
 using WpfApp.Menu;
 using System.Windows.Navigation;
 using System.Windows.Input;
+using System.Xml;
 
 namespace WpfApp
 {
@@ -137,6 +138,7 @@ namespace WpfApp
 		/// <summary>
 		/// Logic for navigating to forward
 		/// </summary>
+		/// <exception cref="XmlException">TODO catch</exception>
 		public async void NextPage()
 		{
 			// adds current form to history for easy backtracking
@@ -343,6 +345,7 @@ namespace WpfApp
 		/// <param name="eapConfigXml"></param>
 		/// <param name="skipOverview"></param>
 		/// <returns>True if function navigated somewhere</returns>
+		/// <exception cref="XmlException">Parsing eap-config failed</exception>
 		private async Task<bool> HandleProfileSelect(string profileId, string eapConfigXml = null, bool skipOverview = false)
 		{
 			LoadPageLoading();
@@ -441,9 +444,26 @@ namespace WpfApp
 			if (profile.oauth || !string.IsNullOrEmpty(profile.redirect))
 				return null;
 
-			return await Task.Run(()
-				=> IdpDownloader.DownloadEapConfig(profile.Id)
-			);
+			try
+			{
+				return await Task.Run(()
+					=> IdpDownloader.DownloadEapConfig(profile.Id)
+				);
+			}
+			catch (ApiUnreachableException e)
+			{
+				throw new EduroamAppUserException("HttpRequestException",
+					"Couldn't connect to the server.\n\n" +
+					"Make sure that you are connected to the internet, then try again.\n" +
+					"Exception: " + e.Message);
+			}
+			catch (ApiParsingException e)
+			{
+				throw new EduroamAppUserException("xml parse exception",
+					"The institution or profile is either not supported or malformed. " +
+					"Please select a different institution or profile.\n\n" +
+					"Exception: " + e.Message);
+			}
 		}
 
 
@@ -489,10 +509,8 @@ namespace WpfApp
 					? eapconfig
 					: null;
 			}
-			catch (EduroamAppUserException)
-			{
-				return null;
-			}
+			catch (XmlException) { }
+			return null;
 		}
 
 		private static App App { get => (App)Application.Current; }

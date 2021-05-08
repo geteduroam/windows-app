@@ -441,6 +441,7 @@ namespace EduroamConfigure
 		/// </summary>
 		/// <param name="eapConfigXmlData">EAP config XML as string</param>
 		/// <returns>EapConfig object</returns>
+		/// <exception cref="XmlException">Parsing <paramref name="eapConfigXmlData"/> failed</exception>
 		public static EapConfig FromXmlData(string profileId, string eapConfigXmlData, bool isOauth = false)
 		{
 			// XML format Documentation:
@@ -459,12 +460,9 @@ namespace EduroamConfigure
 			{
 				eapConfigXml = XElement.Parse(eapConfigXmlData);
 			}
-			catch (XmlException ex)
+			catch (XmlException)
 			{
-				throw new EduroamAppUserException("xml parse exception",
-					"The institution or profile is either not supported or malformed. " +
-					"Please select a different institution or profile.\n\n" +
-					"Exception: " + ex.Message);
+				throw;
 			}
 			/*
 			foreach (XElement eapIdentityProvider in eapConfigXml.Descendants().Where(nameIs("EAPIdentityProvider")))

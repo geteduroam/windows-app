@@ -38,6 +38,7 @@ namespace WpfApp.Classes
 		/// Returns null if user aborted.
 		/// </summary>
 		/// <returns>EapConfig object or null</returns>
+		/// <exception cref="XmlException"></exception>
 		public static EapConfig AskUserForEapConfig()
 		{
 			string filepath;
