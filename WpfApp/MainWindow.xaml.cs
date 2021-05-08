@@ -357,7 +357,8 @@ namespace WpfApp
                 // TODO: ^perhaps reuse logic from PersistingStore.IsReinstallable
                 Debug.WriteLine(nameof(eapConfigXml) + " was set", category: nameof(HandleProfileSelect));
 
-                eapConfig = EapConfig.FromXmlData(profileId, eapConfigXml);
+                eapConfig = EapConfig.FromXmlData(eapConfigXml);
+                eapConfig.ProfileId = profileId;
             }
             else
             {
@@ -503,7 +504,7 @@ namespace WpfApp
             {
                 string eapPath = files.First();
                 string eapString = File.ReadAllText(eapPath);
-                var eapconfig = EapConfig.FromXmlData(profileId: null, eapString);
+                var eapconfig = EapConfig.FromXmlData(eapString);
 
                 return EduroamNetwork.IsEapConfigSupported(eapconfig)
                     ? eapconfig

@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -68,7 +69,7 @@ namespace EduroamConfigure
             PersistingStore.LetsWifiEndpoints = null;
         }
 
-        public static bool AuthorizeAccess(IdentityProviderProfile profile, string authorizationCode, string codeVerifier, Uri redirectUri)
+        public static async Task<bool> AuthorizeAccess(IdentityProviderProfile profile, string authorizationCode, string codeVerifier, Uri redirectUri)
         {
             _ = profile ?? throw new ArgumentNullException(paramName: nameof(profile));
             _ = authorizationCode ?? throw new ArgumentNullException(paramName: nameof(authorizationCode));
@@ -92,24 +93,34 @@ namespace EduroamConfigure
             };
 
             // downloads json file from url as string
-            var tokenJson = PostForm(tokenEndpoint, tokenPostData);
+            string tokenJson;
+            try
+            {
+                tokenJson = await IdentityProviderDownloader.PostForm(tokenEndpoint, tokenPostData);
+            }
+            catch (HttpRequestException ex)
+            {
+                throw new EduroamAppUserException("oauth post error",
+                    userFacingMessage: "Couldn't fetch token json.\nException: " + ex.Message);
+            }
 
             // process response
-            var success = SetAccessTokensFromJson(tokenJson);
-
-            // Persist location
-            if (success)
+            try
+            {
+                SetAccessTokensFromJson(tokenJson);
                 PersistingStore.LetsWifiEndpoints = (profile.Id, tokenEndpoint, eapEndpoint);
+            }
+            catch (ApiParsingException) { return false; }
 
-            return success;
+            return true;
         }
 
         /// <summary>
         /// Parse a json response and store the tokens provided
         /// </summary>
         /// <param name="jsonResponse"></param>
-        /// <returns>True if the json was valid</returns>
-        private static bool SetAccessTokensFromJson(string jsonResponse)
+        /// <exception cref="ApiParsingException">Misformed JSON or missing requird fields</exception>
+        private static void SetAccessTokensFromJson(string jsonResponse)
         {
             // Parse json response to retrieve authorization tokens
             string accessToken;
@@ -117,23 +128,23 @@ namespace EduroamConfigure
             string refreshToken;
             int? accessTokenExpiresIn;
 
+            JObject tokenJson;
             try
             {
-                JObject tokenJson = JObject.Parse(jsonResponse);
-
-                accessToken = tokenJson["access_token"]?.ToString(); // token to retrieve EAP config
-                accessTokenType = tokenJson["token_type"]?.ToString(); // Usually "Bearer", a http authorization scheme
-                accessTokenExpiresIn = tokenJson["expires_in"]?.ToObject<int?>();
-                refreshToken = tokenJson["refresh_token"]?.ToString();
-            }
-            catch (JsonReaderException)
+                tokenJson = JObject.Parse(jsonResponse);
+            } catch (JsonReaderException e)
             {
-                return false; // malformed
+                throw new ApiParsingException("Unable to parse JSON in OAuth response", e);
             }
 
-            if (string.IsNullOrEmpty(accessToken)) return false;
-            if (string.IsNullOrEmpty(accessTokenType)) return false;
-            if (accessTokenExpiresIn == null) return false;
+            accessToken = tokenJson["access_token"]?.ToString(); // token to retrieve EAP config
+            accessTokenType = tokenJson["token_type"]?.ToString(); // Usually "Bearer", a http authorization scheme
+            accessTokenExpiresIn = tokenJson["expires_in"]?.ToObject<int?>();
+            refreshToken = tokenJson["refresh_token"]?.ToString();
+
+            if (string.IsNullOrEmpty(accessToken)
+                || string.IsNullOrEmpty(accessTokenType)
+                || accessTokenExpiresIn == null) throw new ApiParsingException("Missing required fields in OAuth response");
 
             // if we have enough headroom, have our token expire earlier
             if (accessTokenExpiresIn.Value > 60)
@@ -143,15 +154,13 @@ namespace EduroamConfigure
             AccessTokenType = accessTokenType;
             AccessTokenValidUntill = DateTime.Now.AddSeconds(accessTokenExpiresIn.Value);
             RefreshToken = refreshToken;
-
-            return true;
         }
 
         /// <summary>
         /// Will use the refresh token to request a new access token.
         /// </summary>
         /// <returns></returns>
-        public static bool RefreshTokens()
+        public static async Task<bool> RefreshTokens()
         {
             if (!CanRefresh) return false;
 
@@ -165,12 +174,13 @@ namespace EduroamConfigure
             // TODO on background refresh, internet may be offline, but be back in a few seconds; smart retry needed
             try
             {
-                var tokenJson = PostForm(TokenEndpoint, tokenFormData);
+                var tokenJson = await IdentityProviderDownloader.PostForm(TokenEndpoint, tokenFormData);
 
                 // process response
-                return SetAccessTokensFromJson(tokenJson);
+                SetAccessTokensFromJson(tokenJson);
+                return true;
             }
-            catch (EduroamAppUserException)
+            catch (ApiParsingException)
             {
                 // TODO log the error somewhere
                 return false;
@@ -182,31 +192,21 @@ namespace EduroamConfigure
         /// </summary>
         /// <returns>EapConfig with client</returns>
         /// <exception cref="XmlException"></exception>
-        public static EapConfig RequestAndDownloadEapConfig()
+        public static async Task<EapConfig> RequestAndDownloadEapConfig()
         {
             if (EapEndpoint == null) return null;
             if (DateTime.Now > AccessTokenValidUntill)
-                if (!RefreshTokens())
+                if (false == await RefreshTokens())
                     return null;
 
-            string eapConfigXml;
-            try
+            if (AccessTokenType != "Bearer")
             {
-                // Setup client with authorization token in header
-                using var client = new WebClient();
-                client.Headers.Add("Authorization", AccessTokenType + " " + AccessToken);
-
-                // download eap config
-                eapConfigXml = client.UploadString(EapEndpoint.ToString(), "");
+                throw new InvalidOperationException("Expected token_type Bearer but got " + AccessTokenType);
             }
-            catch (WebException ex)
-            {
-                throw new EduroamAppUserException("oauth eapconfig get error",
-                    userFacingMessage: "Couldn't fetch EAP config file. \nException: " + ex.Message);
-            }
-
-            // parse and return
-            return EapConfig.FromXmlData(profileId: ProfileID, eapConfigXml, isOauth: true);
+            var eapConfig = await IdentityProviderDownloader.DownloadEapConfig(EapEndpoint, AccessToken);
+            eapConfig.ProfileId = ProfileID;
+            eapConfig.IsOauth = true;
+            return eapConfig;
         }
 
         /// <summary>
@@ -271,10 +271,10 @@ namespace EduroamConfigure
             }
 
             // this is done automatically by RequestAndDownloadEapConfig, but we do it here for the result code.
-            if (!RefreshTokens())
+            if (false == await RefreshTokens())
                 return RefreshResponse.AccessDenied; // TODO: requires user intervention, make user reconnect
 
-            var eapConfig = RequestAndDownloadEapConfig();
+            var eapConfig = await RequestAndDownloadEapConfig();
             if (eapConfig == null)
                 return RefreshResponse.Failed;
 
@@ -358,24 +358,5 @@ namespace EduroamConfigure
 
         // internal helpers
 
-        /// <summary>
-        /// Upload form and return data as a string.
-        /// </summary>
-        /// <param name="url">Url to upload to.</param>
-        /// <param name="data">Data to post.</param>
-        /// <returns>Web page content.</returns>
-        private static string PostForm(Uri url, NameValueCollection data)
-        {
-            try
-            {
-                using var client = new WebClient();
-                return Encoding.UTF8.GetString(client.UploadValues(url, "POST", data));
-            }
-            catch (WebException ex)
-            {
-                throw new EduroamAppUserException("oauth post error",
-                    userFacingMessage: "Couldn't fetch token json.\nException: " + ex.Message);
-            }
-        }
     }
 }

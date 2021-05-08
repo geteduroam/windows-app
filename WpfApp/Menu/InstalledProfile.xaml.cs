@@ -291,7 +291,15 @@ namespace WpfApp.Menu
         {
             btnRefresh.Content = "Refreshing ...";
             btnRefresh.IsEnabled = false;
-            var response = await Task.Run(() => LetsWifi.RefreshAndInstallEapConfig(force: true, onlyLetsWifi: true));
+            var response = LetsWifi.RefreshResponse.Failed;
+            try
+            {
+                response = await Task.Run(() => LetsWifi.RefreshAndInstallEapConfig(force: true, onlyLetsWifi: true));
+            }
+            catch (ApiParsingException ex)
+            {
+                MessageBox.Show(ex.Message, "Unable to refresh", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             switch (response)
             {
                 case LetsWifi.RefreshResponse.Success:

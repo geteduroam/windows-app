@@ -15,28 +15,24 @@ namespace EduroamConfigure
     public class EapConfig
     {
         // Properties
-        public string ProfileId { get; } // May be null, in the case of a bundled eap config file
+        public string ProfileId; // May be null, in the case of a bundled eap config file
         public List<AuthenticationMethod> AuthenticationMethods { get; }
         public List<CredentialApplicability> CredentialApplicabilities { get; }
         public ProviderInfo InstitutionInfo { get; }
-        public bool IsOauth { get; }
+        public bool IsOauth;
         public string XmlData { get; }
 
         // Constructor
         private EapConfig(
-            string profileId,
             List<AuthenticationMethod> authenticationMethods,
             List<CredentialApplicability> credentialApplicabilities,
             ProviderInfo institutionInfo,
-            string xmlData,
-            bool isOauth = false)
+            string xmlData)
         {
-            ProfileId = profileId;
             AuthenticationMethods = authenticationMethods;
             CredentialApplicabilities = credentialApplicabilities;
             InstitutionInfo = institutionInfo;
             XmlData = xmlData;
-            IsOauth = isOauth;
 
             AuthenticationMethods.ForEach(authMethod =>
             {
@@ -442,7 +438,7 @@ namespace EduroamConfigure
         /// <param name="eapConfigXmlData">EAP config XML as string</param>
         /// <returns>EapConfig object</returns>
         /// <exception cref="XmlException">Parsing <paramref name="eapConfigXmlData"/> failed</exception>
-        public static EapConfig FromXmlData(string profileId, string eapConfigXmlData, bool isOauth = false)
+        public static EapConfig FromXmlData(string eapConfigXmlData)
         {
             // XML format Documentation:
             // Current:  https://github.com/GEANT/CAT/blob/master/devices/eap_config/eap-metadata.xsd
@@ -611,7 +607,6 @@ namespace EduroamConfigure
 
             // create EapConfig object and adds the info
             return new EapConfig(
-                profileId,
                 authMethods,
                 credentialApplicabilities,
                 new EapConfig.ProviderInfo(
@@ -625,8 +620,7 @@ namespace EduroamConfigure
                     instId ?? string.Empty,
                     termsOfUse ?? string.Empty,
                     location),
-                eapConfigXmlData,
-                isOauth
+                eapConfigXmlData
             );
         }
 
