@@ -10,6 +10,8 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Xml;
+using System.Collections.Specialized;
+using System.Text;
 
 namespace EduroamConfigure
 {
@@ -26,12 +28,14 @@ namespace EduroamConfigure
 		// http objects
 		private static HttpClientHandler handler;
 		private static HttpClient client;
+		public static HttpContent EmptyStringContent = new StringContent("");
 
 		// state
 		public List<IdentityProvider> Providers { get; private set; }
 		public List<IdentityProvider> ClosestProviders { get; private set; } // Providers presorted by geo distance
 		private GeoCoordinateWatcher GeoWatcher { get; }
 		public bool Online { get => Providers != null; }
+
 		// Variable to prevent calling loadProviders when it's already running
 		private Task LoadProvidersLock = null;
 
@@ -39,13 +43,7 @@ namespace EduroamConfigure
 			handler = new HttpClientHandler();
 			handler.AutomaticDecompression = System.Net.DecompressionMethods.GZip | DecompressionMethods.Deflate;
 			handler.AllowAutoRedirect = true;
-			client = new HttpClient(handler);
-#if DEBUG
-			client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
-#else
-			client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
-#endif
-			client.Timeout = new TimeSpan(0, 0, 3);
+			client = createClient(null);
 		}
 
 		/// <summary>
@@ -83,7 +81,7 @@ namespace EduroamConfigure
 				LoadProvidersLock = Task.Delay(5000, cancel.Token);
 
 				// downloads json file as string
-				string apiJson = await DownloadUrlAsString(ProviderApiUrl, "application/json").ConfigureAwait(false);
+				string apiJson = await DownloadUrlAsString(ProviderApiUrl, new string[] { "application/json" }).ConfigureAwait(false);
 
 				// gets api instance from json
 				DiscoveryApi discovery = JsonConvert.DeserializeObject<DiscoveryApi>(apiJson);
@@ -147,7 +145,7 @@ namespace EduroamConfigure
 		{
 			try
 			{
-				string apiJson = await DownloadUrlAsString(GeoApiUrl, "application/json");
+				string apiJson = await DownloadUrlAsString(GeoApiUrl, new string[] { "application/json" });
 				return JsonConvert.DeserializeObject<IdpLocation>(apiJson);
 			}
 			catch (HttpRequestException e)
@@ -229,13 +227,21 @@ namespace EduroamConfigure
 
 			// adds profile ID to url containing json file, which in turn contains url to EAP config file download
 			// gets url to EAP config file download from GenerateEapConfig object
-			Uri endpoint = new Uri(profile?.eapconfig_endpoint);
-
+			var eapConfig = await DownloadEapConfig(new Uri(profile.eapconfig_endpoint)).ConfigureAwait(true);
+			eapConfig.ProfileId = profileId;
+			return eapConfig;
+		}
+		public static async Task<EapConfig> DownloadEapConfig(Uri endpoint, string accessToken = null)
+		{
 			// downloads and returns eap config file as string
 			try
 			{
-				string eapXml = await DownloadUrlAsString(endpoint, "application/eap-config");
-				return EapConfig.FromXmlData(profileId: profileId, eapXml);
+				string eapXml = await DownloadUrlAsString(
+						url: endpoint,
+						accept: new string[]{ "application/eap-config", "application/x-eap-config"},
+						accessToken: accessToken
+					);
+				return EapConfig.FromXmlData(eapXml);
 			}
 			catch (HttpRequestException e)
 			{
@@ -277,12 +283,21 @@ namespace EduroamConfigure
 		/// <returns>HTTP body</returns>
 		/// <exception cref="HttpRequestException">Anything that went wrong attempting HTTP request, including DNS</exception>
 		/// <exception cref="ApiParsingException">Content-Type did not match accept</exception>
-		private async static Task<string> DownloadUrlAsString(Uri url, string accept = null)
+		private async static Task<string> DownloadUrlAsString(Uri url, string[] accept = null, string accessToken = null)
 		{
 			HttpResponseMessage response;
 			try
 			{
-				response = await client.GetAsync(url);
+				if (accessToken == null)
+				{
+					response = await client.GetAsync(url);
+				}
+				else
+				{
+					HttpClient authClient = createClient(accessToken);
+					response = await authClient.PostAsync(url, EmptyStringContent);
+					authClient.Dispose();
+				}
 			}
 			catch (TaskCanceledException e)
 			{
@@ -293,13 +308,68 @@ namespace EduroamConfigure
 				throw new HttpRequestException("The request to " + url + " was interrupted", e);
 			}
 
+			return await parseResponse(response, accept);
+		}
+		/// <summary>
+		/// Upload form and return data as a string.
+		/// </summary>
+		/// <param name="url">Url to upload to</param>
+		/// <param name="data">Data to post</param>
+		/// <param name="accept">Content-Type to be expected, null for no check</param>
+		/// <returns>Response payload</returns>
+		/// <exception cref="HttpRequestException">Anything that went wrong attempting HTTP request, including DNS</exception>
+		/// <exception cref="ApiParsingException">Content-Type did not match accept</exception>
+		public static Task<string> PostForm(Uri url, NameValueCollection data, string[] accept = null)
+		{
+			var list = new List<KeyValuePair<string,string>>(data.Count);
+			foreach(string key in data.AllKeys) {
+				list.Add(new KeyValuePair<string,string>(key, data[key]));
+			}
+			return PostForm(url, list, accept);
+		}
+
+		/// <summary>
+		/// Upload form and return data as a string.
+		/// </summary>
+		/// <param name="url">Url to upload to</param>
+		/// <param name="data">Data to post</param>
+		/// <param name="accept">Content-Type to be expected, null for no check</param>
+		/// <returns>Response payload</returns>
+		/// <exception cref="HttpRequestException">Anything that went wrong attempting HTTP request, including DNS</exception>
+		/// <exception cref="ApiParsingException">Content-Type did not match accept</exception>
+		public static async Task<string> PostForm(Uri url, IEnumerable<KeyValuePair<string, string>> data, string[] accept = null)
+		{
+			try
+			{
+				var form = new FormUrlEncodedContent(data);
+				var response = await client.PostAsync(url, form);
+				form.Dispose();
+				return await parseResponse(response, accept);
+			}
+			catch (TaskCanceledException e)
+			{
+				// According to the documentation from HttpClient,
+				// this exception will not be thrown, but instead a HttpRequestException
+				// will be thrown.  This is not the case, so this catch and throw
+				// is to make sure the API matches again
+				throw new HttpRequestException("The request to " + url + " was interrupted", e);
+			}
+		}
+
+		private static async Task<string> parseResponse(HttpResponseMessage response, string[] accept)
+		{
+			if (response.StatusCode >= HttpStatusCode.BadRequest)
+			{
+				throw new HttpRequestException("HTTP " + response.StatusCode + ": " + response.ReasonPhrase + ": " + response.Content);
+			}
+
 			// Check that we got the correct ContentType
 			// Fun fact: did you know that headers are split into two categories?
 			// There's both response.Headers and response.Content.Headers.
 			// Don't try looking for headers at the wrong place, you'll get a System.InvalidOperationException!
-			if (null != accept && accept != response.Content.Headers.ContentType.MediaType)
+			if (null != accept && accept.Any() && !accept.Any((a) => a == response.Content.Headers.ContentType.MediaType))
 			{
-				throw new ApiParsingException("Expected '" + accept + "' but got '" + response.Content.Headers.ContentType.MediaType);
+				throw new ApiParsingException("Expected one of '" + string.Join("', '", accept) + "' but got '" + response.Content.Headers.ContentType.MediaType);
 			}
 
 			HttpContent responseContent = response.Content;
@@ -308,6 +378,27 @@ namespace EduroamConfigure
 			{
 				return await reader.ReadToEndAsync().ConfigureAwait(false);
 			}
+		}
+
+		private static HttpClient createClient(string accessToken)
+		{
+			if (client != null && accessToken == null)
+			{
+				throw new ArgumentNullException("Cannot create a client without access_token");
+			}
+
+			client = new HttpClient(handler);
+#if DEBUG
+			client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
+#else
+			client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
+#endif
+			client.Timeout = new TimeSpan(0, 0, 3);
+			if (accessToken != null)
+			{
+				client.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
+			}
+			return client;
 		}
 
 #pragma warning disable CA2227 // Collection properties should be read only

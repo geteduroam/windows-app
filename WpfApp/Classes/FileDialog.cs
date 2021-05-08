@@ -59,7 +59,9 @@ namespace WpfApp.Classes
 				string eapConfigXml = File.ReadAllText(filepath);
 
 				// create and return EapConfig object
-				return EduroamConfigure.EapConfig.FromXmlData(profileId: filepath, eapConfigXml);
+				var eapConfig = EduroamConfigure.EapConfig.FromXmlData(eapConfigXml);
+				eapConfig.ProfileId = filepath;
+				return eapConfig;
 			}
 			catch (System.Xml.XmlException xmlEx)
 			{

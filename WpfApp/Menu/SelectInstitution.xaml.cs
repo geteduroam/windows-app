@@ -42,8 +42,17 @@ namespace WpfApp.Menu
 		/// <summary>
 		/// Called when the form is created to present the 10 closest providers
 		/// </summary>
-		private void PopulateInstitutions()
+		private async void PopulateInstitutions()
 		{
+			if (downloader.ClosestProviders == null)
+			{
+				await downloader.LoadProviders(true);
+			}
+			if (downloader.ClosestProviders == null)
+			{
+				return;
+			}
+
 			UpdateInstitutions(downloader.ClosestProviders);
 		}
 
@@ -77,6 +86,15 @@ namespace WpfApp.Menu
 		/// </summary>
 		private async void Search()
 		{
+			if (downloader.ClosestProviders == null)
+			{
+				await downloader.LoadProviders(true);
+			}
+			if (downloader.ClosestProviders == null)
+			{
+				return;
+			}
+
 			// flag so only one search is done at a time
 			if (isSearching)
 			{

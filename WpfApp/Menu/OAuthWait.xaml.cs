@@ -137,7 +137,7 @@ namespace WpfApp.Menu
 		/// Callback function for incoming HTTP requests.
 		/// </summary>
 		/// <param name="result">Result of BeginGetContext task.</param>
-		private void ListenerCallback(IAsyncResult result)
+		private async void ListenerCallback(IAsyncResult result)
 		{
 			// cancels and returns if cancellation is requested
 			if (cancelToken.IsCancellationRequested) return;
@@ -157,9 +157,9 @@ namespace WpfApp.Menu
 
 				// Parse the result and download the eap config if successfull
 				(string authorizationCode, string codeVerifier) = oauth.ParseAndExtractAuthorizationCode(responseUrl);
-				bool success = LetsWifi.AuthorizeAccess(profile, authorizationCode, codeVerifier, prefix);
+				bool success = await LetsWifi.AuthorizeAccess(profile, authorizationCode, codeVerifier, prefix);
 
-				eapConfig = success ? LetsWifi.RequestAndDownloadEapConfig() : null;
+				eapConfig = success ? await LetsWifi.RequestAndDownloadEapConfig() : null;
 			}
 			catch (EduroamAppUserException) // TODO: BAD
 			{
