@@ -180,9 +180,9 @@ namespace EduroamConfigure
 				SetAccessTokensFromJson(tokenJson);
 				return true;
 			}
-			catch (ApiParsingException)
+			catch (ApiException e)
 			{
-				// TODO log the error somewhere
+				Debug.Print(e.ToString());
 				return false;
 			}
 		}
@@ -239,10 +239,12 @@ namespace EduroamConfigure
 				{
 					// Must never happen, because if the discovery is reached,
 					// it must be parseable. If it happens anyway, SCREAM!
+					Debug.Print(e.ToString());
 					throw;
 				}
-				catch (ApiUnreachableException)
+				catch (ApiUnreachableException e)
 				{
+					Debug.Print(e.ToString());
 					return RefreshResponse.Failed;
 				}
 			}
@@ -298,8 +300,12 @@ namespace EduroamConfigure
 			try
 			{
 				installer.InstallWLANProfile(); // TODO: currently does not remove the old ones. in the case where ssid was removed from eap config, it will be left stale with an invalid client certificate thumbprint
-					} catch (Exception) {
-				return RefreshResponse.Failed; }
+			}
+			catch
+			{
+				Debug.Print(e.ToString());
+				return RefreshResponse.Failed;
+			}
 
 			// remove the old client certificates installed by us
 			using var clientCert = installer.AuthMethod.ClientCertificateAsX509Certificate2();

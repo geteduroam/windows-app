@@ -161,8 +161,24 @@ namespace WpfApp.Menu
 
 				eapConfig = success ? await LetsWifi.RequestAndDownloadEapConfig() : null;
 			}
-			catch (EduroamAppUserException) // TODO: BAD
+			catch (ApiUnreachableException e) // TODO: BAD
 			{
+				Debug.Print(e.ToString());
+				MessageBox.Show(
+					"Couldn't connect to the server.\n\n" +
+					"Make sure that you are connected to the internet, then try again.\n" +
+					"Exception: " + e.Message,
+					"ApiUnreachableException", MessageBoxButton.OK, MessageBoxImage.Error);
+				eapConfig = null;
+			}
+			catch (ApiParsingException e) // TODO: BAD
+			{
+				Debug.Print(e.ToString());
+				MessageBox.Show(
+					"The institution or profile is either not supported or malformed. " +
+					"Please select a different institution or profile.\n\n" +
+					"Exception: " + e.Message,
+					"ApiParsingException", MessageBoxButton.OK, MessageBoxImage.Error);
 				eapConfig = null;
 			}
 
