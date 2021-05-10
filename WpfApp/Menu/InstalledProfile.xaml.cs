@@ -90,6 +90,8 @@ namespace WpfApp.Menu
 				{
 					// Must never happen, because if the discovery is reached,
 					// it must be parseable. If it happens anyway, SCREAM!
+
+					Debug.Print(e.ToString());
 					throw;
 				}
 
