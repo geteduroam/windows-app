@@ -524,13 +524,18 @@ namespace ManagedNativeWifi
 		/// <param name="profileName">Profile name</param>
 		/// <param name="profileUserType">Profile user type</param>
 		/// <param name="userDataXml">User data XML</param>
-		/// <returns></returns>
-		public static bool SetProfileUserData(Guid interfaceId, string profileName, uint profileUserType, string userDataXml)
+		/// <returns>True if successfully set. False if failed.</returns>
+		/// <remarks>
+		/// In some cases, this function may return true but fail.
+		/// This was observed when setting EapXmlType.AllUsers, but the certificate
+		/// referenced in the EAP XML was installed in the users' store.
+		/// </remarks>
+		public static bool SetProfileEapXmlUserData(Guid interfaceId, string profileName, EapXmlType eapXmlType, string userDataXml)
 		{
-			return SetProfileUserData(null, interfaceId, profileName, profileUserType, userDataXml);
+			return SetProfileEapXmlUserData(null, interfaceId, profileName, eapXmlType, userDataXml);
 		}
 
-		internal static bool SetProfileUserData(Base.WlanClient client, Guid interfaceId, string profileName, uint profileUserType, string userDataXml)
+		internal static bool SetProfileEapXmlUserData(Base.WlanClient client, Guid interfaceId, string profileName, EapXmlType eapXmlType, string userDataXml)
 		{
 			if (interfaceId == Guid.Empty)
 				throw new ArgumentException(nameof(interfaceId));
@@ -538,10 +543,11 @@ namespace ManagedNativeWifi
 			if (string.IsNullOrWhiteSpace(userDataXml))
 				throw new ArgumentNullException(nameof(userDataXml));
 
-			using (var container = new DisposableContainer<Base.WlanClient>(client))
-			{
-				return Base.SetProfileUserData(container.Content.Handle, interfaceId, profileName, profileUserType, userDataXml);
-			}
+			using var container = new DisposableContainer<Base.WlanClient>(client);
+
+			var eapXmlTypeFlag = EapXmlTypeConverter.ConvertBack(eapXmlType);
+
+			return Base.SetProfileEapXmlUserData(container.Content.Handle, interfaceId, profileName, eapXmlTypeFlag, userDataXml);
 		}
 
 		/// <summary>

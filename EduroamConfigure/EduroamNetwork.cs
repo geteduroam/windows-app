@@ -211,16 +211,12 @@ namespace EduroamConfigure
 			if (profile.InterfaceId != InterfaceId)
 				throw new ArgumentException("Provided profile is not for the same interface as this network");
 
-			// See 'dwFlags' at: https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/nf-wlanapi-wlansetprofileeapxmluserdata
-			const uint profileUserTypeCurrentUsers = 0x00000000; // "current user" - https://github.com/rozmansi/WLANSetEAPUserData
-			const uint profileUserTypeAllUSers = 0x00000001; // WLAN_SET_EAPHOST_DATA_ALL_USERS
-
-			if (NativeWifi.SetProfileUserData(
+			if (NativeWifi.SetProfileEapXmlUserData(
 				profile.InterfaceId,
 				profile.ProfileName,
 				forAllUsers // cannot work with profileUserTypeAllUSers and EAP-TLS, probably because the certificate is in the user store?
-					? profileUserTypeAllUSers
-					: profileUserTypeCurrentUsers
+					? EapXmlType.AllUsers
+					: EapXmlType.Default
 					,
 				userDataXml))
 			{

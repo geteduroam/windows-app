@@ -118,7 +118,7 @@ namespace ManagedNativeWifi.Win32
 		[DllImport("Wlanapi.dll")]
 		public static extern uint WlanSetProfileEapXmlUserData(
 			SafeClientHandle hClientHandle,
-			[MarshalAs(UnmanagedType.LPStruct)] Guid pInterfaceGuid,
+			[MarshalAs(UnmanagedType.LPStruct), In] Guid pInterfaceGuid,
 			[MarshalAs(UnmanagedType.LPWStr)] string strProfileName,
 			uint dwFlags,
 			[MarshalAs(UnmanagedType.LPWStr)] string strEapXmlUserData,
