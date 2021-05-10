@@ -301,7 +301,7 @@ namespace EduroamConfigure
 			{
 				installer.InstallWLANProfile(); // TODO: currently does not remove the old ones. in the case where ssid was removed from eap config, it will be left stale with an invalid client certificate thumbprint
 			}
-			catch
+			catch (Exception e)
 			{
 				Debug.Print(e.ToString());
 				return RefreshResponse.Failed;
