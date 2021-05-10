@@ -152,19 +152,6 @@ namespace EduroamConfigure
 		}
 
 		/// <summary>
-		/// Yields EapAuthMethodInstallers which will attempt to install eapConfig for you.
-		/// Refer to frmSummary.InstallEapConfig to see how to use it (TODO: actually explain when finalized)
-		/// </summary>
-		/// <param name="eapConfig">EapConfig object</param>
-		/// <returns>Enumeration of EapAuthMethodInstaller intances for each supported authentification method in eapConfig</returns>
-		public static IEnumerable<EapAuthMethodInstaller> InstallEapConfig(EapConfig eapConfig)
-			=> eapConfig == null
-				? throw new ArgumentNullException(paramName: nameof(eapConfig))
-				: eapConfig.AuthenticationMethods
-					.Where(EduroamNetwork.IsAuthMethodSupported)
-					.Select(authMethod => new EapAuthMethodInstaller(authMethod));
-
-		/// <summary>
 		/// A class which helps you install one of the authMethods
 		/// in a EapConfig, designed to be interactive wiht the user.
 		/// </summary>

@@ -47,49 +47,63 @@ namespace EduroamConfigure
 		// TTLS specific
 		static readonly XNamespace nsTTLS = "http://www.microsoft.com/provisioning/EapTtlsConnectionPropertiesV1";
 
+		private static readonly string[] PREFERRED_SSIDS = new string[]{ "eduroam", "govroam" };
+
+		public static ValueTuple<string, string> CreateSSIDProfileXml(EapConfig.AuthenticationMethod authMethod, string ssid)
+			=> CreateProfileXml(authMethod, withSSID: ssid, strictMode: true);
+		public static ValueTuple<string, string> CreateHS20ProfileXml(EapConfig.AuthenticationMethod authMethod)
+			=> CreateProfileXml(authMethod, withHS20: true, strictMode: true);
 
 		/// <summary>
 		/// Generates wireless profile xml. Content depends on the EAP type.
 		/// </summary>
 		/// <param name="authMethod">authMethod</param>
-		/// <param name="withSsid">TODO</param>
-		/// <param name="asHs2Profile">If to install as hotspot 2.0 profile or not (separate profile from normal eap)</param>
+		/// <param name="withSSID">TODO</param>
+		/// <param name="withHS20">If to install as hotspot 2.0 profile or not (separate profile from normal eap)</param>
 		/// <param name="strictMode">If the server cannot be verified, allow asking the user to allow it anyway</param>
 		/// <returns>A tuple containing the profile name and the WLANProfile XML data</returns>
-		public static ValueTuple<string, string> CreateProfileXml(
+		private static ValueTuple<string, string> CreateProfileXml(
 			EapConfig.AuthenticationMethod authMethod,
-			string withSsid = null,
-			bool asHs2Profile = false,
-			bool strictMode = true)
+			string withSSID = null,
+			bool withHS20 = false,
+			bool strictMode = true,
+			bool hiddenNetwork = true)
 		{
-			// Get list of SSIDs to configure into profile
-			List<string> ssids = withSsid != null
-				? new List<string> { withSsid }
-				: authMethod.EapConfig.CredentialApplicabilities
-					.Where(cred => cred.NetworkType == IEEE802x.IEEE80211) // TODO: Wired 802.1x support
-					.Where(cred => cred.MinRsnProto != "TKIP") // too insecure. TODO: test user experience
-					.Where(cred => cred.Ssid != null) // hs2 oid entires has no ssid
-					.Select(cred => cred.Ssid)
-					.ToList();
-			if (!ssids.Any() && asHs2Profile) // Schema has a minOccurances=1 for SSIDs (at least in the v1 namespace)
-				ssids = new List<string> { "#Passpoint" }; // hs2 profiles ignore SSIDs anyway
-			if (!ssids.Any())
-				throw new EduroamAppUserException("no valid ssids in config");
-			if (asHs2Profile && !SupportsHs2(authMethod))
-				throw new EduroamAppUserException("hotspot2.0 not supported by this authentication method");
-
-			// Get list of ConsortiumOIDs
-			List<string> consortiumOids = authMethod.EapConfig.CredentialApplicabilities
-				.Where(cred => cred.ConsortiumOid != null)
-				.Select(cred => cred.ConsortiumOid)
-				.ToList();
+			if (withHS20 && withSSID != null)
+				throw new ArgumentException("Cannot configure with both SSID and HS20"); // we can, but the result is confusing
+			if (withSSID != null && !authMethod.IsSSIDSupported)
+				throw new ArgumentException("Cannot configure " + nameof(authMethod) + " with SSID because it doesn't support SSID configuration");
+			if (withHS20 && !authMethod.IsHS20Supported)
+				throw new ArgumentException("Cannot configure " + nameof(authMethod) + " with Hotspot 2.0 because it doesn't support Hotspot 2.0 configuration");
+			if (withSSID != null && !authMethod.SSIDs.Any((ssid) => withSSID == ssid))
+				throw new ArgumentException("The ssid is not used by the authentication method");
 
 			// Decide the profile name, which is the unique identifier for this profile
-			var profileName = asHs2Profile
-				? (authMethod.EapConfig.InstitutionInfo.DisplayName)
-				: ssids.First(); // TODO: perhaps change into 'InstitutionInfo.DisplayName + ssids.First()' ? Will then make way for installing eduroam for multiple institutions
-			if (asHs2Profile && ssids.Contains(profileName)) // since profileName is the unique identifier of the profile. avoid collisions with the profiles per ssid
+			string profileName = null;
+			if (withHS20 && string.IsNullOrWhiteSpace(profileName))
+				profileName = authMethod.EapConfig.InstitutionInfo.DisplayName;
+			if (withSSID != null && string.IsNullOrWhiteSpace(profileName))
+				profileName = withSSID;
+			if (string.IsNullOrWhiteSpace(profileName)) foreach (string preferredSSID in PREFERRED_SSIDS)
+			{
+				if (authMethod.SSIDs.Contains(preferredSSID)) {
+					profileName = preferredSSID;
+					break;
+				}
+			}
+			if(string.IsNullOrWhiteSpace(profileName) && authMethod.SSIDs.Any())
+			{
+				profileName = authMethod.SSIDs.First();
+			}
+			if (string.IsNullOrWhiteSpace(profileName) && authMethod.ConsortiumOIDs.Any())
+			{
+				profileName = authMethod.ConsortiumOIDs.First();
+			}
+			if (withHS20 && authMethod.SSIDs.Contains(profileName))
+			{
+				// since profileName is the unique identifier of the profile. avoid collisions with the profiles per ssid
 				profileName += " via Passpoint"; // GEANT convention as fallback
+			}
 
 			// Construct XML document
 			XElement ssidConfigElement;
@@ -140,7 +154,8 @@ namespace EduroamConfigure
 				);
 
 
-			// Add all the supported SSIDs
+			// Add all the supported SSIDs, if we have none, assume we're doing HS20 if we got this far and nobody stopped us
+			var ssids = authMethod.SSIDs.Any() ? authMethod.SSIDs : new List<string> { "#Passpoint" };
 			ssids.ForEach(ssid => // This element supports up to 25 SSIDs in the v1 namespace and up to additional 10000 SSIDs in the v2 namespace.
 				ssidConfigElement.Add(
 					new XElement(nsWLAN + "SSID",
@@ -149,16 +164,16 @@ namespace EduroamConfigure
 					)
 				));
 			ssidConfigElement.Add(
-				new XElement(nsWLAN + "nonBroadcast", "true")
+				new XElement(nsWLAN + "nonBroadcast", hiddenNetwork ? "true" : "false")
 			);
 
 			// Populate the Hs2 field
-			consortiumOids.ForEach(oui =>
+			authMethod.ConsortiumOIDs.ForEach(oui =>
 				roamingConsortiumElement.Add(
 					new XElement(nsWLAN + "OUI", oui)
 				));
 			// ... or remove it if it shouldn't be there
-			if (!asHs2Profile) hs2Element.Remove();
+			if (!withHS20) hs2Element.Remove();
 
 			// return xml as string
 			return (profileName, newProfile.ToString());
@@ -372,17 +387,6 @@ namespace EduroamConfigure
 		}
 
 		/// <summary>
-		/// Use this to determine if authMethod supports Hotspot 2.0
-		/// </summary>
-		public static bool SupportsHs2(EapConfig.AuthenticationMethod authMethod)
-		{
-			// TODO: hotspot2.0 requires Windows 10
-			bool hasOID = authMethod.EapConfig.CredentialApplicabilities
-				.Any(cred => cred.ConsortiumOid != null);
-			return hasOID && IsSupported(authMethod);
-		}
-
-		/// <summary>
 		/// Use this to determine if the authMethod can be installed as a WLanProfile
 		/// </summary>
 		/// <param name="authMethod"></param>
@@ -400,7 +404,7 @@ namespace EduroamConfigure
 			return false;
 		}
 
-		public static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
+		private static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
 		{
 			//bool at_least_win10 = System.Environment.OSVersion.Version.Major >= 10; // TODO: make this work, requires some application manifest
 			var at_least_win10 = true;

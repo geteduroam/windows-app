@@ -426,8 +426,10 @@ namespace WpfApp.Menu
 			bool success = false;
 			Exception lastException = null;
 			// Install EAP config as a profile
-			foreach (var authMethodInstaller in ConnectToEduroam.InstallEapConfig(eapConfig))
+			foreach (var authMethod in eapConfig.SupportedAuthenticationMethods)
 			{
+				var authMethodInstaller = new ConnectToEduroam.EapAuthMethodInstaller(authMethod);
+
 				// install intermediate CAs and client certificates
 				// if user refuses to install a root CA (should never be prompted to at this stage), abort
 				try
