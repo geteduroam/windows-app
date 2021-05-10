@@ -101,17 +101,12 @@ namespace EduroamConfigure
             PersistingStore.IdentityProvider = PersistingStore.IdentityProviderInfo.From(authMethod);
             PersistingStore.Username = username; // save username
 
-            var ssids = authMethod.EapConfig.CredentialApplicabilities
-                .Where(cred => cred.NetworkType == IEEE802x.IEEE80211) // TODO: add support for Wired 802.1x
-                .Where(cred => cred.MinRsnProto != "TKIP") // too insecure. // TODO: test user experience
-                .Where(cred => cred.Ssid != null) // hs2 oid entires has no ssid
-                .Select(cred => cred.Ssid)
-                .ToList();
+            var ssids = authMethod.SSIDs;
 
             ConfiguredWLANProfile profile;
             foreach (var ssid in ssids)
             {
-                (string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod, withSsid: ssid);
+                (string profileName, string profileXml) = ProfileXml.CreateSSIDProfileXml(authMethod, ssid);
                 string userDataXml = UserDataXml.CreateUserDataXml(authMethod, username, password);
                 try
                 {
@@ -126,10 +121,10 @@ namespace EduroamConfigure
                 }
             }
 
-            if (authMethod.Hs2AuthMethod != null)
+            if (authMethod.IsHS20Supported)
             {
-                (string profileName, string profileXml) = ProfileXml.CreateProfileXml(authMethod.Hs2AuthMethod, asHs2Profile: true);
-                string userDataXml = UserDataXml.CreateUserDataXml(authMethod.Hs2AuthMethod, username, password);
+                (string profileName, string profileXml) = ProfileXml.CreateHS20ProfileXml(authMethod);
+                string userDataXml = UserDataXml.CreateUserDataXml(authMethod, username, password);
                 try
                 {
                     profile = InstallProfile(profileName, profileXml, isHs2: true, forAllUsers);
@@ -175,7 +170,7 @@ namespace EduroamConfigure
             }
         }
 
-        private ConfiguredWLANProfile InstallProfile(string profileName, string profileXml, bool isHs2, bool forAllUsers)
+        private ConfiguredWLANProfile InstallProfile(string profileName, string profileXml, bool hs20, bool forAllUsers)
         {
             // security type not required
             const string securityType = null; // TODO: document why
@@ -192,10 +187,10 @@ namespace EduroamConfigure
                 profileXml,
                 securityType,
                 overwrite)) throw new Exception(
-                    "Unable to install " + (isHs2 ? "Passpoint " : "SSID ") + profileName
+                    "Unable to install " + (hs20 ? "Passpoint " : "SSID ") + profileName
                 );
 
-            ConfiguredWLANProfile configuredWLANProfile = new ConfiguredWLANProfile(InterfaceId, profileName, isHs2);
+            ConfiguredWLANProfile configuredWLANProfile = new ConfiguredWLANProfile(InterfaceId, profileName, hs20);
             PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
                 .Add(configuredWLANProfile);
             return configuredWLANProfile;

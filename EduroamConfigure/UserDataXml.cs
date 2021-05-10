@@ -192,10 +192,10 @@ namespace EduroamConfigure
         public static bool IsSupported(EapConfig.AuthenticationMethod authMethod)
             => IsSupported(authMethod.EapType, authMethod.InnerAuthType);
 
-        public static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
+        private static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
         {
-            var isX86 = System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.X86;
-            Debug.Assert(!isX86);
+            var isX86_32 = System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.X86;
+            Debug.Assert(!isX86_32);
             //bool at_least_win10 = System.Environment.OSVersion.Version.Major >= 10; // TODO: make this work, requires some application manifest
             //var at_least_win10 = true;
             return (eapType, innerAuthType) switch
@@ -203,9 +203,9 @@ namespace EduroamConfigure
                 (EapType.TLS, _) => true,
                 //(EapType.MSCHAPv2, InnerAuthType.None) => true,
                 (EapType.PEAP, InnerAuthType.EAP_MSCHAPv2) => true,
-                (EapType.TTLS, InnerAuthType.PAP) => !isX86,
-                (EapType.TTLS, InnerAuthType.MSCHAP) => !isX86, // not tested, but matches schema
-                (EapType.TTLS, InnerAuthType.MSCHAPv2) => !isX86,
+                (EapType.TTLS, InnerAuthType.PAP) => !isX86_32,
+                (EapType.TTLS, InnerAuthType.MSCHAP) => !isX86_32,
+                (EapType.TTLS, InnerAuthType.MSCHAPv2) => !isX86_32,
                 //(EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => at_least_win10 && !isX86, // TODO: xml matches the schema, but win32 throws an error.
                 //(EapType.TTLS, InnerAuthType.EAP_PEAP_MSCHAPv2) => at_least_win10 && !isX86, // TODO: xml matches the schema, but win32 throws an error.
                 _ => false,

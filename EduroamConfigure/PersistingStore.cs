@@ -178,7 +178,7 @@ namespace EduroamConfigure
             public bool                                 IsOauth      { get; }
             public DateTime?                            NotBefore    { get; }
             public DateTime?                            NotAfter     { get; }
-            public (EapType outer, InnerAuthType inner) EapTypeSsid  { get; }
+            public (EapType outer, InnerAuthType inner)?EapTypeSsid  { get; }
             public (EapType outer, InnerAuthType inner)?EapTypeHs2   { get; }
             public string                               EapConfigXml { get; } // optional, used for reinstall of userprofile
             // TODO: registry might have a max-size limit. ^ include institution image
@@ -193,7 +193,7 @@ namespace EduroamConfigure
                 bool                                 isOauth,
                 DateTime?                            notBefore,
                 DateTime?                            notAfter,
-                (EapType outer, InnerAuthType inner) eapTypeSsid,
+                (EapType outer, InnerAuthType inner)?eapTypeSsid,
                 (EapType outer, InnerAuthType inner)?eapTypeHs2,
                 string                               eapConfigXml)
             {
@@ -224,9 +224,11 @@ namespace EduroamConfigure
                         authMethod.EapConfig.IsOauth,
                         authMethod.ClientCertificateNotBefore,
                         authMethod.ClientCertificateNotAfter,
-                        eapTypeSsid: (authMethod.EapType, authMethod.InnerAuthType),
-                        eapTypeHs2: authMethod.Hs2AuthMethod != null
-                            ? (authMethod.Hs2AuthMethod.EapType, authMethod.Hs2AuthMethod.InnerAuthType)
+                        eapTypeSsid: authMethod.IsSSIDSupported
+                            ? (authMethod.EapType, authMethod.InnerAuthType)
+                            : ((EapType, InnerAuthType)?)null,
+                        eapTypeHs2: authMethod.IsHS20Supported
+                            ? (authMethod.EapType, authMethod.InnerAuthType)
                             : ((EapType, InnerAuthType)?)null,
                         eapConfigXml:
                             authMethod.EapType != EapType.TLS

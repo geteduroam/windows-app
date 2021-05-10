@@ -47,7 +47,8 @@ namespace EduroamConfigure
         /// </summary>
         public class AuthenticationMethod
         {
-            // Properties
+            #region Properties
+
             public EapConfig EapConfig { get; set; } // reference to parent EapConfig
             public EapType EapType { get; }
             public InnerAuthType InnerAuthType { get; }
@@ -61,8 +62,29 @@ namespace EduroamConfigure
             public string ClientInnerIdentitySuffix { get; } // realm
             public bool ClientInnerIdentityHint { get; } // Wether to disallow subrealms or not (see https://github.com/GEANT/CAT/issues/190)
 
-            // helpers:
+            public bool IsHS20Supported { get => EapConfig.CredentialApplicabilities.Any(cred => cred.ConsortiumOid != null); }
+            public bool IsSSIDSupported { get => EapConfig.CredentialApplicabilities.Any(cred => cred.Ssid != null && cred.Ssid.Length != 0); }
 
+            #endregion Properties
+            #region Helpers
+
+            // TODO: Also add wired 802.1x support
+            public List<string> SSIDs
+            {
+                get => EapConfig.CredentialApplicabilities
+                    .Where(cred => cred.NetworkType == IEEE802x.IEEE80211)
+                    .Where(cred => cred.MinRsnProto != "TKIP") // Too old and insecure
+                    .Where(cred => cred.Ssid != null) // Filter out HS20 entries, those have no SSID
+                    .Select(cred => cred.Ssid)
+                    .ToList();
+            }
+            public List<string> ConsortiumOIDs
+            {
+                get => EapConfig.CredentialApplicabilities
+                    .Where(cred => cred.ConsortiumOid != null)
+                    .Select(cred => cred.ConsortiumOid)
+                    .ToList();
+            }
             public DateTime? ClientCertificateNotBefore
             {
                 get
@@ -90,20 +112,7 @@ namespace EduroamConfigure
                         ClientCertificatePassphrase);
             }
 
-            /// <summary>
-            /// Will point to 'this' if it supports Hotspot2.0,
-            /// otherwise points to the first one supports Hotspot2.0 in EapConfig.AuthenticationMethods,
-            /// otherwise null.
-            ///
-            /// This method is somewhat risky, since other authMethods may use other certificates
-            /// Ensure you install certificates with ConnectToEduroam.EnumerateCAs()
-            /// </summary>
-            public AuthenticationMethod Hs2AuthMethod {
-                get => ProfileXml.SupportsHs2(this)
-                    ? this
-                    : EapConfig.AuthenticationMethods
-                        .FirstOrDefault(ProfileXml.SupportsHs2);
-            }
+            #endregion Helpers
 
             /// <summary>
             /// Converts and enumerates CertificateAuthorities as X509Certificate2 objects.
@@ -627,6 +636,15 @@ namespace EduroamConfigure
                 eapConfigXmlData
             );
         }
+
+        /// <summary>
+        /// Yields EapAuthMethodInstallers which will attempt to install eapConfig for you.
+        /// Refer to frmSummary.InstallEapConfig to see how to use it (TODO: actually explain when finalized)
+        /// </summary>
+        /// <param name="eapConfig">EapConfig object</param>
+        /// <returns>Enumeration of EapAuthMethodInstaller intances for each supported authentification method in eapConfig</returns>
+        public IEnumerable<AuthenticationMethod> SupportedAuthenticationMethods
+        { get => AuthenticationMethods.Where(EduroamNetwork.IsAuthMethodSupported); }
 
         /// <summary>
         /// If this returns true, then the user must provide the login credentials

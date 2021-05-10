@@ -285,11 +285,11 @@ namespace EduroamConfigure
                     return RefreshResponse.NewRootCaRequired; // TODO: requires user intervention, make user reconnect
 
             // reinstall the same authmethod as last time
-            var installer = ConnectToEduroam
-                .InstallEapConfig(eapConfig)
-                .Where(installer => profileInfo.EapTypeSsid.outer == installer.AuthMethod.EapType)
-                .Where(installer => profileInfo.EapTypeSsid.inner == installer.AuthMethod.InnerAuthType)
-                .FirstOrDefault();
+            var installer = eapConfig.SupportedAuthenticationMethods
+                .Select(authMethod => new ConnectToEduroam.EapAuthMethodInstaller(authMethod))
+                .Where(installer => profileInfo.EapTypeSsid?.outer == installer.AuthMethod.EapType)
+                .Where(installer => profileInfo.EapTypeSsid?.inner == installer.AuthMethod.InnerAuthType)
+                .First();
 
             // should never fail, since we abort if CA installations are needed
             try { installer.InstallCertificates(); } catch (Exception) {
