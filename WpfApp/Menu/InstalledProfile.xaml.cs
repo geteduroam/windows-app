@@ -7,6 +7,7 @@ using System.Windows.Navigation;
 using System.Diagnostics;
 using System.Globalization;
 using EduroamConfigure;
+using System.Net.Http;
 
 namespace WpfApp.Menu
 {
@@ -299,6 +300,11 @@ namespace WpfApp.Menu
             catch (ApiParsingException ex)
             {
                 MessageBox.Show(ex.Message, "Unable to refresh", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (HttpRequestException ex)
+            {
+                mainWindow.NextPage();
+                return;
             }
             switch (response)
             {
