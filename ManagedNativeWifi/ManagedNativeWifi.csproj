@@ -55,6 +55,7 @@
     <Compile Include="BssType.cs" />
     <Compile Include="CipherAlgorithm.cs" />
     <Compile Include="ConnectionMode.cs" />
+    <Compile Include="EapXmlType.cs" />
     <Compile Include="EncryptionType.cs" />
     <Compile Include="InterfaceInfo.cs" />
     <Compile Include="InterfaceState.cs" />

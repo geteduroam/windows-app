@@ -340,20 +340,24 @@ namespace ManagedNativeWifi.Win32
 			return CheckResult(nameof(WlanSetProfile), result, false, pdwReasonCode);
 		}
 
-		public static bool SetProfileUserData(SafeClientHandle clientHandle, Guid interfaceId, string profileName, uint profileUserFlag, string userDataXml)
+		public static bool SetProfileEapXmlUserData(SafeClientHandle clientHandle, Guid interfaceId, string profileName, uint eapXmlFlag, string userDataXml)
 		{
 			var result = WlanSetProfileEapXmlUserData(
 				clientHandle,
 				interfaceId,
 				profileName,
-				profileUserFlag,
+				eapXmlFlag,
 				userDataXml,
 				IntPtr.Zero);
 
-			// ERROR_INVALID_PARAMETER will be returned if the interface is removed.
-			// ERROR_ALREADY_EXISTS will be returned if the profile already exists.
-			// ERROR_BAD_PROFILE will be returned if the profile xml is not valid.
-			// ERROR_NO_MATCH will be returned if the capability specified in the profile is not supported.
+			// ERROR_ACCESS_DENIED will be thrown if the caller does not have sufficient permissions.
+			// ERROR_BAD_PROFILE will be returned if the EAP XML is not valid.
+			// ERROR_INVALID_PARAMETER will be returned if any required parameter is NULL.
+			// ERROR_INVALID_HANDLE will be returned if clientHandle is not found in the handle table.
+			// ERROR_NOT_ENOUGH_MEMORY will be returned if there is not enough storage
+			// ERROR_NOT_SUPPORTED will be returned if the profile does not allow storage of user data.
+			// ERROR_SERVICE_NOT_ACTIVE will be returned if the WLAN service has not been started.
+			// RPC_STATUS will be returned for "Various error codes".
 			return CheckResult(nameof(WlanSetProfileEapXmlUserData), result, false);
 		}
 
