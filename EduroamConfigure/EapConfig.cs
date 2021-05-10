@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -258,6 +259,8 @@ namespace EduroamConfigure
                 catch (CryptographicException ex)
                 {
                     if ((ex.HResult & 0xFFFF) == 0x56) return false; // wrong passphrase
+
+                    Debug.Print(ex.ToString());
                     throw;
                 }
                 return true;
@@ -456,8 +459,9 @@ namespace EduroamConfigure
             {
                 eapConfigXml = XElement.Parse(eapConfigXmlData);
             }
-            catch (XmlException)
+            catch (XmlException e)
             {
+                Debug.Print(e.ToString());
                 throw;
             }
             /*

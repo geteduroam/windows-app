@@ -138,6 +138,8 @@ namespace EduroamConfigure
                 }
                 catch (Win32Exception e)
                 {
+                    Debug.Print(e.ToString());
+
                     // If any errors occur but no SSIDs were configured,
                     // we throw an exception, even if it was ignored otherwise
                     if (ssids.Count == 0)
@@ -369,12 +371,16 @@ namespace EduroamConfigure
                 if (ex.GetBaseException().GetType().Name == "Win32Exception")
                     if (ex.GetBaseException().Message == "MethodName: WlanOpenHandle, ErrorCode: 1062, ErrorMessage: The service has not been started.\r\n")
                         return false;
+
+                Debug.Print(ex.ToString());
                 throw; // unknown
             }
             catch (Win32Exception ex) // in case it doesn't get wrapped in RELEASE
             {
                 if (ex.NativeErrorCode == 1062) // ERROR_SERVICE_NOT_ACTIVE
                     return false;
+
+                Debug.Print(ex.ToString());
                 throw; // unknown
             }
             return true;
