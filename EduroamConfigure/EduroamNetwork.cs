@@ -92,7 +92,7 @@ namespace EduroamConfigure
 		/// <param name="username">User's username optionally with realm</param>
 		/// <param name="password">User's password.</param>
 		/// <param name="authMethod">AuthMethod of profiles to be installed</param>
-		/// <param name="forAllUsers">TODO</param>
+		/// <param name="forAllUsers">Install for all users or only the current user</param>
 		/// <returns>(success with ssid, success with hotspot2)</returns>
 		public void InstallProfiles(EapConfig.AuthenticationMethod authMethod, string username = null, string password = null, bool forAllUsers = true)
 		{
@@ -116,7 +116,8 @@ namespace EduroamConfigure
 				try
 				{
 					profile = InstallProfile(profileName, profileXml, isHs2: false, forAllUsers);
-					InstallUserData(profile, userDataXml, forAllUsers);
+					// forAllUsers does not work with EAP-TLS, probably because the certificate is in the personal store
+					InstallUserData(profile, userDataXml, forAllUsers && authMethod.EapType != EapType.TLS);
 				}
 				catch (Win32Exception e)
 				{
@@ -132,7 +133,8 @@ namespace EduroamConfigure
 				try
 				{
 					profile = InstallProfile(profileName, profileXml, isHs2: true, forAllUsers);
-					InstallUserData(profile, userDataXml, forAllUsers);
+					// forAllUsers does not work with EAP-TLS, probably because the certificate is in the personal store
+					InstallUserData(profile, userDataXml, forAllUsers && authMethod.EapType != EapType.TLS);
 				}
 				catch (Win32Exception e)
 				{
@@ -202,8 +204,9 @@ namespace EduroamConfigure
 		/// </summary>
 		/// <param name="profile">The profile to add user data to</param>
 		/// <param name="userDataXml">The user data XML</param>
-		/// <param name="forAllUsers">TODO - mention the cert store thing</param>
-		public void InstallUserData(ConfiguredWLANProfile profile, string userDataXml, bool forAllUsers = false)
+		/// <param name="forAllUsers">Install for all users or only the current user</param>
+		/// <remarks><paramref name="forAllUsers"/>MUST be false for EAP-TLS, probably because the certificate is in the user store</remarks>
+		public void InstallUserData(ConfiguredWLANProfile profile, string userDataXml, bool forAllUsers)
 		{
 			if (profile.InterfaceId != InterfaceId)
 				throw new ArgumentException("Provided profile is not for the same interface as this network");
@@ -215,9 +218,10 @@ namespace EduroamConfigure
 			if (NativeWifi.SetProfileUserData(
 				profile.InterfaceId,
 				profile.ProfileName,
-				forAllUsers
+				forAllUsers // cannot work with profileUserTypeAllUSers and EAP-TLS, probably because the certificate is in the user store?
 					? profileUserTypeAllUSers
-					: profileUserTypeCurrentUsers,
+					: profileUserTypeCurrentUsers
+					,
 				userDataXml))
 			{
 				if (!profile.HasUserData) // ommit uneccesary writes
