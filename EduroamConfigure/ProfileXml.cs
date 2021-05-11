@@ -67,7 +67,7 @@ namespace EduroamConfigure
             string withSSID = null,
             bool withHS20 = false,
             bool strictMode = true,
-            bool hiddenNetwork = true)
+            bool hiddenNetwork = false)
         {
             if (withHS20 && withSSID != null)
                 throw new ArgumentException("Cannot configure with both SSID and HS20"); // we can, but the result is confusing
