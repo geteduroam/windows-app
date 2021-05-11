@@ -22,7 +22,6 @@ namespace EduroamConfigure
         // Properties
         private AvailableNetworkPack NetworkPack { get; }
         private ProfilePack ProfilePack { get; }
-        private ConfiguredWLANProfile? PersistedProfile { get; }
 
         public Guid InterfaceId { get; }
         public string ProfileName
@@ -35,7 +34,6 @@ namespace EduroamConfigure
         private EduroamNetwork(Guid interfaceId)
         {
             NetworkPack = null;
-            PersistedProfile = null;
             ProfilePack = null;
             InterfaceId = interfaceId; // non-nullable
         }
@@ -43,8 +41,8 @@ namespace EduroamConfigure
         private EduroamNetwork(
             AvailableNetworkPack networkPack,
             ProfilePack profilePack,
-            ConfiguredWLANProfile? persistedProfile = null)
-            : this(profilePack?.Interface.Id ?? networkPack.Interface.Id)
+            object _ = null) // last argument is ConfiguredWLANProfile
+            : this (profilePack?.Interface.Id ?? networkPack.Interface.Id)
         {
             Debug.Assert((networkPack, profilePack) != (null, null));
             Debug.Assert(
@@ -54,7 +52,6 @@ namespace EduroamConfigure
 
             NetworkPack = networkPack;
             ProfilePack = profilePack;
-            PersistedProfile = persistedProfile;
         }
 
         /// <summary>
@@ -336,11 +333,11 @@ namespace EduroamConfigure
             
             // join configured profiles
             return GetAllNetworkProfilePackPairs()
-                .Join(PersistingStore.ConfiguredWLANProfiles,
-                    networkPPack => (networkPPack.ppack.Name, networkPPack.ppack.Interface.Id),
-                    persitedProfile => (persitedProfile.ProfileName, persitedProfile.InterfaceId),
-                    (networkPPack, persitedProfile) => 
-                        new EduroamNetwork(networkPPack.network, networkPPack.ppack, persitedProfile))
+                .Join(inner: PersistingStore.ConfiguredWLANProfiles,
+                    outerKeySelector: networkPPack => (networkPPack.ppack.Name, networkPPack.ppack.Interface.Id),
+                    innerKeySelector: persitedProfile => (persitedProfile.ProfileName, persitedProfile.InterfaceId),
+                    // note, EduroamNetwork doesn't actually use persistedProfile
+                    resultSelector: (networkPPack, persistedProfile) => new EduroamNetwork(networkPPack.network, networkPPack.ppack, persistedProfile))
                 .OrderByDescending(network => network.IsAvailable);
         }
 
