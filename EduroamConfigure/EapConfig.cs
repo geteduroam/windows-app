@@ -15,7 +15,8 @@ namespace EduroamConfigure
 	/// </summary>
 	public class EapConfig
 	{
-		// Properties
+		#region Properties
+
 		public string ProfileId; // May be null, in the case of a bundled eap config file
 		public List<AuthenticationMethod> AuthenticationMethods { get; }
 		public List<CredentialApplicability> CredentialApplicabilities { get; }
@@ -23,7 +24,17 @@ namespace EduroamConfigure
 		public bool IsOauth;
 		public string XmlData { get; }
 
-		// Constructor
+		#endregion
+
+		#region Helpers
+
+		public IEnumerable<string> SSIDs { get => CredentialApplicabilities.Select((c) => c.Ssid); }
+		public IEnumerable<string> ConsortiumOids { get => CredentialApplicabilities.Select((c) => c.ConsortiumOid); }
+
+		#endregion
+
+		#region Constructor
+
 		private EapConfig(
 			List<AuthenticationMethod> authenticationMethods,
 			List<CredentialApplicability> credentialApplicabilities,
@@ -40,6 +51,8 @@ namespace EduroamConfigure
 				authMethod.EapConfig = this;
 			});
 		}
+
+		#endregion
 
 
 		/// <summary>

@@ -19,8 +19,6 @@ namespace EduroamConfigure
 	/// </summary>
 	public readonly struct EduroamNetwork
 	{
-		public const string DefaultSsid = "eduroam";
-
 		// Properties
 		private AvailableNetworkPack NetworkPack { get; }
 		private ProfilePack ProfilePack { get; }
@@ -306,11 +304,11 @@ namespace EduroamConfigure
 			// NativeWifi will throw if service is not available
 			if (!IsWlanServiceApiAvailable())
 				return Enumerable.Empty<EduroamNetwork>();
-			PruneMissingPersistedProfiles();
+			PruneStaleProfiles();
 
 			// TODO: multiple profiles on a single interface creates duplicate work further down
 			//       perhaps group by InterfaceId and have a list of ProfileName in each EduroamNetwork?
-			var availableNetworks = GetAllAvailableEduroamNetworkPacks(eapConfig?.CredentialApplicabilities)
+			var availableNetworks = (eapConfig == null ? Enumerable.Empty<AvailableNetworkPack>() : GetAllMatchingNetworkPacks(eapConfig.SSIDs))
 				.Select(networkPack => new EduroamNetwork(networkPack, null))
 				.ToList();
 
@@ -334,10 +332,10 @@ namespace EduroamConfigure
 			// NativeWifi will throw if service is not available
 			if (!IsWlanServiceApiAvailable())
 				return Enumerable.Empty<EduroamNetwork>();
-			PruneMissingPersistedProfiles();
+			PruneStaleProfiles();
 
 			// join configured profiles
-			return GetAllInstalledProfilePacksWithNetworkPacks()
+			return GetAllNetworkProfilePackPairs()
 				.Join(PersistingStore.ConfiguredWLANProfiles,
 					networkPPack => (networkPPack.ppack.Name, networkPPack.ppack.Interface.Id),
 					persitedProfile => (persitedProfile.ProfileName, persitedProfile.InterfaceId),
@@ -346,18 +344,27 @@ namespace EduroamConfigure
 				.OrderByDescending(network => network.IsAvailable);
 		}
 
-		/// <summary>
-		/// "Can i install and connect to eduroam?"
-		/// </summary>
 		/// <param name="eapConfig">EAP config</param>
-		/// <returns>true if eduroam is available</returns>
-		public static bool IsEduroamAvailable(EapConfig eapConfig)
+		/// <returns>true if at least one network is available</returns>
+		public static bool IsNetworkInRange(EapConfig eapConfig)
 		{
+			if (eapConfig == null)
+			{
+				throw new ArgumentNullException(nameof(eapConfig));
+			}
+
 			// NICE TO HAVE: some way to detect if any Hs2 hotspot is available if no matching ssid are found
-			return GetAllAvailableEduroamNetworkPacks(eapConfig?.CredentialApplicabilities).Any();
+			return IsNetworkInRange(eapConfig.SSIDs);
 		}
 
-		private static void PruneMissingPersistedProfiles()
+		/// <param name="ssids">SSID to look for</param>
+		/// <returns>true if at least one network is available</returns>
+		public static bool IsNetworkInRange(IEnumerable<string> ssids)
+		{
+			return GetAllMatchingNetworkPacks(ssids).Any();
+		}
+
+		private static void PruneStaleProfiles()
 		{
 			// look through installed profiles and remove persisted profile configurations which have been uninstalled by user
 			var installedProfiles = GetAllInstalledProfilePacks().ToList();
@@ -370,7 +377,7 @@ namespace EduroamConfigure
 					continue; // ignore
 
 				// else remove
-				Debug.WriteLine("Removing profile from persisting store called {0} on interface {1}",
+				Debug.WriteLine("Removing stale profile from persisting store called {0} on interface {1}",
 					configuredProfile.ProfileName, configuredProfile.InterfaceId);
 				PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
 					.Remove(configuredProfile);
@@ -386,7 +393,7 @@ namespace EduroamConfigure
 		{
 			try
 			{
-				NativeWifi.EnumerateInterfaces().ToList(); // TODO: why ToList?
+				NativeWifi.EnumerateInterfaces();
 			}
 			catch (TargetInvocationException ex) // we don't know why it gets wrapped
 			{
@@ -413,16 +420,15 @@ namespace EduroamConfigure
 		/// Gets all available network packs with a profile configured
 		/// </summary>
 		/// <returns>Network packs</returns>
-		private static List<AvailableNetworkPack> GetAllAvailableNetworkPacksWithProfiles()
+		private static IEnumerable<AvailableNetworkPack> GetAllAvailableNetworkPacksWithProfiles()
 		{
 			if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
-				return new List<AvailableNetworkPack>();
+				return Enumerable.Empty<AvailableNetworkPack>();
 
 			// TODO, maybe join in the profile pack?
 
 			return NativeWifi.EnumerateAvailableNetworks()
-				.Where(network => !string.IsNullOrEmpty(network.ProfileName))
-				.ToList();
+				.Where(network => !string.IsNullOrEmpty(network.ProfileName));
 		}
 
 
@@ -443,10 +449,10 @@ namespace EduroamConfigure
 		/// Gets all installed profile packs on the machine along with their network packs if available
 		/// </summary>
 		/// <returns>Profile packs with optional network pack</returns>
-		private static List<(ProfilePack ppack, AvailableNetworkPack network)> GetAllInstalledProfilePacksWithNetworkPacks()
+		private static IEnumerable<(ProfilePack ppack, AvailableNetworkPack network)> GetAllNetworkProfilePackPairs()
 		{
 			if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
-				return new List<(ProfilePack, AvailableNetworkPack)>();
+				return Enumerable.Empty<(ProfilePack, AvailableNetworkPack)>();
 
 			// List all WLAN profiles installed on machine
 			var allProfilePacks = NativeWifi.EnumerateProfiles().ToList();
@@ -469,38 +475,23 @@ namespace EduroamConfigure
 				.Where(ppack => !availableProfilePacks.Contains(ppack))
 				.Select(ppack => (ppack, (AvailableNetworkPack)null));
 
-			return availableProfileNetworks.Concat(unavailableProfiles).ToList();
+			return availableProfileNetworks.Concat(unavailableProfiles);
 		}
 
 		/// <summary>
-		/// Gets all network packs containing information about an eduroam network, if any.
+		/// Get all available networks matching the SSID.
 		/// </summary>
+		/// <param name="credentialApplicabilities"></param>
 		/// <returns>Network packs</returns>
-		private static List<AvailableNetworkPack> GetAllAvailableEduroamNetworkPacks(
-			List<EapConfig.CredentialApplicability> credentialApplicabilities)
+		private static IOrderedEnumerable<AvailableNetworkPack> GetAllMatchingNetworkPacks(
+			IEnumerable<string> ssids)
 		{
 			if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
-				return new List<AvailableNetworkPack>();
+				return Enumerable.Empty<AvailableNetworkPack>().OrderBy(_ => false);
 
-			if (credentialApplicabilities != null)
-			{
-				var ssids = credentialApplicabilities
-					.Where(c => c.Ssid != null)
-					.Select(c => c.Ssid)
-					.ToImmutableHashSet();
-
-				return NativeWifi.EnumerateAvailableNetworks()
-					.Where(network => ssids.Contains(network.Ssid.ToString()))
-					.OrderBy(network => string.IsNullOrEmpty(network.ProfileName))
-					.ToList();
-			}
-			else
-			{
-				return NativeWifi.EnumerateAvailableNetworks()
-					.Where(network => network.Ssid.ToString() == DefaultSsid)
-					.OrderBy(network => string.IsNullOrEmpty(network.ProfileName))
-					.ToList();
-			}
+			return NativeWifi.EnumerateAvailableNetworks()
+				.Where(network => ssids.Contains(network.Ssid.ToString()))
+				.OrderBy(network => string.IsNullOrEmpty(network.ProfileName));
 		}
 
 		/// <summary>
