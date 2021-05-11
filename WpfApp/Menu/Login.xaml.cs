@@ -359,7 +359,7 @@ namespace WpfApp.Menu
                 }
                 else
                 {
-                    if (EduroamNetwork.IsEduroamAvailable(eapConfig))
+                    if (EduroamNetwork.IsNetworkInRange(eapConfig))
                     {
                         tbStatus.Text = "Everything is configured!\nUnable to connect to eduroam.";
                     }
