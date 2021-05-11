@@ -9,7 +9,9 @@ using System.IO;
 using System.Reflection;
 using System.Diagnostics;
 using System.ComponentModel;
+#if RUN_PERSISTENT
 using Hardcodet.Wpf.TaskbarNotification;
+#endif
 using EduroamConfigure;
 using WpfApp.Menu;
 using System.Windows.Navigation;
