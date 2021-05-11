@@ -94,6 +94,7 @@ namespace EduroamConfigure
         /// <param name="authMethod">AuthMethod of profiles to be installed</param>
         /// <param name="forAllUsers">Install for all users or only the current user</param>
         /// <returns>(success with ssid, success with hotspot2)</returns>
+        /// <remarks><paramref name="forAllUsers"/> is ignored because it currently must be true for profiles and false for eapxml</remarks>
         public void InstallProfiles(EapConfig.AuthenticationMethod authMethod, string username = null, string password = null, bool forAllUsers = true)
         {
             _ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
@@ -110,9 +111,12 @@ namespace EduroamConfigure
                 string userDataXml = UserDataXml.CreateUserDataXml(authMethod, username, password);
                 try
                 {
-                    profile = InstallProfile(profileName, profileXml, isHs2: false, forAllUsers);
+                    // forAllUsers must be true when installing the profile, but false when installing userdata
+                    // Otherwise the profile is installed but doens't work.  We don't know why.
+                    profile = InstallProfile(profileName, profileXml, hs20: false, forAllUsers: true);
                     // forAllUsers does not work with EAP-TLS, probably because the certificate is in the personal store
-                    InstallUserData(profile, userDataXml, forAllUsers && authMethod.EapType != EapType.TLS);
+                    // Same for all methods where the CA is not public
+                    InstallUserData(profile, userDataXml, false);
                 }
                 catch (Win32Exception e)
                 {
@@ -127,9 +131,12 @@ namespace EduroamConfigure
                 string userDataXml = UserDataXml.CreateUserDataXml(authMethod, username, password);
                 try
                 {
-                    profile = InstallProfile(profileName, profileXml, isHs2: true, forAllUsers);
+                    // forAllUsers must be true when installing the profile, but false when installing userdata
+                    // Otherwise the profile is installed but doens't work.  We don't know why.
+                    profile = InstallProfile(profileName, profileXml, hs20: true, forAllUsers: true);
                     // forAllUsers does not work with EAP-TLS, probably because the certificate is in the personal store
-                    InstallUserData(profile, userDataXml, forAllUsers && authMethod.EapType != EapType.TLS);
+                    // Same for all methods where the CA is not public
+                    InstallUserData(profile, userDataXml, forAllUsers: false);
                 }
                 catch (Win32Exception e)
                 {
