@@ -142,6 +142,16 @@ namespace EduroamConfigure
 				{
 					Debug.Print(e.ToString());
 
+					// ABANDON HOPE, ALL YE WHO ENTER HERE.
+
+					// We have observed that some devices, especially USB Wi-Fi dongles,
+					// will simply fail when trying to configure HS20 on their interfaces.
+					// The error is BAD PROFILE, but the profile works fine on most PCI-based adapters.
+					// Since most profiles offer both HS20 and SSID, and we assume that these adapters
+					// not accepting HS20 is due to them not supporting HS20 anyway,
+					// the best user experience is to silently discard these errors.
+					// However, we do so ONLY if SSIDs are also set, AND we are not running in DEBUG mode.
+
 					// If any errors occur but no SSIDs were configured,
 					// we throw an exception, even if it was ignored otherwise
 					if (ssids.Count == 0)
@@ -149,25 +159,35 @@ namespace EduroamConfigure
 						throw;
 					}
 
-					Debug.WriteLine(e.Message);
-
-					// Accept any error when ssids.Count > 0
+#if !DEBUG
+					// Accept any error when ssids.Count > 0 for Release version.
 					// We still are not sure what kind of errors are to be expected
 					// when configuring HS20, so this gives the best user experience
-#if !DEBUG
 					return;
 #endif
 
+					// -2147467259 == 0x80004005, which is the most generic error code Windows has to offer
+					// Useless but fun reading:
+					// https://support.microsoft.com/en-us/windows/fix-error-0x80004005-9acfca89-b5e4-b976-6fa1-ef358450f3ac
+					// https://support.microsoft.com/en-us/topic/you-may-receive-error-code-0x80004005-or-other-error-codes-when-you-try-to-start-a-windows-xp-based-computer-a15f5b2f-642d-24ac-4912-1570a6bcedec
+					// https://answers.microsoft.com/en-us/msoffice/forum/msoffice_onenote-mso_amobile-msoversion_other/error-code-80004005/ba567a2a-e037-40c3-9a5e-428030db6223
+
 					// When HS20 is not supported, an exception is thrown with these values
-					// We ignore the error, except if no SSID was configured
+					// We ignore the error, except if no SSID was configured (ignored in the stanza ealier)
+					// 1206 == ManagedNativeWifi.Win32.NativeMethod.ERROR_BAD_PROFILE
 					if (e.ErrorCode == -2147467259 || e.NativeErrorCode == 1206)
 					{
+						Debug.WriteLine("Win32Exception: ERROR_BAD_PROFILE");
 						return;
 					}
 
 					// Observed by an institution in The Netherlands, via Paul Dekkers
+					// 183 == ManagedNativeWifi.Win32.NativeMethod.ERROR_ALREADY_EXISTS
 					if (e.ErrorCode == -2147467259 || e.NativeErrorCode == 183)
 					{
+						Debug.WriteLine("Win32Exception: ERROR_ALREADY_EXISTS");
+
+						// TODO try removing and retry?
 						return;
 					}
 
