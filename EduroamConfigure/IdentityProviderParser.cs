@@ -15,7 +15,7 @@ namespace EduroamConfigure
         /// <param name="searchString">Query string</param>
         /// <param name="limit">Number of results to return, reduce this for a speedup</param>
         /// <returns>List of providers ordered by match coefficient</returns>
-        public static List<IdentityProvider> SortByQuery(List<IdentityProvider> providers, string searchString, int limit)
+        public static IEnumerable<IdentityProvider> SortByQuery(IEnumerable<IdentityProvider> providers, string searchString, int limit)
         {
             if (string.IsNullOrEmpty(searchString))
             {
