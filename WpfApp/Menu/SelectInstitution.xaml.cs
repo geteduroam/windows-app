@@ -60,7 +60,7 @@ namespace WpfApp.Menu
 		/// Used to update institution list portrayed to users.
 		/// Called by different thread than Winform thread
 		/// </summary>
-		private void UpdateInstitutions(List<IdentityProvider> institutions)
+		private void UpdateInstitutions(IEnumerable<IdentityProvider> institutions)
 		{
 			this.Dispatcher.Invoke(() => {
 				lbInstitutions.ItemsSource = institutions;
