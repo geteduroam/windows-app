@@ -229,7 +229,7 @@ namespace EduroamConfigure
 				try
 				{
 					using var discovery = new IdentityProviderDownloader();
-					discovery.LoadProviders(useGeodata: false);
+					await discovery.LoadProviders(useGeodata: false);
 					var xml = (await discovery.DownloadEapConfig(profileId)).XmlData;
 					PersistingStore.IdentityProvider = PersistingStore.IdentityProvider
 						?.WithEapConfigXml(xml);
