@@ -6,13 +6,12 @@ using System.Linq;
 using System.Device.Location;
 using System.Globalization;
 using System.Net.Http;
-using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Xml;
 using System.Collections.Specialized;
-using System.Text;
 using System.Diagnostics;
+using System.Net.Http.Headers;
 
 namespace EduroamConfigure
 {
@@ -27,24 +26,32 @@ namespace EduroamConfigure
 #endif
 
         // http objects
-        private static HttpClientHandler handler;
-        private static HttpClient client;
-        public static HttpContent EmptyStringContent = new StringContent("");
+        private static readonly HttpClientHandler Handler = null;
+        private static readonly HttpClient Http = null;
 
         // state
-        public List<IdentityProvider> Providers { get; private set; }
-        public List<IdentityProvider> ClosestProviders { get; private set; } // Providers presorted by geo distance
+        public IEnumerable<IdentityProvider> Providers { get; private set; }
+        public IOrderedEnumerable<IdentityProvider> ClosestProviders { get; private set; } // Providers presorted by geo distance
         private GeoCoordinateWatcher GeoWatcher { get; }
         public bool Online { get => Providers != null; }
 
         // Variable to prevent calling loadProviders when it's already running
-        private Task LoadProvidersLock = null;
+        private Task LoadProvidersLock;
 
-        static IdentityProviderDownloader() {
-            handler = new HttpClientHandler();
-            handler.AutomaticDecompression = System.Net.DecompressionMethods.GZip | DecompressionMethods.Deflate;
-            handler.AllowAutoRedirect = true;
-            client = createClient(null);
+        static IdentityProviderDownloader()
+        {
+            Handler = new HttpClientHandler
+            {
+                AutomaticDecompression = System.Net.DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                AllowAutoRedirect = true
+            };
+            Http = new HttpClient(Handler, false);
+#if DEBUG
+            Http.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
+#else
+            newClient.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
+#endif
+            Http.Timeout = new TimeSpan(0, 0, 3);
         }
 
         /// <summary>
@@ -91,7 +98,7 @@ namespace EduroamConfigure
                 if (ClosestProviders == null)
                 {
                     // turns out just running this once, even without saving it and caching makes subsequent calls much faster
-                    ClosestProviders = useGeodata ? await GetClosestProviders().ConfigureAwait(false) : Providers;
+                    ClosestProviders = useGeodata ? await GetClosestProviders().ConfigureAwait(false) : Providers.OrderBy((p) => p.Name);
                 }
             }
             catch (JsonSerializationException e)
@@ -169,7 +176,7 @@ namespace EduroamConfigure
                 : Providers.Where(p => p.Id == idProviderId).First().Profiles
                 ;
 
-        private async Task<List<IdentityProvider>> GetClosestProviders()
+        private async Task<IOrderedEnumerable<IdentityProvider>> GetClosestProviders()
         {
             if (Providers == null) return null;
 
@@ -202,15 +209,13 @@ namespace EduroamConfigure
                 // sort and return n closest
                 return Providers
                     //.Where(p => p.Country == closestCountryCode)
-                    .OrderBy(p => userCoords.GetDistanceTo(p.GetClosestGeoCoordinate(userCoords)))
-                    .ToList();
+                    .OrderBy(p => userCoords.GetDistanceTo(p.GetClosestGeoCoordinate(userCoords)));
             }
             catch (ApiUnreachableException)
             {
                 return Providers
                    //.Where(p => p.Country == closestCountryCode)
-                   .OrderByDescending(p => p.Country == closestCountryCode)
-                   .ToList();
+                   .OrderByDescending(p => p.Country == closestCountryCode);
             }
         }
 
@@ -293,13 +298,18 @@ namespace EduroamConfigure
             {
                 if (accessToken == null)
                 {
-                    response = await client.GetAsync(url);
+                    response = await Http.GetAsync(url);
                 }
                 else
                 {
-                    HttpClient authClient = createClient(accessToken);
-                    response = await authClient.PostAsync(url, EmptyStringContent);
-                    authClient.Dispose();
+                    using var request = new HttpRequestMessage
+                    {
+                        Method = HttpMethod.Post,
+                        Content = new StringContent(""),
+                        RequestUri = url
+                    };
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                    response = await Http.SendAsync(request).ConfigureAwait(true);
                 }
             }
             catch (TaskCanceledException e)
@@ -344,9 +354,8 @@ namespace EduroamConfigure
         {
             try
             {
-                var form = new FormUrlEncodedContent(data);
-                var response = await client.PostAsync(url, form);
-                form.Dispose();
+                using var form = new FormUrlEncodedContent(data);
+                var response = await Http.PostAsync(url, form);
                 return await parseResponse(response, accept);
             }
             catch (TaskCanceledException e)
@@ -377,31 +386,7 @@ namespace EduroamConfigure
 
             HttpContent responseContent = response.Content;
 
-            using (var reader = new StreamReader(await responseContent.ReadAsStreamAsync().ConfigureAwait(false)))
-            {
-                return await reader.ReadToEndAsync().ConfigureAwait(false);
-            }
-        }
-
-        private static HttpClient createClient(string accessToken)
-        {
-            if (client != null && accessToken == null)
-            {
-                throw new ArgumentNullException("Cannot create a client without access_token");
-            }
-
-            HttpClient newClient = new HttpClient(handler);
-#if DEBUG
-            newClient.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
-#else
-            newClient.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
-#endif
-            newClient.Timeout = new TimeSpan(0, 0, 3);
-            if (accessToken != null)
-            {
-                newClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + accessToken);
-            }
-            return newClient;
+            return await responseContent.ReadAsStringAsync().ConfigureAwait(false);
         }
 
         #pragma warning disable CA2227 // Collection properties should be read only
