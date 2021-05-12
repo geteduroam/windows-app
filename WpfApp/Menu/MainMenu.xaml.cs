@@ -69,8 +69,7 @@ namespace WpfApp.Menu
 			catch (ApiParsingException e)
 			{
 				// Must never happen, because if the discovery is reached,
-				// it must be parseable. If it happens anyway, SCREAM!
-				Debug.Print(e.ToString());
+				// it must be parseable. Logging has been done upstream.
 				tbNewProfile.Text = "API error";
 				MessageBox.Show(e.Message, e.GetType().ToString(), MessageBoxButton.OK, MessageBoxImage.Error);
 			}

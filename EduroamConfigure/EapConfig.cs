@@ -282,7 +282,9 @@ namespace EduroamConfigure
 				{
 					if ((ex.HResult & 0xFFFF) == 0x56) return false; // wrong passphrase
 
+					Debug.WriteLine("THIS SHOULD NOT HAPPEN");
 					Debug.Print(ex.ToString());
+					Debug.Assert(false);
 					throw;
 				}
 				return true;
@@ -483,8 +485,7 @@ namespace EduroamConfigure
 			}
 			catch (XmlException e)
 			{
-				Debug.Print(e.ToString());
-				throw;
+				throw; // explicitly show that XmlException can be thrown here
 			}
 			/*
 			foreach (XElement eapIdentityProvider in eapConfigXml.Descendants().Where(nameIs("EAPIdentityProvider")))

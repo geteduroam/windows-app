@@ -89,9 +89,8 @@ namespace WpfApp.Menu
 				catch (ApiParsingException e)
 				{
 					// Must never happen, because if the discovery is reached,
-					// it must be parseable. If it happens anyway, SCREAM!
+					// it must be parseable. Logging has been done upstream.
 
-					Debug.Print(e.ToString());
 					throw;
 				}
 
