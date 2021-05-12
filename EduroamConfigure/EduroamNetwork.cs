@@ -115,7 +115,10 @@ namespace EduroamConfigure
                 }
                 catch (Win32Exception e)
                 {
+                    Debug.WriteLine("THIS SHOULD NOT HAPPEN");
                     Debug.Print(e.ToString());
+                    Debug.Assert(false);
+
                     throw;
                 }
             }
@@ -185,6 +188,9 @@ namespace EduroamConfigure
                         // TODO try removing and retry?
                         return;
                     }
+
+                    Debug.WriteLine("THIS SHOULD NOT HAPPEN");
+                    Debug.Assert(false);
 
                     // Not ignored, so throw
                     throw;
@@ -398,7 +404,9 @@ namespace EduroamConfigure
                     if (ex.GetBaseException().Message == "MethodName: WlanOpenHandle, ErrorCode: 1062, ErrorMessage: The service has not been started.\r\n")
                         return false;
 
+                Debug.WriteLine("THIS SHOULD NOT HAPPEN");
                 Debug.Print(ex.ToString());
+                Debug.Assert(false);
                 throw; // unknown
             }
             catch (Win32Exception ex) // in case it doesn't get wrapped in RELEASE
@@ -406,7 +414,9 @@ namespace EduroamConfigure
                 if (ex.NativeErrorCode == 1062) // ERROR_SERVICE_NOT_ACTIVE
                     return false;
 
+                Debug.WriteLine("THIS SHOULD NOT HAPPEN");
                 Debug.Print(ex.ToString());
+                Debug.Assert(false);
                 throw; // unknown
             }
             return true;

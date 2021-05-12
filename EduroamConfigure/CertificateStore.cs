@@ -47,7 +47,9 @@ namespace EduroamConfigure
                 if ((uint)ex.HResult == 0x800704C7)
                     throw new UserAbortException("User selected No when prompted for certificate");
 
+                Debug.WriteLine("THIS SHOULD NOT HAPPEN");
                 Debug.Print(ex.ToString());
+                Debug.Assert(false);
                 throw; // unknown exception
             }
 
@@ -119,7 +121,9 @@ namespace EduroamConfigure
                 // if user selects No when prompted to remove the CA
                 if ((uint)ex.HResult == 0x800704C7) return false;
 
+                Debug.WriteLine("THIS SHOULD NOT HAPPEN");
                 Debug.Print(ex.ToString());
+                Debug.Assert(false);
                 throw; // unknown exception
             }
 

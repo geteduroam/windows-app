@@ -103,18 +103,27 @@ namespace EduroamConfigure
             }
             catch (JsonSerializationException e)
             {
+                Debug.WriteLine("THIS SHOULD NOT HAPPEN");
+                Debug.Print(e.ToString());
+                Debug.Assert(false);
+
                 throw new ApiParsingException("JSON does not fit object", e);
             }
             catch (JsonReaderException e)
             {
+                Debug.WriteLine("THIS SHOULD NOT HAPPEN");
+                Debug.Print(e.ToString());
+                Debug.Assert(false);
+
                 throw new ApiParsingException("JSON contains syntax error", e);
             }
             catch (HttpRequestException e)
             {
                 throw new ApiUnreachableException("Access to discovery API failed " + ProviderApiUrl, e);
             }
-            catch (ApiParsingException)
+            catch (ApiParsingException e)
             {
+                // Logged upstream
                 throw;
             }
             finally
@@ -162,6 +171,10 @@ namespace EduroamConfigure
             }
             catch (JsonException e)
             {
+                Debug.WriteLine("THIS SHOULD NOT HAPPEN");
+                Debug.Print(e.ToString());
+                Debug.Assert(false);
+
                 throw new ApiParsingException("GeoApi JSON error", e);
             }
         }
@@ -188,7 +201,9 @@ namespace EduroamConfigure
                 closestCountryCode = (await GetCurrentLocationFromGeoApi()).Country;
             }
             catch (Exception e) {
+                Debug.WriteLine("THIS SHOULD NOT HAPPEN");
                 Debug.Print(e.ToString());
+                Debug.Assert(false);
             }
 
             if (null == closestCountryCode) {
