@@ -78,7 +78,10 @@ namespace WpfApp.Menu
                 try
                 {
                     mainWindow.btnNext.Content = "Loading ...";
-                    if (!mainWindow.IdpDownloader.Online) await Task.Run(() => mainWindow.IdpDownloader.LoadProviders());
+                    if (!mainWindow.IdpDownloader.Online)
+                    {
+                        await mainWindow.IdpDownloader.LoadProviders();
+                    }
                 }
                 catch (ApiUnreachableException)
                 {
@@ -91,11 +94,14 @@ namespace WpfApp.Menu
                     // Must never happen, because if the discovery is reached,
                     // it must be parseable. Logging has been done upstream.
 
-                    throw;
+                    mainWindow.btnNext.IsEnabled = false;
+                    mainWindow.btnNext.Content = "Can't reconnect";
                 }
 
-                // TODO: this ^ Online check should be moved into the IdpDownloader
-                var profile = await Task.Run(() => mainWindow.IdpDownloader.GetProfileFromId(profileId));
+                var profile = mainWindow.IdpDownloader.Online
+                    ? mainWindow.IdpDownloader.GetProfileFromId(profileId)
+                    : null
+                    ;
                 if (profile != null)
                 {
                     mainWindow.btnNext.IsEnabled = true;

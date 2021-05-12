@@ -69,17 +69,17 @@ namespace EduroamConfigure
         /// <exception cref="ApiUnreachableException">API endpoint cannot be contacted</exception>
         public async Task<bool> LoadProviders(bool useGeodata = true)
         {
+            if (Online)
+            {
+                return true;
+            }
+
             Task loadLock = LoadProvidersLock;
             if (loadLock != null) try
             {
                 loadLock.Wait();
             }
-            catch (System.AggregateException) { }
-
-            if (Online)
-            {
-                return true;
-            }
+            catch (AggregateException) { }
 
             CancellationTokenSource cancel = null;
             if (Providers == null) try
@@ -128,8 +128,10 @@ namespace EduroamConfigure
             }
             finally
             {
-                cancel.Cancel();
-                cancel.Dispose();
+                if (cancel != null)
+                {
+                    using (cancel) cancel.Cancel();
+                }
                 LoadProvidersLock = null;
             }
             return Online;
@@ -284,6 +286,11 @@ namespace EduroamConfigure
         /// <returns>The IdentityProviderProfile with the given profileId</returns>
         public IdentityProviderProfile GetProfileFromId(string profileId)
         {
+            if (!Online)
+            {
+                throw new EduroamAppUserException("not_online", "Cannot retrieve profile when offline");
+            }
+
             foreach (IdentityProvider provider in Providers)
             {
                 foreach (IdentityProviderProfile profile in provider.Profiles)
