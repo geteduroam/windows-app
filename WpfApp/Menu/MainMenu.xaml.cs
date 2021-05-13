@@ -1,4 +1,3 @@
-﻿using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -48,7 +47,9 @@ namespace WpfApp.Menu
                 tbExisting.Text = "Connect with " + mainWindow.ExtractedEapConfig.InstitutionInfo.DisplayName;
             }
 
-            Task.Run(() => mainWindow.IdpDownloader.LoadProviders());
+            // Pre-loading when starting the application makes things a bit faster,
+            // but is it also acceptable from a privacy perspective?
+            Task.Run(() => mainWindow.IdpDownloader.LoadProviders(useGeodata: true));
             if (!tbInstalledProfile.IsVisible && !btnExisting.IsVisible)
                 tbNewProfile.Focus();
         }
@@ -63,7 +64,8 @@ namespace WpfApp.Menu
             tbNewProfile.Text = "Loading ...";
             try
             {
-                online = await mainWindow.IdpDownloader.LoadProviders();
+                await mainWindow.IdpDownloader.LoadProviders(useGeodata: true);
+                online = mainWindow.IdpDownloader.Loaded;
                 tbNewProfile.Text = "Connect to eduroam";
             }
             catch (ApiParsingException e)
@@ -84,13 +86,13 @@ namespace WpfApp.Menu
 
         private async void btnNewProfile_Click(object sender, RoutedEventArgs e)
         {
-            if (!mainWindow.IdpDownloader.Online)
+            if (!mainWindow.IdpDownloader.LoadedWithGeo)
             {
                 await LoadProviders();
             }
 
             // The value may have changed, so check again
-            if (mainWindow.IdpDownloader.Online)
+            if (mainWindow.IdpDownloader.Loaded)
             {
                 mainWindow.NextPage();
             }

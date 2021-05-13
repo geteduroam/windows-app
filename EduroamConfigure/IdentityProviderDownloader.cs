@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net;
 using Newtonsoft.Json;
 using System.Linq;
@@ -7,11 +6,11 @@ using System.Device.Location;
 using System.Globalization;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Threading;
 using System.Xml;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Net.Http.Headers;
+using System.Collections.Generic;
 
 namespace EduroamConfigure
 {
@@ -26,25 +25,33 @@ namespace EduroamConfigure
 #endif
 
         // http objects
-        private static readonly HttpClientHandler Handler = null;
-        private static readonly HttpClient Http = null;
+        private static readonly HttpClientHandler Handler = new HttpClientHandler
+        {
+            AutomaticDecompression = System.Net.DecompressionMethods.GZip | DecompressionMethods.Deflate,
+            AllowAutoRedirect = true
+        };
+        private static readonly HttpClient Http;
+        private static readonly GeoCoordinateWatcher GeoWatcher;
 
         // state
-        public IEnumerable<IdentityProvider> Providers { get; private set; }
-        public IOrderedEnumerable<IdentityProvider> ClosestProviders { get; private set; } // Providers presorted by geo distance
-        private GeoCoordinateWatcher GeoWatcher { get; }
-        public bool Online { get => Providers != null; }
+        private GeoCoordinate Coordinates; // Coordinates determined by OS or Web API
+        private IdpLocation Location; // Location with country name determined by user setting or Web API
+        private Task LoadProviderTask;
+        private Task GeoWebApiTask;
 
-        // Variable to prevent calling loadProviders when it's already running
-        private Task LoadProvidersLock;
+        public IEnumerable<IdentityProvider> Providers { get; private set; }
+        public IEnumerable<IdentityProvider> ClosestProviders
+        {
+            get => Coordinates != null && !Coordinates.IsUnknown
+                ? Providers.OrderBy(p => p.getDistanceTo(Coordinates))
+                : Providers.OrderByDescending(p => p.Country == Location.Country)
+                ;
+        }
+        public bool Loaded { get => Providers.Any(); }
+        public bool LoadedWithGeo { get => Loaded && Coordinates != null && !Coordinates.IsUnknown; }
 
         static IdentityProviderDownloader()
         {
-            Handler = new HttpClientHandler
-            {
-                AutomaticDecompression = System.Net.DecompressionMethods.GZip | DecompressionMethods.Deflate,
-                AllowAutoRedirect = true
-            };
             Http = new HttpClient(Handler, false);
 #if DEBUG
             Http.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
@@ -52,6 +59,9 @@ namespace EduroamConfigure
             Http.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
 #endif
             Http.Timeout = new TimeSpan(0, 0, 3);
+
+            GeoWatcher = new GeoCoordinateWatcher();
+            _ = Task.Run(() => GeoWatcher.Start(true));
         }
 
         /// <summary>
@@ -60,45 +70,81 @@ namespace EduroamConfigure
         /// </summary>
         public IdentityProviderDownloader()
         {
-            GeoWatcher = new GeoCoordinateWatcher();
-            GeoWatcher.TryStart(false, TimeSpan.FromMilliseconds(3000));
-            Task.Run(GetClosestProviders);
+            Providers = Enumerable.Empty<IdentityProvider>();
+
+            // gets country code as set in Settings
+            // https://stackoverflow.com/questions/8879259/get-current-location-as-specified-in-region-and-language-in-c-sharp
+            var regKeyGeoId = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Control Panel\International\Geo");
+            var geoID = (string)regKeyGeoId.GetValue("Nation");
+            var allRegions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.ToString()));
+            var regionInfo = allRegions.FirstOrDefault(r => r.GeoId == Int32.Parse(geoID, CultureInfo.InvariantCulture));
+
+            Coordinates = GeoWatcher.Position.Location;
+            Location = new IdpLocation
+            {
+                Country = regionInfo.TwoLetterISORegionName
+            };
+            Debug.Print("Geolocate OS API found country {0}, coordinates {1}", Location.Country, Coordinates);
+
+            GeoWatcher.PositionChanged += (sender, e) =>
+            {
+                Coordinates = e.Position.Location;
+                Debug.Print("Geolocate OS API found country {0}, coordinates {1}", Location.Country, Coordinates);
+            };
         }
 
         /// <exception cref="ApiParsingException">JSON cannot be deserialized</exception>
         /// <exception cref="ApiUnreachableException">API endpoint cannot be contacted</exception>
-        public async Task<bool> LoadProviders(bool useGeodata = true)
+        public Task LoadProviders(bool useGeodata)
         {
-            if (Online)
+            if (LoadProviderTask == null || LoadProviderTask.IsCompleted && !Providers.Any())
             {
-                return true;
+                LoadProviderTask = LoadProvidersInternal();
+            }
+            if (useGeodata && (GeoWebApiTask == null || GeoWebApiTask.IsCompleted && !LoadedWithGeo))
+            {
+                GeoWebApiTask = LoadGeoWebApi();
             }
 
-            Task loadLock = LoadProvidersLock;
-            if (loadLock != null) try
+            if (GeoWebApiTask != null && !GeoWebApiTask.IsCompleted)
             {
-                loadLock.Wait();
-            }
-            catch (AggregateException) { }
-
-            CancellationTokenSource cancel = null;
-            if (Providers == null) try
-            {
-                cancel = new CancellationTokenSource();
-                cancel.Token.ThrowIfCancellationRequested();
-                LoadProvidersLock = Task.Delay(5000, cancel.Token);
-
-                // downloads json file as string
-                string apiJson = await DownloadUrlAsString(ProviderApiUrl, new string[] { "application/json" }).ConfigureAwait(false);
-
-                // gets api instance from json
-                DiscoveryApi discovery = JsonConvert.DeserializeObject<DiscoveryApi>(apiJson);
-                Providers = discovery.Instances;
-
-                if (ClosestProviders == null)
+                return Task.Run(() =>
                 {
-                    // turns out just running this once, even without saving it and caching makes subsequent calls much faster
-                    ClosestProviders = useGeodata ? await GetClosestProviders().ConfigureAwait(false) : Providers.OrderBy((p) => p.Name);
+                    // Run the geolocation code async, but return after 700 milliseconds without aborting it
+                    // If geolocation is too slow, we don't want to keep the user waiting for that
+                    Task.WaitAll(new Task[] { LoadProviderTask, GeoWebApiTask }, 700);
+                    LoadProviderTask.Wait();
+                });
+            }
+            return LoadProviderTask;
+        }
+        private Task LoadGeoWebApi()
+        {
+            var webTask = Task.Run(async () => {
+                string apiJson = await DownloadUrlAsString(GeoApiUrl, new string[] { "application/json" }).ConfigureAwait(false);
+                return JsonConvert.DeserializeObject<IdpLocation>(apiJson);
+            });
+
+            return Task.Run(() => {
+                webTask.Wait();
+                Location = webTask.Result ?? Location;
+                Coordinates = Location.GeoCoordinate;
+
+                Debug.Print("Geolocate Web API found country {0}, coordinates {1}", Location.Country, Coordinates);
+            });
+        }
+        private async Task LoadProvidersInternal()
+        {
+            try
+            {
+                if (!Providers.Any())
+                {
+                    // downloads json file as string
+                    string apiJson = await DownloadUrlAsString(ProviderApiUrl, new string[] { "application/json" }).ConfigureAwait(false);
+
+                    // gets api instance from json
+                    DiscoveryApi discovery = JsonConvert.DeserializeObject<DiscoveryApi>(apiJson);
+                    Providers = discovery.Instances;
                 }
             }
             catch (JsonSerializationException e)
@@ -121,63 +167,10 @@ namespace EduroamConfigure
             {
                 throw new ApiUnreachableException("Access to discovery API failed " + ProviderApiUrl, e);
             }
-            catch (ApiParsingException e)
+            catch (ApiParsingException)
             {
                 // Logged upstream
                 throw;
-            }
-            finally
-            {
-                if (cancel != null)
-                {
-                    using (cancel) cancel.Cancel();
-                }
-                LoadProvidersLock = null;
-            }
-            return Online;
-        }
-
-        /// <summary>
-        /// Will return the current coordinates of the users.
-        /// It may download them if not cached
-        /// </summary>
-        private async Task<GeoCoordinate> GetCoordinates()
-        {
-            if (!GeoWatcher.Position.Location.IsUnknown)
-            {
-                return GeoWatcher.Position.Location;
-            }
-
-            try
-            {
-                return (await GetCurrentLocationFromGeoApi()).Geo.GeoCoordinate;
-            }
-            catch (ApiException)
-            {
-                return null;
-            }
-        }
-
-        /// <exception cref="ApiUnreachableException">GeoApi download error</exception>
-        /// <exception cref="ApiParsingException">GeoApi JSON error</exception>
-        private async static Task<IdpLocation> GetCurrentLocationFromGeoApi()
-        {
-            try
-            {
-                string apiJson = await DownloadUrlAsString(GeoApiUrl, new string[] { "application/json" });
-                return JsonConvert.DeserializeObject<IdpLocation>(apiJson);
-            }
-            catch (HttpRequestException e)
-            {
-                throw new ApiUnreachableException("GeoApi download error", e);
-            }
-            catch (JsonException e)
-            {
-                Debug.WriteLine("THIS SHOULD NOT HAPPEN");
-                Debug.Print(e.ToString());
-                Debug.Assert(false);
-
-                throw new ApiParsingException("GeoApi JSON error", e);
             }
         }
 
@@ -185,56 +178,10 @@ namespace EduroamConfigure
         /// Gets all profiles associated with a identity provider ID.
         /// </summary>
         /// <returns>identity provider profile object containing all profiles for given provider</returns>
+        /// <param name="idProviderId">Find profiles belonging to provider with this ID</param>
+        /// <exception cref="InvalidOperationException">There is no provider with id provided in <paramref name="idProviderId"/></exception>
         public List<IdentityProviderProfile> GetIdentityProviderProfiles(string idProviderId)
-            => idProviderId == null
-                ? Enumerable.Empty<IdentityProviderProfile>().ToList()
-                : Providers.Where(p => p.Id == idProviderId).First().Profiles
-                ;
-
-        private async Task<IOrderedEnumerable<IdentityProvider>> GetClosestProviders()
-        {
-            if (Providers == null) return null;
-
-            // find country code
-            string closestCountryCode = null;
-            try
-            {
-                // find country code from api
-                closestCountryCode = (await GetCurrentLocationFromGeoApi()).Country;
-            }
-            catch (Exception e) {
-                Debug.WriteLine("THIS SHOULD NOT HAPPEN");
-                Debug.Print(e.ToString());
-                Debug.Assert(false);
-            }
-
-            if (null == closestCountryCode) {
-                // gets country code as set in Settings
-                // https://stackoverflow.com/questions/8879259/get-current-location-as-specified-in-region-and-language-in-c-sharp
-                var regKeyGeoId = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Control Panel\International\Geo");
-                var geoID = (string)regKeyGeoId.GetValue("Nation");
-                var allRegions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.ToString()));
-                var regionInfo = allRegions.FirstOrDefault(r => r.GeoId == Int32.Parse(geoID, CultureInfo.InvariantCulture));
-
-                closestCountryCode = regionInfo.TwoLetterISORegionName;
-            }
-
-            try
-            {
-                var userCoords = await GetCoordinates();
-
-                // sort and return n closest
-                return Providers
-                    //.Where(p => p.Country == closestCountryCode)
-                    .OrderBy(p => userCoords.GetDistanceTo(p.GetClosestGeoCoordinate(userCoords)));
-            }
-            catch (ApiUnreachableException)
-            {
-                return Providers
-                   //.Where(p => p.Country == closestCountryCode)
-                   .OrderByDescending(p => p.Country == closestCountryCode);
-            }
-        }
+            => Providers.Where(p => p.Id == idProviderId).First().Profiles;
 
         /// <summary>
         /// Gets download link for EAP config from json and downloads it.
@@ -286,7 +233,7 @@ namespace EduroamConfigure
         /// <returns>The IdentityProviderProfile with the given profileId</returns>
         public IdentityProviderProfile GetProfileFromId(string profileId)
         {
-            if (!Online)
+            if (!Loaded)
             {
                 throw new EduroamAppUserException("not_online", "Cannot retrieve profile when offline");
             }

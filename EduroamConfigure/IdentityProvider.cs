@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Device.Location;
+using System.Linq;
 
 namespace EduroamConfigure
 {
@@ -28,6 +29,7 @@ namespace EduroamConfigure
         public string Postal { get; set; }
         public string City { get; set; }
         public IdpCoordinates Geo { get; set; }
+        public GeoCoordinate GeoCoordinate { get => Geo.GeoCoordinate; }
     }
 
     public class IdentityProviderProfile
@@ -57,15 +59,16 @@ namespace EduroamConfigure
         public List<IdpCoordinates> Geo { get; set; } = new List<IdpCoordinates>();
         public string Id { get; set; }
         public List<IdentityProviderProfile> Profiles { get; set; }
+        public IEnumerable<GeoCoordinate> GeoCoordinates { get => Geo.Select((geo) => geo.GeoCoordinate); }
 
         public GeoCoordinate GetClosestGeoCoordinate(GeoCoordinate compareCoordinate)
         {
-            var closestGeo = new IdpCoordinates();
+            var closestGeo = GeoCoordinate.Unknown;
             // shortest distance
             double shortestDistance = double.MaxValue;
-            foreach (IdpCoordinates geo in Geo)
+            foreach (GeoCoordinate geo in GeoCoordinates)
             {
-                double currentDistance = geo.GeoCoordinate.GetDistanceTo(compareCoordinate);
+                double currentDistance = geo.GetDistanceTo(compareCoordinate);
                 // compares with shortest distance
                 if (currentDistance < shortestDistance)
                 {
@@ -75,7 +78,7 @@ namespace EduroamConfigure
                     closestGeo = geo;
                 }
             }
-            return closestGeo.GeoCoordinate;
+            return closestGeo;
         }
         /// <summary>
         /// How the institution is shown to the end user
@@ -84,6 +87,13 @@ namespace EduroamConfigure
         public override string ToString()
              => Name;
 
+        internal double getDistanceTo(GeoCoordinate coordinates)
+        {
+            var closest = GetClosestGeoCoordinate(coordinates);
+            return closest.IsUnknown
+                ? double.MaxValue
+                : coordinates.GetDistanceTo(closest);
+        }
     }
 
     #pragma warning restore IDE1006 // Naming Styles
