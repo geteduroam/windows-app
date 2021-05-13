@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -27,33 +28,17 @@ namespace WpfApp.Menu
 			LoadPage();
 		}
 
-		// TODO: add loading image
 		private async void LoadPage()
 		{
 			mainWindow.btnNext.IsEnabled = false;
 			downloader = mainWindow.IdpDownloader;
 
-			await Task.Run(() => PopulateInstitutions());
-
-			tbTitle.Text = "Select institution";
-		}
-
-
-		/// <summary>
-		/// Called when the form is created to present the 10 closest providers
-		/// </summary>
-		private async void PopulateInstitutions()
-		{
-			if (downloader.ClosestProviders == null)
-			{
-				await downloader.LoadProviders(true);
-			}
-			if (downloader.ClosestProviders == null)
-			{
-				return;
-			}
+			// The institutions should have been loaded already
+			Debug.Assert(downloader.Loaded);
 
 			UpdateInstitutions(downloader.ClosestProviders);
+
+			tbTitle.Text = "Select institution";
 		}
 
 		/// <summary>
@@ -70,14 +55,10 @@ namespace WpfApp.Menu
 		}
 
 		private void lbInstitution_DoubleClick(object sender, EventArgs e)
-		{
-			mainWindow.NextPage();
-		}
+			=> mainWindow.NextPage();
 
 		private void tbSearch_TextChanged(object sender, TextChangedEventArgs e)
-		{
-			Search();
-		}
+			=> Search();
 
 		/// <summary>
 		/// Search function called when the search box is changed.
@@ -144,9 +125,7 @@ namespace WpfApp.Menu
 		}
 
 		private void Page_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
-		{
-			tbSearch.Focus();
-		}
+			=> tbSearch.Focus();
 
 		private void tbSearch_PreviewKeyDown(object sender, KeyEventArgs e)
 		{

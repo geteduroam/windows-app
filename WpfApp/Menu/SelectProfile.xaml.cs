@@ -43,6 +43,7 @@ namespace WpfApp.Menu
 		/// <summary>
 		/// Fetches a list of all eduroam institutions from https://cat.eduroam.org.
 		/// </summary>
+		/// <exception cref="InvalidOperationException">Got no profiles from GetIdentityProviderProfiles</exception>
 		private void PopulateProfiles()
 		{
 			var idProviderProfiles = mainWindow.IdpDownloader.GetIdentityProviderProfiles(IdProviderId);

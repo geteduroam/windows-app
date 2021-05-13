@@ -78,9 +78,9 @@ namespace WpfApp.Menu
 				try
 				{
 					mainWindow.btnNext.Content = "Loading ...";
-					if (!mainWindow.IdpDownloader.Online)
+					if (!mainWindow.IdpDownloader.Loaded)
 					{
-						await mainWindow.IdpDownloader.LoadProviders();
+						await mainWindow.IdpDownloader.LoadProviders(useGeodata: false);
 					}
 				}
 				catch (ApiUnreachableException)
@@ -98,7 +98,7 @@ namespace WpfApp.Menu
 					mainWindow.btnNext.Content = "Can't reconnect";
 				}
 
-				var profile = mainWindow.IdpDownloader.Online
+				var profile = mainWindow.IdpDownloader.Loaded
 					? mainWindow.IdpDownloader.GetProfileFromId(profileId)
 					: null
 					;
