@@ -71,52 +71,22 @@ namespace WpfApp.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
-        ///&lt;html lang=&quot;en&quot; class=&quot;dialog&quot;&gt;
-        ///&lt;!--TODO: embed the css--&gt;
-        ///&lt;link rel=&quot;stylesheet&quot; href=&quot;https://geteduroam.no/assets/geteduroam.css&quot;&gt;
-        ///&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
-        ///&lt;title&gt;geteduroam - Authorization&lt;/title&gt;
-        ///&lt;div&gt;
-        ///&lt;main&gt;
-        ///	&lt;p class=&quot;text-center&quot;&gt;
-        ///		You have been authorized!&lt;br&gt;
-        ///		&lt;br&gt;
-        ///		You may now close this tab and&lt;br&gt;
-        ///		return to the app.
-        ///	&lt;/p&gt;
-        ///&lt;/main&gt;
-        ///&lt;/div&gt;
-        ///.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static string oauth_accepted {
+        internal static byte[] oauth_accepted {
             get {
-                return ResourceManager.GetString("oauth_accepted", resourceCulture);
+                object obj = ResourceManager.GetObject("oauth_accepted", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &lt;!DOCTYPE html&gt;
-        ///&lt;html lang=&quot;en&quot; class=&quot;dialog&quot;&gt;
-        ///&lt;!--TODO: embed the css--&gt;
-        ///&lt;link rel=&quot;stylesheet&quot; href=&quot;https://geteduroam.no/assets/geteduroam.css&quot;&gt;
-        ///&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
-        ///&lt;title&gt;geteduroam - Authorization&lt;/title&gt;
-        ///&lt;div&gt;
-        ///&lt;main&gt;
-        ///	&lt;p class=&quot;text-center&quot;&gt;
-        ///		Authorization has been rejected.&lt;br&gt;
-        ///		&lt;br&gt;
-        ///		You may now close this tab and&lt;br&gt;
-        ///		return to the app.
-        ///	&lt;/p&gt;
-        ///&lt;/main&gt;
-        ///&lt;/div&gt;
-        ///.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static string oauth_rejected {
+        internal static byte[] oauth_rejected {
             get {
-                return ResourceManager.GetString("oauth_rejected", resourceCulture);
+                object obj = ResourceManager.GetObject("oauth_rejected", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }

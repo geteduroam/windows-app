@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,8 +33,6 @@ namespace WpfApp.Menu
         private Thread listenerThread;
         // cancellation token source
         private static CancellationTokenSource cancelTokenSource;
-        // cancellation token
-        private static CancellationToken cancelToken;
         public EapConfig eapConfig { get; set; }
 
         public OAuthWait(MainWindow mainWindow, IdentityProviderProfile profile) 
@@ -55,14 +52,15 @@ namespace WpfApp.Menu
         private async void Load()
         {
             // starts HTTP listener in new thread so UI stays responsive
-            listenerThread = new Thread(NonblockingListener);
-            listenerThread.IsBackground = true;
+            listenerThread = new Thread(NonblockingListener)
+            {
+                IsBackground = true
+            };
             listenerThread.Start();
             // cancellation thread
             cancelThread = new ManualResetEvent(false);
             // creates cancellation token, used when cancelling BeginGetContext method
             cancelTokenSource = new CancellationTokenSource();
-            cancelToken = cancelTokenSource.Token;
             // wait until oauth done and continue process
             await Task.Run(listenerThread.Join);
             //mainWindow.OAuthComplete(eapConfig);
@@ -90,7 +88,7 @@ namespace WpfApp.Menu
         /// <summary>
         /// Listens for incoming HTTP requests.
         /// </summary>
-        public void NonblockingListener()
+        private void NonblockingListener()
         {
             // creates a listener
             var listener = new HttpListener();
@@ -118,12 +116,6 @@ namespace WpfApp.Menu
                 mainThread.WaitOne();
                 //DialogResult = DialogResult.OK;
             }
-            // if cancelled first
-            else
-            {
-                // needs to call ListenerCallback once to cancel it
-                ListenerCallback(null);
-            }
 
             // closes HTTP listener
             listener.Close();
@@ -140,7 +132,7 @@ namespace WpfApp.Menu
         private async void ListenerCallback(IAsyncResult result)
         {
             // cancels and returns if cancellation is requested
-            if (cancelToken.IsCancellationRequested) return;
+            if (cancelTokenSource.Token.IsCancellationRequested) return;
 
             // sets the callback listener equals to the http listener
             HttpListener callbackListener = (HttpListener)result.AsyncState;
@@ -152,11 +144,36 @@ namespace WpfApp.Menu
             // gets the URL of the target web site
             responseUrl = request.Url;
 
+            // Parse the result and download the eap config if successfull
+            string authorizationCode = null;
+            string codeVerifier;
             try
             {
+                (authorizationCode, codeVerifier) = oauth.ParseAndExtractAuthorizationCode(responseUrl);
+            }
+            finally
+            {
+                try
+                {
+                    using HttpListenerResponse response = context.Response;
+                    // constructs a response
+                    byte[] responseString = authorizationCode == null
+                        ? Properties.Resources.oauth_rejected
+                        : Properties.Resources.oauth_accepted;
 
-                // Parse the result and download the eap config if successfull
-                (string authorizationCode, string codeVerifier) = oauth.ParseAndExtractAuthorizationCode(responseUrl);
+                    // outputs response to web server
+                    response.ContentLength64 = responseString.Length;
+                    response.OutputStream.Write(responseString, 0, responseString.Length);
+                    response.Close();
+                }
+                catch (HttpListenerException e)
+                {
+                    Debug.Print("{0} occurred replying {1} to the webbrowser", e.GetType(), authorizationCode == null ? "REJECT" : "OK");
+                }
+            }
+
+            try
+            {
                 bool success = await LetsWifi.AuthorizeAccess(profile, authorizationCode, codeVerifier, prefix);
 
                 eapConfig = success ? await LetsWifi.RequestAndDownloadEapConfig() : null;
@@ -182,29 +199,9 @@ namespace WpfApp.Menu
                 eapConfig = null;
             }
 
-            try
-            {
-                using HttpListenerResponse response = context.Response;
-                // constructs a response
-                string responseString = eapConfig == null
-                    ? Properties.Resources.oauth_rejected
-                    : Properties.Resources.oauth_accepted;
-
-                // outputs response to web server
-                byte[] responseBytes = Encoding.UTF8.GetBytes(responseString);
-                response.ContentLength64 = responseBytes.Length;
-                response.OutputStream.Write(responseBytes, 0, responseBytes.Length);
-            }
-            catch (HttpListenerException ex)
-            {
-                MessageBox.Show("Could not write to server. \nException: " + ex.Message);
-            }
-
             // resumes main thread
-
-
             mainThread.Set();
-            this.Dispatcher.Invoke(() => {
+            Dispatcher.Invoke(() => {
                 mainWindow.OAuthComplete(eapConfig);
             });
         }
