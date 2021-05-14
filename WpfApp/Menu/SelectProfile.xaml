@@ -13,7 +13,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5" Grid.Row="0" FontSize="24"/>
-        <ListBox x:Name="lbProfiles" ItemContainerStyle="{StaticResource ListBoxItemStyle}" Grid.Row="1" Margin="5" SelectionChanged="lbProfiles_SelectionChanged" MouseDoubleClick="lbProfiles_MouseDoubleClick"/>
+        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="16" Grid.Row="0" FontSize="24"/>
+        <ListBox x:Name="lbProfiles" ItemContainerStyle="{StaticResource ListBoxItemStyle}" Grid.Row="1" Margin="16" SelectionChanged="lbProfiles_SelectionChanged" MouseDoubleClick="lbProfiles_MouseDoubleClick"/>
     </Grid>
 </Page>
