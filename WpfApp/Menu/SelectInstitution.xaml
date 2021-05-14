@@ -15,9 +15,9 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="16" Grid.Row="0" FontSize="24"/>
-        <TextBox x:Name="tbSearch" Padding="2,3,2,3" Height="Auto" MinHeight="24" Text="" Margin="16" Grid.Row="1" TextChanged="tbSearch_TextChanged" PreviewKeyDown="tbSearch_PreviewKeyDown" FontSize="21"/>
-        <TextBlock IsHitTestVisible="False" Text="Search" VerticalAlignment="Center" HorizontalAlignment="Left" TextAlignment="Center" Margin="21,0,0,0" Foreground="DarkGray" Grid.Row="1" FontSize="21">
+        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="5" Grid.Row="0" FontSize="24"/>
+        <TextBox x:Name="tbSearch" Padding="2,3,2,3" Height="Auto" MinHeight="24" Text="" Margin="5" Grid.Row="1" TextChanged="tbSearch_TextChanged" PreviewKeyDown="tbSearch_PreviewKeyDown"/>
+        <TextBlock IsHitTestVisible="False" Text="Search" VerticalAlignment="Center" HorizontalAlignment="Left" TextAlignment="Center" Margin="10,0,0,0" Foreground="DarkGray" Grid.Row="1">
             <TextBlock.Style>
                 <Style TargetType="{x:Type TextBlock}">
                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -29,7 +29,7 @@
                 </Style>
             </TextBlock.Style>
         </TextBlock>
-        <ListBox Grid.Row="2" IsTabStop="False" x:Name="lbInstitutions" ItemContainerStyle="{StaticResource ListBoxItemStyle}" Margin="16" SelectionChanged="lbInstitutions_SelectionChanged" MouseDoubleClick="lbInstitutions_MouseDoubleClick" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+        <ListBox Grid.Row="2" IsTabStop="False" x:Name="lbInstitutions" ItemContainerStyle="{StaticResource ListBoxItemStyle}" Margin="5" SelectionChanged="lbInstitutions_SelectionChanged" MouseDoubleClick="lbInstitutions_MouseDoubleClick" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
 
     </Grid>
 </Page>
