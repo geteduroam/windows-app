@@ -172,7 +172,7 @@ namespace EduroamConfigure
 			// TODO on background refresh, internet may be offline, but be back in a few seconds; smart retry needed
 			try
 			{
-				var tokenJson = await IdentityProviderDownloader.PostForm(TokenEndpoint, tokenFormData);
+				var tokenJson = await IdentityProviderDownloader.PostForm(TokenEndpoint, tokenFormData, new string[]{ "application/json"});
 
 				// process response
 				SetAccessTokensFromJson(tokenJson);
@@ -258,15 +258,14 @@ namespace EduroamConfigure
 				?? throw new NullReferenceException(nameof(PersistingStore.IdentityProvider) + " was null");
 
 			// check if within 2/3 of the client certificate lifespan
-			if (profileInfo.NotBefore != null && profileInfo.NotAfter != null)
+			if (!force && profileInfo.NotBefore != null && profileInfo.NotAfter != null)
 			{
 				var d1 = profileInfo.NotBefore.Value;
 				var d2 = DateTime.Now;
 				var d3 = profileInfo.NotAfter.Value;
 
 				// if we are not a least 2/3 into the validity period (let's encrypt convention)
-				if (d1.Add(TimeSpan.FromTicks((d3 - d1).Ticks * 2 / 3)) > d2)
-					if (!force)
+					if (d1.Add(TimeSpan.FromTicks((d3 - d1).Ticks * 2 / 3)) > d2)
 						return RefreshResponse.StillValid; // prefer not to issue a new cert
 			}
 
