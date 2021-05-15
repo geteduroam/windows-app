@@ -1,13 +1,11 @@
+using EduroamConfigure;
 using System;
-using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Navigation;
-using System.Diagnostics;
-using System.Globalization;
-using EduroamConfigure;
-using System.Net.Http;
 
 namespace WpfApp.Menu
 {
@@ -17,7 +15,6 @@ namespace WpfApp.Menu
 	public partial class InstalledProfile : Page
 	{
 		private readonly MainWindow mainWindow;
-		public bool GoToMain { get; set; }
 		private string webAddress;
 		private string phone;
 		private string emailAddress;
@@ -33,7 +30,6 @@ namespace WpfApp.Menu
 			tbName.Text = PersistingStore.IdentityProvider.Value.DisplayName;
 			LoadContactInfo();
 			LoadCertInfo();
-			LoadProfile();
 
 		}
 		/// <summary>
@@ -50,104 +46,35 @@ namespace WpfApp.Menu
 		}
 
 		/// <summary>
-		/// Loads information from PersistingStore
-		/// </summary>
-		private async void LoadProfile()
-		{
-			if (PersistingStore.IsReinstallable)
-			{
-				mainWindow.btnNext.IsEnabled = true;
-				mainWindow.btnNext.Content = "Reconnect";
-				return;
-			}
-
-			// check if profile id exists in discovery
-
-			//mainWindow.btnNext.IsEnabled = false;
-			if (!string.IsNullOrEmpty(PersistingStore.IdentityProvider?.ProfileId))
-			{
-				try
-				{
-					mainWindow.btnNext.Content = "Loading ...";
-					if (!mainWindow.IdpDownloader.Loaded)
-					{
-						await mainWindow.IdpDownloader.LoadProviders(useGeodata: false);
-					}
-				}
-				catch (ApiUnreachableException)
-				{
-					mainWindow.btnNext.IsEnabled = false;
-					mainWindow.btnNext.Content = "Offline";
-					return;
-				}
-				catch (ApiParsingException)
-				{
-					// Must never happen, because if the discovery is reached,
-					// it must be parseable. Logging has been done upstream.
-
-					mainWindow.btnNext.IsEnabled = false;
-					mainWindow.btnNext.Content = "Can't reconnect";
-				}
-
-				var profile = mainWindow.IdpDownloader.Loaded
-					? mainWindow.IdpDownloader.GetProfileFromId(PersistingStore.IdentityProvider?.ProfileId)
-					: null
-					;
-				if (profile != null)
-				{
-					mainWindow.btnNext.IsEnabled = true;
-					mainWindow.btnNext.Content = "Reconnect";
-					return;
-				}
-				else
-				{
-					mainWindow.btnNext.IsEnabled = false;
-					mainWindow.btnNext.Content = "Can't reconnect";
-					//btnMainMenu.Style = FindResource("BlueButtonStyle") as Style;
-					return;
-				}
-			}
-
-			mainWindow.btnNext.IsEnabled = false;
-			mainWindow.btnNext.Content = "Can't reconnect";
-			// TODO: getting here means that we never should have been in this Form anyway. Move on to MainMenu instead?
-		}
-
-		/// <summary>
 		/// Loads info regarding the certficate of the persising store and displays it to the usr
 		/// </summary>
-		private void LoadCertInfo()
+		public void LoadCertInfo()
 		{
 			if (PersistingStore.IdentityProvider.Value.NotAfter != null)
 			{
 				var expireDate = PersistingStore.IdentityProvider.Value.NotAfter;
 				var nowDate = DateTime.Now;
 				var diffDate = expireDate - nowDate;
-				tbExpires.Text = "Exp: " +  expireDate?.ToString(CultureInfo.InvariantCulture);
+				tbConnectedTo.Text = "Your account is valid for";
+				tbTimeLeft.ToolTip = expireDate?.ToString(CultureInfo.InvariantCulture);
 
-				if(diffDate.Value.Days > 0)
+				if (diffDate.Value.Days > 1)
 				{
-					tbTimeLeft.Text = diffDate.Value.Days.ToString(CultureInfo.InvariantCulture) + " Days left";
+					tbTimeLeft.Text = diffDate.Value.Days.ToString(CultureInfo.InvariantCulture) + " more days";
 				}
-				else if (diffDate.Value.Hours > 0)
+				else if (diffDate.Value.Hours > 1)
 				{
-					tbTimeLeft.Text = diffDate.Value.Hours.ToString(CultureInfo.InvariantCulture) + " Hours left";
+					tbTimeLeft.Text = diffDate.Value.Hours.ToString(CultureInfo.InvariantCulture) + " more hours";
 				}
 				else
 				{
-					tbTimeLeft.Text = diffDate.Value.Minutes.ToString(CultureInfo.InvariantCulture) + " Minutes left";
+					tbTimeLeft.Text = diffDate.Value.Minutes.ToString(CultureInfo.InvariantCulture) + " more minutes";
 				}
-				btnRefresh.Visibility = PersistingStore.IsRefreshable ? Visibility.Visible : Visibility.Collapsed;
-
-				btnRefresh.Content = "Refresh now";
-				btnRefresh.IsEnabled = true;
 			}
 			else
 			{
-				grpCert.Visibility = Visibility.Collapsed;
+				stpCert.Visibility = Visibility.Collapsed;
 			}
-
-
 		}
 
 		/// <summary>
@@ -182,7 +109,7 @@ namespace WpfApp.Menu
 				return;
 			}
 			bool isValidUrl = Uri.TryCreate(webAddress, UriKind.Absolute, out Uri uriResult)
-								  && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+				&& (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
 			// show url as link
 			if (isValidUrl)
 			{
@@ -256,71 +183,9 @@ namespace WpfApp.Menu
 		/// <param name="e"></param>
 		private void btnMainMenu_Click(object sender, RoutedEventArgs e)
 		{
-			GoToMain = true;
 			mainWindow.NextPage();
-			//mainWindow.LoadPageMainMenu();
 		}
 
-		/// <summary>
-		/// Clickable button for user to delete the installed profile
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private async void btnLogout_Click(object sender, RoutedEventArgs e)
-		{
-			btnLogout.Content = "Logging out ..";
-			await Task.Run(() => Logout());
-			mainWindow.LoadPageMainMenu();
-		}
-
-		/// <summary>
-		/// Uninstalls the installed WLAN profile
-		/// </summary>
-		private static void Logout()
-		{
-			LetsWifi.WipeTokens();
-			ConnectToEduroam.RemoveAllWLANProfiles();
-			CertificateStore.UninstallAllInstalledCertificates(omitRootCa: true);
-			PersistingStore.IdentityProvider = null;
-
-			// TODO: remove root CAs aswell in some nice way
-		}
-
-		private async void btnRefresh_Click(object sender, RoutedEventArgs e)
-		{
-			btnRefresh.Content = "Refreshing ...";
-			btnRefresh.IsEnabled = false;
-			var response = LetsWifi.RefreshResponse.Failed;
-			try
-			{
-				response = await Task.Run(() => LetsWifi.RefreshAndInstallEapConfig(force: true, onlyLetsWifi: true));
-			}
-			catch (ApiParsingException ex)
-			{
-				MessageBox.Show(ex.Message, "Unable to refresh", MessageBoxButton.OK, MessageBoxImage.Error);
-			}
-			catch (HttpRequestException)
-			{
-				mainWindow.NextPage();
-				return;
-			}
-			switch (response)
-			{
-				case LetsWifi.RefreshResponse.Success:
-				case LetsWifi.RefreshResponse.UpdatedEapXml: // Should never happen due to onlyLetsWifi=true
-					LoadCertInfo();
-					break;
-				case LetsWifi.RefreshResponse.StillValid: // should never happend due to force=true
-				case LetsWifi.RefreshResponse.AccessDenied:
-				case LetsWifi.RefreshResponse.NewRootCaRequired:
-				case LetsWifi.RefreshResponse.NotRefreshable:
-				case LetsWifi.RefreshResponse.Failed:
-					btnRefresh.Content = "Cant refresh";
-					btnRefresh.IsEnabled = false;
-					break;
-			}
-		}
 	}
-
 
 }

@@ -6,8 +6,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WpfApp"
         mc:Ignorable="d"
-        Title="geteduroam" Height="600" Width="400"
-        MinHeight="420" MinWidth="400" MaxWidth="400"
+        Title="geteduroam" Height="600" Width="420"
+        MinHeight="420" MinWidth="420" MaxWidth="420"
         Closing="OnWindowClose"
         Activated="OnActivated"
         WindowStyle="None" ResizeMode="CanResize" BorderThickness="1" MouseLeftButtonDown="MouseStartWindowDrag"
@@ -18,9 +18,9 @@
     </WindowChrome.WindowChrome>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="49"/>
+            <RowDefinition Height="31"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="56"/>
+            <RowDefinition Height="72"/>
         </Grid.RowDefinitions>
 
         <tb:TaskbarIcon x:Name="TrayIcon"
@@ -39,7 +39,7 @@
 
         <Grid x:Name="gridTopBar" Grid.RowSpan="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="64"/>
+                <ColumnDefinition Width="45"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="64"/>
             </Grid.ColumnDefinitions>
@@ -48,8 +48,8 @@
             <Button x:Name="btnClose" Style="{StaticResource CloseButtonStyle}" IsTabStop="False" Content="      ╳      " VerticalAlignment="Top" HorizontalAlignment="Right" Height="31" Width="45" Click="btnClose_Click" FontSize="12" FontFamily="Calibri" Grid.Column="2" Grid.Row="0"/>
 
             <WebBrowser x:Name="webLogo" Grid.Column="1" Visibility="Hidden" MouseLeftButtonDown="MouseStartWindowDrag"/>
-            <Image x:Name="imgLogo" Grid.Column="1" Visibility="Hidden" Margin="0,6,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
-            <Image x:Name="imgEduroamLogo" Grid.Column="1">
+            <Image x:Name="imgLogo" Grid.Column="1" Visibility="Hidden" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+            <Image x:Name="imgEduroamLogo" Grid.Column="1" Margin="0,0,4,0">
                 <Image.Source>
                     <DrawingImage>
                         <DrawingImage.Drawing>
@@ -99,7 +99,52 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="50*"/>
             </Grid.ColumnDefinitions>
-            <Button Style="{StaticResource BlueButtonStyle}" IsDefault="true" x:Name="btnNext" Content="Next" HorizontalAlignment="Center" VerticalAlignment="Center" Width="131" Grid.Column="1" Height="37" Click="btnNext_Click"/>
+            <Button Style="{StaticResource BlueButtonStyle}" IsDefault="true" x:Name="btnNext" Content="Next" HorizontalAlignment="Center" VerticalAlignment="Center" Width="131" Grid.Column="1" Height="42" Click="btnNext_Click"/>
+            <Button Width="32" Height="32" Background="Transparent" BorderBrush="Transparent" Grid.Column="0" x:Name="btnSettings" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12" FontSize="24" Click="btnSettings_Click">
+                <Image Width="24" Height="24" Grid.Row="1">
+                    <Image.Source>
+                        <DrawingImage>
+                            <DrawingImage.Drawing>
+                                <DrawingGroup>
+                                    <DrawingGroup.Transform>
+                                        <TranslateTransform X="0" Y="0" />
+                                    </DrawingGroup.Transform>
+                                    <GeometryDrawing Brush="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Geometry="F0 M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872l-.1-.34zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z" />
+                                </DrawingGroup>
+                            </DrawingImage.Drawing>
+                        </DrawingImage>
+                    </Image.Source>
+                </Image>
+                <Button.ContextMenu>
+                    <ContextMenu x:Name="ctMenuSettings">
+                        <MenuItem x:Name="miLoadEapFile" Header="Load .eap-config file..." Click="miLoadEapFile_Click"/>
+                        <Separator/>
+                        <MenuItem x:Name="miRefresh" Header="Refresh credential" Click="miRefresh_Click"/>
+                        <MenuItem x:Name="miReauthenticate" Header="Reauthenticate..." Click="miReauthenticate_Click"/>
+                        <Separator/>
+                        <MenuItem x:Name="miRemove" Header="Remove configured Wi-Fi profile..." Click="miRemove_Click"/>
+                        <MenuItem x:Name="miClearRootCerts" Header="Remove root certificates..." Click="miClearRootCerts_Click"/>
+                        <MenuItem x:Name="miUninstall" Header="Uninstall application..." Click="miUninstall_Click"/>
+                    </ContextMenu>
+                </Button.ContextMenu>
+            </Button>
+            <Button Width="32" Height="32" Background="Transparent" BorderBrush="Transparent" Grid.Column="2" x:Name="btnHelp" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="12" FontSize="24" FontFamily="Segoe UI Semibold">
+                <Image Width="24" Height="22" Grid.Row="1">
+                    <Image.Source>
+                        <DrawingImage>
+                            <DrawingImage.Drawing>
+                                <DrawingGroup>
+                                    <DrawingGroup.Transform>
+                                        <TranslateTransform X="0" Y="0" />
+                                    </DrawingGroup.Transform>
+                                    <GeometryDrawing Brush="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Geometry="F0 M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286zm1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94z" />
+                                </DrawingGroup>
+                            </DrawingImage.Drawing>
+                        </DrawingImage>
+                    </Image.Source>
+                </Image>
+
+            </Button>
             <Label Grid.Column="2" x:Name="lblVersion" Content="VERSION" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}" FontFamily="Tahoma" FontSize="8"/>
         </Grid>
 

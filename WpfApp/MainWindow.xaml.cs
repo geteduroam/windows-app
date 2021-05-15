@@ -1,22 +1,24 @@
+using EduroamConfigure;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using System.IO;
-using System.Reflection;
-using System.Diagnostics;
-using System.ComponentModel;
+using System.Windows.Navigation;
+using System.Xml;
+using WpfApp.Classes;
+using WpfApp.Menu;
 #if RUN_PERSISTENT
 using Hardcodet.Wpf.TaskbarNotification;
 #endif
-using EduroamConfigure;
-using WpfApp.Menu;
-using System.Windows.Navigation;
-using System.Windows.Input;
-using System.Xml;
 
 namespace WpfApp
 {
@@ -71,6 +73,7 @@ namespace WpfApp
 		//ExtractFlag decides if the "Not affiliated with this institution? choose another one" text and button shows up on ProfileOverview or not
 		public bool ExtractFlag { get; set; }
 		public string PresetUsername { get; private set; }
+		public EapConfig LocalEapConfig { get; private set; }
 
 		public ProfileStatus ProfileCondition { get; set; } // TODO: use this to determine if we need to clean up after a failed setup, negated by App.Installer.IsInstalled
 		public IdentityProviderDownloader IdpDownloader { get; private set; }
@@ -148,27 +151,13 @@ namespace WpfApp
 			switch (currentFormId)
 			{
 				case FormId.InstalledProfile:
-					if (pageInstalledProfile.GoToMain)
-					{
-						LoadPageMainMenu();
-					}
-					else if (PersistingStore.IdentityProvider?.ProfileId != null)
-					{
-						PresetUsername = PersistingStore.Username;
-						await HandleProfileSelect(
-							PersistingStore.IdentityProvider?.ProfileId,
-							PersistingStore.IdentityProvider?.EapConfigXml,
-							skipOverview: true);
-					}
-					else {
-						LoadPageMainMenu(); // sanity
-					}
+					LoadPageMainMenu();
 					break;
 
 				case FormId.MainMenu:
-					if (pageMainMenu.LocalEapConfig != null)
+					if (LocalEapConfig != null)
 					{
-						eapConfig = pageMainMenu.LocalEapConfig;
+						eapConfig = LocalEapConfig;
 						LoadPageProfileOverview();
 						break;
 					}
@@ -623,7 +612,15 @@ namespace WpfApp
 			currentFormId = FormId.InstalledProfile;
 			btnBack.IsEnabled = false;
 			btnBack.Visibility = Visibility.Hidden;
-			btnNext.Visibility = Visibility.Visible;
+			btnNext.Visibility = Visibility.Hidden;
+			btnSettings.Visibility = Visibility.Visible;
+			btnHelp.Visibility = Visibility.Visible;
+			miLoadEapFile.IsEnabled = true;
+			miRefresh.IsEnabled = PersistingStore.IsRefreshable;
+			miReauthenticate.IsEnabled = PersistingStore.IsRefreshable || PersistingStore.IsReinstallable;
+			miRemove.IsEnabled = PersistingStore.IsRefreshable || PersistingStore.IsReinstallable;
+			miClearRootCerts.IsEnabled = !PersistingStore.IsRefreshable && !PersistingStore.IsReinstallable && CertificateStore.AnyRootCaInstalledByUs();
+			miUninstall.IsEnabled = App.Installer.IsInstalled;
 			pageInstalledProfile = new InstalledProfile(this);
 			Navigate(pageInstalledProfile);
 		}
@@ -634,7 +631,16 @@ namespace WpfApp
 			ExtractFlag = false;
 			currentFormId = FormId.MainMenu;
 			btnNext.Visibility = Visibility.Hidden;
-			btnBack.Visibility = Visibility.Hidden;
+			btnBack.IsEnabled = PersistingStore.IdentityProvider != null;
+			btnBack.Visibility = PersistingStore.IdentityProvider == null ? Visibility.Hidden : Visibility.Visible;
+			btnSettings.Visibility = Visibility.Visible;
+			btnHelp.Visibility = Visibility.Visible;
+			miLoadEapFile.IsEnabled = true;
+			miRefresh.IsEnabled = PersistingStore.IsRefreshable;
+			miReauthenticate.IsEnabled = PersistingStore.IsRefreshable || PersistingStore.IsReinstallable;
+			miRemove.IsEnabled = PersistingStore.IsRefreshable || PersistingStore.IsReinstallable;
+			miClearRootCerts.IsEnabled = !PersistingStore.IsRefreshable && !PersistingStore.IsReinstallable && CertificateStore.AnyRootCaInstalledByUs();
+			miUninstall.IsEnabled = App.Installer.IsInstalled;
 			ResetLogo();
 			if (refresh) pageMainMenu = new MainMenu(this);
 			Navigate(pageMainMenu);
@@ -648,6 +654,8 @@ namespace WpfApp
 			btnNext.Content = "Next";
 			btnBack.IsEnabled = true;
 			btnBack.Visibility = Visibility.Visible;
+			btnSettings.Visibility = Visibility.Hidden;
+			btnHelp.Visibility = Visibility.Hidden;
 			ResetLogo();
 			if (refresh) pageSelectInstitution = new SelectInstitution(this);
 
@@ -660,6 +668,8 @@ namespace WpfApp
 			currentFormId = FormId.SelectProfile;
 			btnNext.Visibility = Visibility.Visible;
 			btnNext.Content = "Next";
+			btnSettings.Visibility = Visibility.Hidden;
+			btnHelp.Visibility = Visibility.Hidden;
 			ResetLogo();
 			if (refresh) pageSelectProfile = new SelectProfile(this, pageSelectInstitution.IdProviderId);
 			Navigate(pageSelectProfile);
@@ -672,6 +682,8 @@ namespace WpfApp
 			btnNext.IsEnabled = true;
 			btnNext.Content = "Next";
 			btnBack.Visibility = Visibility.Visible;
+			btnSettings.Visibility = Visibility.Hidden;
+			btnHelp.Visibility = Visibility.Hidden;
 			if (refresh) pageProfileOverview = new ProfileOverview(this, eapConfig);
 			Navigate(pageProfileOverview);
 		}
@@ -682,7 +694,10 @@ namespace WpfApp
 			currentFormId = FormId.CertificateOverview;
 			btnBack.Visibility = Visibility.Visible;
 			btnBack.IsEnabled = true;
+			btnNext.Visibility = Visibility.Visible;
 			btnNext.Content = "Next";
+			btnSettings.Visibility = Visibility.Hidden;
+			btnHelp.Visibility = Visibility.Hidden;
 			if (refresh) pageCertificateOverview = new CertificateOverview(this, eapConfig);
 			Navigate(pageCertificateOverview);
 		}
@@ -692,6 +707,10 @@ namespace WpfApp
 			currentFormId = FormId.Login;
 			btnBack.IsEnabled = true;
 			btnBack.Visibility = Visibility.Visible;
+			btnSettings.Visibility = Visibility.Hidden;
+			btnHelp.Visibility = Visibility.Hidden;
+			btnSettings.Visibility = Visibility.Hidden;
+			btnHelp.Visibility = Visibility.Hidden;
 			if (refresh) pageLogin = new Login(this, eapConfig);
 			Navigate(pageLogin);
 		}
@@ -701,6 +720,8 @@ namespace WpfApp
 			currentFormId = FormId.Redirect;
 			btnBack.IsEnabled = true;
 			btnNext.IsEnabled = false;
+			btnSettings.Visibility = Visibility.Hidden;
+			btnHelp.Visibility = Visibility.Hidden;
 			if (refresh) pageRedirect = new Redirect(this, redirect);
 			Navigate(pageRedirect);
 		}
@@ -710,6 +731,8 @@ namespace WpfApp
 			currentFormId = FormId.Loading;
 			btnBack.IsEnabled = false;
 			btnNext.IsEnabled = false;
+			btnSettings.Visibility = Visibility.Hidden;
+			btnHelp.Visibility = Visibility.Hidden;
 			if (refresh) pageLoading = new Loading(this);
 			Navigate(pageLoading);
 		}
@@ -721,6 +744,8 @@ namespace WpfApp
 			btnBack.IsEnabled = true;
 			btnNext.Content = "OK";
 			btnNext.Visibility = Visibility.Visible;
+			btnSettings.Visibility = Visibility.Hidden;
+			btnHelp.Visibility = Visibility.Hidden;
 			if (refresh) pageTermsOfUse = new TermsOfUse(this, eapConfig.InstitutionInfo.TermsOfUse);
 			Navigate(pageTermsOfUse);
 		}
@@ -731,10 +756,11 @@ namespace WpfApp
 			btnBack.IsEnabled = true;
 			btnBack.Visibility = Visibility.Visible;
 			btnNext.IsEnabled = false;
+			btnSettings.Visibility = Visibility.Hidden;
+			btnHelp.Visibility = Visibility.Hidden;
 			pageOAuthWait = new OAuthWait(this, profile);
 			Navigate(pageOAuthWait);
 		}
-
 
 
 		private bool IsShuttingDown = false;
@@ -744,6 +770,15 @@ namespace WpfApp
 			Application.Current.Shutdown(exitCode);
 		}
 
+		private void Reauthenticate()
+		{
+			historyFormId.Add(currentFormId);
+			PresetUsername = PersistingStore.Username;
+			_ = HandleProfileSelect(
+				PersistingStore.IdentityProvider?.ProfileId,
+				PersistingStore.IdentityProvider?.EapConfigXml,
+				skipOverview: true);
+		}
 
 		private void btnNext_Click(object sender, RoutedEventArgs e)
 			=> NextPage();
@@ -864,5 +899,84 @@ namespace WpfApp
 			base.OnMouseLeftButtonDown(e);
 			this.DragMove();
 		}
+
+		private void btnSettings_Click(object sender, RoutedEventArgs e)
+		{
+			Button btnSender = (Button)sender;
+			Point ptLowerLeft = new Point(0, btnSender.Height);
+			ptLowerLeft = btnSender.PointToScreen(ptLowerLeft);
+			ctMenuSettings.IsOpen = true;
+		}
+
+		private void miLoadEapFile_Click(object sender, RoutedEventArgs e)
+		{
+			LocalEapConfig = FileDialog.AskUserForEapConfig();
+			if (LocalEapConfig == null)
+				LocalEapConfig = null;
+			else if (!MainWindow.CheckIfEapConfigIsSupported(LocalEapConfig))
+				LocalEapConfig = null;
+			if (LocalEapConfig == null) return;
+			NextPage();
+		}
+		private async void miRefresh_Click(object sender, RoutedEventArgs e)
+		{
+			var response = LetsWifi.RefreshResponse.Failed;
+			try
+			{
+				response = await LetsWifi.RefreshAndInstallEapConfig(force: true, onlyLetsWifi: true);
+			}
+			catch (ApiParsingException ex)
+			{
+				MessageBox.Show(ex.Message, "Unable to refresh", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+			catch (HttpRequestException)
+			{
+				Reauthenticate();
+				return;
+			}
+			switch (response)
+			{
+				case LetsWifi.RefreshResponse.Success:
+				case LetsWifi.RefreshResponse.UpdatedEapXml: // Should never happen due to onlyLetsWifi=true
+					pageInstalledProfile.LoadCertInfo();
+					break;
+				case LetsWifi.RefreshResponse.StillValid: // should never happend due to force=true
+				case LetsWifi.RefreshResponse.AccessDenied:
+				case LetsWifi.RefreshResponse.NewRootCaRequired:
+				case LetsWifi.RefreshResponse.NotRefreshable:
+				case LetsWifi.RefreshResponse.Failed:
+					break;
+			}
+		}
+		private void miReauthenticate_Click(object sender, RoutedEventArgs e) {
+			Reauthenticate();
+		}
+
+		private void miRemove_Click(object sender, RoutedEventArgs e) {
+			string profileName = PersistingStore.IdentityProvider?.DisplayName ?? "geteduroam";
+			if (MessageBoxResult.OK == MessageBox.Show(
+					"This will remove all configuration for\r\n" + profileName,
+					"Remove " + profileName,
+					MessageBoxButton.OKCancel,
+					MessageBoxImage.Warning
+					))
+			{
+				App.RemoveSettings(omitRootCa: true);
+				LoadPageMainMenu();
+			}
+		}
+		private void miClearRootCerts_Click(object sender, RoutedEventArgs e)
+		{
+			CertificateStore.UninstallAllInstalledCertificates(omitRootCa: false);
+			miClearRootCerts.IsEnabled = !PersistingStore.IsRefreshable && !PersistingStore.IsReinstallable && CertificateStore.AnyRootCaInstalledByUs();
+		}
+
+		private void miUninstall_Click(object sender, RoutedEventArgs e)
+		{
+			Hide();
+			App.PromptAndUninstallSelf(_ => { });
+			Shutdown();
+		}
+
 	}
 }
