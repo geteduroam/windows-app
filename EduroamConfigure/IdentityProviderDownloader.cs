@@ -30,8 +30,8 @@ namespace EduroamConfigure
 			AutomaticDecompression = System.Net.DecompressionMethods.GZip | DecompressionMethods.Deflate,
 			AllowAutoRedirect = true
 		};
-		private static readonly HttpClient Http;
-		private static readonly GeoCoordinateWatcher GeoWatcher;
+		private static readonly HttpClient Http = InitializeHttpClient();
+		private static readonly GeoCoordinateWatcher GeoWatcher = new GeoCoordinateWatcher();
 
 		// state
 		private GeoCoordinate Coordinates; // Coordinates determined by OS or Web API
@@ -50,17 +50,19 @@ namespace EduroamConfigure
 		public bool Loaded { get => Providers.Any(); }
 		public bool LoadedWithGeo { get => Loaded && Coordinates != null && !Coordinates.IsUnknown; }
 
+		private static HttpClient InitializeHttpClient()
+		{
+			HttpClient client = new HttpClient(Handler, false);
+#if DEBUG
+			client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
+#else
+			client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
+#endif
+			client.Timeout = new TimeSpan(0, 0, 3);
+			return client;
+		}
 		static IdentityProviderDownloader()
 		{
-			Http = new HttpClient(Handler, false);
-#if DEBUG
-			Http.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
-#else
-			Http.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
-#endif
-			Http.Timeout = new TimeSpan(0, 0, 3);
-
-			GeoWatcher = new GeoCoordinateWatcher();
 			_ = Task.Run(() => GeoWatcher.Start(true));
 		}
 
@@ -303,6 +305,8 @@ namespace EduroamConfigure
 		/// <exception cref="ApiParsingException">Content-Type did not match accept</exception>
 		public static Task<string> PostForm(Uri url, NameValueCollection data, string[] accept = null)
 		{
+			if (data == null) throw new ArgumentNullException(nameof(data));
+
 			var list = new List<KeyValuePair<string,string>>(data.Count);
 			foreach(string key in data.AllKeys) {
 				list.Add(new KeyValuePair<string,string>(key, data[key]));
@@ -369,8 +373,12 @@ namespace EduroamConfigure
 
 
 		// Protected implementation of Dispose pattern.
-		private bool _disposed = false;
-		public void Dispose() => Dispose(true);
+		private bool _disposed;
+		public void Dispose()
+		{
+			Dispose(disposing: true);
+			GC.SuppressFinalize(this);
+		}
 		protected virtual void Dispose(bool disposing)
 		{
 			if (_disposed) return;

@@ -248,7 +248,8 @@ namespace EduroamConfigure
 				try
 				{
 					network.RemoveInstalledProfiles();
-				} catch (Exception e)
+				}
+				catch (ArgumentException e)
 				{
 					ex = e;
 				}

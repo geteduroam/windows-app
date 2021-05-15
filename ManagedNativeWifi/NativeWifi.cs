@@ -522,7 +522,7 @@ namespace ManagedNativeWifi
 		/// </summary>
 		/// <param name="interfaceId">Interface ID</param>
 		/// <param name="profileName">Profile name</param>
-		/// <param name="profileUserType">Profile user type</param>
+		/// <param name="eapXmlType">Profile user type</param>
 		/// <param name="userDataXml">User data XML</param>
 		/// <returns>True if successfully set. False if failed.</returns>
 		/// <remarks>

@@ -73,7 +73,6 @@ namespace WpfApp
 				PromptAndUninstallSelf(success =>
 					{
 						Environment.Exit(0);
-						return success;
 					}
 				);
 				return true;
@@ -82,7 +81,12 @@ namespace WpfApp
 			if (contains("/refresh")
 				|| contains("/force-refresh") || contains("/refresh-force"))
 			{
+#if RUN_PERSISTENT
 				RefreshInstalledProfile(s => false, force: contains("/refresh-force"));
+#else
+				RefreshInstalledProfile(force: contains("/refresh-force"));
+#endif
+
 				return true;
 			}
 
@@ -160,7 +164,7 @@ namespace WpfApp
 #if RUN_PERSISTENT
 				RefreshInstalledProfile(s => ((MainWindow)MainWindow).ShowNotification(s), force: contains("/refresh-force"));
 #else
-				RefreshInstalledProfile(s => false, force: contains("/refresh-force"));
+				RefreshInstalledProfile(force: contains("/refresh-force"));
 				((MainWindow)MainWindow).Shutdown();
 #endif
 			}
@@ -168,12 +172,7 @@ namespace WpfApp
 			if (contains("/uninstall"))
 			{
 				activateMainWindow = false;
-				PromptAndUninstallSelf(success =>
-					{
-						((MainWindow)MainWindow).Shutdown();
-						return "foo";
-					}
-				);
+				PromptAndUninstallSelf(success => ((MainWindow)MainWindow).Shutdown());
 			}
 
 			// TODO: this should be made into a method in MainWindow.
@@ -195,7 +194,11 @@ namespace WpfApp
 		/// <param name="f">Function to show user a message in the tray icon</param>
 		/// <param name="force">Wether to force a reinstall even if the current certificate still is valid for quote some time</param>
 		/// <exception cref="ApiException">The API did something unexpected</exception>
+#if RUN_PERSISTENT
 		private static async void RefreshInstalledProfile(Func<string, bool> f, bool force)
+#else
+		private static async void RefreshInstalledProfile(bool force)
+#endif
 		{
 			_ = await LetsWifi.RefreshAndInstallEapConfig(force) switch
 			{
@@ -221,7 +224,7 @@ namespace WpfApp
 			};
 		}
 
-		private static void PromptAndUninstallSelf<T>(Func<bool, T> shutdown)
+		private static void PromptAndUninstallSelf(Action<bool> shutdown)
 		{
 
 			var choice = MessageBox.Show(
@@ -269,7 +272,7 @@ namespace WpfApp
 						MessageBoxButton.OK,
 						MessageBoxImage.Error);
 					}
-					return shutdown(success);
+					shutdown(success);
 				},
 				doDeleteSelf: true);
 		}
