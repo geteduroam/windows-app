@@ -357,9 +357,7 @@ namespace EduroamConfigure
                 throw new ApiParsingException("Expected one of '" + string.Join("', '", accept) + "' but got '" + response.Content.Headers.ContentType.MediaType);
             }
 
-            HttpContent responseContent = response.Content;
-
-            return await responseContent.ReadAsStringAsync().ConfigureAwait(false);
+            return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
         #pragma warning disable CA2227 // Collection properties should be read only
