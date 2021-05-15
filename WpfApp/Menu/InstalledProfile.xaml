@@ -16,16 +16,20 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="tbName" TextWrapping="Wrap" Text="Profile name" TextAlignment="Center" Margin="5" FontSize="24"/>
-        <GroupBox x:Name="grpCert" Header="Validity" Grid.Row="1" Margin="5">
-            <StackPanel x:Name="stpCert">
-                <TextBlock x:Name="tbTimeLeft" TextWrapping="Wrap" Text="time left" TextAlignment="Center" Margin="5" />
-                <TextBlock x:Name="tbExpires" TextWrapping="Wrap" Text="Exp" TextAlignment="Center" Margin="5" />
-                <Button x:Name="btnRefresh" Style="{StaticResource BlueButtonStyle}" Content="Refresh now"
-                MinHeight="25" MinWidth="100" HorizontalAlignment="Center" Margin="5" Click="btnRefresh_Click" />
-            </StackPanel>
-        </GroupBox>
-        <GroupBox x:Name="grpInfo" Header="Contact info" Margin="5" Grid.Row="2">
+        <TextBlock x:Name="tbName" Margin="24,40" TextWrapping="Wrap" TextAlignment="Center" Text="Profile name" FontSize="24"/>
+        <StackPanel x:Name="stpCert" Margin="24,0,24,24" Grid.Row="1">
+            <TextBlock x:Name="tbConnectedTo" Text="tbConnectedTo" TextWrapping="Wrap" TextAlignment="Center">
+                <TextBlock.Foreground>
+                    <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.GrayTextColorKey}}"/>
+                </TextBlock.Foreground>
+            </TextBlock>
+            <TextBlock x:Name="tbTimeLeft" Text="tbTimeLeft" TextWrapping="Wrap" TextAlignment="Center" FontWeight="Bold">
+                <TextBlock.Foreground>
+                    <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.GrayTextColorKey}}"/>
+                </TextBlock.Foreground>
+            </TextBlock>
+        </StackPanel>
+        <GroupBox x:Name="grpInfo" Header="Provider contact info" Margin="24" Grid.Row="2">
             <Grid Margin="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -56,15 +60,13 @@
 
             </Grid>
         </GroupBox>
-        <Grid Grid.Row="4" VerticalAlignment="Top" Margin="5">
+        <Grid Grid.Row="4" VerticalAlignment="Top" Margin="5,48">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Button x:Name="btnMainMenu" Style="{StaticResource WhiteButtonStyle}" Content="Use a different profile" 
                 MinHeight="37" MinWidth="160" HorizontalAlignment="Center" Grid.Row="0" Click="btnMainMenu_Click"/>
-            <Button x:Name="btnLogout" Style="{StaticResource DangerousButtonStyle}" Content="Logout"
-                MinHeight="25" MinWidth="100" HorizontalAlignment="Center" Margin="5" Grid.Row="1" Click="btnLogout_Click"/>
         </Grid>
 
 

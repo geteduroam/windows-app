@@ -224,9 +224,25 @@ namespace WpfApp
             };
         }
 
-        private static void PromptAndUninstallSelf(Action<bool> shutdown)
+        /// <summary>
+        /// Uninstalls the installed WLAN profile
+        /// </summary>
+        /// <param name="omitRootCa">Keep the installed root certificate</param>
+        /// <remarks>
+        /// On one hand, keeping the root is a security risk,
+        /// on the other, it's a hassle for the user to get too many prompts
+        /// while reinstalling a profile.
+        /// </remarks>
+        public static void RemoveSettings(bool omitRootCa = false)
         {
+            LetsWifi.WipeTokens();
+            ConnectToEduroam.RemoveAllWLANProfiles();
+            CertificateStore.UninstallAllInstalledCertificates(omitRootCa: omitRootCa);
+            PersistingStore.IdentityProvider = null;
+        }
 
+        public static void PromptAndUninstallSelf(Action<bool> shutdown)
+        {
             var choice = MessageBox.Show(
                 "You are currently in the process of completly uninstalling geteduroam.\n" +
                 (CertificateStore.AnyRootCaInstalledByUs()

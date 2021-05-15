@@ -1,8 +1,7 @@
+using EduroamConfigure;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using EduroamConfigure;
-using WpfApp.Classes;
 
 namespace WpfApp.Menu
 {
@@ -12,7 +11,6 @@ namespace WpfApp.Menu
     public partial class MainMenu : Page
     {
         private readonly MainWindow mainWindow;
-        public EapConfig LocalEapConfig { get; set; }
         public bool UseExtracted { get; set; }
         public MainMenu(MainWindow mainWindow)
 
@@ -102,17 +100,6 @@ namespace WpfApp.Menu
         {
             UseExtracted = true;
             mainWindow.ExtractFlag = true;
-            mainWindow.NextPage();
-        }
-
-        private void btnFile_Click(object sender, RoutedEventArgs e)
-        {
-            LocalEapConfig = FileDialog.AskUserForEapConfig();
-            if (LocalEapConfig == null)
-                LocalEapConfig = null;
-            else if (!MainWindow.CheckIfEapConfigIsSupported(LocalEapConfig))
-                LocalEapConfig = null;
-            if (LocalEapConfig == null) return;
             mainWindow.NextPage();
         }
 
