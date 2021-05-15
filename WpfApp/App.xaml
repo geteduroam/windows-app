@@ -1,7 +1,6 @@
 ﻿<Application x:Class="WpfApp.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:WpfApp"
              xmlns:classes ="clr-namespace:WpfApp.Classes"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
@@ -102,7 +101,7 @@
 
         <Style x:Key="DangerousButtonStyle" TargetType="Button">
             <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="  Background" Value="{DynamicResource {x:Static SystemColors.WindowColor}}"/>
+            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowColor}}"/>
             <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColor}}"/>
             <Setter Property="Template">
                 <Setter.Value>

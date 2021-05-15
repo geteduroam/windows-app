@@ -17,14 +17,6 @@ namespace WpfApp.Menu
     public partial class InstalledProfile : Page
     {
         private readonly MainWindow mainWindow;
-        public string ProfileId
-        { get => PersistingStore.IdentityProvider?.ProfileId; }
-        public string ReinstallEapConfigXml
-        { get => PersistingStore.IdentityProvider?.EapConfigXml; }
-        public string ReinstallUsername
-        { get => PersistingStore.Username; }
-        public bool IsRefreshable
-        { get => PersistingStore.IsRefreshable; }
         public bool GoToMain { get; set; }
         private string webAddress;
         private string phone;
@@ -72,8 +64,7 @@ namespace WpfApp.Menu
             // check if profile id exists in discovery
 
             //mainWindow.btnNext.IsEnabled = false;
-            var profileId = ProfileId;
-            if (!string.IsNullOrEmpty(profileId))
+            if (!string.IsNullOrEmpty(PersistingStore.IdentityProvider?.ProfileId))
             {
                 try
                 {
@@ -89,7 +80,7 @@ namespace WpfApp.Menu
                     mainWindow.btnNext.Content = "Offline";
                     return;
                 }
-                catch (ApiParsingException e)
+                catch (ApiParsingException)
                 {
                     // Must never happen, because if the discovery is reached,
                     // it must be parseable. Logging has been done upstream.
@@ -99,7 +90,7 @@ namespace WpfApp.Menu
                 }
 
                 var profile = mainWindow.IdpDownloader.Loaded
-                    ? mainWindow.IdpDownloader.GetProfileFromId(profileId)
+                    ? mainWindow.IdpDownloader.GetProfileFromId(PersistingStore.IdentityProvider?.ProfileId)
                     : null
                     ;
                 if (profile != null)
@@ -146,7 +137,7 @@ namespace WpfApp.Menu
                 {
                     tbTimeLeft.Text = diffDate.Value.Minutes.ToString(CultureInfo.InvariantCulture) + " Minutes left";
                 }
-                btnRefresh.Visibility = IsRefreshable ? Visibility.Visible : Visibility.Collapsed;
+                btnRefresh.Visibility = PersistingStore.IsRefreshable ? Visibility.Visible : Visibility.Collapsed;
 
                 btnRefresh.Content = "Refresh now";
                 btnRefresh.IsEnabled = true;
@@ -285,11 +276,11 @@ namespace WpfApp.Menu
         /// <summary>
         /// Uninstalls the installed WLAN profile
         /// </summary>
-        private void Logout()
+        private static void Logout()
         {
             LetsWifi.WipeTokens();
             ConnectToEduroam.RemoveAllWLANProfiles();
-            CertificateStore.UninstallAllInstalledCertificates(ommitRootCa: true);
+            CertificateStore.UninstallAllInstalledCertificates(omitRootCa: true);
             PersistingStore.IdentityProvider = null;
 
             // TODO: remove root CAs aswell in some nice way
@@ -308,7 +299,7 @@ namespace WpfApp.Menu
             {
                 MessageBox.Show(ex.Message, "Unable to refresh", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException)
             {
                 mainWindow.NextPage();
                 return;

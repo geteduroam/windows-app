@@ -31,7 +31,7 @@ namespace EduroamConfigure
         static readonly XNamespace nsEC = "http://www.microsoft.com/provisioning/EapCommon";
         static readonly XNamespace nsBECP = "http://www.microsoft.com/provisioning/BaseEapConnectionPropertiesV1";
 
-        static readonly XNamespace nsHSP = "http://www.microsoft.com/networking/WLAN/HotspotProfile/v1";
+        //static readonly XNamespace nsHSP = "http://www.microsoft.com/networking/WLAN/HotspotProfile/v1";
 
         // TLS specific
         static readonly XNamespace nsETCPv1 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV1";

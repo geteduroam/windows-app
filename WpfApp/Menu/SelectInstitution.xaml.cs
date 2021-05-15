@@ -28,7 +28,7 @@ namespace WpfApp.Menu
             LoadPage();
         }
 
-        private async void LoadPage()
+        private void LoadPage()
         {
             mainWindow.btnNext.IsEnabled = false;
             downloader = mainWindow.IdpDownloader;

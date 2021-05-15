@@ -152,12 +152,12 @@ namespace WpfApp
                     {
                         LoadPageMainMenu();
                     }
-                    else if (pageInstalledProfile.ProfileId != null)
+                    else if (PersistingStore.IdentityProvider?.ProfileId != null)
                     {
-                        PresetUsername = pageInstalledProfile.ReinstallUsername;
+                        PresetUsername = PersistingStore.Username;
                         await HandleProfileSelect(
-                            pageInstalledProfile.ProfileId,
-                            pageInstalledProfile.ReinstallEapConfigXml,
+                            PersistingStore.IdentityProvider?.ProfileId,
+                            PersistingStore.IdentityProvider?.EapConfigXml,
                             skipOverview: true);
                     }
                     else {

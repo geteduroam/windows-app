@@ -17,11 +17,11 @@ namespace EduroamConfigure
     {
         #region Properties
 
-        public string ProfileId; // May be null, in the case of a bundled eap config file
+        public bool IsOauth { get; set; } // TODO: Used for scaffolding to PersistenStorage, need better solution
+        public string ProfileId { get; set; } // TODO: Used for scaffolding to PersistenStorage, need better solution
         public List<AuthenticationMethod> AuthenticationMethods { get; }
         public List<CredentialApplicability> CredentialApplicabilities { get; }
         public ProviderInfo InstitutionInfo { get; }
-        public bool IsOauth;
         public string XmlData { get; }
 
         #endregion
@@ -129,8 +129,8 @@ namespace EduroamConfigure
 
             /// <summary>
             /// Converts and enumerates CertificateAuthorities as X509Certificate2 objects.
-            /// The objects are disposed of when the next object is yielded
             /// </summary>
+            /// <remarks>The certificates must be disposed after use</remarks>
             public IEnumerable<X509Certificate2> CertificateAuthoritiesAsX509Certificate2()
             {
                 foreach (var ca in ServerCertificateAuthorities)
@@ -483,7 +483,7 @@ namespace EduroamConfigure
             {
                 eapConfigXml = XElement.Parse(eapConfigXmlData);
             }
-            catch (XmlException e)
+            catch (XmlException)
             {
                 throw; // explicitly show that XmlException can be thrown here
             }

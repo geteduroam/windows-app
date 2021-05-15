@@ -45,8 +45,8 @@ namespace WpfApp
 			private string InstallDate;                       // [SET AUTOMATICALLY] The last time this product received service.
 			private string InstallLocation;                   // [SET AUTOMATICALLY] ARPINSTALLLOCATION
 			public  string InstallSource        { get; set; } // SourceDir
-			public  string URLInfoAbout         { get; set; } // ARPURLINFOABOUT
-			public  string URLUpdateInfo        { get; set; } // ARPURLUPDATEINFO
+			public  Uri URLInfoAbout            { get; set; } // ARPURLINFOABOUT
+			public  Uri URLUpdateInfo           { get; set; } // ARPURLUPDATEINFO
 			public  string AuthorizedCDFPrefix  { get; set; } // ARPAUTHORIZEDCDFPREFIX
 			public  string Comments             { get; set; } // [NICE TO HAVE] ARPCOMMENTS. Comments provided to the Add or Remove Programs control panel.
 			public  string Contact              { get; set; } // [NICE TO HAVE] ARPCONTACT. Contact provided to the Add or Remove Programs control panel.
@@ -93,8 +93,8 @@ namespace WpfApp
 				strWriter(nameof(InstallDate),         InstallDate);
 				strWriter(nameof(InstallLocation),     InstallLocation);
 				strWriter(nameof(InstallSource),       InstallSource);
-				strWriter(nameof(URLInfoAbout),        URLInfoAbout);
-				strWriter(nameof(URLUpdateInfo),       URLUpdateInfo);
+				strWriter(nameof(URLInfoAbout),        URLInfoAbout?.ToString());
+				strWriter(nameof(URLUpdateInfo),       URLUpdateInfo?.ToString());
 				strWriter(nameof(AuthorizedCDFPrefix), AuthorizedCDFPrefix);
 				strWriter(nameof(Comments),            Comments);
 				strWriter(nameof(Contact),             Contact);
@@ -313,16 +313,17 @@ namespace WpfApp
 		/// <param name="shutdownAction">a action which will shut down the application in the way you want, recieves true on successfull uninstall</param>
 		/// <param name="doDeleteSelf">whether to schedule a deletion of InstallExePath</param>
 		/// <returns>T</returns>
-		public T ExitAndUninstallSelf<T>(Func<bool, T> shutdownAction, bool doDeleteSelf = false)
+		public void ExitAndUninstallSelf(Action<bool> shutdownAction, bool doDeleteSelf = false)
 		{
 			_ = shutdownAction ?? throw new ArgumentNullException(paramName: nameof(shutdownAction));
 
 			try
 			{
 				EduroamConfigure.ConnectToEduroam.RemoveAllWLANProfiles();
-				EduroamConfigure.CertificateStore.UninstallAllInstalledCertificates(abortOnFail: true);
+				EduroamConfigure.CertificateStore.UninstallAllInstalledCertificates(abortOnFail: true, omitRootCa: false);
 			} catch (Exception) {
-				return shutdownAction(false);
+				shutdownAction(false);
+				return;
 			}
 			EduroamConfigure.LetsWifi.WipeTokens();
 			EduroamConfigure.PersistingStore.IdentityProvider = null;
@@ -373,7 +374,7 @@ namespace WpfApp
 			}
 
 			// Quit
-			return shutdownAction(true);
+			shutdownAction(true);
 		}
 
 #if RUN_PERSISTENT

@@ -184,16 +184,16 @@ namespace EduroamConfigure
         /// Uses the persistant storage to uninstall all known installed certificates
         /// </summary>
         /// <returns>true on success</returns>
-        public static bool UninstallAllInstalledCertificates(bool abortOnFail = false, bool ommitRootCa = false, bool ommitNotInstalledByUs = true)
+        public static bool UninstallAllInstalledCertificates(bool omitRootCa, bool abortOnFail = false, bool omitNotInstalledByUs = true)
         {
             Debug.WriteLine("Uninstalling all installed certificates...");
 
             bool all_removed = true;
             foreach ((var cert, var installedCert) in EnumerateInstalledCertificates())
             {
-                if (installedCert.StoreName == StoreName.Root && ommitRootCa)
+                if (installedCert.StoreName == StoreName.Root && omitRootCa)
                     continue; // skip
-                if (!IsCertificateInstalledByUs(cert, installedCert.StoreName, installedCert.StoreLocation) && ommitNotInstalledByUs)
+                if (!IsCertificateInstalledByUs(cert, installedCert.StoreName, installedCert.StoreLocation) && omitNotInstalledByUs)
                     continue; // skip
 
                 var success = UninstallCertificate(cert, installedCert.StoreName, installedCert.StoreLocation);

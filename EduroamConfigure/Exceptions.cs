@@ -3,6 +3,7 @@ using System.Runtime.Serialization;
 
 namespace EduroamConfigure
 {
+    [Serializable]
     public class EduroamAppUserException : Exception
     {
         public string UserFacingMessage { get; }
@@ -15,6 +16,8 @@ namespace EduroamConfigure
             UserFacingMessage = userFacingMessage ?? "NO REASON PROVIDED"; // TODO: rethink this strategy...
 #endif
         }
+
+        protected EduroamAppUserException(SerializationInfo serializationInfo, StreamingContext streamingContext) : base(serializationInfo, streamingContext) { }
     }
 
     [Serializable]
@@ -23,6 +26,10 @@ namespace EduroamConfigure
         public UserAbortException(string message) : base(message) { }
 
         public UserAbortException(string message, Exception innerException) : base(message, innerException) { }
+
+        protected UserAbortException(SerializationInfo serializationInfo, StreamingContext streamingContext) : base(serializationInfo, streamingContext) { }
+
+        public UserAbortException() { }
     }
 
     [Serializable]
@@ -33,8 +40,7 @@ namespace EduroamConfigure
         public InternetConnectionException() : base(DefaultMessage) { }
         public InternetConnectionException(string message) : base(message) { }
         public InternetConnectionException(string message, Exception innerException) : base(message, innerException) { }
-        protected InternetConnectionException(SerializationInfo info, StreamingContext context) : base(info, context) { }
-
+        protected InternetConnectionException(SerializationInfo serializationInfo, StreamingContext streamingContext) : base(serializationInfo, streamingContext) { }
     }
 
     [Serializable]
