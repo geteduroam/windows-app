@@ -10,7 +10,7 @@
       Title="Login">
 
     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Top">
-        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="Login" TextAlignment="Center" Margin="5" FontSize="24"/>
+        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="Login" TextAlignment="Center" Margin="8,0,8,16" FontSize="24"/>
         <Grid x:Name="gridCred" Margin="5" KeyboardNavigation.IsTabStop="False">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
