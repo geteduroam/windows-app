@@ -4,7 +4,6 @@
         xmlns:tb="http://www.hardcodet.net/taskbar"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfApp"
         mc:Ignorable="d"
         Title="geteduroam" Height="600" Width="420"
         MinHeight="420" MinWidth="420" MaxWidth="420"
@@ -19,6 +18,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="31"/>
+            <RowDefinition Height="64"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="72"/>
         </Grid.RowDefinitions>
@@ -47,9 +47,7 @@
             <Button x:Name="btnBack" Style="{StaticResource HeaderButtonStyle}" Content="   ←    " VerticalAlignment="Top" HorizontalAlignment="Left" Height="31" Width="45" Click="btnBack_Click" FontSize="20" FontFamily="Calibri" FontWeight="Thin" Grid.Column="0" Grid.Row="0"/>
             <Button x:Name="btnClose" Style="{StaticResource CloseButtonStyle}" IsTabStop="False" Content="      ╳      " VerticalAlignment="Top" HorizontalAlignment="Right" Height="31" Width="45" Click="btnClose_Click" FontSize="12" FontFamily="Calibri" Grid.Column="2" Grid.Row="0"/>
 
-            <WebBrowser x:Name="webLogo" Grid.Column="1" Visibility="Hidden" MouseLeftButtonDown="MouseStartWindowDrag"/>
-            <Image x:Name="imgLogo" Grid.Column="1" Visibility="Hidden" Margin="0" VerticalAlignment="Center" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
-            <Image x:Name="imgEduroamLogo" Grid.Column="1" Margin="0,0,4,0">
+            <Image x:Name="imgEduroamLogo" Grid.Column="1">
                 <Image.Source>
                     <DrawingImage>
                         <DrawingImage.Drawing>
@@ -91,13 +89,16 @@
             </Image>
         </Grid>
 
-        <Frame x:Name="Main" NavigationUIVisibility="Hidden" Grid.RowSpan="1" Grid.Row="1" FocusVisualStyle="{x:Null}" KeyboardNavigation.IsTabStop="False" Navigating="Main_Navigating"/>
+        <Image x:Name="imgLogo" Grid.Row="1" Visibility="Hidden" Margin="36,8,36,16" VerticalAlignment="Center" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
+        <WebBrowser x:Name="webLogo" Grid.Row="1" Visibility="Hidden" Margin="36,8,36,0" MouseLeftButtonDown="MouseStartWindowDrag" MouseDown="webLogo_MouseDown"/>
 
-        <Grid x:Name="gridBotBar" Grid.Row="2">
+        <Frame x:Name="Main" NavigationUIVisibility="Hidden" Grid.RowSpan="1" Grid.Row="2" FocusVisualStyle="{x:Null}" KeyboardNavigation.IsTabStop="False" Navigating="Main_Navigating"/>
+
+        <Grid x:Name="gridBotBar" Grid.Row="3">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50*"/>
-                <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="50*"/>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="200*"/>
+                <ColumnDefinition Width="50"/>
             </Grid.ColumnDefinitions>
             <Button Style="{StaticResource BlueButtonStyle}" IsDefault="true" x:Name="btnNext" Content="Next" HorizontalAlignment="Center" VerticalAlignment="Center" Width="131" Grid.Column="1" Height="42" Click="btnNext_Click"/>
             <Button Width="32" Height="32" Background="Transparent" BorderBrush="Transparent" Grid.Column="0" x:Name="btnSettings" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12" FontSize="24" Click="btnSettings_Click">

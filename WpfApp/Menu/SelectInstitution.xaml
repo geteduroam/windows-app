@@ -15,7 +15,7 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="24,40" Grid.Row="0" FontSize="22"/>
+        <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="8,0,8,16" Grid.Row="0" FontSize="22"/>
         <TextBox x:Name="tbSearch" Padding="5,6,5,6" Height="Auto" MinHeight="24" Text="" Margin="24,8" Grid.Row="1" TextChanged="tbSearch_TextChanged" PreviewKeyDown="tbSearch_PreviewKeyDown" FontSize="18"/>
         <TextBlock IsHitTestVisible="False" Text="Search" VerticalAlignment="Center" HorizontalAlignment="Left" TextAlignment="Center" Margin="32,0,0,0" Foreground="DarkGray" Grid.Row="1" FontSize="18">
             <TextBlock.Style>

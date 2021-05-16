@@ -16,7 +16,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock x:Name="tbName" Margin="24,40" TextWrapping="Wrap" TextAlignment="Center" Text="Profile name" FontSize="24"/>
+        <TextBlock x:Name="tbName" Margin="8,0,8,16" TextWrapping="Wrap" TextAlignment="Center" Text="Profile name" FontSize="24"/>
         <StackPanel x:Name="stpCert" Margin="24,0,24,24" Grid.Row="1">
             <TextBlock x:Name="tbConnectedTo" Text="tbConnectedTo" TextWrapping="Wrap" TextAlignment="Center">
                 <TextBlock.Foreground>
