@@ -566,16 +566,12 @@ namespace WpfApp
 			{
 				// deactivate eduroam logo if institute has its own logo
 				imgEduroamLogo.Visibility = Visibility.Hidden;
-				// gets size of container
-				int cWidth = (int)webLogo.Width;
-				int cHeight = (int)webLogo.Height;
 
 				// SVG
 				if (logoMimeType == "image/svg+xml")
 				{
-					imgEduroamLogo.Visibility = Visibility.Visible;
 					imgLogo.Visibility = Visibility.Hidden;
-					webLogo.NavigateToString(ImageFunctions.GenerateSvgLogoHtml(logoBytes, cWidth, cHeight));
+					webLogo.NavigateToString(ImageFunctions.GenerateSvgLogoHtml(logoBytes));
 					webLogo.Visibility = Visibility.Visible;
 				}
 				else // other filetypes (jpg, png etc.)
@@ -587,7 +583,12 @@ namespace WpfApp
 						imgLogo.Source = bitMapImage;
 						imgLogo.Visibility = Visibility.Visible;
 					}
-					catch (System.FormatException)
+					catch (FormatException)
+					{
+						imgEduroamLogo.Visibility = Visibility.Visible;
+						imgLogo.Visibility = Visibility.Hidden;
+					}
+					catch (NotSupportedException)
 					{
 						imgEduroamLogo.Visibility = Visibility.Visible;
 						imgLogo.Visibility = Visibility.Hidden;
@@ -889,14 +890,12 @@ namespace WpfApp
 		}
 
 		private void btnClose_Click(object sender, RoutedEventArgs e)
-		{
-			this.Close();
-		}
+			=> Close();
 
 		private void MouseStartWindowDrag(object sender, System.Windows.Input.MouseButtonEventArgs e)
 		{
-			base.OnMouseLeftButtonDown(e);
-			this.DragMove();
+			//base.OnMouseLeftButtonDown(e);
+			DragMove();
 		}
 
 		private void btnSettings_Click(object sender, RoutedEventArgs e)

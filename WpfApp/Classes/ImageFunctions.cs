@@ -73,37 +73,30 @@ namespace WpfApp
 		/// Generates HTML code for displaying logos in SVG format.
 		/// </summary>
 		/// <param name="logo">SVG logo.</param>
-		/// <param name="maxWidth">Width of the logo container.</param>
-		/// <param name="maxHeight">Height of the logo container.</param>
 		/// <returns>Html code.</returns>
-		public static string GenerateSvgLogoHtml(byte[] logo, int maxWidth, int maxHeight)
+		public static string GenerateSvgLogoHtml(byte[] logo)
 		{
 			string base64 = System.Convert.ToBase64String(logo);
 			return
 				"<!DOCTYPE html>" +
-					"<html>" +
-						"<head>" +
-							"<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" +
-							"<style>" +
-								"html,body {" +
-									"margin: 2.5px 0 0 0;" +
-									"padding: 0;" +
-									"overflow: hidden;" +
-									"display: flex;" +
-									"justify-content: center;" +
-								"}" +
-								"img {" +
-									"max-width:" + maxWidth + "px;" +
-									"max-height:" + maxHeight + "px;" +
-									"width: auto;" +
-									"height: auto;" +
-								"}" +
-							"</style>" +
-						"</head>" +
-						"<body>" +
-							"<img src=\'data:image/svg+xml;base64," + base64 + "\'>" +
-						"</body>" +
-					"</html>";
+				"<html oncontextmenu=\"return false;\" ondragstart=\"return false;\">" +
+				"<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" +
+				"<style>" +
+					"html,body {" +
+						"margin: 0;" +
+						"padding: 0;" +
+						"overflow: hidden;" +
+						"display: flex;" +
+						"justify-content: center;" +
+					"}" +
+					"img {" +
+						"max-width: 100%" +
+						"max-height: 100%" +
+						"width: auto;" +
+						"height: auto;" +
+					"}" +
+				"</style>" +
+				"<img src=\'data:image/svg+xml;base64," + base64 + "\'>";
 		}
 	}
 }
