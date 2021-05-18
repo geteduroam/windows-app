@@ -970,11 +970,10 @@ namespace WpfApp
         }
 
         private void miUninstall_Click(object sender, RoutedEventArgs e)
-        {
-            Hide();
-            App.PromptAndUninstallSelf(_ => { });
-            Shutdown();
-        }
+            => App.PromptAndUninstallSelf(_ => { });
 
+        private void webLogo_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+        }
     }
 }
