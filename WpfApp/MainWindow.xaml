@@ -96,9 +96,9 @@
 
         <Grid x:Name="gridBotBar" Grid.Row="3">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="60"/>
                 <ColumnDefinition Width="200*"/>
-                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="60"/>
             </Grid.ColumnDefinitions>
             <Button Style="{StaticResource BlueButtonStyle}" IsDefault="true" x:Name="btnNext" Content="Next" HorizontalAlignment="Center" VerticalAlignment="Center" Width="131" Grid.Column="1" Height="42" Click="btnNext_Click"/>
             <Button Width="32" Height="32" Background="Transparent" BorderBrush="Transparent" Grid.Column="0" x:Name="btnSettings" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12" FontSize="24" Click="btnSettings_Click">
