@@ -564,9 +564,6 @@ namespace WpfApp
             // adds logo to form if exists
             if (logoBytes.Length > 0)
             {
-                // deactivate eduroam logo if institute has its own logo
-                imgEduroamLogo.Visibility = Visibility.Hidden;
-
                 // SVG
                 if (logoMimeType == "image/svg+xml")
                 {
@@ -576,6 +573,7 @@ namespace WpfApp
                 }
                 else // other filetypes (jpg, png etc.)
                 {
+                    webLogo.Visibility = Visibility.Hidden;
                     try
                     {
                         // converts from base64 to image                      
