@@ -3,36 +3,26 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:WpfApp.Menu"
       mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="360"
       FontSize="14" SnapsToDevicePixels="True"
       Title="MainMenu" RequestBringIntoView="Page_RequestBringIntoView">
 
     <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Background="White" Grid.RowSpan="6"/>
+        <StackPanel Grid.RowSpan="6"/>
         <TextBlock x:Name="tbInfo" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="8,0,8,16" FontSize="24"/>
         <Button x:Name="btnNewProfile" Style="{StaticResource BlueButtonStyle}"
-                Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Width="186" Click="btnNewProfile_Click" Grid.Row="1">
-            <Button.OpacityMask>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black" Offset="0"/>
-                    <GradientStop Color="White" Offset="1"/>
-                    <GradientStop Color="#FF707070" Offset="0.363"/>
-                </LinearGradientBrush>
-            </Button.OpacityMask>
-            <TextBlock x:Name="tbNewProfile" TextWrapping="Wrap" Text="Connect to eduroam" TextAlignment="Center" Margin="5" />
+                Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,32" Width="186" Click="btnNewProfile_Click" Grid.Row="1">
+            <TextBlock x:Name="tbNewProfile" TextWrapping="Wrap" Text="Connect to eduroam" TextAlignment="Center"/>
         </Button>
         <Button x:Name="btnExisting" Style="{StaticResource BlueButtonStyle}"
-                MinHeight="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" Width="186" Click="btnExisting_Click" Grid.Row="2">
-            <TextBlock x:Name="tbExisting" TextWrapping="Wrap" Text="Connect with [bundled config]" TextAlignment="Center" Margin="5" />
+                MinHeight="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,32" Width="186" Click="btnExisting_Click" Grid.Row="2">
+            <TextBlock x:Name="tbExisting" TextWrapping="Wrap" Text="Connect with [bundled config]" TextAlignment="Center"/>
         </Button>
         <Grid x:Name="grdInstalledProfile" Grid.Row="3" Margin="5" VerticalAlignment="Bottom">
             <Grid.RowDefinitions>
