@@ -970,8 +970,9 @@ namespace WpfApp
         private void miUninstall_Click(object sender, RoutedEventArgs e)
             => App.PromptAndUninstallSelf(_ => { });
 
-        private void webLogo_MouseDown(object sender, MouseButtonEventArgs e)
+        private void btnHelp_Click(object sender, RoutedEventArgs e)
         {
+            Process.Start("https://www.geteduroam.app/");
         }
     }
 }

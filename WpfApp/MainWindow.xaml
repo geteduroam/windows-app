@@ -90,7 +90,7 @@
         </Grid>
 
         <Image x:Name="imgLogo" Grid.Row="1" Visibility="Hidden" Margin="36,8,36,16" VerticalAlignment="Center" HorizontalAlignment="Center" RenderOptions.BitmapScalingMode="HighQuality"/>
-        <WebBrowser x:Name="webLogo" Grid.Row="1" Visibility="Hidden" Margin="36,8,36,0" MouseLeftButtonDown="MouseStartWindowDrag" MouseDown="webLogo_MouseDown"/>
+        <WebBrowser x:Name="webLogo" Grid.Row="1" Visibility="Hidden" Margin="36,8,36,0" MouseLeftButtonDown="MouseStartWindowDrag"/>
 
         <Frame x:Name="Main" NavigationUIVisibility="Hidden" Grid.RowSpan="1" Grid.Row="2" FocusVisualStyle="{x:Null}" KeyboardNavigation.IsTabStop="False" Navigating="Main_Navigating"/>
 
@@ -129,7 +129,7 @@
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
-            <Button Width="32" Height="32" Background="Transparent" BorderBrush="Transparent" Grid.Column="2" x:Name="btnHelp" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="12" FontSize="24" FontFamily="Segoe UI Semibold">
+            <Button Width="32" Height="32" Background="Transparent" BorderBrush="Transparent" Grid.Column="2" x:Name="btnHelp" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="12" Click="btnHelp_Click">
                 <Image Width="24" Height="22" Grid.Row="1">
                     <Image.Source>
                         <DrawingImage>
