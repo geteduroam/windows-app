@@ -1,7 +1,6 @@
 using Microsoft.Win32;
 using Microsoft.Win32.TaskScheduler;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -362,10 +361,9 @@ namespace WpfApp
 				{
 					FileName = "cmd.exe",
 					Arguments = "/C choice /C Y /N /D Y /T 5 " +
-						// TODO: escape the following arguments (they're currently set to be safe, but this is a footgun)
-						"& Del " + InstallExePath +
-						"& Del /Q " + InstallDir +
-						"& rmdir " + InstallDir,
+						"& Del " + ShellEscape(InstallExePath) +
+						"& Del /Q " + ShellEscape(InstallDir) +
+						"& rmdir " + ShellEscape(InstallDir),
 					WindowStyle = ProcessWindowStyle.Hidden,
 					CreateNoWindow = true,
 					WorkingDirectory = "C:\\"
@@ -375,6 +373,11 @@ namespace WpfApp
 
 			// Quit
 			shutdownAction(true);
+		}
+
+		private static string ShellEscape(string arg)
+		{
+			return arg.Replace("%", "^%").Replace(" ", "^ ");
 		}
 
 #if RUN_PERSISTENT
@@ -387,7 +390,7 @@ namespace WpfApp
 			Process.Start(new ProcessStartInfo
 				{
 					FileName = "cmd.exe",
-					Arguments = "/C choice /C Y /N /D Y /T " + delay.ToString(CultureInfo.InvariantCulture) +
+					Arguments = "/C choice /C Y /N /D Y /T " + ShellEscape(delay.ToString(CultureInfo.InvariantCulture)) +
 						" & " + command,
 					WindowStyle = ProcessWindowStyle.Hidden,
 					CreateNoWindow = true,
