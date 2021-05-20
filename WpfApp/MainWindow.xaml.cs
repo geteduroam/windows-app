@@ -900,7 +900,6 @@ namespace WpfApp
         {
             Button btnSender = (Button)sender;
             Point ptLowerLeft = new Point(0, btnSender.Height);
-            ptLowerLeft = btnSender.PointToScreen(ptLowerLeft);
             ctMenuSettings.IsOpen = true;
         }
 
