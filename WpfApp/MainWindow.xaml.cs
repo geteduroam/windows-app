@@ -967,7 +967,7 @@ namespace WpfApp
         }
 
         private void miUninstall_Click(object sender, RoutedEventArgs e)
-            => App.PromptAndUninstallSelf(_ => { });
+            => App.PromptAndUninstallSelf(_ => App.Shutdown());
 
         private void btnHelp_Click(object sender, RoutedEventArgs e)
         {
