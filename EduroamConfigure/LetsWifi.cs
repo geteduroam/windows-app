@@ -183,6 +183,11 @@ namespace EduroamConfigure
 				Debug.Print(e.ToString());
 				return false;
 			}
+			catch (HttpRequestException e)
+			{
+				Debug.Print(e.ToString());
+				return false;
+			}
 		}
 
 		/// <summary>
