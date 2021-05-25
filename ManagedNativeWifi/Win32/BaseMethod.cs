@@ -586,7 +586,6 @@ namespace ManagedNativeWifi.Win32
 				case ERROR_NDIS_DOT11_MEDIA_IN_USE:
 				case ERROR_NDIS_DOT11_POWER_STATE_INVALID:
 				case ERROR_GEN_FAILURE:
-				//case 57893: // aka 0xE225, appears to trigger faulty authMethod, TTLS-EAP-* so far
 					if (!throwOnFailure)
 						return false;
 					else
