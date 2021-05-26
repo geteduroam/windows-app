@@ -17,7 +17,7 @@ namespace EduroamConfigure
 	public class IdentityProviderDownloader : IDisposable
 	{
 		// constants
-		private static readonly Uri GeoApiUrl = new Uri("https://geo.geteduroam.app/geoip");
+		private static readonly Uri GeoApiUrl = new Uri("https://geo.eduroam.app/geoip");
 #if DEBUG
 		private static readonly Uri ProviderApiUrl = new Uri("https://discovery.eduroam.app/v1/discovery.json");
 #else
