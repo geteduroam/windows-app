@@ -190,7 +190,7 @@ namespace EduroamConfigure
              => authMethod.EapType != EapType.TLS;
 
         public static bool IsSupported(EapConfig.AuthenticationMethod authMethod)
-            => IsSupported(authMethod.EapType, authMethod.InnerAuthType);
+            => authMethod.AllowSave && IsSupported(authMethod.EapType, authMethod.InnerAuthType);
 
         private static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
         {

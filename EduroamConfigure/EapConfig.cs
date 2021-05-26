@@ -74,7 +74,7 @@ namespace EduroamConfigure
             public string ClientOuterIdentity { get; } // expect it to have a realm. Also known as: anonymous identity, routing identity
             public string ClientInnerIdentitySuffix { get; } // realm
             public bool ClientInnerIdentityHint { get; } // Wether to disallow subrealms or not (see https://github.com/GEANT/CAT/issues/190)
-
+            public bool AllowSave { get; }
             public bool IsHS20Supported { get => EapConfig.CredentialApplicabilities.Any(cred => cred.ConsortiumOid != null); }
             public bool IsSSIDSupported { get => EapConfig.CredentialApplicabilities.Any(cred => cred.Ssid != null && cred.Ssid.Length != 0); }
 
@@ -319,7 +319,8 @@ namespace EduroamConfigure
                 string clientCertificatePassphrase = null,
                 string clientOuterIdentity = null,
                 string innerIdentitySuffix = null,
-                bool innerIdentityHint = false
+                bool innerIdentityHint = false,
+                bool allowSave = true
             )
             {
                 EapType = eapType;
@@ -333,6 +334,7 @@ namespace EduroamConfigure
                 ClientOuterIdentity = clientOuterIdentity;
                 ClientInnerIdentitySuffix = innerIdentitySuffix;
                 ClientInnerIdentityHint = innerIdentityHint;
+                AllowSave = allowSave;
             }
         }
 
@@ -550,6 +552,9 @@ namespace EduroamConfigure
                 var clientInnerIdentityHint = (bool?)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("InnerIdentityHint")) ?? false;
 
+                var allowSave = (bool?)clientSideCredentialXml
+                    ?.Elements().FirstOrDefault(nameIs("allow_save")) ?? true;
+
                 // create new authentication method object and adds it to list
                 authMethods.Add(new EapConfig.AuthenticationMethod(
                     eapType,
@@ -562,7 +567,8 @@ namespace EduroamConfigure
                     clientCertPasswd,
                     clientOuterIdentity,
                     clientInnerIdentitySuffix,
-                    clientInnerIdentityHint
+                    clientInnerIdentityHint,
+                    allowSave
                 ));
             }
 
