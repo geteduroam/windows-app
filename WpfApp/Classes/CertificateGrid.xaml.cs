@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
@@ -58,7 +58,7 @@ namespace WpfApp.Classes
 
        private void btnInstall_Click(object sender, RoutedEventArgs e)
        {
-            this.Installer.InstallCertificate();
+            this.Installer.AttemptInstallCertificate();
             this.IsInstalled = Installer.IsInstalled;
             if (Installer.IsInstalledByUs)
             {

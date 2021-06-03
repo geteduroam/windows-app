@@ -7,149 +7,155 @@ using System.Diagnostics;
 
 namespace EduroamConfigure
 {
-    /// <summary>
-    /// Contains various functions for:
-    /// - installing certificates
-    /// - creating a wireless profile
-    /// - setting user data
-    /// - connecting to a network
-    /// </summary>
-    public static class ConnectToEduroam
-    {
-        // Certificate stores:
+	/// <summary>
+	/// Contains various functions for:
+	/// - installing certificates
+	/// - creating a wireless profile
+	/// - setting user data
+	/// - connecting to a network
+	/// </summary>
+	public static class ConnectToEduroam
+	{
+		// Certificate stores:
 
-        // Used to install root CAs to verify server certificates with
-        private const StoreName rootCaStoreName = StoreName.Root; 
-        private const StoreLocation rootCaStoreLocation = StoreLocation.CurrentUser; // NICE TO HAVE: make this configurable to LocalMachine
-        // Used to install CAs to verify server certificates with
-        private const StoreName interCaStoreName = StoreName.CertificateAuthority;
-        private const StoreLocation interCaStoreLocation = StoreLocation.CurrentUser; // NICE TO HAVE: make this configurable to LocalMachine
-        // Used to install TLS client certificates
-        private const StoreName userCertStoreName = StoreName.My;
-        private const StoreLocation userCertStoreLocation = StoreLocation.CurrentUser;
+		// Used to install root CAs to verify server certificates with
+		private const StoreName rootCaStoreName = StoreName.Root;
+		private const StoreLocation rootCaStoreLocation = StoreLocation.CurrentUser; // NICE TO HAVE: make this configurable to LocalMachine
+																					 // Used to install CAs to verify server certificates with
+		private const StoreName interCaStoreName = StoreName.CertificateAuthority;
+		private const StoreLocation interCaStoreLocation = StoreLocation.CurrentUser; // NICE TO HAVE: make this configurable to LocalMachine
+																					  // Used to install TLS client certificates
+		private const StoreName userCertStoreName = StoreName.My;
+		private const StoreLocation userCertStoreLocation = StoreLocation.CurrentUser;
 
-        /// <summary>
-        /// Checks the EAP config to see if there is any issues
-        /// TODO: test this
-        /// TODO: use this in ui
-        /// </summary>
-        /// <returns>A tuple on the form: (bool isCritical, string description)</returns>
-        public static IEnumerable<ValueTuple<bool, string>> LookForWarningsInEapConfig(EapConfig eapConfig)
-        {
-            _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
+		/// <summary>
+		/// Checks the EAP config to see if there is any issues
+		/// TODO: test this
+		/// TODO: use this in ui
+		/// </summary>
+		/// <returns>A tuple on the form: (bool isCritical, string description)</returns>
+		public static IEnumerable<ValueTuple<bool, string>> LookForWarningsInEapConfig(EapConfig eapConfig)
+		{
+			_ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
 
-            if (!EduroamNetwork.IsEapConfigSupported(eapConfig))
-            {
-                yield return (true, "This configuration is not supported");
-                yield break;
-            }
+			if (!EduroamNetwork.IsEapConfigSupported(eapConfig))
+			{
+				yield return (true, "This configuration is not supported");
+				yield break;
+			}
 
-            if (!eapConfig.AuthenticationMethods
-                    .Where(EduroamNetwork.IsAuthMethodSupported)
-                    .All(authMethod => authMethod.ServerCertificateAuthorities.Any()))
-                yield return (true, "This configuration is missing Certificate Authorities");
+			if (!eapConfig.AuthenticationMethods
+					.Where(EduroamNetwork.IsAuthMethodSupported)
+					.All(authMethod => authMethod.ServerCertificateAuthorities.Any()))
+				yield return (true, "This configuration is missing Certificate Authorities");
 
-            var CAs = EnumerateCAs(eapConfig).ToList();
+			var CAs = EnumerateCAs(eapConfig).ToList();
 
-            DateTime now = DateTime.Now;
-            bool has_expired_ca = CAs
-                .Any(caCert => caCert.NotAfter < now);
+			DateTime now = DateTime.Now;
+			bool has_expired_ca = CAs
+				.Any(caCert => caCert.NotAfter < now);
 
-            bool has_a_yet_to_expire_ca = CAs
-                .Any(caCert => now < caCert.NotAfter);
+			bool has_a_yet_to_expire_ca = CAs
+				.Any(caCert => now < caCert.NotAfter);
 
-            bool has_valid_ca = CAs
-                .Where(caCert => now < caCert.NotAfter)
-                .Any(caCert => caCert.NotBefore < now);
+			bool has_valid_ca = CAs
+				.Where(caCert => now < caCert.NotAfter)
+				.Any(caCert => caCert.NotBefore < now);
 
-            if (has_expired_ca)
-            {
-                yield return has_valid_ca
-                    ? (false,
-                        "One of the provided Certificate Authorities from this institution has expired.\r\n" +
-                        "There might be some issues connecting to eduroam.")
-                    : (true,
-                        "The provided Certificate Authorities from this institution have all expired!\r\n" +
-                        "Please contact the institution to have the issue fixed!");
-            }
-            else if (!has_valid_ca && has_a_yet_to_expire_ca)
-            {
-                DateTime earliest = CAs
-                    .Where(caCert => now < caCert.NotAfter)
-                    .Max(caCert => caCert.NotBefore);
+			if (has_expired_ca)
+			{
+				yield return has_valid_ca
+					? (false,
+						"One of the provided Certificate Authorities from this institution has expired.\r\n" +
+						"There might be some issues connecting to eduroam.")
+					: (true,
+						"The provided Certificate Authorities from this institution have all expired!\r\n" +
+						"Please contact the institution to have the issue fixed!");
+			}
+			else if (!has_valid_ca && has_a_yet_to_expire_ca)
+			{
+				DateTime earliest = CAs
+					.Where(caCert => now < caCert.NotAfter)
+					.Max(caCert => caCert.NotBefore);
 
-                yield return (false,
-                    "The Certificate Authorities in this configuration has yet to become valid.\r\n" +
-                    "This configuration will become valid in " + (earliest - now).TotalMinutes + " minutes.");
-            }
-            else if (!has_valid_ca)
-            {
-                yield return (false,
-                    "The Certificate Authorities in this configuration are not valid.");
-            }
+				yield return (false,
+					"The Certificate Authorities in this configuration has yet to become valid.\r\n" +
+					"This configuration will become valid in " + (earliest - now).TotalMinutes + " minutes.");
+			}
+			else if (!has_valid_ca)
+			{
+				yield return (false,
+					"The Certificate Authorities in this configuration are not valid.");
+			}
 
-            CAs.ForEach(cert => cert.Dispose());
-        }
+			CAs.ForEach(cert => cert.Dispose());
+		}
 
-        /// <summary>
-        /// Enumerates the CAs which the eapConfig in question defines
-        /// </summary>
-        private static IEnumerable<X509Certificate2> EnumerateCAs(EapConfig eapConfig)
-        {
-            _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
-            return eapConfig.AuthenticationMethods
-                .Where(EduroamNetwork.IsAuthMethodSupported)
-                .SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
-                .Where(CertificateStore.CertificateIsRootCA)
-                .GroupBy(cert => cert.Thumbprint, (key, certs) => certs.FirstOrDefault()); // distinct, alternative is to use DistinctBy in MoreLINQ
-        }
+		/// <summary>
+		/// Enumerates the CAs which the eapConfig in question defines
+		/// </summary>
+		private static IEnumerable<X509Certificate2> EnumerateCAs(EapConfig eapConfig)
+		{
+			_ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
+			return eapConfig.AuthenticationMethods
+				.Where(EduroamNetwork.IsAuthMethodSupported)
+				.SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
+				.Where(CertificateStore.CertificateIsRootCA)
+				.GroupBy(cert => cert.Thumbprint, (key, certs) => certs.FirstOrDefault()); // distinct, alternative is to use DistinctBy in MoreLINQ
+		}
 
-        /// <summary>
-        /// Enumerates the CAs which the eapConfig in question defines, wrapped a install helper class
-        /// </summary>
-        public static IEnumerable<CertificateInstaller> EnumerateCAInstallers(EapConfig eapConfig)
-        {
-            _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
-            return EnumerateCAs(eapConfig)
-                .Select(cert => new CertificateInstaller(cert, rootCaStoreName, rootCaStoreLocation));
-        }
+		/// <summary>
+		/// Enumerates the CAs which the eapConfig in question defines, wrapped a install helper class
+		/// </summary>
+		public static IEnumerable<CertificateInstaller> EnumerateCAInstallers(EapConfig eapConfig)
+		{
+			_ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
+			return EnumerateCAs(eapConfig)
+				.Select(cert => new CertificateInstaller(cert, rootCaStoreName, rootCaStoreLocation));
+		}
 
-        /// <summary>
-        /// A helper class which helps you ensure a single certificates is installed.
-        /// </summary>
-        public class CertificateInstaller
-        {
-            private readonly X509Certificate2 cert;
-            private readonly StoreName storeName;
-            private readonly StoreLocation storeLocation;
+		/// <summary>
+		/// A helper class which helps you ensure a single certificates is installed.
+		/// </summary>
+		public class CertificateInstaller
+		{
+			private readonly X509Certificate2 cert;
+			private readonly StoreName storeName;
+			private readonly StoreLocation storeLocation;
 
-            public CertificateInstaller(
-                X509Certificate2 cert,
-                StoreName storeName,
-                StoreLocation storeLocation)
-            {
-                this.cert = cert ?? throw new ArgumentNullException(paramName: nameof(cert));
-                this.storeLocation = storeLocation;
-                this.storeName = storeName;
-            }
+			public CertificateInstaller(
+				X509Certificate2 cert,
+				StoreName storeName,
+				StoreLocation storeLocation)
+			{
+				this.cert = cert ?? throw new ArgumentNullException(paramName: nameof(cert));
+				this.storeLocation = storeLocation;
+				this.storeName = storeName;
+			}
 
-            override public string ToString()
-                => cert.FriendlyName;
+			override public string ToString()
+				=> cert.FriendlyName;
 
-            public bool IsCa { get => storeName == rootCaStoreName; }
+			public bool IsCa { get => storeName == rootCaStoreName; }
 
-            public bool IsInstalled
-            {
-                get => CertificateStore.IsCertificateInstalled(cert, storeName, storeLocation);
-            }
-            public bool IsInstalledByUs
-            {
-                get => CertificateStore.IsCertificateInstalledByUs(cert, storeName, storeLocation);
-            }
+			public bool IsInstalled
+			{
+				get => CertificateStore.IsCertificateInstalled(cert, storeName, storeLocation);
+			}
+			public bool IsInstalledByUs
+			{
+				get => CertificateStore.IsCertificateInstalledByUs(cert, storeName, storeLocation);
+			}
 
-            public void InstallCertificate()
-                => CertificateStore.InstallCertificate(cert, storeName, storeLocation);
-        }
+			public void AttemptInstallCertificate()
+			{
+				try
+				{
+					CertificateStore.InstallCertificate(cert, storeName, storeLocation);
+				}
+				catch (UserAbortException) { }
+			}
+		}
 
         /// <summary>
         /// A class which helps you install one of the authMethods
