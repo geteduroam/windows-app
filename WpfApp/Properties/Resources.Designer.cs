@@ -63,16 +63,6 @@ namespace WpfApp.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] eduroam_logo {
-            get {
-                object obj = ResourceManager.GetObject("eduroam_logo", resourceCulture);
-                return ((byte[])(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
-        /// </summary>
         internal static byte[] oauth_accepted {
             get {
                 object obj = ResourceManager.GetObject("oauth_accepted", resourceCulture);
