@@ -218,9 +218,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="resources\eduroam_logo.svg" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="resources\geteduroam.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -228,9 +225,6 @@
       <Project>{8d2c283d-5868-4329-b86e-060adf68734c}</Project>
       <Name>EduroamConfigure</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="resources\ajax-loader.gif" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="geteduroam.ico" />
