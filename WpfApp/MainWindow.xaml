@@ -41,7 +41,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="45"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="64"/>
+                <ColumnDefinition Width="45"/>
             </Grid.ColumnDefinitions>
 
             <Button x:Name="btnBack" Style="{StaticResource HeaderButtonStyle}" Content="   ←    " VerticalAlignment="Top" HorizontalAlignment="Left" Height="31" Width="45" Click="btnBack_Click" FontSize="20" FontFamily="Calibri" FontWeight="Thin" Grid.Column="0" Grid.Row="0"/>
