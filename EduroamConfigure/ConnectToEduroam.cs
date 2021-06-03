@@ -147,8 +147,14 @@ namespace EduroamConfigure
 				get => CertificateStore.IsCertificateInstalledByUs(cert, storeName, storeLocation);
 			}
 
-			public void InstallCertificate()
-				=> CertificateStore.InstallCertificate(cert, storeName, storeLocation);
+			public void AttemptInstallCertificate()
+			{
+				try
+				{
+					CertificateStore.InstallCertificate(cert, storeName, storeLocation);
+				}
+				catch (UserAbortException) { }
+			}
 		}
 
 		/// <summary>
