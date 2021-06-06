@@ -269,7 +269,8 @@ namespace WpfApp
 					// we cannot show a normal message box on success,
 					// since we've dispatched a job to delete the running binary at this point
 					// but we can spawn a PowerShell that will show the success message
-					if (success) {
+					if (success)
+					{
 						var extinguishMe = new ProcessStartInfo
 						{
 							FileName = "mshta",

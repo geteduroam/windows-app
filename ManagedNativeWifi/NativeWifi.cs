@@ -1,11 +1,10 @@
+using ManagedNativeWifi.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
-
-using ManagedNativeWifi.Common;
 using static ManagedNativeWifi.Win32.NativeMethod;
 using Base = ManagedNativeWifi.Win32.BaseMethod;
 

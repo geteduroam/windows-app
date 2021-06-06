@@ -1,3 +1,4 @@
+using ManagedNativeWifi;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -7,8 +8,6 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Threading.Tasks;
-using ManagedNativeWifi;
-
 using ConfiguredWLANProfile = EduroamConfigure.PersistingStore.ConfiguredWLANProfile;
 
 namespace EduroamConfigure
@@ -42,7 +41,7 @@ namespace EduroamConfigure
 			AvailableNetworkPack networkPack,
 			ProfilePack profilePack,
 			object _ = null) // last argument is ConfiguredWLANProfile
-			: this (profilePack?.Interface.Id ?? networkPack.Interface.Id)
+			: this(profilePack?.Interface.Id ?? networkPack.Interface.Id)
 		{
 			Debug.Assert((networkPack, profilePack) != (null, null));
 			Debug.Assert(
@@ -261,7 +260,9 @@ namespace EduroamConfigure
 						.Remove(profile)
 						.Add(profile.WithUserDataSet());
 				}
-			} else {
+			}
+			else
+			{
 				throw new Exception("Unable to install UserProfile " + profile.ProfileName);
 			}
 		}

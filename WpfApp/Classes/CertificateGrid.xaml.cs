@@ -1,9 +1,9 @@
+using EduroamConfigure;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using EduroamConfigure;
 
 namespace WpfApp.Classes
 {
@@ -15,7 +15,7 @@ namespace WpfApp.Classes
 
 		private readonly List<IObserver<ConnectToEduroam.CertificateInstaller>> observers;
 		public CertificateGrid()
-		{;
+		{
 			observers = new List<IObserver<ConnectToEduroam.CertificateInstaller>>();
 			InitializeComponent();
 		}
@@ -71,7 +71,7 @@ namespace WpfApp.Classes
 
 		private void NotifySubscribers()
 		{
-			foreach(IObserver<ConnectToEduroam.CertificateInstaller> observer in observers)
+			foreach (IObserver<ConnectToEduroam.CertificateInstaller> observer in observers)
 			{
 				observer.OnNext(Installer);
 			}

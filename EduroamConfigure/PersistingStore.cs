@@ -239,7 +239,7 @@ namespace EduroamConfigure
 								: null);
 
 			public IdentityProviderInfo WithEapConfigXml(string eapConfigXml)
-				=> new IdentityProviderInfo( DisplayName, EmailAddress, WebAddress,
+				=> new IdentityProviderInfo(DisplayName, EmailAddress, WebAddress,
 					Phone, InstId, ProfileId, IsOauth, NotBefore, NotAfter,
 					EapTypeSsid, EapTypeHs2, eapConfigXml);
 		}

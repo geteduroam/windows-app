@@ -1,3 +1,4 @@
+using EduroamConfigure;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using EduroamConfigure;
 
 namespace WpfApp.Menu
 {
@@ -47,7 +47,8 @@ namespace WpfApp.Menu
 		/// </summary>
 		private void UpdateInstitutions(IEnumerable<IdentityProvider> institutions)
 		{
-			this.Dispatcher.Invoke(() => {
+			this.Dispatcher.Invoke(() =>
+			{
 				lbInstitutions.ItemsSource = institutions;
 				if (institutions.Any())
 					lbInstitutions.ScrollIntoView(institutions.First());

@@ -1,12 +1,12 @@
+using EduroamConfigure;
 using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Diagnostics;
-using System.Net;
-using System.Threading;
-using EduroamConfigure;
 
 namespace WpfApp.Menu
 {
@@ -201,7 +201,8 @@ namespace WpfApp.Menu
 
 			// resumes main thread
 			mainThread.Set();
-			Dispatcher.Invoke(() => {
+			Dispatcher.Invoke(() =>
+			{
 				mainWindow.OAuthComplete(eapConfig);
 			});
 		}

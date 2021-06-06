@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Security.Cryptography.X509Certificates;
-using System.Linq;
 using System.Diagnostics;
+using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 
 namespace EduroamConfigure
 {
@@ -217,7 +217,7 @@ namespace EduroamConfigure
 			/// If this returns FALSE: It means there is a missing TLS client certificate left to be installed
 			/// </summary>
 			/// <returns>True if the profile was installed on any interface</returns>
-			public void InstallWLANProfile(string username=null, string password=null)
+			public void InstallWLANProfile(string username = null, string password = null)
 			{
 				if (!HasInstalledCertificates)
 					throw new EduroamAppUserException("missing certificates",

@@ -211,7 +211,7 @@ namespace EduroamConfigure
 			// not transactionally secure, probably also not needed
 			all_removed &= PersistingStore.InstalledCertificates.Count == 0;
 
-			Debug.WriteLine("Uninstalling all installed certificates: " + (all_removed ? "SUCCESS": "FAILED"));
+			Debug.WriteLine("Uninstalling all installed certificates: " + (all_removed ? "SUCCESS" : "FAILED"));
 			Debug.WriteLine("");
 			return all_removed;
 		}

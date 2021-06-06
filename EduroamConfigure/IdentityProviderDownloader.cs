@@ -1,16 +1,16 @@
-using System;
-using System.Net;
 using Newtonsoft.Json;
-using System.Linq;
+using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Device.Location;
+using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Xml;
-using System.Collections.Specialized;
-using System.Diagnostics;
-using System.Net.Http.Headers;
-using System.Collections.Generic;
 
 namespace EduroamConfigure
 {
@@ -122,12 +122,14 @@ namespace EduroamConfigure
 		}
 		private Task LoadGeoWebApi()
 		{
-			var webTask = Task.Run(async () => {
+			var webTask = Task.Run(async () =>
+			{
 				string apiJson = await DownloadUrlAsString(GeoApiUrl, new string[] { "application/json" }).ConfigureAwait(false);
 				return JsonConvert.DeserializeObject<IdpLocation>(apiJson);
 			});
 
-			return Task.Run(() => {
+			return Task.Run(() =>
+			{
 				webTask.Wait();
 				Location = webTask.Result ?? Location;
 				Coordinates = Location.GeoCoordinate;
@@ -212,7 +214,7 @@ namespace EduroamConfigure
 			{
 				string eapXml = await DownloadUrlAsString(
 						url: endpoint,
-						accept: new string[]{ "application/eap-config", "application/x-eap-config"},
+						accept: new string[] { "application/eap-config", "application/x-eap-config" },
 						accessToken: accessToken
 					);
 				return EapConfig.FromXmlData(eapXml);
@@ -307,9 +309,10 @@ namespace EduroamConfigure
 		{
 			if (data == null) throw new ArgumentNullException(nameof(data));
 
-			var list = new List<KeyValuePair<string,string>>(data.Count);
-			foreach(string key in data.AllKeys) {
-				list.Add(new KeyValuePair<string,string>(key, data[key]));
+			var list = new List<KeyValuePair<string, string>>(data.Count);
+			foreach (string key in data.AllKeys)
+			{
+				list.Add(new KeyValuePair<string, string>(key, data[key]));
 			}
 			return PostForm(url, list, accept);
 		}

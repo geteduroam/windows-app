@@ -320,7 +320,9 @@ namespace WpfApp
 			{
 				EduroamConfigure.ConnectToEduroam.RemoveAllWLANProfiles();
 				EduroamConfigure.CertificateStore.UninstallAllInstalledCertificates(abortOnFail: true, omitRootCa: false);
-			} catch (Exception) {
+			}
+			catch (Exception)
+			{
 				shutdownAction(false);
 				return;
 			}

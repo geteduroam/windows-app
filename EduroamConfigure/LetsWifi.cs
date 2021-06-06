@@ -36,9 +36,10 @@ namespace EduroamConfigure
 		// interface
 		public static string VersionNumber
 		{
-			get {
+			get
+			{
 				Assembly assembly = Assembly.GetExecutingAssembly();
-				foreach(CustomAttributeData attrs in assembly.CustomAttributes)
+				foreach (CustomAttributeData attrs in assembly.CustomAttributes)
 				{
 					if (attrs.AttributeType.Name == "AssemblyFileVersionAttribute")
 					{
@@ -130,7 +131,8 @@ namespace EduroamConfigure
 			try
 			{
 				tokenJson = JObject.Parse(jsonResponse);
-			} catch (JsonReaderException e)
+			}
+			catch (JsonReaderException e)
 			{
 				throw new ApiParsingException("Unable to parse JSON in OAuth response", e);
 			}
@@ -172,7 +174,7 @@ namespace EduroamConfigure
 			// TODO on background refresh, internet may be offline, but be back in a few seconds; smart retry needed
 			try
 			{
-				var tokenJson = await IdentityProviderDownloader.PostForm(TokenEndpoint, tokenFormData, new string[]{ "application/json"});
+				var tokenJson = await IdentityProviderDownloader.PostForm(TokenEndpoint, tokenFormData, new string[] { "application/json" });
 
 				// process response
 				SetAccessTokensFromJson(tokenJson);
@@ -270,8 +272,8 @@ namespace EduroamConfigure
 				var d3 = profileInfo.NotAfter.Value;
 
 				// if we are not a least 2/3 into the validity period (let's encrypt convention)
-					if (d1.Add(TimeSpan.FromTicks((d3 - d1).Ticks * 2 / 3)) > d2)
-						return RefreshResponse.StillValid; // prefer not to issue a new cert
+				if (d1.Add(TimeSpan.FromTicks((d3 - d1).Ticks * 2 / 3)) > d2)
+					return RefreshResponse.StillValid; // prefer not to issue a new cert
 			}
 
 			// this is done automatically by RequestAndDownloadEapConfig, but we do it here for the result code.
@@ -294,7 +296,9 @@ namespace EduroamConfigure
 				.First();
 
 			// should never fail, since we abort if CA installations are needed
-			try { installer.InstallCertificates(); } catch (Exception) {
+			try { installer.InstallCertificates(); }
+			catch (Exception)
+			{
 				return RefreshResponse.Failed;
 			}
 

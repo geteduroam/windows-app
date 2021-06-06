@@ -252,8 +252,8 @@ namespace WpfApp
 			if (historyFormId.Count == 0) return;
 			if (currentFormId == FormId.Login)
 			{
-					pageLogin.IgnorePasswordChange = true;
-					pageLogin.dispatcherTimer.Stop();
+				pageLogin.IgnorePasswordChange = true;
+				pageLogin.dispatcherTimer.Stop();
 			}
 			switch (historyFormId.Last())
 			{
@@ -261,7 +261,8 @@ namespace WpfApp
 					try
 					{
 						LoadPageInstalledProfile();
-					} catch (InvalidOperationException)
+					}
+					catch (InvalidOperationException)
 					{
 						// Do not crash, but still remove this item
 						// This can happen when logging out and during logout doing to the main menu,
@@ -943,11 +944,13 @@ namespace WpfApp
 					break;
 			}
 		}
-		private void miReauthenticate_Click(object sender, RoutedEventArgs e) {
+		private void miReauthenticate_Click(object sender, RoutedEventArgs e)
+		{
 			Reauthenticate();
 		}
 
-		private void miRemove_Click(object sender, RoutedEventArgs e) {
+		private void miRemove_Click(object sender, RoutedEventArgs e)
+		{
 			string profileName = PersistingStore.IdentityProvider?.DisplayName ?? "geteduroam";
 			if (MessageBoxResult.OK == MessageBox.Show(
 					"This will remove all configuration for\r\n" + profileName,

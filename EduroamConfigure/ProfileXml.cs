@@ -47,7 +47,7 @@ namespace EduroamConfigure
 		// TTLS specific
 		static readonly XNamespace nsTTLS = "http://www.microsoft.com/provisioning/EapTtlsConnectionPropertiesV1";
 
-		private static readonly string[] PREFERRED_SSIDS = new string[]{ "eduroam", "govroam" };
+		private static readonly string[] PREFERRED_SSIDS = new string[] { "eduroam", "govroam" };
 
 		public static ValueTuple<string, string> CreateSSIDProfileXml(EapConfig.AuthenticationMethod authMethod, string ssid)
 			=> CreateProfileXml(authMethod, withSSID: ssid, strictMode: true);
@@ -85,13 +85,14 @@ namespace EduroamConfigure
 			if (withSSID != null && string.IsNullOrWhiteSpace(profileName))
 				profileName = withSSID;
 			if (string.IsNullOrWhiteSpace(profileName)) foreach (string preferredSSID in PREFERRED_SSIDS)
-			{
-				if (authMethod.SSIDs.Contains(preferredSSID)) {
-					profileName = preferredSSID;
-					break;
+				{
+					if (authMethod.SSIDs.Contains(preferredSSID))
+					{
+						profileName = preferredSSID;
+						break;
+					}
 				}
-			}
-			if(string.IsNullOrWhiteSpace(profileName) && authMethod.SSIDs.Any())
+			if (string.IsNullOrWhiteSpace(profileName) && authMethod.SSIDs.Any())
 			{
 				profileName = authMethod.SSIDs.First();
 			}
@@ -197,7 +198,7 @@ namespace EduroamConfigure
 				new XElement(nsEHC + "EapHostConfig",
 					new XElement(nsEHC + "EapMethod",
 						new XElement(nsEC + "Type", (int)eapType),
-						new XElement(nsEC + "VendorId",   0),
+						new XElement(nsEC + "VendorId", 0),
 						new XElement(nsEC + "VendorType", 0),
 						new XElement(nsEC + "AuthorId", eapType == EapType.TTLS ? 311 : 0) // no geant link
 					),

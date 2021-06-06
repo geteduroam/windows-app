@@ -1,10 +1,10 @@
+using EduroamConfigure;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using EduroamConfigure;
 
 namespace WpfApp.Menu
 {
@@ -47,7 +47,8 @@ namespace WpfApp.Menu
 		private void PopulateProfiles()
 		{
 			var idProviderProfiles = mainWindow.IdpDownloader.GetIdentityProviderProfiles(IdProviderId);
-			this.Dispatcher.Invoke(() => {
+			this.Dispatcher.Invoke(() =>
+			{
 				lbProfiles.ItemsSource = idProviderProfiles;
 				lbProfiles.SelectedItem = idProviderProfiles.First();
 			});
@@ -62,7 +63,7 @@ namespace WpfApp.Menu
 			if (lbProfiles.SelectedItem == null) return;
 
 			// gets id of selected profile
-			var selectedProfile = (IdentityProviderProfile) lbProfiles.SelectedItem;
+			var selectedProfile = (IdentityProviderProfile)lbProfiles.SelectedItem;
 			ProfileId = selectedProfile.Id;
 			mainWindow.btnNext.IsEnabled = lbProfiles.SelectedIndex != -1;
 		}

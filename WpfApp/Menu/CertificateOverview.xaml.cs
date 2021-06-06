@@ -1,10 +1,10 @@
+using EduroamConfigure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using EduroamConfigure;
 using WpfApp.Classes;
 
 namespace WpfApp.Menu
@@ -33,7 +33,7 @@ namespace WpfApp.Menu
 			tbInfo.Text = "In order to continue you have to install the listed certificates";
 
 			installers = ConnectToEduroam.EnumerateCAInstallers(eapConfig).ToList();
-			foreach (ConnectToEduroam.CertificateInstaller installer in installers )
+			foreach (ConnectToEduroam.CertificateInstaller installer in installers)
 			{
 				AddSeparator();
 				AddCertGrid(installer);
@@ -49,7 +49,7 @@ namespace WpfApp.Menu
 		/// Adds a CertificateGrid controller to the stpCerts stackpanel
 		/// </summary>
 		/// <param name="installer"></param>
-		private void AddCertGrid( ConnectToEduroam.CertificateInstaller installer)
+		private void AddCertGrid(ConnectToEduroam.CertificateInstaller installer)
 		{
 			CertificateGrid grid = new CertificateGrid
 			{

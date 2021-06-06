@@ -1,14 +1,14 @@
+using EduroamConfigure;
 using System;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Globalization;
-using EduroamConfigure;
-using WpfApp.Classes;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
+using WpfApp.Classes;
 
 namespace WpfApp.Menu
 {
@@ -344,7 +344,8 @@ namespace WpfApp.Menu
 				return true;
 			}
 			pbCertBrowserPassword.IsEnabled = false;
-			try {
+			try
+			{
 				InstallEapConfig(eapConfig, username, password);
 
 				// Any profile installed by us must also be removed by us when it is not needed anymore
@@ -371,12 +372,14 @@ namespace WpfApp.Menu
 					mainWindow.btnNext.Content = "Connect";
 				}
 			}
-			catch (EduroamAppUserException ex) {
+			catch (EduroamAppUserException ex)
+			{
 				tbStatus.Text = "Unknown error while installing profile\n\n" + ex.UserFacingMessage;
 
 				mainWindow.btnNext.Content = "Connect";
 			}
-			catch (Exception ex) {
+			catch (Exception ex)
+			{
 				tbStatus.Text = "Unknown error while installing profile\n\n" + ex.Message;
 
 				mainWindow.btnNext.Content = "Connect";
@@ -436,7 +439,8 @@ namespace WpfApp.Menu
 				{
 					authMethodInstaller.InstallCertificates();
 				}
-				catch (UserAbortException ex) {
+				catch (UserAbortException ex)
+				{
 					lastException = new Exception("Required CA certificate was not installed, this should not happen, please report a bug", ex);
 					// failed, try the next method
 					continue;
@@ -477,9 +481,13 @@ namespace WpfApp.Menu
 			if (success)
 			{
 				mainWindow.ProfileCondition = MainWindow.ProfileStatus.Configured;
-			} else if (lastException != null) {
+			}
+			else if (lastException != null)
+			{
 				throw lastException;
-			} else {
+			}
+			else
+			{
 				throw new Exception(
 					"No supported authentication method found in current profile, please report a bug.");
 			}
@@ -495,7 +503,8 @@ namespace WpfApp.Menu
 		private void dispatcherTimer_Tick(object sender, EventArgs e)
 		{
 			// update time on screen
-			this.Dispatcher.Invoke(() => {
+			this.Dispatcher.Invoke(() =>
+			{
 				tbLocalTime.Text = DateTime.Now.ToString(CultureInfo.InvariantCulture);
 				tbValidTime.Text = certValid.ToString(CultureInfo.InvariantCulture);
 			});
@@ -503,7 +512,8 @@ namespace WpfApp.Menu
 			if (DateTime.Now > certValid)
 			{
 				dispatcherTimer.Stop();
-				this.Dispatcher.Invoke(() => {
+				this.Dispatcher.Invoke(() =>
+				{
 					stpTime.Visibility = Visibility.Collapsed;
 					ConnectClick();
 				});
@@ -511,7 +521,8 @@ namespace WpfApp.Menu
 			// if still not vaid yet
 			else
 			{
-				this.Dispatcher.Invoke(() => {
+				this.Dispatcher.Invoke(() =>
+				{
 					mainWindow.btnNext.IsEnabled = false;
 					stpTime.Visibility = Visibility.Visible;
 					tbStatus.Visibility = Visibility.Collapsed;
