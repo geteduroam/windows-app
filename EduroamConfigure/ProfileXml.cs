@@ -250,7 +250,7 @@ namespace EduroamConfigure
 				// It does not support server validation
 				if (enableServerValidation)
 					throw new EduroamAppUserException("not supported",
-						"MSCHAPv2 as outer EAP does bit support server validation");
+						"MSCHAPv2 as outer EAP does not support server validation");
 				nsEapType = null;
 				thumbprintNodeName = null;
 				serverValidationElement = null;
@@ -296,7 +296,15 @@ namespace EduroamConfigure
 								new XElement(nsMPCPv2 + "AcceptServerName", "true"),
 								new XElement(nsMPCPv2 + "PeapExtensionsV2",
 									new XElement(nsMPCPv3 + "AllowPromptingWhenServerCANotFound", "true")
-								)
+								),
+								String.IsNullOrWhiteSpace(outerIdentity)
+									? new XElement(nsMPCPv2 + "IdentityPrivacy",
+										new XElement(nsMPCPv2 + "EnableIdentityPrivacy", "false")
+									)
+									: new XElement(nsMPCPv2 + "IdentityPrivacy",
+										new XElement(nsMPCPv2 + "EnableIdentityPrivacy", "true"),
+										new XElement(nsMPCPv2 + "AnonymousUserName", outerIdentity)
+									)
 							)
 						)
 					)
@@ -350,10 +358,14 @@ namespace EduroamConfigure
 									throw new EduroamAppUserException("unsupported auth method"),
 							}
 						),
-						new XElement(nsTTLS + "Phase1Identity",
-							new XElement(nsTTLS + "IdentityPrivacy", "true"),
-							new XElement(nsTTLS + "AnonymousIdentity", outerIdentity ?? "")
-						)
+						String.IsNullOrWhiteSpace(outerIdentity)
+							? new XElement(nsTTLS + "Phase1Identity",
+								new XElement(nsTTLS + "IdentityPrivacy", "false")
+							)
+							: new XElement(nsTTLS + "Phase1Identity",
+								new XElement(nsTTLS + "IdentityPrivacy", "true"),
+								new XElement(nsTTLS + "AnonymousIdentity", outerIdentity)
+							)
 					)
 				);
 			}
