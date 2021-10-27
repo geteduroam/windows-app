@@ -42,13 +42,8 @@ namespace EduroamConfigure
 		/// Generates user data xml.
 		/// </summary>
 		/// <param name="authMethod">authMethod</param>
-		/// <param name="username">Username</param>
-		/// <param name="password">Password</param>
 		/// <returns>Complete user data xml as string.</returns>
-		public static string CreateUserDataXml(
-			EapConfig.AuthenticationMethod authMethod,
-			string username,
-			string password)
+		public static string CreateUserDataXml(EapConfig.AuthenticationMethod authMethod)
 		{
 			_ = authMethod ?? throw new ArgumentNullException(nameof(authMethod));
 			using var userCert = authMethod.ClientCertificateAsX509Certificate2();
@@ -70,12 +65,13 @@ namespace EduroamConfigure
 						new XAttribute(XNamespace.Xmlns + "MsChapV2", nsMCUP),
 						new XAttribute(XNamespace.Xmlns + "eapTtls", nsTTLS),
 						EapUserData(
-							username ?? authMethod.ClientUserName,
-							password ?? authMethod.ClientPassword,
+							authMethod.ClientUserName,
+							authMethod.ClientPassword,
 							outerIdentity:
-								!string.IsNullOrEmpty(authMethod.ClientOuterIdentity)
-									? authMethod.ClientOuterIdentity
-									: username,
+								string.IsNullOrEmpty(authMethod.ClientOuterIdentity)
+									? authMethod.ClientUserName
+									: authMethod.ClientOuterIdentity
+									,
 							authMethod.EapType,
 							authMethod.InnerAuthType,
 							userCert?.Thumbprint

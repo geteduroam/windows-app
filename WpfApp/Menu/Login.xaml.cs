@@ -1,5 +1,6 @@
 using EduroamConfigure;
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,14 +36,14 @@ namespace WpfApp.Menu
 		public bool IsConnected { get; set; }
 		public bool IgnorePasswordChange { get; set; }
 		private readonly MainWindow mainWindow;
-		private readonly EapConfig eapConfig;
+		private readonly EapConfig providedEapConfig;
 
 
 
 		public Login(MainWindow mainWindow, EapConfig eapConfig)
 		{
 			this.mainWindow = mainWindow ?? throw new ArgumentNullException(paramName: nameof(mainWindow));
-			this.eapConfig = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
+			this.providedEapConfig = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
 			InitializeComponent();
 			Load();
 		}
@@ -63,13 +64,13 @@ namespace WpfApp.Menu
 			dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
 			dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
 			// Case where eapconfig needs username+passwprd
-			if (eapConfig.NeedsLoginCredentials())
+			if (providedEapConfig.NeedsLoginCredentials())
 			{
 				conType = ConType.Credentials;
 				grpRules.Visibility = Visibility.Hidden;
 				gridCred.Visibility = Visibility.Visible;
 				tbRules.Visibility = Visibility.Visible;
-				(realm, hint) = eapConfig.GetClientInnerIdentityRestrictions();
+				(realm, hint) = providedEapConfig.GetClientInnerIdentityRestrictions();
 				tbRealm.Text = '@' + realm;
 				SetRealmHintVisibility(!string.IsNullOrEmpty(realm) && hint ? Visibility.Visible : Visibility.Hidden);
 				if (!string.IsNullOrEmpty(mainWindow.PresetUsername))
@@ -95,14 +96,14 @@ namespace WpfApp.Menu
 				EnableConnectBtnBasedOnCredentials();
 			}
 			// case where eapconfig needs a certificate and password
-			else if (eapConfig.NeedsClientCertificate())
+			else if (providedEapConfig.NeedsClientCertificate())
 			{
 				gridCertBrowser.Visibility = Visibility.Visible;
 				conType = ConType.CertAndCertPass;
 
 			}
 			// case where eapconfig needs only cert password
-			else if (eapConfig.NeedsClientCertificatePassphrase())
+			else if (providedEapConfig.NeedsClientCertificatePassphrase())
 			{
 				conType = ConType.CertPass;
 				gridCertPassword.Visibility = Visibility.Visible;
@@ -242,50 +243,43 @@ namespace WpfApp.Menu
 		/// Used if both certificate and certificate password is needed
 		/// </summary>
 		/// <returns>truereturns>
-		public async Task<bool> ConnectWithCertAndCertPass()
+		private async Task ConnectWithCertAndCertPass()
 		{
-			var success = eapConfig.AddClientCertificate(filepath, pbCertBrowserPassword.Password);
-
-			if (success)
-			{
-				_ = await ConnectAndUpdateUI();
+			try {
+				await ConnectAndUpdateUI(providedEapConfig.WithClientCertificate(filepath, pbCertBrowserPassword.Password));
 			}
-			else
+			catch (ArgumentException)
 			{
 				tbStatus.Text = "Incorrect password";
 			}
-			return true;
-
 		}
 
 		/// <summary>
 		/// Used if only a certificate password is needed
 		/// </summary>
 		/// <returns>true</returns>
-		public async Task<bool> ConnectWithCertPass()
+		private async Task ConnectWithCertPass()
 		{
-			var success = eapConfig.AddClientCertificatePassphrase(pbCertPassword.Password);
+			pbCertPassword.IsEnabled = false;
 
-			if (success)
-			{
-				pbCertPassword.IsEnabled = false;
-
-				_ = await ConnectAndUpdateUI();
-				pbCertPassword.IsEnabled = true;
+			try {
+				await ConnectAndUpdateUI(providedEapConfig.WithClientCertificatePassphrase(pbCertPassword.Password));
 			}
-			else
+			catch (ArgumentException)
 			{
 				tbStatus.Text = "Incorrect password";
 			}
-			return true;
-
+			finally
+			{
+				pbCertPassword.IsEnabled = true;
+			}
 		}
 
 		/// <summary>
 		/// Used if username and password is needed
 		/// </summary>
 		/// <returns>true</returns>
-		public async Task<bool> ConnectWithLogin()
+		private async Task ConnectWithLogin()
 		{
 			if (IsCredentialsValid())
 			{
@@ -301,7 +295,7 @@ namespace WpfApp.Menu
 				pbCredPassword.IsEnabled = false;
 				tbUsername.IsEnabled = false;
 
-				_ = await ConnectAndUpdateUI(username, password);
+				await ConnectAndUpdateUI(providedEapConfig.WithLoginCredentials(username, password));
 
 				pbCredPassword.IsEnabled = true;
 				tbUsername.IsEnabled = true;
@@ -313,27 +307,26 @@ namespace WpfApp.Menu
 				grpRules.Visibility = string.IsNullOrEmpty(tbRules.Text) ? Visibility.Collapsed : Visibility.Visible;
 				tbStatus.Text = "";
 			}
-			return true;
 		}
 
 		/// <summary>
 		/// Used if no extra credentials are needed to connect
 		/// </summary>
 		/// <returns></returns>
-		public async Task<bool> ConnectWithNothing()
-		{
-			_ = await ConnectAndUpdateUI();
-			return true;
-		}
+		private Task ConnectWithNothing()
+			=> ConnectAndUpdateUI(providedEapConfig);
 
 		/// <summary>
 		/// Common function used by all the various connection cases to install the eap config and actually connect
 		/// </summary>
-		/// <param name="username"></param>
-		/// <param name="password"></param>
-		/// <returns></returns>
-		public async Task<bool> ConnectAndUpdateUI(string username = null, string password = null)
+		/// <param name="eapConfig">Configuration to install, must have all credentials set</param>
+		private async Task ConnectAndUpdateUI(EapConfig eapConfig)
 		{
+			Debug.Assert(
+				!eapConfig.NeedsClientCertificatePassphrase() && !eapConfig.NeedsLoginCredentials(),
+				"Cannot configure EAP config that still needs credentials"
+			);
+
 			if (!EduroamNetwork.IsWlanServiceApiAvailable())
 			{
 				// TODO: update this when wired x802 is a thing
@@ -341,12 +334,12 @@ namespace WpfApp.Menu
 
 				mainWindow.btnNext.Content = "Connect";
 
-				return true;
+				return;
 			}
 			pbCertBrowserPassword.IsEnabled = false;
 			try
 			{
-				InstallEapConfig(eapConfig, username, password);
+				InstallEapConfig(eapConfig);
 
 				// Any profile installed by us must also be removed by us when it is not needed anymore
 				// so install the geteduroam app when we have installed a profile
@@ -385,9 +378,6 @@ namespace WpfApp.Menu
 				mainWindow.btnNext.Content = "Connect";
 			}
 			pbCertBrowserPassword.IsEnabled = true;
-
-
-			return true; // to make it await-able
 		}
 
 		/// <summary>
@@ -410,13 +400,13 @@ namespace WpfApp.Menu
 			return connectSuccess;
 		}
 
-
 		/// <summary>
 		/// Installs certificates from EapConfig and creates wireless profile.
 		/// </summary>
+		/// <param name="eapConfig">Configuration to install, must have all credentials set</param>
 		/// <returns>true on success</returns>
 		[System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1031:Do not catch general exception types", Justification = "Catch-all to not let the application crash")]
-		private void InstallEapConfig(EapConfig eapConfig, string username = null, string password = null)
+		private void InstallEapConfig(EapConfig eapConfig)
 		{
 			if (!MainWindow.CheckIfEapConfigIsSupported(eapConfig)) // should have been caught earlier, but check here too for sanity
 			{
@@ -455,7 +445,7 @@ namespace WpfApp.Menu
 				// Everything is now in order, install the profile!
 				try
 				{
-					authMethodInstaller.InstallWLANProfile(username, password);
+					authMethodInstaller.InstallWLANProfile();
 				}
 				catch (Exception e)
 				{

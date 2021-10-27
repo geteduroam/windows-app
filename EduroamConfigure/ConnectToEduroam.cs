@@ -188,8 +188,10 @@ namespace EduroamConfigure
 			/// <returns>Returns true if all certificates has been successfully installed</returns>
 			public void InstallCertificates()
 			{
-				if (AuthMethod.NeedsClientCertificate())
+				if (AuthMethod.NeedsClientCertificate)
+				{
 					throw new EduroamAppUserException("no client certificate was provided");
+				}
 
 				// get all CAs from Authentication method
 				foreach (var cert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
@@ -217,7 +219,7 @@ namespace EduroamConfigure
 			/// If this returns FALSE: It means there is a missing TLS client certificate left to be installed
 			/// </summary>
 			/// <returns>True if the profile was installed on any interface</returns>
-			public void InstallWLANProfile(string username = null, string password = null)
+			public void InstallWLANProfile()
 			{
 				if (!HasInstalledCertificates)
 					throw new EduroamAppUserException("missing certificates",
@@ -227,7 +229,7 @@ namespace EduroamConfigure
 				foreach (var network in EduroamNetwork.GetAll(AuthMethod.EapConfig))
 				{
 					Debug.WriteLine("Install profile {0}", network.ProfileName);
-					network.InstallProfiles(AuthMethod, username, password, forAllUsers: true);
+					network.InstallProfiles(AuthMethod, forAllUsers: true);
 				}
 			}
 

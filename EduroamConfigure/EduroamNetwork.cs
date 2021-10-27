@@ -83,18 +83,16 @@ namespace EduroamConfigure
 		/// Will install multiple profile, one for each supported SSID
 		/// Will overwrite any profiles with matching names if they exist.
 		/// </summary>
-		/// <param name="username">User's username optionally with realm</param>
-		/// <param name="password">User's password.</param>
 		/// <param name="authMethod">AuthMethod of profiles to be installed</param>
 		/// <param name="forAllUsers">Install for all users or only the current user</param>
 		/// <returns>(success with ssid, success with hotspot2)</returns>
 		/// <remarks><paramref name="forAllUsers"/> is ignored because it currently must be true for profiles and false for eapxml</remarks>
-		public void InstallProfiles(EapConfig.AuthenticationMethod authMethod, string username = null, string password = null, bool forAllUsers = true)
+		public void InstallProfiles(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
 		{
 			_ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
 
 			PersistingStore.IdentityProvider = PersistingStore.IdentityProviderInfo.From(authMethod);
-			PersistingStore.Username = username; // save username
+			PersistingStore.Username = authMethod.ClientUserName; // save username
 
 			var ssids = authMethod.SSIDs;
 
@@ -102,7 +100,7 @@ namespace EduroamConfigure
 			foreach (var ssid in ssids)
 			{
 				(string profileName, string profileXml) = ProfileXml.CreateSSIDProfileXml(authMethod, ssid);
-				string userDataXml = UserDataXml.CreateUserDataXml(authMethod, username, password);
+				string userDataXml = UserDataXml.CreateUserDataXml(authMethod);
 				try
 				{
 					// forAllUsers must be true when installing the profile, but false when installing userdata
@@ -125,7 +123,7 @@ namespace EduroamConfigure
 			if (authMethod.IsHS20Supported)
 			{
 				(string profileName, string profileXml) = ProfileXml.CreateHS20ProfileXml(authMethod);
-				string userDataXml = UserDataXml.CreateUserDataXml(authMethod, username, password);
+				string userDataXml = UserDataXml.CreateUserDataXml(authMethod);
 				try
 				{
 					// forAllUsers must be true when installing the profile, but false when installing userdata

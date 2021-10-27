@@ -17,8 +17,8 @@ namespace EduroamConfigure
 	{
 		#region Properties
 
-		public bool IsOauth { get; set; } // TODO: Used for scaffolding to PersistenStorage, need better solution
-		public string ProfileId { get; set; } // TODO: Used for scaffolding to PersistenStorage, need better solution
+		public bool IsOauth { get; set; } // TODO: Setter used for scaffolding to PersistenStorage, need better solution
+		public string ProfileId { get; set; } // TODO: Setter used for scaffolding to PersistenStorage, need better solution
 		public List<AuthenticationMethod> AuthenticationMethods { get; }
 		public List<CredentialApplicability> CredentialApplicabilities { get; }
 		public ProviderInfo InstitutionInfo { get; }
@@ -69,8 +69,8 @@ namespace EduroamConfigure
 			public List<string> ServerNames { get; }
 			public string ClientUserName { get; } // preset inner identity, expect it to have a realm
 			public string ClientPassword { get; } // preset outer identity
-			public string ClientCertificate { get; private set; } // base64 encoded PKCS12 certificate+privkey bundle
-			public string ClientCertificatePassphrase { get; private set; } // passphrase for ^
+			public string ClientCertificate { get; } // base64 encoded PKCS12 certificate+privkey bundle
+			public string ClientCertificatePassphrase { get; } // passphrase for ^
 			public string ClientOuterIdentity { get; } // expect it to have a realm. Also known as: anonymous identity, routing identity
 			public string ClientInnerIdentitySuffix { get; } // realm
 			public bool ClientInnerIdentityHint { get; } // Wether to disallow subrealms or not (see https://github.com/GEANT/CAT/issues/190)
@@ -126,6 +126,7 @@ namespace EduroamConfigure
 			}
 
 			#endregion Helpers
+			#region CertExport
 
 			/// <summary>
 			/// Converts and enumerates CertificateAuthorities as X509Certificate2 objects.
@@ -187,15 +188,8 @@ namespace EduroamConfigure
 				}
 			}
 
-			/// <summary>
-			/// User presentable EAP scheme identitifer
-			/// </summary>
-			public string EapSchemeName()
-			{
-				if (InnerAuthType != InnerAuthType.None)
-					return EapType.ToString() + "_" + InnerAuthType.ToString();
-				return EapType.ToString();
-			}
+			#endregion CertExport
+			#region Verification
 
 			// methods to check if the authentification method is complete, and methods to mend it
 
@@ -203,67 +197,101 @@ namespace EduroamConfigure
 			/// If this returns true, then the user must provide the login credentials
 			/// when installing with ConnectToEduroam or EduroamNetwork
 			/// </summary>
-			public bool NeedsLoginCredentials()
+			public bool NeedsLoginCredentials
 			{
-				if (UserDataXml.NeedsLoginCredentials(this)) // Auth method expects it
-				{
-					if (string.IsNullOrEmpty(ClientUserName) || string.IsNullOrEmpty(ClientUserName)) // we don't already have them
-						return true;
-				}
-				return false;
+				get => UserDataXml.NeedsLoginCredentials(this) // If the auth method expects it
+					&& string.IsNullOrEmpty(ClientUserName) || string.IsNullOrEmpty(ClientUserName); // and we don't already have them
 			}
 
 			/// <summary>
 			/// If this is true, then you must provide a
 			/// certificate file and add it with this.AddClientCertificate
 			/// </summary>
-			public bool NeedsClientCertificate()
+			public bool NeedsClientCertificate
 			{
-				if (UserDataXml.NeedsLoginCredentials(this)) return false;
-				return string.IsNullOrEmpty(ClientCertificate);
+				get => !UserDataXml.NeedsLoginCredentials(this) // If the auth method needs no user/pass
+					&& string.IsNullOrEmpty(ClientCertificate); // and we don't already have a certificate
 			}
 
 			/// <summary>
 			/// If this is true, then the user must provide a passphrase to the bundled certificate bundle.
 			/// Add this passphrase with this.AddClientCertificatePassphrase
 			/// </summary>
-			public bool NeedsClientCertificatePassphrase()
-				=> !UserDataXml.NeedsLoginCredentials(this)
-				&& !string.IsNullOrEmpty(ClientCertificate)
-				&& !CertificateIsValid;
+			public bool NeedsClientCertificatePassphrase
+			{
+				get => !UserDataXml.NeedsLoginCredentials(this)
+					&& !string.IsNullOrEmpty(ClientCertificate)
+					&& !CertificateIsValid;
+			}
+
+			#endregion Verification
+
+			#region ClientCertificate
+			/// <summary>
+			/// Adds the username and password to be installed along with the wlan profile
+			/// </summary>
+			/// <param name="username">The username for inner auth</param>
+			/// <param name="password">The passpword for inner auth</param>
+			/// <returns>Clone of this object with the appropriate properties set</returns>
+			public AuthenticationMethod WithLoginCredentials(string username, string password)
+				=> new AuthenticationMethod(
+					EapType,
+					InnerAuthType,
+					ServerCertificateAuthorities,
+					ServerNames,
+					username,
+					password,
+					ClientCertificate,
+					ClientCertificatePassphrase,
+					ClientOuterIdentity,
+					ClientInnerIdentitySuffix,
+					ClientInnerIdentityHint);
 
 			/// <summary>
 			/// Reads and adds the user certificate to be installed along with the wlan profile
 			/// </summary>
 			/// <param name="filePath">path to the certificate file in question. PKCS12</param>
 			/// <param name="passphrase">the passphrase to the certificate file in question</param>
-			/// <returns>true if valid and installed</returns>
-			public bool AddClientCertificate(string filePath, string passphrase = null)
-			{
-				var valid = VerifyCertificateBundle(filePath, passphrase);
-
-				if (valid)
-				{
-					ClientCertificate = Convert.ToBase64String(File.ReadAllBytes(filePath));
-					ClientCertificatePassphrase = passphrase;
-				}
-
-				return valid;
-			}
+			/// <returns>Clone of this object with the appropriate properties set</returns>
+			public AuthenticationMethod WithClientCertificate(string filePath, string passphrase = null)
+				=> VerifyCertificateBundle(filePath, passphrase)
+					? new AuthenticationMethod(
+						EapType,
+						InnerAuthType,
+						ServerCertificateAuthorities,
+						ServerNames,
+						ClientUserName,
+						ClientPassword,
+						Convert.ToBase64String(File.ReadAllBytes(filePath)),
+						passphrase,
+						ClientOuterIdentity,
+						ClientInnerIdentitySuffix,
+						ClientInnerIdentityHint)
+					: null
+					;
 
 			/// <summary>
 			/// Sets the passphrase to use when derypting the certificate bundle.
 			/// Will only be stored if valid.
 			/// </summary>
 			/// <param name="passphrase">the passphrase to the certificate</param>
-			/// <returns>true if the passphrase was valid and has been stored</returns>
-			public bool AddClientCertificatePassphrase(string passphrase)
-			{
-				var valid = VerifyCertificateBundle(ClientCertificateRaw, passphrase);
-				if (valid)
-					ClientCertificatePassphrase = passphrase;
-				return valid;
-			}
+			/// <returns>Clone of this object with the appropriate properties set</returns>
+			public AuthenticationMethod WithClientCertificatePassphrase(string passphrase)
+				=> VerifyCertificateBundle(ClientCertificateRaw, passphrase)
+					? new AuthenticationMethod(
+						EapType,
+						InnerAuthType,
+						ServerCertificateAuthorities,
+						ServerNames,
+						ClientUserName,
+						ClientPassword,
+						ClientCertificate,
+						passphrase,
+						ClientOuterIdentity,
+						ClientInnerIdentitySuffix,
+						ClientInnerIdentityHint)
+					: null
+					;
 
 			/// <summary>
 			/// Helper function which verifies if the
@@ -272,7 +300,7 @@ namespace EduroamConfigure
 			/// <param name="rawCertificateData">Certificate data, PKCS12</param>
 			/// <param name="passphrase">the passphrase to the certificate file in question</param>
 			/// <returns>true if valid</returns>
-			public static bool VerifyCertificateBundle(byte[] rawCertificateData, string passphrase = null)
+			private static bool VerifyCertificateBundle(byte[] rawCertificateData, string passphrase = null)
 			{
 				try
 				{
@@ -297,7 +325,7 @@ namespace EduroamConfigure
 			/// <param name="filePath">path to the certificate file in question. PKCS12</param>
 			/// <param name="passphrase">the passphrase to the certificate file in question</param>
 			/// <returns>true if valid</returns>
-			public static bool VerifyCertificateBundle(string filePath, string passphrase = null)
+			private static bool VerifyCertificateBundle(string filePath, string passphrase = null)
 			{
 				if (filePath == null)
 					throw new ArgumentNullException(paramName: nameof(filePath));
@@ -306,6 +334,8 @@ namespace EduroamConfigure
 
 				return VerifyCertificateBundle(File.ReadAllBytes(filePath), passphrase);
 			}
+
+			#endregion ClientCertificate
 
 			// Constructor
 			public AuthenticationMethod(
@@ -666,7 +696,7 @@ namespace EduroamConfigure
 		/// </summary>
 		public bool NeedsLoginCredentials()
 			=> AuthenticationMethods
-				.Any(authMethod => authMethod.NeedsLoginCredentials());
+				.Any(authMethod => authMethod.NeedsLoginCredentials);
 
 		/// <summary>
 		/// If this is true, then you must provide a
@@ -674,7 +704,7 @@ namespace EduroamConfigure
 		/// </summary>
 		public bool NeedsClientCertificate()
 			=> AuthenticationMethods
-				.Any(authMethod => authMethod.NeedsClientCertificate());
+				.Any(authMethod => authMethod.NeedsClientCertificate);
 
 		/// <summary>
 		/// If this is true, then the user must provide a passphrase to the bundled certificate bundle.
@@ -682,31 +712,67 @@ namespace EduroamConfigure
 		/// </summary>
 		public bool NeedsClientCertificatePassphrase()
 			=> AuthenticationMethods
-				.Any(authMethod => authMethod.NeedsClientCertificatePassphrase());
+				.Any(authMethod => authMethod.NeedsClientCertificatePassphrase);
 
 		/// <summary>
 		/// Reads and adds the user certificate to be installed along with the wlan profile
 		/// </summary>
 		/// <param name="filePath">path to the certificate file in question. PKCS12</param>
 		/// <param name="passphrase">the passphrase to the certificate file in question</param>
-		/// <returns>true if valid and installed</returns>
-		public bool AddClientCertificate(string certificatePath, string certificatePassphrase = null)
-			=> AuthenticationMethods
-				.Where(authMethod => authMethod
-					.AddClientCertificate(certificatePath, certificatePassphrase))
-				.ToList().Any(); // evaluate all
+		/// <returns>Clone of this object with the appropriate properties set</returns>
+		/// <exception cref="ArgumentException">The client certificate was not accepted by any authentication method</exception>
+		public EapConfig WithClientCertificate(string certificatePath, string certificatePassphrase = null)
+		{
+			IEnumerable<AuthenticationMethod> authMethods = AuthenticationMethods.Select(authMethod => authMethod.WithClientCertificate(certificatePath, certificatePassphrase)).Where(x => x != null);
+			if (!authMethods.Any()) throw new ArgumentException("No authentication method can accept the client certificate");
+
+			return new EapConfig(
+				authMethods.ToList(),
+				CredentialApplicabilities,
+				InstitutionInfo,
+				XmlData
+			);
+		}
 
 		/// <summary>
 		/// Sets the passphrase to use when derypting the certificate bundle.
 		/// Will only be stored if valid.
 		/// </summary>
 		/// <param name="passphrase">the passphrase to the certificate</param>
-		/// <returns>true if the passphrase was valid and has been stored</returns>
-		public bool AddClientCertificatePassphrase(string certificatePassphrase)
-			=> AuthenticationMethods
-				.Where(authMethod => authMethod
-					.AddClientCertificatePassphrase(certificatePassphrase))
-				.ToList().Any(); // evaluate all
+		/// <returns>Clone of this object with the appropriate properties set</returns>
+		/// <exception cref="ArgumentException">The client certificate was not accepted by any authentication method</exception>
+		public EapConfig WithClientCertificatePassphrase(string certificatePassphrase)
+		{
+			IEnumerable<AuthenticationMethod> authMethods = AuthenticationMethods.Select(authMethod => authMethod.WithClientCertificatePassphrase(certificatePassphrase)).Where(x => x != null);
+			if (!authMethods.Any()) throw new ArgumentException("No authentication accepts the passphrase");
+
+			return new EapConfig(
+				authMethods.ToList(),
+				CredentialApplicabilities,
+				InstitutionInfo,
+				XmlData
+			);
+		}
+
+		/// <summary>
+		/// Sets the username/password for inner auth.
+		/// </summary>
+		/// <param name="username">The username for inner auth</param>
+		/// <param name="password">The passpword for inner auth</param>
+		/// <returns>Clone of this object with the appropriate properties set</returns>
+		/// <exception cref="ArgumentException">The client certificate was not accepted by any authentication method</exception>
+		public EapConfig WithLoginCredentials(string username, string password)
+		{
+			IEnumerable<AuthenticationMethod> authMethods = AuthenticationMethods.Select(authMethod => authMethod.WithLoginCredentials(username, password)).Where(x => x != null);
+			if (!authMethods.Any()) throw new ArgumentException("No authentication accepts the passphrase");
+
+			return new EapConfig(
+				authMethods.ToList(),
+				CredentialApplicabilities,
+				InstitutionInfo,
+				XmlData
+			);
+		}
 
 		/// <summary>
 		/// goes through all the AuthenticationMethods in this config and tries to reason about a correct method
