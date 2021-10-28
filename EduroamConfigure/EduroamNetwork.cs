@@ -414,6 +414,9 @@ namespace EduroamConfigure
 				if (ex.GetBaseException().GetType().Name == "Win32Exception")
 					if (ex.GetBaseException().Message == "MethodName: WlanOpenHandle, ErrorCode: 1062, ErrorMessage: The service has not been started.\r\n")
 						return false;
+				if (ex.GetBaseException().GetType().Name == "DllNotFoundException")
+					if (ex.GetBaseException().HResult == -2146233052) // Message: Unable to load DLL 'Wlanapi.dll': The specified module could not be found. (Exception from HRESULT: 0x8007007E))
+						return false;
 
 				Debug.WriteLine("THIS SHOULD NOT HAPPEN");
 				Debug.Print(ex.ToString());
