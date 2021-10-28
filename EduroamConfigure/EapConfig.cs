@@ -41,15 +41,10 @@ namespace EduroamConfigure
 			ProviderInfo institutionInfo,
 			string xmlData)
 		{
-			AuthenticationMethods = authenticationMethods;
+			AuthenticationMethods = authenticationMethods.Select(authMethod => authMethod.WithEapConfig(this)).ToList();
 			CredentialApplicabilities = credentialApplicabilities;
 			InstitutionInfo = institutionInfo;
 			XmlData = xmlData;
-
-			AuthenticationMethods.ForEach(authMethod =>
-			{
-				authMethod.EapConfig = this;
-			});
 		}
 
 		#endregion
@@ -62,7 +57,7 @@ namespace EduroamConfigure
 		{
 			#region Properties
 
-			public EapConfig EapConfig { get; set; } // reference to parent EapConfig
+			public EapConfig EapConfig { get; } // reference to parent EapConfig
 			public EapType EapType { get; }
 			public InnerAuthType InnerAuthType { get; }
 			public List<string> ServerCertificateAuthorities { get; } // base64 encoded DER certificate
@@ -227,7 +222,7 @@ namespace EduroamConfigure
 
 			#endregion Verification
 
-			#region ClientCertificate
+			#region Credentials
 			/// <summary>
 			/// Adds the username and password to be installed along with the wlan profile
 			/// </summary>
@@ -293,6 +288,21 @@ namespace EduroamConfigure
 						ClientInnerIdentityHint)
 					: null
 					;
+			public AuthenticationMethod WithEapConfig(EapConfig eapConfig)
+				=> new AuthenticationMethod(
+						eapConfig,
+						EapType,
+						InnerAuthType,
+						ServerCertificateAuthorities,
+						ServerNames,
+						ClientUserName,
+						ClientPassword,
+						ClientCertificate,
+						ClientCertificatePassphrase,
+						ClientOuterIdentity,
+						ClientInnerIdentitySuffix,
+						ClientInnerIdentityHint
+					);
 
 			/// <summary>
 			/// Helper function which verifies if the
@@ -336,7 +346,7 @@ namespace EduroamConfigure
 				return VerifyCertificateBundle(File.ReadAllBytes(filePath), passphrase);
 			}
 
-			#endregion ClientCertificate
+			#endregion Credentials
 
 			// Constructor
 			public AuthenticationMethod(
@@ -351,8 +361,23 @@ namespace EduroamConfigure
 				string clientOuterIdentity = null,
 				string innerIdentitySuffix = null,
 				bool innerIdentityHint = false
+			) : this(null, eapType, innerAuthType, serverCertificateAuthorities, serverName, clientUserName, clientPassword, clientCertificate, clientCertificatePassphrase, clientOuterIdentity, innerIdentitySuffix, innerIdentityHint) { }
+			private AuthenticationMethod(
+				EapConfig eapConfig,
+				EapType eapType,
+				InnerAuthType innerAuthType,
+				List<string> serverCertificateAuthorities,
+				List<string> serverName,
+				string clientUserName = null,
+				string clientPassword = null,
+				string clientCertificate = null,
+				string clientCertificatePassphrase = null,
+				string clientOuterIdentity = null,
+				string innerIdentitySuffix = null,
+				bool innerIdentityHint = false
 			)
 			{
+				EapConfig = eapConfig;
 				EapType = eapType;
 				InnerAuthType = innerAuthType;
 				ServerCertificateAuthorities = serverCertificateAuthorities ?? new List<string>();
