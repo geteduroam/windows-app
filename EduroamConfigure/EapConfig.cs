@@ -199,8 +199,9 @@ namespace EduroamConfigure
 			/// </summary>
 			public bool NeedsLoginCredentials
 			{
-				get => UserDataXml.NeedsLoginCredentials(this) // If the auth method expects it
-					&& string.IsNullOrEmpty(ClientUserName) || string.IsNullOrEmpty(ClientUserName); // and we don't already have them
+				get => EapType != EapType.TLS // If the auth method expects login credentials
+					&& string.IsNullOrEmpty(ClientUserName) // but we don't already have them
+					|| string.IsNullOrEmpty(ClientPassword);
 			}
 
 			/// <summary>
@@ -209,7 +210,7 @@ namespace EduroamConfigure
 			/// </summary>
 			public bool NeedsClientCertificate
 			{
-				get => !UserDataXml.NeedsLoginCredentials(this) // If the auth method needs no user/pass
+				get => EapType == EapType.TLS // If we use EAP-TLS
 					&& string.IsNullOrEmpty(ClientCertificate); // and we don't already have a certificate
 			}
 
@@ -219,9 +220,9 @@ namespace EduroamConfigure
 			/// </summary>
 			public bool NeedsClientCertificatePassphrase
 			{
-				get => !UserDataXml.NeedsLoginCredentials(this)
-					&& !string.IsNullOrEmpty(ClientCertificate)
-					&& !CertificateIsValid;
+				get => EapType == EapType.TLS // If we use EAP-TLS
+					&& !string.IsNullOrEmpty(ClientCertificate) // and we DO have a client certificate
+					&& !CertificateIsValid; // but we cannot read it yet
 			}
 
 			#endregion Verification
