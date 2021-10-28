@@ -235,7 +235,7 @@ namespace EduroamConfigure
 							&& string.IsNullOrEmpty(authMethod.ClientCertificate) // should never happen with CAT nor letswifi
 							&& string.IsNullOrEmpty(authMethod.ClientPassword)
 							&& !authMethod.EapConfig.IsOauth
-								? authMethod.EapConfig.XmlData
+								? authMethod.EapConfig.RawOriginalEapConfigXmlData
 								: null);
 
 			public IdentityProviderInfo WithEapConfigXml(string eapConfigXml)

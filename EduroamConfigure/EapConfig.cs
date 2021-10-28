@@ -22,7 +22,7 @@ namespace EduroamConfigure
 		public List<AuthenticationMethod> AuthenticationMethods { get; }
 		public List<CredentialApplicability> CredentialApplicabilities { get; }
 		public ProviderInfo InstitutionInfo { get; }
-		public string XmlData { get; }
+		public string RawOriginalEapConfigXmlData { get; }
 
 		#endregion
 
@@ -39,12 +39,12 @@ namespace EduroamConfigure
 			List<AuthenticationMethod> authenticationMethods,
 			List<CredentialApplicability> credentialApplicabilities,
 			ProviderInfo institutionInfo,
-			string xmlData)
+			string eapConfigXmlData)
 		{
 			AuthenticationMethods = authenticationMethods.Select(authMethod => authMethod.WithEapConfig(this)).ToList();
 			CredentialApplicabilities = credentialApplicabilities;
 			InstitutionInfo = institutionInfo;
-			XmlData = xmlData;
+			RawOriginalEapConfigXmlData = eapConfigXmlData;
 		}
 
 		#endregion
@@ -763,7 +763,7 @@ namespace EduroamConfigure
 				authMethods.ToList(),
 				CredentialApplicabilities,
 				InstitutionInfo,
-				XmlData
+				RawOriginalEapConfigXmlData
 			);
 		}
 
@@ -783,7 +783,7 @@ namespace EduroamConfigure
 				authMethods.ToList(),
 				CredentialApplicabilities,
 				InstitutionInfo,
-				XmlData
+				RawOriginalEapConfigXmlData
 			);
 		}
 
@@ -803,7 +803,7 @@ namespace EduroamConfigure
 				authMethods.ToList(),
 				CredentialApplicabilities,
 				InstitutionInfo,
-				XmlData
+				RawOriginalEapConfigXmlData
 			);
 		}
 
