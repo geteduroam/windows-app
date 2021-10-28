@@ -195,6 +195,7 @@ namespace EduroamConfigure
 		/// <exception cref="ApiParsingException">eap-config cannot be parsed as XML</exception>
 		public async Task<EapConfig> DownloadEapConfig(string profileId)
 		{
+			await LoadProviders(useGeodata: false);
 			IdentityProviderProfile profile = GetProfileFromId(profileId);
 			if (String.IsNullOrEmpty(profile?.eapconfig_endpoint))
 			{

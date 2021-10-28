@@ -70,7 +70,7 @@ namespace WpfApp.Menu
 		{
 			if (downloader.ClosestProviders == null)
 			{
-				await downloader.LoadProviders(true);
+				await downloader.LoadProviders(useGeodata: true);
 			}
 			if (downloader.ClosestProviders == null)
 			{
