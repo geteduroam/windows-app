@@ -688,31 +688,38 @@ namespace EduroamConfigure
 		/// <param name="eapConfig">EapConfig object</param>
 		/// <returns>Enumeration of EapAuthMethodInstaller intances for each supported authentification method in eapConfig</returns>
 		public IEnumerable<AuthenticationMethod> SupportedAuthenticationMethods
-		{ get => AuthenticationMethods.Where(EduroamNetwork.IsAuthMethodSupported); }
+		{
+			get => AuthenticationMethods.Where(EduroamNetwork.IsAuthMethodSupported);
+		}
 
 		/// <summary>
 		/// If this returns true, then the user must provide the login credentials
 		/// when installing with ConnectToEduroam or EduroamNetwork
 		/// </summary>
-		public bool NeedsLoginCredentials()
-			=> AuthenticationMethods
-				.Any(authMethod => authMethod.NeedsLoginCredentials);
+		public bool NeedsLoginCredentials
+		{
+			get => AuthenticationMethods.Any(authMethod => authMethod.NeedsLoginCredentials);
+		}
 
 		/// <summary>
 		/// If this is true, then you must provide a
 		/// certificate file and add it with this.AddClientCertificate
 		/// </summary>
-		public bool NeedsClientCertificate()
-			=> AuthenticationMethods
+		public bool NeedsClientCertificate
+		{
+			get => AuthenticationMethods
 				.Any(authMethod => authMethod.NeedsClientCertificate);
+		}
 
 		/// <summary>
 		/// If this is true, then the user must provide a passphrase to the bundled certificate bundle.
 		/// Add this passphrase with this.AddClientCertificatePassphrase
 		/// </summary>
-		public bool NeedsClientCertificatePassphrase()
-			=> AuthenticationMethods
+		public bool NeedsClientCertificatePassphrase
+		{
+			get => AuthenticationMethods
 				.Any(authMethod => authMethod.NeedsClientCertificatePassphrase);
+		}
 
 		/// <summary>
 		/// Reads and adds the user certificate to be installed along with the wlan profile

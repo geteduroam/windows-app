@@ -64,7 +64,7 @@ namespace WpfApp.Menu
 			dispatcherTimer.Tick += new EventHandler(dispatcherTimer_Tick);
 			dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
 			// Case where eapconfig needs username+passwprd
-			if (providedEapConfig.NeedsLoginCredentials())
+			if (providedEapConfig.NeedsLoginCredentials)
 			{
 				conType = ConType.Credentials;
 				grpRules.Visibility = Visibility.Hidden;
@@ -96,14 +96,14 @@ namespace WpfApp.Menu
 				EnableConnectBtnBasedOnCredentials();
 			}
 			// case where eapconfig needs a certificate and password
-			else if (providedEapConfig.NeedsClientCertificate())
+			else if (providedEapConfig.NeedsClientCertificate)
 			{
 				gridCertBrowser.Visibility = Visibility.Visible;
 				conType = ConType.CertAndCertPass;
 
 			}
 			// case where eapconfig needs only cert password
-			else if (providedEapConfig.NeedsClientCertificatePassphrase())
+			else if (providedEapConfig.NeedsClientCertificatePassphrase)
 			{
 				conType = ConType.CertPass;
 				gridCertPassword.Visibility = Visibility.Visible;
@@ -323,7 +323,7 @@ namespace WpfApp.Menu
 		private async Task ConnectAndUpdateUI(EapConfig eapConfig)
 		{
 			Debug.Assert(
-				!eapConfig.NeedsClientCertificatePassphrase() && !eapConfig.NeedsLoginCredentials(),
+				!eapConfig.NeedsClientCertificatePassphrase && !eapConfig.NeedsLoginCredentials,
 				"Cannot configure EAP config that still needs credentials"
 			);
 
