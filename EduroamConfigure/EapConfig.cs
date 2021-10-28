@@ -230,18 +230,20 @@ namespace EduroamConfigure
 			/// <param name="password">The passpword for inner auth</param>
 			/// <returns>Clone of this object with the appropriate properties set</returns>
 			public AuthenticationMethod WithLoginCredentials(string username, string password)
-				=> new AuthenticationMethod(
-					EapType,
-					InnerAuthType,
-					ServerCertificateAuthorities,
-					ServerNames,
-					username,
-					password,
-					ClientCertificate,
-					ClientCertificatePassphrase,
-					ClientOuterIdentity,
-					ClientInnerIdentitySuffix,
-					ClientInnerIdentityHint);
+				=> EapType == EapType.TLS
+					? null
+					: new AuthenticationMethod(
+						EapType,
+						InnerAuthType,
+						ServerCertificateAuthorities,
+						ServerNames,
+						username,
+						password,
+						ClientCertificate,
+						ClientCertificatePassphrase,
+						ClientOuterIdentity,
+						ClientInnerIdentitySuffix,
+						ClientInnerIdentityHint);
 
 			/// <summary>
 			/// Reads and adds the user certificate to be installed along with the wlan profile
@@ -250,7 +252,7 @@ namespace EduroamConfigure
 			/// <param name="passphrase">the passphrase to the certificate file in question</param>
 			/// <returns>Clone of this object with the appropriate properties set</returns>
 			public AuthenticationMethod WithClientCertificate(string filePath, string passphrase = null)
-				=> VerifyCertificateBundle(filePath, passphrase)
+				=> EapType == EapType.TLS && VerifyCertificateBundle(filePath, passphrase)
 					? new AuthenticationMethod(
 						EapType,
 						InnerAuthType,
@@ -273,7 +275,7 @@ namespace EduroamConfigure
 			/// <param name="passphrase">the passphrase to the certificate</param>
 			/// <returns>Clone of this object with the appropriate properties set</returns>
 			public AuthenticationMethod WithClientCertificatePassphrase(string passphrase)
-				=> VerifyCertificateBundle(ClientCertificateRaw, passphrase)
+				=> EapType == EapType.TLS && VerifyCertificateBundle(ClientCertificateRaw, passphrase)
 					? new AuthenticationMethod(
 						EapType,
 						InnerAuthType,
