@@ -195,8 +195,9 @@ namespace EduroamConfigure
 			public bool NeedsLoginCredentials
 			{
 				get => EapType != EapType.TLS // If the auth method expects login credentials
-					&& string.IsNullOrEmpty(ClientUserName) // but we don't already have them
-					|| string.IsNullOrEmpty(ClientPassword);
+					&& (string.IsNullOrEmpty(ClientUserName) // but we don't already have them
+						|| string.IsNullOrEmpty(ClientPassword)
+					);
 			}
 
 			/// <summary>
