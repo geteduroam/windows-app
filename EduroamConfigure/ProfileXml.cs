@@ -294,9 +294,6 @@ namespace EduroamConfigure
 							new XElement(nsMPCPv1 + "PeapExtensions",
 								new XElement(nsMPCPv2 + "PerformServerValidation", "true"),
 								new XElement(nsMPCPv2 + "AcceptServerName", "true"),
-								new XElement(nsMPCPv2 + "PeapExtensionsV2",
-									new XElement(nsMPCPv3 + "AllowPromptingWhenServerCANotFound", "true")
-								),
 								String.IsNullOrWhiteSpace(outerIdentity)
 									? new XElement(nsMPCPv2 + "IdentityPrivacy",
 										new XElement(nsMPCPv2 + "EnableIdentityPrivacy", "false")
@@ -305,6 +302,22 @@ namespace EduroamConfigure
 										new XElement(nsMPCPv2 + "EnableIdentityPrivacy", "true"),
 										new XElement(nsMPCPv2 + "AnonymousUserName", outerIdentity)
 									)
+								,
+
+								// Here, the ordering is important.  If PeapExtensionsV2 is not last, SOME devices will throw an error.
+								// The profile throws a W32Exception ErrorCode 1206 (corrupt profile) ReasonCode 1 (unenumerated at the time of writing)
+								// The reason is probably that the V1 schema specifies a specific ordering of the elements,
+								// which up until to now we never saw was enforced.
+								// https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-gpwl/0673b15a-492f-4e7d-b15b-61a329293e80
+
+								// A confirmed problematic device ran on:
+								// Windows 10 (OS Build 17134.1550)
+								// https://support.microsoft.com/en-us/topic/june-9-2020-kb4561621-os-build-17134-1550-2b74db42-3293-808c-199e-eb4130982afe
+								// Intel(R) Dual Band Wireless-AC 7265
+								// Driver Version 19.51.24.3 (8/26/2019)
+								new XElement(nsMPCPv2 + "PeapExtensionsV2",
+									new XElement(nsMPCPv3 + "AllowPromptingWhenServerCANotFound", "true")
+								)
 							)
 						)
 					)
