@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -50,9 +51,9 @@ namespace EduroamConfigure
 		private static readonly string[] PREFERRED_SSIDS = new string[] { "eduroam", "govroam" };
 
 		public static ValueTuple<string, string> CreateSSIDProfileXml(EapConfig.AuthenticationMethod authMethod, string ssid)
-			=> CreateProfileXml(authMethod, withSSID: ssid, strictMode: true);
+			=> CreateProfileXml(authMethod, withSSID: ssid);
 		public static ValueTuple<string, string> CreateHS20ProfileXml(EapConfig.AuthenticationMethod authMethod)
-			=> CreateProfileXml(authMethod, withHS20: true, strictMode: true);
+			=> CreateProfileXml(authMethod, withHS20: true);
 
 		/// <summary>
 		/// Generates wireless profile xml. Content depends on the EAP type.
@@ -60,13 +61,11 @@ namespace EduroamConfigure
 		/// <param name="authMethod">authMethod</param>
 		/// <param name="withSSID">TODO</param>
 		/// <param name="withHS20">If to install as hotspot 2.0 profile or not (separate profile from normal eap)</param>
-		/// <param name="strictMode">If the server cannot be verified, allow asking the user to allow it anyway</param>
 		/// <returns>A tuple containing the profile name and the WLANProfile XML data</returns>
 		private static ValueTuple<string, string> CreateProfileXml(
 			EapConfig.AuthenticationMethod authMethod,
 			string withSSID = null,
 			bool withHS20 = false,
-			bool strictMode = true,
 			bool hiddenNetwork = false)
 		{
 			if (withHS20 && withSSID != null)
@@ -140,14 +139,14 @@ namespace EduroamConfigure
 								new XElement(nsOneX + "authMode", "user"),
 								new XElement(nsOneX + "EAPConfig",
 									CreateEapConfiguration(
-										authMethod.EapType,
-										authMethod.InnerAuthType,
-										authMethod.ClientOuterIdentity,
-										authMethod.ServerNames,
-										authMethod.CertificateAuthoritiesAsX509Certificate2()
+										eapType: authMethod.EapType,
+										innerAuthType: authMethod.InnerAuthType,
+										outerIdentity: authMethod.ClientOuterIdentity,
+										serverNames: authMethod.ServerNames,
+										caThumbprints: authMethod.CertificateAuthoritiesAsX509Certificate2()
 											.Where(cert => cert.Subject == cert.Issuer)
-											.Select(cert => cert.Thumbprint).ToList(),
-										strictMode)
+											.Select(cert => cert.Thumbprint).ToList()
+									)
 								)
 							)
 						)
@@ -185,10 +184,14 @@ namespace EduroamConfigure
 			InnerAuthType innerAuthType,
 			string outerIdentity,
 			List<string> serverNames,
-			List<string> caThumbprints,
-			bool strictMode)
+			List<string> caThumbprints)
 		{
-			bool enableServerValidation = strictMode && (serverNames.Any() || caThumbprints.Any());
+			// Typically, this should be on ALWAYS, BUT:
+			// If the outer type is TTLS, we recursively get back here again,
+			// and do we need to have double validation?
+			bool enableServerValidation = serverNames.Any() || caThumbprints.Any();
+			// For now, we'd like it to be always on
+			Debug.Assert(enableServerValidation);
 
 			// creates the root xml strucure, with references to some of its descendants
 			XElement configElement;
@@ -351,21 +354,27 @@ namespace EduroamConfigure
 									),
 								InnerAuthType.EAP_PEAP_MSCHAPv2 =>
 									CreateEapConfiguration(
-										EapType.PEAP,
-										InnerAuthType.EAP_MSCHAPv2,
-										outerIdentity,
-										serverNames, // strip server names from inner eap? remove this case altogether?
-										caThumbprints,
-										strictMode
+										eapType: EapType.PEAP,
+										innerAuthType: InnerAuthType.EAP_MSCHAPv2,
+										outerIdentity: outerIdentity,
+										// For inner EAP, do we still need to verify the server name?
+										serverNames: serverNames,
+										caThumbprints: caThumbprints
+										// Or strip server names and thumbprints from inner eap?
+										//serverNames: new List<string>(),
+										//caThumbprints: new List<string>()
 									),
 								InnerAuthType.EAP_MSCHAPv2 =>
 									CreateEapConfiguration(
-										EapType.MSCHAPv2,
-										InnerAuthType.None,
-										outerIdentity,
-										new List<string>(),
-										new List<string>(),
-										strictMode
+										eapType:EapType.MSCHAPv2,
+										innerAuthType: InnerAuthType.None,
+										outerIdentity: outerIdentity,
+										// For inner EAP, do we still need to verify the server name?
+										serverNames: serverNames,
+										caThumbprints: caThumbprints
+										// Or strip server names and thumbprints from inner eap?
+										//serverNames: new List<string>(),
+										//caThumbprints: new List<string>()
 									),
 								_ =>
 									throw new EduroamAppUserException("unsupported auth method"),
