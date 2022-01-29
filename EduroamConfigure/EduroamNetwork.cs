@@ -87,7 +87,7 @@ namespace EduroamConfigure
 		/// <param name="forAllUsers">Install for all users or only the current user</param>
 		/// <returns>(success with ssid, success with hotspot2)</returns>
 		/// <remarks><paramref name="forAllUsers"/> is ignored because it currently must be true for profiles and false for eapxml</remarks>
-		public void InstallProfiles(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true, int maxEapVersion = ProfileXml.MAX_EAP_VERSION)
+		public void InstallProfiles(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
 		{
 			_ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
 
@@ -95,12 +95,11 @@ namespace EduroamConfigure
 			PersistingStore.Username = authMethod.ClientUserName; // save username
 
 			var ssids = authMethod.SSIDs;
-			maxEapVersion = Math.Min(maxEapVersion, ProfileXml.MAX_EAP_VERSION));
 
 			ConfiguredWLANProfile profile;
 			foreach (var ssid in ssids)
 			{
-				(string profileName, string profileXml) = ProfileXml.CreateSSIDProfileXml(authMethod, ssid, maxEapVersion);
+				(string profileName, string profileXml) = ProfileXml.CreateSSIDProfileXml(authMethod, ssid);
 				string userDataXml = UserDataXml.CreateUserDataXml(authMethod);
 				try
 				{
@@ -113,34 +112,6 @@ namespace EduroamConfigure
 				}
 				catch (Win32Exception e)
 				{
-					if (maxEapVersion > 2 && e.ErrorCode == -2147467259 && e.NativeErrorCode == 1206 && e.Message.Contains("ReasonCode: 1"))
-					{
-						try
-						{
-							// Disable nsMPCPv3 because it doesn't work on some platforms
-							// The profile throws a W32Exception ErrorCode 1206 (corrupt profile) ReasonCode 1 (unenumerated at the time of writing)
-							// Reason unknown, but could it have something to do with Wi-Fi drivers?
-
-							// A confirmed problematic device ran on:
-							// Windows 10 (OS Build 17134.1550)
-							// https://support.microsoft.com/en-us/topic/june-9-2020-kb4561621-os-build-17134-1550-2b74db42-3293-808c-199e-eb4130982afe
-							// Intel(R) Dual Band Wireless-AC 7265
-							// Driver Version 19.51.24.3 (8/26/2019)
-
-							// Restart this function with one lower version of maxEapVersion
-							InstallProfiles(authMethod, forAllUsers, maxEapVersion - 1);
-							return;
-						}
-						catch (Exception)
-						{
-							// An exception occurred while we were trying to recover from the first one
-							// We log this exception, but then ignore it and throw the original exception
-
-							Debug.WriteLine("THIS SHOULD REALLY NOT HAPPEN");
-							Debug.Print(e.ToString());
-						}
-					}
-
 					Debug.WriteLine("THIS SHOULD NOT HAPPEN");
 					Debug.Print(e.ToString());
 					Debug.Assert(false);
@@ -151,7 +122,7 @@ namespace EduroamConfigure
 
 			if (authMethod.IsHS20Supported)
 			{
-				(string profileName, string profileXml) = ProfileXml.CreateHS20ProfileXml(authMethod, maxEapVersion);
+				(string profileName, string profileXml) = ProfileXml.CreateHS20ProfileXml(authMethod);
 				string userDataXml = UserDataXml.CreateUserDataXml(authMethod);
 				try
 				{

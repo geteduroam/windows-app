@@ -23,9 +23,6 @@ namespace EduroamConfigure
 	/// </remarks>
 	class ProfileXml
 	{
-		public const int MAX_EAP_VERSION = 3;
-		public const int MIN_EAP_VERSION = 2;
-
 		// Namespaces:
 
 		// WLANProfile
@@ -53,10 +50,10 @@ namespace EduroamConfigure
 
 		private static readonly string[] PREFERRED_SSIDS = new string[] { "eduroam", "govroam" };
 
-		public static ValueTuple<string, string> CreateSSIDProfileXml(EapConfig.AuthenticationMethod authMethod, string ssid, int maxEapVersion = MAX_EAP_VERSION)
-			=> CreateProfileXml(authMethod, withSSID: ssid, maxEapVersion: maxEapVersion);
-		public static ValueTuple<string, string> CreateHS20ProfileXml(EapConfig.AuthenticationMethod authMethod, int maxEapVersion = MAX_EAP_VERSION)
-			=> CreateProfileXml(authMethod, withHS20: true, maxEapVersion: maxEapVersion);
+		public static ValueTuple<string, string> CreateSSIDProfileXml(EapConfig.AuthenticationMethod authMethod, string ssid)
+			=> CreateProfileXml(authMethod, withSSID: ssid);
+		public static ValueTuple<string, string> CreateHS20ProfileXml(EapConfig.AuthenticationMethod authMethod)
+			=> CreateProfileXml(authMethod, withHS20: true);
 
 		/// <summary>
 		/// Generates wireless profile xml. Content depends on the EAP type.
@@ -69,8 +66,7 @@ namespace EduroamConfigure
 			EapConfig.AuthenticationMethod authMethod,
 			string withSSID = null,
 			bool withHS20 = false,
-			bool hiddenNetwork = false,
-			int maxEapVersion = MAX_EAP_VERSION)
+			bool hiddenNetwork = false)
 		{
 			if (withHS20 && withSSID != null)
 				throw new ArgumentException("Cannot configure with both SSID and HS20"); // we can, but the result is confusing
@@ -147,7 +143,6 @@ namespace EduroamConfigure
 										innerAuthType: authMethod.InnerAuthType,
 										outerIdentity: authMethod.ClientOuterIdentity,
 										serverNames: authMethod.ServerNames,
-										maxEapVersion: maxEapVersion,
 										caThumbprints: authMethod.CertificateAuthoritiesAsX509Certificate2()
 											.Where(cert => cert.Subject == cert.Issuer)
 											.Select(cert => cert.Thumbprint).ToList()
@@ -189,8 +184,7 @@ namespace EduroamConfigure
 			InnerAuthType innerAuthType,
 			string outerIdentity,
 			List<string> serverNames,
-			List<string> caThumbprints,
-			int maxEapVersion = MAX_EAP_VERSION)
+			List<string> caThumbprints)
 		{
 			// Typically, this should be on ALWAYS, BUT:
 			// If the outer type is TTLS, we recursively get back here again,
@@ -280,11 +274,6 @@ namespace EduroamConfigure
 				nsEapType = nsMPCPv1;
 				thumbprintNodeName = "TrustedRootCA";
 
-				if (maxEapVersion < MIN_EAP_VERSION)
-				{
-					throw new IndexOutOfRangeException("Maximum supported EAP version too low");
-				}
-
 				// adds MSCHAPv2 specific elements (inner eap)
 				configElement.Add(
 					new XElement(nsBECP + "Eap", // PEAP
@@ -308,6 +297,20 @@ namespace EduroamConfigure
 							new XElement(nsMPCPv1 + "PeapExtensions",
 								new XElement(nsMPCPv2 + "PerformServerValidation", "true"),
 								new XElement(nsMPCPv2 + "AcceptServerName", "true"),
+
+								// Here, the ordering is important.  If PeapExtensionsV2 is not last, SOME devices will throw an error.
+								// The profile throws a W32Exception ErrorCode 1206 (corrupt profile) ReasonCode 1 (unenumerated at the time of writing)
+								// The reason is probably that the V1 schema specifies a specific ordering of the elements,
+								// which up until to now we never saw was enforced.
+								// https://docs.microsoft.com/en-us/openspecs/windows_protocols/ms-gpwl/0673b15a-492f-4e7d-b15b-61a329293e80
+
+								// A confirmed problematic device ran on:
+								// Windows 10 (OS Build 17134.1550)
+								// https://support.microsoft.com/en-us/topic/june-9-2020-kb4561621-os-build-17134-1550-2b74db42-3293-808c-199e-eb4130982afe
+								// Intel(R) Dual Band Wireless-AC 7265
+								// Driver Version 19.51.24.3 (8/26/2019)
+
+								// Restart this function with one lower version of maxEapVersion
 								String.IsNullOrWhiteSpace(outerIdentity)
 									? new XElement(nsMPCPv2 + "IdentityPrivacy",
 										new XElement(nsMPCPv2 + "EnableIdentityPrivacy", "false")
@@ -317,11 +320,9 @@ namespace EduroamConfigure
 										new XElement(nsMPCPv2 + "AnonymousUserName", outerIdentity)
 									)
 								,
-								maxEapVersion > 2
-									? new XElement(nsMPCPv2 + "PeapExtensionsV2",
-										new XElement(nsMPCPv3 + "AllowPromptingWhenServerCANotFound", "true")
-									)
-									: null
+								new XElement(nsMPCPv2 + "PeapExtensionsV2",
+									new XElement(nsMPCPv3 + "AllowPromptingWhenServerCANotFound", "true")
+								)
 							)
 						)
 					)
