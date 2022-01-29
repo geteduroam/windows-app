@@ -170,7 +170,7 @@ namespace EduroamConfigure
 					// When HS20 is not supported, an exception is thrown with these values
 					// We ignore the error, except if no SSID was configured (ignored in the stanza ealier)
 					// 1206 == ManagedNativeWifi.Win32.NativeMethod.ERROR_BAD_PROFILE
-					if (e.ErrorCode == -2147467259 || e.NativeErrorCode == 1206)
+					if (e.ErrorCode == -2147467259 && e.NativeErrorCode == 1206)
 					{
 						Debug.WriteLine("Win32Exception: ERROR_BAD_PROFILE");
 						return;
@@ -178,7 +178,7 @@ namespace EduroamConfigure
 
 					// Observed by an institution in The Netherlands, via Paul Dekkers
 					// 183 == ManagedNativeWifi.Win32.NativeMethod.ERROR_ALREADY_EXISTS
-					if (e.ErrorCode == -2147467259 || e.NativeErrorCode == 183)
+					if (e.ErrorCode == -2147467259 && e.NativeErrorCode == 183)
 					{
 						Debug.WriteLine("Win32Exception: ERROR_ALREADY_EXISTS");
 
@@ -189,7 +189,7 @@ namespace EduroamConfigure
 					// This error code happens when attempting to configure TTLS-EAP-MSCHAPv2 user data
 					// We don't really know why this happens; UserDataXml::IsSupported() will advise against
 					// using this authentication method.  If we got here anyway, it's a bug.
-					if (e.ErrorCode == -2147467259 || e.NativeErrorCode == 0xE225) /* 57893 */
+					if (e.ErrorCode == -2147467259 && e.NativeErrorCode == 0xE225) /* 57893 */
 					{
 						Debug.WriteLine("Win32Exception: NativeErrorCode 0xE225 (57893), TTLS-EAP-MSCHAPv2 attempted? - THIS SHOULD NOT HAPPEN");
 						throw;
