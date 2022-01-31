@@ -77,6 +77,11 @@ namespace EduroamConfigure
 			if (withSSID != null && !authMethod.SSIDs.Any((ssid) => withSSID == ssid))
 				throw new ArgumentException("The ssid is not used by the authentication method");
 
+			if (authMethod.ServerNames.Count == 0 || authMethod.ServerCertificateAuthorities.Count == 0)
+			{
+				throw new ArgumentException("The authentication method must have server certificate validation through server name and allowed CA");
+			}
+
 			// Decide the profile name, which is the unique identifier for this profile
 			string profileName = null;
 			if (withHS20 && string.IsNullOrWhiteSpace(profileName))
@@ -188,10 +193,8 @@ namespace EduroamConfigure
 		{
 			// Typically, this should be on ALWAYS, BUT:
 			// If the outer type is TTLS, we recursively get back here again,
-			// and do we need to have double validation?
+			// and we cannot do inner validation.
 			bool enableServerValidation = serverNames.Any() || caThumbprints.Any();
-			// For now, we'd like it to be always on
-			Debug.Assert(enableServerValidation);
 
 			// creates the root xml strucure, with references to some of its descendants
 			XElement configElement;
@@ -357,24 +360,18 @@ namespace EduroamConfigure
 										eapType: EapType.PEAP,
 										innerAuthType: InnerAuthType.EAP_MSCHAPv2,
 										outerIdentity: outerIdentity,
-										// For inner EAP, do we still need to verify the server name?
-										serverNames: serverNames,
-										caThumbprints: caThumbprints
-										// Or strip server names and thumbprints from inner eap?
-										//serverNames: new List<string>(),
-										//caThumbprints: new List<string>()
+										// Strip server names and thumbprints from inner EAP, only need in outer
+										serverNames: new List<string>(),
+										caThumbprints: new List<string>()
 									),
 								InnerAuthType.EAP_MSCHAPv2 =>
 									CreateEapConfiguration(
 										eapType:EapType.MSCHAPv2,
 										innerAuthType: InnerAuthType.None,
 										outerIdentity: outerIdentity,
-										// For inner EAP, do we still need to verify the server name?
-										serverNames: serverNames,
-										caThumbprints: caThumbprints
-										// Or strip server names and thumbprints from inner eap?
-										//serverNames: new List<string>(),
-										//caThumbprints: new List<string>()
+										// Strip server names and thumbprints from inner EAP, only need in outer
+										serverNames: new List<string>(),
+										caThumbprints: new List<string>()
 									),
 								_ =>
 									throw new EduroamAppUserException("unsupported auth method"),
