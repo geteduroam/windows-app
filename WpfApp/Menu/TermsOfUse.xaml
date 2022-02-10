@@ -14,10 +14,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="Terms of Use" TextAlignment="Center" FontSize="24" Margin="5" Grid.RowSpan="1"/>
-        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="0" Grid.RowSpan="1" Grid.Row="1">
-            <StackPanel x:Name="stpTou">
-                <TextBlock x:Name="tbTou" TextWrapping="Wrap" Text="Terms of Use" TextAlignment="Center" Margin="5"/>
-            </StackPanel>
-        </ScrollViewer>
+        <WebBrowser x:Name="webTou" Grid.Row="1"/>
     </Grid>
 </Page>
