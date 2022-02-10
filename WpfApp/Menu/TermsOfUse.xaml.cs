@@ -34,33 +34,28 @@ namespace WpfApp.Menu
 				tou = tou.Substring(3);
 			}
 
-			bool fixLinks = !Regex.IsMatch(tou, "(^|\\s)<a[\\S\t ]*>");
-			bool fixNewlines = !Regex.IsMatch(tou, "(^|\\s)<(p|br)[\\S\t ]*>");
+			tou = tou.Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;");
 
-			if (fixNewlines)
+			tou = Regex.Replace(tou, "([\t ]*\r?\n){2,}", " <p>");
+			tou = Regex.Replace(tou, "([\t ]*\r?\n)", "<br>");
+
+			// Split on space (so we can check per word if it is a link)
+			string[] touSplit = Regex.Split(tou, "[\\s ]+");
+
+			for (int i = 0; i < touSplit.Length; i++)
 			{
-				tou = Regex.Replace(tou, "([\t ]*\r?\n){2,}", " <p>");
-				tou = Regex.Replace(tou, "([\t ]*\r?\n)", "<br>");
-			}
-
-
-			if (fixLinks)
-			{
-				// Split on space (so we can check per word if it is a link)
-				string[] touSplit = Regex.Split(tou, "[\\s ]+");
-
-				for (int i = 0; i < touSplit.Length; i++)
+				var start = Regex.Match(touSplit[i], "^(&quot;|&lt;|&gt;|[\\.,\\?!':;])+").Value;
+				var end = Regex.Match(touSplit[i], "(&quot;|&lt;|&gt;|[\\.,\\?!':;])+$").Value;
+				var w = touSplit[i].Substring(start.Length, touSplit[i].Length - end.Length - start.Length);
+				if (w.StartsWith("www.") || w.StartsWith("http://") || w.StartsWith("https://"))
 				{
-					var w = touSplit[i];
-					if (w.StartsWith("www.") || w.StartsWith("http://") || w.StartsWith("https://"))
-					{
-						var link = w.StartsWith("http") ? w : "http://" + w;
-						touSplit[i] = "<a target=\"_blank\" href=\"" + link + "\">" + w + "</a>";
-					}
+					var link = w.StartsWith("http") ? w : "http://" + w;
+					
+					touSplit[i] = start + "<a target=\"_blank\" href=\"" + link + "\">" + w + "</a>" + end;
 				}
-
-				tou = String.Join(" ", touSplit);
 			}
+
+			tou = String.Join(" ", touSplit);
 
 			return
 				"<!DOCTYPE html>" +
@@ -71,6 +66,7 @@ namespace WpfApp.Menu
 						"margin: 2em;" +
 						"justify-content: center;" +
 						"font-family: \"Segoe UI\", \"Tahoma\", sans-serif;" +
+						"font-size: .9em;" +
 					"}" +
 				"</style>" +
 				tou;
