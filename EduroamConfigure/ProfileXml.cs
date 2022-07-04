@@ -277,6 +277,13 @@ namespace EduroamConfigure
 				nsEapType = nsMPCPv1;
 				thumbprintNodeName = "TrustedRootCA";
 
+				// Windows wants to add the realm itself, we must only set the local part
+				// This appears to be the case for PEAP-EAP-MSCHAPv2
+				string anonymousUserName = outerIdentity.Contains("@")
+					? outerIdentity.Substring(outerIdentity.IndexOf("@"))
+					: outerIdentity
+					;
+
 				// adds MSCHAPv2 specific elements (inner eap)
 				configElement.Add(
 					new XElement(nsBECP + "Eap", // PEAP
@@ -300,13 +307,13 @@ namespace EduroamConfigure
 							new XElement(nsMPCPv1 + "PeapExtensions",
 								new XElement(nsMPCPv2 + "PerformServerValidation", "true"),
 								new XElement(nsMPCPv2 + "AcceptServerName", "true"),
-								String.IsNullOrWhiteSpace(outerIdentity)
+								String.IsNullOrWhiteSpace(anonymousUserName)
 									? new XElement(nsMPCPv2 + "IdentityPrivacy",
 										new XElement(nsMPCPv2 + "EnableIdentityPrivacy", "false")
 									)
 									: new XElement(nsMPCPv2 + "IdentityPrivacy",
 										new XElement(nsMPCPv2 + "EnableIdentityPrivacy", "true"),
-										new XElement(nsMPCPv2 + "AnonymousUserName", outerIdentity)
+										new XElement(nsMPCPv2 + "AnonymousUserName", anonymousUserName)
 									)
 								,
 
