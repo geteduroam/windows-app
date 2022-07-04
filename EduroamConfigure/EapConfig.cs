@@ -751,6 +751,20 @@ namespace EduroamConfigure
 		}
 
 		/// <summary>
+		/// Determine if this EapConfig needs the anonymous ident to have the same realm as the username
+		/// This is not enforced, the realm is simply dropped if needed, but this variable can be used to warn the user if the anonymous ident is modified
+		/// </summary>
+		public string RequiredAnonymousIdentRealm
+		{
+			get => !String.IsNullOrEmpty(SupportedAuthenticationMethods.First().ClientOuterIdentity)
+				&& SupportedAuthenticationMethods.First().ClientOuterIdentity.Contains("@")
+				&& (SupportedAuthenticationMethods.First().EapType, SupportedAuthenticationMethods.First().InnerAuthType) == (EapType.PEAP, InnerAuthType.EAP_MSCHAPv2)
+				? SupportedAuthenticationMethods.First().ClientOuterIdentity.Substring(SupportedAuthenticationMethods.First().ClientOuterIdentity.IndexOf("@"))
+				: null
+				;
+		}
+
+		/// <summary>
 		/// Reads and adds the user certificate to be installed along with the wlan profile
 		/// </summary>
 		/// <param name="filePath">path to the certificate file in question. PKCS12</param>

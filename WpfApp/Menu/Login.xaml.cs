@@ -184,13 +184,30 @@ namespace WpfApp.Menu
 
 			var brokenRules = IdentityProviderParser.GetRulesBrokenOnUsername(username, realm, hint).ToList();
 			bool usernameValid = !brokenRules.Any();
+
+			if (usernameValid && !String.IsNullOrEmpty(providedEapConfig.RequiredAnonymousIdentRealm))
+			{
+				// Windows will set the realm itself for PEAP-EAP-MSCHAPv2
+				// If the realm does not match, AND ALL OTHER TESTS ARE OK (usernameValid == true),
+				// warn the user if the realms mismatch, but don't prevent connecting.
+
+				var fullUsername = GetFullUsername();
+				var userRealm = fullUsername.Substring(fullUsername.IndexOf("@"));
+
+				if (providedEapConfig.RequiredAnonymousIdentRealm != userRealm)
+				{
+					brokenRules.Add("/!\\ The outer realm will be set to \"" + userRealm + "\" but the profile specified \"" + providedEapConfig.RequiredAnonymousIdentRealm + "\"");
+				}
+			}
+
 			tbRules.Text = "";
-			if (!usernameValid)
+			if (brokenRules.Any())
 			{
 				tbRules.Text = string.Join("\n", brokenRules);
 			}
 
 			bool fieldsValid = (!string.IsNullOrEmpty(pbCredPassword.Password) && usernameValid) || IsConnected;
+
 			return fieldsValid;
 		}
 		/// <summary>
@@ -283,13 +300,7 @@ namespace WpfApp.Menu
 		{
 			if (IsCredentialsValid())
 			{
-				string username = tbUsername.Text;
-
-
-				if (tbRealm.Visibility == Visibility.Visible)
-				{
-					username += tbRealm.Text;
-				}
+				string username = GetFullUsername();
 				string password = pbCredPassword.Password;
 
 				pbCredPassword.IsEnabled = false;
@@ -308,6 +319,11 @@ namespace WpfApp.Menu
 				tbStatus.Text = "";
 			}
 		}
+
+		private string GetFullUsername()
+			=> tbRealm.Visibility == Visibility.Visible
+				? tbUsername.Text + tbRealm.Text
+				: tbUsername.Text;
 
 		/// <summary>
 		/// Used if no extra credentials are needed to connect
