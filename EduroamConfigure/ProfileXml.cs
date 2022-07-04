@@ -355,6 +355,8 @@ namespace EduroamConfigure
 									new XElement(nsTTLS + "MSCHAPv2Authentication",
 										new XElement(nsTTLS + "UseWinlogonCredentials", "false")
 									),
+								/*
+								// Probably not in use anywhere
 								InnerAuthType.EAP_PEAP_MSCHAPv2 =>
 									CreateEapConfiguration(
 										eapType: EapType.PEAP,
@@ -364,7 +366,8 @@ namespace EduroamConfigure
 										serverNames: new List<string>(),
 										caThumbprints: new List<string>()
 									),
-								InnerAuthType.EAP_MSCHAPv2 =>
+								*/
+								InnerAuthType.EAP_MSCHAPv2 => // Sometimes just called TTLS-EAP
 									CreateEapConfiguration(
 										eapType:EapType.MSCHAPv2,
 										innerAuthType: InnerAuthType.None,
@@ -448,8 +451,8 @@ namespace EduroamConfigure
 				(EapType.TTLS, InnerAuthType.PAP) => true,
 				(EapType.TTLS, InnerAuthType.MSCHAP) => true,
 				(EapType.TTLS, InnerAuthType.MSCHAPv2) => true,
-				(EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => at_least_win10,
-				(EapType.TTLS, InnerAuthType.EAP_PEAP_MSCHAPv2) => at_least_win10,
+				(EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => at_least_win10, // Sometimes just called TTLS-EAP
+				//(EapType.TTLS, InnerAuthType.EAP_PEAP_MSCHAPv2) => at_least_win10, // theoretically supported, but we don't know any server
 				_ => false,
 			};
 		}
