@@ -680,6 +680,7 @@ namespace WpfApp
 			btnNext.Visibility = Visibility.Visible;
 			btnNext.IsEnabled = true;
 			btnNext.Content = "Next";
+			btnBack.IsEnabled = true;
 			btnBack.Visibility = Visibility.Visible;
 			btnSettings.Visibility = Visibility.Hidden;
 			btnHelp.Visibility = Visibility.Hidden;
@@ -912,7 +913,11 @@ namespace WpfApp
 			else if (!MainWindow.CheckIfEapConfigIsSupported(LocalEapConfig))
 				LocalEapConfig = null;
 			if (LocalEapConfig == null) return;
+
 			NextPage();
+
+			// Reset the local config, so that we don't accidentally override the button to the discovery
+			LocalEapConfig = null;
 		}
 		private async void miRefresh_Click(object sender, RoutedEventArgs e)
 		{
