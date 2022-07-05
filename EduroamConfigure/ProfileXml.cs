@@ -280,7 +280,7 @@ namespace EduroamConfigure
 				// Windows wants to add the realm itself, we must only set the local part
 				// This appears to be the case for PEAP-EAP-MSCHAPv2
 				string anonymousUserName = outerIdentity.Contains("@")
-					? outerIdentity.Substring(outerIdentity.IndexOf("@"))
+					? outerIdentity.Substring(0, outerIdentity.IndexOf("@"))
 					: outerIdentity
 					;
 
