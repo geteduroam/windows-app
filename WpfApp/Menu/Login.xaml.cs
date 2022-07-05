@@ -185,18 +185,25 @@ namespace WpfApp.Menu
 			var brokenRules = IdentityProviderParser.GetRulesBrokenOnUsername(username, realm, hint).ToList();
 			bool usernameValid = !brokenRules.Any();
 
-			if (usernameValid && !String.IsNullOrEmpty(providedEapConfig.RequiredAnonymousIdentRealm))
+			if (usernameValid && providedEapConfig.RequiredAnonymousIdentRealm != null) // required realm can be empty string!
 			{
 				// Windows will set the realm itself for PEAP-EAP-MSCHAPv2
 				// If the realm does not match, AND ALL OTHER TESTS ARE OK (usernameValid == true),
 				// warn the user if the realms mismatch, but don't prevent connecting.
 
 				var fullUsername = GetFullUsername();
-				var userRealm = fullUsername.Substring(fullUsername.IndexOf("@"));
+				var userRealm = fullUsername.Contains("@")
+					? fullUsername.Substring(fullUsername.IndexOf("@"))
+					: ""
+					;
 
 				if (providedEapConfig.RequiredAnonymousIdentRealm != userRealm)
 				{
-					brokenRules.Add("/!\\ The outer realm will be set to \"" + userRealm + "\" but the profile specified \"" + providedEapConfig.RequiredAnonymousIdentRealm + "\"");
+					var strProfileRealm = String.IsNullOrEmpty(providedEapConfig.RequiredAnonymousIdentRealm)
+						? "realmless"
+						: "\"" + providedEapConfig.RequiredAnonymousIdentRealm + "\""
+						;
+					brokenRules.Add("/!\\ The realm for the OuterIdentity will be set to \"" + userRealm + "\" but the profile specified " + strProfileRealm);
 				}
 			}
 

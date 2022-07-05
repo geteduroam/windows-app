@@ -753,13 +753,16 @@ namespace EduroamConfigure
 		/// <summary>
 		/// Determine if this EapConfig needs the anonymous ident to have the same realm as the username
 		/// This is not enforced, the realm is simply dropped if needed, but this variable can be used to warn the user if the anonymous ident is modified
+		/// Empty string means the username is required to not have a realm, null means that no realm is required
 		/// </summary>
 		public string RequiredAnonymousIdentRealm
 		{
 			get => !String.IsNullOrEmpty(SupportedAuthenticationMethods.First().ClientOuterIdentity)
-				&& SupportedAuthenticationMethods.First().ClientOuterIdentity.Contains("@")
-				&& (SupportedAuthenticationMethods.First().EapType, SupportedAuthenticationMethods.First().InnerAuthType) == (EapType.PEAP, InnerAuthType.EAP_MSCHAPv2)
-				? SupportedAuthenticationMethods.First().ClientOuterIdentity.Substring(SupportedAuthenticationMethods.First().ClientOuterIdentity.IndexOf("@"))
+				&& SupportedAuthenticationMethods.First().EapType == EapType.PEAP
+				&& SupportedAuthenticationMethods.First().InnerAuthType == InnerAuthType.EAP_MSCHAPv2
+				? SupportedAuthenticationMethods.First().ClientOuterIdentity.Contains("@")
+					? SupportedAuthenticationMethods.First().ClientOuterIdentity.Substring(SupportedAuthenticationMethods.First().ClientOuterIdentity.IndexOf("@"))
+					: ""
 				: null
 				;
 		}
