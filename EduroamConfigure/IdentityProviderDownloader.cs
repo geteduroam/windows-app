@@ -58,6 +58,9 @@ namespace EduroamConfigure
 #else
 			client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
 #endif
+			// This client will not be used for subsequent requests,
+			// so don't keep the connection open any longer than necessary
+			client.DefaultRequestHeaders.ConnectionClose = true;
 			client.Timeout = new TimeSpan(0, 0, 8);
 			return client;
 		}
