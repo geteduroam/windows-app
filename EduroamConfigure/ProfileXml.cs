@@ -378,7 +378,7 @@ namespace EduroamConfigure
 									CreateEapConfiguration(
 										eapType:EapType.MSCHAPv2,
 										innerAuthType: InnerAuthType.None,
-										outerIdentity: outerIdentity,
+										outerIdentity: null, // Not relevant for inner auth
 										// Strip server names and thumbprints from inner EAP, only need in outer
 										serverNames: new List<string>(),
 										caThumbprints: new List<string>()
