@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Uninett AS")]
 [assembly: AssemblyProduct("geteduroam")]
-[assembly: AssemblyCopyright("Copyright © 2018-2021")]
+[assembly: AssemblyCopyright("Copyright © 2018-2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -49,5 +49,5 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("3.2.8")]
-[assembly: AssemblyFileVersion("3.2.8")]
+[assembly: AssemblyVersion("3.2.9")]
+[assembly: AssemblyFileVersion("3.2.9")]

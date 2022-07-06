@@ -9,6 +9,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 No unreleased changes.
 
 
+## [geteduroam 3.2.9](https://github.com/geteduroam/windows-app/releases/tag/geteduroam-3.2.9)
+
+## Fixed
+* Fix Back button not working after opening an .eap-config file manually
+* Drop realm from OuterIdentity for PEAP-MSCHAPv2, as Windows adds the realm itself
+
+### Changed
+* Handle discovery "seq" as string, not integer; this prevents a crash when seq cannot be parsed as integer
+* Prevent disabling CA checking; this was not possible but now the code path is also removed
+* Handle more network errors when loading the discovery file
+* Remove nonsensical TTLS-EAP-PEAP-MSCHAPv2 method; there doesn't seem to be a server that supports this
+* Send `Connection: Close` header when retrieving the discovery
+
+
 ## [geteduroam 3.2.8](https://github.com/geteduroam/windows-app/releases/tag/geteduroam-3.2.8)
 
 ### Fixed
