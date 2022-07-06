@@ -58,7 +58,7 @@ namespace EduroamConfigure
 #else
 			client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
 #endif
-			client.Timeout = new TimeSpan(0, 0, 3);
+			client.Timeout = new TimeSpan(0, 0, 8);
 			return client;
 		}
 		static IdentityProviderDownloader()
@@ -114,8 +114,19 @@ namespace EduroamConfigure
 				{
 					// Run the geolocation code async, but return after 700 milliseconds without aborting it
 					// If geolocation is too slow, we don't want to keep the user waiting for that
-					Task.WaitAll(new Task[] { LoadProviderTask, GeoWebApiTask }, 700);
-					LoadProviderTask.Wait();
+					try
+					{
+						Task.WaitAll(new Task[] { LoadProviderTask, GeoWebApiTask }, 700);
+						LoadProviderTask.Wait(); // Handle any AggregateException here
+					}
+					catch (System.AggregateException ae)
+					{
+						foreach (var e in ae.InnerExceptions)
+						{
+							if (e is ApiParsingException) throw e;
+							if (e is ApiUnreachableException) throw e;
+						}
+					}
 				});
 			}
 			return LoadProviderTask;
