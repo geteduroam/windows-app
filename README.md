@@ -9,21 +9,17 @@ This application helps set up eduroam on end-users' computers by automatically f
 
 ## Supported authentication modes
 
-The following EAP modes can be fully configured:
+The following EAP methods can be fully configured:
 
 * PEAP-MSCHAPv2
 * TLS
-* TTLS-PAP (x86\_64 only)
-* TTLS-MSCHAP (x86\_64 only)
-* TTLS-MSCHAPv2 (x86\_64 only)
-
-There is currently also partial (though disabled) support for:
-
+* TTLS-PAP
+* TTLS-MSCHAP
+* TTLS-MSCHAPv2
 * TTLS-EAP-MSCHAPv2
-* TTLS-EAP-PEAP-MSCHAPv2
 
-These modes could be configured as a WLAN profile, but cannot be configured with
-a user profile. (username and password)
+The only exception is that on PEAP-MSCHAPv2, the OuterIdentity must have the same realm as the username.
+This is a limitation set by Windows.
 
 For all modes, you can also install Hotspot 2.0.
 
