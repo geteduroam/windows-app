@@ -152,14 +152,16 @@ namespace EduroamConfigure
 					if (ssids.Count == 0)
 					{
 						throw;
-					}
-
 #if !DEBUG
-					// Accept any error when ssids.Count > 0 for Release version.
-					// We still are not sure what kind of errors are to be expected
-					// when configuring HS20, so this gives the best user experience
-					return;
+					}
+					else
+					{
+						// Accept any error when ssids.Count > 0 for Release version.
+						// We still are not sure what kind of errors are to be expected
+						// when configuring HS20, so this gives the best user experience
+						return;
 #endif
+					}
 
 					// -2147467259 == 0x80004005, which is the most generic error code Windows has to offer
 					// Useless but fun reading:
