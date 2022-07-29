@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ManagedNativeWifi", "ManagedNativeWifi\ManagedNativeWifi.csproj", "{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduroamConfigure", "EduroamConfigure\EduroamConfigure.csproj", "{8D2C283D-5868-4329-B86E-060ADF68734C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp", "WpfApp\WpfApp.csproj", "{88939F1B-5677-49B1-BC07-71605598494A}"
@@ -19,18 +17,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Debug|x64.Build.0 = Debug|Any CPU
-		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Debug|x86.Build.0 = Debug|Any CPU
-		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Release|x64.ActiveCfg = Release|Any CPU
-		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Release|x64.Build.0 = Release|Any CPU
-		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Release|x86.ActiveCfg = Release|Any CPU
-		{EBFF4686-23E6-42BF-97CA-CF82641BCFA7}.Release|x86.Build.0 = Release|Any CPU
 		{8D2C283D-5868-4329-B86E-060ADF68734C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8D2C283D-5868-4329-B86E-060ADF68734C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D2C283D-5868-4329-B86E-060ADF68734C}.Debug|x64.ActiveCfg = Debug|Any CPU
