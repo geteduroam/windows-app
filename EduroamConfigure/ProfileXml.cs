@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -376,7 +375,7 @@ namespace EduroamConfigure
 								*/
 								InnerAuthType.EAP_MSCHAPv2 => // Sometimes just called TTLS-EAP
 									CreateEapConfiguration(
-										eapType:EapType.MSCHAPv2,
+										eapType: EapType.MSCHAPv2,
 										innerAuthType: InnerAuthType.None,
 										outerIdentity: null, // Not relevant for inner auth
 										// Strip server names and thumbprints from inner EAP, only need in outer

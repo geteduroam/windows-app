@@ -269,7 +269,8 @@ namespace WpfApp.Menu
 		/// <returns>truereturns>
 		private async Task ConnectWithCertAndCertPass()
 		{
-			try {
+			try
+			{
 				await ConnectAndUpdateUI(providedEapConfig.WithClientCertificate(filepath, pbCertBrowserPassword.Password));
 			}
 			catch (ArgumentException)
@@ -286,7 +287,8 @@ namespace WpfApp.Menu
 		{
 			pbCertPassword.IsEnabled = false;
 
-			try {
+			try
+			{
 				await ConnectAndUpdateUI(providedEapConfig.WithClientCertificatePassphrase(pbCertPassword.Password));
 			}
 			catch (ArgumentException)
