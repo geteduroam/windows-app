@@ -7,6 +7,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Schema;
 
 namespace EduroamConfigure
 {
@@ -15,6 +16,10 @@ namespace EduroamConfigure
 	/// </summary>
 	public class EapConfig
 	{
+		#region Constants
+		private static readonly XmlSchemaSet EAP_CONFIG_SCHEMA;
+		#endregion
+
 		#region Properties
 
 		public bool IsOauth { get; set; } // TODO: Setter used for scaffolding to PersistenStorage, need better solution
@@ -47,6 +52,11 @@ namespace EduroamConfigure
 			RawOriginalEapConfigXmlData = eapConfigXmlData;
 		}
 
+		static EapConfig() {
+			var xsdReader = new StringReader(Properties.Resources.EapConfigModified);
+			EAP_CONFIG_SCHEMA = new XmlSchemaSet();
+			EAP_CONFIG_SCHEMA.Add("", XmlReader.Create(xsdReader));
+		}
 		#endregion
 
 
@@ -536,11 +546,12 @@ namespace EduroamConfigure
 			static Func<XElement, bool> nameIs(string name) => // shorthand lambda
 				element => element.Name.LocalName == name;
 
-			// load the XML file into a XElement object
-			XElement eapConfigXml;
+			XDocument eapConfigXml;
 			try
 			{
-				eapConfigXml = XElement.Parse(eapConfigXmlData);
+				var xmlReader = new StringReader(eapConfigXmlData);
+				eapConfigXml = XDocument.Load(XmlReader.Create(xmlReader));
+				eapConfigXml.Validate(EAP_CONFIG_SCHEMA, ValidationEventHandler);
 			}
 			catch (XmlException)
 			{
@@ -710,6 +721,14 @@ namespace EduroamConfigure
 			);
 		}
 
+		static void ValidationEventHandler(object sender, ValidationEventArgs e)
+		{
+			XmlSeverityType type = XmlSeverityType.Warning;
+			if (Enum.TryParse<XmlSeverityType>("Error", out type))
+			{
+				if (type == XmlSeverityType.Error) throw new XmlException(e.Message);
+			}
+		}
 		/// <summary>
 		/// Yields EapAuthMethodInstallers which will attempt to install eapConfig for you.
 		/// Refer to frmSummary.InstallEapConfig to see how to use it (TODO: actually explain when finalized)
