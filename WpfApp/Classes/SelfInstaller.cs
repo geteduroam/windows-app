@@ -250,15 +250,6 @@ namespace WpfApp
 			lnk.WorkingDirectory = InstallDir;
 			lnk.Save();
 
-#if RUN_PERSISTENT
-			// Register the application to run on boot
-			Debug.WriteLine("Write str to {0}\\{1}: {2}",
-				rnsRun, ApplicationIdentifier, StartMinimizedCommand);
-			Registry.SetValue(rnsRun, ApplicationIdentifier, StartMinimizedCommand);
-			// TODO: test if run on boot works ^
-#endif
-
-
 			// Register scheduled task to check for updates
 			Debug.WriteLine("Create scheduled task: " + ScheduledTaskName);
 			using (var ts = new TaskService())
@@ -340,10 +331,6 @@ namespace WpfApp
 					exceptionOnNotExists: false);
 
 			// remove registry entries
-#if RUN_PERSISTENT
-			// Still gonna delete the Run registry key even if not being persistent,
-			// in case the older version did install it
-#endif
 			Debug.WriteLine("Delete registry value: " + rnsRun + "\\" + ApplicationIdentifier);
 			using (RegistryKey key = Registry.CurrentUser
 					.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run", writable: true))
@@ -382,24 +369,5 @@ namespace WpfApp
 			return arg.Replace("%", "^%").Replace(" ", "^ ");
 		}
 
-#if RUN_PERSISTENT
-		public static void DelayedStart(string command, int delay = 5)
-		{
-			_ = command ?? throw new ArgumentNullException(paramName: nameof(command));
-
-			// TODO: escape the command. Escaping in CMD is not trivial
-			Debug.WriteLine("START: {0}", command, "");
-			Process.Start(new ProcessStartInfo
-				{
-					FileName = "cmd.exe",
-					Arguments = "/C choice /C Y /N /D Y /T " + ShellEscape(delay.ToString(CultureInfo.InvariantCulture)) +
-						" & " + command,
-					WindowStyle = ProcessWindowStyle.Hidden,
-					CreateNoWindow = true,
-					WorkingDirectory = "C:\\"
-				}
-			);
-		}
-#endif
 	}
 }

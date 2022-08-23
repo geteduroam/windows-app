@@ -23,20 +23,6 @@
             <RowDefinition Height="72"/>
         </Grid.RowDefinitions>
 
-        <tb:TaskbarIcon x:Name="TrayIcon"
-                ToolTipText="geteduroam"
-                TrayLeftMouseDown="tb_TrayLeftMouseDown"
-                TrayMouseDoubleClick="TrayIcon_TrayMouseDoubleClick"
-                Visibility="Hidden"
-                IconSource="geteduroam.ico">
-            <tb:TaskbarIcon.ContextMenu>
-                <ContextMenu>
-                    <MenuItem Header="Show geteduroam" Click="MenuItem_Click_Show"/>
-                    <MenuItem Header="Exit" Click="MenuItem_Click_Exit"/>
-                </ContextMenu>
-            </tb:TaskbarIcon.ContextMenu>
-        </tb:TaskbarIcon>
-
         <Grid x:Name="gridTopBar" Grid.RowSpan="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="45"/>

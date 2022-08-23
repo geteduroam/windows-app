@@ -16,9 +16,6 @@ using System.Windows.Navigation;
 using System.Xml;
 using WpfApp.Classes;
 using WpfApp.Menu;
-#if RUN_PERSISTENT
-using Hardcodet.Wpf.TaskbarNotification;
-#endif
 
 namespace WpfApp
 {
@@ -99,14 +96,6 @@ namespace WpfApp
 				lblVersion.Content = LetsWifi.VersionNumber;
 #endif
 			}
-
-#if RUN_PERSISTENT
-			if (App.StartHiddenInTray && App.Installer.IsRunningInInstallLocation)
-				Hide();
-
-			if (App.Installer.IsRunningInInstallLocation)
-				TrayIcon.Visibility = Visibility.Visible;
-#endif
 
 			Load();
 		}
@@ -508,15 +497,6 @@ namespace WpfApp
 
 		private static App App { get => (App)Application.Current; }
 
-#if RUN_PERSISTENT
-		public bool ShowNotification(string message, string title = "geteduroam", BalloonIcon icon = BalloonIcon.Info)
-		{
-			// TODO: doesn't show for peder, but does show for simon. RDP might be the culprit
-			TrayIcon.ShowBalloonTip(title, message, icon);
-			return true; // to be able to use it inside an expression
-		}
-#endif
-
 		/// <summary>
 		/// Called by the Menu.OAuthWait page when the OAuth process is done.
 		/// Gives the EapConfig it got from the oauth session as param
@@ -815,37 +795,6 @@ namespace WpfApp
 			Debug.WriteLine("{0}: {1}", nameof(IsShuttingDown), IsShuttingDown);
 			Debug.WriteLine("{0}: {1}", nameof(App.Installer.IsInstalled), App.Installer.IsInstalled);
 			Debug.WriteLine("{0}: {1}", nameof(App.Installer.IsRunningInInstallLocation), App.Installer.IsRunningInInstallLocation);
-
-#if RUN_PERSISTENT
-			if (!App.Installer.IsInstalled)
-				return; // do not cancel the Closing event
-
-			if (App.Installer.IsInstalled && !App.Installer.IsRunningInInstallLocation)
-			{
-#if !DEBUG
-				// this happens after the first time setup
-				SelfInstaller.DelayedStart(App.Installer.StartMinimizedCommand);
-#endif
-				return; // do not cancel the Closing event
-			}
-
-			if (IsShuttingDown)
-				return; // closed in tray icon, unable to cancel. avoid creating the balloon
-
-			// Cancels the Window.Close(), but unable to cancel Application.Shutdown()
-			e.Cancel = true;
-
-			ShowNotification("geteduroam is still running in the background");
-
-			Hide(); // window
-
-			if (PersistingStore.IdentityProvider != null)
-				LoadPageInstalledProfile();
-			else
-				LoadPageMainMenu();
-
-			historyFormId.Clear();
-#endif
 		}
 
 		private void TrayIcon_TrayMouseDoubleClick(object sender, RoutedEventArgs e)
