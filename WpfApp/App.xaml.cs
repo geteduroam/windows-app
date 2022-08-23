@@ -20,10 +20,6 @@ namespace WpfApp
 	{
 		private const string SingleInstanceUid = "7aab8621-df45-4eb5-85c3-c70c06e8a22e";
 
-#if RUN_PERSISTENT
-		public bool StartHiddenInTray { get; private set; } = false;
-#endif
-
 		[STAThread]
 		public static void Main(string[] args)
 		{
@@ -81,53 +77,16 @@ namespace WpfApp
 			if (contains("/refresh")
 				|| contains("/force-refresh") || contains("/refresh-force"))
 			{
-#if RUN_PERSISTENT
-				RefreshInstalledProfile(s => false, force: contains("/refresh-force"));
-#else
 				RefreshInstalledProfile(force: contains("/refresh-force"));
-#endif
 
 				return true;
 			}
 
 			return contains("/close")
-#if !RUN_PERSISTENT
 				// Just quit when being started with /background
 				|| contains("/background")
-#endif
 				;
 		}
-
-#if RUN_PERSISTENT
-		/// <summary>
-		/// WPF startup handler, first instance runs this.
-		/// Handles command line args related to wpf behaviour
-		/// </summary>
-		/// <param name="e"></param>
-		protected override void OnStartup(StartupEventArgs e)
-		{
-			// shorthand
-			bool contains(string check) =>
-				e?.Args.Any(param => string.Equals(param, check, StringComparison.InvariantCultureIgnoreCase)) ?? false;
-
-			if (contains("/refresh")
-				|| contains("/refresh-force"))
-			{
-				// TODO: check if ((MainWindow)MainWindow).ShowNotification works at this point during startup
-				RefreshInstalledProfile(s => ((MainWindow)MainWindow).ShowNotification(s), force: contains("/refresh-force"));
-			}
-
-			if (contains("/background")
-				|| contains("/refresh")
-				|| contains("/refresh-force"))
-			{
-				Debug.WriteLine("Starting hidden in tray");
-				StartHiddenInTray = true;
-			}
-
-			base.OnStartup(e);
-		}
-#endif
 
 		/// <summary>
 		/// Signal handler from secondary instances.
@@ -161,12 +120,8 @@ namespace WpfApp
 				|| contains("/refresh-force"))
 			{
 				activateMainWindow = false;
-#if RUN_PERSISTENT
-				RefreshInstalledProfile(s => ((MainWindow)MainWindow).ShowNotification(s), force: contains("/refresh-force"));
-#else
 				RefreshInstalledProfile(force: contains("/refresh-force"));
 				((MainWindow)MainWindow).Shutdown();
-#endif
 			}
 
 			if (contains("/uninstall"))
@@ -194,11 +149,7 @@ namespace WpfApp
 		/// <param name="f">Function to show user a message in the tray icon</param>
 		/// <param name="force">Wether to force a reinstall even if the current certificate still is valid for quote some time</param>
 		/// <exception cref="ApiException">The API did something unexpected</exception>
-#if RUN_PERSISTENT
-		private static async void RefreshInstalledProfile(Func<string, bool> f, bool force)
-#else
 		private static async void RefreshInstalledProfile(bool force)
-#endif
 		{
 			_ = await LetsWifi.RefreshAndInstallEapConfig(force) switch
 			{
@@ -207,14 +158,6 @@ namespace WpfApp
 				LetsWifi.RefreshResponse.Success => true, // nice!
 				LetsWifi.RefreshResponse.StillValid => true, // no work needed
 				LetsWifi.RefreshResponse.NotRefreshable => false, // ignore, since we currently always schedule the task in windows
-
-#if RUN_PERSISTENT
-				// TODO: show tray icon when not running persistent, but one of these three happens?
-				// TODO: reword these into something better
-				LetsWifi.RefreshResponse.NewRootCaRequired => f("Your geteduroam setup should be reconfigured"),
-				LetsWifi.RefreshResponse.AccessDenied => f("Your geteduroam setup should be reconfigured"),
-				LetsWifi.RefreshResponse.Failed => f("Your geteduroam setup should be reconfigured"),
-#endif
 
 #if DEBUG
 				_ => throw new NotImplementedException(nameof(RefreshInstalledProfile))
