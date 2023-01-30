@@ -274,7 +274,7 @@ namespace WpfApp
 			applicationMetadata: new SelfInstaller.ApplicationMeta()
 			{
 				DisplayName = "geteduroam",  // [REQUIRED] ProductName
-				Publisher = "Uninett AS",  // [REQUIRED] Manufacturer
+				Publisher = "SURF",  // [REQUIRED] Manufacturer
 				Version = AssemblyName.Version.ToString(),
 				VersionMajor = AssemblyName.Version.Major.ToString(CultureInfo.InvariantCulture),
 				VersionMinor = AssemblyName.Version.Minor.ToString(CultureInfo.InvariantCulture),

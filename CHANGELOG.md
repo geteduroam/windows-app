@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 No unreleased changes.
 
 
+## [geteduroam 3.2.10](https://github.com/geteduroam/windows-app/releases/tag/geteduroam-3.2.10)
+
+## Fixed
+* NullPointerException when OuterIdentity is not set
+
+## Changed
+* Updated ManagedNativeWifi, is now a NuGet package
+* Updated NuGet packages
+* Updated target to Visual Studio 2022
+* Removed code for running in the background; this was never needed
+
+
 ## [geteduroam 3.2.9](https://github.com/geteduroam/windows-app/releases/tag/geteduroam-3.2.9)
 
 ## Fixed
