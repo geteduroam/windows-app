@@ -4,8 +4,8 @@ This application helps set up eduroam on end-users' computers by automatically f
 
 ## Structure
 
-* **WpfApp**:           The graphical user interface and UX logic.
-* **EduroamConfigure**: The logic interfacing with the discovery api, and the logic to parse and configure the various profiles into windows.
+* **WpfApp**:            The graphical user interface and UX logic.
+* **EduroamConfigure**:  The logic interfacing with the discovery api, and the logic to parse and configure the various profiles into windows.
 
 ## Supported authentication modes
 
@@ -57,9 +57,9 @@ When you have a hardware token, you can sign the application
 
 (actually, just go to **C:\Program Files(x86)** and search for **signtool.exe** and use the one that's in an **x64** directory)
 
-Sign by running
+Sign by running in the directory containing geteduroam.exe:
 
-	"C:\Program Files (x86)\Windows Kits\10\bin\10.x\x64\signtool.exe" sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /a C:\Users\jornane\Source\Repos\EduroamApp\EduroamApp\obj\Release\geteduroam.exe
+	"C:\Program Files (x86)\Windows Kits\10\bin\10.x\x64\signtool.exe" sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /a geteduroam.exe
 
 You can drag files to the command window to write their whole paths.
 
