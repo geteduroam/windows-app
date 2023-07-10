@@ -1,19 +1,13 @@
-﻿<Application x:Class="Eduroam.App.App"
+﻿<Application x:Class="Govroam.App.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Startup="App_OnStartup"
-             xmlns:local="clr-namespace:Eduroam.App"
-             xmlns:Converters="clr-namespace:App.Library.Converters;assembly=App.Library">
+             xmlns:local="clr-namespace:Govroam.App">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styling/Styling.xaml"/>
-                
-                <!--<ResourceDictionary>
-                    <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
-                </ResourceDictionary>-->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-      
     </Application.Resources>
 </Application>

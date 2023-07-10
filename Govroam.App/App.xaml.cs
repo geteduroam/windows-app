@@ -3,7 +3,7 @@ using System.Windows;
 
 using App.Library;
 
-namespace Eduroam.App
+namespace Govroam.App
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -18,10 +18,8 @@ namespace Eduroam.App
                 this.Shutdown(1);
             }
 
-            var mainWindow = new MainWindow
-            {
-                WindowState = WindowState.Minimized
-            };
+            var mainWindow = new MainWindow();
+            mainWindow.WindowState = WindowState.Minimized;
             mainWindow.Show();
         }
     }

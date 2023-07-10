@@ -195,7 +195,6 @@ namespace WpfApp
 				caption: "geteduroam",
 				MessageBoxButton.YesNo,
 				MessageBoxImage.Warning);
-
 			if (choice != MessageBoxResult.Yes)
 			{
 				MessageBox.Show(
