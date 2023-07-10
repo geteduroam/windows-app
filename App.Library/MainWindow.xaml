@@ -19,6 +19,7 @@
                 <ResourceDictionary>
                     <localTemplates:LocalDataTemplateSelector x:Key="LocalDataTemplateSelector"/>
                     <converters:ImageConverter x:Key="ImageConverter"/>
+                    <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -31,15 +32,49 @@
                 Margin="0,0,0,75"
                 Width="200" Height="50"
                 HorizontalAlignment="Right">
-        <Grid>
-            <Image Stretch="Uniform" 
+            <Grid>
+                <Image Stretch="Uniform" 
                    Name="ImageIcon"
                    Source="{Binding Converter={StaticResource ImageConverter}, ConverterParameter=eduroam_logo.png}"/>
+            </Grid>
+        </Border>
+ 
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center"
+              Visibility="{Binding ActiveContent, Converter={StaticResource NullToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <!--<StackPanel Grid.RowSpan="6"/>
+            <TextBlock x:Name="tbInfo" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="8,0,8,16" FontSize="24"/>-->
+            <Button x:Name="btnNewProfile" Style="{DynamicResource BlueButtonStyle}"
+                    Command="{Binding NewProfileCommand}"
+                Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,32" Width="186" Grid.Row="1">
+                <TextBlock x:Name="tbNewProfile" TextWrapping="Wrap" Text="{Binding LanguageText[ConnectToEduroam]}" TextAlignment="Center"/>
+            </Button>
+            <!--<Button x:Name="btnExisting" Style="{DynamicResource BlueButtonStyle}"
+                MinHeight="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,32" Width="186" Grid.Row="2">
+                <TextBlock x:Name="tbExisting" TextWrapping="Wrap" Text="Connect with [bundled config]" TextAlignment="Center"/>
+            </Button>
+            <Grid x:Name="grdInstalledProfile" Grid.Row="3" Margin="5" VerticalAlignment="Bottom">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="tbConfiguredInfo" TextWrapping="Wrap" Text="Already configured account" TextAlignment="Center" Margin="5"/>
+                <Button x:Name="btnInstalledProfile" Style="{DynamicResource WhiteButtonStyle}" 
+                MinHeight="37"  Width="130" HorizontalAlignment="Center"  Margin="5"  Grid.Row="1" >
+                    <TextBlock x:Name="tbInstalledProfile" TextWrapping="Wrap" Text="Already configured account" TextAlignment="Center" Margin="5" />
+                </Button>
+            </Grid>-->
+
+
         </Grid>
-            </Border>
 
         <ContentControl Grid.Row="0"
-                        Content="{Binding ActiveContent}" 
+                        Content="{Binding ActiveContent}"
                         ContentTemplateSelector="{DynamicResource LocalDataTemplateSelector}" />
     </Grid>
 </Window>
