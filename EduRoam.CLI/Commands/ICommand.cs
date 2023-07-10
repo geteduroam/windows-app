@@ -1,7 +1,9 @@
-﻿namespace EduRoam.CLI.Commands
+﻿using System.CommandLine;
+
+namespace EduRoam.CLI.Commands
 {
     public interface ICommand
     {
-        Task Run(string[] args);
+        Command Get();
     }
 }

@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "EduRoam.CLI": {
+      "commandName": "Project",
+      "commandLineArgs": "connect-institution --i \"Moreelsepark College\""
+    }
+  }
+}

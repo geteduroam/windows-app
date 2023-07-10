@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.CommandLine;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,12 +11,22 @@ namespace EduRoam.CLI.Commands
     {
         public readonly static string CommandName = "clear" ;
 
-        public Task Run(string[] args)
+        public static string CommandDescription => "clear";
+
+        public Command Get()
         {
-            Console.Clear();
+            var command = new Command(CommandName, CommandDescription)
+            {
 
-            return Task.CompletedTask;
+            };
 
+            command.SetHandler(() =>
+            {
+                Console.Clear();
+            });
+
+            return command;
         }
+
     }
 }
