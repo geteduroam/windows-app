@@ -34,7 +34,7 @@ namespace EduRoam.Connect
             AllowAutoRedirect = true
         };
         private static readonly HttpClient Http = InitializeHttpClient();
-        private static readonly GeoCoordinateWatcher GeoWatcher = new GeoCoordinateWatcher();
+        // private static readonly GeoCoordinateWatcher GeoWatcher = new GeoCoordinateWatcher();
 
         // state
         private GeoCoordinate Coordinates; // Coordinates determined by OS or Web API
@@ -69,7 +69,7 @@ namespace EduRoam.Connect
         }
         static IdentityProviderDownloader()
         {
-            _ = Task.Run(() => GeoWatcher.Start(true));
+            // _ = Task.Run(() => GeoWatcher.Start(true));
         }
 
         /// <summary>
@@ -87,55 +87,56 @@ namespace EduRoam.Connect
             var allRegions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.ToString()));
             var regionInfo = allRegions.FirstOrDefault(r => r.GeoId == int.Parse(geoID, CultureInfo.InvariantCulture));
 
-            Coordinates = GeoWatcher.Position.Location;
+            //Coordinates = GeoWatcher.Position.Location;
             Location = new IdpLocation
             {
                 Country = regionInfo.TwoLetterISORegionName
             };
             Debug.Print("Geolocate OS API found country {0}, coordinates {1}", Location.Country, Coordinates);
 
-            GeoWatcher.PositionChanged += (sender, e) =>
-            {
-                Coordinates = e.Position.Location;
-                Debug.Print("Geolocate OS API found country {0}, coordinates {1}", Location.Country, Coordinates);
-            };
+            //GeoWatcher.PositionChanged += (sender, e) =>
+            //{
+            //    Coordinates = e.Position.Location;
+            //    Debug.Print("Geolocate OS API found country {0}, coordinates {1}", Location.Country, Coordinates);
+            //};
         }
 
         /// <exception cref="ApiParsingException">JSON cannot be deserialized</exception>
         /// <exception cref="ApiUnreachableException">API endpoint cannot be contacted</exception>
-        public Task LoadProviders(bool useGeodata)
+        public async Task LoadProviders(bool useGeodata)
         {
             if (LoadProviderTask == null || LoadProviderTask.IsCompleted && !Providers.Any())
             {
                 LoadProviderTask = LoadProvidersInternal();
             }
-            if (useGeodata && (GeoWebApiTask == null || GeoWebApiTask.IsCompleted && !LoadedWithGeo))
-            {
-                GeoWebApiTask = LoadGeoWebApi();
-            }
+            //if (useGeodata && (GeoWebApiTask == null || GeoWebApiTask.IsCompleted && !LoadedWithGeo))
+            //{
+            //    GeoWebApiTask = LoadGeoWebApi();
+            //}
 
-            if (GeoWebApiTask != null && !GeoWebApiTask.IsCompleted)
-            {
-                return Task.Run(() =>
-                {
-                    // Run the geolocation code async, but return after 700 milliseconds without aborting it
-                    // If geolocation is too slow, we don't want to keep the user waiting for that
-                    try
-                    {
-                        Task.WaitAll(new Task[] { LoadProviderTask, GeoWebApiTask }, 700);
-                        LoadProviderTask.Wait(); // Handle any AggregateException here
-                    }
-                    catch (AggregateException ae)
-                    {
-                        foreach (var e in ae.InnerExceptions)
-                        {
-                            if (e is ApiParsingException) throw e;
-                            if (e is ApiUnreachableException) throw e;
-                        }
-                    }
-                });
-            }
-            return LoadProviderTask;
+            //if (GeoWebApiTask != null && !GeoWebApiTask.IsCompleted)
+            //{
+            //    var geoTask = Task.Run(async () =>
+            //    {
+            //        // Run the geolocation code async, but return after 700 milliseconds without aborting it
+            //        // If geolocation is too slow, we don't want to keep the user waiting for that
+            //        try
+            //        {
+            //            await GeoWebApiTask;
+            //        }
+            //        catch (AggregateException ae)
+            //        {
+            //            foreach (var e in ae.InnerExceptions)
+            //            {
+            //                if (e is ApiParsingException) throw e;
+            //                if (e is ApiUnreachableException) throw e;
+            //            }
+            //        }
+            //    });
+
+            //    geoTask.Wait(700);
+            //}
+            await LoadProviderTask;
         }
         private Task LoadGeoWebApi()
         {
@@ -192,6 +193,10 @@ namespace EduRoam.Connect
             {
                 // Logged upstream
                 throw;
+            }
+            catch (Exception exc)
+            {
+                Debug.WriteLine(exc);
             }
         }
 
@@ -401,7 +406,7 @@ namespace EduRoam.Connect
         protected virtual void Dispose(bool disposing)
         {
             if (_disposed) return;
-            if (disposing) GeoWatcher?.Dispose();
+            // if (disposing) GeoWatcher?.Dispose();
             _disposed = true;
         }
 

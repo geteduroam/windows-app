@@ -10,9 +10,11 @@ namespace EduRoam.CLI.Commands
     {
         public readonly static string CommandName = "clear" ;
 
-        public void Run(string[] args)
+        public Task Run(string[] args)
         {
             Console.Clear();
+
+            return Task.CompletedTask;
 
         }
     }

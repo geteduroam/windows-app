@@ -1,11 +1,5 @@
 ﻿using EduRoam.CLI.Commands;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace EduRoam.CLI
 {
     public class Engine
@@ -16,7 +10,7 @@ namespace EduRoam.CLI
             { Commands.Clear.CommandName, new Commands.Clear() }
         };
 
-        public void Run(string[] args)
+        public async Task Run(string[] args)
         {
             if (args.Length < 1)
             {
@@ -33,7 +27,7 @@ namespace EduRoam.CLI
             if (command != null)
             {
                 var commandArgs = args.Skip(1).ToArray();
-                command.Run(commandArgs);
+                await command.Run(commandArgs);
             }
 
 

@@ -5,8 +5,8 @@ class Program
 {
     private static Engine Engine => new Engine();
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
-        Engine.Run(args);
+        await Engine.Run(args);
     }
 }
