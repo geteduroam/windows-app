@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\eduroam_logo.png" />
     <None Remove="Language\LanguageTexts.csv" />
   </ItemGroup>
 
@@ -23,16 +24,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\eduroam_logo.png" />
     <EmbeddedResource Include="Language\LanguageTexts.csv" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="30.0.1" />
     <PackageReference Include="TaskScheduler" Version="2.10.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Images\" />
   </ItemGroup>
 
 </Project>
