@@ -5,6 +5,14 @@ namespace App.Library.Command
 {
     public class DelegateCommand : ICommand
     {
+        public DelegateCommand(
+                Action commandAction,
+                Func<bool> canExecute = null)
+        {
+            this.CommandAction = commandAction;
+            this.CanExecuteFunc = canExecute;
+        }
+
         public event EventHandler CanExecuteChanged
         {
             add => CommandManager.RequerySuggested += value;

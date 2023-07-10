@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:viewModels="clr-namespace:App.Library.ViewModels">
+
+    <DataTemplate DataType="{x:Type viewModels:SelectInstitutionViewModel}">
+        <Grid Height="100" Width="100" Background="Cyan">
+
+        </Grid>
+
+    </DataTemplate>
+
+</ResourceDictionary>
