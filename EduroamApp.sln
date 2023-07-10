@@ -7,7 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduroamConfigure", "Eduroam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp", "WpfApp\WpfApp.csproj", "{88939F1B-5677-49B1-BC07-71605598494A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eduroam.App", "Eduroam.App\Eduroam.App.csproj", "{12CE1576-2775-4B95-9067-40271C0BFCAC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Eduroam.App", "Eduroam.App\Eduroam.App.csproj", "{12CE1576-2775-4B95-9067-40271C0BFCAC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduRoam.Connect", "EduRoam.Connect\EduRoam.Connect.csproj", "{D121BA23-5140-4262-B0D3-1DF4A0CAEA7B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,6 +57,18 @@ Global
 		{12CE1576-2775-4B95-9067-40271C0BFCAC}.Release|x64.Build.0 = Release|Any CPU
 		{12CE1576-2775-4B95-9067-40271C0BFCAC}.Release|x86.ActiveCfg = Release|Any CPU
 		{12CE1576-2775-4B95-9067-40271C0BFCAC}.Release|x86.Build.0 = Release|Any CPU
+		{D121BA23-5140-4262-B0D3-1DF4A0CAEA7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D121BA23-5140-4262-B0D3-1DF4A0CAEA7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D121BA23-5140-4262-B0D3-1DF4A0CAEA7B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D121BA23-5140-4262-B0D3-1DF4A0CAEA7B}.Debug|x64.Build.0 = Debug|Any CPU
+		{D121BA23-5140-4262-B0D3-1DF4A0CAEA7B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D121BA23-5140-4262-B0D3-1DF4A0CAEA7B}.Debug|x86.Build.0 = Debug|Any CPU
+		{D121BA23-5140-4262-B0D3-1DF4A0CAEA7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D121BA23-5140-4262-B0D3-1DF4A0CAEA7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D121BA23-5140-4262-B0D3-1DF4A0CAEA7B}.Release|x64.ActiveCfg = Release|Any CPU
+		{D121BA23-5140-4262-B0D3-1DF4A0CAEA7B}.Release|x64.Build.0 = Release|Any CPU
+		{D121BA23-5140-4262-B0D3-1DF4A0CAEA7B}.Release|x86.ActiveCfg = Release|Any CPU
+		{D121BA23-5140-4262-B0D3-1DF4A0CAEA7B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
