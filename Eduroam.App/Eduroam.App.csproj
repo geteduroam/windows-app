@@ -5,6 +5,32 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
+    <StartupObject>Eduroam.App.App</StartupObject>
+    <ApplicationIcon>geteduroam.ico</ApplicationIcon>
+    <Configurations>Debug;Release;DebugArm</Configurations>
+    <Platforms>AnyCPU;ARM32</Platforms>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="geteduroam.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="geteduroam.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\App.Library\App.Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="geteduroam.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Styling\Styling.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
 
 </Project>

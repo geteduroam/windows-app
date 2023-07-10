@@ -1,0 +1,45 @@
+﻿<Window x:Class="App.Library.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:App.Library"
+        xmlns:localTemplates="clr-namespace:App.Library.Templates"
+        xmlns:converters="clr-namespace:App.Library.Converters"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="8"/>
+    </WindowChrome.WindowChrome>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styling/Styling.xaml"/>
+                <ResourceDictionary Source="Templates/Index.xaml"/>
+                <ResourceDictionary>
+                    <localTemplates:LocalDataTemplateSelector x:Key="LocalDataTemplateSelector"/>
+                    <converters:ImageConverter x:Key="ImageConverter"/>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Background="{DynamicResource BackgroundBrush}">
+
+        <Border BorderBrush="White" BorderThickness="1" CornerRadius="25,0,0,25"
+                Background="White"
+                VerticalAlignment="Bottom"
+                Margin="0,0,0,75"
+                Width="200" Height="50"
+                HorizontalAlignment="Right">
+        <Grid>
+            <Image Stretch="Uniform" 
+                   Name="ImageIcon"
+                   Source="{Binding Converter={StaticResource ImageConverter}, ConverterParameter=eduroam_logo.png}"/>
+        </Grid>
+            </Border>
+
+        <ContentControl Grid.Row="0"
+                        Content="{Binding ActiveContent}" 
+                        ContentTemplateSelector="{DynamicResource LocalDataTemplateSelector}" />
+    </Grid>
+</Window>
