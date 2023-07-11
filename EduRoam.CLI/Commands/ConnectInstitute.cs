@@ -8,6 +8,7 @@ using System.CommandLine;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -78,7 +79,7 @@ namespace EduRoam.CLI.Commands
                             return;
                         }
 
-
+                        await this.ProcessProfileAsync(profile, idpDownloader);
                     }
                     else if (profiles.Count == 1) // skip the profile select and go with the first one
                     {
@@ -86,50 +87,13 @@ namespace EduRoam.CLI.Commands
                         if (!string.IsNullOrEmpty(profileId))
                         {
                             var fullProfile = idpDownloader.GetProfileFromId(profileId);
-                            try
-                            {
-                                if (fullProfile.oauth)
-                                {
-                                    var oauthHandler = new OAuthHandler(fullProfile);
-                                    await oauthHandler.Handle();
-
-                                    this.eapConfig = oauthHandler.EapConfig;
-
-                                    if (this.eapConfig == null)
-                                    {
-                                        ConsoleExtension.WriteError("Profile is empty.");
-                                        return;
-                                    }
-
-                                    if (CheckIfEapConfigIsSupported(this.eapConfig))
-                                    {
-                                        if (HasInfo(eapConfig))
-                                        {
-                                            LoadPageProfileOverview();
-                                        }
-                                        LoadPageCertificateOverview();
-
-                                        await ConnectAsync();
-                                    }
-                                } else
-                                {
-                                    var eapConfig = await DownloadEapConfig(fullProfile, idpDownloader);
-                                }
-                            }
-                            catch (EduroamAppUserException ex) // TODO: catch this on some higher level
-                            {
-                                ConsoleExtension.WriteError(
-                                    ex.UserFacingMessage);
-                            }
-                            catch (Exception exc)
-                            {
-                                ConsoleExtension.WriteError(exc.ToString());
-                            }
+                            await this.ProcessProfileAsync(fullProfile, idpDownloader);
                         }
                     }
                     else
                     {
-                        Console.WriteLine($"Institute '{institute}' has multiple profiles. Enter the name of a profile as an extra argument.");
+                        Console.WriteLine($"Institute '{institute}' has multiple profiles. Enter the name of a profile as an extra argument. (--p \"<profile name>\")");
+                        Console.WriteLine();
                         Console.WriteLine("Profiles:");
 
                         foreach (var profile in profiles)
@@ -154,7 +118,51 @@ namespace EduRoam.CLI.Commands
 
         }
 
-        private void LoadPageProfileOverview()
+        private async Task ProcessProfileAsync(IdentityProviderProfile fullProfile, IdentityProviderDownloader idpDownloader)
+        {
+            try
+            {
+                if (fullProfile.oauth)
+                {
+                    var oauthHandler = new OAuthHandler(fullProfile);
+                    await oauthHandler.Handle();
+
+                    this.eapConfig = oauthHandler.EapConfig;
+                }
+                else
+                {
+                    this.eapConfig = await DownloadEapConfig(fullProfile, idpDownloader);
+                }
+
+                if (this.eapConfig == null)
+                {
+                    ConsoleExtension.WriteError("Profile is empty.");
+                    return;
+                }
+
+                if (CheckIfEapConfigIsSupported(this.eapConfig))
+                {
+                    if (HasInfo(eapConfig))
+                    {
+                        ShowProfileOverview();
+                    }
+                    ResolveCertificates();
+
+                    await this.ConnectAsync();
+                }
+            }
+            catch (EduroamAppUserException ex) // TODO: catch this on some higher level
+            {
+                ConsoleExtension.WriteError(
+                    ex.UserFacingMessage);
+            }
+            catch (Exception exc)
+            {
+                ConsoleExtension.WriteError(exc.ToString());
+            }
+        }
+
+        private void ShowProfileOverview()
         {
             if (this.eapConfig?.InstitutionInfo != null) {
                 var institutionInfo = this.eapConfig!.InstitutionInfo;
@@ -174,7 +182,7 @@ namespace EduRoam.CLI.Commands
             }
         }
 
-        private void LoadPageCertificateOverview()
+        private void ResolveCertificates()
         {
             ConsoleExtension.WriteStatus("In order to continue the following certificates have to be installed.");
             var installers = ConnectToEduroam.EnumerateCAInstallers(this.eapConfig!).ToList();
@@ -203,7 +211,7 @@ namespace EduRoam.CLI.Commands
                     installer.AttemptInstallCertificate();
                 }
             }
-        }
+         }
 
         /// <summary>
         /// Gets EAP-config file, either directly or after browser authentication.
@@ -278,19 +286,27 @@ namespace EduRoam.CLI.Commands
 		/// Tries to connect to eduroam
 		/// </summary>
 		/// <returns></returns>
-		public static async Task ConnectAsync()
+		public async Task ConnectAsync()
         {
+            bool connected = await Task.Run(ConnectToEduroam.TryToConnect);
+            
             try
             {
-                bool connectSuccess = await Task.Run(ConnectToEduroam.TryToConnect);
-
-                if (connectSuccess)
+                if (connected)
                 {
-                    ConsoleExtension.WriteStatus("Connected!");
+                    ConsoleExtension.WriteError("You are now connected to EduRoam.");
                 }
                 else
                 {
-                    ConsoleExtension.WriteError("Could not connect.");
+                    if (EduRoamNetwork.IsNetworkInRange(this.eapConfig!))
+                    {
+                        ConsoleExtension.WriteError("Everything is configured!\nUnable to connect to eduroam.");
+                    }
+                    else
+                    {
+                        // Hs2 is not enumerable
+                        ConsoleExtension.WriteError("Everything is configured!\nUnable to connect to eduroam, you're probably out of coverage.");
+                    }
                 }
             }
             catch (EduroamAppUserException ex)
