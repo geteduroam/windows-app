@@ -5,7 +5,9 @@ using EduRoam.Connect.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.CommandLine;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,6 +18,8 @@ namespace EduRoam.CLI.Commands
         public static string CommandName => "connect-institution";
 
         public static string CommandDescription => "connect-institution";
+
+        private EapConfig? eapConfig;
 
         public Command Get()
         {
@@ -84,12 +88,25 @@ namespace EduRoam.CLI.Commands
                             var fullProfile = idpDownloader.GetProfileFromId(autoProfileId);
                             try
                             {
-                                var eapConfig = await DownloadEapConfig(fullProfile, idpDownloader);
+                                if (fullProfile.oauth)
+                                {
+                                    var oauthHandler = new OAuthHandler(fullProfile);
+                                    await oauthHandler.Handle();
+
+                                    this.eapConfig = oauthHandler.EapConfig;
+                                } else
+                                {
+                                    var eapConfig = await DownloadEapConfig(fullProfile, idpDownloader);
+                                }
                             }
                             catch (EduroamAppUserException ex) // TODO: catch this on some higher level
                             {
                                 ConsoleExtension.WriteError(
                                     ex.UserFacingMessage);
+                            }
+                            catch (Exception exc)
+                            {
+                                ConsoleExtension.WriteError(exc.ToString());
                             }
                         }
                     }
@@ -156,5 +173,7 @@ namespace EduRoam.CLI.Commands
                     "Exception: " + e.Message);
             }
         }
+
+        
     }
 }
