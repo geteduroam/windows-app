@@ -18,28 +18,27 @@ namespace EduRoam.Connect
     /// Connects to an Eduroam network if available and stores information about it.
     /// Note: this struct is read only. After using it to store changes, fetch the networks again to see the changes.
     /// </summary>
-    public readonly struct EdurRoamNetwork
+    public readonly struct EduRoamNetwork
 	{
 		// Properties
 		private AvailableNetworkPack NetworkPack { get; }
 		private ProfilePack ProfilePack { get; }
 
 		public Guid InterfaceId { get; }
-		public string ProfileName
-		{ get => ProfilePack?.Name ?? NetworkPack?.ProfileName; }
+		public string ProfileName { get => ProfilePack?.Name ?? NetworkPack?.ProfileName ?? ""; }
 		public bool IsAvailable
 		{ get => NetworkPack != null; }
 
 		// TODO: Add support for Wired 801x
 
-		private EdurRoamNetwork(Guid interfaceId)
+		private EduRoamNetwork(Guid interfaceId)
 		{
 			NetworkPack = null;
 			ProfilePack = null;
 			InterfaceId = interfaceId; // non-nullable
 		}
 
-		private EdurRoamNetwork(
+		private EduRoamNetwork(
 			AvailableNetworkPack networkPack,
 			ProfilePack profilePack,
 			object _ = null) // last argument is ConfiguredWLANProfile
@@ -315,17 +314,17 @@ namespace EduRoam.Connect
 		/// Enumerates EduroamNetwork objects for all wireless network interfaces.
 		/// </summary>
 		/// <param name="eapConfig">Optional eap config to search with.</param>
-		public static IEnumerable<EdurRoamNetwork> GetAll(EapConfig eapConfig)
+		public static IEnumerable<EduRoamNetwork> GetAll(EapConfig eapConfig)
 		{
 			// NativeWifi will throw if service is not available
 			if (!IsWlanServiceApiAvailable())
-				return Enumerable.Empty<EdurRoamNetwork>();
+				return Enumerable.Empty<EduRoamNetwork>();
 			PruneStaleProfiles();
 
 			// TODO: multiple profiles on a single interface creates duplicate work further down
 			//       perhaps group by InterfaceId and have a list of ProfileName in each EduroamNetwork?
 			var availableNetworks = (eapConfig == null ? Enumerable.Empty<AvailableNetworkPack>() : GetAllMatchingNetworkPacks(eapConfig.SSIDs))
-				.Select(networkPack => new EdurRoamNetwork(networkPack, null))
+				.Select(networkPack => new EduRoamNetwork(networkPack, null))
 				.ToList();
 
 			var configuredInterfaces = availableNetworks
@@ -335,7 +334,7 @@ namespace EduRoam.Connect
 			// These are not available, but they are configurable
 			var unavailableNetworks = GetAllInterfaceIds()
 				.Where(guid => !configuredInterfaces.Contains(guid))
-				.Select(guid => new EdurRoamNetwork(guid));
+				.Select(guid => new EduRoamNetwork(guid));
 
 			return availableNetworks.Concat(unavailableNetworks);
 		}
@@ -343,11 +342,11 @@ namespace EduRoam.Connect
 		/// <summary>
 		/// Yields a EduroamNetwork instance for each configured profile for each network interface.
 		/// </summary>
-		public static IEnumerable<EdurRoamNetwork> GetConfigured()
+		public static IEnumerable<EduRoamNetwork> GetConfigured()
 		{
 			// NativeWifi will throw if service is not available
 			if (!IsWlanServiceApiAvailable())
-				return Enumerable.Empty<EdurRoamNetwork>();
+				return Enumerable.Empty<EduRoamNetwork>();
 			PruneStaleProfiles();
 
 			// join configured profiles
@@ -356,7 +355,7 @@ namespace EduRoam.Connect
 					outerKeySelector: networkPPack => (networkPPack.ppack.Name, networkPPack.ppack.Interface.Id),
 					innerKeySelector: persitedProfile => (persitedProfile.ProfileName, persitedProfile.InterfaceId),
 					// note, EduroamNetwork doesn't actually use persistedProfile
-					resultSelector: (networkPPack, persistedProfile) => new EdurRoamNetwork(networkPPack.network, networkPPack.ppack, persistedProfile))
+					resultSelector: (networkPPack, persistedProfile) => new EduRoamNetwork(networkPPack.network, networkPPack.ppack, persistedProfile))
 				.OrderByDescending(network => network.IsAvailable);
 		}
 

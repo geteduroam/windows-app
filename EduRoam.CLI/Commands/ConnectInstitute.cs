@@ -67,7 +67,7 @@ namespace EduRoam.CLI.Commands
                     }
                     var profiles = idpDownloader.GetIdentityProviderProfiles(provider.Id);
 
-                    string? autoProfileId = null;
+                    string? profileId = null;
                     if (profileName != null)
                     {
                         var profile = profiles.FirstOrDefault(p => p.Name.Equals(profileName, StringComparison.InvariantCultureIgnoreCase));
@@ -82,10 +82,10 @@ namespace EduRoam.CLI.Commands
                     }
                     else if (profiles.Count == 1) // skip the profile select and go with the first one
                     {
-                        autoProfileId = profiles.FirstOrDefault().Id;
-                        if (!string.IsNullOrEmpty(autoProfileId))
+                        profileId = profiles.Single().Id;
+                        if (!string.IsNullOrEmpty(profileId))
                         {
-                            var fullProfile = idpDownloader.GetProfileFromId(autoProfileId);
+                            var fullProfile = idpDownloader.GetProfileFromId(profileId);
                             try
                             {
                                 if (fullProfile.oauth)
@@ -94,6 +94,23 @@ namespace EduRoam.CLI.Commands
                                     await oauthHandler.Handle();
 
                                     this.eapConfig = oauthHandler.EapConfig;
+
+                                    if (this.eapConfig == null)
+                                    {
+                                        ConsoleExtension.WriteError("Profile is empty.");
+                                        return;
+                                    }
+
+                                    if (CheckIfEapConfigIsSupported(this.eapConfig))
+                                    {
+                                        if (HasInfo(eapConfig))
+                                        {
+                                            LoadPageProfileOverview();
+                                        }
+                                        LoadPageCertificateOverview();
+
+                                        await ConnectAsync();
+                                    }
                                 } else
                                 {
                                     var eapConfig = await DownloadEapConfig(fullProfile, idpDownloader);
@@ -137,13 +154,64 @@ namespace EduRoam.CLI.Commands
 
         }
 
+        private void LoadPageProfileOverview()
+        {
+            if (this.eapConfig?.InstitutionInfo != null) {
+                var institutionInfo = this.eapConfig!.InstitutionInfo;
+
+                Console.WriteLine();
+                ConsoleExtension.WriteStatus("***********************************************");
+                ConsoleExtension.WriteStatus($"* {institutionInfo.DisplayName}");
+                ConsoleExtension.WriteStatus($"* {institutionInfo.Description}");
+                if (!HasContactInfo(eapConfig.InstitutionInfo))
+                {
+                    ConsoleExtension.WriteStatusIf(institutionInfo.WebAddress != null, $"* {institutionInfo.WebAddress}");
+                    ConsoleExtension.WriteStatusIf(institutionInfo.EmailAddress != null, $"* {institutionInfo.EmailAddress}");
+                    ConsoleExtension.WriteStatusIf(institutionInfo.Phone != null, $"* {institutionInfo.Phone}");
+                }
+                ConsoleExtension.WriteStatus("***********************************************");
+                Console.WriteLine();
+            }
+        }
+
+        private void LoadPageCertificateOverview()
+        {
+            ConsoleExtension.WriteStatus("In order to continue the following certificates have to be installed.");
+            var installers = ConnectToEduroam.EnumerateCAInstallers(this.eapConfig!).ToList();
+            foreach (ConnectToEduroam.CertificateInstaller installer in installers)
+            {
+                Console.WriteLine();
+                ConsoleExtension.WriteStatus($"* {installer.ToString()}, installed: {(installer.IsInstalled ? "✓" : "x")}");
+                Console.WriteLine();
+            }
+
+            var certificatesNotInstalled = installers.Where(installer => !installer.IsInstalled);
+
+            if (certificatesNotInstalled.Any())
+            {
+                ConsoleExtension.WriteStatus("One or more certificates are not installed yet. Install the certificates? (y/N)");
+                var key = Console.ReadKey();
+
+                if (key.KeyChar != 'y' && key.KeyChar != 'Y')
+                {
+                    ConsoleExtension.WriteError("Cannot connect when not all required certificates are stored");
+                    return;
+                }
+
+                foreach (var installer in certificatesNotInstalled)
+                {
+                    installer.AttemptInstallCertificate();
+                }
+            }
+        }
+
         /// <summary>
-		/// Gets EAP-config file, either directly or after browser authentication.
-		/// Prepares for redirect if no EAP-config.
-		/// </summary>
-		/// <returns>EapConfig object.</returns>
-		/// <exception cref="EduroamAppUserException">description</exception>
-		public async Task<EapConfig?> DownloadEapConfig(IdentityProviderProfile profile, IdentityProviderDownloader idpDownloader)
+        /// Gets EAP-config file, either directly or after browser authentication.
+        /// Prepares for redirect if no EAP-config.
+        /// </summary>
+        /// <returns>EapConfig object.</returns>
+        /// <exception cref="EduroamAppUserException">description</exception>
+        public async Task<EapConfig?> DownloadEapConfig(IdentityProviderProfile profile, IdentityProviderDownloader idpDownloader)
         {
             if (string.IsNullOrEmpty(profile?.Id))
                 return null;
@@ -174,6 +242,63 @@ namespace EduRoam.CLI.Commands
             }
         }
 
-        
+        private static bool CheckIfEapConfigIsSupported(EapConfig eapConfig)
+        {            
+            if (!EduRoamNetwork.IsEapConfigSupported(eapConfig))
+            {
+                ConsoleExtension.WriteError(
+                    "The profile you have selected is not supported by this application.\nNo supported authentification method was found.");
+                return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+		/// Used to determine if an eapconfig has enough info
+		/// for the ProfileOverview page to show
+		/// </summary>
+		/// <param name="config"></param>
+		/// <returns></returns>
+		private static bool HasInfo(EapConfig config)
+            => !string.IsNullOrEmpty(config.InstitutionInfo.WebAddress)
+            || !string.IsNullOrEmpty(config.InstitutionInfo.EmailAddress)
+            || !string.IsNullOrEmpty(config.InstitutionInfo.Description)
+            || !string.IsNullOrEmpty(config.InstitutionInfo.Phone)
+            || !string.IsNullOrEmpty(config.InstitutionInfo.TermsOfUse);
+
+        private static bool HasContactInfo(EapConfig.ProviderInfo info)
+        {
+            bool hasWebAddress = !string.IsNullOrEmpty(info.WebAddress);
+            bool hasEmailAddress = !string.IsNullOrEmpty(info.EmailAddress);
+            bool hasPhone = !string.IsNullOrEmpty(info.Phone);
+            return (hasWebAddress || hasEmailAddress || hasPhone);
+        }
+
+        /// <summary>
+		/// Tries to connect to eduroam
+		/// </summary>
+		/// <returns></returns>
+		public static async Task ConnectAsync()
+        {
+            try
+            {
+                bool connectSuccess = await Task.Run(ConnectToEduroam.TryToConnect);
+
+                if (connectSuccess)
+                {
+                    ConsoleExtension.WriteStatus("Connected!");
+                }
+                else
+                {
+                    ConsoleExtension.WriteError("Could not connect.");
+                }
+            }
+            catch (EduroamAppUserException ex)
+            {
+                // NICE TO HAVE: log the error
+                ConsoleExtension.WriteError($"Could not connect. \nException: {ex.UserFacingMessage}.");
+            }
+            
+        }
     }
 }
