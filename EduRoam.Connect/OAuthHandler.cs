@@ -1,12 +1,8 @@
 ﻿using EduRoam.Connect.Exceptions;
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace EduRoam.Connect
 {
@@ -17,14 +13,19 @@ namespace EduRoam.Connect
         private readonly Uri authUri;
         private readonly OAuth oauth;
 
-        private ManualResetEvent? cancelThread;
-        private CancellationTokenSource? cancelTokenSource;
-        private ManualResetEvent? mainThread;
-
         public OAuthHandler(IdentityProviderProfile profile)
         {
+            if (!profile.oauth)
+            {
+                throw new ArgumentException("Profile is not targeted for OAuth", nameof(profile));
+            }
+            if (string.IsNullOrWhiteSpace(profile.authorization_endpoint))
+            {
+                throw new ArgumentException("The profile does not contain a valid authorization endpoint");
+            }
+
             this.profile = profile;
-            this.oauth = new OAuth(new Uri(profile?.authorization_endpoint));
+            this.oauth = new OAuth(new Uri(profile.authorization_endpoint));
             // The url to send the user to
             this.authUri = oauth.CreateAuthUri();
             // The url to listen to for the user to be redirected back to
@@ -32,6 +33,21 @@ namespace EduRoam.Connect
         }
 
         public EapConfig? EapConfig { get; private set; }
+
+        /// <summary>
+        /// Cancellation thread (Optional)
+        /// </summary>
+        private ManualResetEvent? CancelThread { get; set; }
+
+        /// <summary>
+        /// Creates cancellation token, used when cancelling BeginGetContext method. (Optional)
+        /// </summary>
+        private CancellationTokenSource? CancelTokenSource { get; set; }
+
+        /// <summary>
+        /// Main thread (Optional)
+        /// </summary>
+        private ManualResetEvent? mainThread { get; set; }
 
         public async Task Handle()
         {
@@ -41,10 +57,7 @@ namespace EduRoam.Connect
                 IsBackground = true
             };
             listenerThread.Start();
-            // cancellation thread
-            this.cancelThread = new ManualResetEvent(false);
-            // creates cancellation token, used when cancelling BeginGetContext method
-            this.cancelTokenSource = new CancellationTokenSource();
+            
             // wait until oauth done and continue process
             await Task.Run(listenerThread.Join);
         }
@@ -52,7 +65,7 @@ namespace EduRoam.Connect
         /// <summary>
 		/// Listens for incoming HTTP requests.
 		/// </summary>
-		private void NonblockingListener() //, AsyncCallback listenerCallback, ManualResetEvent mainThread, ManualResetEvent cancelThread)
+		private void NonblockingListener()
         {
             // creates a listener
             using var listener = new HttpListener();
@@ -76,24 +89,27 @@ namespace EduRoam.Connect
             HttpListenerContext context = listener.GetContext();
             HttpListenerRequest request = context.Request;
 
-            //result.AsyncWaitHandle.WaitOne();
             // creates WaitHandle array with two tasks: BeginGetContext and cancel thread
-            WaitHandle[] handles = { result.AsyncWaitHandle, cancelThread! };
+            var handles = new List<WaitHandle>() { result.AsyncWaitHandle }; 
+            if (this.CancelThread != null)
+            {
+                handles.Add(this.CancelThread);
+            }
             // waits for both tasks to complete, gets array index of the first one to complete
-            int handleResult = WaitHandle.WaitAny(handles);
-
+            int handleResult = WaitHandle.WaitAny(handles.ToArray());
+            
             // if BeginGetContext completes first
             if (handleResult == 0)
             {
                 // freezes main thread so ListenerCallback function can finish
-                mainThread = new ManualResetEvent(false);
-                mainThread.WaitOne();
-                //DialogResult = DialogResult.OK;
+                if (this.mainThread != null)
+                {
+                    mainThread.WaitOne();
+                }
             }
 
             // closes HTTP listener
             listener.Close();
-            // download eapconfig using response from oauth process
         }
 
         /// <summary>
@@ -103,7 +119,7 @@ namespace EduRoam.Connect
 		private async void ListenerCallback(IAsyncResult result)
         {
             // cancels and returns if cancellation is requested
-            if (cancelTokenSource == null || cancelTokenSource.Token.IsCancellationRequested) return;
+            if (this.CancelTokenSource != null && this.CancelTokenSource.Token.IsCancellationRequested) return;
 
             // sets the callback listener equals to the http listener
             HttpListener callbackListener = (HttpListener)result.AsyncState;
@@ -170,8 +186,11 @@ namespace EduRoam.Connect
                 this.EapConfig = null;
             } finally
             {
-                // resumes main thread
-                mainThread?.Set();
+                if (this.mainThread != null)
+                {
+                    // resumes main thread
+                    this.mainThread?.Set();
+                }
             }            
         }
     }
