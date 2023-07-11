@@ -7,7 +7,9 @@
         xmlns:localTemplates="clr-namespace:App.Library.Templates"
         xmlns:converters="clr-namespace:App.Library.Converters"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Closing="MainWindow_OnClosing"
+        Title="geteduroam" Height="600" Width="420"
+        MinHeight="420" MinWidth="420" MaxWidth="420">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0" ResizeBorderThickness="8"/>
     </WindowChrome.WindowChrome>
@@ -18,6 +20,7 @@
                 <ResourceDictionary Source="Templates/Index.xaml"/>
                 <ResourceDictionary>
                     <localTemplates:LocalDataTemplateSelector x:Key="LocalDataTemplateSelector"/>
+                    <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
                     <converters:ImageConverter x:Key="ImageConverter"/>
                     <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
                 </ResourceDictionary>
@@ -40,6 +43,7 @@
         </Border>
  
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center"
+              IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
               Visibility="{Binding ActiveContent, Converter={StaticResource NullToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -47,8 +51,8 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <!--<StackPanel Grid.RowSpan="6"/>
-            <TextBlock x:Name="tbInfo" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="8,0,8,16" FontSize="24"/>-->
+            <!--<StackPanel Grid.RowSpan="6"/>-->
+            <TextBlock x:Name="tbInfo" TextWrapping="Wrap" Text="{Binding IsLoading}" TextAlignment="Center" Margin="8,0,8,16" FontSize="24" />
             <Button x:Name="btnNewProfile" Style="{DynamicResource BlueButtonStyle}"
                     Command="{Binding NewProfileCommand}"
                 Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,32" Width="186" Grid.Row="1">

@@ -32,5 +32,10 @@ namespace App.Library.Command
         {
             return this.CanExecuteFunc == null || this.CanExecuteFunc();
         }
+
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
     }
 }

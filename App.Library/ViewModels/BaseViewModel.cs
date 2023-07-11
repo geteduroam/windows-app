@@ -12,8 +12,11 @@ public abstract class BaseViewModel : NotifyPropertyChanged
 {
     public ILanguageText LanguageText { get; }
 
-    protected BaseViewModel(ILanguageText languageText)
+    protected MainViewModel MainViewModel { get; }
+
+    protected BaseViewModel(MainViewModel mainViewModel)
     {
-        this.LanguageText = languageText;
+        this.MainViewModel = mainViewModel;
+        this.LanguageText = mainViewModel.LanguageText;
     }
 }

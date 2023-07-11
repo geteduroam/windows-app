@@ -1,24 +1,25 @@
-using System;
-using System.Windows.Controls;
-using System.Windows;
+﻿using System;
+using System.Globalization;
 using System.Windows.Data;
 
 namespace App.Library.Converters
 {
-    public class InverseBooleanToVisibilityConverter : IValueConverter
+    [ValueConversion(typeof(bool), typeof(bool))]
+    public class InverseBooleanConverter : IValueConverter
     {
-        private readonly BooleanToVisibilityConverter converter = new BooleanToVisibilityConverter();
-
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var result = this.converter.Convert(value, targetType, parameter, culture) as Visibility?;
-            return result == Visibility.Collapsed ? Visibility.Visible : Visibility.Collapsed;
+            if (targetType != typeof(bool))
+            {
+                throw new InvalidOperationException("The target must be a boolean");
+            }
+
+            return !(bool)value;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var result = this.converter.ConvertBack(value, targetType, parameter, culture) as bool?;
-            return result != true;
+            throw new NotSupportedException();
         }
     }
 }
