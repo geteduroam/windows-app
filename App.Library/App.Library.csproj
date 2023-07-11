@@ -33,4 +33,8 @@
     <PackageReference Include="TaskScheduler" Version="2.10.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\EduRoam.Connect\EduRoam.Connect.csproj" />
+  </ItemGroup>
+
 </Project>

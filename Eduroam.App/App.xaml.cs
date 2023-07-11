@@ -18,10 +18,7 @@ namespace Eduroam.App
                 this.Shutdown(1);
             }
 
-            var mainWindow = new MainWindow
-            {
-                WindowState = WindowState.Minimized
-            };
+            var mainWindow = new MainWindow();
             mainWindow.Show();
         }
     }

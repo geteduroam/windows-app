@@ -19,7 +19,6 @@ namespace Govroam.App
             }
 
             var mainWindow = new MainWindow();
-            mainWindow.WindowState = WindowState.Minimized;
             mainWindow.Show();
         }
     }

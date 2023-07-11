@@ -1,4 +1,6 @@
-﻿using App.Library.ViewModels;
+﻿using System.ComponentModel;
+
+using App.Library.ViewModels;
 
 using System.Windows;
 
@@ -16,6 +18,11 @@ namespace App.Library
             this.InitializeComponent();
             this.MainViewModel = new MainViewModel();
             this.DataContext = this.MainViewModel;
+        }
+
+        private void MainWindow_OnClosing(object? sender, CancelEventArgs e)
+        {
+            this.MainViewModel.Dispose();
         }
     }
 }

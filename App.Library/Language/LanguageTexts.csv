@@ -1,4 +1,7 @@
 Key;EN;NL
 AppTitle;Eduroam;Eduroam
-Test1;test1 en;test1 nl
-ConnectToEduroam;Connect to eduroam;Connect to eduroam
+ConnectToEduroam;Connect to eduroam;Verbind met eduroam
+SelectInstitution;Select institution;Selecteer instelling
+SelectProfile;Select profile;Selecteer profiel
+Search;Search;Zoeken
+ButtonNext;Next;Volgende
