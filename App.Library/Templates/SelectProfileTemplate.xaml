@@ -8,7 +8,7 @@
                 <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="TextBlock" TextAlignment="Center" Margin="8,0,8,16" Grid.Row="0" FontSize="24"/>
+            <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="{Binding LanguageText[SelectProfile]}" TextAlignment="Center" Margin="8,0,8,16" Grid.Row="0" FontSize="24"/>
             <ListBox x:Name="lbProfiles" ItemContainerStyle="{DynamicResource ListBoxItemStyle}" Grid.Row="1" Margin="24,8"
                      ItemsSource="{Binding Profiles}"/>
         </Grid>

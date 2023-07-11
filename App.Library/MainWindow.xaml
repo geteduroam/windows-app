@@ -28,21 +28,28 @@
         </ResourceDictionary>
     </Window.Resources>
     <Grid Background="{DynamicResource BackgroundBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
 
-        <Border BorderBrush="White" BorderThickness="1" CornerRadius="25,0,0,25"
+
+        <!--<Border BorderBrush="White" BorderThickness="1" CornerRadius="25,0,0,25"
                 Background="White"
                 VerticalAlignment="Bottom"
                 Margin="0,0,0,75"
                 Width="200" Height="50"
-                HorizontalAlignment="Right">
-            <Grid>
-                <Image Stretch="Uniform" 
+                HorizontalAlignment="Right">-->
+        <Grid Grid.Row="0" Height="50">
+            <Image Stretch="Uniform" 
                    Name="ImageIcon"
                    Source="{Binding Converter={StaticResource ImageConverter}, ConverterParameter=eduroam_logo.png}"/>
-            </Grid>
-        </Border>
- 
+        </Grid>
+        <!--</Border>-->
+
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center"
+              Grid.Row="1"
               IsEnabled="{Binding IsLoading, Converter={StaticResource InverseBooleanConverter}}"
               Visibility="{Binding ActiveContent, Converter={StaticResource NullToVisibilityConverter}}">
             <Grid.RowDefinitions>
@@ -52,7 +59,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <!--<StackPanel Grid.RowSpan="6"/>-->
-            <TextBlock x:Name="tbInfo" TextWrapping="Wrap" Text="{Binding IsLoading}" TextAlignment="Center" Margin="8,0,8,16" FontSize="24" />
+          
             <Button x:Name="btnNewProfile" Style="{DynamicResource BlueButtonStyle}"
                     Command="{Binding NewProfileCommand}"
                 Height="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,32" Width="186" Grid.Row="1">
@@ -73,12 +80,19 @@
                     <TextBlock x:Name="tbInstalledProfile" TextWrapping="Wrap" Text="Already configured account" TextAlignment="Center" Margin="5" />
                 </Button>
             </Grid>-->
-
-
         </Grid>
 
-        <ContentControl Grid.Row="0"
+        <ContentControl Grid.Row="1"
                         Content="{Binding ActiveContent}"
                         ContentTemplateSelector="{DynamicResource LocalDataTemplateSelector}" />
+
+        <Grid Grid.Row="2" Visibility="{Binding ActiveContent, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+            <Button Style="{DynamicResource BlueButtonStyle}"
+                    Command="{Binding ActiveContent.NextCommand}"
+                    IsDefault="true" 
+                    Content="{Binding LanguageText[ButtonNext]}" HorizontalAlignment="Center" VerticalAlignment="Center" Width="131" 
+                    Margin="10,10,10,20"
+                    Height="42"/>
+        </Grid>
     </Grid>
 </Window>

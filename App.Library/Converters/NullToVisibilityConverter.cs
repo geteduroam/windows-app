@@ -9,6 +9,11 @@ namespace App.Library.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (string.Equals("inverse", (parameter ?? "").ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                return value == null ? Visibility.Collapsed : Visibility.Visible;
+            }
+
             return value == null ? Visibility.Visible : Visibility.Collapsed;
         }
 
