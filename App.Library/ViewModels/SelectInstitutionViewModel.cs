@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 using App.Library.Command;
 using App.Library.Language;
@@ -54,7 +55,7 @@ namespace App.Library.ViewModels
             return this.SelectedIdentityProvider != null;
         }
 
-        protected override void GoNext()
+        protected override Task GoNextAsync()
         {
             this.MainViewModel.State.SelectedIdentityProvider = this.SelectedIdentityProvider;
 
@@ -71,6 +72,7 @@ namespace App.Library.ViewModels
             //LoadPageSelectProfile();
 
             this.MainViewModel.SetActiveContent(new SelectProfileViewModel(this.MainViewModel));
+            return Task.CompletedTask;
             //this.CallPropertyChanged(string.Empty);
         }
     }

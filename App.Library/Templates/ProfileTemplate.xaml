@@ -97,8 +97,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding Phone}"
                         TextWrapping="Wrap"
-                        Visibility="{Binding PhoneIsValid, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    </TextBlock>
+                        Visibility="{Binding PhoneIsValid, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </Grid>
             </GroupBox>
 
@@ -132,10 +131,9 @@
                     Margin="0,5"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"
-                    Click="btnAlt_Click"
+                    Command="{Binding SelectOtherInstitutionCommand}"
                     Content="{Binding LanguageText[ProfileSelectOtherInstitution]}"
                     Style="{DynamicResource WhiteButtonStyle}" />
-
 
             </Grid>
         </Grid>

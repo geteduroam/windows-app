@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 using App.Library.Command;
 
@@ -92,9 +93,10 @@ namespace App.Library.ViewModels
             return true;
         }
 
-        protected override void GoNext()
+        protected override Task GoNextAsync()
         {
             //todo ShowTou was always true in old situation, What to do?
+            MainViewModel.SetActiveContent(new TermsOfUseViewModel(this.MainViewModel, TermsOfUse));
 
             //if (pageProfileOverview.ShowTou)
             //{
@@ -109,6 +111,7 @@ namespace App.Library.ViewModels
             //}
 
             //LoadPageLogin();
+            return Task.CompletedTask;
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 using EduRoam.Connect;
 
@@ -25,7 +26,7 @@ namespace App.Library.ViewModels
             return this.AllCertificatesAreInstalled;
         }
 
-        protected override void GoNext()
+        protected override Task GoNextAsync()
         {
             throw new System.NotImplementedException();
         }

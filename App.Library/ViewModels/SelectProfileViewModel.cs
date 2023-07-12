@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using EduRoam.Connect;
 
@@ -23,11 +24,17 @@ namespace App.Library.ViewModels
             return this.SelectedProfile != null;
         }
 
-        protected override void GoNext()
+        protected override async Task GoNextAsync()
         {
-            string profileId = this.SelectedProfile.Id;
             // if profile could not be handled then return to form
-            //if (!await HandleProfileSelect(profileId)) LoadPageSelectProfile(refresh: false);
+            var result = await MainViewModel.HandleProfileSelect(this.SelectedProfile);
+            //if (!await HandleProfileSelect(profileId)) 
+            if (!result)
+            {
+                //todo what todo? stay here?
+                //LoadPageSelectProfile(refresh: false);
+            }
+            //return Task.CompletedTask;
         }
     }
 }

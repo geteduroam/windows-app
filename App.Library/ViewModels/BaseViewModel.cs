@@ -4,6 +4,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Threading.Tasks;
+
 using App.Library.Command;
 using App.Library.Language;
 
@@ -19,12 +21,33 @@ public abstract class BaseViewModel : NotifyPropertyChanged
     {
         this.MainViewModel = mainViewModel;
         this.LanguageText = mainViewModel.LanguageText;
-        this.NextCommand = new DelegateCommand(this.GoNext, this.CanGoNext);
+        this.NextCommand = new AsyncCommand(this.GoNextAsync, this.CanGoNext);
     }
 
-    public DelegateCommand NextCommand { get; protected set; }
+    public AsyncCommand NextCommand { get; protected set; }
 
     protected abstract bool CanGoNext();
 
-    protected abstract void GoNext();
+    protected abstract Task GoNextAsync();
+
+    public bool IsLoading { get; protected set; }
+
+    protected void SetIsLoading(bool value)
+    {
+        this.IsLoading = value;
+        this.CallPropertyChanged(nameof(this.IsLoading));
+    }
+
+    private async Task RunExecuteActionAsync()
+    {
+        this.SetIsLoading(true);
+        try
+        {
+            await GoNextAsync();
+        }
+        finally
+        {
+            this.SetIsLoading(false);
+        }
+    }
 }
