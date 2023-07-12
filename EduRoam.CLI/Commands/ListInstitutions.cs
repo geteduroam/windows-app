@@ -1,61 +1,39 @@
 ﻿using EduRoam.Connect;
 using EduRoam.Connect.Exceptions;
+using EduRoam.Connect.Tasks;
 
-using System;
-using System.Collections.Generic;
 using System.CommandLine;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EduRoam.CLI.Commands
 {
     public class ListInstitutions : ICommand
     {
-        public static string CommandName => "list";
+        public static string CommandName => "list-institutions";
 
         public static string CommandDescription => "Get a list of institutions with a EduRoam profile";
 
-        public Command Get()
+        public Command GetCommand()
         {
-            var command = new Command(CommandName, CommandDescription)
-            {
-                
-            };
-            
+            var command = new Command(CommandName, CommandDescription);
+
             command.SetHandler(async () =>
             {
-                await LoadProviders();
+                await this.ShowProvidersAsync();
             });
 
             return command;
         }
 
-        public async Task Run(string[] args)
+        private async Task ShowProvidersAsync()
         {
-            Console.WriteLine($"Run {CommandName} with the following args: {string.Join(", ", args)}");
-
-            await this.LoadProviders();
-        }
-
-        /// <summary>
-		/// If no providers available try to download them
-		/// </summary>
-		private async Task LoadProviders()
-        {
-            using var idpDownloader = new IdentityProviderDownloader();
-
             try
             {
-                await idpDownloader.LoadProviders(useGeodata: true);
-                if (idpDownloader.Loaded)
+                var getListTask = new GetListTask();
+                var closestProviders = await getListTask.GetAsync();
+
+                foreach (var provider in closestProviders)
                 {
-                    var closestProviders = idpDownloader.ClosestProviders;
-                    foreach (var provider in closestProviders)
-                    {
-                        Console.WriteLine(provider.Name);
-                    }
+                    Console.WriteLine(provider.Name);
                 }
             }
             catch (ApiParsingException e)
@@ -63,13 +41,13 @@ namespace EduRoam.CLI.Commands
                 // Must never happen, because if the discovery is reached,
                 // it must be parseable. Logging has been done upstream.
                 ConsoleExtension.WriteError("API error");
-                ConsoleExtension.WriteError(e.Message, e.GetType().ToString());                
+                ConsoleExtension.WriteError(e.Message, e.GetType().ToString());
             }
             catch (ApiUnreachableException)
             {
                 ConsoleExtension.WriteError("No internet connection");
             }
-            
+
 
         }
     }

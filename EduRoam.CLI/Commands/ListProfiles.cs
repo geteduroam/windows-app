@@ -6,11 +6,11 @@ using System.CommandLine;
 
 namespace EduRoam.CLI.Commands
 {
-    public class ConnectByProfile : ICommand
+    public class ListProfiles : ICommand
     {
-        public static string CommandName => "connect";
+        public static string CommandName => "list-profiles";
 
-        public static string CommandDescription => "connect based on a institution profile";
+        public static string CommandDescription => "Get a list of institution profiles";
 
         public Command GetCommand()
         {
@@ -20,35 +20,28 @@ namespace EduRoam.CLI.Commands
                 isDefault: true,
                 description: "The name of the institute to connect to.");
 
-            var profileOption = new Option<string>(
-                name: "--p",
-                parseArgument: OptionExtensions.NonEmptyString,
-                isDefault: true,
-                description: "Institute's profile to connect to.");
-
             var command = new Command(CommandName, CommandDescription)
             {
-                instituteOption,
-                profileOption
+                instituteOption
             };
 
 
-            command.SetHandler(async (string institute, string profileName) =>
+            command.SetHandler(async (string institute) =>
             {
-                var connectTask = new ConnectTask();
+                var getProfilesTask = new GetProfilesTask();
 
                 try
                 {
-                    await connectTask.ConnectAsync(institute, profileName);
+                    var profiles = await getProfilesTask.GetProfilesAsync(institute);
+
+                    foreach (var profile in profiles)
+                    {
+                        Console.WriteLine(profile.Name);
+                    }
                 }
-                catch (Exception exc) when (exc is ArgumentException || exc is UnknownInstituteException || exc is UnknownProfileException)
+                catch (Exception exc) when (exc is UnknownInstituteException || exc is UnknownProfileException)
                 {
                     ConsoleExtension.WriteError(exc.Message);
-                }
-                catch (EduroamAppUserException ex)
-                {
-                    ConsoleExtension.WriteError(
-                        ex.UserFacingMessage);
                 }
                 catch (ApiParsingException e)
                 {
@@ -62,9 +55,11 @@ namespace EduRoam.CLI.Commands
                     ConsoleExtension.WriteError("No internet connection");
                 }
 
-            }, instituteOption, profileOption);
+            }, instituteOption);
 
             return command;
         }
+
+
     }
 }

@@ -13,7 +13,7 @@ namespace EduRoam.CLI.Commands
 
         public static string CommandDescription => "clear console";
 
-        public Command Get()
+        public Command GetCommand()
         {
             var command = new Command(CommandName, CommandDescription)
             {

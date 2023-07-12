@@ -27,9 +27,9 @@ namespace EduRoam.Connect
             this.profile = profile;
             this.oauth = new OAuth(new Uri(profile.authorization_endpoint));
             // The url to send the user to
-            this.authUri = oauth.CreateAuthUri();
+            this.authUri = this.oauth.CreateAuthUri();
             // The url to listen to for the user to be redirected back to
-            this.prefix = oauth.GetRedirectUri();
+            this.prefix = this.oauth.GetRedirectUri();
         }
 
         public EapConfig? EapConfig { get; private set; }
@@ -52,12 +52,12 @@ namespace EduRoam.Connect
         public async Task Handle()
         {
             // starts HTTP listener in new thread so UI stays responsive
-            var listenerThread = new Thread(NonblockingListener)
+            var listenerThread = new Thread(this.NonblockingListener)
             {
                 IsBackground = true
             };
             listenerThread.Start();
-            
+
             // wait until oauth done and continue process
             await Task.Run(listenerThread.Join);
         }
@@ -70,21 +70,23 @@ namespace EduRoam.Connect
             // creates a listener
             using var listener = new HttpListener();
             // add prefix to listener
-            listener.Prefixes.Add(prefix.ToString());
+            listener.Prefixes.Add(this.prefix.ToString());
             // starts listener
             listener.Start();
 
             // creates BeginGetContext task for retrieving HTTP request
-            IAsyncResult result = listener.BeginGetContext(ListenerCallback, listener);
-            
+            var result = listener.BeginGetContext(this.ListenerCallback, listener);
+
             // opens authentication URI in default browser
+#pragma warning disable CA1416 // Validate platform compatibility
             var startInfo = new ProcessStartInfo()
             {
-                FileName = authUri.ToString(),
+                FileName = this.authUri.ToString(),
                 LoadUserProfile = true,
                 UseShellExecute = true,
-                
+
             };
+#pragma warning restore CA1416 // Validate platform compatibility
 
             using var process = Process.Start(startInfo);
 
@@ -92,8 +94,8 @@ namespace EduRoam.Connect
             process!.Exited += (object? sender, EventArgs e) => { this.Process_Exited(processThread); };
             process!.EnableRaisingEvents = true;
 
-            HttpListenerContext context = listener.GetContext();
-            HttpListenerRequest request = context.Request;
+            var context = listener.GetContext();
+            var request = context.Request;
 
             // creates WaitHandle array with two or three tasks: BeginGetContext, Process thread and optionally cancel thread
             var handles = new List<WaitHandle>() { result.AsyncWaitHandle, processThread };
@@ -102,7 +104,7 @@ namespace EduRoam.Connect
                 handles.Add(this.CancelThread);
             }
             // waits for any task in the handles list to complete, gets array index of the first one to complete
-            int handleResult = WaitHandle.WaitAny(handles.ToArray());
+            var handleResult = WaitHandle.WaitAny(handles.ToArray());
 
             // if BeginGetContext completes first
             if (handleResult == 0)
@@ -135,7 +137,7 @@ namespace EduRoam.Connect
             if (this.CancelTokenSource != null && this.CancelTokenSource.Token.IsCancellationRequested) return;
 
             // sets the callback listener equals to the http listener
-            HttpListener callbackListener = (HttpListener)result.AsyncState;
+            var callbackListener = (HttpListener)result.AsyncState;
 
             if (!callbackListener.IsListening)
             {
@@ -143,8 +145,8 @@ namespace EduRoam.Connect
             }
 
             // calls EndGetContext to complete the asynchronous operation
-            HttpListenerContext context = callbackListener.EndGetContext(result);
-            HttpListenerRequest request = context.Request;
+            var context = callbackListener.EndGetContext(result);
+            var request = context.Request;
 
             // gets the URL of the target web site
             var responseUrl = request.Url;
@@ -154,15 +156,15 @@ namespace EduRoam.Connect
             string codeVerifier;
             try
             {
-                (authorizationCode, codeVerifier) = oauth.ParseAndExtractAuthorizationCode(responseUrl);
+                (authorizationCode, codeVerifier) = this.oauth.ParseAndExtractAuthorizationCode(responseUrl);
             }
             finally
             {
                 try
                 {
-                    using HttpListenerResponse response = context.Response;
+                    using var response = context.Response;
                     // constructs a response
-                    byte[] responseString = Encoding.ASCII.GetBytes(authorizationCode == null
+                    var responseString = Encoding.ASCII.GetBytes(authorizationCode == null
                         ? Properties.Resources.oauth_rejected
                         : Properties.Resources.oauth_accepted);
 
@@ -179,7 +181,7 @@ namespace EduRoam.Connect
 
             try
             {
-                bool success = await LetsWifi.AuthorizeAccess(profile, authorizationCode, codeVerifier, prefix);
+                var success = await LetsWifi.AuthorizeAccess(this.profile, authorizationCode, codeVerifier, this.prefix);
 
                 this.EapConfig = success ? await LetsWifi.RequestAndDownloadEapConfig() : null;
             }
@@ -202,14 +204,15 @@ namespace EduRoam.Connect
                 //    "Exception: " + e.Message,
                 //    "ApiParsingException", MessageBoxButton.OK, MessageBoxImage.Error);
                 this.EapConfig = null;
-            } finally
+            }
+            finally
             {
                 if (this.mainThread != null)
                 {
                     // resumes main thread
                     this.mainThread?.Set();
                 }
-            }            
+            }
         }
     }
 }

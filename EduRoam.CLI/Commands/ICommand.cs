@@ -4,6 +4,6 @@ namespace EduRoam.CLI.Commands
 {
     public interface ICommand
     {
-        Command Get();
+        Command GetCommand();
     }
 }
