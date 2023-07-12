@@ -47,7 +47,7 @@ namespace EduRoam.CLI.Commands
                     }
                     else
                     {
-                        this.ShowProfileOverview(eapConfig);
+                        ShowProfileOverview(eapConfig);
                     }
                 }
                 catch (Exception exc) when (exc is ArgumentException || exc is UnknownInstituteException || exc is UnknownProfileException)
@@ -76,7 +76,7 @@ namespace EduRoam.CLI.Commands
             return command;
         }
 
-        private void ShowProfileOverview(EapConfig eapConfig)
+        private static void ShowProfileOverview(EapConfig eapConfig)
         {
             var institutionInfo = eapConfig!.InstitutionInfo;
             var supported = CheckIfEapConfigIsSupported(eapConfig);
@@ -87,23 +87,24 @@ namespace EduRoam.CLI.Commands
             ConsoleExtension.WriteStatus($"* {institutionInfo.Description}");
             if (!HasContactInfo(eapConfig.InstitutionInfo))
             {
-                ConsoleExtension.WriteStatusIf(institutionInfo.WebAddress != null, $"* web: {institutionInfo.WebAddress}");
-                ConsoleExtension.WriteStatusIf(institutionInfo.EmailAddress != null, $"* e-mail: {institutionInfo.EmailAddress}");
-                ConsoleExtension.WriteStatusIf(institutionInfo.Phone != null, $"* phone: {institutionInfo.Phone}");
-            }
-            ConsoleExtension.WriteStatus($"* supported: {(supported ? "✓" : "x")}");
-            if (!string.IsNullOrWhiteSpace(institutionInfo.TermsOfUse))
-            {
-                ConsoleExtension.WriteStatus("* ");
-                ConsoleExtension.WriteStatus("* terms of use:");
-                ConsoleExtension.WriteStatus($"* {institutionInfo.TermsOfUse.Trim()}");
-                ConsoleExtension.WriteStatus("* ");
-            }
-            ConsoleExtension.WriteStatus("***********************************************");
-            Console.WriteLine();
+                ConsoleExtension.WriteStatusIf(!string.IsNullOrEmpty(institutionInfo.WebAddress), $"* web: {institutionInfo.WebAddress}");
+                ConsoleExtension.WriteStatusIf(!string.IsNullOrEmpty(institutionInfo.EmailAddress), $"* e-mail: {institutionInfo.EmailAddress}");
+                ConsoleExtension.WriteStatusIf(!string.IsNullOrEmpty(institutionInfo.Phone), $"* phone: {institutionInfo.Phone}");
 
+                ConsoleExtension.WriteStatus($"* supported: {(supported ? "✓" : "x")}");
+
+                if (!string.IsNullOrWhiteSpace(institutionInfo.TermsOfUse))
+                {
+                    ConsoleExtension.WriteStatus("* ");
+                    ConsoleExtension.WriteStatus("* terms of use:");
+                    ConsoleExtension.WriteStatus($"* {institutionInfo.TermsOfUse.Trim()}");
+                    ConsoleExtension.WriteStatus("* ");
+                }
+                ConsoleExtension.WriteStatus("***********************************************");
+                Console.WriteLine();
+
+            }
         }
-
         private static bool CheckIfEapConfigIsSupported(EapConfig eapConfig)
         {
             if (!EduRoamNetwork.IsEapConfigSupported(eapConfig))

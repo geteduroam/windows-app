@@ -40,15 +40,15 @@ namespace EduRoam.Connect.Tasks
                 throw new UnknownProfileException(nameOfinstitute, profileName);
             }
 
-            return await this.ProcessProfileAsync(profile);
+            return await ProcessProfileAsync(profile);
 
         }
 
-        private async Task<EapConfig?> ProcessProfileAsync(IdentityProviderProfile fullProfile)
+        private static async Task<EapConfig?> ProcessProfileAsync(IdentityProviderProfile fullProfile)
         {
             var idpDownloader = new IdentityProviderDownloader();
 
-            EapConfig? eapConfig = null;
+            EapConfig? eapConfig;
 
             if (fullProfile.oauth)
             {
