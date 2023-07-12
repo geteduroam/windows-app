@@ -9,34 +9,42 @@ namespace EduRoam.Connect.Tasks
         /// <summary>
         /// Connect by a institutes profile
         /// </summary>
+        /// <param name="nameOfinstitute"></param>
+        /// <param name="profileName"></param>
+        /// <param name="forceConfiguration">
+        ///     Force automatic configuration (for example install certificates) 
+        ///     if the profile is not already configured (fully).
+        /// </param>
         /// <exception cref="ArgumentException"
         /// <exception cref="ApiParsingException" />
         /// <exception cref="ApiUnreachableException" />
         /// <exception cref="UnknownInstituteException" />
         /// <exception cref="UnknownProfileException" />
         /// <exception cref="EduroamAppUserException"/>
-        public async Task ConnectAsync(string institute, string profileName, bool forceConfiguration = false)
+        public async Task ConnectAsync(string nameOfinstitute, string profileName, bool forceConfiguration = false)
         {
-            if (string.IsNullOrWhiteSpace(institute))
+            if (string.IsNullOrWhiteSpace(nameOfinstitute))
             {
-                throw new ArgumentException("Empty institute", nameof(institute));
+                throw new ArgumentNullException(nameof(nameOfinstitute));
             }
             if (string.IsNullOrWhiteSpace(profileName))
             {
-                throw new ArgumentException("Empty profile", nameof(profileName));
+                throw new ArgumentNullException(nameof(profileName));
             }
 
             var getProfilesTask = new GetProfilesTask();
-            var profiles = await getProfilesTask.GetProfilesAsync(institute);
+            var profiles = await getProfilesTask.GetProfilesAsync(nameOfinstitute);
             var profile = profiles.FirstOrDefault(p => p.Name.Equals(profileName, StringComparison.InvariantCultureIgnoreCase));
 
             if (profile == null)
             {
-                ConsoleExtension.WriteError($"Institute '{institute}' has no profile named '{profileName}'");
-                throw new UnknownProfileException(institute, profileName);
+                ConsoleExtension.WriteError($"Institute '{nameOfinstitute}' has no profile named '{profileName}'");
+                throw new UnknownProfileException(nameOfinstitute, profileName);
             }
 
             await this.ProcessProfileAsync(profile, forceConfiguration);
+
+            await this.ConnectAsync();
 
         }
 
@@ -70,8 +78,6 @@ namespace EduRoam.Connect.Tasks
                     this.ShowProfileOverview();
                 }
                 this.ResolveCertificates(forceConfiguration);
-
-                await this.ConnectAsync();
             }
         }
 
