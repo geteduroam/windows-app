@@ -9,6 +9,22 @@
             Console.ForegroundColor = ConsoleColor.White;
         }
 
+        public static void WriteStatusIf(Func<bool> showIf, string value, params object[] args)
+        {
+            if (showIf())
+            {
+                WriteStatus(value, args);
+            }
+        }
+
+        public static void WriteStatusIf(bool show, string value, params object[] args)
+        {
+            if (show)
+            {
+                WriteStatus(value, args);
+            }
+        }
+
         public static void WriteStatus(string value, params object[] args)
         {
             Console.ForegroundColor = ConsoleColor.Green;
