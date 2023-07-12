@@ -16,6 +16,8 @@ namespace App.Library.ViewModels
     {
         private readonly IdentityProviderDownloader idpDownloader;
 
+        public static readonly SelfInstaller SelfInstaller = SelfInstaller.Create();
+
         public MainViewModel()
         {
             this.LanguageText = new LanguageText(@"App.Library.Language.LanguageTexts.csv", "EN");
@@ -170,13 +172,14 @@ namespace App.Library.ViewModels
                 LoadPageLogin();
                 return true;
             }
-            else if (!string.IsNullOrEmpty(profile?.redirect))
+
+            if (!string.IsNullOrEmpty(profile?.redirect))
             {
-                // TODO: add option to go to selectmethod from redirect
-                LoadPageRedirect(new Uri(profile.redirect));
+                this.SetActiveContent(new RedirectViewModel(this, new Uri(profile.redirect)));
                 return true;
             }
-            else if (profile?.oauth ?? false)
+            
+            if (profile?.oauth ?? false)
             {
                 LoadPageOAuthWait(profile);
                 return true;

@@ -3,5 +3,7 @@
         <ResourceDictionary Source="SelectProfileTemplate.xaml" />
         <ResourceDictionary Source="SelectInstitutionTemplate.xaml" />
         <ResourceDictionary Source="RedirectTemplate.xaml" />
+        <ResourceDictionary Source="CertificateTemplate.xaml" />
+        <ResourceDictionary Source="CertificateInstallerTemplate.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>
