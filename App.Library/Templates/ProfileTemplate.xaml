@@ -3,8 +3,142 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:viewModels="clr-namespace:App.Library.ViewModels">
 
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
     <DataTemplate DataType="{x:Type viewModels:ProfileViewModel}">
-        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+                Grid.Row="0"
+                Margin="8,0,8,16"
+                FontSize="24"
+                Text="{Binding Name}"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+
+            <TextBlock
+                Grid.Row="1"
+                Margin="5"
+                Text="{Binding Description}"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+
+            <GroupBox
+                x:Name="grpInfo"
+                Grid.Row="2"
+                Margin="5"
+                Header="Contact info">
+                <Grid Margin="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="3*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Label
+                        Grid.Column="0"
+                        Margin="0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Content="{Binding LanguageText[ProfileWeb]}"
+                        Visibility="{Binding WebAddressIsValid, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <Label
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Content="{Binding LanguageText[ProfileEmail]}"
+                        Visibility="{Binding EmailAddress, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <Label
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Content="{Binding LanguageText[ProfilePhone]}"
+                        Visibility="{Binding PhoneIsValid, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                    <TextBlock
+                        Grid.Row="0"
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Text=""
+                        TextWrapping="Wrap"
+                        Visibility="{Binding WebAddressIsValid, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Hyperlink Command="{Binding NavigateWebCommand}">
+                            <TextBlock Text="{Binding WebAddress}" TextWrapping="Wrap" />
+                        </Hyperlink>
+                    </TextBlock>
+
+                    <TextBlock
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding EmailIsValid, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Hyperlink Command="{Binding OpenEmailCommand}">
+                            <TextBlock Text="{Binding EmailAddress}" TextWrapping="Wrap" />
+                        </Hyperlink>
+                    </TextBlock>
+                    <TextBlock
+                        Grid.Row="2"
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Text="{Binding Phone}"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding PhoneIsValid, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    </TextBlock>
+                </Grid>
+            </GroupBox>
+
+            <TextBlock
+                Grid.Row="3"
+                Margin="5"
+                TextAlignment="Center"
+                TextWrapping="Wrap">
+                <Hyperlink Command="{Binding NextCommand}">
+                    <TextBlock Text="{Binding LanguageText[ProfileAgreeTerms]}" />
+                </Hyperlink>
+            </TextBlock>
+
+            <Grid
+                Grid.Row="4"
+                Margin="5"
+                VerticalAlignment="Bottom">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+                <TextBlock
+                    Margin="5"
+                    Text="{Binding LanguageText[ProfileNotAffiliatedInstitution]}"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap" />
+                <Button
+                    Grid.Row="1"
+                    Width="160"
+                    Height="34"
+                    Margin="0,5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Click="btnAlt_Click"
+                    Content="{Binding LanguageText[ProfileSelectOtherInstitution]}"
+                    Style="{DynamicResource WhiteButtonStyle}" />
+
+
+            </Grid>
+        </Grid>
     </DataTemplate>
 
 </ResourceDictionary>
