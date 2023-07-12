@@ -18,13 +18,13 @@ namespace EduRoam.CLI.Commands
 
             command.SetHandler(async () =>
             {
-                await this.ShowProvidersAsync();
+                await ShowProvidersAsync();
             });
 
             return command;
         }
 
-        private async Task ShowProvidersAsync()
+        private static async Task ShowProvidersAsync()
         {
             try
             {
