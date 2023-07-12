@@ -39,13 +39,13 @@ namespace EduRoam.Connect
             get => CertificateStore.IsCertificateInstalledByUs(cert, storeName, storeLocation);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <exception cref="UserAbortException" />
         public void AttemptInstallCertificate()
         {
-            try
-            {
-                CertificateStore.InstallCertificate(cert, storeName, storeLocation);
-            }
-            catch (UserAbortException) { }
+            CertificateStore.InstallCertificate(cert, storeName, storeLocation);
         }
     }
 
