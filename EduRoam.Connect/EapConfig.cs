@@ -722,6 +722,15 @@ namespace EduRoam.Connect
         }
 
         /// <summary>
+        /// Used to determine if an eapconfig has enough info for the ProfileOverview page to show
+        /// </summary>
+        public bool HasInfo => !string.IsNullOrEmpty(InstitutionInfo.WebAddress)
+                               || !string.IsNullOrEmpty(InstitutionInfo.EmailAddress)
+                               || !string.IsNullOrEmpty(InstitutionInfo.Description)
+                               || !string.IsNullOrEmpty(InstitutionInfo.Phone)
+                               || !string.IsNullOrEmpty(InstitutionInfo.TermsOfUse);
+
+        /// <summary>
         /// If this returns true, then the user must provide the login credentials
         /// when installing with ConnectToEduroam or EduroamNetwork
         /// </summary>

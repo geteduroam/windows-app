@@ -5,3 +5,8 @@ SelectInstitution;Select institution;Selecteer instelling
 SelectProfile;Select profile;Selecteer profiel
 Search;Search;Zoeken
 ButtonNext;Next;Volgende
+Loading;Loading...;Even geduld...
+RedirectTitle;Redirect;Redirect
+RedirectText;Click here to be redirected to the insitutions site for more info on how to connect. When you click the link this application will close.;Klik hier om doorverwezen te worden naar de site van de instelling voor meer informatie over hoe u verbinding kunt maken. Wanneer u op de link klikt, wordt deze toepassing gesloten.
+CertificateTitleStart;In order to continue you have to install the listed certificates;Om door te gaan moet u de vermelde certificaten installeren
+CertificateTitleInstalled;All certificates are installed;Alle certificaten zijn geïnstalleerd
