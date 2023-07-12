@@ -6,7 +6,7 @@ using System.CommandLine;
 
 namespace EduRoam.CLI.Commands
 {
-    public class ShowEapConfigInfo
+    public class ShowEapConfigInfo : ICommand
     {
         public static string CommandName => "show-eap-config";
 
@@ -41,14 +41,13 @@ namespace EduRoam.CLI.Commands
                 {
                     var eapConfig = await connectTask.GetEapConfigAsync(institute, profileName);
 
-                    if (eapConfig == null || !eapConfig.HasInfo)
+                    if (eapConfig == null || !HasInfo(eapConfig))
                     {
                         Console.WriteLine("No EAP Config info to show");
                     }
-
                     else
                     {
-
+                        this.ShowProfileOverview(eapConfig);
                     }
                 }
                 catch (Exception exc) when (exc is ArgumentException || exc is UnknownInstituteException || exc is UnknownProfileException)
@@ -88,11 +87,18 @@ namespace EduRoam.CLI.Commands
             ConsoleExtension.WriteStatus($"* {institutionInfo.Description}");
             if (!HasContactInfo(eapConfig.InstitutionInfo))
             {
-                ConsoleExtension.WriteStatusIf(institutionInfo.WebAddress != null, $"* {institutionInfo.WebAddress}");
-                ConsoleExtension.WriteStatusIf(institutionInfo.EmailAddress != null, $"* {institutionInfo.EmailAddress}");
-                ConsoleExtension.WriteStatusIf(institutionInfo.Phone != null, $"* {institutionInfo.Phone}");
+                ConsoleExtension.WriteStatusIf(institutionInfo.WebAddress != null, $"* web: {institutionInfo.WebAddress}");
+                ConsoleExtension.WriteStatusIf(institutionInfo.EmailAddress != null, $"* e-mail: {institutionInfo.EmailAddress}");
+                ConsoleExtension.WriteStatusIf(institutionInfo.Phone != null, $"* phone: {institutionInfo.Phone}");
             }
             ConsoleExtension.WriteStatus($"* supported: {(supported ? "✓" : "x")}");
+            if (!string.IsNullOrWhiteSpace(institutionInfo.TermsOfUse))
+            {
+                ConsoleExtension.WriteStatus("* ");
+                ConsoleExtension.WriteStatus("* terms of use:");
+                ConsoleExtension.WriteStatus($"* {institutionInfo.TermsOfUse.Trim()}");
+                ConsoleExtension.WriteStatus("* ");
+            }
             ConsoleExtension.WriteStatus("***********************************************");
             Console.WriteLine();
 

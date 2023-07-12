@@ -36,14 +36,14 @@ namespace EduRoam.Connect
 
             var CAs = EnumerateCAs(eapConfig).ToList();
 
-            DateTime now = DateTime.Now;
-            bool has_expired_ca = CAs
+            var now = DateTime.Now;
+            var has_expired_ca = CAs
                 .Any(caCert => caCert.NotAfter < now);
 
-            bool has_a_yet_to_expire_ca = CAs
+            var has_a_yet_to_expire_ca = CAs
                 .Any(caCert => now < caCert.NotAfter);
 
-            bool has_valid_ca = CAs
+            var has_valid_ca = CAs
                 .Where(caCert => now < caCert.NotAfter)
                 .Any(caCert => caCert.NotBefore < now);
 
@@ -59,7 +59,7 @@ namespace EduRoam.Connect
             }
             else if (!has_valid_ca && has_a_yet_to_expire_ca)
             {
-                DateTime earliest = CAs
+                var earliest = CAs
                     .Where(caCert => now < caCert.NotAfter)
                     .Max(caCert => caCert.NotBefore);
 
@@ -82,11 +82,14 @@ namespace EduRoam.Connect
         private static IEnumerable<X509Certificate2> EnumerateCAs(EapConfig eapConfig)
         {
             _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
-            return eapConfig.AuthenticationMethods
+            var rootCACertificates = eapConfig.AuthenticationMethods
                 .Where(EduRoamNetwork.IsAuthMethodSupported)
                 .SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
-                .Where(CertificateStore.CertificateIsRootCA)
-                .GroupBy(cert => cert.Thumbprint, (key, certs) => certs.FirstOrDefault()); // distinct, alternative is to use DistinctBy in MoreLINQ
+                .Where(CertificateStore.CertificateIsRootCA);
+
+            return rootCACertificates
+                .DistinctBy(cert => cert.Thumbprint);
+            // .GroupBy(cert => cert!.Thumbprint, (key, certs) => certs.FirstOrDefault()); // distinct, alternative is to use DistinctBy in MoreLINQ
         }
 
         /// <summary>
@@ -106,8 +109,8 @@ namespace EduRoam.Connect
         /// <returns>True if all profile deletions were succesful</returns>
         public static void RemoveAllWLANProfiles()
         {
-            Exception ex = null;
-            foreach (EduRoamNetwork network in EduRoamNetwork.GetAll(null))
+            Exception? ex = null;
+            foreach (var network in EduRoamNetwork.GetAll())
             {
                 try
                 {
