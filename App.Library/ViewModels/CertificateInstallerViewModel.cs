@@ -1,14 +1,14 @@
-﻿using System.Threading.Tasks;
-
-using App.Library.Command;
+﻿using App.Library.Command;
 
 using EduRoam.Connect;
+
+using System.Threading.Tasks;
 
 namespace App.Library.ViewModels
 {
     public class CertificateInstallerViewModel : NotifyPropertyChanged
     {
-        public CertificateInstallerViewModel(ConnectToEduroam.CertificateInstaller certificateInstaller)
+        public CertificateInstallerViewModel(CertificateInstaller certificateInstaller)
         {
             this.CertificateInstaller = certificateInstaller;
             this.InstallCommand = new DelegateCommand(this.Install, this.CanInstall);
@@ -16,7 +16,7 @@ namespace App.Library.ViewModels
 
         public DelegateCommand InstallCommand { get; protected set; }
 
-        public ConnectToEduroam.CertificateInstaller CertificateInstaller { get; private set; }
+        public CertificateInstaller CertificateInstaller { get; private set; }
 
         public string Text => this.CertificateInstaller.ToString();
 

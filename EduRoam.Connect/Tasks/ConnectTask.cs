@@ -15,7 +15,7 @@ namespace EduRoam.Connect.Tasks
         /// <exception cref="UnknownInstituteException" />
         /// <exception cref="UnknownProfileException" />
         /// <exception cref="EduroamAppUserException"/>
-        public async Task ConnectAsync(string institute, string profileName)
+        public async Task ConnectAsync(string institute, string profileName, bool forceConfiguration = false)
         {
             if (string.IsNullOrWhiteSpace(institute))
             {
@@ -28,8 +28,6 @@ namespace EduRoam.Connect.Tasks
 
             var getProfilesTask = new GetProfilesTask();
             var profiles = await getProfilesTask.GetProfilesAsync(institute);
-
-
             var profile = profiles.FirstOrDefault(p => p.Name.Equals(profileName, StringComparison.InvariantCultureIgnoreCase));
 
             if (profile == null)
@@ -38,11 +36,11 @@ namespace EduRoam.Connect.Tasks
                 throw new UnknownProfileException(institute, profileName);
             }
 
-            await this.ProcessProfileAsync(profile);
+            await this.ProcessProfileAsync(profile, forceConfiguration);
 
         }
 
-        private async Task ProcessProfileAsync(IdentityProviderProfile fullProfile)
+        private async Task ProcessProfileAsync(IdentityProviderProfile fullProfile, bool forceConfiguration)
         {
             var idpDownloader = new IdentityProviderDownloader();
 
@@ -71,7 +69,7 @@ namespace EduRoam.Connect.Tasks
                 {
                     this.ShowProfileOverview();
                 }
-                this.ResolveCertificates();
+                this.ResolveCertificates(forceConfiguration);
 
                 await this.ConnectAsync();
             }
@@ -99,7 +97,7 @@ namespace EduRoam.Connect.Tasks
             }
         }
 
-        private void ResolveCertificates()
+        private void ResolveCertificates(bool forceConfiguration)
         {
             ConsoleExtension.WriteStatus("In order to continue the following certificates have to be installed.");
             var installers = ConnectToEduroam.EnumerateCAInstallers(this.eapConfig!).ToList();
@@ -114,18 +112,16 @@ namespace EduRoam.Connect.Tasks
 
             if (certificatesNotInstalled.Any())
             {
-                ConsoleExtension.WriteStatus("One or more certificates are not installed yet. Install the certificates? (y/N)");
-                //var key = Console.ReadKey();
-
-                //if (key.KeyChar != 'y' && key.KeyChar != 'Y')
-                //{
-                //    ConsoleExtension.WriteError("Cannot connect when not all required certificates are stored");
-                //    return;
-                //}
-
-                foreach (var installer in certificatesNotInstalled)
+                if (!forceConfiguration)
                 {
-                    installer.AttemptInstallCertificate();
+                    ConsoleExtension.WriteStatus("One or more certificates are not installed yet. Install the certificates? (y/N)");
+                }
+                else
+                {
+                    foreach (var installer in certificatesNotInstalled)
+                    {
+                        installer.AttemptInstallCertificate();
+                    }
                 }
             }
         }

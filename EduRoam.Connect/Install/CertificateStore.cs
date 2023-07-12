@@ -1,18 +1,28 @@
-using EduRoam.Connect.Exceptions;
+﻿using EduRoam.Connect.Exceptions;
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
+
 using InstalledCertificate = EduRoam.Connect.PersistingStore.InstalledCertificate;
 
-namespace EduRoam.Connect
+namespace EduRoam.Connect.Install
 {
     public static class CertificateStore
     {
+        // Certificate stores:
+
+        // Used to install root CAs to verify server certificates with
+        public readonly static StoreName RootCaStoreName = StoreName.Root;
+        public readonly static StoreLocation RootCaStoreLocation = StoreLocation.CurrentUser; // NICE TO HAVE: make this configurable to LocalMachine
+                                                                                              // Used to install CAs to verify server certificates with
+        public readonly static StoreName InterCaStoreName = StoreName.CertificateAuthority;
+        public readonly static StoreLocation InterCaStoreLocation = StoreLocation.CurrentUser; // NICE TO HAVE: make this configurable to LocalMachine
+                                                                                               // Used to install TLS client certificates
+        public readonly static StoreName UserCertStoreName = StoreName.My;
+        public readonly static StoreLocation UserCertStoreLocation = StoreLocation.CurrentUser;
+
         /// <summary>
         /// Installs the certificate into the certificate store chosen.
         /// If the certificate is sucessfully installed, this will be recorded in the Persistant Storage

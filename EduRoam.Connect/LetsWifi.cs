@@ -1,16 +1,13 @@
 using EduRoam.Connect.Exceptions;
+using EduRoam.Connect.Install;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 
 namespace EduRoam.Connect
 {
@@ -292,7 +289,7 @@ namespace EduRoam.Connect
 
             // reinstall the same authmethod as last time
             var installer = eapConfig.SupportedAuthenticationMethods
-                .Select(authMethod => new ConnectToEduroam.EapAuthMethodInstaller(authMethod))
+                .Select(authMethod => new EapAuthMethodInstaller(authMethod))
                 .Where(installer => profileInfo.EapTypeSsid?.outer == installer.AuthMethod.EapType)
                 .Where(installer => profileInfo.EapTypeSsid?.inner == installer.AuthMethod.InnerAuthType)
                 .First();
