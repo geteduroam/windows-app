@@ -1,24 +1,15 @@
 ﻿using EduRoam.Connect;
 using EduRoam.Connect.Exceptions;
 
-
-using System;
-using System.Collections.Generic;
 using System.CommandLine;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EduRoam.CLI.Commands
 {
-    public class ConnectInstitution : ICommand
+    public class ConnectByProfile : ICommand
     {
-        public static string CommandName => "connect-institution";
+        public static string CommandName => "connect";
 
-        public static string CommandDescription => "connect-institution";
+        public static string CommandDescription => "connect based on a institution profile";
 
         private EapConfig? eapConfig;
 

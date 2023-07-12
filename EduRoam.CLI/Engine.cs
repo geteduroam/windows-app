@@ -10,7 +10,7 @@ namespace EduRoam.CLI
         private readonly List<ICommand> CommandsList = new ()
         {
             { new ListInstitutions() },
-            { new ConnectInstitution() },
+            { new Commands.ConnectByProfile() },
             { new Clear() }
         };
 
@@ -28,13 +28,13 @@ namespace EduRoam.CLI
 
         public async Task Run(string[] args)
         {
-            if (args.Length < 1)
-            {
-                if (args[0].Equals("x", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    return;
-                }
-            }
+            //if (args.Length < 1)
+            //{
+            //    if (args[0].Equals("x", StringComparison.InvariantCultureIgnoreCase))
+            //    {
+            //        return;
+            //    }
+            //}
 
             await this.rootCommand.InvokeAsync(args);
             //try

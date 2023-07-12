@@ -76,28 +76,34 @@ namespace EduRoam.Connect
 
             // creates BeginGetContext task for retrieving HTTP request
             IAsyncResult result = listener.BeginGetContext(ListenerCallback, listener);
+            
             // opens authentication URI in default browser
             var startInfo = new ProcessStartInfo()
             {
                 FileName = authUri.ToString(),
                 LoadUserProfile = true,
-                UseShellExecute = true
+                UseShellExecute = true,
+                
             };
-            Process.Start(startInfo);
-            //Process.Start(authUri.ToString());
+
+            using var process = Process.Start(startInfo);
+
+            var processThread = new ManualResetEvent(false);
+            process!.Exited += (object? sender, EventArgs e) => { this.Process_Exited(processThread); };
+            process!.EnableRaisingEvents = true;
 
             HttpListenerContext context = listener.GetContext();
             HttpListenerRequest request = context.Request;
 
-            // creates WaitHandle array with two tasks: BeginGetContext and cancel thread
-            var handles = new List<WaitHandle>() { result.AsyncWaitHandle }; 
+            // creates WaitHandle array with two or three tasks: BeginGetContext, Process thread and optionally cancel thread
+            var handles = new List<WaitHandle>() { result.AsyncWaitHandle, processThread };
             if (this.CancelThread != null)
             {
                 handles.Add(this.CancelThread);
             }
-            // waits for both tasks to complete, gets array index of the first one to complete
+            // waits for any task in the handles list to complete, gets array index of the first one to complete
             int handleResult = WaitHandle.WaitAny(handles.ToArray());
-            
+
             // if BeginGetContext completes first
             if (handleResult == 0)
             {
@@ -112,17 +118,29 @@ namespace EduRoam.Connect
             listener.Close();
         }
 
+        private void Process_Exited(ManualResetEvent processThread)
+        {
+            var result = processThread.Set();
+            var waitResult = processThread.WaitOne();
+            ConsoleExtension.WriteError($"Browser closed before OAuth process was succesfully finished. ({result}, {waitResult})");
+        }
+
         /// <summary>
-		/// Callback function for incoming HTTP requests.
-		/// </summary>
-		/// <param name="result">Result of BeginGetContext task.</param>
-		private async void ListenerCallback(IAsyncResult result)
+        /// Callback function for incoming HTTP requests.
+        /// </summary>
+        /// <param name="result">Result of BeginGetContext task.</param>
+        private async void ListenerCallback(IAsyncResult result)
         {
             // cancels and returns if cancellation is requested
             if (this.CancelTokenSource != null && this.CancelTokenSource.Token.IsCancellationRequested) return;
 
             // sets the callback listener equals to the http listener
             HttpListener callbackListener = (HttpListener)result.AsyncState;
+
+            if (!callbackListener.IsListening)
+            {
+                return;
+            }
 
             // calls EndGetContext to complete the asynchronous operation
             HttpListenerContext context = callbackListener.EndGetContext(result);

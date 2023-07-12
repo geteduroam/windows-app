@@ -2,7 +2,7 @@
   "profiles": {
     "EduRoam.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "connect-institution --i \"uninett\" --p \"geteduroam (sertifikat)\""
+      "commandLineArgs": "connect --i \"Moreelsepark College\""
     }
   }
 }

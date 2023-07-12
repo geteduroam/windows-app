@@ -13,9 +13,9 @@ namespace EduRoam.CLI.Commands
 {
     public class ListInstitutions : ICommand
     {
-        public static string CommandName => "list-institutions";
+        public static string CommandName => "list";
 
-        public static string CommandDescription => "list-institutions";
+        public static string CommandDescription => "Get a list of institutions with a EduRoam profile";
 
         public Command Get()
         {

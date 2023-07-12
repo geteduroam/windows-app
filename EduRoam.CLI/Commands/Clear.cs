@@ -11,7 +11,7 @@ namespace EduRoam.CLI.Commands
     {
         public readonly static string CommandName = "clear" ;
 
-        public static string CommandDescription => "clear";
+        public static string CommandDescription => "clear console";
 
         public Command Get()
         {
