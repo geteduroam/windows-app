@@ -19,9 +19,6 @@ namespace App.Library.ViewModels
         {
             this.idpDownloader = idpDownloader;
             this.searchText = string.Empty;
-            this.NextCommand = new DelegateCommand(
-                this.Next,
-                this.CanGoNext);
         }
 
         public string SearchText
@@ -52,14 +49,12 @@ namespace App.Library.ViewModels
 
         public IdentityProvider SelectedIdentityProvider { get; set; }
 
-        public DelegateCommand NextCommand { get; protected set; }
-
-        private bool CanGoNext()
+        protected override bool CanGoNext()
         {
             return this.SelectedIdentityProvider != null;
         }
 
-        private void Next()
+        protected override void GoNext()
         {
             this.MainViewModel.State.SelectedIdentityProvider = this.SelectedIdentityProvider;
 

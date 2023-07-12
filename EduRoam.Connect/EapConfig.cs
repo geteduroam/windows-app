@@ -718,7 +718,7 @@ namespace EduRoam.Connect
         /// <returns>Enumeration of EapAuthMethodInstaller intances for each supported authentification method in eapConfig</returns>
         public IEnumerable<AuthenticationMethod> SupportedAuthenticationMethods
         {
-            get => AuthenticationMethods.Where(EdurRoamNetwork.IsAuthMethodSupported);
+            get => AuthenticationMethods.Where(EduRoamNetwork.IsAuthMethodSupported);
         }
 
         /// <summary>

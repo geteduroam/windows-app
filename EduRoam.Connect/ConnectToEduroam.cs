@@ -40,14 +40,14 @@ namespace EduRoam.Connect
 		{
 			_ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
 
-			if (!EdurRoamNetwork.IsEapConfigSupported(eapConfig))
+			if (!EduRoamNetwork.IsEapConfigSupported(eapConfig))
 			{
 				yield return (true, "This configuration is not supported");
 				yield break;
 			}
 
 			if (!eapConfig.AuthenticationMethods
-					.Where(EdurRoamNetwork.IsAuthMethodSupported)
+					.Where(EduRoamNetwork.IsAuthMethodSupported)
 					.All(authMethod => authMethod.ServerCertificateAuthorities.Any()))
 				yield return (true, "This configuration is missing Certificate Authorities");
 
@@ -100,7 +100,7 @@ namespace EduRoam.Connect
 		{
 			_ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
 			return eapConfig.AuthenticationMethods
-				.Where(EdurRoamNetwork.IsAuthMethodSupported)
+				.Where(EduRoamNetwork.IsAuthMethodSupported)
 				.SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
 				.Where(CertificateStore.CertificateIsRootCA)
 				.GroupBy(cert => cert.Thumbprint, (key, certs) => certs.FirstOrDefault()); // distinct, alternative is to use DistinctBy in MoreLINQ
@@ -228,7 +228,7 @@ namespace EduRoam.Connect
 						"You must first install certificates with InstallCertificates");
 
 				// Install wlan profile
-				foreach (var network in EdurRoamNetwork.GetAll(AuthMethod.EapConfig))
+				foreach (var network in EduRoamNetwork.GetAll(AuthMethod.EapConfig))
 				{
 					Debug.WriteLine("Install profile {0}", network.ProfileName);
 					network.InstallProfiles(AuthMethod, forAllUsers: true);
@@ -253,7 +253,7 @@ namespace EduRoam.Connect
 		public static void RemoveAllWLANProfiles()
 		{
 			Exception ex = null;
-			foreach (EdurRoamNetwork network in EdurRoamNetwork.GetAll(null))
+			foreach (EduRoamNetwork network in EduRoamNetwork.GetAll(null))
 			{
 				try
 				{
@@ -276,7 +276,7 @@ namespace EduRoam.Connect
 		public static async Task<bool> TryToConnect()
 		{
 			// gets updated eduroam network packs
-			foreach (var network in EdurRoamNetwork.GetConfigured())
+			foreach (var network in EduRoamNetwork.GetConfigured())
 			{
 				var success = await network.TryToConnect();
 				if (success) return true;

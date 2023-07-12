@@ -1,4 +1,5 @@
 using EduroamConfigure;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,6 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Xml;
+
 using WpfApp.Classes;
 using WpfApp.Menu;
 

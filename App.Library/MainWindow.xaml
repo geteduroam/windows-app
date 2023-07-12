@@ -23,6 +23,7 @@
                     <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
                     <converters:ImageConverter x:Key="ImageConverter"/>
                     <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+                    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -34,6 +35,12 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.RowSpan="2" ZIndex="100" Grid.Row="1"
+              Background="{DynamicResource BackgroundBrush}"
+              Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Text="{Binding LanguageText[Loading]}" TextAlignment="Center" Margin="5" FontSize="24"
+                       HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Grid>
 
         <!--<Border BorderBrush="White" BorderThickness="1" CornerRadius="25,0,0,25"
                 Background="White"
