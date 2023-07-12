@@ -5,5 +5,8 @@
         <ResourceDictionary Source="RedirectTemplate.xaml" />
         <ResourceDictionary Source="CertificateTemplate.xaml" />
         <ResourceDictionary Source="CertificateInstallerTemplate.xaml" />
+        <ResourceDictionary Source="ProfileTemplate.xaml" />
+        <ResourceDictionary Source="LoginTemplate.xaml" />
+        <ResourceDictionary Source="OAuthTemplate.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

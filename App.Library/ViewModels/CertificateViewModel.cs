@@ -7,13 +7,9 @@ namespace App.Library.ViewModels
 {
     public class CertificateViewModel : BaseViewModel
     {
-        private readonly EapConfig eapConfig;
-
         public CertificateViewModel(MainViewModel mainViewModel, EapConfig eapConfig)
             : base(mainViewModel)
         {
-            this.eapConfig = eapConfig;
-
             //todo maybe subscribe to NotifyChanged or custom event to trigger AllInstalled
             this.Installers = new ObservableCollection<CertificateInstallerViewModel>(
                 ConnectToEduroam.EnumerateCAInstallers(eapConfig)

@@ -102,6 +102,8 @@ namespace App.Library.ViewModels
                 });
         }
 
+        //todo Move to a better place
+
         /// <summary>
         /// downloads eap config based on profileId
         /// seperated into its own function as this can happen either through
@@ -158,18 +160,18 @@ namespace App.Library.ViewModels
                 if (eapConfig.HasInfo
                     && !skipOverview)
                 {
-                    LoadPageProfileOverview();
+                    SetActiveContent(new ProfileViewModel(this, eapConfig));
                     return true;
                 }
 
                 if (ConnectToEduroam.EnumerateCAInstallers(eapConfig)
                                     .Any(installer => installer.IsInstalledByUs || !installer.IsInstalled))
                 {
-                    LoadPageCertificateOverview();
+                    SetActiveContent(new CertificateViewModel(this, eapConfig));
                     return true;
                 }
 
-                LoadPageLogin();
+                SetActiveContent(new LoginViewModel(this, eapConfig));
                 return true;
             }
 
@@ -181,7 +183,7 @@ namespace App.Library.ViewModels
             
             if (profile?.oauth ?? false)
             {
-                LoadPageOAuthWait(profile);
+                SetActiveContent(new OAuthViewModel(this, profile));
                 return true;
             }
 
