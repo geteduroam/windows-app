@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 using EduRoam.Connect;
 
@@ -16,7 +17,7 @@ namespace App.Library.ViewModels
             throw new NotImplementedException();
         }
 
-        protected override void GoNext()
+        protected override Task GoNextAsync()
         {
             throw new NotImplementedException();
         }

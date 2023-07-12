@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-using EduRoam.Connect;
-
 namespace App.Library.ViewModels
 {
-    public class LoginViewModel : BaseViewModel
+    public class TermsOfUseViewModel : BaseViewModel
     {
-        public LoginViewModel(MainViewModel mainViewModel, EapConfig eapConfig)
+        public TermsOfUseViewModel(MainViewModel mainViewModel, string text)
             : base(mainViewModel)
         {
+            this.Text = text;
         }
+
+        public string Text { get; }
 
         protected override bool CanGoNext()
         {

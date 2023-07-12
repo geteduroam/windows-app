@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace App.Library.ViewModels
@@ -19,10 +20,11 @@ namespace App.Library.ViewModels
             return true;
         }
 
-        protected override void GoNext()
+        protected override Task GoNextAsync()
         {
             Process.Start(new ProcessStartInfo(this.redirectUri.ToString()));
             Application.Current.Shutdown(1);
+            return Task.CompletedTask;
         }
     }
 }

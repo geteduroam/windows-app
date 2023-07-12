@@ -119,7 +119,7 @@ namespace App.Library.ViewModels
             /// <param name="skipOverview"></param>
             /// <returns>True if function navigated somewhere</returns>
             /// <exception cref="XmlException">Parsing eap-config failed</exception>
-            private async Task<bool> HandleProfileSelect(
+            public async Task<bool> HandleProfileSelect(
             IdentityProviderProfile profile,
             string eapConfigXml = null,
             bool skipOverview = false)
