@@ -9,40 +9,46 @@ namespace EduRoam.Connect.Tasks
         /// <summary>
         /// Connect by a institutes profile
         /// </summary>
+        /// <param name="nameOfinstitute"></param>
+        /// <param name="profileName"></param>
+        /// <param name="forceConfiguration">
+        ///     Force automatic configuration (for example install certificates) 
+        ///     if the profile is not already configured (fully).
+        /// </param>
         /// <exception cref="ArgumentException"
         /// <exception cref="ApiParsingException" />
         /// <exception cref="ApiUnreachableException" />
         /// <exception cref="UnknownInstituteException" />
         /// <exception cref="UnknownProfileException" />
         /// <exception cref="EduroamAppUserException"/>
-        public async Task ConnectAsync(string institute, string profileName)
+        public async Task ConnectAsync(string nameOfinstitute, string profileName, bool forceConfiguration = false)
         {
-            if (string.IsNullOrWhiteSpace(institute))
+            if (string.IsNullOrWhiteSpace(nameOfinstitute))
             {
-                throw new ArgumentException("Empty institute", nameof(institute));
+                throw new ArgumentNullException(nameof(nameOfinstitute));
             }
             if (string.IsNullOrWhiteSpace(profileName))
             {
-                throw new ArgumentException("Empty profile", nameof(profileName));
+                throw new ArgumentNullException(nameof(profileName));
             }
 
             var getProfilesTask = new GetProfilesTask();
-            var profiles = await getProfilesTask.GetProfilesAsync(institute);
-
-
+            var profiles = await getProfilesTask.GetProfilesAsync(nameOfinstitute);
             var profile = profiles.FirstOrDefault(p => p.Name.Equals(profileName, StringComparison.InvariantCultureIgnoreCase));
 
             if (profile == null)
             {
-                ConsoleExtension.WriteError($"Institute '{institute}' has no profile named '{profileName}'");
-                throw new UnknownProfileException(institute, profileName);
+                ConsoleExtension.WriteError($"Institute '{nameOfinstitute}' has no profile named '{profileName}'");
+                throw new UnknownProfileException(nameOfinstitute, profileName);
             }
 
-            await this.ProcessProfileAsync(profile);
+            await this.ProcessProfileAsync(profile, forceConfiguration);
+
+            await this.ConnectAsync();
 
         }
 
-        private async Task ProcessProfileAsync(IdentityProviderProfile fullProfile)
+        private async Task ProcessProfileAsync(IdentityProviderProfile fullProfile, bool forceConfiguration)
         {
             var idpDownloader = new IdentityProviderDownloader();
 
@@ -71,9 +77,7 @@ namespace EduRoam.Connect.Tasks
                 {
                     this.ShowProfileOverview();
                 }
-                this.ResolveCertificates();
-
-                await this.ConnectAsync();
+                this.ResolveCertificates(forceConfiguration);
             }
         }
 
@@ -99,7 +103,7 @@ namespace EduRoam.Connect.Tasks
             }
         }
 
-        private void ResolveCertificates()
+        private void ResolveCertificates(bool forceConfiguration)
         {
             ConsoleExtension.WriteStatus("In order to continue the following certificates have to be installed.");
             var installers = ConnectToEduroam.EnumerateCAInstallers(this.eapConfig!).ToList();
@@ -114,18 +118,16 @@ namespace EduRoam.Connect.Tasks
 
             if (certificatesNotInstalled.Any())
             {
-                ConsoleExtension.WriteStatus("One or more certificates are not installed yet. Install the certificates? (y/N)");
-                //var key = Console.ReadKey();
-
-                //if (key.KeyChar != 'y' && key.KeyChar != 'Y')
-                //{
-                //    ConsoleExtension.WriteError("Cannot connect when not all required certificates are stored");
-                //    return;
-                //}
-
-                foreach (var installer in certificatesNotInstalled)
+                if (!forceConfiguration)
                 {
-                    installer.AttemptInstallCertificate();
+                    ConsoleExtension.WriteStatus("One or more certificates are not installed yet. Install the certificates? (y/N)");
+                }
+                else
+                {
+                    foreach (var installer in certificatesNotInstalled)
+                    {
+                        installer.AttemptInstallCertificate();
+                    }
                 }
             }
         }

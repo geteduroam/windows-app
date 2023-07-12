@@ -26,20 +26,26 @@ namespace EduRoam.CLI.Commands
                 isDefault: true,
                 description: "Institute's profile to connect to.");
 
+            var forceOption = new Option<bool>(
+                name: "--f",
+                description: "Force automatic configuration if the profile is not already configured (fully).",
+                getDefaultValue: () => false);
+
             var command = new Command(CommandName, CommandDescription)
             {
                 instituteOption,
-                profileOption
+                profileOption,
+                forceOption
             };
 
 
-            command.SetHandler(async (string institute, string profileName) =>
+            command.SetHandler(async (string institute, string profileName, bool force) =>
             {
                 var connectTask = new ConnectTask();
 
                 try
                 {
-                    await connectTask.ConnectAsync(institute, profileName);
+                    await connectTask.ConnectAsync(institute, profileName, force);
                 }
                 catch (Exception exc) when (exc is ArgumentException || exc is UnknownInstituteException || exc is UnknownProfileException)
                 {
@@ -62,7 +68,7 @@ namespace EduRoam.CLI.Commands
                     ConsoleExtension.WriteError("No internet connection");
                 }
 
-            }, instituteOption, profileOption);
+            }, instituteOption, profileOption, forceOption);
 
             return command;
         }

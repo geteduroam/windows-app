@@ -13,6 +13,11 @@ namespace EduRoam.Connect.Tasks
         /// <exception cref="UnknownInstituteException" />
         public async Task<IEnumerable<IdentityProviderProfile>> GetProfilesAsync(string institute)
         {
+            if (string.IsNullOrWhiteSpace(institute))
+            {
+                throw new ArgumentNullException(nameof(institute));
+            }
+
             using var idpDownloader = new IdentityProviderDownloader();
 
             await idpDownloader.LoadProviders(useGeodata: true);

@@ -6,12 +6,13 @@ namespace EduRoam.CLI
 {
     public class Engine
     {
-        private readonly List<ICommand> CommandsList = new()
+        private readonly List<ICommand> commandsList = new()
         {
+            { new Clear() },
+            { new ConnectByProfile() },
             { new ListInstitutions() },
             { new ListProfiles() },
-            { new Commands.ConnectByProfile() },
-            { new Clear() }
+            { new ShowEapConfigInfo() },
         };
 
         private readonly RootCommand rootCommand;
@@ -20,7 +21,7 @@ namespace EduRoam.CLI
         {
             this.rootCommand = new RootCommand("Edu Roam CLI");
 
-            foreach (var command in this.CommandsList)
+            foreach (var command in this.commandsList)
             {
                 this.rootCommand.AddCommand(command.GetCommand());
             }
