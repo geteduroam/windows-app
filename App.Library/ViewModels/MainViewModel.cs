@@ -45,6 +45,21 @@ namespace App.Library.ViewModels
 
         public bool IsLoading { get; private set; }
 
+        public static bool CheckIfEapConfigIsSupported(EapConfig eapConfig)
+        {
+            if (!EduRoamNetwork.IsEapConfigSupported(eapConfig))
+            {
+                MessageBox.Show(
+                    "The profile you have selected is not supported by this application.",
+                    "No supported authentification method was found.",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Exclamation);
+                return false;
+            }
+
+            return true;
+        }
+
         private bool CanNewProfileCommandAction()
         {
             return this.idpDownloader.Loaded;
@@ -85,12 +100,6 @@ namespace App.Library.ViewModels
                 });
         }
 
-
-
-
-
-
-
         /// <summary>
         /// downloads eap config based on profileId
         /// seperated into its own function as this can happen either through
@@ -101,7 +110,10 @@ namespace App.Library.ViewModels
         /// <param name="skipOverview"></param>
         /// <returns>True if function navigated somewhere</returns>
         /// <exception cref="XmlException">Parsing eap-config failed</exception>
-        private async Task<bool> HandleProfileSelect(IdentityProviderProfile profile, string eapConfigXml = null, bool skipOverview = false)
+        private async Task<bool> HandleProfileSelect(
+            IdentityProviderProfile profile,
+            string eapConfigXml = null,
+            bool skipOverview = false)
         {
             this.IsLoading = true;
             EapConfig eapConfig;
@@ -109,25 +121,23 @@ namespace App.Library.ViewModels
             if (!string.IsNullOrEmpty(eapConfigXml))
             {
                 // TODO: ^perhaps reuse logic from PersistingStore.IsReinstallable
-                Debug.WriteLine(nameof(eapConfigXml) + " was set", category: nameof(HandleProfileSelect));
+                Debug.WriteLine(nameof(eapConfigXml) + " was set", category: nameof(this.HandleProfileSelect));
 
                 eapConfig = EapConfig.FromXmlData(eapConfigXml);
                 eapConfig.ProfileId = profile.Id;
             }
             else
             {
-                Debug.WriteLine(nameof(eapConfigXml) + " was not set", category: nameof(HandleProfileSelect));
+                Debug.WriteLine(nameof(eapConfigXml) + " was not set", category: nameof(this.HandleProfileSelect));
 
-                profile = idpDownloader.GetProfileFromId(profile.Id);
+                profile = this.idpDownloader.GetProfileFromId(profile.Id);
                 try
                 {
-                    eapConfig = await DownloadEapConfig(profile);
+                    eapConfig = await this.DownloadEapConfig(profile);
                 }
                 catch (EduroamAppUserException ex) // TODO: catch this on some higher level
                 {
-                    MessageBox.Show(
-                        ex.UserFacingMessage,
-                        caption: "geteduroam - Exception");
+                    MessageBox.Show(ex.UserFacingMessage, caption: "geteduroam - Exception");
                     eapConfig = null;
                 }
             }
@@ -139,15 +149,19 @@ namespace App.Library.ViewModels
             if (eapConfig != null)
             {
                 if (!CheckIfEapConfigIsSupported(eapConfig))
+                {
                     return false;
+                }
 
-                if (HasInfo(eapConfig) && !skipOverview)
+                if (eapConfig.HasInfo
+                    && !skipOverview)
                 {
                     LoadPageProfileOverview();
                     return true;
                 }
+
                 if (ConnectToEduroam.EnumerateCAInstallers(eapConfig)
-                        .Any(installer => installer.IsInstalledByUs || !installer.IsInstalled))
+                                    .Any(installer => installer.IsInstalledByUs || !installer.IsInstalled))
                 {
                     LoadPageCertificateOverview();
                     return true;
@@ -164,10 +178,10 @@ namespace App.Library.ViewModels
             }
             else if (profile?.oauth ?? false)
             {
-
                 LoadPageOAuthWait(profile);
                 return true;
             }
+
             return false;
         }
 
@@ -180,45 +194,39 @@ namespace App.Library.ViewModels
         public async Task<EapConfig> DownloadEapConfig(IdentityProviderProfile profile)
         {
             if (string.IsNullOrEmpty(profile?.Id))
+            {
                 return null;
+            }
 
             // if OAuth
-            if (profile.oauth || !string.IsNullOrEmpty(profile.redirect))
+            if (profile.oauth
+                || !string.IsNullOrEmpty(profile.redirect))
+            {
                 return null;
+            }
 
             try
             {
-                return await Task.Run(()
-                                          => this.idpDownloader.DownloadEapConfig(profile.Id)
-                       );
+                return await Task.Run(() => this.idpDownloader.DownloadEapConfig(profile.Id));
             }
             catch (ApiUnreachableException e)
             {
-                throw new EduroamAppUserException("HttpRequestException",
-                                                  "Couldn't connect to the server.\n\n" +
-                                                  "Make sure that you are connected to the internet, then try again.\n" +
-                                                  "Exception: " + e.Message);
+                throw new EduroamAppUserException(
+                    "HttpRequestException",
+                    "Couldn't connect to the server.\n\n"
+                    + "Make sure that you are connected to the internet, then try again.\n"
+                    + "Exception: "
+                    + e.Message);
             }
             catch (ApiParsingException e)
             {
-                throw new EduroamAppUserException("xml parse exception",
-                                                  "The institution or profile is either not supported or malformed. " +
-                                                  "Please select a different institution or profile.\n\n" +
-                                                  "Exception: " + e.Message);
+                throw new EduroamAppUserException(
+                    "xml parse exception",
+                    "The institution or profile is either not supported or malformed. "
+                    + "Please select a different institution or profile.\n\n"
+                    + "Exception: "
+                    + e.Message);
             }
-        }
-
-        public static bool CheckIfEapConfigIsSupported(EapConfig eapConfig)
-        {
-            if (!EduroamNetwork.IsEapConfigSupported(eapConfig))
-            {
-                MessageBox.Show(
-                    "The profile you have selected is not supported by this application.",
-                    "No supported authentification method was found.",
-                    MessageBoxButton.OK, MessageBoxImage.Exclamation);
-                return false;
-            }
-            return true;
         }
     }
 }

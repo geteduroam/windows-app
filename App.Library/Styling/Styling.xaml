@@ -1,28 +1,27 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <SolidColorBrush x:Key="BackgroundBrush" Color="#EBF2F7"/>
+    <SolidColorBrush x:Key="BackgroundBrush" Color="#EBF2F7" />
 
     <Style x:Key="BlueButtonStyle" TargetType="Button">
-        <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}"/>
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border Background="{TemplateBinding Background}">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                         </Trigger>
                         <Trigger Property="IsKeyboardFocused" Value="True">
-                            <Setter Property="Background" Value="#04d076"></Setter>
+                            <Setter Property="Background" Value="#04d076" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -31,15 +30,20 @@
     </Style>
 
     <Style x:Key="WhiteButtonStyle" TargetType="Button">
-        <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="border" Background="{TemplateBinding Background}" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}"
-                            BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Border
+                        x:Name="border"
+                        Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                        BorderThickness="1">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -55,46 +59,47 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ListBoxItem">
-                    <Border BorderThickness="{TemplateBinding Border.BorderThickness}"
-                  Padding="{TemplateBinding Control.Padding}"
-                  BorderBrush="{TemplateBinding Border.BorderBrush}"
-                  Background="{TemplateBinding Panel.Background}"
-                  Name="Bd"
-                  SnapsToDevicePixels="True">
-                        <ContentPresenter Content="{TemplateBinding ContentControl.Content}"
-                               ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
-                               ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
-                               HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
-                               VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
-                               SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
+                    <Border
+                        Name="Bd"
+                        Padding="{TemplateBinding Control.Padding}"
+                        Background="{TemplateBinding Panel.Background}"
+                        BorderBrush="{TemplateBinding Border.BorderBrush}"
+                        BorderThickness="{TemplateBinding Border.BorderThickness}"
+                        SnapsToDevicePixels="True">
+                        <ContentPresenter
+                            HorizontalAlignment="{TemplateBinding Control.HorizontalContentAlignment}"
+                            VerticalAlignment="{TemplateBinding Control.VerticalContentAlignment}"
+                            Content="{TemplateBinding ContentControl.Content}"
+                            ContentStringFormat="{TemplateBinding ContentControl.ContentStringFormat}"
+                            ContentTemplate="{TemplateBinding ContentControl.ContentTemplate}"
+                            SnapsToDevicePixels="{TemplateBinding UIElement.SnapsToDevicePixels}" />
                         <Border.InputBindings>
-                            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DataContext.NextCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"/>
+                            <MouseBinding Command="{Binding DataContext.NextCommand, RelativeSource={RelativeSource AncestorType=ListBox}}" MouseAction="LeftDoubleClick" />
                         </Border.InputBindings>
                     </Border>
-                  
+
 
                     <ControlTemplate.Triggers>
 
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="Selector.IsSelected" Value="True"/>
+                                <Condition Property="Selector.IsSelected" Value="True" />
                             </MultiTrigger.Conditions>
-                            <Setter Property="Panel.Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.GradientActiveCaptionBrushKey}}"/>
-                            <Setter Property="Border.BorderBrush" TargetName="Bd" Value="Transparent"/>
+                            <Setter TargetName="Bd" Property="Panel.Background" Value="{DynamicResource {x:Static SystemColors.GradientActiveCaptionBrushKey}}" />
+                            <Setter TargetName="Bd" Property="Border.BorderBrush" Value="Transparent" />
 
 
                         </MultiTrigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
-                                <Condition Property="UIElement.IsMouseOver" Value="True"/>
-                                <Condition Property="Selector.IsSelected" Value="False"/>
+                                <Condition Property="UIElement.IsMouseOver" Value="True" />
+                                <Condition Property="Selector.IsSelected" Value="False" />
                             </MultiTrigger.Conditions>
-                            <Setter Property="Panel.Background" TargetName="Bd" 
-                                    Value="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}"/>
-                            <Setter Property="Border.BorderBrush" TargetName="Bd" Value="Transparent"/>
+                            <Setter TargetName="Bd" Property="Panel.Background" Value="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}" />
+                            <Setter TargetName="Bd" Property="Border.BorderBrush" Value="Transparent" />
                         </MultiTrigger>
                         <Trigger Property="UIElement.IsEnabled" Value="False">
-                            <Setter Property="TextElement.Foreground" TargetName="Bd">
+                            <Setter TargetName="Bd" Property="TextElement.Foreground">
                                 <Setter.Value>
                                     <DynamicResource ResourceKey="{x:Static SystemColors.GrayTextBrushKey}" />
                                 </Setter.Value>

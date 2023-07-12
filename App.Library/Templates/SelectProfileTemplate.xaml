@@ -1,16 +1,28 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:viewModels="clr-namespace:App.Library.ViewModels">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:viewModels="clr-namespace:App.Library.ViewModels">
 
     <DataTemplate DataType="{x:Type viewModels:SelectProfileViewModel}">
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Grid.RowDefinitions>
-                <RowDefinition Height="auto"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock x:Name="tbTitle" TextWrapping="Wrap" Text="{Binding LanguageText[SelectProfile]}" TextAlignment="Center" Margin="8,0,8,16" Grid.Row="0" FontSize="24"/>
-            <ListBox x:Name="lbProfiles" ItemContainerStyle="{DynamicResource ListBoxItemStyle}" Grid.Row="1" Margin="24,8"
-                     ItemsSource="{Binding Profiles}"/>
+            <TextBlock
+                x:Name="tbTitle"
+                Grid.Row="0"
+                Margin="8,0,8,16"
+                FontSize="24"
+                Text="{Binding LanguageText[SelectProfile]}"
+                TextAlignment="Center"
+                TextWrapping="Wrap" />
+            <ListBox
+                x:Name="lbProfiles"
+                Grid.Row="1"
+                Margin="24,8"
+                ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
+                ItemsSource="{Binding Profiles}" />
         </Grid>
     </DataTemplate>
 
