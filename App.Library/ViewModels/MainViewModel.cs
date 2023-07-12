@@ -102,19 +102,24 @@ namespace App.Library.ViewModels
                 });
         }
 
+        public void Restart()
+        {
+            SetActiveContent(null);
+        }
+
         //todo Move to a better place
 
-        /// <summary>
-        /// downloads eap config based on profileId
-        /// seperated into its own function as this can happen either through
-        /// user selecting a profile or a profile being autoselected
-        /// </summary>
-        /// <param name="profile"></param>
-        /// <param name="eapConfigXml"></param>
-        /// <param name="skipOverview"></param>
-        /// <returns>True if function navigated somewhere</returns>
-        /// <exception cref="XmlException">Parsing eap-config failed</exception>
-        private async Task<bool> HandleProfileSelect(
+            /// <summary>
+            /// downloads eap config based on profileId
+            /// seperated into its own function as this can happen either through
+            /// user selecting a profile or a profile being autoselected
+            /// </summary>
+            /// <param name="profile"></param>
+            /// <param name="eapConfigXml"></param>
+            /// <param name="skipOverview"></param>
+            /// <returns>True if function navigated somewhere</returns>
+            /// <exception cref="XmlException">Parsing eap-config failed</exception>
+            private async Task<bool> HandleProfileSelect(
             IdentityProviderProfile profile,
             string eapConfigXml = null,
             bool skipOverview = false)

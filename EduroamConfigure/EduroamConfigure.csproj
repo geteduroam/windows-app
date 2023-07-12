@@ -65,6 +65,9 @@
     <Compile Include="UserDataXml.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".editorconfig" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="DuoVia.FuzzyStrings">
       <Version>2.1.0</Version>
     </PackageReference>
