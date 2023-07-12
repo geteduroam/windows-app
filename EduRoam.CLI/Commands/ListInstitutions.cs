@@ -28,7 +28,7 @@ namespace EduRoam.CLI.Commands
         {
             try
             {
-                var getListTask = new GetListTask();
+                var getListTask = new GetInstitutesTask();
                 var closestProviders = await getListTask.GetAsync();
 
                 foreach (var provider in closestProviders)

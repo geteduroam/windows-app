@@ -2,7 +2,7 @@
 
 namespace EduRoam.Connect.Tasks
 {
-    public class GetListTask
+    public class GetInstitutesTask
     {
         /// <summary>
         /// Get a list of Identity Providers.
