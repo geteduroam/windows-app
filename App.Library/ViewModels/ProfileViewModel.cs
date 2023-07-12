@@ -18,7 +18,7 @@ namespace App.Library.ViewModels
             this.eapConfig = eapConfig;
             this.NavigateWebCommand = new DelegateCommand(this.NavigateWeb, this.CanNavigateWeb);
             this.OpenEmailCommand = new DelegateCommand(this.OpenEmail, this.CanOpenEmail);
-            this.SelectOtherInstitutionCommand = new DelegateCommand(this.OpenEmail, () => true);
+            this.SelectOtherInstitutionCommand = new DelegateCommand(this.SelectOtherInstitution, () => true);
 
             //todo ExtractFlag?
             //todo CopyToClipboard WebAddress / Phone / Email?

@@ -18,7 +18,11 @@ namespace App.Library.Command
             this.canExecute = canExecute;
         }
 
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler CanExecuteChanged
+        {
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
 
         public bool CanExecute()
         {
@@ -45,7 +49,7 @@ namespace App.Library.Command
 
         public void RaiseCanExecuteChanged()
         {
-            this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            //this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
         #region Explicit implementations
