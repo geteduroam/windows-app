@@ -7,19 +7,29 @@ namespace App.Library.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
-        public LoginViewModel(MainViewModel mainViewModel, EapConfig eapConfig)
-            : base(mainViewModel)
+        public LoginViewModel(MainViewModel owner, EapConfig eapConfig)
+            : base(owner)
         {
         }
 
-        protected override bool CanGoNext()
+        protected override bool CanNavigateNextAsync()
         {
             throw new NotImplementedException();
         }
 
-        protected override Task GoNextAsync()
+        protected override Task NavigateNextAsync()
         {
             throw new NotImplementedException();
+        }
+
+        protected override bool CanNavigatePrevious()
+        {
+            return false;
+        }
+
+        protected override Task NavigatePreviousAsync()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

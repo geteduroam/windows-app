@@ -23,7 +23,7 @@
                 Margin="24,8"
                 ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                 ItemsSource="{Binding Profiles}" 
-                SelectedItem="{Binding SelectedProfile}"/>
+                SelectedItem="{Binding Owner.State.SelectedProfile}"/>
         </Grid>
     </DataTemplate>
 

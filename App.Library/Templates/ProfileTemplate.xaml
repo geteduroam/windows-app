@@ -60,7 +60,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Content="{Binding LanguageText[ProfileEmail]}"
-                        Visibility="{Binding EmailAddress, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        Visibility="{Binding EmailIsValid, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <Label
                         Grid.Row="2"
                         Grid.Column="0"

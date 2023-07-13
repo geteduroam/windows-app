@@ -63,7 +63,7 @@
                 ItemsSource="{Binding Institutions}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 ScrollViewer.VerticalScrollBarVisibility="Visible"
-                SelectedItem="{Binding SelectedIdentityProvider}" />
+                SelectedItem="{Binding Owner.State.SelectedIdentityProvider}" />
         </Grid>
     </DataTemplate>
 

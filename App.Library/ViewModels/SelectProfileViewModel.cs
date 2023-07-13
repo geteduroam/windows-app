@@ -7,27 +7,25 @@ namespace App.Library.ViewModels
 {
     public class SelectProfileViewModel : BaseViewModel
     {
-        public SelectProfileViewModel(MainViewModel mainViewModel) //, IdentityProviderDownloader idpDownloader)
-            : base(mainViewModel)
+        public SelectProfileViewModel(MainViewModel owner) //, IdentityProviderDownloader idpDownloader)
+            : base(owner)
         {
             //this.idpDownloader = idpDownloader;
             //this.searchText = string.Empty;
             //this.NextCommand = new DelegateCommand(this.Next, this.CanGoNext);
         }
 
-        public List<IdentityProviderProfile> Profiles => this.MainViewModel.State.SelectedIdentityProvider.Profiles;
+        public List<IdentityProviderProfile> Profiles => this.Owner.State.SelectedIdentityProvider.Profiles;
 
-        public IdentityProviderProfile SelectedProfile { get; set; }
-
-        protected override bool CanGoNext()
+        protected override bool CanNavigateNextAsync()
         {
-            return this.SelectedProfile != null;
+            return this.Owner.State.SelectedProfile != null;
         }
 
-        protected override async Task GoNextAsync()
+        protected override async Task NavigateNextAsync()
         {
             // if profile could not be handled then return to form
-            var result = await MainViewModel.HandleProfileSelect(this.SelectedProfile);
+            var result = await this.Owner.HandleProfileSelect(this.Owner.State.SelectedProfile);
             //if (!await HandleProfileSelect(profileId)) 
             if (!result)
             {
@@ -35,6 +33,16 @@ namespace App.Library.ViewModels
                 //LoadPageSelectProfile(refresh: false);
             }
             //return Task.CompletedTask;
+        }
+
+        protected override bool CanNavigatePrevious()
+        {
+            return false;
+        }
+
+        protected override Task NavigatePreviousAsync()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

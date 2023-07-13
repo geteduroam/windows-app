@@ -8,8 +8,8 @@ namespace App.Library.ViewModels
 {
     public class CertificateViewModel : BaseViewModel
     {
-        public CertificateViewModel(MainViewModel mainViewModel, EapConfig eapConfig)
-            : base(mainViewModel)
+        public CertificateViewModel(MainViewModel owner, EapConfig eapConfig)
+            : base(owner)
         {
             //todo maybe subscribe to NotifyChanged or custom event to trigger AllInstalled
             this.Installers = new ObservableCollection<CertificateInstallerViewModel>(
@@ -21,12 +21,22 @@ namespace App.Library.ViewModels
 
         public bool AllCertificatesAreInstalled => Installers.All(x => x.IsInstalled);
 
-        protected override bool CanGoNext()
+        protected override bool CanNavigateNextAsync()
         {
             return this.AllCertificatesAreInstalled;
         }
 
-        protected override Task GoNextAsync()
+        protected override Task NavigateNextAsync()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        protected override bool CanNavigatePrevious()
+        {
+            return false;
+        }
+
+        protected override Task NavigatePreviousAsync()
         {
             throw new System.NotImplementedException();
         }

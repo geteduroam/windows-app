@@ -5,22 +5,32 @@ namespace App.Library.ViewModels
 {
     public class TermsOfUseViewModel : BaseViewModel
     {
-        public TermsOfUseViewModel(MainViewModel mainViewModel, string text)
-            : base(mainViewModel)
+        public TermsOfUseViewModel(MainViewModel owner, string text)
+            : base(owner)
         {
             this.Text = text;
         }
 
         public string Text { get; }
 
-        protected override bool CanGoNext()
+        protected override bool CanNavigateNextAsync()
+        {
+            return false;
+        }
+
+        protected override Task NavigateNextAsync()
         {
             throw new NotImplementedException();
         }
 
-        protected override Task GoNextAsync()
+        protected override bool CanNavigatePrevious()
         {
-            throw new NotImplementedException();
+            return false;
+        }
+
+        protected override Task NavigatePreviousAsync()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

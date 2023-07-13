@@ -15,8 +15,8 @@ namespace App.Library.ViewModels
 
         private string searchText;
 
-        public SelectInstitutionViewModel(MainViewModel mainViewModel, IdentityProviderDownloader idpDownloader)
-            : base(mainViewModel)
+        public SelectInstitutionViewModel(MainViewModel owner, IdentityProviderDownloader idpDownloader)
+            : base(owner)
         {
             this.idpDownloader = idpDownloader;
             this.searchText = string.Empty;
@@ -43,25 +43,20 @@ namespace App.Library.ViewModels
 
                 return new ObservableCollection<IdentityProvider>(
                     this.idpDownloader.ClosestProviders.Where(
-                        x => x.Name.ToLowerInvariant()
-                              .Contains(this.searchText.ToLowerInvariant())));
+                        x => x.Name.ToLowerInvariant().StartsWith(this.searchText.ToLowerInvariant())));
             }
         }
 
-        public IdentityProvider SelectedIdentityProvider { get; set; }
-
-        protected override bool CanGoNext()
+        protected override bool CanNavigateNextAsync()
         {
-            return this.SelectedIdentityProvider != null;
+            return this.Owner.State.SelectedIdentityProvider != null;
         }
 
-        protected override Task GoNextAsync()
+        protected override Task NavigateNextAsync()
         {
-            this.MainViewModel.State.SelectedIdentityProvider = this.SelectedIdentityProvider;
-
-            if (this.MainViewModel.State.SelectedIdentityProvider.Profiles.Count == 1) // skip the profile select and go with the first one
+            if (this.Owner.State.SelectedIdentityProvider.Profiles.Count == 1) // skip the profile select and go with the first one
             {
-                var autoProfileId = this.MainViewModel.State.SelectedIdentityProvider.Profiles.Single().Id;
+                var autoProfileId = this.Owner.State.SelectedIdentityProvider.Profiles.Single().Id;
                 if (!string.IsNullOrEmpty(autoProfileId))
                 {
                     // if profile could not be handled then return to form
@@ -71,9 +66,19 @@ namespace App.Library.ViewModels
             }
             //LoadPageSelectProfile();
 
-            this.MainViewModel.SetActiveContent(new SelectProfileViewModel(this.MainViewModel));
+            this.Owner.SetActiveContent(new SelectProfileViewModel(this.Owner));
             return Task.CompletedTask;
             //this.CallPropertyChanged(string.Empty);
+        }
+
+        protected override bool CanNavigatePrevious()
+        {
+            return false;
+        }
+
+        protected override Task NavigatePreviousAsync()
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

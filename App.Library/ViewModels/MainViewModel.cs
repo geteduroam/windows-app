@@ -104,6 +104,8 @@ namespace App.Library.ViewModels
 
         public void Restart()
         {
+            State.SelectedIdentityProvider = null;
+            State.SelectedProfile = null;
             SetActiveContent(null);
         }
 

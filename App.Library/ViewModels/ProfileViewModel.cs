@@ -12,8 +12,8 @@ namespace App.Library.ViewModels
     {
         private readonly EapConfig eapConfig;
 
-        public ProfileViewModel(MainViewModel mainViewModel, EapConfig eapConfig)
-            : base(mainViewModel)
+        public ProfileViewModel(MainViewModel owner, EapConfig eapConfig)
+            : base(owner)
         {
             this.eapConfig = eapConfig;
             this.NavigateWebCommand = new DelegateCommand(this.NavigateWeb, this.CanNavigateWeb);
@@ -85,18 +85,18 @@ namespace App.Library.ViewModels
 
         private void SelectOtherInstitution()
         {
-           MainViewModel.Restart();
+           this.Owner.Restart();
         }
 
-        protected override bool CanGoNext()
+        protected override bool CanNavigateNextAsync()
         {
             return true;
         }
 
-        protected override Task GoNextAsync()
+        protected override Task NavigateNextAsync()
         {
             //todo ShowTou was always true in old situation, What to do?
-            MainViewModel.SetActiveContent(new TermsOfUseViewModel(this.MainViewModel, TermsOfUse));
+            this.Owner.SetActiveContent(new TermsOfUseViewModel(this.Owner, TermsOfUse));
 
             //if (pageProfileOverview.ShowTou)
             //{
@@ -112,6 +112,16 @@ namespace App.Library.ViewModels
 
             //LoadPageLogin();
             return Task.CompletedTask;
+        }
+
+        protected override bool CanNavigatePrevious()
+        {
+            return false;
+        }
+
+        protected override Task NavigatePreviousAsync()
+        {
+            throw new System.NotImplementedException();
         }
 
         /// <summary>
