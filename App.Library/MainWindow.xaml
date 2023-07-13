@@ -51,6 +51,7 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Background="{DynamicResource BackgroundBrush}"
+            Opacity="0.5"
             Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
             ZIndex="100">
             <TextBlock
@@ -61,8 +62,6 @@
                 Text="{Binding LanguageText[Loading]}"
                 TextAlignment="Center" />
         </Grid>
-
-
 
         <Grid
             Grid.Row="1"
@@ -76,10 +75,8 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <!--<StackPanel Grid.RowSpan="6"/>-->
 
             <Button
-                x:Name="btnNewProfile"
                 Grid.Row="1"
                 Width="186"
                 Height="56"
@@ -94,21 +91,6 @@
                     TextAlignment="Center"
                     TextWrapping="Wrap" />
             </Button>
-            <!--<Button x:Name="btnExisting" Style="{DynamicResource BlueButtonStyle}"
-                MinHeight="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,32" Width="186" Grid.Row="2">
-                <TextBlock x:Name="tbExisting" TextWrapping="Wrap" Text="Connect with [bundled config]" TextAlignment="Center"/>
-            </Button>
-            <Grid x:Name="grdInstalledProfile" Grid.Row="3" Margin="5" VerticalAlignment="Bottom">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock x:Name="tbConfiguredInfo" TextWrapping="Wrap" Text="Already configured account" TextAlignment="Center" Margin="5"/>
-                <Button x:Name="btnInstalledProfile" Style="{DynamicResource WhiteButtonStyle}"
-                MinHeight="37"  Width="130" HorizontalAlignment="Center"  Margin="5"  Grid.Row="1" >
-                    <TextBlock x:Name="tbInstalledProfile" TextWrapping="Wrap" Text="Already configured account" TextAlignment="Center" Margin="5" />
-                </Button>
-            </Grid>-->
         </Grid>
 
         <ContentControl

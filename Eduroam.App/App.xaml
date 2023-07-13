@@ -8,10 +8,6 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Styling/Styling.xaml"/>
-                
-                <!--<ResourceDictionary>
-                    <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
-                </ResourceDictionary>-->
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
       

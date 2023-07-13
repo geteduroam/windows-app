@@ -8,6 +8,5 @@
         <ResourceDictionary Source="ProfileTemplate.xaml" />
         <ResourceDictionary Source="LoginTemplate.xaml" />
         <ResourceDictionary Source="OAuthTemplate.xaml" />
-        <ResourceDictionary Source="TermsOfUseTemplate.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

@@ -11,8 +11,8 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <TextBlock
@@ -101,15 +101,14 @@
                 </Grid>
             </GroupBox>
 
-            <TextBlock
+            <ScrollViewer
                 Grid.Row="3"
                 Margin="5"
-                TextAlignment="Center"
-                TextWrapping="Wrap">
-                <Hyperlink Command="{Binding NextCommand}">
-                    <TextBlock Text="{Binding LanguageText[ProfileAgreeTerms]}" />
-                </Hyperlink>
-            </TextBlock>
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
+                <TextBlock ScrollViewer.CanContentScroll="True" Text="{Binding TermsOfUse}"
+                           TextWrapping="WrapWithOverflow"/>
+            </ScrollViewer>
 
             <Grid
                 Grid.Row="4"

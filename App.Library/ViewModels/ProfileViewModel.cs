@@ -96,8 +96,7 @@ namespace App.Library.ViewModels
         protected override Task NavigateNextAsync()
         {
             //todo ShowTou was always true in old situation, What to do?
-            this.Owner.SetActiveContent(new TermsOfUseViewModel(this.Owner, TermsOfUse));
-
+            
             //if (pageProfileOverview.ShowTou)
             //{
             //    LoadPageTermsOfUse();
