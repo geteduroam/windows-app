@@ -32,7 +32,7 @@
                 Margin="20,0,0,0"
                 VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Installers}"
-                              ItemTemplateSelector="{DynamicResource LocalDataTemplateSelector}" >
+                              ItemTemplateSelector="{StaticResource LocalDataTemplateSelector}" >
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Vertical"/>

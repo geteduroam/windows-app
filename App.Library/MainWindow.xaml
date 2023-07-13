@@ -5,8 +5,8 @@
     xmlns:converters="clr-namespace:App.Library.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:App.Library"
-    xmlns:templates="clr-namespace:App.Library.Templates"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:templates="clr-namespace:App.Library.Templates"
     Title="geteduroam"
     Width="420"
     Height="600"
@@ -15,9 +15,9 @@
     MaxWidth="420"
     Closing="MainWindow_OnClosing"
     mc:Ignorable="d">
-    <WindowChrome.WindowChrome>
+    <!--<WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0" ResizeBorderThickness="8" />
-    </WindowChrome.WindowChrome>
+    </WindowChrome.WindowChrome>-->
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -41,12 +41,17 @@
             <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
+        <Grid Grid.Row="0" Height="50">
+            <Image Source="{Binding Converter={StaticResource ImageConverter}, ConverterParameter=eduroam_logo.png}" Stretch="Uniform" />
+        </Grid>
+
         <Grid
             Grid.Row="1"
             Grid.RowSpan="2"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             Background="{DynamicResource BackgroundBrush}"
+            Opacity="0.5"
             Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
             ZIndex="100">
             <TextBlock
@@ -57,20 +62,6 @@
                 Text="{Binding LanguageText[Loading]}"
                 TextAlignment="Center" />
         </Grid>
-
-        <!--<Border BorderBrush="White" BorderThickness="1" CornerRadius="25,0,0,25"
-                Background="White"
-                VerticalAlignment="Bottom"
-                Margin="0,0,0,75"
-                Width="200" Height="50"
-                HorizontalAlignment="Right">-->
-        <Grid Grid.Row="0" Height="50">
-            <Image
-                Name="ImageIcon"
-                Source="{Binding Converter={StaticResource ImageConverter}, ConverterParameter=eduroam_logo.png}"
-                Stretch="Uniform" />
-        </Grid>
-        <!--</Border>-->
 
         <Grid
             Grid.Row="1"
@@ -84,10 +75,8 @@
                 <RowDefinition Height="*" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <!--<StackPanel Grid.RowSpan="6"/>-->
 
             <Button
-                x:Name="btnNewProfile"
                 Grid.Row="1"
                 Width="186"
                 Height="56"
@@ -102,21 +91,6 @@
                     TextAlignment="Center"
                     TextWrapping="Wrap" />
             </Button>
-            <!--<Button x:Name="btnExisting" Style="{DynamicResource BlueButtonStyle}"
-                MinHeight="56" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,32" Width="186" Grid.Row="2">
-                <TextBlock x:Name="tbExisting" TextWrapping="Wrap" Text="Connect with [bundled config]" TextAlignment="Center"/>
-            </Button>
-            <Grid x:Name="grdInstalledProfile" Grid.Row="3" Margin="5" VerticalAlignment="Bottom">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <TextBlock x:Name="tbConfiguredInfo" TextWrapping="Wrap" Text="Already configured account" TextAlignment="Center" Margin="5"/>
-                <Button x:Name="btnInstalledProfile" Style="{DynamicResource WhiteButtonStyle}"
-                MinHeight="37"  Width="130" HorizontalAlignment="Center"  Margin="5"  Grid.Row="1" >
-                    <TextBlock x:Name="tbInstalledProfile" TextWrapping="Wrap" Text="Already configured account" TextAlignment="Center" Margin="5" />
-                </Button>
-            </Grid>-->
         </Grid>
 
         <ContentControl
@@ -125,16 +99,28 @@
             ContentTemplateSelector="{DynamicResource LocalDataTemplateSelector}" />
 
         <Grid Grid.Row="2" Visibility="{Binding ActiveContent, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-            <Button
-                Width="131"
-                Height="42"
-                Margin="10,10,10,20"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Command="{Binding ActiveContent.NextCommand}"
-                Content="{Binding LanguageText[ButtonNext]}"
-                IsDefault="true"
-                Style="{DynamicResource BlueButtonStyle}" />
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button
+                    Width="131"
+                    Height="42"
+                    Margin="10,10,10,20"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding ActiveContent.PreviousCommand}"
+                    Content="{Binding LanguageText[ButtonPrevious]}"
+                    Style="{DynamicResource BlueButtonStyle}" />
+
+                <Button
+                    Width="131"
+                    Height="42"
+                    Margin="10,10,10,20"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Command="{Binding ActiveContent.NextCommand}"
+                    Content="{Binding LanguageText[ButtonNext]}"
+                    IsDefault="true"
+                    Style="{DynamicResource BlueButtonStyle}" />
+            </StackPanel>
         </Grid>
     </Grid>
 </Window>

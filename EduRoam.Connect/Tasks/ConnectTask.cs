@@ -63,7 +63,7 @@ namespace EduRoam.Connect.Tasks
 
                 if (connected)
                 {
-                    ConsoleExtension.WriteError("You are now connected to EduRoam.");
+                    ConsoleExtension.WriteStatus("You are now connected to EduRoam.");
                 }
                 else
                 {

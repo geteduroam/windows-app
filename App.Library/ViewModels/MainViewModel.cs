@@ -32,6 +32,8 @@ namespace App.Library.ViewModels
                 {
                     await this.idpDownloader.LoadProviders(useGeodata: true);
                     this.IsLoading = false;
+
+                    this.SetActiveContent(new SelectInstitutionViewModel(this, this.idpDownloader));
                     this.CallPropertyChanged(string.Empty);
                     this.NewProfileCommand.RaiseCanExecuteChanged();
                 });
@@ -104,6 +106,8 @@ namespace App.Library.ViewModels
 
         public void Restart()
         {
+            State.SelectedIdentityProvider = null;
+            State.SelectedProfile = null;
             SetActiveContent(null);
         }
 

@@ -2,7 +2,7 @@
   "profiles": {
     "EduRoam.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "show-eap-config --i \"uninett\" --p Ansatt"
+      "commandLineArgs": "connect --i \"Moreelsepark college\" --p \"Mijn Moreelsepark\""
     }
   }
 }

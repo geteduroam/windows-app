@@ -11,8 +11,8 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <TextBlock
@@ -60,7 +60,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Content="{Binding LanguageText[ProfileEmail]}"
-                        Visibility="{Binding EmailAddress, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        Visibility="{Binding EmailIsValid, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <Label
                         Grid.Row="2"
                         Grid.Column="0"
@@ -101,15 +101,14 @@
                 </Grid>
             </GroupBox>
 
-            <TextBlock
+            <ScrollViewer
                 Grid.Row="3"
                 Margin="5"
-                TextAlignment="Center"
-                TextWrapping="Wrap">
-                <Hyperlink Command="{Binding NextCommand}">
-                    <TextBlock Text="{Binding LanguageText[ProfileAgreeTerms]}" />
-                </Hyperlink>
-            </TextBlock>
+                HorizontalScrollBarVisibility="Disabled"
+                VerticalScrollBarVisibility="Auto">
+                <TextBlock ScrollViewer.CanContentScroll="True" Text="{Binding TermsOfUse}"
+                           TextWrapping="WrapWithOverflow"/>
+            </ScrollViewer>
 
             <Grid
                 Grid.Row="4"

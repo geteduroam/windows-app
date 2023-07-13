@@ -22,7 +22,8 @@
                 Grid.Row="1"
                 Margin="24,8"
                 ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
-                ItemsSource="{Binding Profiles}" />
+                ItemsSource="{Binding Profiles}" 
+                SelectedItem="{Binding Owner.State.SelectedProfile}"/>
         </Grid>
     </DataTemplate>
 

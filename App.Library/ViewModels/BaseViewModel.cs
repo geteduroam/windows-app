@@ -4,6 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Threading;
 using System.Threading.Tasks;
 
 using App.Library.Command;
@@ -15,20 +16,27 @@ public abstract class BaseViewModel : NotifyPropertyChanged
 {
     public ILanguageText LanguageText { get; }
 
-    protected MainViewModel MainViewModel { get; }
+    public MainViewModel Owner { get; }
 
-    protected BaseViewModel(MainViewModel mainViewModel)
+    protected BaseViewModel(MainViewModel owner)
     {
-        this.MainViewModel = mainViewModel;
-        this.LanguageText = mainViewModel.LanguageText;
-        this.NextCommand = new AsyncCommand(this.GoNextAsync, this.CanGoNext);
+        this.Owner = owner;
+        this.LanguageText = owner.LanguageText;
+        this.NextCommand = new AsyncCommand(this.ExecuteNavigateNextActionAsync, this.CanNavigateNextAsync);
+        this.PreviousCommand = new AsyncCommand(this.ExecuteNavigatePreviousActionAsync, this.CanNavigatePrevious);
     }
 
     public AsyncCommand NextCommand { get; protected set; }
 
-    protected abstract bool CanGoNext();
+    public AsyncCommand PreviousCommand { get; protected set; }
 
-    protected abstract Task GoNextAsync();
+    protected abstract bool CanNavigateNextAsync();
+
+    protected abstract Task NavigateNextAsync();
+
+    protected abstract bool CanNavigatePrevious();
+
+    protected abstract Task NavigatePreviousAsync();
 
     public bool IsLoading { get; protected set; }
 
@@ -38,12 +46,25 @@ public abstract class BaseViewModel : NotifyPropertyChanged
         this.CallPropertyChanged(nameof(this.IsLoading));
     }
 
-    private async Task RunExecuteActionAsync()
+    private async Task ExecuteNavigateNextActionAsync()
     {
         this.SetIsLoading(true);
         try
         {
-            await GoNextAsync();
+            await this.NavigateNextAsync();
+        }
+        finally
+        {
+            this.SetIsLoading(false);
+        }
+    }
+
+    private async Task ExecuteNavigatePreviousActionAsync()
+    {
+        this.SetIsLoading(true);
+        try
+        {
+            await this.NavigatePreviousAsync();
         }
         finally
         {
