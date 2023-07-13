@@ -7,7 +7,7 @@ namespace EduRoam.CLI.Commands
 {
     public class Configure : ICommand
     {
-        public static string CommandName => "connect";
+        public static string CommandName => "configure";
 
         public static string CommandDescription => "connect based on a institution profile";
 
