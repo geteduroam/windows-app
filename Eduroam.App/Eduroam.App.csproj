@@ -8,7 +8,7 @@
     <StartupObject>Eduroam.App.App</StartupObject>
     <ApplicationIcon>geteduroam.ico</ApplicationIcon>
     <Configurations>Debug;Release;DebugArm</Configurations>
-    <Platforms>AnyCPU;ARM32</Platforms>
+    <Platforms>AnyCPU;ARM32;ARM64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
