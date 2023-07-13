@@ -34,15 +34,5 @@ namespace App.Library.ViewModels
             }
             //return Task.CompletedTask;
         }
-
-        protected override bool CanNavigatePrevious()
-        {
-            return false;
-        }
-
-        protected override Task NavigatePreviousAsync()
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

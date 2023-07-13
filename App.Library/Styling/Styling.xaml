@@ -2,6 +2,10 @@
 
     <SolidColorBrush x:Key="BackgroundBrush" Color="#EBF2F7" />
 
+    <Style x:Key="TextBlockLarge" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="24" />
+    </Style>
+
     <Style x:Key="BlueButtonStyle" TargetType="Button">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" />
@@ -112,16 +116,21 @@
     </Style>
 
     <Style x:Key="InstallButtonStyle" TargetType="Button">
-        <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
-        <Setter Property="Content" Value="Install"/>
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
+        <Setter Property="Content" Value="Install" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <Border x:Name="border" Background="{TemplateBinding Background}" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}"
-                            BorderThickness="1" BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <Border
+                        x:Name="border"
+                        Width="{TemplateBinding Width}"
+                        Height="{TemplateBinding Height}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
+                        BorderThickness="1">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
@@ -133,28 +142,28 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsEnabled" Value="False">
-                <Setter Property="Content" Value="Installed ✔️"/>
+                <Setter Property="Content" Value="Installed ✔️" />
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <Style x:Key="HeaderButtonStyle" TargetType="Button">
-        <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowColor}}"/>
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColor}}"/>
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowColor}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColor}}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border Background="{TemplateBinding Background}">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="#8888" />
                         </Trigger>
-                        <Trigger Property="Button.IsPressed" Value="True" >
-                            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}"/>
-                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}"/>
+                        <Trigger Property="Button.IsPressed" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" />
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.HighlightTextBrushKey}}" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -163,23 +172,23 @@
     </Style>
 
     <Style x:Key="CloseButtonStyle" TargetType="Button">
-        <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowColor}}"/>
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColor}}"/>
+        <Setter Property="OverridesDefaultStyle" Value="True" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.WindowColor}}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ActiveCaptionTextColor}}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border Background="{TemplateBinding Background}">
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="#ff0000" />
-                            <Setter Property="Foreground" Value="#ffff"/>
+                            <Setter Property="Foreground" Value="#ffff" />
                         </Trigger>
-                        <Trigger Property="Button.IsPressed" Value="True" >
-                            <Setter Property="Background" Value="#88ff0000"/>
-                            <Setter Property="Foreground" Value="#ffff"/>
+                        <Trigger Property="Button.IsPressed" Value="True">
+                            <Setter Property="Background" Value="#88ff0000" />
+                            <Setter Property="Foreground" Value="#ffff" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

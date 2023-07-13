@@ -1,9 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-
-using App.Library.Command;
-using App.Library.Language;
 
 using EduRoam.Connect;
 
@@ -43,7 +41,8 @@ namespace App.Library.ViewModels
 
                 return new ObservableCollection<IdentityProvider>(
                     this.idpDownloader.ClosestProviders.Where(
-                        x => x.Name.ToLowerInvariant().StartsWith(this.searchText.ToLowerInvariant())));
+                        x => x.Name.ToLowerInvariant()
+                              .StartsWith(this.searchText.ToLowerInvariant())));
             }
         }
 
@@ -54,9 +53,11 @@ namespace App.Library.ViewModels
 
         protected override Task NavigateNextAsync()
         {
-            if (this.Owner.State.SelectedIdentityProvider.Profiles.Count == 1) // skip the profile select and go with the first one
+            if (this.Owner.State.SelectedIdentityProvider.Profiles.Count
+                == 1) // skip the profile select and go with the first one
             {
-                var autoProfileId = this.Owner.State.SelectedIdentityProvider.Profiles.Single().Id;
+                var autoProfileId = this.Owner.State.SelectedIdentityProvider.Profiles.Single()
+                                        .Id;
                 if (!string.IsNullOrEmpty(autoProfileId))
                 {
                     // if profile could not be handled then return to form
@@ -69,16 +70,6 @@ namespace App.Library.ViewModels
             this.Owner.SetActiveContent(new SelectProfileViewModel(this.Owner));
             return Task.CompletedTask;
             //this.CallPropertyChanged(string.Empty);
-        }
-
-        protected override bool CanNavigatePrevious()
-        {
-            return false;
-        }
-
-        protected override Task NavigatePreviousAsync()
-        {
-            throw new System.NotImplementedException();
         }
     }
 }
