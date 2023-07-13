@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EduRoam.Connect.Device
 {
@@ -45,13 +40,13 @@ namespace EduRoam.Connect.Device
         {
             get
             {
-                DisposeCheck();
-                return m_desiredAccuracy;
+                this.DisposeCheck();
+                return this.m_desiredAccuracy;
             }
             private set
             {
-                DisposeCheck();
-                m_desiredAccuracy = value;
+                this.DisposeCheck();
+                this.m_desiredAccuracy = value;
             }
         }
 
@@ -68,18 +63,18 @@ namespace EduRoam.Connect.Device
         {
             get
             {
-                DisposeCheck();
-                return m_threshold;
+                this.DisposeCheck();
+                return this.m_threshold;
             }
             set
             {
-                DisposeCheck();
+                this.DisposeCheck();
                 if (value < 0.0 || double.IsNaN(value))
                 {
                     throw new ArgumentOutOfRangeException("value", "Argument_MustBeNonNegative");
                 }
 
-                m_threshold = value;
+                this.m_threshold = value;
             }
         }
 
@@ -94,7 +89,7 @@ namespace EduRoam.Connect.Device
         {
             get
             {
-                DisposeCheck();
+                this.DisposeCheck();
                 throw new NotSupportedException();
                 // return m_watcher.Permission;
             }
@@ -111,7 +106,7 @@ namespace EduRoam.Connect.Device
             [SecuritySafeCritical]
             get
             {
-                DisposeCheck();
+                this.DisposeCheck();
                 throw new NotSupportedException();
                 // return m_watcher.Position;
             }
@@ -129,7 +124,7 @@ namespace EduRoam.Connect.Device
             [SecuritySafeCritical]
             get
             {
-                DisposeCheck();
+                this.DisposeCheck();
                 throw new NotSupportedException();
                 // return m_watcher.Status;
             }
@@ -156,12 +151,12 @@ namespace EduRoam.Connect.Device
             [SecuritySafeCritical]
             add
             {
-                m_propertyChanged = (PropertyChangedEventHandler)Delegate.Combine(m_propertyChanged, value);
+                this.m_propertyChanged = (PropertyChangedEventHandler)Delegate.Combine(this.m_propertyChanged, value);
             }
             [SecuritySafeCritical]
             remove
             {
-                m_propertyChanged = (PropertyChangedEventHandler)Delegate.Remove(m_propertyChanged, value);
+                this.m_propertyChanged = (PropertyChangedEventHandler)Delegate.Remove(this.m_propertyChanged, value);
             }
         }
 
@@ -173,12 +168,12 @@ namespace EduRoam.Connect.Device
             [SecuritySafeCritical]
             add
             {
-                m_positionChanged = (EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>)Delegate.Combine(m_positionChanged, value);
+                this.m_positionChanged = (EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>)Delegate.Combine(this.m_positionChanged, value);
             }
             [SecuritySafeCritical]
             remove
             {
-                m_positionChanged = (EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>)Delegate.Remove(m_positionChanged, value);
+                this.m_positionChanged = (EventHandler<GeoPositionChangedEventArgs<GeoCoordinate>>)Delegate.Remove(this.m_positionChanged, value);
             }
         }
 
@@ -190,12 +185,12 @@ namespace EduRoam.Connect.Device
             [SecuritySafeCritical]
             add
             {
-                m_statusChanged = (EventHandler<GeoPositionStatusChangedEventArgs>)Delegate.Combine(m_statusChanged, value);
+                this.m_statusChanged = (EventHandler<GeoPositionStatusChangedEventArgs>)Delegate.Combine(this.m_statusChanged, value);
             }
             [SecuritySafeCritical]
             remove
             {
-                m_statusChanged = (EventHandler<GeoPositionStatusChangedEventArgs>)Delegate.Remove(m_statusChanged, value);
+                this.m_statusChanged = (EventHandler<GeoPositionStatusChangedEventArgs>)Delegate.Remove(this.m_statusChanged, value);
             }
         }
 
@@ -220,20 +215,20 @@ namespace EduRoam.Connect.Device
         //     can degrade performance and should be specified only when high accuracy is needed.
         public GeoCoordinateWatcher(GeoPositionAccuracy desiredAccuracy)
         {
-            m_desiredAccuracy = desiredAccuracy;
-            m_watcher = new GeoCoordinateWatcherInternal(desiredAccuracy);
+            this.m_desiredAccuracy = desiredAccuracy;
+            this.m_watcher = new GeoCoordinateWatcherInternal(desiredAccuracy);
             if (SynchronizationContext.Current == null)
             {
-                m_synchronizationContext = new SynchronizationContext();
+                this.m_synchronizationContext = new SynchronizationContext();
             }
             else
             {
-                m_synchronizationContext = SynchronizationContext.Current;
+                this.m_synchronizationContext = SynchronizationContext.Current;
             }
 
-            m_watcher.StatusChanged += OnInternalStatusChanged;
-            m_watcher.PermissionChanged += OnInternalPermissionChanged;
-            m_watcher.PositionChanged += OnInternalLocationChanged;
+            this.m_watcher.StatusChanged += this.OnInternalStatusChanged;
+            this.m_watcher.PermissionChanged += this.OnInternalPermissionChanged;
+            this.m_watcher.PositionChanged += this.OnInternalLocationChanged;
         }
 
         //
@@ -244,8 +239,8 @@ namespace EduRoam.Connect.Device
         [SecuritySafeCritical]
         public void Start()
         {
-            DisposeCheck();
-            Start(suppressPermissionPrompt: false);
+            this.DisposeCheck();
+            this.Start(suppressPermissionPrompt: false);
         }
 
         //
@@ -261,7 +256,7 @@ namespace EduRoam.Connect.Device
         [SecuritySafeCritical]
         public void Start(bool suppressPermissionPrompt)
         {
-            DisposeCheck();
+            this.DisposeCheck();
             throw new NotSupportedException();
             // m_watcher.TryStart(suppressPermissionPrompt, TimeSpan.Zero);
         }
@@ -286,8 +281,8 @@ namespace EduRoam.Connect.Device
         [SecuritySafeCritical]
         public bool TryStart(bool suppressPermissionPrompt, TimeSpan timeout)
         {
-            DisposeCheck();
-            long num = (long)timeout.TotalMilliseconds;
+            this.DisposeCheck();
+            var num = (long)timeout.TotalMilliseconds;
             if (num <= 0 || int.MaxValue < num)
             {
                 throw new NotSupportedException();
@@ -305,30 +300,30 @@ namespace EduRoam.Connect.Device
         [SecuritySafeCritical]
         public void Stop()
         {
-            DisposeCheck();
+            this.DisposeCheck();
             throw new NotSupportedException();
             // m_watcher.Stop();
         }
 
         private void OnInternalLocationChanged(object sender, GeoPositionChangedEventArgs<GeoCoordinate> e)
         {
-            if (e.Position != null && (m_lastCoordinate == GeoCoordinate.Unknown || e.Position.Location == GeoCoordinate.Unknown || e.Position.Location.GetDistanceTo(m_lastCoordinate) >= m_threshold))
+            if (e.Position != null && (this.m_lastCoordinate == GeoCoordinate.Unknown || e.Position.Location == GeoCoordinate.Unknown || e.Position.Location.GetDistanceTo(this.m_lastCoordinate) >= this.m_threshold))
             {
-                m_lastCoordinate = e.Position.Location;
-                PostEvent(OnPositionChanged, new GeoPositionChangedEventArgs<GeoCoordinate>(e.Position));
-                OnPropertyChanged("Position");
+                this.m_lastCoordinate = e.Position.Location;
+                this.PostEvent(this.OnPositionChanged, new GeoPositionChangedEventArgs<GeoCoordinate>(e.Position));
+                this.OnPropertyChanged("Position");
             }
         }
 
         private void OnInternalStatusChanged(object sender, GeoPositionStatusChangedEventArgs e)
         {
-            PostEvent(OnPositionStatusChanged, new GeoPositionStatusChangedEventArgs(e.Status));
-            OnPropertyChanged("Status");
+            this.PostEvent(this.OnPositionStatusChanged, new GeoPositionStatusChangedEventArgs(e.Status));
+            this.OnPropertyChanged("Status");
         }
 
         private void OnInternalPermissionChanged(object sender, GeoPermissionChangedEventArgs e)
         {
-            OnPropertyChanged("Permission");
+            this.OnPropertyChanged("Permission");
         }
 
         //
@@ -368,9 +363,9 @@ namespace EduRoam.Connect.Device
         //     The name of the property that has changed.
         protected void OnPropertyChanged(string propertyName)
         {
-            if (m_propertyChanged != null)
+            if (this.m_propertyChanged != null)
             {
-                m_propertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                this.m_propertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
@@ -381,7 +376,7 @@ namespace EduRoam.Connect.Device
         [SecuritySafeCritical]
         public void Dispose()
         {
-            Dispose(disposing: true);
+            this.Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
 
@@ -392,7 +387,7 @@ namespace EduRoam.Connect.Device
         [SecuritySafeCritical]
         ~GeoCoordinateWatcher()
         {
-            Dispose(disposing: false);
+            this.Dispose(disposing: false);
         }
 
         //
@@ -406,7 +401,7 @@ namespace EduRoam.Connect.Device
         //     resources.
         protected virtual void Dispose(bool disposing)
         {
-            if (!m_disposed)
+            if (!this.m_disposed)
             {
                 //if (disposing && m_watcher != null)
                 //{
@@ -414,13 +409,13 @@ namespace EduRoam.Connect.Device
                 //    m_watcher = null;
                 //}
 
-                m_disposed = true;
+                this.m_disposed = true;
             }
         }
 
         private void DisposeCheck()
         {
-            if (m_disposed)
+            if (this.m_disposed)
             {
                 throw new ObjectDisposedException("GeoCoordinateWatcher");
             }
@@ -428,7 +423,7 @@ namespace EduRoam.Connect.Device
 
         private void PostEvent<T>(EventRaiser<T> callback, T e) where T : EventArgs
         {
-            m_synchronizationContext.Post(delegate (object state)
+            this.m_synchronizationContext.Post(delegate (object state)
             {
                 callback((T)state);
             }, e);

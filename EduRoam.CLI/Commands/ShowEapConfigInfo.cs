@@ -18,13 +18,13 @@ namespace EduRoam.CLI.Commands
                 name: "--i",
                 parseArgument: OptionExtensions.NonEmptyString,
                 isDefault: true,
-                description: "The name of the institute to connect to.");
+                description: "Institute's name.");
 
             var profileOption = new Option<string>(
                 name: "--p",
                 parseArgument: OptionExtensions.NonEmptyString,
                 isDefault: true,
-                description: "Institute's profile to connect to.");
+                description: "Institute's profile.");
 
             var command = new Command(CommandName, CommandDescription)
             {
@@ -35,10 +35,9 @@ namespace EduRoam.CLI.Commands
 
             command.SetHandler(async (string institute, string profileName) =>
             {
-                var connectTask = new GetEapConfigTask();
-
                 try
                 {
+                    var connectTask = new GetEapConfigTask();
                     var eapConfig = await connectTask.GetEapConfigAsync(institute, profileName);
 
                     if (eapConfig == null || !HasInfo(eapConfig))

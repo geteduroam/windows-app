@@ -9,7 +9,7 @@ namespace EduRoam.CLI.Commands
     {
         public static string CommandName => "configure";
 
-        public static string CommandDescription => "connect based on a institution profile";
+        public static string CommandDescription => "Configure Wi-Fi based on a institution profile";
 
         public Command GetCommand()
         {

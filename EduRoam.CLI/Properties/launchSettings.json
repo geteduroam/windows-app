@@ -2,7 +2,7 @@
   "profiles": {
     "EduRoam.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "connect --i \"Moreelsepark college\" --p \"Mijn Moreelsepark\""
+      "commandLineArgs": ""
     }
   }
 }

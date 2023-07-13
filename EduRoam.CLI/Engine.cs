@@ -8,12 +8,15 @@ namespace EduRoam.CLI
     {
         private readonly List<ICommand> commandsList = new()
         {
-            { new Clear() },
             { new Configure() },
             { new ConnectByProfile() },
             { new ListInstitutions() },
             { new ListProfiles() },
+            { new Refresh() },
+            { new Remove() },
             { new ShowEapConfigInfo() },
+            { new Uninstall() },
+
         };
 
         private readonly RootCommand rootCommand;

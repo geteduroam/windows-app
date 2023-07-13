@@ -4,7 +4,12 @@ namespace EduRoam.Connect.Tasks
 {
     public class ConnectTask
     {
-        private EapConfig? eapConfig;
+        private EapConfig eapConfig;
+
+        public ConnectTask(EapConfig eapConfig)
+        {
+            this.eapConfig = eapConfig;
+        }
 
         /// <summary>
         /// Connect by a institutes profile
@@ -14,14 +19,12 @@ namespace EduRoam.Connect.Tasks
         ///     Force automatic configuration (for example install certificates) 
         ///     if the profile is not already configured (fully).
         /// </param>
-        public async Task<bool> ConnectAsync(EapConfig eapConfig, bool forceConfiguration = false)
+        public async Task<bool> ConnectAsync(bool forceConfiguration = false)
         {
-            if (eapConfig == null)
+            if (this.eapConfig == null)
             {
                 return false;
             }
-
-            this.eapConfig = eapConfig;
 
             if (!this.CheckIfEapConfigIsSupported())
             {

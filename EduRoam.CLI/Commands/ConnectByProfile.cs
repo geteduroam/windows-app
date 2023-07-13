@@ -10,7 +10,7 @@ namespace EduRoam.CLI.Commands
     {
         public static string CommandName => "connect";
 
-        public static string CommandDescription => "connect based on a institution profile";
+        public static string CommandDescription => "Configure Wi-Fi based on a institution profile and connect ";
 
         public Command GetCommand()
         {
@@ -50,11 +50,11 @@ namespace EduRoam.CLI.Commands
                     return;
                 }
 
-                var connectTask = new ConnectTask();
+                var connectTask = new ConnectTask(eapConfig);
 
                 try
                 {
-                    var connected = await connectTask.ConnectAsync(eapConfig, force);
+                    var connected = await connectTask.ConnectAsync(force);
 
                     try
                     {

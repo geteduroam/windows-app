@@ -3,16 +3,11 @@ using EduRoam.Connect.Exceptions;
 
 using Newtonsoft.Json;
 
-using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using System.Xml;
 
 namespace EduRoam.Connect
@@ -37,25 +32,25 @@ namespace EduRoam.Connect
         // private static readonly GeoCoordinateWatcher GeoWatcher = new GeoCoordinateWatcher();
 
         // state
-        private GeoCoordinate Coordinates; // Coordinates determined by OS or Web API
-        private IdpLocation Location; // Location with country name determined by user setting or Web API
-        private Task LoadProviderTask;
-        private Task GeoWebApiTask;
+        private GeoCoordinate coordinates; // Coordinates determined by OS or Web API
+        private IdpLocation location; // Location with country name determined by user setting or Web API
+        private Task loadProviderTask;
+        private Task geoWebApiTask;
 
         public IEnumerable<IdentityProvider> Providers { get; private set; }
         public IEnumerable<IdentityProvider> ClosestProviders
         {
-            get => Coordinates != null && !Coordinates.IsUnknown
-                ? Providers.OrderBy(p => p.getDistanceTo(Coordinates))
-                : Providers.OrderByDescending(p => p.Country == Location.Country)
+            get => this.coordinates != null && !this.coordinates.IsUnknown
+                ? this.Providers.OrderBy(p => p.getDistanceTo(this.coordinates))
+                : this.Providers.OrderByDescending(p => p.Country == this.location.Country)
                 ;
         }
-        public bool Loaded { get => Providers.Any(); }
-        public bool LoadedWithGeo { get => Loaded && Coordinates != null && !Coordinates.IsUnknown; }
+        public bool Loaded { get => this.Providers.Any(); }
+        public bool LoadedWithGeo { get => this.Loaded && this.coordinates != null && !this.coordinates.IsUnknown; }
 
         private static HttpClient InitializeHttpClient()
         {
-            HttpClient client = new HttpClient(Handler, false);
+            var client = new HttpClient(Handler, false);
 #if DEBUG
             client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
 #else
@@ -78,21 +73,23 @@ namespace EduRoam.Connect
         /// </summary>
         public IdentityProviderDownloader()
         {
-            Providers = Enumerable.Empty<IdentityProvider>();
+            this.Providers = Enumerable.Empty<IdentityProvider>();
 
             // gets country code as set in Settings
             // https://stackoverflow.com/questions/8879259/get-current-location-as-specified-in-region-and-language-in-c-sharp
+#pragma warning disable CA1416 // Validate platform compatibility
             var regKeyGeoId = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Control Panel\International\Geo");
             var geoID = (string)regKeyGeoId.GetValue("Nation");
+#pragma warning restore CA1416 // Validate platform compatibility
             var allRegions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.ToString()));
             var regionInfo = allRegions.FirstOrDefault(r => r.GeoId == int.Parse(geoID, CultureInfo.InvariantCulture));
 
             //Coordinates = GeoWatcher.Position.Location;
-            Location = new IdpLocation
+            this.location = new IdpLocation
             {
-                Country = regionInfo.TwoLetterISORegionName
+                Country = regionInfo?.TwoLetterISORegionName
             };
-            Debug.Print("Geolocate OS API found country {0}, coordinates {1}", Location.Country, Coordinates);
+            Debug.Print("Geolocate OS API found country {0}, coordinates {1}", this.location.Country, this.coordinates);
 
             //GeoWatcher.PositionChanged += (sender, e) =>
             //{
@@ -105,9 +102,9 @@ namespace EduRoam.Connect
         /// <exception cref="ApiUnreachableException">API endpoint cannot be contacted</exception>
         public async Task LoadProviders(bool useGeodata)
         {
-            if (LoadProviderTask == null || LoadProviderTask.IsCompleted && !Providers.Any())
+            if (this.loadProviderTask == null || this.loadProviderTask.IsCompleted && !this.Providers.Any())
             {
-                LoadProviderTask = LoadProvidersInternal();
+                this.loadProviderTask = this.LoadProvidersInternal();
             }
             //if (useGeodata && (GeoWebApiTask == null || GeoWebApiTask.IsCompleted && !LoadedWithGeo))
             //{
@@ -136,37 +133,39 @@ namespace EduRoam.Connect
 
             //    geoTask.Wait(700);
             //}
-            await LoadProviderTask;
+            await this.loadProviderTask;
         }
+
         private Task LoadGeoWebApi()
         {
             var webTask = Task.Run(async () =>
             {
-                string apiJson = await DownloadUrlAsString(GeoApiUrl, new string[] { "application/json" }).ConfigureAwait(false);
+                var apiJson = await DownloadUrlAsString(GeoApiUrl, new string[] { "application/json" }).ConfigureAwait(false);
                 return JsonConvert.DeserializeObject<IdpLocation>(apiJson);
             });
 
             return Task.Run(() =>
             {
                 webTask.Wait();
-                Location = webTask.Result ?? Location;
-                Coordinates = Location.GeoCoordinate;
+                this.location = webTask.Result ?? this.location;
+                this.coordinates = this.location.GeoCoordinate;
 
-                Debug.Print("Geolocate Web API found country {0}, coordinates {1}", Location.Country, Coordinates);
+                Debug.Print("Geolocate Web API found country {0}, coordinates {1}", this.location.Country, this.coordinates);
             });
         }
+
         private async Task LoadProvidersInternal()
         {
             try
             {
-                if (!Providers.Any())
+                if (!this.Providers.Any())
                 {
                     // downloads json file as string
-                    string apiJson = await DownloadUrlAsString(ProviderApiUrl, new string[] { "application/json" }).ConfigureAwait(false);
+                    var apiJson = await DownloadUrlAsString(ProviderApiUrl, new string[] { "application/json" }).ConfigureAwait(false);
 
                     // gets api instance from json
-                    DiscoveryApi discovery = JsonConvert.DeserializeObject<DiscoveryApi>(apiJson);
-                    Providers = discovery.Instances;
+                    var discovery = JsonConvert.DeserializeObject<DiscoveryApi>(apiJson);
+                    this.Providers = discovery?.Instances;
                 }
             }
             catch (JsonSerializationException e)
@@ -207,7 +206,7 @@ namespace EduRoam.Connect
         /// <param name="idProviderId">Find profiles belonging to provider with this ID</param>
         /// <exception cref="InvalidOperationException">There is no provider with id provided in <paramref name="idProviderId"/></exception>
         public List<IdentityProviderProfile> GetIdentityProviderProfiles(string idProviderId)
-            => Providers.Where(p => p.Id == idProviderId).First().Profiles;
+            => this.Providers.Where(p => p.Id == idProviderId).First().Profiles;
 
         /// <summary>
         /// Gets download link for EAP config from json and downloads it.
@@ -217,8 +216,8 @@ namespace EduRoam.Connect
         /// <exception cref="ApiParsingException">eap-config cannot be parsed as XML</exception>
         public async Task<EapConfig> DownloadEapConfig(string profileId)
         {
-            await LoadProviders(useGeodata: false);
-            IdentityProviderProfile profile = GetProfileFromId(profileId);
+            await this.LoadProviders(useGeodata: false);
+            var profile = this.GetProfileFromId(profileId);
             if (string.IsNullOrEmpty(profile?.eapconfig_endpoint))
             {
                 throw new EduroamAppUserException("Requested profile not listed in discovery");
@@ -230,12 +229,13 @@ namespace EduRoam.Connect
             eapConfig.ProfileId = profileId;
             return eapConfig;
         }
-        public static async Task<EapConfig> DownloadEapConfig(Uri endpoint, string accessToken = null)
+
+        public static async Task<EapConfig> DownloadEapConfig(Uri endpoint, string? accessToken = null)
         {
             // downloads and returns eap config file as string
             try
             {
-                string eapXml = await DownloadUrlAsString(
+                var eapXml = await DownloadUrlAsString(
                         url: endpoint,
                         accept: new string[] { "application/eap-config", "application/x-eap-config" },
                         accessToken: accessToken
@@ -258,16 +258,16 @@ namespace EduRoam.Connect
         /// <exception cref="NullReferenceException">If LoadProviders() was not called or threw an exception</exception>
         /// <param name="profileId"></param>
         /// <returns>The IdentityProviderProfile with the given profileId</returns>
-        public IdentityProviderProfile GetProfileFromId(string profileId)
+        public IdentityProviderProfile? GetProfileFromId(string profileId)
         {
-            if (!Loaded)
+            if (!this.Loaded)
             {
                 throw new EduroamAppUserException("not_online", "Cannot retrieve profile when offline");
             }
 
-            foreach (IdentityProvider provider in Providers)
+            foreach (var provider in this.Providers)
             {
-                foreach (IdentityProviderProfile profile in provider.Profiles)
+                foreach (var profile in provider.Profiles)
                 {
                     if (profile.Id == profileId)
                     {
@@ -287,7 +287,7 @@ namespace EduRoam.Connect
         /// <returns>HTTP body</returns>
         /// <exception cref="HttpRequestException">Anything that went wrong attempting HTTP request, including DNS</exception>
         /// <exception cref="ApiParsingException">Content-Type did not match accept</exception>
-        private async static Task<string> DownloadUrlAsString(Uri url, string[] accept = null, string accessToken = null)
+        private async static Task<string> DownloadUrlAsString(Uri url, string[]? accept = null, string? accessToken = null)
         {
             HttpResponseMessage response;
             try
@@ -328,14 +328,14 @@ namespace EduRoam.Connect
         /// <returns>Response payload</returns>
         /// <exception cref="HttpRequestException">Anything that went wrong attempting HTTP request, including DNS</exception>
         /// <exception cref="ApiParsingException">Content-Type did not match accept</exception>
-        public static Task<string> PostForm(Uri url, NameValueCollection data, string[] accept = null)
+        public static Task<string> PostForm(Uri url, NameValueCollection data, string[]? accept = null)
         {
             if (data == null) throw new ArgumentNullException(nameof(data));
 
-            var list = new List<KeyValuePair<string, string>>(data.Count);
-            foreach (string key in data.AllKeys)
+            var list = new List<KeyValuePair<string, string?>>(data.Count);
+            foreach (var key in data.AllKeys)
             {
-                list.Add(new KeyValuePair<string, string>(key, data[key]));
+                list.Add(new KeyValuePair<string, string?>(key, data[key]));
             }
             return PostForm(url, list, accept);
         }
@@ -349,7 +349,7 @@ namespace EduRoam.Connect
         /// <returns>Response payload</returns>
         /// <exception cref="HttpRequestException">Anything that went wrong attempting HTTP request, including DNS</exception>
         /// <exception cref="ApiParsingException">Content-Type did not match accept</exception>
-        public static async Task<string> PostForm(Uri url, IEnumerable<KeyValuePair<string, string>> data, string[] accept = null)
+        public static async Task<string> PostForm(Uri url, IEnumerable<KeyValuePair<string, string?>> data, string[]? accept = null)
         {
             try
             {
@@ -367,7 +367,7 @@ namespace EduRoam.Connect
             }
         }
 
-        private static async Task<string> parseResponse(HttpResponseMessage response, string[] accept)
+        private static async Task<string> parseResponse(HttpResponseMessage response, string[]? accept)
         {
             if (response.StatusCode >= HttpStatusCode.BadRequest)
             {
@@ -378,9 +378,9 @@ namespace EduRoam.Connect
             // Fun fact: did you know that headers are split into two categories?
             // There's both response.Headers and response.Content.Headers.
             // Don't try looking for headers at the wrong place, you'll get a System.InvalidOperationException!
-            if (null != accept && accept.Any() && !accept.Any((a) => a == response.Content.Headers.ContentType.MediaType))
+            if (null != accept && accept.Any() && !accept.Any((a) => a == response.Content.Headers.ContentType?.MediaType))
             {
-                throw new ApiParsingException("Expected one of '" + string.Join("', '", accept) + "' but got '" + response.Content.Headers.ContentType.MediaType);
+                throw new ApiParsingException("Expected one of '" + string.Join("', '", accept) + "' but got '" + response.Content.Headers.ContentType?.MediaType);
             }
 
             return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -397,17 +397,17 @@ namespace EduRoam.Connect
 
 
         // Protected implementation of Dispose pattern.
-        private bool _disposed;
+        private bool disposed;
         public void Dispose()
         {
-            Dispose(disposing: true);
+            this.Dispose(disposing: true);
             GC.SuppressFinalize(this);
         }
         protected virtual void Dispose(bool disposing)
         {
-            if (_disposed) return;
+            if (this.disposed) return;
             // if (disposing) GeoWatcher?.Dispose();
-            _disposed = true;
+            this.disposed = true;
         }
 
     }
