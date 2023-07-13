@@ -1,4 +1,6 @@
-﻿using App.Library.ViewModels;
+﻿using System.Collections.Generic;
+
+using App.Library.ViewModels;
 
 using EduRoam.Connect;
 
@@ -9,6 +11,11 @@ namespace App.Library
         private IdentityProvider selectedIdentityProvider;
 
         private IdentityProviderProfile selectedProfile;
+
+        public ApplicationState()
+        {
+            this.NavigationHistory = new Stack<BaseViewModel>();
+        }
 
         public IdentityProvider SelectedIdentityProvider
         {
@@ -35,5 +42,14 @@ namespace App.Library
                 this.CallPropertyChanged();
             }
         }
+
+        public void Reset()
+        {
+            SelectedIdentityProvider = null;
+            SelectedProfile = null;
+            NavigationHistory.Clear();
+        }
+
+        public Stack<BaseViewModel> NavigationHistory { get; }
     }
 }

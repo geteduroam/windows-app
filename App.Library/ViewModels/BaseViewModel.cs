@@ -4,6 +4,7 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,9 +35,16 @@ public abstract class BaseViewModel : NotifyPropertyChanged
 
     protected abstract Task NavigateNextAsync();
 
-    protected abstract bool CanNavigatePrevious();
+    protected virtual bool CanNavigatePrevious()
+    {
+        return this.Owner.State.NavigationHistory.Any();
+    }
 
-    protected abstract Task NavigatePreviousAsync();
+    protected virtual Task NavigatePreviousAsync()
+    {
+       this.Owner.SetPreviousActiveContent();
+       return Task.CompletedTask;
+    }
 
     public bool IsLoading { get; protected set; }
 

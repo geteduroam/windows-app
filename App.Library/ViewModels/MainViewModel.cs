@@ -89,6 +89,16 @@ namespace App.Library.ViewModels
             }
         }
 
+        public void SetPreviousActiveContent()
+        {
+            if (this.State.NavigationHistory.TryPop(out var viewModel))
+            {
+                this.ActiveContent = viewModel;
+                this.IsLoading = false;
+                this.CallPropertyChanged(nameof(this.ActiveContent));
+            }
+        }
+
         public void SetActiveContent(BaseViewModel viewModel)
         {
             this.IsLoading = true;
@@ -96,9 +106,13 @@ namespace App.Library.ViewModels
             Task.Run(
                 () =>
                 {
+                    if (this.ActiveContent != null)
+                    {
+                        this.State.NavigationHistory.Push(this.ActiveContent);
+                    }
+
                     this.ActiveContent = viewModel;
                     this.IsLoading = false;
-
                     this.CallPropertyChanged(nameof(this.ActiveContent));
                     this.CallPropertyChanged(nameof(this.IsLoading));
                 });
@@ -106,9 +120,9 @@ namespace App.Library.ViewModels
 
         public void Restart()
         {
-            State.SelectedIdentityProvider = null;
-            State.SelectedProfile = null;
-            SetActiveContent(null);
+            State.Reset();
+            this.ActiveContent = new SelectInstitutionViewModel(this, this.idpDownloader);
+            this.CallPropertyChanged(nameof(this.ActiveContent));
         }
 
         //todo Move to a better place

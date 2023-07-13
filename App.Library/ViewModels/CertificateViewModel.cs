@@ -30,15 +30,5 @@ namespace App.Library.ViewModels
         {
             throw new System.NotImplementedException();
         }
-
-        protected override bool CanNavigatePrevious()
-        {
-            return false;
-        }
-
-        protected override Task NavigatePreviousAsync()
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }
