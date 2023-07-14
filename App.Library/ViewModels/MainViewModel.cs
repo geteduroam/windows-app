@@ -1,14 +1,15 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-
-using App.Library.Command;
+﻿using App.Library.Command;
 using App.Library.Language;
 
 using EduRoam.Connect;
 using EduRoam.Connect.Exceptions;
+using EduRoam.Connect.Install;
+
+using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace App.Library.ViewModels
 {
@@ -16,7 +17,7 @@ namespace App.Library.ViewModels
     {
         private readonly IdentityProviderDownloader idpDownloader;
 
-        public static readonly SelfInstaller SelfInstaller = SelfInstaller.Create();
+        public static readonly SelfInstaller SelfInstaller = SelfInstaller.DefaultInstance;
 
         public MainViewModel()
         {
@@ -127,20 +128,20 @@ namespace App.Library.ViewModels
 
         //todo Move to a better place
 
-            /// <summary>
-            /// downloads eap config based on profileId
-            /// seperated into its own function as this can happen either through
-            /// user selecting a profile or a profile being autoselected
-            /// </summary>
-            /// <param name="profile"></param>
-            /// <param name="eapConfigXml"></param>
-            /// <param name="skipOverview"></param>
-            /// <returns>True if function navigated somewhere</returns>
-            /// <exception cref="XmlException">Parsing eap-config failed</exception>
-            public async Task<bool> HandleProfileSelect(
-            IdentityProviderProfile profile,
-            string eapConfigXml = null,
-            bool skipOverview = false)
+        /// <summary>
+        /// downloads eap config based on profileId
+        /// seperated into its own function as this can happen either through
+        /// user selecting a profile or a profile being autoselected
+        /// </summary>
+        /// <param name="profile"></param>
+        /// <param name="eapConfigXml"></param>
+        /// <param name="skipOverview"></param>
+        /// <returns>True if function navigated somewhere</returns>
+        /// <exception cref="XmlException">Parsing eap-config failed</exception>
+        public async Task<bool> HandleProfileSelect(
+        IdentityProviderProfile profile,
+        string eapConfigXml = null,
+        bool skipOverview = false)
         {
             this.IsLoading = true;
             EapConfig eapConfig;
@@ -203,7 +204,7 @@ namespace App.Library.ViewModels
                 this.SetActiveContent(new RedirectViewModel(this, new Uri(profile.redirect)));
                 return true;
             }
-            
+
             if (profile?.oauth ?? false)
             {
                 SetActiveContent(new OAuthViewModel(this, profile));

@@ -1,4 +1,7 @@
-﻿using System.CommandLine;
+﻿using EduRoam.Connect;
+using EduRoam.Connect.Tasks;
+
+using System.CommandLine;
 
 namespace EduRoam.CLI.Commands
 {
@@ -17,7 +20,16 @@ namespace EduRoam.CLI.Commands
 
             command.SetHandler(() =>
             {
-                throw new NotSupportedException("Not supported yet");
+
+                var profileName = PersistingStore.IdentityProvider?.DisplayName ?? "geteduroam";
+                Console.WriteLine($"This will remove all configuration for '{profileName}'. Are you sure? (y/N)");
+
+                var choice = Console.ReadKey();
+                if (choice.KeyChar == 'y' || choice.KeyChar == 'Y')
+                {
+                    var task = new RemoveWiFiConfigurationTask();
+                    task.Remove();
+                }
             });
 
             return command;

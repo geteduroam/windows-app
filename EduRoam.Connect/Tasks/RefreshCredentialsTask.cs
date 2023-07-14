@@ -13,7 +13,7 @@ namespace EduRoam.Connect.Tasks
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ApiParsingException"/>
-        public async Task<string> Refresh()
+        public async Task<string> RefreshAsync()
         {
             var response = LetsWifi.RefreshResponse.Failed;
 

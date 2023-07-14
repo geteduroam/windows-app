@@ -1,4 +1,6 @@
-﻿using System.CommandLine;
+﻿using EduRoam.Connect.Tasks;
+
+using System.CommandLine;
 
 namespace EduRoam.CLI.Commands
 {
@@ -15,9 +17,15 @@ namespace EduRoam.CLI.Commands
 
             };
 
-            command.SetHandler(() =>
+            command.SetHandler(async () =>
             {
-                throw new NotSupportedException("Not supported yet");
+                var task = new RefreshCredentialsTask();
+                var message = await task.RefreshAsync();
+
+                if (!string.IsNullOrWhiteSpace(message))
+                {
+                    Console.WriteLine(message);
+                }
             });
 
             return command;
