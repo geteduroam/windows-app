@@ -35,5 +35,12 @@ namespace EduRoam.Connect.Tasks
             return Enumerable.Empty<IdentityProviderProfile>();
         }
 
+        public IdentityProviderProfile? GetProfile(string profileId)
+        {
+            using var idpDownloader = new IdentityProviderDownloader();
+
+            return idpDownloader.GetProfileFromId(profileId);
+        }
+
     }
 }

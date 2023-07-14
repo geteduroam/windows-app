@@ -4,6 +4,10 @@ namespace EduRoam.Connect.Exceptions
 {
     public class UnknownProfileException : ApplicationException
     {
+        public UnknownProfileException(string profileId) : base($"Profile not found")
+        {
+        }
+
         public UnknownProfileException(string institute, string profile) : base($"Institute '{institute}' has no profile named '{profile}'")
         {
         }

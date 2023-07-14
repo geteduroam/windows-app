@@ -44,6 +44,19 @@ namespace EduRoam.Connect.Tasks
 
         }
 
+        public async Task<EapConfig?> GetEapConfigAsync(string profileId)
+        {
+            var getProfilesTask = new GetProfilesTask();
+            var profile = getProfilesTask.GetProfile(profileId);
+
+            if (profile == null)
+            {
+                throw new UnknownProfileException(profileId);
+            }
+
+            return await ProcessProfileAsync(profile);
+        }
+
         private static async Task<EapConfig?> ProcessProfileAsync(IdentityProviderProfile fullProfile)
         {
             var idpDownloader = new IdentityProviderDownloader();

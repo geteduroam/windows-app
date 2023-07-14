@@ -39,7 +39,7 @@ namespace EduRoam.CLI.Commands
 
                 if (eapConfig == null)
                 {
-                    ConsoleExtension.WriteError($"Could not connect, EAP Config is empty");
+                    ConsoleExtension.WriteError($"Could not connect, EAP Configuration is empty");
                     return;
                 }
 
@@ -50,11 +50,11 @@ namespace EduRoam.CLI.Commands
 
                 if (configurationResolved)
                 {
-                    ConsoleExtension.WriteStatus("EAP Config is configured");
+                    ConsoleExtension.WriteStatus("EAP is configured");
                 }
                 else
                 {
-                    ConsoleExtension.WriteStatus("EAP Config could not be configured");
+                    ConsoleExtension.WriteStatus("EAP could not be configured");
                 }
 
             }, instituteOption, profileOption);
