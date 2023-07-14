@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EduRoam.Connect.Install;
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -167,10 +169,13 @@ namespace App.Library
         }
 
 
-        private static AssemblyName GetAssemblyName()
+        private static Version? AssemblyVersion
         {
-            return Assembly.GetExecutingAssembly()
-                           .GetName();
+            get
+            {
+                return Assembly.GetExecutingAssembly()
+                               .GetName().Version;
+            }
         }
 
         // TODO: can we populate with from AssemblyName? in general, all mentions of "eduroam" and "geteduroam" should be configurable
@@ -180,24 +185,23 @@ namespace App.Library
             {
                 DisplayName = "geteduroam", // [REQUIRED] ProductName
                 Publisher = "SURF",         // [REQUIRED] Manufacturer
-                Version = GetAssemblyName()
-                          .Version.ToString(),
-                VersionMajor = GetAssemblyName().Version.Major.ToString(CultureInfo.InvariantCulture),
-                VersionMinor = GetAssemblyName().Version.Minor.ToString(CultureInfo.InvariantCulture),
-                HelpLink = null,            // ARPHELPLINK
-                HelpTelephone = null,       // ARPHELPTELEPHONE
-                InstallSource = null,       // SourceDir
-                URLInfoAbout = null,        // ARPURLINFOABOUT
-                URLUpdateInfo = null,       // ARPURLUPDATEINFO
-                AuthorizedCDFPrefix = null, // ARPAUTHORIZEDCDFPREFIX
+                Version = AssemblyVersion?.ToString() ?? "",
+                VersionMajor = AssemblyVersion?.Major.ToString(CultureInfo.InvariantCulture) ?? "",
+                VersionMinor = AssemblyVersion?.Minor.ToString(CultureInfo.InvariantCulture) ?? "",
+                HelpLink = null!,            // ARPHELPLINK
+                HelpTelephone = null!,       // ARPHELPTELEPHONE
+                InstallSource = null!,       // SourceDir
+                URLInfoAbout = null!,        // ARPURLINFOABOUT
+                URLUpdateInfo = null!,       // ARPURLUPDATEINFO
+                AuthorizedCDFPrefix = null!, // ARPAUTHORIZEDCDFPREFIX
                 Comments =
-                    null, // [NICE TO HAVE] ARPCOMMENTS. Comments provided to the Add or Remove Programs control panel.
+                    null!, // [NICE TO HAVE] ARPCOMMENTS. Comments provided to the Add or Remove Programs control panel.
                 Contact =
-                    null, // [NICE TO HAVE] ARPCONTACT. Contact provided to the Add or Remove Programs control panel.
+                    null!, // [NICE TO HAVE] ARPCONTACT. Contact provided to the Add or Remove Programs control panel.
                 Language = null, // ProductLanguage
-                Readme = null, // [NICE TO HAVE] ARPREADME. Readme provided to the Add or Remove Programs control panel.
+                Readme = null!, // [NICE TO HAVE] ARPREADME. Readme provided to the Add or Remove Programs control panel.
                 SettingsIdentifier =
-                    null, // MSIARPSETTINGSIDENTIFIER. contains a semi-colon delimited list of the registry locations where the application stores a user's settings and preferences.
+                    null!, // MSIARPSETTINGSIDENTIFIER. contains a semi-colon delimited list of the registry locations where the application stores a user's settings and preferences.
                 NoRepair = true,
                 NoModify = true,
             });
