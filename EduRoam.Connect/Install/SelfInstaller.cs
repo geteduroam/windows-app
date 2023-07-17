@@ -364,7 +364,6 @@ namespace EduRoam.Connect.Install
 
             // remove registry entries
             Debug.WriteLine("Delete registry value: " + rnsRun + "\\" + this.applicationIdentifier);
-#pragma warning disable CA1416 // Validate platform compatibility
             using (var key = Registry.CurrentUser
                     .OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run", writable: true))
                 if (key?.GetValue(this.applicationIdentifier) != null)
@@ -374,7 +373,6 @@ namespace EduRoam.Connect.Install
                     .OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall", writable: true))
                 if (key?.OpenSubKey(this.applicationIdentifier) != null)
                     key.DeleteSubKeyTree(this.applicationIdentifier); // TODO: for some reason this doesn't seem to work
-#pragma warning restore CA1416 // Validate platform compatibility
 
             // Delete myself:
             if (System.IO.File.Exists(this.InstallExePath) && doDeleteSelf)

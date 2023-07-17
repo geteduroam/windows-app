@@ -13,17 +13,8 @@ namespace EduRoam.CLI.Commands
 
         public Command GetCommand()
         {
-            var instituteOption = new Option<string>(
-                name: "--i",
-                parseArgument: OptionExtensions.NonEmptyString,
-                isDefault: true,
-                description: "The name of the institute to connect to.");
-
-            var profileOption = new Option<string>(
-                name: "--p",
-                parseArgument: OptionExtensions.NonEmptyString,
-                isDefault: true,
-                description: "Institute's profile to connect to.");
+            var instituteOption = Arguments.Institute;
+            var profileOption = Arguments.Profile;
 
             var command = new Command(CommandName, CommandDescription)
             {

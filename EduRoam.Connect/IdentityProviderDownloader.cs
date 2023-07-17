@@ -77,10 +77,8 @@ namespace EduRoam.Connect
 
             // gets country code as set in Settings
             // https://stackoverflow.com/questions/8879259/get-current-location-as-specified-in-region-and-language-in-c-sharp
-#pragma warning disable CA1416 // Validate platform compatibility
             var regKeyGeoId = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Control Panel\International\Geo");
             var geoID = (string)regKeyGeoId.GetValue("Nation");
-#pragma warning restore CA1416 // Validate platform compatibility
             var allRegions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.ToString()));
             var regionInfo = allRegions.FirstOrDefault(r => r.GeoId == int.Parse(geoID, CultureInfo.InvariantCulture));
 

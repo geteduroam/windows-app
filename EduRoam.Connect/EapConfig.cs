@@ -26,8 +26,8 @@ namespace EduRoam.Connect
 
         #region Helpers
 
-        public IEnumerable<string> SSIDs { get => CredentialApplicabilities.Select((c) => c.Ssid); }
-        public IEnumerable<string> ConsortiumOids { get => CredentialApplicabilities.Select((c) => c.ConsortiumOid); }
+        public IEnumerable<string> SSIDs { get => this.CredentialApplicabilities.Select((c) => c.Ssid); }
+        public IEnumerable<string> ConsortiumOids { get => this.CredentialApplicabilities.Select((c) => c.ConsortiumOid); }
 
         #endregion
 
@@ -39,14 +39,13 @@ namespace EduRoam.Connect
             ProviderInfo institutionInfo,
             string eapConfigXmlData)
         {
-            AuthenticationMethods = authenticationMethods.Select(authMethod => authMethod.WithEapConfig(this)).ToList();
-            CredentialApplicabilities = credentialApplicabilities;
-            InstitutionInfo = institutionInfo;
-            RawOriginalEapConfigXmlData = eapConfigXmlData;
+            this.AuthenticationMethods = authenticationMethods.Select(authMethod => authMethod.WithEapConfig(this)).ToList();
+            this.CredentialApplicabilities = credentialApplicabilities;
+            this.InstitutionInfo = institutionInfo;
+            this.RawOriginalEapConfigXmlData = eapConfigXmlData;
         }
 
         #endregion
-
 
         /// <summary>
         /// AuthenticationMethod contains information about client certificates and CAs.
@@ -68,8 +67,8 @@ namespace EduRoam.Connect
             public string ClientInnerIdentitySuffix { get; } // realm
             public bool ClientInnerIdentityHint { get; } // Wether to disallow subrealms or not (see https://github.com/GEANT/CAT/issues/190)
 
-            public bool IsHS20Supported { get => EapConfig.CredentialApplicabilities.Any(cred => cred.ConsortiumOid != null); }
-            public bool IsSSIDSupported { get => EapConfig.CredentialApplicabilities.Any(cred => cred.Ssid != null && cred.Ssid.Length != 0); }
+            public bool IsHS20Supported { get => this.EapConfig.CredentialApplicabilities.Any(cred => cred.ConsortiumOid != null); }
+            public bool IsSSIDSupported { get => this.EapConfig.CredentialApplicabilities.Any(cred => cred.Ssid != null && cred.Ssid.Length != 0); }
 
             #endregion Properties
 
@@ -78,7 +77,7 @@ namespace EduRoam.Connect
             // TODO: Also add wired 802.1x support
             public List<string> SSIDs
             {
-                get => EapConfig.CredentialApplicabilities
+                get => this.EapConfig.CredentialApplicabilities
                     .Where(cred => cred.NetworkType == IEEE802x.IEEE80211)
                     .Where(cred => cred.MinRsnProto != "TKIP") // Too old and insecure
                     .Where(cred => cred.Ssid != null) // Filter out HS20 entries, those have no SSID
@@ -87,7 +86,7 @@ namespace EduRoam.Connect
             }
             public List<string> ConsortiumOIDs
             {
-                get => EapConfig.CredentialApplicabilities
+                get => this.EapConfig.CredentialApplicabilities
                     .Where(cred => cred.ConsortiumOid != null)
                     .Select(cred => cred.ConsortiumOid)
                     .ToList();
@@ -96,7 +95,7 @@ namespace EduRoam.Connect
             {
                 get
                 {
-                    using var cert = ClientCertificateAsX509Certificate2();
+                    using var cert = this.ClientCertificateAsX509Certificate2();
                     return cert?.NotBefore;
                 }
             }
@@ -104,19 +103,18 @@ namespace EduRoam.Connect
             {
                 get
                 {
-                    using var cert = ClientCertificateAsX509Certificate2();
+                    using var cert = this.ClientCertificateAsX509Certificate2();
                     return cert?.NotAfter;
                 }
             }
 
-
             private byte[] ClientCertificateRaw
-            { get => Convert.FromBase64String(ClientCertificate); }
+            { get => Convert.FromBase64String(this.ClientCertificate); }
             private bool CertificateIsValid
             {
                 get => VerifyCertificateBundle(
-                        Convert.FromBase64String(ClientCertificate),
-                        ClientCertificatePassphrase);
+                        Convert.FromBase64String(this.ClientCertificate),
+                        this.ClientCertificatePassphrase);
             }
 
             #endregion Helpers
@@ -129,7 +127,7 @@ namespace EduRoam.Connect
             /// <remarks>The certificates must be disposed after use</remarks>
             public IEnumerable<X509Certificate2> CertificateAuthoritiesAsX509Certificate2()
             {
-                foreach (var ca in ServerCertificateAuthorities)
+                foreach (var ca in this.ServerCertificateAuthorities)
                 {
                     X509Certificate2 cert;
                     try
@@ -155,16 +153,16 @@ namespace EduRoam.Connect
             /// Converts the client certificate base64 data to a X509Certificate2 object
             /// </summary>
             /// <returns>X509Certificate2 if any. Null if non exist or the passphrase is incorrect</returns>
-            public X509Certificate2 ClientCertificateAsX509Certificate2()
+            public X509Certificate2? ClientCertificateAsX509Certificate2()
             {
-                if (string.IsNullOrEmpty(ClientCertificate))
+                if (string.IsNullOrEmpty(this.ClientCertificate))
                     return null;
 
                 try
                 {
                     var cert = new X509Certificate2(
-                        Convert.FromBase64String(ClientCertificate),
-                        ClientCertificatePassphrase,
+                        Convert.FromBase64String(this.ClientCertificate),
+                        this.ClientCertificatePassphrase,
                         X509KeyStorageFlags.PersistKeySet);
 
                     // sets the friendly name of certificate
@@ -184,6 +182,7 @@ namespace EduRoam.Connect
             }
 
             #endregion CertExport
+
             #region Verification
 
             // methods to check if the authentification method is complete, and methods to mend it
@@ -194,9 +193,9 @@ namespace EduRoam.Connect
             /// </summary>
             public bool NeedsLoginCredentials
             {
-                get => EapType != EapType.TLS // If the auth method expects login credentials
-                    && (string.IsNullOrEmpty(ClientUserName) // but we don't already have them
-                        || string.IsNullOrEmpty(ClientPassword)
+                get => this.EapType != EapType.TLS // If the auth method expects login credentials
+                    && (string.IsNullOrEmpty(this.ClientUserName) // but we don't already have them
+                        || string.IsNullOrEmpty(this.ClientPassword)
                     );
             }
 
@@ -206,8 +205,8 @@ namespace EduRoam.Connect
             /// </summary>
             public bool NeedsClientCertificate
             {
-                get => EapType == EapType.TLS // If we use EAP-TLS
-                    && string.IsNullOrEmpty(ClientCertificate); // and we don't already have a certificate
+                get => this.EapType == EapType.TLS // If we use EAP-TLS
+                    && string.IsNullOrEmpty(this.ClientCertificate); // and we don't already have a certificate
             }
 
             /// <summary>
@@ -216,9 +215,9 @@ namespace EduRoam.Connect
             /// </summary>
             public bool NeedsClientCertificatePassphrase
             {
-                get => EapType == EapType.TLS // If we use EAP-TLS
-                    && !string.IsNullOrEmpty(ClientCertificate) // and we DO have a client certificate
-                    && !CertificateIsValid; // but we cannot read it yet
+                get => this.EapType == EapType.TLS // If we use EAP-TLS
+                    && !string.IsNullOrEmpty(this.ClientCertificate) // and we DO have a client certificate
+                    && !this.CertificateIsValid; // but we cannot read it yet
             }
 
             #endregion Verification
@@ -230,21 +229,21 @@ namespace EduRoam.Connect
             /// <param name="username">The username for inner auth</param>
             /// <param name="password">The passpword for inner auth</param>
             /// <returns>Clone of this object with the appropriate properties set</returns>
-            public AuthenticationMethod WithLoginCredentials(string username, string password)
-                => EapType == EapType.TLS
+            public AuthenticationMethod? WithLoginCredentials(string username, string password)
+                => this.EapType == EapType.TLS
                     ? null
                     : new AuthenticationMethod(
-                        EapType,
-                        InnerAuthType,
-                        ServerCertificateAuthorities,
-                        ServerNames,
+                        this.EapType,
+                        this.InnerAuthType,
+                        this.ServerCertificateAuthorities,
+                        this.ServerNames,
                         username,
                         password,
-                        ClientCertificate,
-                        ClientCertificatePassphrase,
-                        ClientOuterIdentity,
-                        ClientInnerIdentitySuffix,
-                        ClientInnerIdentityHint);
+                        this.ClientCertificate,
+                        this.ClientCertificatePassphrase,
+                        this.ClientOuterIdentity,
+                        this.ClientInnerIdentitySuffix,
+                        this.ClientInnerIdentityHint);
 
             /// <summary>
             /// Reads and adds the user certificate to be installed along with the wlan profile
@@ -252,20 +251,20 @@ namespace EduRoam.Connect
             /// <param name="filePath">path to the certificate file in question. PKCS12</param>
             /// <param name="passphrase">the passphrase to the certificate file in question</param>
             /// <returns>Clone of this object with the appropriate properties set</returns>
-            public AuthenticationMethod WithClientCertificate(string filePath, string passphrase = null)
-                => EapType == EapType.TLS && VerifyCertificateBundle(filePath, passphrase)
+            public AuthenticationMethod? WithClientCertificate(string filePath, string? passphrase = null)
+                => this.EapType == EapType.TLS && VerifyCertificateBundle(filePath, passphrase)
                     ? new AuthenticationMethod(
-                        EapType,
-                        InnerAuthType,
-                        ServerCertificateAuthorities,
-                        ServerNames,
-                        ClientUserName,
-                        ClientPassword,
+                        this.EapType,
+                        this.InnerAuthType,
+                        this.ServerCertificateAuthorities,
+                        this.ServerNames,
+                        this.ClientUserName,
+                        this.ClientPassword,
                         Convert.ToBase64String(File.ReadAllBytes(filePath)),
                         passphrase,
-                        ClientOuterIdentity,
-                        ClientInnerIdentitySuffix,
-                        ClientInnerIdentityHint)
+                        this.ClientOuterIdentity,
+                        this.ClientInnerIdentitySuffix,
+                        this.ClientInnerIdentityHint)
                     : null
                     ;
 
@@ -275,36 +274,36 @@ namespace EduRoam.Connect
             /// </summary>
             /// <param name="passphrase">the passphrase to the certificate</param>
             /// <returns>Clone of this object with the appropriate properties set</returns>
-            public AuthenticationMethod WithClientCertificatePassphrase(string passphrase)
-                => EapType == EapType.TLS && VerifyCertificateBundle(ClientCertificateRaw, passphrase)
+            public AuthenticationMethod? WithClientCertificatePassphrase(string passphrase)
+                => this.EapType == EapType.TLS && VerifyCertificateBundle(this.ClientCertificateRaw, passphrase)
                     ? new AuthenticationMethod(
-                        EapType,
-                        InnerAuthType,
-                        ServerCertificateAuthorities,
-                        ServerNames,
-                        ClientUserName,
-                        ClientPassword,
-                        ClientCertificate,
+                        this.EapType,
+                        this.InnerAuthType,
+                        this.ServerCertificateAuthorities,
+                        this.ServerNames,
+                        this.ClientUserName,
+                        this.ClientPassword,
+                        this.ClientCertificate,
                         passphrase,
-                        ClientOuterIdentity,
-                        ClientInnerIdentitySuffix,
-                        ClientInnerIdentityHint)
+                        this.ClientOuterIdentity,
+                        this.ClientInnerIdentitySuffix,
+                        this.ClientInnerIdentityHint)
                     : null
                     ;
             public AuthenticationMethod WithEapConfig(EapConfig eapConfig)
                 => new AuthenticationMethod(
                         eapConfig,
-                        EapType,
-                        InnerAuthType,
-                        ServerCertificateAuthorities,
-                        ServerNames,
-                        ClientUserName,
-                        ClientPassword,
-                        ClientCertificate,
-                        ClientCertificatePassphrase,
-                        ClientOuterIdentity,
-                        ClientInnerIdentitySuffix,
-                        ClientInnerIdentityHint
+                        this.EapType,
+                        this.InnerAuthType,
+                        this.ServerCertificateAuthorities,
+                        this.ServerNames,
+                        this.ClientUserName,
+                        this.ClientPassword,
+                        this.ClientCertificate,
+                        this.ClientCertificatePassphrase,
+                        this.ClientOuterIdentity,
+                        this.ClientInnerIdentitySuffix,
+                        this.ClientInnerIdentityHint
                     );
 
             /// <summary>
@@ -314,7 +313,7 @@ namespace EduRoam.Connect
             /// <param name="rawCertificateData">Certificate data, PKCS12</param>
             /// <param name="passphrase">the passphrase to the certificate file in question</param>
             /// <returns>true if valid</returns>
-            private static bool VerifyCertificateBundle(byte[] rawCertificateData, string passphrase = null)
+            private static bool VerifyCertificateBundle(byte[] rawCertificateData, string? passphrase = null)
             {
                 try
                 {
@@ -339,7 +338,7 @@ namespace EduRoam.Connect
             /// <param name="filePath">path to the certificate file in question. PKCS12</param>
             /// <param name="passphrase">the passphrase to the certificate file in question</param>
             /// <returns>true if valid</returns>
-            private static bool VerifyCertificateBundle(string filePath, string passphrase = null)
+            private static bool VerifyCertificateBundle(string filePath, string? passphrase = null)
             {
                 if (filePath == null)
                     throw new ArgumentNullException(paramName: nameof(filePath));
@@ -357,41 +356,42 @@ namespace EduRoam.Connect
                 InnerAuthType innerAuthType,
                 List<string> serverCertificateAuthorities,
                 List<string> serverName,
-                string clientUserName = null,
-                string clientPassword = null,
-                string clientCertificate = null,
-                string clientCertificatePassphrase = null,
-                string clientOuterIdentity = null,
-                string innerIdentitySuffix = null,
+                string? clientUserName = null,
+                string? clientPassword = null,
+                string? clientCertificate = null,
+                string? clientCertificatePassphrase = null,
+                string? clientOuterIdentity = null,
+                string? innerIdentitySuffix = null,
                 bool innerIdentityHint = false
             ) : this(null, eapType, innerAuthType, serverCertificateAuthorities, serverName, clientUserName, clientPassword, clientCertificate, clientCertificatePassphrase, clientOuterIdentity, innerIdentitySuffix, innerIdentityHint) { }
+
             private AuthenticationMethod(
                 EapConfig eapConfig,
                 EapType eapType,
                 InnerAuthType innerAuthType,
                 List<string> serverCertificateAuthorities,
                 List<string> serverName,
-                string clientUserName = null,
-                string clientPassword = null,
-                string clientCertificate = null,
-                string clientCertificatePassphrase = null,
-                string clientOuterIdentity = null,
-                string innerIdentitySuffix = null,
+                string? clientUserName = null,
+                string? clientPassword = null,
+                string? clientCertificate = null,
+                string? clientCertificatePassphrase = null,
+                string? clientOuterIdentity = null,
+                string? innerIdentitySuffix = null,
                 bool innerIdentityHint = false
             )
             {
-                EapConfig = eapConfig;
-                EapType = eapType;
-                InnerAuthType = innerAuthType;
-                ServerCertificateAuthorities = serverCertificateAuthorities ?? new List<string>();
-                ServerNames = serverName ?? new List<string>();
-                ClientUserName = clientUserName;
-                ClientPassword = clientPassword;
-                ClientCertificate = clientCertificate;
-                ClientCertificatePassphrase = clientCertificatePassphrase;
-                ClientOuterIdentity = clientOuterIdentity;
-                ClientInnerIdentitySuffix = innerIdentitySuffix;
-                ClientInnerIdentityHint = innerIdentityHint;
+                this.EapConfig = eapConfig;
+                this.EapType = eapType;
+                this.InnerAuthType = innerAuthType;
+                this.ServerCertificateAuthorities = serverCertificateAuthorities ?? new List<string>();
+                this.ServerNames = serverName ?? new List<string>();
+                this.ClientUserName = clientUserName;
+                this.ClientPassword = clientPassword;
+                this.ClientCertificate = clientCertificate;
+                this.ClientCertificatePassphrase = clientCertificatePassphrase;
+                this.ClientOuterIdentity = clientOuterIdentity;
+                this.ClientInnerIdentitySuffix = innerIdentitySuffix;
+                this.ClientInnerIdentityHint = innerIdentityHint;
             }
         }
 
@@ -425,16 +425,16 @@ namespace EduRoam.Connect
                 string termsOfUse,
                 ValueTuple<double, double>? location)
             {
-                DisplayName = displayName;
-                Description = description;
-                LogoData = logoData;
-                LogoMimeType = logoMimeType;
-                EmailAddress = emailAddress;
-                WebAddress = webAddress;
-                Phone = phone;
-                InstId = instId;
-                TermsOfUse = termsOfUse;
-                Location = location;
+                this.DisplayName = displayName;
+                this.Description = description;
+                this.LogoData = logoData;
+                this.LogoMimeType = logoMimeType;
+                this.EmailAddress = emailAddress;
+                this.WebAddress = webAddress;
+                this.Phone = phone;
+                this.InstId = instId;
+                this.TermsOfUse = termsOfUse;
+                this.Location = location;
             }
         }
 
@@ -468,7 +468,6 @@ namespace EduRoam.Connect
             /// </summary>
             public string MinRsnProto { get; } // "TKIP" or "CCMP"
 
-
             // IEEE8023 only:
 
             /// <summary>
@@ -484,11 +483,11 @@ namespace EduRoam.Connect
                 string networkId)
             {
 
-                NetworkType = networkType;
-                Ssid = ssid;
-                ConsortiumOid = consortiumOid;
-                MinRsnProto = minRsnProto;
-                NetworkId = networkId;
+                this.NetworkType = networkType;
+                this.Ssid = ssid;
+                this.ConsortiumOid = consortiumOid;
+                this.MinRsnProto = minRsnProto;
+                this.NetworkId = networkId;
             }
 
             public static CredentialApplicability IEEE80211(
@@ -516,7 +515,6 @@ namespace EduRoam.Connect
             }
 
         }
-
 
         /// <summary>
         /// Creates a new EapConfig object from EAP config xml data
@@ -558,11 +556,11 @@ namespace EduRoam.Connect
                 new List<AuthenticationMethod>();
 
             // iterate over all AuthenticationMethods elements from xml
-            foreach (XElement authMethodXml in eapConfigXml.Descendants().Where(nameIs("AuthenticationMethod")))
+            foreach (var authMethodXml in eapConfigXml.Descendants().Where(nameIs("AuthenticationMethod")))
             {
-                XElement serverSideCredentialXml = authMethodXml
+                var serverSideCredentialXml = authMethodXml
                     .Elements().FirstOrDefault(nameIs("ServerSideCredential"));
-                XElement clientSideCredentialXml = authMethodXml
+                var clientSideCredentialXml = authMethodXml
                     .Elements().FirstOrDefault(nameIs("ClientSideCredential"));
 
                 // get EAP method type
@@ -570,7 +568,7 @@ namespace EduRoam.Connect
                     .Elements().First(nameIs("EAPMethod"))
                     .Elements().First(nameIs("Type"));
 
-                InnerAuthType innerAuthType = (InnerAuthType?)(int?)authMethodXml
+                var innerAuthType = (InnerAuthType?)(int?)authMethodXml
                     .Elements().FirstOrDefault(nameIs("InnerAuthenticationMethod"))
                     ?.Descendants().FirstOrDefault(nameIs("Type"))
                     ?? InnerAuthType.None;
@@ -578,13 +576,13 @@ namespace EduRoam.Connect
                 // ServerSideCredential
 
                 // get list of strings of CA certificates
-                List<string> serverCAs = serverSideCredentialXml
+                var serverCAs = serverSideCredentialXml
                     .Elements().Where(nameIs("CA")) // TODO: <CA format="X.509" encoding="base64"> is assumed, schema does not enforce this
                     .Select(xElement => (string)xElement)
                     .ToList();
 
                 // get list of strings of server IDs
-                List<string> serverNames = serverSideCredentialXml
+                var serverNames = serverSideCredentialXml
                     .Elements().Where(nameIs("ServerID"))
                     .Select(xElement => (string)xElement)
                     .ToList();
@@ -626,58 +624,57 @@ namespace EduRoam.Connect
             }
 
             // create a new empty list for authentication methods
-            List<CredentialApplicability> credentialApplicabilities =
-                new List<CredentialApplicability>();
+            var credentialApplicabilities = new List<CredentialApplicability>();
 
-            foreach (XElement credentialApplicabilityXml in eapConfigXml.Descendants().First(nameIs("CredentialApplicability")).Elements())
+            foreach (var credentialApplicabilityXml in eapConfigXml.Descendants().First(nameIs("CredentialApplicability")).Elements())
             {
                 credentialApplicabilities.Add(credentialApplicabilityXml.Name.LocalName switch
                 {
                     "IEEE80211" =>
                         CredentialApplicability.IEEE80211(
-                            (string)credentialApplicabilityXml.Elements().FirstOrDefault(nameIs("SSID")),
-                            (string)credentialApplicabilityXml.Elements().FirstOrDefault(nameIs("ConsortiumOID")),
-                            (string)credentialApplicabilityXml.Elements().FirstOrDefault(nameIs("MinRSNProto"))
+                            (string?)credentialApplicabilityXml?.Elements().FirstOrDefault(nameIs("SSID")),
+                            (string?)credentialApplicabilityXml?.Elements().FirstOrDefault(nameIs("ConsortiumOID")),
+                            (string?)credentialApplicabilityXml?.Elements().FirstOrDefault(nameIs("MinRSNProto"))
                         ),
                     "IEEE8023" =>
                         CredentialApplicability.IEEE8023(
-                            (string)credentialApplicabilityXml.Elements().FirstOrDefault(nameIs("NetworkID"))
+                            (string?)credentialApplicabilityXml?.Elements().FirstOrDefault(nameIs("NetworkID"))
                         ),
                     _ => throw new NotImplementedException(),
                 });
             }
 
             // get logo and identity element
-            XElement logoElement = eapConfigXml
+            var logoElement = eapConfigXml
                 .Descendants().FirstOrDefault(nameIs("ProviderLogo"));
-            XElement eapIdentityElement = eapConfigXml
+            var eapIdentityElement = eapConfigXml
                 .Descendants().FirstOrDefault(nameIs("EAPIdentityProvider")); // NICE TO HAVE: update this if the yield return above gets used
 
             // get institution ID from identity element
-            var instId = (string)eapIdentityElement.Attribute("ID");
+            var instId = (string?)eapIdentityElement?.Attribute("ID");
 
             // get provider's logo as base64 encoded string and its mime-type
-            var logoData = Convert.FromBase64String((string)logoElement ?? "");
-            var logoMimeType = (string)logoElement?.Attribute("mime");
+            var logoData = Convert.FromBase64String((string?)logoElement ?? "");
+            var logoMimeType = (string?)logoElement?.Attribute("mime");
 
             // Read ProviderInfo attributes:
-            XElement providerInfoXml = eapConfigXml
+            var providerInfoXml = eapConfigXml
                 .Descendants().FirstOrDefault(nameIs("ProviderInfo"));
 
-            var displayName = (string)providerInfoXml
+            var displayName = (string?)providerInfoXml
                 ?.Elements().FirstOrDefault(nameIs("DisplayName"));
-            var description = (string)providerInfoXml
+            var description = (string?)providerInfoXml
                 ?.Elements().FirstOrDefault(nameIs("Description"));
-            var emailAddress = (string)providerInfoXml
+            var emailAddress = (string?)providerInfoXml
                 ?.Elements().FirstOrDefault(nameIs("Helpdesk"))
                 ?.Elements().FirstOrDefault(nameIs("EmailAddress"));
-            var webAddress = (string)providerInfoXml
+            var webAddress = (string?)providerInfoXml
                 ?.Elements().FirstOrDefault(nameIs("Helpdesk"))
                 ?.Elements().FirstOrDefault(nameIs("WebAddress"));
-            var phone = (string)providerInfoXml
+            var phone = (string?)providerInfoXml
                 ?.Elements().FirstOrDefault(nameIs("Helpdesk"))
                 ?.Elements().FirstOrDefault(nameIs("Phone"));
-            var termsOfUse = (string)providerInfoXml
+            var termsOfUse = (string?)providerInfoXml
                 ?.Elements().FirstOrDefault(nameIs("TermsOfUse"));
 
             // Read coordinates
@@ -718,17 +715,17 @@ namespace EduRoam.Connect
         /// <returns>Enumeration of EapAuthMethodInstaller intances for each supported authentification method in eapConfig</returns>
         public IEnumerable<AuthenticationMethod> SupportedAuthenticationMethods
         {
-            get => AuthenticationMethods.Where(EduRoamNetwork.IsAuthMethodSupported);
+            get => this.AuthenticationMethods.Where(EduRoamNetwork.IsAuthMethodSupported);
         }
 
         /// <summary>
         /// Used to determine if an eapconfig has enough info for the ProfileOverview page to show
         /// </summary>
-        public bool HasInfo => !string.IsNullOrEmpty(InstitutionInfo.WebAddress)
-                               || !string.IsNullOrEmpty(InstitutionInfo.EmailAddress)
-                               || !string.IsNullOrEmpty(InstitutionInfo.Description)
-                               || !string.IsNullOrEmpty(InstitutionInfo.Phone)
-                               || !string.IsNullOrEmpty(InstitutionInfo.TermsOfUse);
+        public bool HasInfo => !string.IsNullOrEmpty(this.InstitutionInfo.WebAddress)
+                               || !string.IsNullOrEmpty(this.InstitutionInfo.EmailAddress)
+                               || !string.IsNullOrEmpty(this.InstitutionInfo.Description)
+                               || !string.IsNullOrEmpty(this.InstitutionInfo.Phone)
+                               || !string.IsNullOrEmpty(this.InstitutionInfo.TermsOfUse);
 
         /// <summary>
         /// If this returns true, then the user must provide the login credentials
@@ -736,7 +733,7 @@ namespace EduRoam.Connect
         /// </summary>
         public bool NeedsLoginCredentials
         {
-            get => AuthenticationMethods.Any(authMethod => authMethod.NeedsLoginCredentials);
+            get => this.AuthenticationMethods.Any(authMethod => authMethod.NeedsLoginCredentials);
         }
 
         /// <summary>
@@ -755,7 +752,7 @@ namespace EduRoam.Connect
         /// </summary>
         public bool NeedsClientCertificatePassphrase
         {
-            get => AuthenticationMethods
+            get => this.AuthenticationMethods
                 .Any(authMethod => authMethod.NeedsClientCertificatePassphrase);
         }
 
@@ -785,14 +782,14 @@ namespace EduRoam.Connect
         /// <exception cref="ArgumentException">The client certificate was not accepted by any authentication method</exception>
         public EapConfig WithClientCertificate(string certificatePath, string certificatePassphrase = null)
         {
-            IEnumerable<AuthenticationMethod> authMethods = AuthenticationMethods.Select(authMethod => authMethod.WithClientCertificate(certificatePath, certificatePassphrase)).Where(x => x != null);
+            var authMethods = this.AuthenticationMethods.Select(authMethod => authMethod.WithClientCertificate(certificatePath, certificatePassphrase)).Where(x => x != null);
             if (!authMethods.Any()) throw new ArgumentException("No authentication method can accept the client certificate");
 
             return new EapConfig(
                 authMethods.ToList(),
-                CredentialApplicabilities,
-                InstitutionInfo,
-                RawOriginalEapConfigXmlData
+                this.CredentialApplicabilities,
+                this.InstitutionInfo,
+                this.RawOriginalEapConfigXmlData
             );
         }
 
@@ -805,14 +802,14 @@ namespace EduRoam.Connect
         /// <exception cref="ArgumentException">The client certificate was not accepted by any authentication method</exception>
         public EapConfig WithClientCertificatePassphrase(string certificatePassphrase)
         {
-            IEnumerable<AuthenticationMethod> authMethods = AuthenticationMethods.Select(authMethod => authMethod.WithClientCertificatePassphrase(certificatePassphrase)).Where(x => x != null);
+            var authMethods = this.AuthenticationMethods.Select(authMethod => authMethod.WithClientCertificatePassphrase(certificatePassphrase)).Where(x => x != null);
             if (!authMethods.Any()) throw new ArgumentException("No authentication accepts the passphrase");
 
             return new EapConfig(
                 authMethods.ToList(),
-                CredentialApplicabilities,
-                InstitutionInfo,
-                RawOriginalEapConfigXmlData
+                this.CredentialApplicabilities,
+                this.InstitutionInfo,
+                this.RawOriginalEapConfigXmlData
             );
         }
 
@@ -825,14 +822,17 @@ namespace EduRoam.Connect
         /// <exception cref="ArgumentException">The client certificate was not accepted by any authentication method</exception>
         public EapConfig WithLoginCredentials(string username, string password)
         {
-            IEnumerable<AuthenticationMethod> authMethods = AuthenticationMethods.Select(authMethod => authMethod.WithLoginCredentials(username, password)).Where(x => x != null);
-            if (!authMethods.Any()) throw new ArgumentException("No authentication accepts the passphrase");
+            var authMethods = this.AuthenticationMethods.Select(authMethod => authMethod.WithLoginCredentials(username, password)).Where(x => x != null);
+            if (!authMethods.Any())
+            {
+                throw new ArgumentException("No authentication accepts the passphrase");
+            }
 
             return new EapConfig(
                 authMethods.ToList(),
-                CredentialApplicabilities,
-                InstitutionInfo,
-                RawOriginalEapConfigXmlData
+                this.CredentialApplicabilities,
+                this.InstitutionInfo,
+                this.RawOriginalEapConfigXmlData
             );
         }
 
@@ -843,15 +843,15 @@ namespace EduRoam.Connect
         /// https://github.com/GEANT/CAT/blob/master/tutorials/MappingCATOptionsIntoSupplicantConfig.md#verify-user-input-to-contain-realm-suffix-checkbox
         /// </summary>
         /// <returns>A ValueTuple with the inner identity suffix and hint</returns>
-        public (string suffix, bool hint) GetClientInnerIdentityRestrictions()
+        public (string? suffix, bool hint) GetClientInnerIdentityRestrictions()
         {
-            var hint = AuthenticationMethods
+            var hint = this.AuthenticationMethods
                 .All(authMethod => authMethod.ClientInnerIdentityHint);
-            var suffi = AuthenticationMethods
+            var suffi = this.AuthenticationMethods
                 .Select(authMethod => authMethod.ClientInnerIdentitySuffix)
                 .ToList();
 
-            string suffix = null;
+            string? suffix = null;
             if (suffi.Any())
             {
                 var first = suffi.First();

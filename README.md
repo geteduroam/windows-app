@@ -4,8 +4,11 @@ This application helps set up eduroam on end-users' computers by automatically f
 
 ## Structure
 
-* **WpfApp**:            The graphical user interface and UX logic.
-* **EduroamConfigure**:  The logic interfacing with the discovery api, and the logic to parse and configure the various profiles into windows.
+* **EduRoam.App**:      The "eduroam" app.
+* **GovRoam.App**:      The "govroam" app.
+* **App.Library**:		The Wpf graphical user interface
+* **EduRoam.CLI**:      The command line interface
+* **EduRoam.Connect**:  The logic interfacing with the discovery api, and the logic to parse and configure the various profiles into windows.
 
 ## Supported authentication modes
 
@@ -36,7 +39,7 @@ A tray icon for running in the background can be enabled through a project flag,
 
 ### Prerequisites
 
- * Visual Studio 2019 (https://visualstudio.microsoft.com/downloads/) with C# 8.0
+ * Visual Studio 2019/2022 (https://visualstudio.microsoft.com/downloads/) with C# 8.0
  * .NET Framework 4.7.1
 
 

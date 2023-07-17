@@ -7,16 +7,13 @@ namespace EduRoam.CLI.Commands
 {
     internal class Uninstall : ICommand
     {
-        public readonly static string CommandName = "uninstall";
+        public static readonly string CommandName = "uninstall";
 
-        public static string CommandDescription => "Uninstall application";
+        public static readonly string CommandDescription = "Uninstall application";
 
         public Command GetCommand()
         {
-            var command = new Command(CommandName, CommandDescription)
-            {
-
-            };
+            var command = new Command(CommandName, CommandDescription);
 
             command.SetHandler(() =>
             {

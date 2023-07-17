@@ -78,7 +78,6 @@ namespace EduRoam.Connect
             var result = listener.BeginGetContext(this.ListenerCallback, listener);
 
             // opens authentication URI in default browser
-#pragma warning disable CA1416 // Validate platform compatibility
             var startInfo = new ProcessStartInfo()
             {
                 FileName = this.authUri.ToString(),
@@ -86,7 +85,6 @@ namespace EduRoam.Connect
                 UseShellExecute = true,
 
             };
-#pragma warning restore CA1416 // Validate platform compatibility
 
             using var process = Process.Start(startInfo);
 

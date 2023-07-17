@@ -14,24 +14,14 @@ namespace EduRoam.CLI.Commands
 
         public Command GetCommand()
         {
-            var instituteOption = new Option<string>(
-                name: "--i",
-                parseArgument: OptionExtensions.NonEmptyString,
-                isDefault: true,
-                description: "Institute's name.");
-
-            var profileOption = new Option<string>(
-                name: "--p",
-                parseArgument: OptionExtensions.NonEmptyString,
-                isDefault: true,
-                description: "Institute's profile.");
+            var instituteOption = Arguments.Institute;
+            var profileOption = Arguments.Profile;
 
             var command = new Command(CommandName, CommandDescription)
             {
                 instituteOption,
                 profileOption
             };
-
 
             command.SetHandler(async (string institute, string profileName) =>
             {
