@@ -9,12 +9,11 @@ namespace EduRoam.CLI
         private readonly List<ICommand> commandsList = new()
         {
             { new Configure() },
-            { new ConnectByProfile() },
-            { new ListInstitutions() },
-            { new ListProfiles() },
+            { new Commands.Connect() },
+            { new List() },
             { new Refresh() },
             { new Remove() },
-            { new ShowEapConfigInfo() },
+            { new Show() },
             { new Uninstall() },
 
         };

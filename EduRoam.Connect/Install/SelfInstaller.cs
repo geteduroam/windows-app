@@ -1,4 +1,5 @@
 using EduRoam.Connect.Exceptions;
+using EduRoam.Connect.Store;
 
 using IWshRuntimeLibrary;
 
@@ -348,7 +349,7 @@ namespace EduRoam.Connect.Install
                 return;
             }
             LetsWifi.WipeTokens();
-            PersistingStore.IdentityProvider = null;
+            RegistryStore.Instance.ClearIdentity();
 
             // Remove start menu link
             Debug.WriteLine("Delete file: " + this.StartMenuLnkPath);

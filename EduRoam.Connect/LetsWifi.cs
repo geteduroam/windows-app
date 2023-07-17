@@ -1,5 +1,6 @@
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Install;
+using EduRoam.Connect.Store;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,38 +13,59 @@ using System.Security.Cryptography.X509Certificates;
 namespace EduRoam.Connect
 {
     // https://github.com/geteduroam/lets-wifi
-    public static class LetsWifi
+    public partial class LetsWifi
     {
         // tokens to access API, valid for a small time window
-        private static string AccessToken;
-        private static string AccessTokenType;
-        private static DateTime AccessTokenValidUntill;
+        private string AccessToken;
+        private string AccessTokenType;
+        private DateTime AccessTokenValidUntill;
+        private readonly BaseConfigStore store;
 
-        // Persisted state
-
-        private static string ProfileID
-        { get => PersistingStore.LetsWifiEndpoints?.profileId; }
-        private static Uri TokenEndpoint // requires either authorization code or refresh token, provides access token
-        { get => PersistingStore.LetsWifiEndpoints?.tokenEndpoint; }
-        private static Uri EapEndpoint // requires an access token
-        { get => PersistingStore.LetsWifiEndpoints?.eapEndpoint; }
-        private static string RefreshToken // single-use token to refresh the access token (Bearer header)
+        private LetsWifi()
         {
-            get => PersistingStore.LetsWifiRefreshToken;
-            set => PersistingStore.LetsWifiRefreshToken = value;
+            this.store = new RegistryStore();
+        }
+
+        public static LetsWifi Instance => new LetsWifi();
+
+        private string? ProfileID { get => this.store.WifiEndpoint?.ProfileId; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// requires either authorization code or refresh token, provides access token
+        /// </remarks>
+        private Uri? TokenEndpoint { get => this.store.WifiEndpoint?.TokenEndpoint; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <remarks>
+        /// requires an access token
+        /// </remarks>
+        private Uri? EapEndpoint { get => this.store.WifiEndpoint?.EapEndpoint; }
+
+        /// <summary>
+        /// single-use token to refresh the access token (Bearer header)
+        /// </summary>
+        private string? RefreshToken
+        {
+            get => this.store.WifiRefreshToken;
+            set => this.store.UpdateWifiRefreshToken(value);
         }
 
         // interface
-        public static string VersionNumber
+        public string? VersionNumber
         {
             get
             {
-                Assembly assembly = Assembly.GetExecutingAssembly();
-                foreach (CustomAttributeData attrs in assembly.CustomAttributes)
+                var assembly = Assembly.GetExecutingAssembly();
+                foreach (var attrs in assembly.CustomAttributes)
                 {
                     if (attrs.AttributeType.Name == "AssemblyFileVersionAttribute")
                     {
-                        foreach (CustomAttributeTypedArgument attr in attrs.ConstructorArguments)
+                        foreach (var attr in attrs.ConstructorArguments)
                         {
                             if (attr.Value is string)
                             {
@@ -56,19 +78,19 @@ namespace EduRoam.Connect
             }
         }
 
-        public static bool CanRefresh
+        public bool CanRefresh
         {
-            get => TokenEndpoint != null
-                && RefreshToken != null;
+            get => this.TokenEndpoint != null
+                && this.RefreshToken != null;
         }
 
         public static void WipeTokens()
         {
-            RefreshToken = null;
-            PersistingStore.LetsWifiEndpoints = null;
+            RegistryStore.Instance.ClearWifiRefreshToken();
+            RegistryStore.Instance.ClearWifiEndpoint();
         }
 
-        public static async Task<bool> AuthorizeAccess(IdentityProviderProfile profile, string authorizationCode, string codeVerifier, Uri redirectUri)
+        public async Task<bool> AuthorizeAccess(IdentityProviderProfile profile, string authorizationCode, string codeVerifier, Uri redirectUri)
         {
             _ = profile ?? throw new ArgumentNullException(paramName: nameof(profile));
             _ = authorizationCode ?? throw new ArgumentNullException(paramName: nameof(authorizationCode));
@@ -76,11 +98,18 @@ namespace EduRoam.Connect
 
             WipeTokens();
 
-            if (string.IsNullOrEmpty(profile.token_endpoint)) return false;
-            if (string.IsNullOrEmpty(profile.eapconfig_endpoint)) return false;
+            if (string.IsNullOrEmpty(profile.token_endpoint))
+            {
+                return false;
+            }
 
-            Uri tokenEndpoint = new Uri(profile.token_endpoint);
-            Uri eapEndpoint = new Uri(profile.eapconfig_endpoint);
+            if (string.IsNullOrEmpty(profile.eapconfig_endpoint))
+            {
+                return false;
+            }
+
+            var tokenEndpoint = new Uri(profile.token_endpoint);
+            var eapEndpoint = new Uri(profile.eapconfig_endpoint);
 
             // Parameters to get access tokens form lets-wifi
             var tokenPostData = new NameValueCollection() {
@@ -106,8 +135,8 @@ namespace EduRoam.Connect
             // process response
             try
             {
-                SetAccessTokensFromJson(tokenJson);
-                PersistingStore.LetsWifiEndpoints = (profile.Id, tokenEndpoint, eapEndpoint);
+                this.SetAccessTokensFromJson(tokenJson);
+                this.store.UpdateWifiEndpoint(new WifiEndpoint(profile.Id, tokenEndpoint, eapEndpoint));
             }
             catch (ApiParsingException) { return false; }
 
@@ -119,7 +148,7 @@ namespace EduRoam.Connect
         /// </summary>
         /// <param name="jsonResponse"></param>
         /// <exception cref="ApiParsingException">Misformed JSON or missing requird fields</exception>
-        private static void SetAccessTokensFromJson(string jsonResponse)
+        private void SetAccessTokensFromJson(string jsonResponse)
         {
             // Parse json response to retrieve authorization tokens
             string accessToken;
@@ -150,23 +179,23 @@ namespace EduRoam.Connect
             if (accessTokenExpiresIn.Value > 60)
                 accessTokenExpiresIn -= 10; // reduces chance of error
 
-            AccessToken = accessToken;
-            AccessTokenType = accessTokenType;
-            AccessTokenValidUntill = DateTime.Now.AddSeconds(accessTokenExpiresIn.Value);
-            RefreshToken = refreshToken;
+            this.AccessToken = accessToken;
+            this.AccessTokenType = accessTokenType;
+            this.AccessTokenValidUntill = DateTime.Now.AddSeconds(accessTokenExpiresIn.Value);
+            this.RefreshToken = refreshToken;
         }
 
         /// <summary>
         /// Will use the refresh token to request a new access token.
         /// </summary>
         /// <returns></returns>
-        public static async Task<bool> RefreshTokens()
+        public async Task<bool> RefreshTokens()
         {
-            if (!CanRefresh) return false;
+            if (!this.CanRefresh) return false;
 
             var tokenFormData = new NameValueCollection() {
                 { "grant_type", "refresh_token" },
-                { "refresh_token", RefreshToken },
+                { "refresh_token", this.RefreshToken },
                 { "client_id", OAuth.clientId },
             };
 
@@ -174,10 +203,10 @@ namespace EduRoam.Connect
             // TODO on background refresh, internet may be offline, but be back in a few seconds; smart retry needed
             try
             {
-                var tokenJson = await IdentityProviderDownloader.PostForm(TokenEndpoint, tokenFormData, new string[] { "application/json" });
+                var tokenJson = await IdentityProviderDownloader.PostForm(this.TokenEndpoint, tokenFormData, new string[] { "application/json" });
 
                 // process response
-                SetAccessTokensFromJson(tokenJson);
+                this.SetAccessTokensFromJson(tokenJson);
                 return true;
             }
             catch (ApiException e)
@@ -197,20 +226,30 @@ namespace EduRoam.Connect
         /// </summary>
         /// <returns>EapConfig with client</returns>
         /// <exception cref="XmlException"></exception>
-        public static async Task<EapConfig> RequestAndDownloadEapConfig()
+        public async Task<EapConfig?> RequestAndDownloadEapConfig()
         {
-            if (EapEndpoint == null) return null;
-            if (DateTime.Now > AccessTokenValidUntill)
-                if (false == await RefreshTokens())
-                    return null;
-
-            if (AccessTokenType != "Bearer")
+            if (this.EapEndpoint == null)
             {
-                throw new InvalidOperationException("Expected token_type Bearer but got " + AccessTokenType);
+                return null;
             }
-            var eapConfig = await IdentityProviderDownloader.DownloadEapConfig(EapEndpoint, AccessToken);
-            eapConfig.ProfileId = ProfileID;
+
+            if (DateTime.Now > this.AccessTokenValidUntill)
+            {
+                if (false == await this.RefreshTokens())
+                {
+                    return null;
+                }
+            }
+
+            if (this.AccessTokenType != "Bearer")
+            {
+                throw new InvalidOperationException("Expected token_type Bearer but got " + this.AccessTokenType);
+            }
+
+            var eapConfig = await IdentityProviderDownloader.DownloadEapConfig(this.EapEndpoint, this.AccessToken);
+            eapConfig.ProfileId = this.ProfileID;
             eapConfig.IsOauth = true;
+
             return eapConfig;
         }
 
@@ -221,22 +260,23 @@ namespace EduRoam.Connect
         /// <param name="force">Wether to force a reinstall even if the current certificate still is valid for quote some time</param>
         /// <returns>An enum describing the result</returns>
         /// <exception cref="ApiParsingException">JSON cannot be deserialized</exception>
-        public static async Task<RefreshResponse> RefreshAndInstallEapConfig(bool force = false, bool onlyLetsWifi = false)
+        public async Task<RefreshResponse> RefreshAndInstallEapConfig(bool force = false, bool onlyLetsWifi = false)
         {
             // if LetsWifi is not set up:
             // Download a new EapConfig xml if we already have one stored
-            var profileId = PersistingStore.IdentityProvider?.ProfileId;
+            var profileId = this.store.IdentityProvider?.ProfileId;
             if (!onlyLetsWifi
-                && !PersistingStore.IsRefreshable
-                && PersistingStore.IsReinstallable
+                && !this.store.IsRefreshable
+                && this.store.IsReinstallable
                 && !string.IsNullOrEmpty(profileId))
             {
                 try
                 {
                     using var discovery = new IdentityProviderDownloader();
                     var xml = (await discovery.DownloadEapConfig(profileId)).RawOriginalEapConfigXmlData;
-                    PersistingStore.IdentityProvider = PersistingStore.IdentityProvider
-                        ?.WithEapConfigXml(xml);
+
+                    var identityProvider = this.store.IdentityProvider?.WithEapConfigXml(xml);
+                    this.store.UpdateIdentity(identityProvider);
                     return RefreshResponse.UpdatedEapXml;
                 }
                 catch (ApiParsingException e)
@@ -256,12 +296,12 @@ namespace EduRoam.Connect
             // otherwise, we try to refresh through LetsWifi
 
             // Check if we can, at all:
-            if (!PersistingStore.IsRefreshable)
+            if (!this.store.IsRefreshable)
                 return RefreshResponse.NotRefreshable;
 
             // should never be null since the check above was successfull
-            var profileInfo = PersistingStore.IdentityProvider
-                ?? throw new NullReferenceException(nameof(PersistingStore.IdentityProvider) + " was null");
+            var profileInfo = this.store.IdentityProvider
+                ?? throw new NullReferenceException(nameof(this.store.IdentityProvider) + " was null");
 
             // check if within 2/3 of the client certificate lifespan
             if (!force && profileInfo.NotBefore != null && profileInfo.NotAfter != null)
@@ -276,10 +316,10 @@ namespace EduRoam.Connect
             }
 
             // this is done automatically by RequestAndDownloadEapConfig, but we do it here for the result code.
-            if (false == await RefreshTokens())
+            if (false == await this.RefreshTokens())
                 return RefreshResponse.AccessDenied; // TODO: requires user intervention, make user reconnect
 
-            var eapConfig = await RequestAndDownloadEapConfig();
+            var eapConfig = await this.RequestAndDownloadEapConfig();
             if (eapConfig == null)
                 return RefreshResponse.Failed;
 
@@ -314,11 +354,15 @@ namespace EduRoam.Connect
 
             // remove the old client certificates installed by us
             using var clientCert = installer.AuthMethod.ClientCertificateAsX509Certificate2();
+
             var oldClientCerts = CertificateStore.EnumerateInstalledCertificates()
                 .Where(cert => cert.installedCert.StoreName == StoreName.My)
                 .Where(cert => cert.cert.Thumbprint != clientCert.Thumbprint);
+
             foreach ((var cert, var installedCert) in oldClientCerts)
+            {
                 CertificateStore.UninstallCertificate(cert, installedCert.StoreName, installedCert.StoreLocation);
+            }
             // TODO: This codeblob above could be reworked into uninstalling only expired certificates, such a helper functiong in CertificateStore would be nice
 
             // TODO: handle the case where the new installed certificate is not valid yet
@@ -326,48 +370,5 @@ namespace EduRoam.Connect
 
             return RefreshResponse.Success;
         }
-
-        public enum RefreshResponse
-        {
-            /// <summary>
-            /// All is good chief
-            /// </summary>
-            Success,
-
-            /// <summary>
-            /// If the profile was not refreshibly through LetsWifi, but
-            /// instead managed to update the profile for a Reinstall
-            /// </summary>
-            UpdatedEapXml,
-
-            /// <summary>
-            /// The user has to install some new root certificates.
-            /// User intevention is required
-            /// </summary>
-            NewRootCaRequired,
-
-            /// <summary>
-            /// The refresh token was denied. the user has to reauthenticate
-            /// </summary>
-            AccessDenied,
-
-            /// <summary>
-            /// There is no need to refresh the EAP profile, since it is still valid for quite some time
-            /// </summary>
-            StillValid,
-
-            /// <summary>
-            /// The installed profile is not refreshable
-            /// </summary>
-            NotRefreshable,
-
-            /// <summary>
-            /// Something failed
-            /// </summary>
-            Failed,
-        }
-
-        // internal helpers
-
     }
 }

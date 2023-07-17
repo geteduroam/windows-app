@@ -1,25 +1,45 @@
 ﻿using System.CommandLine;
 using System.CommandLine.Parsing;
 
-namespace EduRoam.CLI.Commands
+namespace EduRoam.CLI
 {
-    public static class Arguments
+    public static class Options
     {
-        public static Option<string> Institute => new(
+        public static Option<string> GetInstituteOption(bool optional = false)
+        {
+            if (optional)
+            {
+                return new(name: "--i", description: "The name of the institute to connect to.");
+            }
+
+            return new(
                 name: "--i",
                 parseArgument: NonEmptyString,
                 isDefault: true,
                 description: "The name of the institute to connect to.");
+        }
 
-        public static Option<string> Profile => new(
+        public static Option<string> GetProfileOption(bool optional = false)
+        {
+            if (optional)
+            {
+                return new(name: "--p", description: "Institute's profile to connect to.");
+            }
+
+            return new(
                 name: "--p",
                 parseArgument: NonEmptyString,
                 isDefault: true,
                 description: "Institute's profile to connect to.");
+        }
 
-        public static Option<bool> Force => new(
+        public static Option<FileInfo> GetEapConfigOption() => new(
+                aliases: new string[] { "--c", "-config" },
+                description: "Path to EAP config .eap-config.");
+
+        public static Option<bool> GetForceOption() => new(
                 name: "--f",
-                description: "Force automatic configuration if the profile is not already configured (fully).",
+                description: "Force action.",
                 getDefaultValue: () => false);
 
         private static string NonEmptyString(ArgumentResult result)

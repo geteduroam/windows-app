@@ -458,29 +458,29 @@ namespace EduRoam.Connect
             /// <summary>
             /// NetworkType == IEEE80211 only. Used to configure WPA with SSID
             /// </summary>
-            public string Ssid { get; } // Wifi SSID, TODO: use
+            public string? Ssid { get; } // Wifi SSID, TODO: use
             /// <summary>
             /// NetworkType == IEEE80211 only. Used to configure WPA with Hotspot 2.0
             /// </summary>
-            public string ConsortiumOid { get; } // Hotspot2.0
+            public string? ConsortiumOid { get; } // Hotspot2.0
             /// <summary>
             /// NetworkType == IEEE80211 only, Has either a value of "TKIP" or "CCMP"
             /// </summary>
-            public string MinRsnProto { get; } // "TKIP" or "CCMP"
+            public string? MinRsnProto { get; } // "TKIP" or "CCMP"
 
             // IEEE8023 only:
 
             /// <summary>
             /// NetworkType == IEEE8023 only
             /// </summary>
-            public string NetworkId { get; }
+            public string? NetworkId { get; }
 
             private CredentialApplicability(
                 IEEE802x networkType,
-                string ssid,
-                string consortiumOid,
-                string minRsnProto,
-                string networkId)
+                string? ssid,
+                string? consortiumOid,
+                string? minRsnProto,
+                string? networkId)
             {
 
                 this.NetworkType = networkType;
@@ -552,8 +552,7 @@ namespace EduRoam.Connect
 			*/
 
             // create a new empty list for authentication methods
-            List<AuthenticationMethod> authMethods =
-                new List<AuthenticationMethod>();
+            var authMethods = new List<AuthenticationMethod>();
 
             // iterate over all AuthenticationMethods elements from xml
             foreach (var authMethodXml in eapConfigXml.Descendants().Where(nameIs("AuthenticationMethod")))
@@ -590,19 +589,19 @@ namespace EduRoam.Connect
                 // ClientSideCredential
 
                 // Preset credentials
-                var clientUserName = (string)clientSideCredentialXml
+                var clientUserName = (string?)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("UserName"));
-                var clientPassword = (string)clientSideCredentialXml
+                var clientPassword = (string?)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("Password"));
-                var clientCert = (string)clientSideCredentialXml
+                var clientCert = (string?)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("ClientCertificate")); // TODO: <ClientCertificate format="PKCS12" encoding="base64"> is assumed
-                var clientCertPasswd = (string)clientSideCredentialXml
+                var clientCertPasswd = (string?)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("Passphrase"));
 
                 // inner/outer identity
-                var clientOuterIdentity = (string)clientSideCredentialXml
+                var clientOuterIdentity = (string?)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("OuterIdentity"));
-                var clientInnerIdentitySuffix = (string)clientSideCredentialXml
+                var clientInnerIdentitySuffix = (string?)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("InnerIdentitySuffix"));
                 var clientInnerIdentityHint = (bool?)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("InnerIdentityHint")) ?? false;

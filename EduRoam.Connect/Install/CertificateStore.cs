@@ -1,11 +1,12 @@
 ﻿using EduRoam.Connect.Exceptions;
+using EduRoam.Connect.Store;
 
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
 
-using InstalledCertificate = EduRoam.Connect.PersistingStore.InstalledCertificate;
+using InstalledCertificate = EduRoam.Connect.Store.Certificate;
 
 namespace EduRoam.Connect.Install
 {
@@ -66,8 +67,7 @@ namespace EduRoam.Connect.Install
             }
 
             // keep track of that we've installed it
-            PersistingStore.InstalledCertificates = PersistingStore.InstalledCertificates
-                .Add(InstalledCertificate.FromCertificate(cert, storeName, storeLocation));
+            RegistryStore.Instance.AddInstalledCertificate(InstalledCertificate.FromCertificate(cert, storeName, storeLocation));
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace EduRoam.Connect.Install
 
         public static bool IsCertificateInstalledByUs(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation)
             => IsCertificateInstalled(cert, storeName, storeLocation)
-            && PersistingStore.InstalledCertificates
+            && RegistryStore.Instance.InstalledCertificates
                 .Contains(InstalledCertificate.FromCertificate(cert, storeName, storeLocation));
 
         public static bool AnyRootCaInstalledByUs()
@@ -147,7 +147,7 @@ namespace EduRoam.Connect.Install
 
         public static IEnumerable<(X509Certificate2 cert, InstalledCertificate installedCert)> EnumerateInstalledCertificates()
         {
-            foreach (var installedCert in PersistingStore.InstalledCertificates.ToList())
+            foreach (var installedCert in RegistryStore.Instance.InstalledCertificates.ToList())
             {
                 // find matching certs in certstore
                 X509Certificate2Collection matchingCerts;
@@ -158,7 +158,7 @@ namespace EduRoam.Connect.Install
                         .Find(X509FindType.FindByThumbprint, installedCert.Thumbprint, validOnly: false);
                 }
 
-                bool found = false;
+                var found = false;
                 foreach (var cert in matchingCerts)
                 {
                     // thumbprint already found to match
@@ -186,8 +186,7 @@ namespace EduRoam.Connect.Install
                         Debug.Fail("Unable to find persisted certificate, even when thumbprint matched");
 
                     // not found, stop tracking it
-                    PersistingStore.InstalledCertificates = PersistingStore.InstalledCertificates
-                        .Remove(installedCert);
+                    RegistryStore.Instance.RemoveInstalledCertificate(installedCert);
                 }
             }
         }
@@ -200,7 +199,7 @@ namespace EduRoam.Connect.Install
         {
             Debug.WriteLine("Uninstalling all installed certificates...");
 
-            bool all_removed = true;
+            var all_removed = true;
             foreach ((var cert, var installedCert) in EnumerateInstalledCertificates())
             {
                 if (installedCert.StoreName == StoreName.Root && omitRootCa)
@@ -211,8 +210,9 @@ namespace EduRoam.Connect.Install
                 var success = UninstallCertificate(cert, installedCert.StoreName, installedCert.StoreLocation);
 
                 if (success)
-                    PersistingStore.InstalledCertificates = PersistingStore.InstalledCertificates
-                        .Remove(installedCert);
+                {
+                    RegistryStore.Instance.RemoveInstalledCertificate(installedCert);
+                }
 
                 all_removed &= success;
 
@@ -221,7 +221,7 @@ namespace EduRoam.Connect.Install
             }
 
             // not transactionally secure, probably also not needed
-            all_removed &= PersistingStore.InstalledCertificates.Count == 0;
+            all_removed &= !RegistryStore.Instance.InstalledCertificates.Any();
 
             Debug.WriteLine("Uninstalling all installed certificates: " + (all_removed ? "SUCCESS" : "FAILED"));
             Debug.WriteLine("");

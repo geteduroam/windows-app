@@ -179,9 +179,9 @@ namespace EduRoam.Connect
 
             try
             {
-                var success = await LetsWifi.AuthorizeAccess(this.profile, authorizationCode, codeVerifier, this.prefix);
+                var success = await LetsWifi.Instance.AuthorizeAccess(this.profile, authorizationCode, codeVerifier, this.prefix);
 
-                this.EapConfig = success ? await LetsWifi.RequestAndDownloadEapConfig() : null;
+                this.EapConfig = success ? await LetsWifi.Instance.RequestAndDownloadEapConfig() : null;
             }
             catch (ApiUnreachableException e) // TODO: BAD
             {

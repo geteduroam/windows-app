@@ -1,3 +1,5 @@
+using EduRoam.Connect.Store;
+
 using ManagedNativeWifi;
 
 using System.Collections.Immutable;
@@ -6,7 +8,7 @@ using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Reflection;
 
-using ConfiguredWLANProfile = EduRoam.Connect.PersistingStore.ConfiguredWLANProfile;
+using WLANProfile = EduRoam.Connect.Store.WLANProfile;
 
 namespace EduRoam.Connect
 {
@@ -16,28 +18,32 @@ namespace EduRoam.Connect
     /// </summary>
     public readonly struct EduRoamNetwork
     {
+        // TODO: Add support for Wired 801x
+
         // Properties
-        private AvailableNetworkPack NetworkPack { get; }
-        private ProfilePack ProfilePack { get; }
+        private readonly BaseConfigStore store = new RegistryStore();
+
+        private AvailableNetworkPack? NetworkPack { get; }
+
+        private ProfilePack? ProfilePack { get; }
 
         public Guid InterfaceId { get; }
-        public string ProfileName { get => ProfilePack?.Name ?? NetworkPack?.ProfileName ?? ""; }
-        public bool IsAvailable
-        { get => NetworkPack != null; }
 
-        // TODO: Add support for Wired 801x
+        public string ProfileName { get => this.ProfilePack?.Name ?? this.NetworkPack?.ProfileName ?? ""; }
+
+        public bool IsAvailable { get => this.NetworkPack != null; }
 
         private EduRoamNetwork(Guid interfaceId)
         {
-            NetworkPack = null;
-            ProfilePack = null;
-            InterfaceId = interfaceId; // non-nullable
+            this.NetworkPack = null;
+            this.ProfilePack = null;
+            this.InterfaceId = interfaceId; // non-nullable
         }
 
         private EduRoamNetwork(
             AvailableNetworkPack networkPack,
-            ProfilePack profilePack,
-            object _ = null) // last argument is ConfiguredWLANProfile
+            ProfilePack? profilePack,
+            object? _ = null) // last argument is ConfiguredWLANProfile
             : this(profilePack?.Interface.Id ?? networkPack.Interface.Id)
         {
             Debug.Assert((networkPack, profilePack) != (null, null));
@@ -46,8 +52,8 @@ namespace EduRoam.Connect
                 || profilePack == null
                 || networkPack.Interface.Id == profilePack.Interface.Id);
 
-            NetworkPack = networkPack;
-            ProfilePack = profilePack;
+            this.NetworkPack = networkPack;
+            this.ProfilePack = profilePack;
         }
 
         /// <summary>
@@ -88,24 +94,23 @@ namespace EduRoam.Connect
         {
             _ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
 
-            PersistingStore.IdentityProvider = PersistingStore.IdentityProviderInfo.From(authMethod);
-            PersistingStore.Username = authMethod.ClientUserName; // save username
+            RegistryStore.Instance.UpdateIdentity(authMethod.ClientUserName, IdentityProviderInfo.From(authMethod));
 
             var ssids = authMethod.SSIDs;
 
-            ConfiguredWLANProfile profile;
+            WLANProfile profile;
             foreach (var ssid in ssids)
             {
-                (string profileName, string profileXml) = ProfileXml.CreateSSIDProfileXml(authMethod, ssid);
-                string userDataXml = UserDataXml.CreateUserDataXml(authMethod);
+                (var profileName, var profileXml) = ProfileXml.CreateSSIDProfileXml(authMethod, ssid);
+                var userDataXml = UserDataXml.CreateUserDataXml(authMethod);
                 try
                 {
                     // forAllUsers must be true when installing the profile, but false when installing userdata
                     // Otherwise the profile is installed but doens't work.  We don't know why.
-                    profile = InstallProfile(profileName, profileXml, hs20: false, forAllUsers: true);
+                    profile = this.InstallProfile(profileName, profileXml, hs20: false, forAllUsers: true);
                     // forAllUsers does not work with EAP-TLS, probably because the certificate is in the personal store
                     // Same for all methods where the CA is not public
-                    InstallUserData(profile, userDataXml, false);
+                    this.InstallUserData(profile, userDataXml, false);
                 }
                 catch (Win32Exception e)
                 {
@@ -119,16 +124,16 @@ namespace EduRoam.Connect
 
             if (authMethod.IsHS20Supported)
             {
-                (string profileName, string profileXml) = ProfileXml.CreateHS20ProfileXml(authMethod);
-                string userDataXml = UserDataXml.CreateUserDataXml(authMethod);
+                (var profileName, var profileXml) = ProfileXml.CreateHS20ProfileXml(authMethod);
+                var userDataXml = UserDataXml.CreateUserDataXml(authMethod);
                 try
                 {
                     // forAllUsers must be true when installing the profile, but false when installing userdata
                     // Otherwise the profile is installed but doens't work.  We don't know why.
-                    profile = InstallProfile(profileName, profileXml, hs20: true, forAllUsers: true);
+                    profile = this.InstallProfile(profileName, profileXml, hs20: true, forAllUsers: true);
                     // forAllUsers does not work with EAP-TLS, probably because the certificate is in the personal store
                     // Same for all methods where the CA is not public
-                    InstallUserData(profile, userDataXml, forAllUsers: false);
+                    this.InstallUserData(profile, userDataXml, forAllUsers: false);
                 }
                 catch (Win32Exception e)
                 {
@@ -204,29 +209,28 @@ namespace EduRoam.Connect
             }
         }
 
-        private ConfiguredWLANProfile InstallProfile(string profileName, string profileXml, bool hs20, bool forAllUsers)
+        private WLANProfile InstallProfile(string profileName, string profileXml, bool hs20, bool forAllUsers)
         {
             // security type not required
-            const string securityType = null; // TODO: document why
+            const string? SecurityType = null; // TODO: document why
 
             // overwrites if profile already exists
-            const bool overwrite = true;
+            const bool Overwrite = true;
 
             // https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/nf-wlanapi-wlansetprofile
             if (!NativeWifi.SetProfile(
-                InterfaceId,
+                this.InterfaceId,
                 forAllUsers
                     ? ProfileType.AllUser
                     : ProfileType.PerUser, // TODO: make this option work and set as default
                 profileXml,
-                securityType,
-                overwrite)) throw new Exception(
+                SecurityType,
+                Overwrite)) throw new Exception(
                     "Unable to install " + (hs20 ? "Passpoint " : "SSID ") + profileName
                 );
 
-            ConfiguredWLANProfile configuredWLANProfile = new ConfiguredWLANProfile(InterfaceId, profileName, hs20);
-            PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
-                .Add(configuredWLANProfile);
+            var configuredWLANProfile = new WLANProfile(this.InterfaceId, profileName, hs20);
+            this.store.AddConfiguredWLANProfile(configuredWLANProfile);
             return configuredWLANProfile;
         }
 
@@ -237,9 +241,9 @@ namespace EduRoam.Connect
         /// <param name="userDataXml">The user data XML</param>
         /// <param name="forAllUsers">Install for all users or only the current user</param>
         /// <remarks><paramref name="forAllUsers"/>MUST be false for EAP-TLS, probably because the certificate is in the user store</remarks>
-        public void InstallUserData(ConfiguredWLANProfile profile, string userDataXml, bool forAllUsers)
+        public void InstallUserData(WLANProfile profile, string userDataXml, bool forAllUsers)
         {
-            if (profile.InterfaceId != InterfaceId)
+            if (profile.InterfaceId != this.InterfaceId)
                 throw new ArgumentException("Provided profile is not for the same interface as this network");
 
             if (NativeWifi.SetProfileEapXmlUserData(
@@ -253,9 +257,8 @@ namespace EduRoam.Connect
             {
                 if (!profile.HasUserData) // ommit uneccesary writes
                 {
-                    PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
-                        .Remove(profile)
-                        .Add(profile.WithUserDataSet());
+                    this.store.RemoveConfiguredWLANProfile(profile);
+                    this.store.AddConfiguredWLANProfile(profile.WithUserDataSet());
                 }
             }
             else
@@ -273,20 +276,19 @@ namespace EduRoam.Connect
         /// </remarks>
         public void RemoveInstalledProfiles()
         {
-            Debug.WriteLine("Removing installed profiles on " + InterfaceId);
-            foreach (var configuredProfile in PersistingStore.ConfiguredWLANProfiles.ToList())
+            Debug.WriteLine("Removing installed profiles on " + this.InterfaceId);
+            foreach (var configuredProfile in this.store.ConfiguredWLANProfiles.ToList())
             {
-                if (configuredProfile.InterfaceId == InterfaceId)
+                if (configuredProfile.InterfaceId == this.InterfaceId)
                 {
                     // We explicitly ignore errors from NativeWifi,
                     // as any failures probably mean that our info and the info in the OS is out of sync
-                    NativeWifi.DeleteProfile(InterfaceId, configuredProfile.ProfileName); // May return false
-                    PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
-                        .Remove(configuredProfile);
+                    NativeWifi.DeleteProfile(this.InterfaceId, configuredProfile.ProfileName); // May return false
+                    this.store.RemoveConfiguredWLANProfile(configuredProfile);
                 }
             }
 
-            if (0 != PersistingStore.ConfiguredWLANProfiles.Count)
+            if (this.store.ConfiguredWLANProfiles.Any())
             {
                 throw new Exception("Some WLAN profile could not be removed");
             }
@@ -294,12 +296,12 @@ namespace EduRoam.Connect
 
         public async Task<bool> TryToConnect()
         {
-            if (!IsAvailable) return false;
+            if (!this.IsAvailable) return false;
 
             return await NativeWifi.ConnectNetworkAsync(
-                interfaceId: NetworkPack.Interface.Id,
-                profileName: NetworkPack.ProfileName,
-                bssType: NetworkPack.BssType,
+                interfaceId: this.NetworkPack.Interface.Id,
+                profileName: this.NetworkPack.ProfileName,
+                bssType: this.NetworkPack.BssType,
                 timeout: TimeSpan.FromSeconds(8));
         }
 
@@ -347,7 +349,7 @@ namespace EduRoam.Connect
 
             // join configured profiles
             return GetAllNetworkProfilePackPairs()
-                .Join(inner: PersistingStore.ConfiguredWLANProfiles,
+                .Join(inner: RegistryStore.Instance.ConfiguredWLANProfiles,
                     outerKeySelector: networkPPack => (networkPPack.ppack.Name, networkPPack.ppack.Interface.Id),
                     innerKeySelector: persitedProfile => (persitedProfile.ProfileName, persitedProfile.InterfaceId),
                     // note, EduroamNetwork doesn't actually use persistedProfile
@@ -379,7 +381,7 @@ namespace EduRoam.Connect
         {
             // look through installed profiles and remove persisted profile configurations which have been uninstalled by user
             var installedProfiles = GetAllInstalledProfilePacks().ToList();
-            foreach (var configuredProfile in PersistingStore.ConfiguredWLANProfiles)
+            foreach (var configuredProfile in RegistryStore.Instance.ConfiguredWLANProfiles)
             {
                 // if still installed
                 if (installedProfiles.Any(ppack
@@ -390,8 +392,7 @@ namespace EduRoam.Connect
                 // else remove
                 Debug.WriteLine("Removing stale profile from persisting store called {0} on interface {1}",
                     configuredProfile.ProfileName, configuredProfile.InterfaceId);
-                PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
-                    .Remove(configuredProfile);
+                RegistryStore.Instance.RemoveConfiguredWLANProfile(configuredProfile);
             }
         }
 
@@ -409,11 +410,20 @@ namespace EduRoam.Connect
             catch (TargetInvocationException ex) // we don't know why it gets wrapped
             {
                 if (ex.GetBaseException().GetType().Name == "Win32Exception")
+                {
                     if (ex.GetBaseException().Message == "MethodName: WlanOpenHandle, ErrorCode: 1062, ErrorMessage: The service has not been started.\r\n")
+                    {
                         return false;
+                    }
+                }
+
                 if (ex.GetBaseException().GetType().Name == "DllNotFoundException")
+                {
                     if (ex.GetBaseException().HResult == -2146233052) // Message: Unable to load DLL 'Wlanapi.dll': The specified module could not be found. (Exception from HRESULT: 0x8007007E))
+                    {
                         return false;
+                    }
+                }
 
                 Debug.WriteLine("THIS SHOULD NOT HAPPEN");
                 Debug.Print(ex.ToString());

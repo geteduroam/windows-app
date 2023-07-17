@@ -13,8 +13,8 @@ namespace EduRoam.CLI.Commands
 
         public Command GetCommand()
         {
-            var instituteOption = Arguments.Institute;
-            var profileOption = Arguments.Profile;
+            var instituteOption = Options.GetInstituteOption();
+            var profileOption = Options.GetProfileOption();
 
             var command = new Command(CommandName, CommandDescription)
             {

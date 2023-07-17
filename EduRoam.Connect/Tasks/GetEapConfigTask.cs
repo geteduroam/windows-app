@@ -44,6 +44,26 @@ namespace EduRoam.Connect.Tasks
 
         }
 
+        public async Task<EapConfig?> GetEapConfigAsync(FileInfo eapConfigPath)
+        {
+            var filePath = eapConfigPath.FullName;
+            var eapConfigContent = await File.ReadAllTextAsync(filePath);
+
+            // create and return EapConfig object
+            var eapConfig = EapConfig.FromXmlData(eapConfigContent);
+            eapConfig.ProfileId = filePath;
+
+            return eapConfig;
+        }
+
+        public async Task<EapConfig?> GetEapConfigAsync()
+        {
+            // create and return EapConfig object
+            var eapConfig = await LetsWifi.Instance.RequestAndDownloadEapConfig();
+
+            return eapConfig;
+        }
+
         public async Task<EapConfig?> GetEapConfigAsync(string profileId)
         {
             var getProfilesTask = new GetProfilesTask();

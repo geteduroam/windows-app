@@ -1,4 +1,5 @@
 ﻿using EduRoam.Connect.Install;
+using EduRoam.Connect.Store;
 
 namespace EduRoam.Connect.Tasks
 {
@@ -18,7 +19,7 @@ namespace EduRoam.Connect.Tasks
             LetsWifi.WipeTokens();
             ConnectToEduroam.RemoveAllWLANProfiles();
             CertificateStore.UninstallAllInstalledCertificates(omitRootCa: omitRootCa);
-            PersistingStore.IdentityProvider = null;
+            RegistryStore.Instance.ClearIdentity();
         }
     }
 }

@@ -6,7 +6,7 @@ using System.CommandLine;
 
 namespace EduRoam.CLI.Commands
 {
-    public class ConnectByProfile : ICommand
+    public class Connect : ICommand
     {
         public static string CommandName => "connect";
 
@@ -14,34 +14,38 @@ namespace EduRoam.CLI.Commands
 
         public Command GetCommand()
         {
-            var instituteOption = Arguments.Institute;
-            var profileOption = Arguments.Profile;
-            var forceOption = Arguments.Force;
+            var instituteOption = Options.GetInstituteOption(optional: true);
+            var profileOption = Options.GetProfileOption(optional: true);
+            var eapConfigFileOption = Options.GetEapConfigOption();
+            var forceOption = Options.GetForceOption();
 
             var command = new Command(CommandName, CommandDescription)
             {
+                eapConfigFileOption,
                 instituteOption,
                 profileOption,
                 forceOption
             };
 
-
-            command.SetHandler(async (string institute, string profileName, bool force) =>
+            command.AddValidator(validator =>
             {
-                var getEapConfig = new GetEapConfigTask();
-                var eapConfig = await getEapConfig.GetEapConfigAsync(institute, profileName);
+                var instituteOptionValue = validator.GetValueForOption(instituteOption);
+                var profileOptionValue = validator.GetValueForOption(profileOption);
+                var eapConfigFileArgValue = validator.GetValueForOption(eapConfigFileOption);
 
-                if (eapConfig == null)
+                if (eapConfigFileArgValue == null && (string.IsNullOrWhiteSpace(instituteOptionValue) || string.IsNullOrWhiteSpace(profileOptionValue)))
                 {
-                    ConsoleExtension.WriteError($"Could not connect, EAP Config is empty");
-                    return;
+                    validator.ErrorMessage = $"Missing options. Provide the {eapConfigFileOption.Aliases.First()} option or both {instituteOption.Name} and {profileOption.Name} options";
                 }
+            });
 
-                var connectTask = new ConnectTask(eapConfig);
+            command.SetHandler(async (FileInfo? eapConfigFile, string? institute, string? profileName, bool force) =>
+            {
+                var connectTask = new ConnectTask();
 
                 try
                 {
-                    var connected = await connectTask.ConnectAsync(force);
+                    var connected = await connectTask.ConnectAsync();
 
                     try
                     {
@@ -51,7 +55,16 @@ namespace EduRoam.CLI.Commands
                         }
                         else
                         {
-                            if (EduRoamNetwork.IsNetworkInRange(eapConfig))
+                            var eapConfigTask = new GetEapConfigTask();
+
+                            var eapConfig = await eapConfigTask.GetEapConfigAsync();
+
+                            if (eapConfig == null)
+                            {
+                                ConsoleExtension.WriteError($"Everything is configured!\nCould not connect because no EAP Config could be found");
+
+                            }
+                            else if (EduRoamNetwork.IsNetworkInRange(eapConfig))
                             {
                                 ConsoleExtension.WriteError("Everything is configured!\nUnable to connect to eduroam.");
                             }
@@ -90,7 +103,7 @@ namespace EduRoam.CLI.Commands
                     ConsoleExtension.WriteError("No internet connection");
                 }
 
-            }, instituteOption, profileOption, forceOption);
+            }, eapConfigFileOption, instituteOption, profileOption, forceOption);
 
             return command;
         }

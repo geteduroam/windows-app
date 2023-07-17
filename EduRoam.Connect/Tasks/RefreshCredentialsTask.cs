@@ -1,4 +1,5 @@
 ﻿using EduRoam.Connect.Exceptions;
+using EduRoam.Connect.Store;
 
 using System.Diagnostics;
 using System.Globalization;
@@ -19,7 +20,7 @@ namespace EduRoam.Connect.Tasks
 
             try
             {
-                response = await LetsWifi.RefreshAndInstallEapConfig(force: true, onlyLetsWifi: true);
+                response = await LetsWifi.Instance.RefreshAndInstallEapConfig(force: true, onlyLetsWifi: true);
             }
             catch (HttpRequestException)
             {
@@ -45,11 +46,11 @@ namespace EduRoam.Connect.Tasks
 
         private void Reauthenticate()
         {
-            if (PersistingStore.IdentityProvider?.ProfileId != null)
+            if (RegistryStore.Instance.IdentityProvider?.ProfileId != null)
             {
                 _ = this.HandleProfileSelect(
-                    PersistingStore.IdentityProvider.Value.ProfileId,
-                    PersistingStore.IdentityProvider?.EapConfigXml,
+                    RegistryStore.Instance.IdentityProvider.Value.ProfileId,
+                    RegistryStore.Instance.IdentityProvider?.EapConfigXml,
                     skipOverview: true);
             }
         }
@@ -61,9 +62,9 @@ namespace EduRoam.Connect.Tasks
         {
             var message = new StringBuilder();
 
-            if (PersistingStore.IdentityProvider?.NotAfter != null)
+            if (RegistryStore.Instance.IdentityProvider?.NotAfter != null)
             {
-                var expireDate = PersistingStore.IdentityProvider.Value.NotAfter;
+                var expireDate = RegistryStore.Instance.IdentityProvider.Value.NotAfter;
                 var nowDate = DateTime.Now;
                 var diffDate = expireDate - nowDate;
 

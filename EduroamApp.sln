@@ -23,6 +23,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{29C0B188-A
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deprecated", "deprecated", "{C5046DF4-B9BA-468E-A7DE-811832273104}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -210,6 +212,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8D2C283D-5868-4329-B86E-060ADF68734C} = {C5046DF4-B9BA-468E-A7DE-811832273104}
+		{88939F1B-5677-49B1-BC07-71605598494A} = {C5046DF4-B9BA-468E-A7DE-811832273104}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E267844-5CE0-4636-A8E5-5821B83D9864}

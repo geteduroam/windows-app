@@ -52,9 +52,9 @@ namespace EduRoam.Connect
         {
             var client = new HttpClient(Handler, false);
 #if DEBUG
-            client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
+            client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.Instance.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
 #else
-			client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
+			client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.Instance.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
 #endif
             // This client will not be used for subsequent requests,
             // so don't keep the connection open any longer than necessary
