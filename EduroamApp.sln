@@ -25,6 +25,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{29C0B188-A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deprecated", "deprecated", "{C5046DF4-B9BA-468E-A7DE-811832273104}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{2CFFF257-3B7E-471C-8F24-A3FFB796AC3D}"
+	ProjectSection(SolutionItems) = preProject
+		test\example.eap-config = test\example.eap-config
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
