@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PlatformTarget>AnyCPU</PlatformTarget>
+	  <AssemblyName>geteduroam-cli</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

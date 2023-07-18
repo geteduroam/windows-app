@@ -37,7 +37,7 @@ namespace EduRoam.CLI.Commands
             return command;
         }
 
-        private static async Task ShowProfilesAsync(string? institute)
+        private static async Task ShowProfilesAsync(string institute)
         {
             var getProfilesTask = new GetProfilesTask();
 
@@ -58,12 +58,12 @@ namespace EduRoam.CLI.Commands
             {
                 // Must never happen, because if the discovery is reached,
                 // it must be parseable. Logging has been done upstream.
-                ConsoleExtension.WriteError("API error");
+                ConsoleExtension.WriteError(Resource.ErrorApi);
                 ConsoleExtension.WriteError(e.Message, e.GetType().ToString());
             }
             catch (ApiUnreachableException)
             {
-                ConsoleExtension.WriteError("No internet connection");
+                ConsoleExtension.WriteError(Resource.ErrorNoInternet);
             }
         }
 
@@ -83,12 +83,12 @@ namespace EduRoam.CLI.Commands
             {
                 // Must never happen, because if the discovery is reached,
                 // it must be parseable. Logging has been done upstream.
-                ConsoleExtension.WriteError("API error");
+                ConsoleExtension.WriteError(Resource.ErrorApi);
                 ConsoleExtension.WriteError(e.Message, e.GetType().ToString());
             }
             catch (ApiUnreachableException)
             {
-                ConsoleExtension.WriteError("No internet connection");
+                ConsoleExtension.WriteError(Resource.ErrorNoInternet);
             }
 
 
