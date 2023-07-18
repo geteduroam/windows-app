@@ -3,8 +3,6 @@ using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Store;
 
 using System.Diagnostics;
-using System.Globalization;
-using System.Text;
 
 namespace EduRoam.Connect.Tasks
 {
@@ -25,7 +23,7 @@ namespace EduRoam.Connect.Tasks
             }
             catch (HttpRequestException)
             {
-                this.Reauthenticate();
+                await this.ReauthenticateAsync();
                 return string.Empty;
             }
 
@@ -45,15 +43,19 @@ namespace EduRoam.Connect.Tasks
             return string.Empty;
         }
 
-        private void Reauthenticate()
+        private Task ReauthenticateAsync()
         {
-            if (RegistryStore.Instance.IdentityProvider?.ProfileId != null)
+            var identityProvider = RegistryStore.Instance.IdentityProvider;
+
+            if (identityProvider?.ProfileId != null)
             {
-                _ = this.HandleProfileSelect(
-                    RegistryStore.Instance.IdentityProvider.Value.ProfileId,
-                    RegistryStore.Instance.IdentityProvider?.EapConfigXml,
+                return this.HandleProfileSelectAsync(
+                    identityProvider.Value.ProfileId,
+                    identityProvider?.EapConfigXml,
                     skipOverview: true);
             }
+
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -61,32 +63,16 @@ namespace EduRoam.Connect.Tasks
 		/// </summary>
 		private string GetExpirationInfo()
         {
-            var message = new StringBuilder();
-
             if (RegistryStore.Instance.IdentityProvider?.NotAfter != null)
             {
-                var expireDate = RegistryStore.Instance.IdentityProvider.Value.NotAfter;
-                var nowDate = DateTime.Now;
-                var diffDate = expireDate - nowDate;
+                var statusTask = new StatusTask();
+                var status = statusTask.GetStatus();
 
-                message.Append("Your account is valid for");
-                message.AppendLine(expireDate?.ToString(CultureInfo.InvariantCulture));
+                return $"{Resource.LabelAccountValidFor}: {status.TimeLeft}";
 
-                if (diffDate.Value.Days > 1)
-                {
-                    message.AppendLine(diffDate.Value.Days.ToString(CultureInfo.InvariantCulture) + " more days");
-                }
-                else if (diffDate.Value.Hours > 1)
-                {
-                    message.Append(diffDate.Value.Hours.ToString(CultureInfo.InvariantCulture) + " more hours");
-                }
-                else
-                {
-                    message.Append(diffDate.Value.Minutes.ToString(CultureInfo.InvariantCulture) + " more minutes");
-                }
             }
 
-            return message.ToString();
+            return string.Empty;
         }
 
         /// <summary>
@@ -100,7 +86,7 @@ namespace EduRoam.Connect.Tasks
 		/// <returns>True if function navigated somewhere</returns>
 		/// <exception cref="XmlException">Parsing eap-config failed</exception>
         /// <exception cref="EduroamAppUserException"/>
-		private async Task<bool> HandleProfileSelect(string profileId, string? eapConfigXml, bool skipOverview = false)
+		private async Task<bool> HandleProfileSelectAsync(string profileId, string? eapConfigXml, bool skipOverview = false)
         {
             EapConfig? eapConfig = null;
 
@@ -109,17 +95,17 @@ namespace EduRoam.Connect.Tasks
                 throw new ArgumentNullException(nameof(profileId));
             }
 
-            if (!string.IsNullOrEmpty(eapConfigXml))
+            if (!string.IsNullOrWhiteSpace(eapConfigXml))
             {
                 // TODO: ^perhaps reuse logic from PersistingStore.IsReinstallable
-                Debug.WriteLine(nameof(eapConfigXml) + " was set", category: nameof(HandleProfileSelect));
+                Debug.WriteLine(nameof(eapConfigXml) + " was set", category: nameof(HandleProfileSelectAsync));
 
                 eapConfig = EapConfig.FromXmlData(eapConfigXml);
                 eapConfig.ProfileId = profileId;
             }
             else
             {
-                Debug.WriteLine(nameof(eapConfigXml) + " was not set", category: nameof(HandleProfileSelect));
+                Debug.WriteLine(nameof(eapConfigXml) + " was not set", category: nameof(HandleProfileSelectAsync));
 
                 var eapConfigTask = new GetEapConfigTask();
 
