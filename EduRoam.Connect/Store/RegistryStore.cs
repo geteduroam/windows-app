@@ -9,7 +9,16 @@ namespace EduRoam.Connect.Store
 {
     public class RegistryStore : BaseConfigStore
     {
-        public RegistryStore() { }
+        public RegistryStore()
+        {
+            this.Username = GetValue<string>("Username");
+            this.IdentityProvider = GetValue<IdentityProviderInfo>("IdentityProvider");
+            this.ConfiguredWLANProfiles = GetValue<ImmutableHashSet<WLANProfile>>("ConfiguredWLANProfiles") ?? ImmutableHashSet<WLANProfile>.Empty;
+            this.InstalledCertificates = GetValue<ImmutableHashSet<Certificate>>("InstalledCertificates") ?? ImmutableHashSet<Certificate>.Empty;
+            this.WifiEndpoint = GetValue<WifiEndpoint?>("LetsWifiEndpoints");
+            this.WifiRefreshToken = GetValue<string?>("LetsWifiRefreshToken");
+
+        }
 
         public static RegistryStore Instance => new RegistryStore();
 
@@ -19,7 +28,7 @@ namespace EduRoam.Connect.Store
 
             if (currentProfiles == null)
             {
-                currentProfiles = ImmutableHashSet.Create<WLANProfile>();
+                currentProfiles = ImmutableHashSet<WLANProfile>.Empty;
             }
             var newProfiles = currentProfiles.Add(profile);
 
@@ -32,7 +41,7 @@ namespace EduRoam.Connect.Store
 
             if (currentCertificates == null)
             {
-                currentCertificates = ImmutableHashSet.Create<Certificate>();
+                currentCertificates = ImmutableHashSet<Certificate>.Empty;
             }
             var newCertificates = currentCertificates.Add(certificate);
 

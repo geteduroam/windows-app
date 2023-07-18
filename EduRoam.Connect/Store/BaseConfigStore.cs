@@ -14,31 +14,31 @@ namespace EduRoam.Connect.Store
         /// <summary>
         /// The username to remember from when the user last logged in
         /// </summary>
-        public string? Username { get; }
+        public string? Username { get; init; }
 
-        public IdentityProviderInfo? IdentityProvider { get; }
+        public IdentityProviderInfo? IdentityProvider { get; init; }
 
         /// <summary>
         /// A set of the configured WLANProfiles
         /// </summary>
-        public ImmutableHashSet<WLANProfile> ConfiguredWLANProfiles { get; }
+        public ImmutableHashSet<WLANProfile> ConfiguredWLANProfiles { get; init; }
 
         /// <summary>
         /// A set of the installed CAs and client certificates.
         /// Managed by EduroamConfigure.CertificateStore
         /// </summary>
-        public ImmutableHashSet<Certificate> InstalledCertificates { get; }
+        public ImmutableHashSet<Certificate> InstalledCertificates { get; init; }
 
         /// <summary>
         /// The endpoints to access the lets-wifi
         /// using the refresh token
         /// </summary>
-        public WifiEndpoint? WifiEndpoint { get; }
+        public WifiEndpoint? WifiEndpoint { get; init; }
 
         /// <summary>
         /// The single-use refresh token to talk with the lets-wifi API
         /// </summary>
-        public string? WifiRefreshToken { get; }
+        public string? WifiRefreshToken { get; init; }
 
         public abstract void UpdateIdentity(string userName, IdentityProviderInfo provider);
 
