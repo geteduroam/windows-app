@@ -1,30 +1,20 @@
 ﻿using EduRoam.CLI.Commands;
 
 using System.CommandLine;
+using System.Reflection;
 
 namespace EduRoam.CLI
 {
     public class Engine
     {
-        private readonly List<ICommand> commandsList = new()
-        {
-            { new Configure() },
-            { new Commands.Connect() },
-            { new List() },
-            { new Refresh() },
-            { new Remove() },
-            { new Show() },
-            { new Uninstall() },
-
-        };
-
         private readonly RootCommand rootCommand;
 
         public Engine()
         {
             this.rootCommand = new RootCommand("Edu Roam CLI");
+            var commandsList = GetCommandList();
 
-            foreach (var command in this.commandsList)
+            foreach (var command in commandsList)
             {
                 this.rootCommand.AddCommand(command.GetCommand());
             }
@@ -35,5 +25,24 @@ namespace EduRoam.CLI
             await this.rootCommand.InvokeAsync(args);
         }
 
+
+        public static List<ICommand> GetCommandList()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var commandClasses = assembly.GetTypes().Where(t => t.GetInterfaces().Contains(typeof(ICommand)));
+
+            var commands = new List<ICommand>();
+
+            foreach (var commandClass in commandClasses)
+            {
+                var command = Activator.CreateInstance(commandClass) as ICommand;
+
+                if (command == null) { continue; }
+
+                commands.Add(command);
+            }
+
+            return commands;
+        }
     }
 }
