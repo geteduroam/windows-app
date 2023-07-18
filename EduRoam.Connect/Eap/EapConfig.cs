@@ -6,7 +6,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace EduRoam.Connect
+namespace EduRoam.Connect.Eap
 {
     /// <summary>
     /// Stores information found in an EAP-config file.
@@ -26,8 +26,8 @@ namespace EduRoam.Connect
 
         #region Helpers
 
-        public IEnumerable<string> SSIDs { get => this.CredentialApplicabilities.Select((c) => c.Ssid); }
-        public IEnumerable<string> ConsortiumOids { get => this.CredentialApplicabilities.Select((c) => c.ConsortiumOid); }
+        public IEnumerable<string> SSIDs { get => this.CredentialApplicabilities.Where((c) => !string.IsNullOrWhiteSpace(c.Ssid)).Select((c) => c.Ssid!); }
+        public IEnumerable<string> ConsortiumOids { get => this.CredentialApplicabilities.Where((c) => !string.IsNullOrWhiteSpace(c.ConsortiumOid)).Select((c) => c.ConsortiumOid!); }
 
         #endregion
 
@@ -81,14 +81,14 @@ namespace EduRoam.Connect
                     .Where(cred => cred.NetworkType == IEEE802x.IEEE80211)
                     .Where(cred => cred.MinRsnProto != "TKIP") // Too old and insecure
                     .Where(cred => cred.Ssid != null) // Filter out HS20 entries, those have no SSID
-                    .Select(cred => cred.Ssid)
+                    .Select(cred => cred.Ssid!)
                     .ToList();
             }
             public List<string> ConsortiumOIDs
             {
                 get => this.EapConfig.CredentialApplicabilities
                     .Where(cred => cred.ConsortiumOid != null)
-                    .Select(cred => cred.ConsortiumOid)
+                    .Select(cred => cred.ConsortiumOid!)
                     .ToList();
             }
             public DateTime? ClientCertificateNotBefore
@@ -563,7 +563,7 @@ namespace EduRoam.Connect
                     .Elements().FirstOrDefault(nameIs("ClientSideCredential"));
 
                 // get EAP method type
-                EapType eapType = (EapType)(int)authMethodXml
+                var eapType = (EapType)(int)authMethodXml
                     .Elements().First(nameIs("EAPMethod"))
                     .Elements().First(nameIs("Type"));
 
@@ -575,13 +575,13 @@ namespace EduRoam.Connect
                 // ServerSideCredential
 
                 // get list of strings of CA certificates
-                var serverCAs = serverSideCredentialXml
+                var serverCAs = serverSideCredentialXml?
                     .Elements().Where(nameIs("CA")) // TODO: <CA format="X.509" encoding="base64"> is assumed, schema does not enforce this
                     .Select(xElement => (string)xElement)
                     .ToList();
 
                 // get list of strings of server IDs
-                var serverNames = serverSideCredentialXml
+                var serverNames = serverSideCredentialXml?
                     .Elements().Where(nameIs("ServerID"))
                     .Select(xElement => (string)xElement)
                     .ToList();
@@ -610,8 +610,8 @@ namespace EduRoam.Connect
                 authMethods.Add(new AuthenticationMethod(
                     eapType,
                     innerAuthType,
-                    serverCAs,
-                    serverNames,
+                    serverCAs ?? new List<string>(),
+                    serverNames ?? new List<string>(),
                     clientUserName,
                     clientPassword,
                     clientCert,
@@ -741,7 +741,7 @@ namespace EduRoam.Connect
         /// </summary>
         public bool NeedsClientCertificate
         {
-            get => AuthenticationMethods
+            get => this.AuthenticationMethods
                 .Any(authMethod => authMethod.NeedsClientCertificate);
         }
 
@@ -779,10 +779,16 @@ namespace EduRoam.Connect
         /// <param name="passphrase">the passphrase to the certificate file in question</param>
         /// <returns>Clone of this object with the appropriate properties set</returns>
         /// <exception cref="ArgumentException">The client certificate was not accepted by any authentication method</exception>
-        public EapConfig WithClientCertificate(string certificatePath, string certificatePassphrase = null)
+        public EapConfig WithClientCertificate(string certificatePath, string? certificatePassphrase = null)
         {
-            var authMethods = this.AuthenticationMethods.Select(authMethod => authMethod.WithClientCertificate(certificatePath, certificatePassphrase)).Where(x => x != null);
-            if (!authMethods.Any()) throw new ArgumentException("No authentication method can accept the client certificate");
+            var authMethods = this.AuthenticationMethods.Select(authMethod => authMethod.WithClientCertificate(certificatePath, certificatePassphrase))
+                .Where(authMethod => authMethod != null)
+                .Select(authMethod => authMethod!);
+
+            if (!authMethods.Any())
+            {
+                throw new ArgumentException("No authentication method can accept the client certificate");
+            }
 
             return new EapConfig(
                 authMethods.ToList(),
@@ -801,7 +807,10 @@ namespace EduRoam.Connect
         /// <exception cref="ArgumentException">The client certificate was not accepted by any authentication method</exception>
         public EapConfig WithClientCertificatePassphrase(string certificatePassphrase)
         {
-            var authMethods = this.AuthenticationMethods.Select(authMethod => authMethod.WithClientCertificatePassphrase(certificatePassphrase)).Where(x => x != null);
+            var authMethods = this.AuthenticationMethods.Select(authMethod => authMethod.WithClientCertificatePassphrase(certificatePassphrase))
+                .Where(authMethod => authMethod != null)
+                .Select(authMethod => authMethod!);
+
             if (!authMethods.Any()) throw new ArgumentException("No authentication accepts the passphrase");
 
             return new EapConfig(
@@ -821,7 +830,10 @@ namespace EduRoam.Connect
         /// <exception cref="ArgumentException">The client certificate was not accepted by any authentication method</exception>
         public EapConfig WithLoginCredentials(string username, string password)
         {
-            var authMethods = this.AuthenticationMethods.Select(authMethod => authMethod.WithLoginCredentials(username, password)).Where(x => x != null);
+            var authMethods = this.AuthenticationMethods.Select(authMethod => authMethod.WithLoginCredentials(username, password))
+                .Where(authMethod => authMethod != null)
+                .Select(authMethod => authMethod!);
+
             if (!authMethods.Any())
             {
                 throw new ArgumentException("No authentication accepts the passphrase");
@@ -860,48 +872,6 @@ namespace EduRoam.Connect
             return (suffix, hint);
         }
 
-    }
-
-    public enum IEEE802x
-    {
-        /// <summary>
-        /// Wired LAN
-        /// </summary>
-        IEEE8023, // TODO: add full support for this (wired x802)
-
-        /// <summary>
-        /// Wireless LAN
-        /// </summary>
-        IEEE80211
-    }
-
-    /// <summary>
-    ///  https://www.vocal.com/secure-communication/eap-types/
-    /// </summary>
-    public enum EapType
-    {
-        TLS = 13,
-        TTLS = 21,
-        PEAP = 25,
-        MSCHAPv2 = 26,
-    }
-
-    /// <summary>
-    /// The type of authentification used in the inner tunnel.
-    /// Also known as stage 2 authentification.
-    /// </summary>
-    public enum InnerAuthType
-    {
-        // For those EAP types with no inner auth method (TLS and MSCHAPv2)
-        None = 0,
-        // Non-EAP methods
-        PAP = 1,
-        //CHAP = NaN, // Not defined in EapConfig schema
-        MSCHAP = 2,
-        MSCHAPv2 = 3,
-        // Tunneled Eap methods
-        EAP_PEAP_MSCHAPv2 = 25,
-        EAP_MSCHAPv2 = 26,
     }
 
 }

@@ -1,4 +1,6 @@
-﻿namespace EduRoam.Connect.Store
+﻿using EduRoam.Connect.Eap;
+
+namespace EduRoam.Connect.Store
 {
     public readonly struct IdentityProviderInfo
     {

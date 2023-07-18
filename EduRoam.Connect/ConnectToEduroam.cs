@@ -1,3 +1,4 @@
+using EduRoam.Connect.Eap;
 using EduRoam.Connect.Install;
 
 using System.Security.Cryptography.X509Certificates;

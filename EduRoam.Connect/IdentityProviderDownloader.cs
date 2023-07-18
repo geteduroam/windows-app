@@ -1,4 +1,5 @@
 using EduRoam.Connect.Device;
+using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 
 using Newtonsoft.Json;

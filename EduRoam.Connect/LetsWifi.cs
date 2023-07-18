@@ -1,3 +1,4 @@
+using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Install;
 using EduRoam.Connect.Store;

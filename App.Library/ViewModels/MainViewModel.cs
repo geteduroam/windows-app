@@ -2,6 +2,7 @@
 using App.Library.Language;
 
 using EduRoam.Connect;
+using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Install;
 

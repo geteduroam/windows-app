@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 using App.Library.Command;
 
-using EduRoam.Connect;
+using EduRoam.Connect.Eap;
 
 namespace App.Library.ViewModels
 {

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using EduRoam.Connect;
+using EduRoam.Connect.Eap;
 
 namespace App.Library.ViewModels
 {

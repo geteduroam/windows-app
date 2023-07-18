@@ -61,6 +61,42 @@ namespace EduRoam.Connect {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Everything is configured!\nCould not connect because no EAP Config could be found.
+        /// </summary>
+        public static string ConfiguredButNotConnected {
+            get {
+                return ResourceManager.GetString("ConfiguredButNotConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Everything is configured!\nUnable to connect to eduroam, you&apos;re probably out of coverage..
+        /// </summary>
+        public static string ConfiguredButProbablyOutOfCoverage {
+            get {
+                return ResourceManager.GetString("ConfiguredButProbablyOutOfCoverage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Everything is configured!\nUnable to connect to eduroam..
+        /// </summary>
+        public static string ConfiguredButUnableToConnect {
+            get {
+                return ResourceManager.GetString("ConfiguredButUnableToConnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are now connected to EduRoam..
+        /// </summary>
+        public static string Connected {
+            get {
+                return ResourceManager.GetString("Connected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} more days.
         /// </summary>
         public static string DaysLeft {
@@ -75,6 +111,15 @@ namespace EduRoam.Connect {
         public static string ErrorApi {
             get {
                 return ResourceManager.GetString("ErrorApi", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not connect. \nException: {0}..
+        /// </summary>
+        public static string ErrorNoConnection {
+            get {
+                return ResourceManager.GetString("ErrorNoConnection", resourceCulture);
             }
         }
         

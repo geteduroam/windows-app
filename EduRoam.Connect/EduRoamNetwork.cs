@@ -1,3 +1,4 @@
+using EduRoam.Connect.Eap;
 using EduRoam.Connect.Store;
 
 using ManagedNativeWifi;

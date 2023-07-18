@@ -117,11 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ConfiguredButNotConnected" xml:space="preserve">
+    <value>Everything is configured!\nCould not connect because no EAP Config could be found</value>
+  </data>
+  <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
+    <value>Everything is configured!\nUnable to connect to eduroam, you're probably out of coverage.</value>
+  </data>
+  <data name="ConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Everything is configured!\nUnable to connect to eduroam.</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>You are now connected to EduRoam.</value>
+  </data>
   <data name="DaysLeft" xml:space="preserve">
     <value>{0} more days</value>
   </data>
   <data name="ErrorApi" xml:space="preserve">
     <value>API error</value>
+  </data>
+  <data name="ErrorNoConnection" xml:space="preserve">
+    <value>Could not connect. \nException: {0}.</value>
   </data>
   <data name="ErrorNoInternet" xml:space="preserve">
     <value>No internet connection</value>

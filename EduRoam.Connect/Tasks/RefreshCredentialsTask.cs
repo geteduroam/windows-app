@@ -1,4 +1,5 @@
-﻿using EduRoam.Connect.Exceptions;
+﻿using EduRoam.Connect.Eap;
+using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Store;
 
 using System.Diagnostics;
