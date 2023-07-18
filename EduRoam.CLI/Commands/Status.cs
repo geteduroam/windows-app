@@ -23,12 +23,13 @@ namespace EduRoam.CLI.Commands
                 Console.WriteLine();
                 ConsoleExtension.WriteStatus("***********************************************");
                 ConsoleExtension.WriteStatus("* ");
-                ConsoleExtension.WriteStatus($"* {Resource.ProfileLabel}: {status.ProfileName}");
+                ConsoleExtension.WriteStatus($"* {Resource.LabelProfile}: {status.ProfileName}");
                 ConsoleExtension.WriteStatus("* ");
-                ConsoleExtension.WriteStatus($"* {Resource.AccountValidFor}: {status.TimeLeft}");
+                ConsoleExtension.WriteStatus($"* {Resource.LabelAccountValidFor}: {status.TimeLeft}");
                 ConsoleExtension.WriteStatus("* ");
                 ConsoleExtension.WriteStatus("* ");
-                ConsoleExtension.WriteStatus($"* {Resource.VersionLabel}: {status.Version}");
+                ConsoleExtension.WriteStatus($"* {Resource.LabelHelp}: {Resource.HelpUrl}");
+                ConsoleExtension.WriteStatus($"* {Resource.LabelVersion}: {status.Version}");
                 ConsoleExtension.WriteStatus("***********************************************");
                 Console.WriteLine();
             });

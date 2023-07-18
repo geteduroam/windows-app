@@ -25,17 +25,7 @@ namespace EduRoam.CLI.Commands
                 profileOption,
             };
 
-            command.AddValidator(validator =>
-            {
-                var instituteOptionValue = validator.GetValueForOption(instituteOption);
-                var profileOptionValue = validator.GetValueForOption(profileOption);
-                var eapConfigFileArgValue = validator.GetValueForOption(eapConfigFileOption);
-
-                if (eapConfigFileArgValue == null && (string.IsNullOrWhiteSpace(instituteOptionValue) || string.IsNullOrWhiteSpace(profileOptionValue)))
-                {
-                    validator.ErrorMessage = $"Missing options. Provide the {eapConfigFileOption.Aliases.First()} option or both {instituteOption.Name} and {profileOption.Name} options";
-                }
-            });
+            EnsureProperOptionsAreProvided(eapConfigFileOption, instituteOption, profileOption, command);
 
             command.SetHandler(async (FileInfo? eapConfigFile, string? institute, string? profileName) =>
             {
@@ -56,7 +46,7 @@ namespace EduRoam.CLI.Commands
 
                     if (eapConfig == null || !HasInfo(eapConfig))
                     {
-                        Console.WriteLine("No EAP Config info to show");
+                        Console.WriteLine(Resource.NoEAPConfig);
                     }
                     else
                     {
@@ -76,17 +66,40 @@ namespace EduRoam.CLI.Commands
                 {
                     // Must never happen, because if the discovery is reached,
                     // it must be parseable. Logging has been done upstream.
-                    ConsoleExtension.WriteError("API error");
+                    ConsoleExtension.WriteError(Resource.ErrorApi);
                     ConsoleExtension.WriteError(e.Message, e.GetType().ToString());
                 }
                 catch (ApiUnreachableException)
                 {
-                    ConsoleExtension.WriteError("No internet connection");
+                    ConsoleExtension.WriteError(Resource.ErrorNoInternet);
                 }
 
             }, eapConfigFileOption, instituteOption, profileOption);
 
             return command;
+        }
+
+        /// <summary>
+        /// Ensure the user has provided a Eap Config option or
+        ///  both Institute and Profile options
+        /// </summary>
+        /// <param name="instituteOption"></param>
+        /// <param name="profileOption"></param>
+        /// <param name="eapConfigFileOption"></param>
+        /// <param name="command"></param>
+        private static void EnsureProperOptionsAreProvided(Option<FileInfo> eapConfigFileOption, Option<string> instituteOption, Option<string> profileOption, Command command)
+        {
+            command.AddValidator(validator =>
+            {
+                var instituteOptionValue = validator.GetValueForOption(instituteOption);
+                var profileOptionValue = validator.GetValueForOption(profileOption);
+                var eapConfigFileArgValue = validator.GetValueForOption(eapConfigFileOption);
+
+                if (eapConfigFileArgValue == null && (string.IsNullOrWhiteSpace(instituteOptionValue) || string.IsNullOrWhiteSpace(profileOptionValue)))
+                {
+                    validator.ErrorMessage = string.Format(Resource.ErrorShowCommandOptions, string.Join("\\", eapConfigFileOption.Aliases), string.Join("\\", instituteOption.Aliases), string.Join("\\", profileOption.Aliases));
+                }
+            });
         }
 
         private static void ShowProfileOverview(EapConfig eapConfig)
@@ -100,18 +113,18 @@ namespace EduRoam.CLI.Commands
             ConsoleExtension.WriteStatus($"* {institutionInfo.Description}");
             if (!HasContactInfo(eapConfig.InstitutionInfo))
             {
-                ConsoleExtension.WriteStatusIf(!string.IsNullOrEmpty(institutionInfo.WebAddress), $"* web: {institutionInfo.WebAddress}");
-                ConsoleExtension.WriteStatusIf(!string.IsNullOrEmpty(institutionInfo.EmailAddress), $"* e-mail: {institutionInfo.EmailAddress}");
-                ConsoleExtension.WriteStatusIf(!string.IsNullOrEmpty(institutionInfo.Phone), $"* phone: {institutionInfo.Phone}");
+                ConsoleExtension.WriteStatusIf(!string.IsNullOrEmpty(institutionInfo.WebAddress), $"* {Resource.LabelWeb}: {institutionInfo.WebAddress}");
+                ConsoleExtension.WriteStatusIf(!string.IsNullOrEmpty(institutionInfo.EmailAddress), $"* {Resource.LabelEmail}: {institutionInfo.EmailAddress}");
+                ConsoleExtension.WriteStatusIf(!string.IsNullOrEmpty(institutionInfo.Phone), $"* {Resource.LabelPhone}: {institutionInfo.Phone}");
             }
 
             ConsoleExtension.WriteStatus("* ");
-            ConsoleExtension.WriteStatus($"* supported: {(supported ? "✓" : "x")}");
+            ConsoleExtension.WriteStatus($"* {Resource.LabelSupported}: {(supported ? Resource.Yes : Resource.No)}");
 
             if (!string.IsNullOrWhiteSpace(institutionInfo.TermsOfUse))
             {
                 ConsoleExtension.WriteStatus("* ");
-                ConsoleExtension.WriteStatus("* terms of use:");
+                ConsoleExtension.WriteStatus($"* {Resource.LabelTermsOfUse}:");
                 ConsoleExtension.WriteStatus($"* {institutionInfo.TermsOfUse.Trim()}");
                 ConsoleExtension.WriteStatus("* ");
             }
@@ -124,8 +137,7 @@ namespace EduRoam.CLI.Commands
         {
             if (!EduRoamNetwork.IsEapConfigSupported(eapConfig))
             {
-                ConsoleExtension.WriteError(
-                    "The profile you have selected is not supported by this application.\nNo supported authentification method was found.");
+                ConsoleExtension.WriteError(Resource.ErrorUnsupportedProfile);
                 return false;
             }
             return true;

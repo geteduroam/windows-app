@@ -9,11 +9,11 @@ namespace EduRoam.CLI
         {
             if (optional)
             {
-                return new(name: "--i", description: "The name of the institute to connect to.");
+                return new(aliases: new string[] { "-i", "--institute" }, description: "The name of the institute to connect to.");
             }
 
             return new(
-                name: "--i",
+                aliases: new string[] { "-i", "--institute" },
                 parseArgument: NonEmptyString,
                 isDefault: true,
                 description: "The name of the institute to connect to.");
@@ -23,22 +23,22 @@ namespace EduRoam.CLI
         {
             if (optional)
             {
-                return new(name: "--p", description: "Institute's profile to connect to.");
+                return new(aliases: new string[] { "-p", "--profile" }, description: "Institute's profile to connect to.");
             }
 
             return new(
-                name: "--p",
+                aliases: new string[] { "-p", "--profile" },
                 parseArgument: NonEmptyString,
                 isDefault: true,
                 description: "Institute's profile to connect to.");
         }
 
         public static Option<FileInfo> GetEapConfigOption() => new(
-                aliases: new string[] { "--c", "-config" },
+                aliases: new string[] { "-c", "--config" },
                 description: "Path to EAP config .eap-config.");
 
         public static Option<bool> GetForceOption() => new(
-                name: "--f",
+                aliases: new string[] { "-f", "--force" },
                 description: "Force action.",
                 getDefaultValue: () => false);
 
@@ -46,16 +46,16 @@ namespace EduRoam.CLI
         {
             if (!result.Tokens.Any())
             {
-                result.ErrorMessage = $"Option --{result.Argument.Name} is required";
-                return "";
+                result.ErrorMessage = $"Option {result.Argument.Name} is required";
+                return string.Empty;
             }
 
             var value = result.Tokens.Single().Value;
 
             if (string.IsNullOrWhiteSpace(value))
             {
-                result.ErrorMessage = $"--{result.Argument.Name} option value cannot be empty or whitespace only";
-                return "";
+                result.ErrorMessage = $"{result.Argument.HelpName} option value cannot be empty or whitespace only";
+                return string.Empty;
 
             }
             return value;

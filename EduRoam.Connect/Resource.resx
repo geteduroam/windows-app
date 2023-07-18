@@ -117,20 +117,62 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AccountValidFor" xml:space="preserve">
-    <value>Your account is valid for</value>
-  </data>
   <data name="DaysLeft" xml:space="preserve">
     <value>{0} more days</value>
+  </data>
+  <data name="ErrorApi" xml:space="preserve">
+    <value>API error</value>
+  </data>
+  <data name="ErrorNoInternet" xml:space="preserve">
+    <value>No internet connection</value>
+  </data>
+  <data name="ErrorShowCommandOptions" xml:space="preserve">
+    <value>Missing options. Provide the {0} option or both {1} and {2} options</value>
+  </data>
+  <data name="ErrorUnsupportedProfile" xml:space="preserve">
+    <value>The profile you have selected is not supported by this application. No supported authentification method was found.</value>
+  </data>
+  <data name="HelpUrl" xml:space="preserve">
+    <value>https://www.geteduroam.app/</value>
   </data>
   <data name="HoursLeft" xml:space="preserve">
     <value>{0} more hours</value>
   </data>
+  <data name="LabelAccountValidFor" xml:space="preserve">
+    <value>Your account is valid for</value>
+  </data>
+  <data name="LabelEmail" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="LabelHelp" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="LabelPhone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
+  <data name="LabelProfile" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="LabelSupported" xml:space="preserve">
+    <value>Supported</value>
+  </data>
+  <data name="LabelTermsOfUse" xml:space="preserve">
+    <value>Terms of use</value>
+  </data>
+  <data name="LabelVersion" xml:space="preserve">
+    <value>App version</value>
+  </data>
+  <data name="LabelWeb" xml:space="preserve">
+    <value>Web</value>
+  </data>
   <data name="MinutesLeft" xml:space="preserve">
     <value>{0} more minutes</value>
   </data>
-  <data name="ProfileLabel" xml:space="preserve">
-    <value>Profile</value>
+  <data name="No" xml:space="preserve">
+    <value>x</value>
+  </data>
+  <data name="NoEAPConfig" xml:space="preserve">
+    <value>No EAP Config info to show</value>
   </data>
   <data name="VersionDebug" xml:space="preserve">
     <value>{0}+Debug</value>
@@ -138,13 +180,13 @@
   <data name="VersionDebugNoVersion" xml:space="preserve">
     <value>Debug</value>
   </data>
-  <data name="VersionLabel" xml:space="preserve">
-    <value>App version</value>
-  </data>
   <data name="VersionRelease" xml:space="preserve">
     <value>{0}</value>
   </data>
   <data name="VersionReleaseNoVersion" xml:space="preserve">
     <value>Versionless</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>✓</value>
   </data>
 </root>

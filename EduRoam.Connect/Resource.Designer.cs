@@ -61,20 +61,56 @@ namespace EduRoam.Connect {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Your account is valid for.
-        /// </summary>
-        public static string AccountValidFor {
-            get {
-                return ResourceManager.GetString("AccountValidFor", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} more days.
         /// </summary>
         public static string DaysLeft {
             get {
                 return ResourceManager.GetString("DaysLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to API error.
+        /// </summary>
+        public static string ErrorApi {
+            get {
+                return ResourceManager.GetString("ErrorApi", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No internet connection.
+        /// </summary>
+        public static string ErrorNoInternet {
+            get {
+                return ResourceManager.GetString("ErrorNoInternet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing options. Provide the {0} option or both {1} and {2} options.
+        /// </summary>
+        public static string ErrorShowCommandOptions {
+            get {
+                return ResourceManager.GetString("ErrorShowCommandOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The profile you have selected is not supported by this application. No supported authentification method was found..
+        /// </summary>
+        public static string ErrorUnsupportedProfile {
+            get {
+                return ResourceManager.GetString("ErrorUnsupportedProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to https://www.geteduroam.app/.
+        /// </summary>
+        public static string HelpUrl {
+            get {
+                return ResourceManager.GetString("HelpUrl", resourceCulture);
             }
         }
         
@@ -88,6 +124,87 @@ namespace EduRoam.Connect {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Your account is valid for.
+        /// </summary>
+        public static string LabelAccountValidFor {
+            get {
+                return ResourceManager.GetString("LabelAccountValidFor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E-mail.
+        /// </summary>
+        public static string LabelEmail {
+            get {
+                return ResourceManager.GetString("LabelEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Help.
+        /// </summary>
+        public static string LabelHelp {
+            get {
+                return ResourceManager.GetString("LabelHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone.
+        /// </summary>
+        public static string LabelPhone {
+            get {
+                return ResourceManager.GetString("LabelPhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Profile.
+        /// </summary>
+        public static string LabelProfile {
+            get {
+                return ResourceManager.GetString("LabelProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Supported.
+        /// </summary>
+        public static string LabelSupported {
+            get {
+                return ResourceManager.GetString("LabelSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terms of use.
+        /// </summary>
+        public static string LabelTermsOfUse {
+            get {
+                return ResourceManager.GetString("LabelTermsOfUse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App version.
+        /// </summary>
+        public static string LabelVersion {
+            get {
+                return ResourceManager.GetString("LabelVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web.
+        /// </summary>
+        public static string LabelWeb {
+            get {
+                return ResourceManager.GetString("LabelWeb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} more minutes.
         /// </summary>
         public static string MinutesLeft {
@@ -97,11 +214,20 @@ namespace EduRoam.Connect {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Profile.
+        ///   Looks up a localized string similar to x.
         /// </summary>
-        public static string ProfileLabel {
+        public static string No {
             get {
-                return ResourceManager.GetString("ProfileLabel", resourceCulture);
+                return ResourceManager.GetString("No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No EAP Config info to show.
+        /// </summary>
+        public static string NoEAPConfig {
+            get {
+                return ResourceManager.GetString("NoEAPConfig", resourceCulture);
             }
         }
         
@@ -124,15 +250,6 @@ namespace EduRoam.Connect {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to App version.
-        /// </summary>
-        public static string VersionLabel {
-            get {
-                return ResourceManager.GetString("VersionLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0}.
         /// </summary>
         public static string VersionRelease {
@@ -147,6 +264,15 @@ namespace EduRoam.Connect {
         public static string VersionReleaseNoVersion {
             get {
                 return ResourceManager.GetString("VersionReleaseNoVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ✓.
+        /// </summary>
+        public static string Yes {
+            get {
+                return ResourceManager.GetString("Yes", resourceCulture);
             }
         }
     }
