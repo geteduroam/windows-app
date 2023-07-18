@@ -9,9 +9,9 @@ namespace EduRoam.CLI.Commands
 {
     public class Show : ICommand
     {
-        public static string CommandName => "show";
+        public static readonly string CommandName = "show";
 
-        public static string CommandDescription => "Show EAP Config information";
+        public static readonly string CommandDescription = Resource.CommandDescriptionShow;
 
         public Command GetCommand()
         {
@@ -162,6 +162,7 @@ namespace EduRoam.CLI.Commands
             var hasWebAddress = !string.IsNullOrEmpty(info.WebAddress);
             var hasEmailAddress = !string.IsNullOrEmpty(info.EmailAddress);
             var hasPhone = !string.IsNullOrEmpty(info.Phone);
+
             return (hasWebAddress || hasEmailAddress || hasPhone);
         }
     }

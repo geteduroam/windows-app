@@ -61,6 +61,96 @@ namespace EduRoam.Connect {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to continue?.
+        /// </summary>
+        public static string AreYouSure {
+            get {
+                return ResourceManager.GetString("AreYouSure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configure Wi-Fi based on a institution profile.
+        /// </summary>
+        public static string CommandDescriptionConfigure {
+            get {
+                return ResourceManager.GetString("CommandDescriptionConfigure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect with the current profile.
+        /// </summary>
+        public static string CommandDescriptionConnect {
+            get {
+                return ResourceManager.GetString("CommandDescriptionConnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get a list of institutions or profiles for a institution..
+        /// </summary>
+        public static string CommandDescriptionList {
+            get {
+                return ResourceManager.GetString("CommandDescriptionList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reauthenticate.
+        /// </summary>
+        public static string CommandDescriptionReauthenticate {
+            get {
+                return ResourceManager.GetString("CommandDescriptionReauthenticate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh credentials.
+        /// </summary>
+        public static string CommandDescriptionRefresh {
+            get {
+                return ResourceManager.GetString("CommandDescriptionRefresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove configured Wi-Fi profile and/or root certificates.
+        /// </summary>
+        public static string CommandDescriptionRemove {
+            get {
+                return ResourceManager.GetString("CommandDescriptionRemove", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show EAP Config information.
+        /// </summary>
+        public static string CommandDescriptionShow {
+            get {
+                return ResourceManager.GetString("CommandDescriptionShow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show status.
+        /// </summary>
+        public static string CommandDescriptionStatus {
+            get {
+                return ResourceManager.GetString("CommandDescriptionStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uninstall application.
+        /// </summary>
+        public static string CommandDescriptionUninstall {
+            get {
+                return ResourceManager.GetString("CommandDescriptionUninstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Everything is configured!\nCould not connect because no EAP Config could be found.
         /// </summary>
         public static string ConfiguredButNotConnected {
@@ -88,6 +178,15 @@ namespace EduRoam.Connect {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to EAP is configured.
+        /// </summary>
+        public static string ConfiguredEap {
+            get {
+                return ResourceManager.GetString("ConfiguredEap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You are now connected to EduRoam..
         /// </summary>
         public static string Connected {
@@ -106,11 +205,47 @@ namespace EduRoam.Connect {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to geteduroam.
+        /// </summary>
+        public static string DefaultIdentityProvider {
+            get {
+                return ResourceManager.GetString("DefaultIdentityProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Done.
+        /// </summary>
+        public static string Done {
+            get {
+                return ResourceManager.GetString("Done", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to API error.
         /// </summary>
         public static string ErrorApi {
             get {
                 return ResourceManager.GetString("ErrorApi", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not connect, EAP Configuration is empty.
+        /// </summary>
+        public static string ErrorEapConfigIsEmpty {
+            get {
+                return ResourceManager.GetString("ErrorEapConfigIsEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EAP could not be configured.
+        /// </summary>
+        public static string ErrorEapNotConfigured {
+            get {
+                return ResourceManager.GetString("ErrorEapNotConfigured", resourceCulture);
             }
         }
         
@@ -129,6 +264,15 @@ namespace EduRoam.Connect {
         public static string ErrorNoInternet {
             get {
                 return ResourceManager.GetString("ErrorNoInternet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to geteduroam has not been uninstalled..
+        /// </summary>
+        public static string ErrorNotUninstalled {
+            get {
+                return ResourceManager.GetString("ErrorNotUninstalled", resourceCulture);
             }
         }
         
@@ -165,6 +309,15 @@ namespace EduRoam.Connect {
         public static string HoursLeft {
             get {
                 return ResourceManager.GetString("HoursLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to y.
+        /// </summary>
+        public static string IsSure {
+            get {
+                return ResourceManager.GetString("IsSure", resourceCulture);
             }
         }
         
@@ -273,6 +426,42 @@ namespace EduRoam.Connect {
         public static string NoEAPConfig {
             get {
                 return ResourceManager.GetString("NoEAPConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to n.
+        /// </summary>
+        public static string NotSure {
+            get {
+                return ResourceManager.GetString("NotSure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This will remove all configuration for &apos;{0}&apos;..
+        /// </summary>
+        public static string ProfileRemoveConfirmation {
+            get {
+                return ResourceManager.GetString("ProfileRemoveConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This means uninstalling all the trusted root certificates installed by this application..
+        /// </summary>
+        public static string UninstallCertificatesWarning {
+            get {
+                return ResourceManager.GetString("UninstallCertificatesWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are currently in the process of completly uninstalling geteduroam.
+        /// </summary>
+        public static string UninstallWarning {
+            get {
+                return ResourceManager.GetString("UninstallWarning", resourceCulture);
             }
         }
         

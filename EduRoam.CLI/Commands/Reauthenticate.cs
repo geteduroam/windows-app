@@ -5,11 +5,11 @@ using System.CommandLine;
 
 namespace EduRoam.CLI.Commands
 {
-    internal class Refresh : ICommand
+    internal class Reauthenticate : ICommand
     {
-        public static readonly string CommandName = "refresh";
+        public static readonly string CommandName = "reauthenticate";
 
-        public static readonly string CommandDescription = Resource.CommandDescriptionRefresh;
+        public static readonly string CommandDescription = Resource.CommandDescriptionReauthenticate;
 
         public Command GetCommand()
         {
@@ -18,12 +18,10 @@ namespace EduRoam.CLI.Commands
             command.SetHandler(async () =>
             {
                 var task = new RefreshCredentialsTask();
-                var message = await task.RefreshAsync();
+                await task.ReauthenticateAsync();
 
-                if (!string.IsNullOrWhiteSpace(message))
-                {
-                    Console.WriteLine(message);
-                }
+                Console.WriteLine(Resource.Done);
+
             });
 
             return command;

@@ -7,9 +7,9 @@ namespace EduRoam.CLI.Commands
 {
     internal class Status : ICommand
     {
-        public static string CommandName => "status";
+        public static readonly string CommandName = "status";
 
-        public static string CommandDescription => "Show status";
+        public static readonly string CommandDescription = Resource.CommandDescriptionStatus;
 
         public Command GetCommand()
         {

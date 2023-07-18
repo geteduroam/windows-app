@@ -1,4 +1,5 @@
-﻿using EduRoam.Connect.Install;
+﻿using EduRoam.Connect;
+using EduRoam.Connect.Install;
 using EduRoam.Connect.Tasks;
 
 using System.CommandLine;
@@ -9,7 +10,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "uninstall";
 
-        public static readonly string CommandDescription = "Uninstall application";
+        public static readonly string CommandDescription = Resource.CommandDescriptionUninstall;
 
         public Command GetCommand()
         {
@@ -17,22 +18,29 @@ namespace EduRoam.CLI.Commands
 
             command.SetHandler(() =>
             {
-                Console.WriteLine(
-                "You are currently in the process of completly uninstalling geteduroam.\n" +
-                (CertificateStore.AnyRootCaInstalledByUs()
-                    ? "This means uninstalling all the trusted root certificates installed by this application.\n\n"
-                    : "\n") +
-                "Are you sure you want to continue? (y/N)");
+                Console.WriteLine(Resource.UninstallWarning);
 
-                var choice = Console.ReadKey();
-                if (choice.KeyChar == 'y' || choice.KeyChar == 'Y')
+                if (CertificateStore.AnyRootCaInstalledByUs())
+                {
+                    Console.WriteLine(Resource.UninstallCertificatesWarning);
+                    Console.WriteLine();
+                    Console.WriteLine();
+                }
+                else
+                {
+                    Console.WriteLine();
+                }
+
+                var confirmed = Confirm.GetConfirmation();
+
+                if (confirmed)
                 {
                     var task = new UninstallTask();
                     task.Uninstall();
                 }
                 else
                 {
-                    Console.WriteLine("geteduroam has not been uninstalled.");
+                    Console.WriteLine(Resource.ErrorNotUninstalled);
                 }
             });
 

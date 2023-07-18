@@ -7,9 +7,9 @@ namespace EduRoam.CLI.Commands
 {
     public class Configure : ICommand
     {
-        public static string CommandName => "configure";
+        public static readonly string CommandName = "configure";
 
-        public static string CommandDescription => "Configure Wi-Fi based on a institution profile";
+        public static readonly string CommandDescription = Resource.CommandDescriptionConfigure;
 
         public Command GetCommand()
         {
@@ -30,7 +30,7 @@ namespace EduRoam.CLI.Commands
 
                 if (eapConfig == null)
                 {
-                    ConsoleExtension.WriteError($"Could not connect, EAP Configuration is empty");
+                    ConsoleExtension.WriteError(Resource.ErrorEapConfigIsEmpty);
                     return;
                 }
 
@@ -41,11 +41,11 @@ namespace EduRoam.CLI.Commands
 
                 if (configurationResolved)
                 {
-                    ConsoleExtension.WriteStatus("EAP is configured");
+                    ConsoleExtension.WriteStatus(Resource.ConfiguredEap);
                 }
                 else
                 {
-                    ConsoleExtension.WriteStatus("EAP could not be configured");
+                    ConsoleExtension.WriteError(Resource.ErrorEapNotConfigured);
                 }
 
             }, instituteOption, profileOption);

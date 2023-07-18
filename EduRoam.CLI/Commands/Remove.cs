@@ -1,4 +1,5 @@
-﻿using EduRoam.Connect.Store;
+﻿using EduRoam.Connect;
+using EduRoam.Connect.Store;
 using EduRoam.Connect.Tasks;
 
 using System.CommandLine;
@@ -9,7 +10,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "remove";
 
-        public static readonly string CommandDescription = "Remove configured Wi-Fi profile and/or root certificates";
+        public static readonly string CommandDescription = Resource.CommandDescriptionRemove;
 
         private readonly BaseConfigStore store = new RegistryStore();
 
@@ -19,11 +20,11 @@ namespace EduRoam.CLI.Commands
 
             command.SetHandler(() =>
             {
-                var profileName = this.store.IdentityProvider?.DisplayName ?? "geteduroam";
-                Console.WriteLine($"This will remove all configuration for '{profileName}'. Are you sure? (y/N)");
+                var profileName = this.store.IdentityProvider?.DisplayName ?? Resource.DefaultIdentityProvider;
+                Console.Write(Resource.ProfileRemoveConfirmation, profileName);
+                var confirmed = Confirm.GetConfirmation();
 
-                var choice = Console.ReadKey();
-                if (choice.KeyChar == 'y' || choice.KeyChar == 'Y')
+                if (confirmed)
                 {
                     var task = new RemoveWiFiConfigurationTask();
                     task.Remove();

@@ -43,7 +43,7 @@ namespace EduRoam.Connect.Tasks
             return string.Empty;
         }
 
-        private Task ReauthenticateAsync()
+        public Task ReauthenticateAsync()
         {
             var identityProvider = RegistryStore.Instance.IdentityProvider;
 

@@ -8,9 +8,9 @@ namespace EduRoam.CLI.Commands
 {
     public class Connect : ICommand
     {
-        public static string CommandName => "connect";
+        public static readonly string CommandName = "connect";
 
-        public static string CommandDescription => "Connect with the current profile";
+        public static readonly string CommandDescription = Resource.CommandDescriptionConnect;
 
         public Command GetCommand()
         {

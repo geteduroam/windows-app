@@ -8,9 +8,9 @@ namespace EduRoam.CLI.Commands
 {
     public class List : ICommand
     {
-        public static string CommandName => "list";
+        public static readonly string CommandName = "list";
 
-        public static string CommandDescription => "Get a list of institutions or profiles for a institution.";
+        public static readonly string CommandDescription = Resource.CommandDescriptionList;
 
         public Command GetCommand()
         {
