@@ -23,7 +23,7 @@ namespace EduRoam.CLI.Commands
                 var profileName = this.store.IdentityProvider?.DisplayName ?? Resource.DefaultIdentityProvider;
 
                 Console.Write(Resource.ProfileRemoveConfirmation, profileName);
-                var confirmed = Confirm.GetConfirmation();
+                var confirmed = Interaction.GetConfirmation();
 
                 if (confirmed)
                 {

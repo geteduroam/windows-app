@@ -1,11 +1,66 @@
 ﻿using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
+using EduRoam.Connect.Store;
 
 namespace EduRoam.Connect.Tasks
 {
     public class ResolveConfigurationTask
     {
         private EapConfig? eapConfig;
+
+        private readonly BaseConfigStore store = new RegistryStore();
+
+        public ResolveConfigurationTask(EapConfig eapConfig)
+        {
+            this.eapConfig = eapConfig;
+        }
+
+        /// <summary>
+        /// Resolve configuration of the certificates. This is a prerequisite for <see cref="ResolveConfiguration(EapConfig, bool)"/>
+        /// </summary>
+        /// <param name="forceConfiguration"></param>
+        /// <returns></returns>
+        public bool ResolveCertificates(bool forceConfiguration)
+        {
+            var certificatesNotInstalled = this.GetNotInstalledCertificates();
+
+            if (certificatesNotInstalled.Any())
+            {
+                if (!forceConfiguration)
+                {
+                    return false;
+                }
+                else
+                {
+                    try
+                    {
+                        foreach (var installer in certificatesNotInstalled)
+                        {
+                            installer.AttemptInstallCertificate();
+
+                            if (installer.IsInstalledByUs)
+                            {
+                                // Any CA that we have installed must also be removed by us when it is not needed anymore
+                                this.store.AddInstalledCertificate(installer.Certificate);
+                            }
+                        }
+                    }
+                    catch (UserAbortException)
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }
+
+        private IEnumerable<CertificateInstaller> GetNotInstalledCertificates()
+        {
+            var installers = ConnectToEduroam.EnumerateCAInstallers(this.eapConfig!).ToList();
+            var certificatesNotInstalled = installers.Where(installer => !installer.IsInstalled);
+            return certificatesNotInstalled;
+        }
 
         /// <summary>
         /// Connect by a institutes profile
@@ -21,63 +76,15 @@ namespace EduRoam.Connect.Tasks
         /// <exception cref="UnknownInstituteException" />
         /// <exception cref="UnknownProfileException" />
         /// <exception cref="EduroamAppUserException"/>
-        public bool ResolveConfiguration(EapConfig eapConfig, bool forceConfiguration = true)
+        public bool ResolveConfiguration(bool forceConfiguration = true)
         {
-            if (eapConfig == null)
-            {
-                return false;
-            }
-
-            this.eapConfig = eapConfig;
-
             if (!this.CheckIfEapConfigIsSupported())
             {
                 return false;
             }
 
-            return this.ResolveCertificates(forceConfiguration);
+            return !this.GetNotInstalledCertificates().Any();
         }
-
-        private bool ResolveCertificates(bool forceConfiguration)
-        {
-            ConsoleExtension.WriteStatus("In order to continue the following certificates have to be installed.");
-            var installers = ConnectToEduroam.EnumerateCAInstallers(this.eapConfig!).ToList();
-            foreach (var installer in installers)
-            {
-                Console.WriteLine();
-                ConsoleExtension.WriteStatus($"* {installer}, installed: {(installer.IsInstalled ? "✓" : "x")}");
-                Console.WriteLine();
-            }
-
-            var certificatesNotInstalled = installers.Where(installer => !installer.IsInstalled);
-
-            if (certificatesNotInstalled.Any())
-            {
-                if (!forceConfiguration)
-                {
-                    ConsoleExtension.WriteStatus("One or more certificates are not installed yet. Install the certificates? (y/N)");
-                    return false;
-                }
-                else
-                {
-                    try
-                    {
-                        foreach (var installer in certificatesNotInstalled)
-                        {
-                            installer.AttemptInstallCertificate();
-                        }
-                    }
-                    catch (UserAbortException)
-                    {
-                        return false;
-                    }
-                }
-            }
-
-            return true;
-        }
-
-
 
         private bool CheckIfEapConfigIsSupported()
         {

@@ -18,17 +18,19 @@ namespace EduRoam.CLI.Commands
             var instituteOption = Options.GetInstituteOption(optional: true);
             var profileOption = Options.GetProfileOption(optional: true);
             var eapConfigFileOption = Options.GetEapConfigOption();
+            var forceOption = Options.GetForceOption();
 
             var command = new Command(CommandName, CommandDescription)
             {
                 instituteOption,
                 profileOption,
-                eapConfigFileOption
+                eapConfigFileOption,
+                forceOption
             };
 
             command.EnsureProperEapConfigSourceOptionsAreProvided(eapConfigFileOption, instituteOption, profileOption);
 
-            command.SetHandler(async (FileInfo? eapConfigFile, string? institute, string? profileName) =>
+            command.SetHandler(async (FileInfo? eapConfigFile, string? institute, string? profileName, bool force) =>
             {
                 var connectTask = new GetEapConfigTask();
 
@@ -49,21 +51,75 @@ namespace EduRoam.CLI.Commands
                     return;
                 }
 
-                var configurationTask = new ResolveConfigurationTask();
-                var configurationResolved = configurationTask.ResolveConfiguration(eapConfig, true);
-
-                if (configurationResolved)
+                if (!EduRoamNetwork.IsEapConfigSupported(eapConfig))
                 {
-                    ConsoleExtension.WriteStatus(Resource.ConfiguredEap);
+                    ConsoleExtension.WriteError(Resource.ErrorUnsupportedProfile);
+                    return;
+                }
+
+                var success = ConfigureCertificates(eapConfig, force);
+
+                if (success)
+                {
+                    ConfigureProfile(eapConfig, force);
                 }
                 else
                 {
-                    ConsoleExtension.WriteError(Resource.ErrorEapNotConfigured);
+                    ConsoleExtension.WriteError(Resource.ErrorRequiredCertificatesNotInstalled);
                 }
 
-            }, eapConfigFileOption, instituteOption, profileOption);
+            }, eapConfigFileOption, instituteOption, profileOption, forceOption);
 
             return command;
+        }
+
+        private static bool ConfigureCertificates(EapConfig eapConfig, bool force)
+        {
+            OutputCertificatesStatus(eapConfig);
+
+            var configurationTask = new ResolveConfigurationTask(eapConfig);
+
+            var certificatesResolved = configurationTask.ResolveCertificates(force);
+
+            if (!certificatesResolved && !force)
+            {
+                Console.WriteLine(Resource.RequestToInstallCertificates);
+                var confirm = Interaction.GetConfirmation();
+
+                if (confirm)
+                {
+                    certificatesResolved = configurationTask.ResolveCertificates(true);
+                }
+            }
+
+            return certificatesResolved;
+        }
+
+        private static void ConfigureProfile(EapConfig eapConfig, bool force)
+        {
+            var configurationTask = new ResolveConfigurationTask(eapConfig);
+            var configurationResolved = configurationTask.ResolveConfiguration(force);
+
+            if (configurationResolved)
+            {
+                ConsoleExtension.WriteStatus(Resource.ConfiguredEap);
+            }
+            else
+            {
+                ConsoleExtension.WriteError(Resource.ErrorEapNotConfigured);
+            }
+        }
+
+        private static void OutputCertificatesStatus(EapConfig eapConfig)
+        {
+            ConsoleExtension.WriteStatus(Resource.CertificatesInstallationNotification);
+            var installers = ConnectToEduroam.EnumerateCAInstallers(eapConfig).ToList();
+            foreach (var installer in installers)
+            {
+                Console.WriteLine();
+                ConsoleExtension.WriteStatus($"* {string.Format(Resource.CertificatesInstallationStatus, installer, Interaction.GetYesNoText(installer.IsInstalled))}");
+                Console.WriteLine();
+            }
         }
     }
 }

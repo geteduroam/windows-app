@@ -23,32 +23,15 @@ namespace EduRoam.CLI.Commands
 
                 try
                 {
-                    var connected = await connectTask.ConnectAsync();
+                    var (connected, message) = await connectTask.ConnectAsync();
 
                     if (connected)
                     {
-                        ConsoleExtension.WriteStatus(Resource.Connected);
+                        ConsoleExtension.WriteStatus(message);
                     }
                     else
                     {
-                        var eapConfigTask = new GetEapConfigTask();
-
-                        var eapConfig = await eapConfigTask.GetEapConfigAsync();
-
-                        if (eapConfig == null)
-                        {
-                            ConsoleExtension.WriteError(Resource.ConfiguredButNotConnected);
-
-                        }
-                        else if (EduRoamNetwork.IsNetworkInRange(eapConfig))
-                        {
-                            ConsoleExtension.WriteError(Resource.ConfiguredButUnableToConnect);
-                        }
-                        else
-                        {
-                            // Hs2 is not enumerable
-                            ConsoleExtension.WriteError(Resource.ConfiguredButProbablyOutOfCoverage);
-                        }
+                        ConsoleExtension.WriteError(message);
                     }
 
                 }
@@ -58,7 +41,7 @@ namespace EduRoam.CLI.Commands
                     ConsoleExtension.WriteError(Resource.ErrorNoConnection, ex.UserFacingMessage);
                 }
 
-                catch (Exception exc) when (exc is ArgumentException || exc is UnknownInstituteException || exc is UnknownProfileException)
+                catch (ArgumentException exc)
                 {
                     ConsoleExtension.WriteError(exc.Message);
                 }

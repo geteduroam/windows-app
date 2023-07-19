@@ -98,7 +98,7 @@ namespace EduRoam.CLI.Commands
             }
 
             ConsoleExtension.WriteStatus("* ");
-            ConsoleExtension.WriteStatus($"* {Resource.LabelSupported}: {(supported ? Resource.Yes : Resource.No)}");
+            ConsoleExtension.WriteStatus($"* {Resource.LabelSupported}: {Interaction.GetYesNoText(supported)}");
 
             if (!string.IsNullOrWhiteSpace(institutionInfo.TermsOfUse))
             {

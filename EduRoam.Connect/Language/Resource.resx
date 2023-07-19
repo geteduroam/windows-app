@@ -123,6 +123,12 @@
   <data name="AreYouSure" xml:space="preserve">
     <value>Are you sure you want to continue?</value>
   </data>
+  <data name="CertificatesInstallationNotification" xml:space="preserve">
+    <value>In order to continue the following certificates have to be installed.</value>
+  </data>
+  <data name="CertificatesInstallationStatus" xml:space="preserve">
+    <value>{0}, installed: {1}</value>
+  </data>
   <data name="CommandDescriptionConfigure" xml:space="preserve">
     <value>Configure Wi-Fi based on a institution profile</value>
   </data>
@@ -183,6 +189,9 @@
   <data name="ErrorEapNotConfigured" xml:space="preserve">
     <value>EAP could not be configured</value>
   </data>
+  <data name="ErrorInternetConnection" xml:space="preserve">
+    <value>Error with internet connection</value>
+  </data>
   <data name="ErrorNoConnection" xml:space="preserve">
     <value>Could not connect. \nException: {0}.</value>
   </data>
@@ -195,11 +204,17 @@
   <data name="ErrorOptionIsEmpty" xml:space="preserve">
     <value>{0} option value cannot be empty or whitespace only</value>
   </data>
+  <data name="ErrorRequiredCertificatesNotInstalled" xml:space="preserve">
+    <value>Not all required certificates are installed.</value>
+  </data>
   <data name="ErrorShowCommandOptions" xml:space="preserve">
     <value>Missing options. Provide the {0} option or both {1} and {2} options</value>
   </data>
   <data name="ErrorUnsupportedProfile" xml:space="preserve">
     <value>The profile you have selected is not supported by this application. No supported authentification method was found.</value>
+  </data>
+  <data name="ErrorWirelessUnavailable" xml:space="preserve">
+    <value>Wireless is unavailable on this computer</value>
   </data>
   <data name="HelpUrl" xml:space="preserve">
     <value>https://www.geteduroam.app/</value>
@@ -242,12 +257,14 @@
   </data>
   <data name="No" xml:space="preserve">
     <value>x</value>
+    <comment>Used for user confirmation, as the 'yes' option</comment>
   </data>
   <data name="NoEAPConfig" xml:space="preserve">
     <value>No EAP Config info to show</value>
   </data>
   <data name="NotSure" xml:space="preserve">
     <value>n</value>
+    <comment>Used for user confirmation, as the 'no' option</comment>
   </data>
   <data name="OptionDescriptionEAPConfig" xml:space="preserve">
     <value>Path to EAP config .eap-config.</value>
@@ -269,6 +286,9 @@
   </data>
   <data name="ProfileRemoveConfirmation" xml:space="preserve">
     <value>This will remove all configuration for '{0}'.</value>
+  </data>
+  <data name="RequestToInstallCertificates" xml:space="preserve">
+    <value>Install all required certificates?</value>
   </data>
   <data name="UninstallNotification" xml:space="preserve">
     <value>The application and its configuration have been uninstalled.</value>

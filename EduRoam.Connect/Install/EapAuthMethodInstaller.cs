@@ -19,7 +19,6 @@ namespace EduRoam.Connect
         // reference to the EAP config
         public EapConfig.AuthenticationMethod AuthMethod { get; }
 
-
         /// <summary>
         /// Constructs a EapAuthMethodInstaller
         /// </summary>
@@ -38,29 +37,33 @@ namespace EduRoam.Connect
         /// <returns>Returns true if all certificates has been successfully installed</returns>
         public void InstallCertificates()
         {
-            if (AuthMethod.NeedsClientCertificate)
+            if (this.AuthMethod.NeedsClientCertificate)
             {
                 throw new EduroamAppUserException("no client certificate was provided");
             }
 
             // get all CAs from Authentication method
-            foreach (var cert in AuthMethod.CertificateAuthoritiesAsX509Certificate2())
+            foreach (var cert in this.AuthMethod.CertificateAuthoritiesAsX509Certificate2())
             {
                 // if this doesn't work, try https://stackoverflow.com/a/34174890
-                bool isRootCA = cert.Subject == cert.Issuer;
+                var isRootCA = cert.Subject == cert.Issuer;
                 CertificateStore.InstallCertificate(cert,
                     isRootCA ? CertificateStore.RootCaStoreName : CertificateStore.InterCaStoreName,
                     isRootCA ? CertificateStore.RootCaStoreLocation : CertificateStore.InterCaStoreLocation);
             }
 
             // Install client certificate if any
-            if (!string.IsNullOrEmpty(AuthMethod.ClientCertificate))
+            if (!string.IsNullOrEmpty(this.AuthMethod.ClientCertificate))
             {
-                using var clientCert = AuthMethod.ClientCertificateAsX509Certificate2();
-                CertificateStore.InstallCertificate(clientCert, CertificateStore.UserCertStoreName, CertificateStore.UserCertStoreLocation);
+                using var clientCert = this.AuthMethod.ClientCertificateAsX509Certificate2();
+
+                if (clientCert != null)
+                {
+                    CertificateStore.InstallCertificate(clientCert, CertificateStore.UserCertStoreName, CertificateStore.UserCertStoreLocation);
+                }
             }
 
-            hasInstalledCertificates = true;
+            this.hasInstalledCertificates = true;
         }
 
         /// <summary>
@@ -71,27 +74,26 @@ namespace EduRoam.Connect
         /// <returns>True if the profile was installed on any interface</returns>
         public void InstallWLANProfile()
         {
-            if (!hasInstalledCertificates)
+            if (!this.hasInstalledCertificates)
+            {
                 throw new EduroamAppUserException("missing certificates",
                     "You must first install certificates with InstallCertificates");
+            }
 
             // Install wlan profile
-            foreach (var network in EduRoamNetwork.GetAll(AuthMethod.EapConfig))
+            foreach (var network in EduRoamNetwork.GetAll(this.AuthMethod.EapConfig))
             {
                 Debug.WriteLine("Install profile {0}", network.ProfileName);
-                network.InstallProfiles(AuthMethod, forAllUsers: true);
+                network.InstallProfiles(this.AuthMethod, forAllUsers: true);
             }
         }
 
         public (DateTime From, DateTime? To) GetTimeWhenValid()
         {
-            using var cert = AuthMethod.ClientCertificateAsX509Certificate2();
+            using var cert = this.AuthMethod.ClientCertificateAsX509Certificate2();
             return cert == null
-                ? (DateTime.Now.AddSeconds(-30), (DateTime?)null)
+                ? (DateTime.Now.AddSeconds(-30), null)
                 : (cert.NotBefore, cert.NotAfter);
         }
-
     }
-
-
 }

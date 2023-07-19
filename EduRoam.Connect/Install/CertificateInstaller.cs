@@ -1,5 +1,6 @@
 ﻿using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Install;
+using EduRoam.Connect.Store;
 
 using System.Security.Cryptography.X509Certificates;
 
@@ -25,18 +26,22 @@ namespace EduRoam.Connect
             this.storeName = storeName;
         }
 
-        override public string ToString()
-            => cert.FriendlyName;
+        public override string ToString() => this.cert.FriendlyName;
 
-        public bool IsCa { get => storeName == CertificateStore.RootCaStoreName; }
+        public bool IsCa { get => this.storeName == CertificateStore.RootCaStoreName; }
 
         public bool IsInstalled
         {
-            get => CertificateStore.IsCertificateInstalled(cert, storeName, storeLocation);
+            get => CertificateStore.IsCertificateInstalled(this.cert, this.storeName, this.storeLocation);
         }
         public bool IsInstalledByUs
         {
-            get => CertificateStore.IsCertificateInstalledByUs(cert, storeName, storeLocation);
+            get => CertificateStore.IsCertificateInstalledByUs(this.cert, this.storeName, this.storeLocation);
+        }
+
+        public Certificate Certificate
+        {
+            get => Certificate.FromCertificate(this.cert, this.storeName, this.storeLocation);
         }
 
         /// <summary>
@@ -45,7 +50,7 @@ namespace EduRoam.Connect
         /// <exception cref="UserAbortException" />
         public void AttemptInstallCertificate()
         {
-            CertificateStore.InstallCertificate(cert, storeName, storeLocation);
+            CertificateStore.InstallCertificate(this.cert, this.storeName, this.storeLocation);
         }
     }
 

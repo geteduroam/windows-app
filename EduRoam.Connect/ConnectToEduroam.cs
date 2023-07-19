@@ -137,7 +137,10 @@ namespace EduRoam.Connect
             foreach (var network in EduRoamNetwork.GetConfigured())
             {
                 var success = await network.TryToConnect();
-                if (success) return true;
+                if (success)
+                {
+                    return true;
+                }
             }
             return false;
         }

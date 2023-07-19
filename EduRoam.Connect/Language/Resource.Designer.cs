@@ -79,6 +79,24 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to In order to continue the following certificates have to be installed..
+        /// </summary>
+        public static string CertificatesInstallationNotification {
+            get {
+                return ResourceManager.GetString("CertificatesInstallationNotification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}, installed: {1}.
+        /// </summary>
+        public static string CertificatesInstallationStatus {
+            get {
+                return ResourceManager.GetString("CertificatesInstallationStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Configure Wi-Fi based on a institution profile.
         /// </summary>
         public static string CommandDescriptionConfigure {
@@ -259,6 +277,15 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error with internet connection.
+        /// </summary>
+        public static string ErrorInternetConnection {
+            get {
+                return ResourceManager.GetString("ErrorInternetConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not connect. \nException: {0}..
         /// </summary>
         public static string ErrorNoConnection {
@@ -295,6 +322,15 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Not all required certificates are installed..
+        /// </summary>
+        public static string ErrorRequiredCertificatesNotInstalled {
+            get {
+                return ResourceManager.GetString("ErrorRequiredCertificatesNotInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing options. Provide the {0} option or both {1} and {2} options.
         /// </summary>
         public static string ErrorShowCommandOptions {
@@ -309,6 +345,15 @@ namespace EduRoam.Connect.Language {
         public static string ErrorUnsupportedProfile {
             get {
                 return ResourceManager.GetString("ErrorUnsupportedProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Wireless is unavailable on this computer.
+        /// </summary>
+        public static string ErrorWirelessUnavailable {
+            get {
+                return ResourceManager.GetString("ErrorWirelessUnavailable", resourceCulture);
             }
         }
         
@@ -516,6 +561,15 @@ namespace EduRoam.Connect.Language {
         public static string ProfileRemoveConfirmation {
             get {
                 return ResourceManager.GetString("ProfileRemoveConfirmation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install all required certificates?.
+        /// </summary>
+        public static string RequestToInstallCertificates {
+            get {
+                return ResourceManager.GetString("RequestToInstallCertificates", resourceCulture);
             }
         }
         

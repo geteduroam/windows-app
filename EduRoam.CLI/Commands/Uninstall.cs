@@ -28,7 +28,7 @@ namespace EduRoam.CLI.Commands
                 }
                 Console.WriteLine();
 
-                var confirmed = Confirm.GetConfirmation();
+                var confirmed = Interaction.GetConfirmation();
 
                 if (confirmed)
                 {

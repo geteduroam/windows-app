@@ -1,19 +1,21 @@
-﻿using System.Runtime.Serialization;
+﻿using EduRoam.Connect.Language;
+
+using System.Runtime.Serialization;
 
 namespace EduRoam.Connect.Exceptions
 {
     [Serializable]
-	public class InternetConnectionException : Exception
-	{
-		private const string DefaultMessage = "Error with internet connection";
+    public class InternetConnectionException : Exception
+    {
+        private static readonly string DefaultMessage = Resource.ErrorInternetConnection;
 
-		public InternetConnectionException() : base(DefaultMessage) { }
+        public InternetConnectionException() : base(DefaultMessage) { }
 
-		public InternetConnectionException(string message) : base(message) { }
+        public InternetConnectionException(string message) : base(message) { }
 
-		public InternetConnectionException(string message, Exception innerException) : base(message, innerException) { }
+        public InternetConnectionException(string message, Exception innerException) : base(message, innerException) { }
 
-		protected InternetConnectionException(SerializationInfo serializationInfo, StreamingContext streamingContext) : base(serializationInfo, streamingContext) { }
-	}
+        protected InternetConnectionException(SerializationInfo serializationInfo, StreamingContext streamingContext) : base(serializationInfo, streamingContext) { }
+    }
 }
 

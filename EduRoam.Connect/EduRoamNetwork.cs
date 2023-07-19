@@ -297,7 +297,10 @@ namespace EduRoam.Connect
 
         public async Task<bool> TryToConnect()
         {
-            if (!this.IsAvailable) return false;
+            if (!this.IsAvailable)
+            {
+                return false;
+            }
 
             return await NativeWifi.ConnectNetworkAsync(
                 interfaceId: this.NetworkPack.Interface.Id,

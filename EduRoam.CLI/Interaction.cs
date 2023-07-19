@@ -2,7 +2,7 @@
 
 namespace EduRoam.CLI
 {
-    public static class Confirm
+    public static class Interaction
     {
         public static bool GetConfirmation()
         {
@@ -11,6 +11,11 @@ namespace EduRoam.CLI
             var choice = Console.ReadLine() ?? Resource.NotSure.ToUpper();
 
             return (choice.Trim().ToString().Equals(Resource.IsSure, StringComparison.CurrentCultureIgnoreCase));
+        }
+
+        public static string GetYesNoText(bool status)
+        {
+            return status ? Resource.Yes : Resource.No;
         }
     }
 }
