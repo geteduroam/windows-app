@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using App.Library.ViewModels;
 
-using App.Library.ViewModels;
+using EduRoam.Connect.Identity;
 
-using EduRoam.Connect;
+using System.Collections.Generic;
 
 namespace App.Library
 {

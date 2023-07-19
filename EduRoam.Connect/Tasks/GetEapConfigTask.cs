@@ -1,5 +1,6 @@
 ﻿using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
+using EduRoam.Connect.Identity;
 
 namespace EduRoam.Connect.Tasks
 {
@@ -84,7 +85,7 @@ namespace EduRoam.Connect.Tasks
 
             EapConfig? eapConfig;
 
-            if (fullProfile.oauth)
+            if (fullProfile.OAuth)
             {
                 var oauthHandler = new OAuthHandler(fullProfile);
                 await oauthHandler.Handle();
@@ -113,7 +114,7 @@ namespace EduRoam.Connect.Tasks
             }
 
             // if OAuth
-            if (profile.oauth || !string.IsNullOrEmpty(profile.redirect))
+            if (profile.OAuth || !string.IsNullOrEmpty(profile.Redirect))
             {
                 return null;
             }

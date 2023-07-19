@@ -1,5 +1,6 @@
 ﻿using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
+using EduRoam.Connect.Identity;
 
 using System.Diagnostics;
 using System.Net;
@@ -16,17 +17,17 @@ namespace EduRoam.Connect
 
         public OAuthHandler(IdentityProviderProfile profile)
         {
-            if (!profile.oauth)
+            if (!profile.OAuth)
             {
                 throw new ArgumentException("Profile is not targeted for OAuth", nameof(profile));
             }
-            if (string.IsNullOrWhiteSpace(profile.authorization_endpoint))
+            if (string.IsNullOrWhiteSpace(profile.AuthorizationEndpoint))
             {
                 throw new ArgumentException("The profile does not contain a valid authorization endpoint");
             }
 
             this.profile = profile;
-            this.oauth = new OAuth(new Uri(profile.authorization_endpoint));
+            this.oauth = new OAuth(new Uri(profile.AuthorizationEndpoint));
             // The url to send the user to
             this.authUri = this.oauth.CreateAuthUri();
             // The url to listen to for the user to be redirected back to

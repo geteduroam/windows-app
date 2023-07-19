@@ -1,4 +1,5 @@
 ﻿using EduRoam.Connect.Exceptions;
+using EduRoam.Connect.Identity;
 
 namespace EduRoam.Connect.Tasks
 {
@@ -25,7 +26,7 @@ namespace EduRoam.Connect.Tasks
                 {
                     return providers;
                 }
-                return providers.Where(provider => provider.Name.Contains(query, StringComparison.CurrentCultureIgnoreCase));
+                return IdentityProviderParser.SortByQuery(providers, query);
             }
 
             return Enumerable.Empty<IdentityProvider>();

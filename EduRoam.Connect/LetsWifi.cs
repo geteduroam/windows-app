@@ -1,5 +1,6 @@
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
+using EduRoam.Connect.Identity;
 using EduRoam.Connect.Install;
 using EduRoam.Connect.Store;
 
@@ -99,18 +100,18 @@ namespace EduRoam.Connect
 
             WipeTokens();
 
-            if (string.IsNullOrEmpty(profile.token_endpoint))
+            if (string.IsNullOrEmpty(profile.TokenEndpoint))
             {
                 return false;
             }
 
-            if (string.IsNullOrEmpty(profile.eapconfig_endpoint))
+            if (string.IsNullOrEmpty(profile.EapConfigEndpoint))
             {
                 return false;
             }
 
-            var tokenEndpoint = new Uri(profile.token_endpoint);
-            var eapEndpoint = new Uri(profile.eapconfig_endpoint);
+            var tokenEndpoint = new Uri(profile.TokenEndpoint);
+            var eapEndpoint = new Uri(profile.EapConfigEndpoint);
 
             // Parameters to get access tokens form lets-wifi
             var tokenPostData = new NameValueCollection() {
@@ -266,6 +267,7 @@ namespace EduRoam.Connect
             // if LetsWifi is not set up:
             // Download a new EapConfig xml if we already have one stored
             var profileId = this.store.IdentityProvider?.ProfileId;
+
             if (!onlyLetsWifi
                 && !this.store.IsRefreshable
                 && this.store.IsReinstallable
@@ -298,7 +300,9 @@ namespace EduRoam.Connect
 
             // Check if we can, at all:
             if (!this.store.IsRefreshable)
+            {
                 return RefreshResponse.NotRefreshable;
+            }
 
             // should never be null since the check above was successfull
             var profileInfo = this.store.IdentityProvider
@@ -313,20 +317,30 @@ namespace EduRoam.Connect
 
                 // if we are not a least 2/3 into the validity period (let's encrypt convention)
                 if (d1.Add(TimeSpan.FromTicks((d3 - d1).Ticks * 2 / 3)) > d2)
+                {
                     return RefreshResponse.StillValid; // prefer not to issue a new cert
+                }
             }
 
             // this is done automatically by RequestAndDownloadEapConfig, but we do it here for the result code.
             if (false == await this.RefreshTokens())
+            {
                 return RefreshResponse.AccessDenied; // TODO: requires user intervention, make user reconnect
+            }
 
             var eapConfig = await this.RequestAndDownloadEapConfig();
             if (eapConfig == null)
+            {
                 return RefreshResponse.Failed;
+            }
 
             foreach (var rootCA in ConnectToEduroam.EnumerateCAInstallers(eapConfig))
+            {
                 if (!rootCA.IsInstalled)
+                {
                     return RefreshResponse.NewRootCaRequired; // TODO: requires user intervention, make user reconnect
+                }
+            }
 
             // reinstall the same authmethod as last time
             var installer = eapConfig.SupportedAuthenticationMethods
@@ -358,7 +372,7 @@ namespace EduRoam.Connect
 
             var oldClientCerts = CertificateStore.EnumerateInstalledCertificates()
                 .Where(cert => cert.installedCert.StoreName == StoreName.My)
-                .Where(cert => cert.cert.Thumbprint != clientCert.Thumbprint);
+                .Where(cert => cert.cert.Thumbprint != clientCert?.Thumbprint);
 
             foreach ((var cert, var installedCert) in oldClientCerts)
             {

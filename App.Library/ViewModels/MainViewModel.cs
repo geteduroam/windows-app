@@ -4,6 +4,7 @@ using App.Library.Language;
 using EduRoam.Connect;
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
+using EduRoam.Connect.Identity;
 using EduRoam.Connect.Install;
 
 using System;
@@ -200,13 +201,13 @@ namespace App.Library.ViewModels
                 return true;
             }
 
-            if (!string.IsNullOrEmpty(profile?.redirect))
+            if (!string.IsNullOrEmpty(profile?.Redirect))
             {
-                this.SetActiveContent(new RedirectViewModel(this, new Uri(profile.redirect)));
+                this.SetActiveContent(new RedirectViewModel(this, new Uri(profile.Redirect)));
                 return true;
             }
 
-            if (profile?.oauth ?? false)
+            if (profile?.OAuth ?? false)
             {
                 SetActiveContent(new OAuthViewModel(this, profile));
                 return true;
@@ -229,8 +230,8 @@ namespace App.Library.ViewModels
             }
 
             // if OAuth
-            if (profile.oauth
-                || !string.IsNullOrEmpty(profile.redirect))
+            if (profile.OAuth
+                || !string.IsNullOrEmpty(profile.Redirect))
             {
                 return null;
             }

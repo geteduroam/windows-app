@@ -11,7 +11,7 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Xml;
 
-namespace EduRoam.Connect
+namespace EduRoam.Connect.Identity
 {
     public class IdentityProviderDownloader : IDisposable
     {
@@ -79,7 +79,7 @@ namespace EduRoam.Connect
             // gets country code as set in Settings
             // https://stackoverflow.com/questions/8879259/get-current-location-as-specified-in-region-and-language-in-c-sharp
             var regKeyGeoId = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Control Panel\International\Geo");
-            var geoID = (string)regKeyGeoId.GetValue("Nation");
+            var geoID = (string?)regKeyGeoId?.GetValue("Nation");
             var allRegions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.ToString()));
             var regionInfo = allRegions.FirstOrDefault(r => r.GeoId == int.Parse(geoID, CultureInfo.InvariantCulture));
 
@@ -217,14 +217,14 @@ namespace EduRoam.Connect
         {
             await this.LoadProviders(useGeodata: false);
             var profile = this.GetProfileFromId(profileId);
-            if (string.IsNullOrEmpty(profile?.eapconfig_endpoint))
+            if (string.IsNullOrEmpty(profile?.EapConfigEndpoint))
             {
                 throw new EduroamAppUserException("Requested profile not listed in discovery");
             }
 
             // adds profile ID to url containing json file, which in turn contains url to EAP config file download
             // gets url to EAP config file download from GenerateEapConfig object
-            var eapConfig = await DownloadEapConfig(new Uri(profile.eapconfig_endpoint)).ConfigureAwait(true);
+            var eapConfig = await DownloadEapConfig(new Uri(profile.EapConfigEndpoint)).ConfigureAwait(true);
             eapConfig.ProfileId = profileId;
             return eapConfig;
         }

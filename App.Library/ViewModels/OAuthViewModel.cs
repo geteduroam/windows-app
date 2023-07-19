@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using EduRoam.Connect.Identity;
 
-using EduRoam.Connect;
+using System;
+using System.Threading.Tasks;
 
 namespace App.Library.ViewModels
 {

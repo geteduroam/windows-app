@@ -1,11 +1,8 @@
 using DuoVia.FuzzyStrings;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
-namespace EduRoam.Connect
+namespace EduRoam.Connect.Identity
 {
     public static class IdentityProviderParser
     {
@@ -14,9 +11,9 @@ namespace EduRoam.Connect
         /// </summary>
         /// <param name="providers">List of providers to query</param>
         /// <param name="searchString">Query string</param>
-        /// <param name="limit">Number of results to return, reduce this for a speedup</param>
+        /// <param name="limit">Maximum number of results (999 by default) to return, reduce this for a speedup</param>
         /// <returns>List of providers ordered by match coefficient</returns>
-        public static IEnumerable<IdentityProvider> SortByQuery(IEnumerable<IdentityProvider> providers, string searchString, int limit)
+        public static IEnumerable<IdentityProvider> SortByQuery(IEnumerable<IdentityProvider> providers, string searchString, int limit = 999)
         {
             if (string.IsNullOrEmpty(searchString))
             {
@@ -69,7 +66,7 @@ namespace EduRoam.Connect
         private static string NormalizeString(string str)
         {
             // TODO: perhaps allow non-us characters?
-            string strippedString = Encoding.ASCII.GetString(Encoding.GetEncoding("Cyrillic").GetBytes(str))
+            var strippedString = Encoding.ASCII.GetString(Encoding.GetEncoding("Cyrillic").GetBytes(str))
                 .ToUpperInvariant()
                 .Replace("-", " ")
                 .Replace("[", "")

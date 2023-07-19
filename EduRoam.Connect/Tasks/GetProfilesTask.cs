@@ -1,4 +1,5 @@
 ﻿using EduRoam.Connect.Exceptions;
+using EduRoam.Connect.Identity;
 
 namespace EduRoam.Connect.Tasks
 {

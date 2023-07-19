@@ -1,9 +1,8 @@
-﻿using System;
+﻿using EduRoam.Connect.Identity;
+
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-
-using EduRoam.Connect;
 
 namespace App.Library.ViewModels
 {
