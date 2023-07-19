@@ -1,5 +1,5 @@
-﻿using EduRoam.Connect;
-using EduRoam.Connect.Install;
+﻿using EduRoam.Connect.Install;
+using EduRoam.Connect.Language;
 using EduRoam.Connect.Tasks;
 
 using System.CommandLine;

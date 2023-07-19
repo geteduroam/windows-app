@@ -1,8 +1,6 @@
 using EduRoam.Connect.Exceptions;
 
-using System;
 using System.Collections.Specialized;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -16,9 +14,9 @@ namespace EduRoam.Connect
     public class OAuth
     {
         // static config
-        private const string responseType = "code";
-        private const string codeChallengeMethod = "S256";
-        private const string scope = "eap-metadata";
+        private const string ResponseType = "code";
+        private const string CodeChallengeMethod = "S256";
+        private const string Scope = "eap-metadata";
         public const string clientId = "app.geteduroam.win";
         // instance config
         private readonly Uri redirectUri; // uri to locally hosted servers
@@ -38,9 +36,9 @@ namespace EduRoam.Connect
         {
             this.authEndpoint = authEndpoint;
 
-            Random rng = new Random();
-            int randomPort = rng.Next(49152, 65535);
-            redirectUri = new Uri($"http://[::1]:{randomPort}/");
+            var rng = new Random();
+            var randomPort = rng.Next(49152, 65535);
+            this.redirectUri = new Uri($"http://[::1]:{randomPort}/");
         }
 
         /// <summary>
@@ -50,26 +48,26 @@ namespace EduRoam.Connect
         public Uri CreateAuthUri()
         {
             // sets non-static authorization uri parameters
-            state = Base64UrlEncode(Guid.NewGuid().ToByteArray()); // random alphanumeric string
-            codeVerifier = Base64UrlEncode(GenerateCodeChallengeBase()); // generate random byte array, convert to base64url
-            codeChallenge = Base64UrlEncode(SHA256Hash(codeVerifier)); // hash code verifier with SHA256, convert to base64url
+            this.state = Base64UrlEncode(Guid.NewGuid().ToByteArray()); // random alphanumeric string
+            this.codeVerifier = Base64UrlEncode(GenerateCodeChallengeBase()); // generate random byte array, convert to base64url
+            this.codeChallenge = Base64UrlEncode(SHA256Hash(this.codeVerifier)); // hash code verifier with SHA256, convert to base64url
 
             // concatenates parameters into authorization endpoint URI
-            string authUri = string.Concat(authEndpoint, "?", ConstructQueryString(new NameValueCollection() {
-                { "response_type", responseType },
-                { "code_challenge_method", codeChallengeMethod },
-                { "scope", scope },
-                { "code_challenge", codeChallenge },
-                { "redirect_uri", redirectUri.ToString() },
+            var authUri = string.Concat(this.authEndpoint, "?", ConstructQueryString(new NameValueCollection() {
+                { "response_type", ResponseType },
+                { "code_challenge_method", CodeChallengeMethod },
+                { "scope", Scope },
+                { "code_challenge", this.codeChallenge },
+                { "redirect_uri", this.redirectUri.ToString() },
                 { "client_id", clientId },
-                { "state", state }
+                { "state", this.state }
             }));
 
             return new Uri(authUri);
         }
 
         public Uri GetRedirectUri()
-            => redirectUri;
+            => this.redirectUri;
 
 
         /// <summary>
@@ -105,7 +103,7 @@ namespace EduRoam.Connect
                 throw new EduroamAppUserException("oauth code missing",
                     userFacingMessage: "Response string doesn't contain code. Aborting operation.");
 
-            return (code, codeVerifier);
+            return (code, this.codeVerifier);
         }
 
 
@@ -115,7 +113,7 @@ namespace EduRoam.Connect
         /// <returns>Code challenge base.</returns>
         private static byte[] GenerateCodeChallengeBase()
         {
-            using var random = new RNGCryptoServiceProvider();
+            using var random = RandomNumberGenerator.Create();
 
             var salt = new byte[32];
             random.GetNonZeroBytes(salt);
@@ -129,7 +127,7 @@ namespace EduRoam.Connect
         /// <returns>Base64url string.</returns>
         private static string Base64UrlEncode(byte[] arg)
         {
-            string s = Convert.ToBase64String(arg); // regular base64 encoder
+            var s = Convert.ToBase64String(arg); // regular base64 encoder
             s = s.Split('=')[0]; // remove trailing '='s
             s = s.Replace('+', '-'); // 62nd char of encoding
             s = s.Replace('/', '_'); // 63rd char of encoding
@@ -144,7 +142,7 @@ namespace EduRoam.Connect
         private static byte[] SHA256Hash(string dataString)
         {
             // create a SHA256 context
-            using SHA256 sha256Hash = SHA256.Create();
+            using var sha256Hash = SHA256.Create();
 
             // Compute hash and return
             return sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(dataString));

@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
-
 using InstalledCertificate = EduRoam.Connect.Store.Certificate;
 
 namespace EduRoam.Connect.Install
@@ -15,14 +14,14 @@ namespace EduRoam.Connect.Install
         // Certificate stores:
 
         // Used to install root CAs to verify server certificates with
-        public readonly static StoreName RootCaStoreName = StoreName.Root;
-        public readonly static StoreLocation RootCaStoreLocation = StoreLocation.CurrentUser; // NICE TO HAVE: make this configurable to LocalMachine
+        public static readonly StoreName RootCaStoreName = StoreName.Root;
+        public static readonly StoreLocation RootCaStoreLocation = StoreLocation.CurrentUser; // NICE TO HAVE: make this configurable to LocalMachine
                                                                                               // Used to install CAs to verify server certificates with
-        public readonly static StoreName InterCaStoreName = StoreName.CertificateAuthority;
-        public readonly static StoreLocation InterCaStoreLocation = StoreLocation.CurrentUser; // NICE TO HAVE: make this configurable to LocalMachine
+        public static readonly StoreName InterCaStoreName = StoreName.CertificateAuthority;
+        public static readonly StoreLocation InterCaStoreLocation = StoreLocation.CurrentUser; // NICE TO HAVE: make this configurable to LocalMachine
                                                                                                // Used to install TLS client certificates
-        public readonly static StoreName UserCertStoreName = StoreName.My;
-        public readonly static StoreLocation UserCertStoreLocation = StoreLocation.CurrentUser;
+        public static readonly StoreName UserCertStoreName = StoreName.My;
+        public static readonly StoreLocation UserCertStoreLocation = StoreLocation.CurrentUser;
 
         /// <summary>
         /// Installs the certificate into the certificate store chosen.
@@ -37,7 +36,9 @@ namespace EduRoam.Connect.Install
             _ = cert ?? throw new ArgumentNullException(paramName: nameof(cert));
 
             if (IsCertificateInstalled(cert, storeName, storeLocation))
+            {
                 return;
+            }
 
             using var certStore = new X509Store(storeName, storeLocation);
             certStore.Open(OpenFlags.ReadWrite);
@@ -58,7 +59,9 @@ namespace EduRoam.Connect.Install
             {
                 // if user selects No when prompted to install the CA
                 if ((uint)ex.HResult == 0x800704C7)
+                {
                     throw new UserAbortException("User selected No when prompted for certificate");
+                }
 
                 Debug.WriteLine("THIS SHOULD NOT HAPPEN");
                 Debug.Print(ex.ToString());
@@ -111,7 +114,9 @@ namespace EduRoam.Connect.Install
         public static bool UninstallCertificate(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation)
         {
             if (!IsCertificateInstalled(cert, storeName, storeLocation))
+            {
                 return false;
+            }
 
             Debug.WriteLine("Removing '{0}' from cert store {1}:{2}",
                 cert.FriendlyName, storeName.ToString(), storeLocation.ToString());
@@ -131,14 +136,16 @@ namespace EduRoam.Connect.Install
             catch (CryptographicException ex)
             {
                 // if user selects No when prompted to remove the CA
-                if ((uint)ex.HResult == 0x800704C7) return false;
+                if ((uint)ex.HResult == 0x800704C7)
+                {
+                    return false;
+                }
 
                 Debug.WriteLine("THIS SHOULD NOT HAPPEN");
                 Debug.Print(ex.ToString());
                 Debug.Assert(false);
                 throw; // unknown exception
             }
-
 
             // if we're still able to find it, then it probably wasn't removed.
             return !IsCertificateInstalled(cert, storeName, storeLocation);
@@ -163,9 +170,20 @@ namespace EduRoam.Connect.Install
                 {
                     // thumbprint already found to match
                     // TODO: is it possible for these attributes to be modified after adding them to their stores? If not then remove the RELEASE block below
-                    if (cert.Issuer != installedCert.Issuer) continue;
-                    if (cert.Subject != installedCert.Subject) continue;
-                    if (cert.SerialNumber != installedCert.SerialNumber) continue;
+                    if (cert.Issuer != installedCert.Issuer)
+                    {
+                        continue;
+                    }
+
+                    if (cert.Subject != installedCert.Subject)
+                    {
+                        continue;
+                    }
+
+                    if (cert.SerialNumber != installedCert.SerialNumber)
+                    {
+                        continue;
+                    }
 
                     found = true;
                     yield return (cert, installedCert);
@@ -183,7 +201,9 @@ namespace EduRoam.Connect.Install
                     // warning
                     // TODO: prime target for metrics
                     if (matchingCerts.Count != 0)
+                    {
                         Debug.Fail("Unable to find persisted certificate, even when thumbprint matched");
+                    }
 
                     // not found, stop tracking it
                     RegistryStore.Instance.RemoveInstalledCertificate(installedCert);
@@ -203,9 +223,14 @@ namespace EduRoam.Connect.Install
             foreach ((var cert, var installedCert) in EnumerateInstalledCertificates())
             {
                 if (installedCert.StoreName == StoreName.Root && omitRootCa)
+                {
                     continue; // skip
+                }
+
                 if (!IsCertificateInstalledByUs(cert, installedCert.StoreName, installedCert.StoreLocation) && omitNotInstalledByUs)
+                {
                     continue; // skip
+                }
 
                 var success = UninstallCertificate(cert, installedCert.StoreName, installedCert.StoreLocation);
 
@@ -217,7 +242,9 @@ namespace EduRoam.Connect.Install
                 all_removed &= success;
 
                 if (!success && abortOnFail)
+                {
                     break;
+                }
             }
 
             // not transactionally secure, probably also not needed

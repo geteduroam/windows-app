@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using EduRoam.Connect.Language;
+
+using System.Globalization;
 
 namespace EduRoam.Connect.Tasks
 {

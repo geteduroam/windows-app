@@ -1,6 +1,7 @@
 ﻿using EduRoam.Connect;
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
+using EduRoam.Connect.Language;
 using EduRoam.Connect.Tasks;
 
 using System.CommandLine;
@@ -26,7 +27,7 @@ namespace EduRoam.CLI.Commands
                 profileOption,
             };
 
-            EnsureProperOptionsAreProvided(eapConfigFileOption, instituteOption, profileOption, command);
+            command.EnsureProperEapConfigSourceOptionsAreProvided(eapConfigFileOption, instituteOption, profileOption);
 
             command.SetHandler(async (FileInfo? eapConfigFile, string? institute, string? profileName) =>
             {
@@ -78,29 +79,6 @@ namespace EduRoam.CLI.Commands
             }, eapConfigFileOption, instituteOption, profileOption);
 
             return command;
-        }
-
-        /// <summary>
-        /// Ensure the user has provided a Eap Config option or
-        ///  both Institute and Profile options
-        /// </summary>
-        /// <param name="instituteOption"></param>
-        /// <param name="profileOption"></param>
-        /// <param name="eapConfigFileOption"></param>
-        /// <param name="command"></param>
-        private static void EnsureProperOptionsAreProvided(Option<FileInfo> eapConfigFileOption, Option<string> instituteOption, Option<string> profileOption, Command command)
-        {
-            command.AddValidator(validator =>
-            {
-                var instituteOptionValue = validator.GetValueForOption(instituteOption);
-                var profileOptionValue = validator.GetValueForOption(profileOption);
-                var eapConfigFileArgValue = validator.GetValueForOption(eapConfigFileOption);
-
-                if (eapConfigFileArgValue == null && (string.IsNullOrWhiteSpace(instituteOptionValue) || string.IsNullOrWhiteSpace(profileOptionValue)))
-                {
-                    validator.ErrorMessage = string.Format(Resource.ErrorShowCommandOptions, string.Join("\\", eapConfigFileOption.Aliases), string.Join("\\", instituteOption.Aliases), string.Join("\\", profileOption.Aliases));
-                }
-            });
         }
 
         private static void ShowProfileOverview(EapConfig eapConfig)

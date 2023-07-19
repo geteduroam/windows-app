@@ -1,5 +1,5 @@
 ﻿using EduRoam.CLI.Commands;
-using EduRoam.Connect;
+using EduRoam.Connect.Language;
 
 using System.CommandLine;
 using System.Reflection;

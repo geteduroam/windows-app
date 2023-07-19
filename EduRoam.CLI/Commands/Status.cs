@@ -1,4 +1,5 @@
 ﻿using EduRoam.Connect;
+using EduRoam.Connect.Language;
 using EduRoam.Connect.Tasks;
 
 using System.CommandLine;

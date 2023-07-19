@@ -27,7 +27,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Resources\Resource.Designer.cs">
+    <Compile Update="Language\Resource.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
       <DependentUpon>Resource.resx</DependentUpon>
@@ -39,10 +39,10 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Resource.resx">
+    <EmbeddedResource Update="Language\Resource.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>EduRoam.Connect</CustomToolNamespace>
+      <CustomToolNamespace>EduRoam.Connect.Language</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
 

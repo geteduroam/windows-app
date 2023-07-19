@@ -1,4 +1,4 @@
-﻿using EduRoam.Connect;
+﻿using EduRoam.Connect.Language;
 using EduRoam.Connect.Store;
 using EduRoam.Connect.Tasks;
 
@@ -21,6 +21,7 @@ namespace EduRoam.CLI.Commands
             command.SetHandler(() =>
             {
                 var profileName = this.store.IdentityProvider?.DisplayName ?? Resource.DefaultIdentityProvider;
+
                 Console.Write(Resource.ProfileRemoveConfirmation, profileName);
                 var confirmed = Confirm.GetConfirmation();
 

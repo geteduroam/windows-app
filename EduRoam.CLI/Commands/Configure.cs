@@ -1,4 +1,6 @@
 ﻿using EduRoam.Connect;
+using EduRoam.Connect.Eap;
+using EduRoam.Connect.Language;
 using EduRoam.Connect.Tasks;
 
 using System.CommandLine;
@@ -13,20 +15,33 @@ namespace EduRoam.CLI.Commands
 
         public Command GetCommand()
         {
-            var instituteOption = Options.GetInstituteOption();
-            var profileOption = Options.GetProfileOption();
+            var instituteOption = Options.GetInstituteOption(optional: true);
+            var profileOption = Options.GetProfileOption(optional: true);
+            var eapConfigFileOption = Options.GetEapConfigOption();
 
             var command = new Command(CommandName, CommandDescription)
             {
                 instituteOption,
-                profileOption
+                profileOption,
+                eapConfigFileOption
             };
 
+            command.EnsureProperEapConfigSourceOptionsAreProvided(eapConfigFileOption, instituteOption, profileOption);
 
-            command.SetHandler(async (string institute, string profileName) =>
+            command.SetHandler(async (FileInfo? eapConfigFile, string? institute, string? profileName) =>
             {
-                var getEapConfig = new GetEapConfigTask();
-                var eapConfig = await getEapConfig.GetEapConfigAsync(institute, profileName);
+                var connectTask = new GetEapConfigTask();
+
+                EapConfig? eapConfig;
+
+                if (eapConfigFile == null)
+                {
+                    eapConfig = await connectTask.GetEapConfigAsync(institute!, profileName!);
+                }
+                else
+                {
+                    eapConfig = await connectTask.GetEapConfigAsync(eapConfigFile);
+                }
 
                 if (eapConfig == null)
                 {
@@ -34,10 +49,8 @@ namespace EduRoam.CLI.Commands
                     return;
                 }
 
-                var connectTask = new ResolveConfigurationTask();
-
-
-                var configurationResolved = connectTask.ResolveConfiguration(eapConfig, true);
+                var configurationTask = new ResolveConfigurationTask();
+                var configurationResolved = configurationTask.ResolveConfiguration(eapConfig, true);
 
                 if (configurationResolved)
                 {
@@ -48,7 +61,7 @@ namespace EduRoam.CLI.Commands
                     ConsoleExtension.WriteError(Resource.ErrorEapNotConfigured);
                 }
 
-            }, instituteOption, profileOption);
+            }, eapConfigFileOption, instituteOption, profileOption);
 
             return command;
         }

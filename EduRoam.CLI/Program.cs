@@ -1,5 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using EduRoam.CLI;
+using EduRoam.Connect.Language;
 
 public class Program
 {
@@ -7,7 +8,7 @@ public class Program
 
     public static async Task Main(string[] args)
     {
-        EduRoam.Connect.Resource.Culture = System.Globalization.CultureInfo.CurrentUICulture;
+        Resource.Culture = System.Globalization.CultureInfo.CurrentUICulture;
 
         await Engine.Run(args);
     }

@@ -1,4 +1,4 @@
-﻿using EduRoam.Connect;
+﻿using EduRoam.Connect.Language;
 
 using System.CommandLine;
 using System.CommandLine.Parsing;
@@ -48,6 +48,29 @@ namespace EduRoam.CLI
                 aliases: new string[] { "-q", "--query" },
                 description: Resource.OptionDescriptionQuery);
 
+        /// <summary>
+        /// Ensure the user has provided an Eap Config option or
+        ///  both Institute and Profile options
+        /// </summary>
+        /// <param name="instituteOption"></param>
+        /// <param name="profileOption"></param>
+        /// <param name="eapConfigFileOption"></param>
+        /// <param name="command"></param>
+        public static void EnsureProperEapConfigSourceOptionsAreProvided(this Command command, Option<FileInfo> eapConfigFileOption, Option<string> instituteOption, Option<string> profileOption)
+        {
+            command.AddValidator(validator =>
+            {
+                var instituteOptionValue = validator.GetValueForOption(instituteOption);
+                var profileOptionValue = validator.GetValueForOption(profileOption);
+                var eapConfigFileArgValue = validator.GetValueForOption(eapConfigFileOption);
+
+                if (eapConfigFileArgValue == null && (string.IsNullOrWhiteSpace(instituteOptionValue) || string.IsNullOrWhiteSpace(profileOptionValue)))
+                {
+                    validator.ErrorMessage = string.Format(Resource.ErrorShowCommandOptions, string.Join("\\", eapConfigFileOption.Aliases), string.Join("\\", instituteOption.Aliases), string.Join("\\", profileOption.Aliases));
+                }
+            });
+        }
+
         private static string NonEmptyString(ArgumentResult result)
         {
             if (!result.Tokens.Any())
@@ -66,5 +89,6 @@ namespace EduRoam.CLI
             }
             return value;
         }
+
     }
 }
