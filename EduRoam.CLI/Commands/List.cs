@@ -15,39 +15,48 @@ namespace EduRoam.CLI.Commands
         public Command GetCommand()
         {
             var instituteOption = Options.GetInstituteOption(optional: true);
+            var queryOption = Options.GetQueryOption();
 
             var command = new Command(CommandName, CommandDescription)
             {
-                instituteOption
+                instituteOption,
+                queryOption
             };
 
-            command.SetHandler(async (string? institute) =>
+            command.SetHandler(async (string? institute, string? query) =>
             {
                 if (!string.IsNullOrWhiteSpace(institute))
                 {
-                    await ShowProfilesAsync(institute);
+                    await ShowProfilesAsync(institute, query);
                 }
                 else
                 {
-                    await ShowInstitutesAsync();
+                    await ShowInstitutesAsync(query);
                 }
 
-            }, instituteOption);
+            }, instituteOption, queryOption);
 
             return command;
         }
 
-        private static async Task ShowProfilesAsync(string institute)
+        private static async Task ShowProfilesAsync(string institute, string? query = null)
         {
             var getProfilesTask = new GetProfilesTask();
 
             try
             {
-                var profiles = await getProfilesTask.GetProfilesAsync(institute);
+                var profiles = await getProfilesTask.GetProfilesAsync(institute, query);
 
-                foreach (var profile in profiles)
+                if (profiles.Any())
                 {
-                    Console.WriteLine(profile.Name);
+                    foreach (var profile in profiles)
+                    {
+                        Console.WriteLine(profile.Name);
+                    }
+                }
+                else
+                {
+                    ConsoleExtension.WriteWarning(Resource.WarningNoProfilesFound);
                 }
             }
             catch (Exception exc) when (exc is UnknownInstituteException || exc is UnknownProfileException)
@@ -67,16 +76,23 @@ namespace EduRoam.CLI.Commands
             }
         }
 
-        private static async Task ShowInstitutesAsync()
+        private static async Task ShowInstitutesAsync(string? query)
         {
             try
             {
                 var getListTask = new GetInstitutesTask();
-                var closestProviders = await getListTask.GetAsync();
+                var institutes = await getListTask.GetAsync(query);
 
-                foreach (var provider in closestProviders)
+                if (institutes.Any())
                 {
-                    Console.WriteLine(provider.Name);
+                    foreach (var provider in institutes)
+                    {
+                        Console.WriteLine(provider.Name);
+                    }
+                }
+                else
+                {
+                    ConsoleExtension.WriteWarning(Resource.WarningNoInstitutesFound);
                 }
             }
             catch (ApiParsingException e)

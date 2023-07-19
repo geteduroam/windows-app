@@ -9,6 +9,13 @@
             Console.ForegroundColor = ConsoleColor.White;
         }
 
+        public static void WriteWarning(string value, params object[] args)
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(value, args);
+            Console.ForegroundColor = ConsoleColor.White;
+        }
+
         public static void WriteStatusIf(Func<bool> showIf, string value, params object[] args)
         {
             if (showIf())

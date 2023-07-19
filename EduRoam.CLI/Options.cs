@@ -1,4 +1,6 @@
-﻿using System.CommandLine;
+﻿using EduRoam.Connect;
+
+using System.CommandLine;
 using System.CommandLine.Parsing;
 
 namespace EduRoam.CLI
@@ -9,44 +11,48 @@ namespace EduRoam.CLI
         {
             if (optional)
             {
-                return new(aliases: new string[] { "-i", "--institute" }, description: "The name of the institute to connect to.");
+                return new(aliases: new string[] { "-i", "--institute" }, description: Resource.OptionDescriptionInstitute);
             }
 
             return new(
                 aliases: new string[] { "-i", "--institute" },
                 parseArgument: NonEmptyString,
                 isDefault: true,
-                description: "The name of the institute to connect to.");
+                description: Resource.OptionDescriptionInstitute);
         }
 
         public static Option<string> GetProfileOption(bool optional = false)
         {
             if (optional)
             {
-                return new(aliases: new string[] { "-p", "--profile" }, description: "Institute's profile to connect to.");
+                return new(aliases: new string[] { "-p", "--profile" }, description: Resource.OptionDescriptionProfile);
             }
 
             return new(
                 aliases: new string[] { "-p", "--profile" },
                 parseArgument: NonEmptyString,
                 isDefault: true,
-                description: "Institute's profile to connect to.");
+                description: Resource.OptionDescriptionProfile);
         }
 
         public static Option<FileInfo> GetEapConfigOption() => new(
                 aliases: new string[] { "-c", "--config" },
-                description: "Path to EAP config .eap-config.");
+                description: Resource.OptionDescriptionEAPConfig);
 
         public static Option<bool> GetForceOption() => new(
                 aliases: new string[] { "-f", "--force" },
-                description: "Force action.",
+                description: Resource.OptionDescriptionForce,
                 getDefaultValue: () => false);
+
+        public static Option<string> GetQueryOption() => new(
+                aliases: new string[] { "-q", "--query" },
+                description: Resource.OptionDescriptionQuery);
 
         private static string NonEmptyString(ArgumentResult result)
         {
             if (!result.Tokens.Any())
             {
-                result.ErrorMessage = $"Option {result.Argument.Name} is required";
+                result.ErrorMessage = string.Format(Resource.OptionRequired, result.Argument.Name);
                 return string.Empty;
             }
 
@@ -54,7 +60,7 @@ namespace EduRoam.CLI
 
             if (string.IsNullOrWhiteSpace(value))
             {
-                result.ErrorMessage = $"{result.Argument.HelpName} option value cannot be empty or whitespace only";
+                result.ErrorMessage = string.Format(Resource.ErrorOptionIsEmpty, result.Argument.HelpName);
                 return string.Empty;
 
             }

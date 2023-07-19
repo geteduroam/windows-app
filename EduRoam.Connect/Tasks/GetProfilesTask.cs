@@ -7,11 +7,12 @@ namespace EduRoam.Connect.Tasks
         /// <summary>
         /// Get a list of available institute profiles
         /// </summary>
-        /// <param name="institute"></param>
+        /// <param name="institute">Name of institute to get profiles for</param>
+        /// <param name="query">Query to filter profiles</param>
         /// <exception cref="ApiParsingException" />
         /// <exception cref="ApiUnreachableException" />
         /// <exception cref="UnknownInstituteException" />
-        public async Task<IEnumerable<IdentityProviderProfile>> GetProfilesAsync(string institute)
+        public async Task<IEnumerable<IdentityProviderProfile>> GetProfilesAsync(string institute, string? query = null)
         {
             if (string.IsNullOrWhiteSpace(institute))
             {
@@ -29,7 +30,14 @@ namespace EduRoam.Connect.Tasks
                 {
                     throw new UnknownInstituteException(institute);
                 }
-                return idpDownloader.GetIdentityProviderProfiles(provider.Id);
+
+                var profiles = idpDownloader.GetIdentityProviderProfiles(provider.Id);
+                if (string.IsNullOrWhiteSpace(query))
+                {
+                    return profiles;
+                }
+                return profiles.Where(provider => provider.Name.Contains(query, StringComparison.CurrentCultureIgnoreCase));
+
             }
 
             return Enumerable.Empty<IdentityProviderProfile>();

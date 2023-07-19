@@ -192,6 +192,9 @@
   <data name="ErrorNotUninstalled" xml:space="preserve">
     <value>geteduroam has not been uninstalled.</value>
   </data>
+  <data name="ErrorOptionIsEmpty" xml:space="preserve">
+    <value>{0} option value cannot be empty or whitespace only</value>
+  </data>
   <data name="ErrorShowCommandOptions" xml:space="preserve">
     <value>Missing options. Provide the {0} option or both {1} and {2} options</value>
   </data>
@@ -246,6 +249,24 @@
   <data name="NotSure" xml:space="preserve">
     <value>n</value>
   </data>
+  <data name="OptionDescriptionEAPConfig" xml:space="preserve">
+    <value>Path to EAP config .eap-config.</value>
+  </data>
+  <data name="OptionDescriptionForce" xml:space="preserve">
+    <value>Force action.</value>
+  </data>
+  <data name="OptionDescriptionInstitute" xml:space="preserve">
+    <value>The name of the institute to connect to.</value>
+  </data>
+  <data name="OptionDescriptionProfile" xml:space="preserve">
+    <value>Institute's profile to connect to.</value>
+  </data>
+  <data name="OptionDescriptionQuery" xml:space="preserve">
+    <value>Query to filter items</value>
+  </data>
+  <data name="OptionRequired" xml:space="preserve">
+    <value>Option {0} is required</value>
+  </data>
   <data name="ProfileRemoveConfirmation" xml:space="preserve">
     <value>This will remove all configuration for '{0}'.</value>
   </data>
@@ -266,6 +287,12 @@
   </data>
   <data name="VersionReleaseNoVersion" xml:space="preserve">
     <value>Versionless</value>
+  </data>
+  <data name="WarningNoInstitutesFound" xml:space="preserve">
+    <value>No institutes found</value>
+  </data>
+  <data name="WarningNoProfilesFound" xml:space="preserve">
+    <value>No profiles found</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>✓</value>

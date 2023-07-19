@@ -286,6 +286,15 @@ namespace EduRoam.Connect {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} option value cannot be empty or whitespace only.
+        /// </summary>
+        public static string ErrorOptionIsEmpty {
+            get {
+                return ResourceManager.GetString("ErrorOptionIsEmpty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing options. Provide the {0} option or both {1} and {2} options.
         /// </summary>
         public static string ErrorShowCommandOptions {
@@ -448,6 +457,60 @@ namespace EduRoam.Connect {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Path to EAP config .eap-config..
+        /// </summary>
+        public static string OptionDescriptionEAPConfig {
+            get {
+                return ResourceManager.GetString("OptionDescriptionEAPConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Force action..
+        /// </summary>
+        public static string OptionDescriptionForce {
+            get {
+                return ResourceManager.GetString("OptionDescriptionForce", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The name of the institute to connect to..
+        /// </summary>
+        public static string OptionDescriptionInstitute {
+            get {
+                return ResourceManager.GetString("OptionDescriptionInstitute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Institute&apos;s profile to connect to..
+        /// </summary>
+        public static string OptionDescriptionProfile {
+            get {
+                return ResourceManager.GetString("OptionDescriptionProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Query to filter items.
+        /// </summary>
+        public static string OptionDescriptionQuery {
+            get {
+                return ResourceManager.GetString("OptionDescriptionQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Option {0} is required.
+        /// </summary>
+        public static string OptionRequired {
+            get {
+                return ResourceManager.GetString("OptionRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This will remove all configuration for &apos;{0}&apos;..
         /// </summary>
         public static string ProfileRemoveConfirmation {
@@ -507,6 +570,24 @@ namespace EduRoam.Connect {
         public static string VersionReleaseNoVersion {
             get {
                 return ResourceManager.GetString("VersionReleaseNoVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No institutes found.
+        /// </summary>
+        public static string WarningNoInstitutesFound {
+            get {
+                return ResourceManager.GetString("WarningNoInstitutesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No profiles found.
+        /// </summary>
+        public static string WarningNoProfilesFound {
+            get {
+                return ResourceManager.GetString("WarningNoProfilesFound", resourceCulture);
             }
         }
         
