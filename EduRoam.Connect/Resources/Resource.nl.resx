@@ -117,134 +117,137 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>geteduroam CLI</value>
+  </data>
   <data name="AreYouSure" xml:space="preserve">
-    <value>Are you sure you want to continue?</value>
+    <value>Are you sure you want to continue? !!!</value>
   </data>
   <data name="CommandDescriptionConfigure" xml:space="preserve">
-    <value>Configure Wi-Fi based on a institution profile</value>
+    <value>Configure Wi-Fi based on a institution profile !!!</value>
   </data>
   <data name="CommandDescriptionConnect" xml:space="preserve">
-    <value>Connect with the current profile</value>
+    <value>Connect with the current profile !!!</value>
   </data>
   <data name="CommandDescriptionList" xml:space="preserve">
-    <value>Get a list of institutions or profiles for a institution.</value>
+    <value>Get a list of institutions or profiles for a institution. !!!</value>
   </data>
   <data name="CommandDescriptionReauthenticate" xml:space="preserve">
-    <value>Reauthenticate</value>
+    <value>Reauthenticate !!!</value>
   </data>
   <data name="CommandDescriptionRefresh" xml:space="preserve">
-    <value>Refresh credentials</value>
+    <value>Refresh credentials !!!</value>
   </data>
   <data name="CommandDescriptionRemove" xml:space="preserve">
-    <value>Remove configured Wi-Fi profile and/or root certificates</value>
+    <value>Remove configured Wi-Fi profile and/or root certificates !!!</value>
   </data>
   <data name="CommandDescriptionShow" xml:space="preserve">
-    <value>Show EAP Config information</value>
+    <value>Show EAP Config information !!!</value>
   </data>
   <data name="CommandDescriptionStatus" xml:space="preserve">
-    <value>Show status</value>
+    <value>Show status !!!</value>
   </data>
   <data name="CommandDescriptionUninstall" xml:space="preserve">
-    <value>Uninstall application</value>
+    <value>Uninstall application !!!</value>
   </data>
   <data name="ConfiguredButNotConnected" xml:space="preserve">
-    <value>Everything is configured!\nCould not connect because no EAP Config could be found</value>
+    <value>Everything is configured!\nCould not connect because no EAP Config could be found !!!</value>
   </data>
   <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>Everything is configured!\nUnable to connect to eduroam, you're probably out of coverage.</value>
+    <value>Everything is configured!\nUnable to connect to eduroam, you're probably out of coverage. !!!</value>
   </data>
   <data name="ConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Everything is configured!\nUnable to connect to eduroam.</value>
+    <value>Everything is configured!\nUnable to connect to eduroam. !!!</value>
   </data>
   <data name="ConfiguredEap" xml:space="preserve">
-    <value>EAP is configured</value>
+    <value>EAP is configured !!!</value>
   </data>
   <data name="Connected" xml:space="preserve">
-    <value>You are now connected to EduRoam.</value>
+    <value>You are now connected to EduRoam. !!!</value>
   </data>
   <data name="DaysLeft" xml:space="preserve">
-    <value>{0} more days</value>
+    <value>{0} more days !!!</value>
   </data>
   <data name="DefaultIdentityProvider" xml:space="preserve">
-    <value>geteduroam</value>
+    <value>geteduroam !!!</value>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Done</value>
+    <value>Done !!!</value>
   </data>
   <data name="ErrorApi" xml:space="preserve">
-    <value>API error</value>
+    <value>API error !!!</value>
   </data>
   <data name="ErrorEapConfigIsEmpty" xml:space="preserve">
-    <value>Could not connect, EAP Configuration is empty</value>
+    <value>Could not connect, EAP Configuration is empty !!!</value>
   </data>
   <data name="ErrorEapNotConfigured" xml:space="preserve">
-    <value>EAP could not be configured</value>
+    <value>EAP could not be configured !!!</value>
   </data>
   <data name="ErrorNoConnection" xml:space="preserve">
-    <value>Could not connect. \nException: {0}.</value>
+    <value>Could not connect. \nException: {0}. !!!</value>
   </data>
   <data name="ErrorNoInternet" xml:space="preserve">
-    <value>No internet connection</value>
+    <value>No internet connection !!!</value>
   </data>
   <data name="ErrorNotUninstalled" xml:space="preserve">
-    <value>geteduroam has not been uninstalled.</value>
+    <value>geteduroam has not been uninstalled. !!!</value>
   </data>
   <data name="ErrorShowCommandOptions" xml:space="preserve">
-    <value>Missing options. Provide the {0} option or both {1} and {2} options</value>
+    <value>Missing options. Provide the {0} option or both {1} and {2} options !!!</value>
   </data>
   <data name="ErrorUnsupportedProfile" xml:space="preserve">
-    <value>The profile you have selected is not supported by this application. No supported authentification method was found.</value>
+    <value>The profile you have selected is not supported by this application. No supported authentification method was found. !!!</value>
   </data>
   <data name="HelpUrl" xml:space="preserve">
-    <value>https://www.geteduroam.app/</value>
+    <value>https://www.geteduroam.app/ !!!</value>
   </data>
   <data name="HoursLeft" xml:space="preserve">
-    <value>{0} more hours</value>
+    <value>{0} more hours !!!</value>
   </data>
   <data name="IsSure" xml:space="preserve">
-    <value>y</value>
+    <value>j</value>
   </data>
   <data name="LabelAccountValidFor" xml:space="preserve">
-    <value>Your account is valid for</value>
+    <value>Your account is valid for !!!</value>
   </data>
   <data name="LabelEmail" xml:space="preserve">
-    <value>E-mail</value>
+    <value>E-mail !!!</value>
   </data>
   <data name="LabelHelp" xml:space="preserve">
-    <value>Help</value>
+    <value>Help !!!</value>
   </data>
   <data name="LabelPhone" xml:space="preserve">
-    <value>Phone</value>
+    <value>Phone !!!</value>
   </data>
   <data name="LabelProfile" xml:space="preserve">
-    <value>Profile</value>
+    <value>Profile !!!</value>
   </data>
   <data name="LabelSupported" xml:space="preserve">
-    <value>Supported</value>
+    <value>Supported !!!</value>
   </data>
   <data name="LabelTermsOfUse" xml:space="preserve">
-    <value>Terms of use</value>
+    <value>Terms of use !!!</value>
   </data>
   <data name="LabelVersion" xml:space="preserve">
-    <value>App version</value>
+    <value>App version !!!</value>
   </data>
   <data name="LabelWeb" xml:space="preserve">
-    <value>Web</value>
+    <value>Web !!!</value>
   </data>
   <data name="MinutesLeft" xml:space="preserve">
-    <value>{0} more minutes</value>
+    <value>{0} more minutes !!!</value>
   </data>
   <data name="No" xml:space="preserve">
-    <value>x</value>
+    <value>x !!!</value>
   </data>
   <data name="NoEAPConfig" xml:space="preserve">
-    <value>No EAP Config info to show</value>
+    <value>No EAP Config info to show !!!</value>
   </data>
   <data name="NotSure" xml:space="preserve">
     <value>n</value>
   </data>
   <data name="ProfileRemoveConfirmation" xml:space="preserve">
-    <value>This will remove all configuration for '{0}'.</value>
+    <value>This will remove all configuration for '{0}'. !!!</value>
   </data>
   <data name="UninstallCertificatesWarning" xml:space="preserve">
     <value>This means uninstalling all the trusted root certificates installed by this application.</value>

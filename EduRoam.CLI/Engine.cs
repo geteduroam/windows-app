@@ -1,4 +1,5 @@
 ﻿using EduRoam.CLI.Commands;
+using EduRoam.Connect;
 
 using System.CommandLine;
 using System.Reflection;
@@ -11,7 +12,7 @@ namespace EduRoam.CLI
 
         public Engine()
         {
-            this.rootCommand = new RootCommand("Edu Roam CLI");
+            this.rootCommand = new RootCommand(Resource.AppTitle);
             var commandsList = GetCommandList();
 
             foreach (var command in commandsList)

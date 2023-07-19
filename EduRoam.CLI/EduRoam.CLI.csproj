@@ -2,12 +2,21 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.22621.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PlatformTarget>AnyCPU</PlatformTarget>
 	  <AssemblyName>geteduroam-cli</AssemblyName>
+	  <ApplicationIcon>geteduroam.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="geteduroam.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="geteduroam.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
@@ -15,6 +24,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EduRoam.Connect\EduRoam.Connect.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="geteduroam.ico" />
   </ItemGroup>
 
 </Project>
