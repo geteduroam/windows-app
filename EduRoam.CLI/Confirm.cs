@@ -8,9 +8,9 @@ namespace EduRoam.CLI
         {
             Console.Write($"{Resource.AreYouSure} ({Resource.IsSure.ToLower()}/{Resource.NotSure.ToUpper()})");
 
-            var choice = Console.ReadKey();
+            var choice = Console.ReadLine() ?? Resource.NotSure.ToUpper();
 
-            return (choice.KeyChar.ToString().Equals(Resource.IsSure, StringComparison.CurrentCultureIgnoreCase));
+            return (choice.Trim().ToString().Equals(Resource.IsSure, StringComparison.CurrentCultureIgnoreCase));
         }
     }
 }

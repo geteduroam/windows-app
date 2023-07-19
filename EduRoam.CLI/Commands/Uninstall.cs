@@ -1,4 +1,5 @@
-﻿using EduRoam.Connect.Install;
+﻿using EduRoam.Connect;
+using EduRoam.Connect.Install;
 using EduRoam.Connect.Language;
 using EduRoam.Connect.Tasks;
 
@@ -18,29 +19,25 @@ namespace EduRoam.CLI.Commands
 
             command.SetHandler(() =>
             {
-                Console.WriteLine(Resource.UninstallWarning);
+                ConsoleExtension.WriteWarning(Resource.WarningUninstall);
 
                 if (CertificateStore.AnyRootCaInstalledByUs())
                 {
-                    Console.WriteLine(Resource.UninstallCertificatesWarning);
-                    Console.WriteLine();
-                    Console.WriteLine();
-                }
-                else
-                {
+                    ConsoleExtension.WriteWarning(Resource.WarningUninstallCertificates);
                     Console.WriteLine();
                 }
+                Console.WriteLine();
 
                 var confirmed = Confirm.GetConfirmation();
 
                 if (confirmed)
                 {
                     var task = new UninstallTask();
-                    task.Uninstall();
+                    task.Uninstall((success) => Console.WriteLine("Ready"));
                 }
                 else
                 {
-                    Console.WriteLine(Resource.ErrorNotUninstalled);
+                    ConsoleExtension.WriteError(Resource.ErrorNotUninstalled);
                 }
             });
 

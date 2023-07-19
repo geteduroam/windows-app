@@ -1,4 +1,5 @@
 ﻿using EduRoam.Connect.Install;
+using EduRoam.Connect.Language;
 
 using System.Diagnostics;
 
@@ -6,7 +7,7 @@ namespace EduRoam.Connect.Tasks
 {
     public class UninstallTask
     {
-        public void Uninstall()
+        public void Uninstall(Action<bool> shutdown)
         {
             SelfInstaller.DefaultInstance.ExitAndUninstallSelf(
                 success =>
@@ -19,7 +20,7 @@ namespace EduRoam.Connect.Tasks
                         var extinguishMe = new ProcessStartInfo
                         {
                             FileName = "mshta",
-                            Arguments = "vbscript:Execute(\"msgbox \"\"The application and its configuration have been uninstalled\"\", 0, \"\"Uninstall geteduroam\"\":close\")",
+                            Arguments = $"vbscript:Execute(\"msgbox \"\"{Resource.UninstallNotification}\"\", 0, \"\"{Resource.UninstallNotificationTitle}\"\":close\")",
                             WindowStyle = ProcessWindowStyle.Normal, // Shows a console in the taskbar, but it's hidden
                             CreateNoWindow = true,
                             WorkingDirectory = "C:\\"
@@ -28,18 +29,18 @@ namespace EduRoam.Connect.Tasks
                     }
                     else
                     {
-                        throw new NotSupportedException("Message when uninstall did not succeed");
-                        //MessageBox.Show(
-                        //"geteduroam is not yet uninstalled! The uninstallation was aborted.",
-                        //caption: "Uninstall geteduroam",
-                        //MessageBoxButton.OK,
-                        //MessageBoxImage.Error);
+                        var extinguishMe = new ProcessStartInfo
+                        {
+                            FileName = "mshta",
+                            Arguments = $"vbscript:Execute(\"msgbox \"\"{Resource.UninstallNotification}\"\", 0, \"\"{Resource.UninstallNotificationTitle}\"\":close\")",
+                            WindowStyle = ProcessWindowStyle.Normal, // Shows a console in the taskbar, but it's hidden
+                            CreateNoWindow = true,
+                            WorkingDirectory = "C:\\"
+                        };
+                        Process.Start(extinguishMe);
                     }
 
-                    throw new NotSupportedException("shutdown(success);");
-                    //shutdown(success);
-
-
+                    shutdown(success);
                 },
                 doDeleteSelf: true);
         }

@@ -16,7 +16,7 @@ namespace EduRoam.Connect.Install
     /// Because reinventing the wheel is fun.
     /// This is probably not achievable with the provided installer?
     /// </summary>
-	public class SelfInstaller
+	public partial class SelfInstaller
     {
         private readonly string applicationIdentifier;
         private ApplicationMeta applicationMetadata;
@@ -35,7 +35,7 @@ namespace EduRoam.Connect.Install
 
         private static AssemblyName AssemblyName => Assembly.GetExecutingAssembly().GetName();
 
-        public static SelfInstaller DefaultInstance => new SelfInstaller(
+        public static SelfInstaller DefaultInstance => new(
             applicationIdentifier: "geteduroam",
             applicationMetadata: new ApplicationMeta()
             {
@@ -60,137 +60,69 @@ namespace EduRoam.Connect.Install
             }
         );
 
-        public struct ApplicationMeta
-        {
-            // See https://docs.microsoft.com/en-us/windows/win32/msi/uninstall-registry-key
-            private string DisplayIcon;                       // [SET AUTOMATICALLY]
-            public string DisplayName { get; set; } // ProductName
-            private string DisplayVersion { get => Version; } // [SET AUTOMATICALLY] Derived from ProductVersion
-            public string Publisher { get; set; } // Manufacturer
-            public string Version { get; set; } // Derived from ProductVersion
-            public string VersionMajor { get; set; } // Derived from ProductVersion
-            public string VersionMinor { get; set; } // Derived from ProductVersion
-            public string HelpLink { get; set; } // ARPHELPLINK
-            public string HelpTelephone { get; set; } // ARPHELPTELEPHONE
-            private string InstallDate;                       // [SET AUTOMATICALLY] The last time this product received service.
-            private string InstallLocation;                   // [SET AUTOMATICALLY] ARPINSTALLLOCATION
-            public string InstallSource { get; set; } // SourceDir
-            public Uri URLInfoAbout { get; set; } // ARPURLINFOABOUT
-            public Uri URLUpdateInfo { get; set; } // ARPURLUPDATEINFO
-            public string AuthorizedCDFPrefix { get; set; } // ARPAUTHORIZEDCDFPREFIX
-            public string Comments { get; set; } // [NICE TO HAVE] ARPCOMMENTS. Comments provided to the Add or Remove Programs control panel.
-            public string Contact { get; set; } // [NICE TO HAVE] ARPCONTACT. Contact provided to the Add or Remove Programs control panel.
-            public uint? Language { get; set; } // ProductLanguage
-            private string ModifyPath;                        // [SET AUTOMATICALLY] "Determined and set by the Windows Installer."
-            public string Readme { get; set; } // [NICE TO HAVE] ARPREADME. Readme provided to the Add or Remove Programs control panel.
-            private string UninstallString;                   // [SET AUTOMATICALLY] "Determined and set by Windows Installer."
-            public string SettingsIdentifier { get; set; } // MSIARPSETTINGSIDENTIFIER. contains a semi-colon delimited list of the registry locations where the application stores a user's settings and preferences.
-            public bool? NoRepair { get; set; } // REG_DWORD
-            public bool? NoModify { get; set; } // REG_DWORD
-            private uint? EstimatedSize;                     // [SET AUTOMATICALLY] REG_DWORD
-
-
-            // for SelfInstaller to use:
-
-            public void SetRequired(
-                SelfInstaller installer)
-            {
-                _ = installer ?? throw new ArgumentNullException(paramName: nameof(installer));
-                this.DisplayIcon = installer.InstallExePath;
-                this.InstallLocation = installer.InstallDir;
-                this.InstallDate = DateTime.Today.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
-                this.UninstallString = installer.UninstallCommand;
-                this.EstimatedSize = (uint)new FileInfo(ThisExePath).Length / 1024;
-                this.ModifyPath = null;
-                // TODO: SettingsIdentifier = ?
-            }
-
-            public void Write(
-                Action<string, string> strWriter,
-                Action<string, uint?> intWriter)
-            {
-                _ = strWriter ?? throw new ArgumentNullException(paramName: nameof(strWriter));
-                _ = intWriter ?? throw new ArgumentNullException(paramName: nameof(intWriter));
-                strWriter(nameof(DisplayIcon), DisplayIcon);
-                strWriter(nameof(DisplayName), DisplayName);
-                strWriter(nameof(DisplayVersion), DisplayVersion);
-                strWriter(nameof(Publisher), Publisher);
-                strWriter(nameof(Version), Version);
-                strWriter(nameof(VersionMajor), VersionMajor);
-                strWriter(nameof(VersionMinor), VersionMinor);
-                strWriter(nameof(HelpLink), HelpLink);
-                strWriter(nameof(HelpTelephone), HelpTelephone);
-                strWriter(nameof(InstallDate), InstallDate);
-                strWriter(nameof(InstallLocation), InstallLocation);
-                strWriter(nameof(InstallSource), InstallSource);
-                strWriter(nameof(URLInfoAbout), URLInfoAbout?.ToString());
-                strWriter(nameof(URLUpdateInfo), URLUpdateInfo?.ToString());
-                strWriter(nameof(AuthorizedCDFPrefix), AuthorizedCDFPrefix);
-                strWriter(nameof(Comments), Comments);
-                strWriter(nameof(Contact), Contact);
-                intWriter(nameof(Language), Language);
-                strWriter(nameof(ModifyPath), ModifyPath);
-                strWriter(nameof(Readme), Readme);
-                strWriter(nameof(UninstallString), UninstallString);
-                strWriter(nameof(SettingsIdentifier), SettingsIdentifier);
-                intWriter(nameof(NoRepair), NoRepair.HasValue ? (uint?)Convert.ToInt32(NoRepair, CultureInfo.InvariantCulture) : null);
-                intWriter(nameof(NoModify), NoModify.HasValue ? (uint?)Convert.ToInt32(NoModify, CultureInfo.InvariantCulture) : null);
-                intWriter(nameof(EstimatedSize), EstimatedSize);
-            }
-
-            public void Nullcheck()
-            {
-                _ = DisplayIcon ?? throw new NullReferenceException(nameof(DisplayIcon) + " can not be null");
-                _ = DisplayName ?? throw new NullReferenceException(nameof(DisplayName) + " can not be null");
-                _ = Publisher ?? throw new NullReferenceException(nameof(Publisher) + " can not be null");
-                _ = Version ?? throw new NullReferenceException(nameof(Version) + " can not be null");
-                _ = VersionMajor ?? throw new NullReferenceException(nameof(VersionMajor) + " can not be null");
-                _ = VersionMinor ?? throw new NullReferenceException(nameof(VersionMinor) + " can not be null");
-                _ = UninstallString ?? throw new NullReferenceException(nameof(UninstallString) + " can not be null");
-                _ = EstimatedSize ?? throw new NullReferenceException(nameof(EstimatedSize) + " can not be null");
-            }
-        }
-
-
         // Shorthands
 
         public static string AppdataLocalDir
-        { get => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData); }
+        {
+            get => Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+        }
 
         public static string StartmenuProgramsDir
-        { get => Environment.GetFolderPath(Environment.SpecialFolder.Programs); }
+        {
+            get => Environment.GetFolderPath(Environment.SpecialFolder.Programs);
+        }
 
         public static string ThisExePath
-        { get => Process.GetCurrentProcess().MainModule.FileName; }
+        {
+            get => Process.GetCurrentProcess().MainModule!.FileName!;
+        }
 
         public string InstallDir
-        { get => AppdataLocalDir + Path.DirectorySeparatorChar + applicationIdentifier; }
+        {
+            get => AppdataLocalDir + Path.DirectorySeparatorChar + this.applicationIdentifier;
+        }
 
         public string InstallExePath
-        { get => InstallDir + Path.DirectorySeparatorChar + applicationIdentifier + ".exe"; }
+        {
+            get => this.InstallDir + Path.DirectorySeparatorChar + this.applicationIdentifier + ".exe";
+        }
 
         // TODO: add /Refresh as a property
 
         public string StartMinimizedCommand
-        { get => InstallExePath + " /Background"; }
+        {
+            get => this.InstallExePath + " /Background";
+        }
 
         public string UninstallCommand
-        { get => InstallExePath + " /Uninstall"; }
+        {
+            get => this.InstallExePath + " /Uninstall";
+        }
 
         public string CloseCommand
-        { get => InstallExePath + " /Close"; }
+        {
+            get => this.InstallExePath + " /Close";
+        }
 
         public string StartMenuLnkPath
-        { get => StartmenuProgramsDir + Path.DirectorySeparatorChar + applicationIdentifier + ".lnk"; }
+        {
+            get => StartmenuProgramsDir + Path.DirectorySeparatorChar + this.applicationIdentifier + ".lnk";
+        }
 
         public string ScheduledTaskName
-        { get => applicationIdentifier + " - Check for updated config"; }
+        {
+            get => this.applicationIdentifier + " - Check for updated config";
+        }
 
         // Registry Namespaces
         private static string rnsRun
-        { get => "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run"; }
+        {
+            get => "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Run";
+        }
         private string rnsUninstall
-        { get => "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" + applicationIdentifier; }
+        {
+            get => "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\" + this.applicationIdentifier;
+        }
 
 
         // Public interface
@@ -199,22 +131,30 @@ namespace EduRoam.Connect.Install
         /// If false, it is probably running from %HOME%/Downloads or something
         /// </summary>
         public bool IsInstalled
-        { get => System.IO.File.Exists(InstallExePath); }
+        {
+            get => System.IO.File.Exists(this.InstallExePath);
+        }
 
         /// <summary>
         /// If false, it is probably running from %HOME%/Downloads or something
         /// </summary>
         public bool IsRunningInInstallLocation
-        { get => InstallExePath == ThisExePath; }
+        {
+            get => this.InstallExePath == ThisExePath;
+        }
 
         public void EnsureIsInstalled()
         {
-            if (IsRunningInInstallLocation) return; // TODO: some flow to update itself
-            if (IsInstalled)
+            if (this.IsRunningInInstallLocation)
+            {
+                return; // TODO: some flow to update itself
+            }
+
+            if (this.IsInstalled)
             {
                 // TODO: assemblyversion instad of file date
                 var d1 = System.IO.File.GetLastWriteTime(ThisExePath);
-                var d2 = System.IO.File.GetLastWriteTime(InstallExePath);
+                var d2 = System.IO.File.GetLastWriteTime(this.InstallExePath);
                 if (DateTime.Compare(d1, d2) <= 0)
                 {
                     // TODO: console no work
@@ -227,7 +167,7 @@ namespace EduRoam.Connect.Install
 
             // TODO: user downloads new geteduroam -> runs the file -> single-instance running from install folder starts -> no update of binary
 
-            InstallToUserLocal();
+            this.InstallToUserLocal();
         }
 
         /// <summary>
@@ -237,14 +177,18 @@ namespace EduRoam.Connect.Install
         private void InstallToUserLocal()
         {
             // avoid uneccesary/illegal updates
-            if (IsRunningInInstallLocation) // sanity check, should never happen
+            if (this.IsRunningInInstallLocation) // sanity check, should never happen
+            {
                 throw new EduroamAppUserException("already installed", // TODO: use a more fitting exception?
                     "This application has already been installed. " +
                     "Installing it again won't have any effect.");
+            }
 
             // Create target install directory
-            if (!Directory.Exists(InstallDir))
-                Directory.CreateDirectory(InstallDir);
+            if (!Directory.Exists(this.InstallDir))
+            {
+                Directory.CreateDirectory(this.InstallDir);
+            }
 
             // write executable, not retaining Zone.Identifier NTFS stream
             /*
@@ -254,76 +198,91 @@ namespace EduRoam.Connect.Install
             // Reading and writing manually works better, because then the resulting .exe can be openend
             // at startup or by the scheduler without the user getting "Are you sure you want to run this software?"
             var binaryExe = System.IO.File.ReadAllBytes(ThisExePath);
-            System.IO.File.WriteAllBytes(InstallExePath, binaryExe);
+            System.IO.File.WriteAllBytes(this.InstallExePath, binaryExe);
 
             // Register the application in Windows
-            applicationMetadata.Write(
+            this.applicationMetadata.Write(
                 intWriter: (key, value) =>
                 {
-                    if (value == null) return; // ignore null values
-                    Debug.WriteLine("Write int to {0}\\{1}: {2}", rnsUninstall, key, value);
-                    Registry.SetValue(rnsUninstall, key, value, RegistryValueKind.DWord);
+                    if (value == null)
+                    {
+                        return; // ignore null values
+                    }
+
+                    Debug.WriteLine("Write int to {0}\\{1}: {2}", this.rnsUninstall, key, value);
+                    Registry.SetValue(this.rnsUninstall, key, value, RegistryValueKind.DWord);
                 },
                 strWriter: (key, value) =>
                 {
-                    if (value == null) return; // ignore null values
-                    Debug.WriteLine("Write str to {0}\\{1}: {2}", rnsUninstall, key, value);
-                    Registry.SetValue(rnsUninstall, key, value);
+                    if (value == null)
+                    {
+                        return; // ignore null values
+                    }
+
+                    Debug.WriteLine("Write str to {0}\\{1}: {2}", this.rnsUninstall, key, value);
+                    Registry.SetValue(this.rnsUninstall, key, value);
                 });
 
             // Add shortcut to start menu
-            Debug.WriteLine("Create shortcut: " + StartMenuLnkPath);
-            if (!System.IO.File.Exists(StartMenuLnkPath))
-                System.IO.File.Delete(StartMenuLnkPath);
+            Debug.WriteLine("Create shortcut: " + this.StartMenuLnkPath);
+            if (!System.IO.File.Exists(this.StartMenuLnkPath))
+            {
+                System.IO.File.Delete(this.StartMenuLnkPath);
+            }
+
             var wshell = new WshShell();
-            var lnk = wshell.CreateShortcut(StartMenuLnkPath) as IWshShortcut;
-            lnk.TargetPath = InstallExePath;
-            lnk.WorkingDirectory = InstallDir;
-            lnk.Save();
+            var lnk = wshell.CreateShortcut(this.StartMenuLnkPath) as IWshShortcut;
+
+            if (lnk != null)
+            {
+                lnk.TargetPath = this.InstallExePath;
+                lnk.WorkingDirectory = this.InstallDir;
+                lnk.Save();
+            }
 
             // Register scheduled task to check for updates
-            Debug.WriteLine("Create scheduled task: " + ScheduledTaskName);
-            using (var ts = new TaskService())
+            Debug.WriteLine("Create scheduled task: " + this.ScheduledTaskName);
+            using var ts = new TaskService();
+            var task = ts.NewTask();
+            task.Settings.AllowDemandStart = true;
+            task.Settings.StartWhenAvailable = true; // run as soon as possible after a scheduled start is missed
+            task.Settings.DisallowStartIfOnBatteries = false;
+
+            if (this.applicationMetadata.Publisher != null)
             {
-                var task = ts.NewTask();
-                task.Settings.AllowDemandStart = true;
-                task.Settings.StartWhenAvailable = true; // run as soon as possible after a scheduled start is missed
-                task.Settings.DisallowStartIfOnBatteries = false;
+                task.RegistrationInfo.Author = this.applicationMetadata.Publisher;
+            }
 
-                if (applicationMetadata.Publisher != null)
-                    task.RegistrationInfo.Author = applicationMetadata.Publisher;
+            task.Actions.Add(new ExecAction(this.InstallExePath, arguments: "/Refresh"));
 
-                task.Actions.Add(new ExecAction(InstallExePath, arguments: "/Refresh"));
+            /*
+   task.Triggers.Add(new DailyTrigger(daysInterval: 3) { // every 3 days
+       StartBoundary = DateTime.Today.AddHours(12) }); // around noon
+   */
 
-                /*
-       task.Triggers.Add(new DailyTrigger(daysInterval: 3) { // every 3 days
-           StartBoundary = DateTime.Today.AddHours(12) }); // around noon
-       */
+            // TODO: switch from the schedule below to the schedule above when certificate lifetime is extended for production
 
-                // TODO: switch from the schedule below to the schedule above when certificate lifetime is extended for production
+            // Every day, six times
+            task.Triggers.Add(new DailyTrigger(daysInterval: 1)
+            { StartBoundary = DateTime.Today.AddHours(0) });
+            task.Triggers.Add(new DailyTrigger(daysInterval: 1)
+            { StartBoundary = DateTime.Today.AddHours(4) });
+            task.Triggers.Add(new DailyTrigger(daysInterval: 1)
+            { StartBoundary = DateTime.Today.AddHours(8) });
+            task.Triggers.Add(new DailyTrigger(daysInterval: 1)
+            { StartBoundary = DateTime.Today.AddHours(12) });
+            task.Triggers.Add(new DailyTrigger(daysInterval: 1)
+            { StartBoundary = DateTime.Today.AddHours(16) });
+            task.Triggers.Add(new DailyTrigger(daysInterval: 1)
+            { StartBoundary = DateTime.Today.AddHours(20) });
 
-                // Every day, six times
-                task.Triggers.Add(new DailyTrigger(daysInterval: 1)
-                { StartBoundary = DateTime.Today.AddHours(0) });
-                task.Triggers.Add(new DailyTrigger(daysInterval: 1)
-                { StartBoundary = DateTime.Today.AddHours(4) });
-                task.Triggers.Add(new DailyTrigger(daysInterval: 1)
-                { StartBoundary = DateTime.Today.AddHours(8) });
-                task.Triggers.Add(new DailyTrigger(daysInterval: 1)
-                { StartBoundary = DateTime.Today.AddHours(12) });
-                task.Triggers.Add(new DailyTrigger(daysInterval: 1)
-                { StartBoundary = DateTime.Today.AddHours(16) });
-                task.Triggers.Add(new DailyTrigger(daysInterval: 1)
-                { StartBoundary = DateTime.Today.AddHours(20) });
-
-                try
-                {
-                    ts.RootFolder.RegisterTaskDefinition(ScheduledTaskName, task);
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    // TODO: we were not allowed to create the scheduled task
-                }
+            try
+            {
+                ts.RootFolder.RegisterTaskDefinition(this.ScheduledTaskName, task);
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // TODO: we were not allowed to create the scheduled task
             }
         }
 
@@ -353,7 +312,10 @@ namespace EduRoam.Connect.Install
 
             // Remove start menu link
             Debug.WriteLine("Delete file: " + this.StartMenuLnkPath);
-            if (System.IO.File.Exists(this.StartMenuLnkPath)) System.IO.File.Delete(this.StartMenuLnkPath);
+            if (System.IO.File.Exists(this.StartMenuLnkPath))
+            {
+                System.IO.File.Delete(this.StartMenuLnkPath);
+            }
 
             // remove update task
             Debug.WriteLine("Delete scheduled task: " + this.ScheduledTaskName);
@@ -367,13 +329,22 @@ namespace EduRoam.Connect.Install
             Debug.WriteLine("Delete registry value: " + rnsRun + "\\" + this.applicationIdentifier);
             using (var key = Registry.CurrentUser
                     .OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Run", writable: true))
+            {
                 if (key?.GetValue(this.applicationIdentifier) != null)
+                {
                     key.DeleteValue(this.applicationIdentifier);
+                }
+            }
+
             Debug.WriteLine("Delete registry subkey: " + this.rnsUninstall); ;
             using (var key = Registry.CurrentUser
                     .OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall", writable: true))
+            {
                 if (key?.OpenSubKey(this.applicationIdentifier) != null)
+                {
                     key.DeleteSubKeyTree(this.applicationIdentifier); // TODO: for some reason this doesn't seem to work
+                }
+            }
 
             // Delete myself:
             if (System.IO.File.Exists(this.InstallExePath) && doDeleteSelf)

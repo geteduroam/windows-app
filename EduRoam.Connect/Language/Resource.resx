@@ -270,11 +270,11 @@
   <data name="ProfileRemoveConfirmation" xml:space="preserve">
     <value>This will remove all configuration for '{0}'.</value>
   </data>
-  <data name="UninstallCertificatesWarning" xml:space="preserve">
-    <value>This means uninstalling all the trusted root certificates installed by this application.</value>
+  <data name="UninstallNotification" xml:space="preserve">
+    <value>The application and its configuration have been uninstalled.</value>
   </data>
-  <data name="UninstallWarning" xml:space="preserve">
-    <value>You are currently in the process of completly uninstalling geteduroam</value>
+  <data name="UninstallNotificationTitle" xml:space="preserve">
+    <value>Uninstall geteduroam</value>
   </data>
   <data name="VersionDebug" xml:space="preserve">
     <value>{0}+Debug</value>
@@ -293,6 +293,12 @@
   </data>
   <data name="WarningNoProfilesFound" xml:space="preserve">
     <value>No profiles found</value>
+  </data>
+  <data name="WarningUninstall" xml:space="preserve">
+    <value>You are currently in the process of completly uninstalling geteduroam</value>
+  </data>
+  <data name="WarningUninstallCertificates" xml:space="preserve">
+    <value>This means uninstalling all the trusted root certificates installed by this application.</value>
   </data>
   <data name="Yes" xml:space="preserve">
     <value>✓</value>

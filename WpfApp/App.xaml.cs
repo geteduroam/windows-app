@@ -1,4 +1,4 @@
-using EduroamConfigure;
+//using EduroamConfigure;
 
 using Newtonsoft.Json;
 

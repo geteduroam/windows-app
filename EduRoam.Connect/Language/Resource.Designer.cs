@@ -520,20 +520,20 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This means uninstalling all the trusted root certificates installed by this application..
+        ///   Looks up a localized string similar to The application and its configuration have been uninstalled..
         /// </summary>
-        public static string UninstallCertificatesWarning {
+        public static string UninstallNotification {
             get {
-                return ResourceManager.GetString("UninstallCertificatesWarning", resourceCulture);
+                return ResourceManager.GetString("UninstallNotification", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You are currently in the process of completly uninstalling geteduroam.
+        ///   Looks up a localized string similar to Uninstall geteduroam.
         /// </summary>
-        public static string UninstallWarning {
+        public static string UninstallNotificationTitle {
             get {
-                return ResourceManager.GetString("UninstallWarning", resourceCulture);
+                return ResourceManager.GetString("UninstallNotificationTitle", resourceCulture);
             }
         }
         
@@ -588,6 +588,24 @@ namespace EduRoam.Connect.Language {
         public static string WarningNoProfilesFound {
             get {
                 return ResourceManager.GetString("WarningNoProfilesFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are currently in the process of completly uninstalling geteduroam.
+        /// </summary>
+        public static string WarningUninstall {
+            get {
+                return ResourceManager.GetString("WarningUninstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This means uninstalling all the trusted root certificates installed by this application..
+        /// </summary>
+        public static string WarningUninstallCertificates {
+            get {
+                return ResourceManager.GetString("WarningUninstallCertificates", resourceCulture);
             }
         }
         

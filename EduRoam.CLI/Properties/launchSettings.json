@@ -2,7 +2,7 @@
   "profiles": {
     "EduRoam.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "list -q pa2"
+      "commandLineArgs": "uninstall"
     }
   }
 }
