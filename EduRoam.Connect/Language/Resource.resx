@@ -156,20 +156,14 @@
   <data name="CommandDescriptionUninstall" xml:space="preserve">
     <value>Uninstall application</value>
   </data>
-  <data name="ConfiguredButNotConnected" xml:space="preserve">
-    <value>Everything is configured!\nCould not connect because no EAP Config could be found</value>
-  </data>
-  <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>Everything is configured!\nUnable to connect to eduroam, you're probably out of coverage.</value>
-  </data>
-  <data name="ConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Everything is configured!\nUnable to connect to eduroam.</value>
-  </data>
   <data name="ConfiguredEap" xml:space="preserve">
     <value>EAP is configured</value>
   </data>
   <data name="Connected" xml:space="preserve">
     <value>You are now connected to EduRoam.</value>
+  </data>
+  <data name="ConnectionUsernameAndPasswordRequired" xml:space="preserve">
+    <value>Please provide a username and password to connect.</value>
   </data>
   <data name="DaysLeft" xml:space="preserve">
     <value>{0} more days</value>
@@ -183,6 +177,30 @@
   <data name="ErrorApi" xml:space="preserve">
     <value>API error</value>
   </data>
+  <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
+    <value>Everything is configured!\nCould not connect because EAP Config could no be found</value>
+  </data>
+  <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
+    <value>Everything is configured!\nUnable to connect to eduroam, you're probably out of coverage.</value>
+  </data>
+  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Everything is configured!\nUnable to connect to eduroam.</value>
+  </data>
+  <data name="ErrorCredentialsAtChar" xml:space="preserve">
+    <value>Username must contain @ exactly once</value>
+  </data>
+  <data name="ErrorCredentialsEndsWith" xml:space="preserve">
+    <value>Username cannot end with a period or whitespace</value>
+  </data>
+  <data name="ErrorCredentialsEndWithRealm" xml:space="preserve">
+    <value>Username must end with .{0} or @{0}</value>
+  </data>
+  <data name="ErrorCredentialsEndWithRealmNoSubdomain" xml:space="preserve">
+    <value>Username must end with @{0}</value>
+  </data>
+  <data name="ErrorCredentialsSpecialCharacters" xml:space="preserve">
+    <value>Characters such as . and @ can not be adjacent to each other</value>
+  </data>
   <data name="ErrorEapConfigIsEmpty" xml:space="preserve">
     <value>Could not connect, EAP Configuration is empty</value>
   </data>
@@ -191,6 +209,9 @@
   </data>
   <data name="ErrorInternetConnection" xml:space="preserve">
     <value>Error with internet connection</value>
+  </data>
+  <data name="ErrorInvalidCredentials" xml:space="preserve">
+    <value>Username and/or password are not valid</value>
   </data>
   <data name="ErrorNoConnection" xml:space="preserve">
     <value>Could not connect. \nException: {0}.</value>
@@ -284,6 +305,9 @@
   <data name="OptionRequired" xml:space="preserve">
     <value>Option {0} is required</value>
   </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
   <data name="ProfileRemoveConfirmation" xml:space="preserve">
     <value>This will remove all configuration for '{0}'.</value>
   </data>
@@ -295,6 +319,9 @@
   </data>
   <data name="UninstallNotificationTitle" xml:space="preserve">
     <value>Uninstall geteduroam</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Username</value>
   </data>
   <data name="VersionDebug" xml:space="preserve">
     <value>{0}+Debug</value>

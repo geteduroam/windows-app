@@ -32,18 +32,7 @@ namespace EduRoam.CLI.Commands
 
             command.SetHandler(async (FileInfo? eapConfigFile, string? institute, string? profileName, bool force) =>
             {
-                var connectTask = new GetEapConfigTask();
-
-                EapConfig? eapConfig;
-
-                if (eapConfigFile == null)
-                {
-                    eapConfig = await connectTask.GetEapConfigAsync(institute!, profileName!);
-                }
-                else
-                {
-                    eapConfig = await connectTask.GetEapConfigAsync(eapConfigFile);
-                }
+                var eapConfig = await GetEapConfig(eapConfigFile, institute, profileName);
 
                 if (eapConfig == null)
                 {
@@ -71,6 +60,18 @@ namespace EduRoam.CLI.Commands
             }, eapConfigFileOption, instituteOption, profileOption, forceOption);
 
             return command;
+        }
+
+        private static Task<EapConfig?> GetEapConfig(FileInfo? eapConfigFile, string? institute, string? profileName)
+        {
+            var connectTask = new GetEapConfigTask();
+
+            if (eapConfigFile == null)
+            {
+                return connectTask.GetEapConfigAsync(institute!, profileName!);
+            }
+
+            return connectTask.GetEapConfigAsync(eapConfigFile);
         }
 
         private static bool ConfigureCertificates(EapConfig eapConfig, bool force)

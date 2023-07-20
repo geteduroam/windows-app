@@ -1,10 +1,14 @@
 ﻿using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
+using EduRoam.Connect.Language;
+using EduRoam.Connect.Store;
 
 namespace EduRoam.Connect.Tasks
 {
     public class GetProfilesTask
     {
+        private readonly BaseConfigStore store = new RegistryStore();
+
         /// <summary>
         /// Get a list of available institute profiles
         /// </summary>
@@ -51,5 +55,9 @@ namespace EduRoam.Connect.Tasks
             return idpDownloader.GetProfileFromId(profileId);
         }
 
+        public string GetCurrentProfileName()
+        {
+            return this.store.IdentityProvider?.DisplayName ?? Resource.DefaultIdentityProvider;
+        }
     }
 }

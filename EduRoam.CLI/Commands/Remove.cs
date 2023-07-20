@@ -1,5 +1,4 @@
 ﻿using EduRoam.Connect.Language;
-using EduRoam.Connect.Store;
 using EduRoam.Connect.Tasks;
 
 using System.CommandLine;
@@ -12,17 +11,15 @@ namespace EduRoam.CLI.Commands
 
         public static readonly string CommandDescription = Resource.CommandDescriptionRemove;
 
-        private readonly BaseConfigStore store = new RegistryStore();
-
         public Command GetCommand()
         {
             var command = new Command(CommandName, CommandDescription);
 
             command.SetHandler(() =>
             {
-                var profileName = this.store.IdentityProvider?.DisplayName ?? Resource.DefaultIdentityProvider;
+                var profilesTask = new GetProfilesTask();
 
-                Console.Write(Resource.ProfileRemoveConfirmation, profileName);
+                Console.Write(Resource.ProfileRemoveConfirmation, profilesTask.GetCurrentProfileName());
                 var confirmed = Interaction.GetConfirmation();
 
                 if (confirmed)

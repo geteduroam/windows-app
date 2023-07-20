@@ -103,7 +103,6 @@ namespace EduRoam.Connect
                 .Select(cert => new CertificateInstaller(cert, CertificateStore.RootCaStoreName, CertificateStore.RootCaStoreLocation));
         }
 
-
         /// <summary>
         /// Deletes all network profile matching ssid, which is "eduroam" by default
         /// </summary>
@@ -125,7 +124,6 @@ namespace EduRoam.Connect
 
             if (ex != null) throw ex;
         }
-
 
         /// <summary>
         /// Attempts to connects to any eduroam wireless LAN, in succession

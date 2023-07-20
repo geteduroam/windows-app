@@ -9,10 +9,10 @@ namespace EduRoam.Connect.Store
 {
     public class RegistryStore : BaseConfigStore
     {
-        public RegistryStore()
+        public RegistryStore() : base()
         {
             this.Username = GetValue<string>("Username");
-            this.IdentityProvider = GetValue<IdentityProviderInfo>("IdentityProvider");
+            this.IdentityProvider = GetValue<IdentityProviderInfo?>("IdentityProvider");
             this.ConfiguredWLANProfiles = GetValue<ImmutableHashSet<WLANProfile>>("ConfiguredWLANProfiles") ?? ImmutableHashSet<WLANProfile>.Empty;
             this.InstalledCertificates = GetValue<ImmutableHashSet<Certificate>>("InstalledCertificates") ?? ImmutableHashSet<Certificate>.Empty;
             this.WifiEndpoint = GetValue<WifiEndpoint?>("LetsWifiEndpoints");
@@ -20,16 +20,12 @@ namespace EduRoam.Connect.Store
 
         }
 
-        public static RegistryStore Instance => new RegistryStore();
+        public static RegistryStore Instance => new();
 
         public override void AddConfiguredWLANProfile(WLANProfile profile)
         {
-            var currentProfiles = GetValue<ImmutableHashSet<WLANProfile>>("ConfiguredWLANProfiles");
+            var currentProfiles = GetValue<ImmutableHashSet<WLANProfile>>("ConfiguredWLANProfiles") ?? ImmutableHashSet<WLANProfile>.Empty;
 
-            if (currentProfiles == null)
-            {
-                currentProfiles = ImmutableHashSet<WLANProfile>.Empty;
-            }
             var newProfiles = currentProfiles.Add(profile);
 
             SetValue("ConfiguredWLANProfiles", newProfiles);
@@ -37,12 +33,8 @@ namespace EduRoam.Connect.Store
 
         public override void AddInstalledCertificate(Certificate certificate)
         {
-            var currentCertificates = GetValue<ImmutableHashSet<Certificate>>("InstalledCertificates");
+            var currentCertificates = GetValue<ImmutableHashSet<Certificate>>("InstalledCertificates") ?? ImmutableHashSet<Certificate>.Empty;
 
-            if (currentCertificates == null)
-            {
-                currentCertificates = ImmutableHashSet<Certificate>.Empty;
-            }
             var newCertificates = currentCertificates.Add(certificate);
 
             SetValue("InstalledCertificates", newCertificates);
@@ -112,19 +104,23 @@ namespace EduRoam.Connect.Store
             this.UpdateWifiRefreshToken(null);
         }
 
-        private const string ns = "HKEY_CURRENT_USER\\Software\\geteduroam"; // Namespace in Registry
+        private const string AppRegistryNamespace = "HKEY_CURRENT_USER\\Software\\geteduroam";
 
-        private static T? GetValue<T>(string key, string defaultJson = "null")
+        private static T? GetValue<T>(string key)
         {
             try
             {
-                var value = (string?)Registry.GetValue(ns, key, null) ?? defaultJson;
+                var value = (string?)Registry.GetValue(AppRegistryNamespace, key, null);
 
+                if (value == null || value == "null")
+                {
+                    return default;
+                }
                 return JsonConvert.DeserializeObject<T>(value);
             }
             catch (JsonReaderException)
             {
-                return JsonConvert.DeserializeObject<T>(defaultJson);
+                return default;
             }
         }
 
@@ -132,10 +128,10 @@ namespace EduRoam.Connect.Store
         {
             var serialized = JsonConvert.SerializeObject(value);
 
-            if (serialized != (string?)Registry.GetValue(ns, key, null)) // only write when we make a change
+            if (serialized != (string?)Registry.GetValue(AppRegistryNamespace, key, null)) // only write when we make a change
             {
-                Debug.WriteLine("Write to {0}\\{1}: {2}", ns, key, serialized);
-                Registry.SetValue(ns, key, serialized);
+                Debug.WriteLine("Write to {0}\\{1}: {2}", AppRegistryNamespace, key, serialized);
+                Registry.SetValue(AppRegistryNamespace, key, serialized);
             }
 
             return;

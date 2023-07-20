@@ -1,5 +1,7 @@
 using DuoVia.FuzzyStrings;
 
+using EduRoam.Connect.Language;
+
 using System.Text;
 
 namespace EduRoam.Connect.Identity
@@ -13,9 +15,9 @@ namespace EduRoam.Connect.Identity
         /// <param name="searchString">Query string</param>
         /// <param name="limit">Maximum number of results (999 by default) to return, reduce this for a speedup</param>
         /// <returns>List of providers ordered by match coefficient</returns>
-        public static IEnumerable<IdentityProvider> SortByQuery(IEnumerable<IdentityProvider> providers, string searchString, int limit = 999)
+        public static IEnumerable<IdentityProvider> SortByQuery(IEnumerable<IdentityProvider> providers, string? searchString, int limit = 999)
         {
-            if (string.IsNullOrEmpty(searchString))
+            if (string.IsNullOrWhiteSpace(searchString))
             {
                 return providers;
             }
@@ -98,33 +100,38 @@ namespace EduRoam.Connect.Identity
         /// <param name="requiredRealm">the realm required for the username, empty for any realm, null for no realm needed</param>
         /// <param name="noSubDomainInRealm">Wether to allow subdomains in the realm</param>
         /// <returns>nothing if no rules are broken, otherwise descriptions of rulse being broken</returns>
-        public static IEnumerable<string> GetRulesBrokenOnUsername(string username, string requiredRealm, bool noSubDomainInRealm)
+        public static IEnumerable<string> GetRulesBrokenOnUsername(string? username, string? requiredRealm, bool noSubDomainInRealm)
         {
             // TODO: perhaps move this function?
 
             // If no username given, or no realm is required, do no sanity check
-            if (string.IsNullOrWhiteSpace(username) || requiredRealm == null) yield break;
+            if (string.IsNullOrWhiteSpace(username) || requiredRealm == null)
+            {
+                yield break;
+            }
 
             // checks that special characters are not adjacent to each other
             if (username.Contains("..") || username.Contains(".@") || username.Contains("@."))
             {
-                yield return "Characters such as . and @ can not be adjacent to each other";
+                yield return Resource.ErrorCredentialsSpecialCharacters;
             }
             else
             {
                 // there a no two @@ adjacent, but there should be only one @ at all
                 var index = username.IndexOf('@');
                 if (index == -1 || index != username.LastIndexOf('@'))
-                    yield return "Username must contain @ exactly once";
+                {
+                    yield return Resource.ErrorCredentialsAtChar;
+                }
             }
 
             // if realm is specified
             if (string.IsNullOrEmpty(requiredRealm))
             {
                 // no specific realm set, only check that the username does not end with dot or whitespace
-                if (username[username.Length - 1] == '.' || username[username.Length - 1] == ' ')
+                if (username[^1] == '.' || username[^1] == ' ')
                 {
-                    yield return "Username cannot end with a period or whitespace";
+                    yield return Resource.ErrorCredentialsEndsWith;
                 }
             }
             else
@@ -135,9 +142,8 @@ namespace EduRoam.Connect.Identity
                     && (noSubDomainInRealm || !username.EndsWith("." + requiredRealm, StringComparison.Ordinal)))
                 {
                     yield return noSubDomainInRealm
-                        ? $"Username must end with @{requiredRealm}"
-                        : $"Username must end with .{requiredRealm} or @{requiredRealm}"
-                        ;
+                        ? string.Format(Resource.ErrorCredentialsEndWithRealmNoSubdomain, requiredRealm)
+                        : string.Format(Resource.ErrorCredentialsEndWithRealm, requiredRealm);
                 }
             }
         }

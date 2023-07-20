@@ -1,21 +1,75 @@
-﻿using EduRoam.Connect.Exceptions;
+﻿using EduRoam.Connect.Eap;
+using EduRoam.Connect.Exceptions;
+using EduRoam.Connect.Identity;
 using EduRoam.Connect.Language;
+
+using System.Security;
 
 namespace EduRoam.Connect.Tasks
 {
     public class ConnectTask
     {
+        public async Task<ConnectionType> GetConnectionTypeAsync()
+        {
+            var eapConfig = await GetEapConfig();
+
+            if (eapConfig != null)
+            {
+                if (eapConfig.NeedsLoginCredentials)
+                {
+                    return ConnectionType.Credentials;
+                }
+                else if (eapConfig.NeedsClientCertificate)
+                {
+                    return ConnectionType.CertAndCertPass;
+
+                }
+                // case where eapconfig needs only cert password
+                else if (eapConfig.NeedsClientCertificatePassphrase)
+                {
+                    return ConnectionType.CertPass;
+                }
+            }
+            return ConnectionType.Nothing;
+        }
+
+        public async Task<(bool, IList<string>)> ValidateCredentialsAsync(string? userName, SecureString password)
+        {
+            if (string.IsNullOrWhiteSpace(userName) || password.Length == 0)
+            {
+                return (false, Resource.ErrorInvalidCredentials.AsListItem());
+            }
+
+            var eapConfig = await GetEapConfig();
+            if (eapConfig == null)
+            {
+                // this should never happen, because this method should only be called after a connection type is determined based upon GetConnectionTypeAsync().
+                return (false, Resource.ErrorConfiguredButNotConnected.AsListItem());
+            }
+
+            var (realm, hint) = eapConfig.GetClientInnerIdentityRestrictions();
+
+            var brokenRules = IdentityProviderParser.GetRulesBrokenOnUsername(userName, realm, hint);
+
+            if (brokenRules.Any())
+            {
+                return (false, brokenRules.ToList());
+            }
+
+            return (true, Array.Empty<string>());
+        }
+
         /// <summary>
         /// Connect by a institutes profile
         /// </summary>
         /// <returns>True if a connection could be established, false otherwise</returns>
         /// <exception cref="EduroamAppUserException" />
-        public async Task<(bool connected, string message)> ConnectAsync()
+        public async Task<(bool connected, IList<string> messages)> ConnectAsync()
         {
             if (!EduRoamNetwork.IsWlanServiceApiAvailable())
             {
                 // TODO: update this when wired x802 is a thing
-                return (false, Resource.ErrorWirelessUnavailable);
+                return (false, Resource.ErrorWirelessUnavailable.AsListItem());
             }
 
             var connected = await Task.Run(ConnectToEduroam.TryToConnect);
@@ -27,27 +81,38 @@ namespace EduRoam.Connect.Tasks
             }
             else
             {
-                var eapConfigTask = new GetEapConfigTask();
-
-                var eapConfig = await eapConfigTask.GetEapConfigAsync();
+                var eapConfig = await GetEapConfig();
 
                 if (eapConfig == null)
                 {
-                    message = Resource.ConfiguredButNotConnected;
+                    message = Resource.ErrorConfiguredButNotConnected;
 
                 }
                 else if (EduRoamNetwork.IsNetworkInRange(eapConfig))
                 {
-                    message = Resource.ConfiguredButUnableToConnect;
+                    message = Resource.ErrorConfiguredButUnableToConnect;
                 }
                 else
                 {
                     // Hs2 is not enumerable
-                    message = Resource.ConfiguredButProbablyOutOfCoverage;
+                    message = Resource.ErrorConfiguredButProbablyOutOfCoverage;
                 }
             }
 
-            return (connected, message);
+            return (connected, message.AsListItem());
+        }
+
+        public Task<(bool connected, string message)> ConnectAsync(string? userName, SecureString password)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        private static async Task<EapConfig?> GetEapConfig()
+        {
+            var eapConfigTask = new GetEapConfigTask();
+
+            return await eapConfigTask.GetEapConfigAsync();
         }
     }
 }

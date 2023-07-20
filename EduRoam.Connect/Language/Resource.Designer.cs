@@ -178,33 +178,6 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Everything is configured!\nCould not connect because no EAP Config could be found.
-        /// </summary>
-        public static string ConfiguredButNotConnected {
-            get {
-                return ResourceManager.GetString("ConfiguredButNotConnected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Everything is configured!\nUnable to connect to eduroam, you&apos;re probably out of coverage..
-        /// </summary>
-        public static string ConfiguredButProbablyOutOfCoverage {
-            get {
-                return ResourceManager.GetString("ConfiguredButProbablyOutOfCoverage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Everything is configured!\nUnable to connect to eduroam..
-        /// </summary>
-        public static string ConfiguredButUnableToConnect {
-            get {
-                return ResourceManager.GetString("ConfiguredButUnableToConnect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to EAP is configured.
         /// </summary>
         public static string ConfiguredEap {
@@ -219,6 +192,15 @@ namespace EduRoam.Connect.Language {
         public static string Connected {
             get {
                 return ResourceManager.GetString("Connected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please provide a username and password to connect..
+        /// </summary>
+        public static string ConnectionUsernameAndPasswordRequired {
+            get {
+                return ResourceManager.GetString("ConnectionUsernameAndPasswordRequired", resourceCulture);
             }
         }
         
@@ -259,6 +241,78 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Everything is configured!\nCould not connect because EAP Config could no be found.
+        /// </summary>
+        public static string ErrorConfiguredButNotConnected {
+            get {
+                return ResourceManager.GetString("ErrorConfiguredButNotConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Everything is configured!\nUnable to connect to eduroam, you&apos;re probably out of coverage..
+        /// </summary>
+        public static string ErrorConfiguredButProbablyOutOfCoverage {
+            get {
+                return ResourceManager.GetString("ErrorConfiguredButProbablyOutOfCoverage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Everything is configured!\nUnable to connect to eduroam..
+        /// </summary>
+        public static string ErrorConfiguredButUnableToConnect {
+            get {
+                return ResourceManager.GetString("ErrorConfiguredButUnableToConnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username must contain @ exactly once.
+        /// </summary>
+        public static string ErrorCredentialsAtChar {
+            get {
+                return ResourceManager.GetString("ErrorCredentialsAtChar", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username cannot end with a period or whitespace.
+        /// </summary>
+        public static string ErrorCredentialsEndsWith {
+            get {
+                return ResourceManager.GetString("ErrorCredentialsEndsWith", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username must end with .{0} or @{0}.
+        /// </summary>
+        public static string ErrorCredentialsEndWithRealm {
+            get {
+                return ResourceManager.GetString("ErrorCredentialsEndWithRealm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username must end with @{0}.
+        /// </summary>
+        public static string ErrorCredentialsEndWithRealmNoSubdomain {
+            get {
+                return ResourceManager.GetString("ErrorCredentialsEndWithRealmNoSubdomain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Characters such as . and @ can not be adjacent to each other.
+        /// </summary>
+        public static string ErrorCredentialsSpecialCharacters {
+            get {
+                return ResourceManager.GetString("ErrorCredentialsSpecialCharacters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not connect, EAP Configuration is empty.
         /// </summary>
         public static string ErrorEapConfigIsEmpty {
@@ -282,6 +336,15 @@ namespace EduRoam.Connect.Language {
         public static string ErrorInternetConnection {
             get {
                 return ResourceManager.GetString("ErrorInternetConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username and/or password are not valid.
+        /// </summary>
+        public static string ErrorInvalidCredentials {
+            get {
+                return ResourceManager.GetString("ErrorInvalidCredentials", resourceCulture);
             }
         }
         
@@ -556,6 +619,15 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        public static string Password {
+            get {
+                return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This will remove all configuration for &apos;{0}&apos;..
         /// </summary>
         public static string ProfileRemoveConfirmation {
@@ -588,6 +660,15 @@ namespace EduRoam.Connect.Language {
         public static string UninstallNotificationTitle {
             get {
                 return ResourceManager.GetString("UninstallNotificationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username.
+        /// </summary>
+        public static string Username {
+            get {
+                return ResourceManager.GetString("Username", resourceCulture);
             }
         }
         
