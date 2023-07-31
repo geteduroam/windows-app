@@ -85,14 +85,11 @@ namespace EduRoam.Connect
                 FileName = this.authUri.ToString(),
                 LoadUserProfile = true,
                 UseShellExecute = true,
-
             };
 
             using var process = Process.Start(startInfo);
 
             var processThread = new ManualResetEvent(false);
-            process!.Exited += (object? sender, EventArgs e) => { this.Process_Exited(processThread); };
-            process!.EnableRaisingEvents = true;
 
             var context = listener.GetContext();
             var request = context.Request;
@@ -120,13 +117,6 @@ namespace EduRoam.Connect
             listener.Close();
         }
 
-        private void Process_Exited(ManualResetEvent processThread)
-        {
-            var result = processThread.Set();
-            var waitResult = processThread.WaitOne();
-            ConsoleExtension.WriteError($"Browser closed before OAuth process was succesfully finished. ({result}, {waitResult})");
-        }
-
         /// <summary>
         /// Callback function for incoming HTTP requests.
         /// </summary>
@@ -139,7 +129,7 @@ namespace EduRoam.Connect
             // sets the callback listener equals to the http listener
             var callbackListener = (HttpListener?)result.AsyncState;
 
-            if (callbackListener == null || callbackListener.IsListening)
+            if (callbackListener == null || !callbackListener.IsListening)
             {
                 return;
             }

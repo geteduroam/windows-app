@@ -1,15 +1,13 @@
-﻿using System.Security;
-
-namespace EduRoam.Connect.Tasks.Connectors
+﻿namespace EduRoam.Connect.Tasks.Connectors
 {
     public class ConnectorCredentials
     {
-        public ConnectorCredentials(SecureString password)
+        public ConnectorCredentials(string password)
         {
             this.Password = password;
         }
 
-        public ConnectorCredentials(string? userName, SecureString password) : this(password)
+        public ConnectorCredentials(string? userName, string password) : this(password)
         {
             this.UserName = userName;
 
@@ -17,6 +15,6 @@ namespace EduRoam.Connect.Tasks.Connectors
 
         public string? UserName { get; }
 
-        public SecureString Password { get; }
+        public string Password { get; }
     }
 }

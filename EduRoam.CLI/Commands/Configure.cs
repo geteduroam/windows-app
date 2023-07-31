@@ -6,7 +6,6 @@ using EduRoam.Connect.Tasks;
 using EduRoam.Connect.Tasks.Connectors;
 
 using System.CommandLine;
-using System.Security;
 
 namespace EduRoam.CLI.Commands
 {
@@ -103,7 +102,7 @@ namespace EduRoam.CLI.Commands
         {
             var configurationTask = new ConfigureTask(eapConfig);
 
-            var connector = configurationTask.GetConnector(eapConfig);
+            var connector = configurationTask.GetConnector();
             if (connector == null)
             {
                 ConsoleExtension.WriteError(Resource.ErrorEapConfigIsEmpty);
@@ -191,7 +190,7 @@ namespace EduRoam.CLI.Commands
             }
 
             Console.Write($"{Resource.Passphrase}: ");
-            using var passphrase = ReadPassword();
+            var passphrase = ReadPassword();
 
             connector.Credentials = new ConnectorCredentials(passphrase);
             connector.CertificatePath = certificateFile;
@@ -208,7 +207,7 @@ namespace EduRoam.CLI.Commands
         private async Task<(bool connected, IList<string> messages)> ConfigureWithCertPassAsync(CertPassConnector connector, bool force)
         {
             Console.Write($"{Resource.Passphrase}: ");
-            using var passphrase = ReadPassword();
+            var passphrase = ReadPassword();
 
             connector.Credentials = new ConnectorCredentials(passphrase);
 
@@ -228,7 +227,7 @@ namespace EduRoam.CLI.Commands
             var userName = Console.ReadLine();
 
             Console.Write($"{Resource.Password}: ");
-            using var password = ReadPassword();
+            var password = ReadPassword();
 
             connector.Credentials = new ConnectorCredentials(userName, password);
 
@@ -246,9 +245,9 @@ namespace EduRoam.CLI.Commands
         /// </summary>
         /// <returns></returns>
         /// <remarks>Based on https://stackoverflow.com/a/3404522</remarks>
-        private static SecureString ReadPassword()
+        private static string ReadPassword()
         {
-            var pass = new SecureString();
+            var pass = string.Empty;
             ConsoleKeyInfo keyInfo;
             do
             {
@@ -257,14 +256,15 @@ namespace EduRoam.CLI.Commands
                 if (keyInfo.Key == ConsoleKey.Backspace && pass.Length > 0)
                 {
                     Console.Write("\b \b");
-                    pass.RemoveAt(pass.Length - 1);
+                    pass = pass.Remove(pass.Length - 1);
                 }
                 else if (!char.IsControl(keyInfo.KeyChar))
                 {
                     Console.Write("*");
-                    pass.AppendChar(keyInfo.KeyChar);
+                    pass += keyInfo.KeyChar;
                 }
             } while (keyInfo.Key != ConsoleKey.Enter);
+            Console.WriteLine();
 
             return pass;
         }

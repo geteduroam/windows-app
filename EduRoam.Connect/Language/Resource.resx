@@ -368,6 +368,12 @@
   <data name="VersionReleaseNoVersion" xml:space="preserve">
     <value>Versionless</value>
   </data>
+  <data name="WarningInstallCertificates" xml:space="preserve">
+    <value>You must first install certificates with InstallCertificates</value>
+  </data>
+  <data name="WarningMissingCertificates" xml:space="preserve">
+    <value>Missing certificates</value>
+  </data>
   <data name="WarningNoInstitutesFound" xml:space="preserve">
     <value>No institutes found</value>
   </data>

@@ -808,6 +808,24 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You must first install certificates with InstallCertificates.
+        /// </summary>
+        public static string WarningInstallCertificates {
+            get {
+                return ResourceManager.GetString("WarningInstallCertificates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing certificates.
+        /// </summary>
+        public static string WarningMissingCertificates {
+            get {
+                return ResourceManager.GetString("WarningMissingCertificates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No institutes found.
         /// </summary>
         public static string WarningNoInstitutesFound {

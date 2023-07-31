@@ -1,4 +1,5 @@
 ﻿using EduRoam.Connect.Eap;
+using EduRoam.Connect.Language;
 
 namespace EduRoam.Connect.Store
 {
@@ -15,8 +16,8 @@ namespace EduRoam.Connect.Store
         public DateTime? NotAfter { get; }
         public (EapType outer, InnerAuthType inner)? EapTypeSsid { get; }
         public (EapType outer, InnerAuthType inner)? EapTypeHs2 { get; }
-        public string EapConfigXml { get; } // optional, used for reinstall of userprofile
-                                            // TODO: registry might have a max-size limit. ^ include institution image
+        public string? EapConfigXml { get; } // optional, used for reinstall of userprofile
+                                             // TODO: registry might have a max-size limit. ^ include institution image
 
         public IdentityProviderInfo(
             string displayName,
@@ -30,53 +31,58 @@ namespace EduRoam.Connect.Store
             DateTime? notAfter,
             (EapType outer, InnerAuthType inner)? eapTypeSsid,
             (EapType outer, InnerAuthType inner)? eapTypeHs2,
-            string eapConfigXml)
+            string? eapConfigXml)
         {
-            DisplayName = displayName;
-            EmailAddress = emailAddress;
-            WebAddress = webAddress;
-            Phone = phone;
-            InstId = instId;
-            ProfileId = profileId;
-            IsOauth = isOauth;
-            NotBefore = notBefore;
-            NotAfter = notAfter;
-            EapTypeSsid = eapTypeSsid;
-            EapTypeHs2 = eapTypeHs2;
-            EapConfigXml = eapConfigXml;
+            this.DisplayName = displayName;
+            this.EmailAddress = emailAddress;
+            this.WebAddress = webAddress;
+            this.Phone = phone;
+            this.InstId = instId;
+            this.ProfileId = profileId;
+            this.IsOauth = isOauth;
+            this.NotBefore = notBefore;
+            this.NotAfter = notAfter;
+            this.EapTypeSsid = eapTypeSsid;
+            this.EapTypeHs2 = eapTypeHs2;
+            this.EapConfigXml = eapConfigXml;
         }
 
-        public static IdentityProviderInfo From(EapConfig.AuthenticationMethod authMethod)
-            => authMethod == null
-                ? throw new ArgumentNullException(paramName: nameof(authMethod))
+        public static IdentityProviderInfo From(EapConfig.AuthenticationMethod? authMethod)
+        {
+            if (authMethod == null)
+            {
+                throw new ArgumentNullException(paramName: nameof(authMethod));
+            }
+
+            var eapConfig = authMethod.EapConfig;
+
+            return eapConfig == null
+                ? throw new ArgumentException(Resource.ErrorEapConfigIsEmpty)
                 : new IdentityProviderInfo(
-                    authMethod.EapConfig.InstitutionInfo.DisplayName,
-                    authMethod.EapConfig.InstitutionInfo.EmailAddress,
-                    authMethod.EapConfig.InstitutionInfo.WebAddress,
-                    authMethod.EapConfig.InstitutionInfo.Phone,
-                    authMethod.EapConfig.InstitutionInfo.InstId,
-                    authMethod.EapConfig.ProfileId,
-                    authMethod.EapConfig.IsOauth,
-                    authMethod.ClientCertificateNotBefore,
-                    authMethod.ClientCertificateNotAfter,
-                    eapTypeSsid: authMethod.IsSSIDSupported
-                        ? (authMethod.EapType, authMethod.InnerAuthType)
-                        : ((EapType, InnerAuthType)?)null,
-                    eapTypeHs2: authMethod.IsHS20Supported
-                        ? (authMethod.EapType, authMethod.InnerAuthType)
-                        : ((EapType, InnerAuthType)?)null,
-                    eapConfigXml:
-                        authMethod.EapType != EapType.TLS
-                        && string.IsNullOrEmpty(authMethod.ClientCertificate) // should never happen with CAT nor letswifi
-                        && string.IsNullOrEmpty(authMethod.ClientPassword)
-                        && !authMethod.EapConfig.IsOauth
-                            ? authMethod.EapConfig.RawOriginalEapConfigXmlData
-                            : null);
+                   eapConfig.InstitutionInfo.DisplayName,
+                   eapConfig.InstitutionInfo.EmailAddress,
+                   eapConfig.InstitutionInfo.WebAddress,
+                   eapConfig.InstitutionInfo.Phone,
+                   eapConfig.InstitutionInfo.InstId,
+                   eapConfig.ProfileId,
+                   eapConfig.IsOauth,
+                   authMethod.ClientCertificateNotBefore,
+                   authMethod.ClientCertificateNotAfter,
+                   eapTypeSsid: authMethod.IsSSIDSupported ? (authMethod.EapType, authMethod.InnerAuthType) : ((EapType, InnerAuthType)?)null,
+                   eapTypeHs2: authMethod.IsHS20Supported ? (authMethod.EapType, authMethod.InnerAuthType) : ((EapType, InnerAuthType)?)null,
+                   eapConfigXml:
+                       authMethod.EapType != EapType.TLS
+                       && string.IsNullOrEmpty(authMethod.ClientCertificate) // should never happen with CAT nor letswifi
+                       && string.IsNullOrEmpty(authMethod.ClientPassword)
+                       && !eapConfig.IsOauth
+                           ? eapConfig.RawOriginalEapConfigXmlData
+                           : null);
+        }
 
         public IdentityProviderInfo WithEapConfigXml(string eapConfigXml)
-            => new IdentityProviderInfo(DisplayName, EmailAddress, WebAddress,
-                Phone, InstId, ProfileId, IsOauth, NotBefore, NotAfter,
-                EapTypeSsid, EapTypeHs2, eapConfigXml);
+            => new(this.DisplayName, this.EmailAddress, this.WebAddress,
+                this.Phone, this.InstId, this.ProfileId, this.IsOauth, this.NotBefore, this.NotAfter,
+                this.EapTypeSsid, this.EapTypeHs2, eapConfigXml);
     }
 
 }

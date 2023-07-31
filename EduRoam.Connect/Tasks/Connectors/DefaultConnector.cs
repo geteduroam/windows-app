@@ -46,5 +46,22 @@ namespace EduRoam.Connect.Tasks.Connectors
 
             return (connected, message.AsListItem());
         }
+
+        public override async Task<(bool, IList<string>)> ConfigureAsync(bool forceConfiguration = false)
+        {
+            var (configured, messages) = await base.ConfigureAsync(forceConfiguration);
+
+            if (configured)
+            {
+                var exception = this.InstallEapConfig(this.eapConfig);
+                if (exception != null)
+                {
+                    configured = false;
+                    messages = exception.Message.AsListItem();
+                }
+            }
+
+            return (configured, messages);
+        }
     }
 }

@@ -5,7 +5,6 @@ using EduRoam.Connect.Tasks;
 using EduRoam.Connect.Tasks.Connectors;
 
 using System.CommandLine;
-using System.Security;
 
 namespace EduRoam.CLI.Commands
 {
@@ -112,7 +111,7 @@ namespace EduRoam.CLI.Commands
             var userName = Console.ReadLine();
 
             Console.Write($"{Resource.Password}: ");
-            using var password = ReadPassword();
+            var password = ReadPassword();
 
             connector.Credentials = new ConnectorCredentials(userName, password);
 
@@ -136,9 +135,9 @@ namespace EduRoam.CLI.Commands
         /// </summary>
         /// <returns></returns>
         /// <remarks>Based on https://stackoverflow.com/a/3404522</remarks>
-        private static SecureString ReadPassword()
+        private static string ReadPassword()
         {
-            var pass = new SecureString();
+            var pass = string.Empty;
             ConsoleKeyInfo keyInfo;
             do
             {
@@ -147,14 +146,15 @@ namespace EduRoam.CLI.Commands
                 if (keyInfo.Key == ConsoleKey.Backspace && pass.Length > 0)
                 {
                     Console.Write("\b \b");
-                    pass.RemoveAt(pass.Length - 1);
+                    pass += pass.Length - 1;
                 }
                 else if (!char.IsControl(keyInfo.KeyChar))
                 {
                     Console.Write("*");
-                    pass.AppendChar(keyInfo.KeyChar);
+                    pass += keyInfo.KeyChar;
                 }
             } while (keyInfo.Key != ConsoleKey.Enter);
+            Console.WriteLine();
 
             return pass;
         }

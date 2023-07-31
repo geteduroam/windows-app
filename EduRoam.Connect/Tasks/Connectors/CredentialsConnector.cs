@@ -3,7 +3,6 @@ using EduRoam.Connect.Identity;
 using EduRoam.Connect.Language;
 
 using System.Diagnostics;
-using System.Security;
 
 namespace EduRoam.Connect.Tasks.Connectors
 {
@@ -37,7 +36,7 @@ namespace EduRoam.Connect.Tasks.Connectors
             return (true, Array.Empty<string>());
         }
 
-        public async Task<(bool connected, string message)> ConnectAsync(string userName, SecureString password)
+        public async Task<(bool connected, string message)> ConnectAsync(string userName, string password)
         {
             var connected = false;
             var message = string.Empty;
@@ -90,7 +89,7 @@ namespace EduRoam.Connect.Tasks.Connectors
 
             if (configured)
             {
-                var eapConfigWithCredentials = this.eapConfig.WithLoginCredentials(this.Credentials!.UserName!, this.Credentials!.Password.ToString()!);
+                var eapConfigWithCredentials = this.eapConfig.WithLoginCredentials(this.Credentials!.UserName!, this.Credentials!.Password);
 
                 var exception = this.InstallEapConfig(eapConfigWithCredentials);
                 if (exception != null)

@@ -56,30 +56,9 @@ namespace EduRoam.Connect.Tasks
             return true;
         }
 
-        public Connector? GetConnector(EapConfig eapConfig)
+        public Connector? GetConnector()
         {
-            return Connector.GetInstance(eapConfig);
-        }
-
-        /// <summary>
-        /// Connect by a institutes profile
-        /// </summary>
-        /// <param name="eapConfig"></param>
-        /// <param name="forceConfiguration">
-        ///     Force automatic configuration (for example install certificates) 
-        ///     if the profile is not already configured (fully).
-        /// </param>
-        public async Task<bool> ConfigureAsyncOld(bool forceConfiguration = false)
-        {
-            var connector = Connector.GetInstance(this.eapConfig);
-            if (connector != null)
-            {
-                var (succeeded, _) = await connector.ConfigureAsync(forceConfiguration);
-
-                return succeeded;
-            }
-
-            return false;
+            return Connector.GetInstance(this.eapConfig);
         }
 
         private IEnumerable<CertificateInstaller> GetNotInstalledCertificates()

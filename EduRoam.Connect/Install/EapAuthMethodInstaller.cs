@@ -77,8 +77,8 @@ namespace EduRoam.Connect
         {
             if (!this.hasInstalledCertificates)
             {
-                throw new EduroamAppUserException("missing certificates",
-                    "You must first install certificates with InstallCertificates");
+                throw new EduroamAppUserException(Resource.WarningMissingCertificates,
+                    Resource.WarningInstallCertificates);
             }
 
             // Install wlan profile

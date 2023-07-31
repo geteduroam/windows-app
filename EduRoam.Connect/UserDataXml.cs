@@ -1,7 +1,6 @@
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 
-using System;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -20,7 +19,7 @@ namespace EduRoam.Connect
     /// C:\Windows\schemas\EAPMethods
     /// C:\Windows\schemas\EAPHost
     /// </remarks>
-    class UserDataXml
+    public class UserDataXml
     {
         // Namespaces:
 
@@ -51,7 +50,7 @@ namespace EduRoam.Connect
             _ = authMethod ?? throw new ArgumentNullException(nameof(authMethod));
             using var userCert = authMethod.ClientCertificateAsX509Certificate2();
 
-            XElement newUserData =
+            var newUserData =
                 new XElement(nsEHUC + "EapHostUserCredentials",
                     new XAttribute(XNamespace.Xmlns + "eapCommon", nsEC),
                     new XAttribute(XNamespace.Xmlns + "baseEap", nsBEMUC),
