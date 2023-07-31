@@ -2,9 +2,10 @@
 {
     public enum ConnectionType
     {
+        Nothing,
+        Default,
         Credentials,
         CertPass,
         CertAndCertPass,
-        Nothing,
     }
 }

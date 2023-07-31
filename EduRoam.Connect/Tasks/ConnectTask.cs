@@ -2,6 +2,7 @@
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
 using EduRoam.Connect.Language;
+using EduRoam.Connect.Tasks.Connectors;
 
 using System.Security;
 
@@ -9,28 +10,11 @@ namespace EduRoam.Connect.Tasks
 {
     public class ConnectTask
     {
-        public async Task<ConnectionType> GetConnectionTypeAsync()
+        public async Task<Connector?> GetConnectorAsync()
         {
             var eapConfig = await GetEapConfig();
 
-            if (eapConfig != null)
-            {
-                if (eapConfig.NeedsLoginCredentials)
-                {
-                    return ConnectionType.Credentials;
-                }
-                else if (eapConfig.NeedsClientCertificate)
-                {
-                    return ConnectionType.CertAndCertPass;
-
-                }
-                // case where eapconfig needs only cert password
-                else if (eapConfig.NeedsClientCertificatePassphrase)
-                {
-                    return ConnectionType.CertPass;
-                }
-            }
-            return ConnectionType.Nothing;
+            return Connector.GetInstance(eapConfig);
         }
 
         public async Task<(bool, IList<string>)> ValidateCredentialsAsync(string? userName, SecureString password)
@@ -82,7 +66,6 @@ namespace EduRoam.Connect.Tasks
             else
             {
                 var eapConfig = await GetEapConfig();
-
                 if (eapConfig == null)
                 {
                     message = Resource.ErrorConfiguredButNotConnected;

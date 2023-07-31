@@ -1,6 +1,7 @@
 ﻿using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Install;
+using EduRoam.Connect.Language;
 
 using System.Diagnostics;
 
@@ -39,7 +40,7 @@ namespace EduRoam.Connect
         {
             if (this.AuthMethod.NeedsClientCertificate)
             {
-                throw new EduroamAppUserException("no client certificate was provided");
+                throw new EduroamAppUserException(Resource.ErrorNoClientCertificateProvided);
             }
 
             // get all CAs from Authentication method

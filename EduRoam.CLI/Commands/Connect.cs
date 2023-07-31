@@ -2,6 +2,7 @@
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Language;
 using EduRoam.Connect.Tasks;
+using EduRoam.Connect.Tasks.Connectors;
 
 using System.CommandLine;
 using System.Security;
@@ -22,27 +23,34 @@ namespace EduRoam.CLI.Commands
             {
                 var connectTask = new ConnectTask();
 
+                var connector = await connectTask.GetConnectorAsync();
+                if (connector == null)
+                {
+                    ConsoleExtension.WriteError(Resource.ErrorEapConfigIsEmpty);
+                    return;
+                }
+
                 try
                 {
                     var connected = false;
                     IList<string> messages = new List<string>();
 
-                    var connectionType = await connectTask.GetConnectionTypeAsync();
-
-                    switch (connectionType)
+                    switch (connector)
                     {
-                        case ConnectionType.Credentials:
-                            (connected, messages) = await this.ConnectWithCredentialsAsync(connectTask);
+                        case CredentialsConnector credentialsConnector:
+                            (connected, messages) = await this.ConnectWithCredentialsAsync(credentialsConnector);
                             break;
-                        case ConnectionType.CertPass:
-                            (connected, messages) = await this.ConnectWithCertPassAsync(connectTask);
+                        case CertPassConnector certPassConnector:
+                            (connected, messages) = await this.ConnectWithCertPassAsync(certPassConnector);
                             break;
-                        case ConnectionType.CertAndCertPass:
-                            (connected, messages) = await this.ConnectWithCertAndCertPassAsync(connectTask);
+                        case CertAndCertPassConnector certAndCertPassConnector:
+                            (connected, messages) = await this.ConnectWithCertAndCertPassAsync(certAndCertPassConnector);
+                            break;
+                        case DefaultConnector defaultConnector:
+                            (connected, messages) = await this.ConnectAsync(defaultConnector);
                             break;
                         default:
-                            (connected, messages) = await connectTask.ConnectAsync();
-                            break;
+                            throw new NotSupportedException(string.Format(Resource.ErrorUnsupportedConnectionType, connector.GetType().Name));
                     }
 
                     if (connected)
@@ -82,17 +90,22 @@ namespace EduRoam.CLI.Commands
             return command;
         }
 
-        private Task<(bool connected, IList<string> messages)> ConnectWithCertAndCertPassAsync(ConnectTask connectTask)
+        private Task<(bool connected, IList<string> messages)> ConnectAsync(DefaultConnector connector)
         {
             throw new NotImplementedException();
         }
 
-        private Task<(bool connected, IList<string> messages)> ConnectWithCertPassAsync(ConnectTask connectTask)
+        private Task<(bool connected, IList<string> messages)> ConnectWithCertAndCertPassAsync(CertAndCertPassConnector connector)
         {
             throw new NotImplementedException();
         }
 
-        private async Task<(bool connected, IList<string> messages)> ConnectWithCredentialsAsync(ConnectTask connectTask)
+        private Task<(bool connected, IList<string> messages)> ConnectWithCertPassAsync(CertPassConnector connector)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task<(bool connected, IList<string> messages)> ConnectWithCredentialsAsync(CredentialsConnector connector)
         {
             Console.WriteLine(Resource.ConnectionUsernameAndPasswordRequired);
             Console.Write($"{Resource.Username}: ");
@@ -101,13 +114,13 @@ namespace EduRoam.CLI.Commands
             Console.Write($"{Resource.Password}: ");
             using var password = ReadPassword();
 
-            var connected = false;
+            connector.Credentials = new ConnectorCredentials(userName, password);
 
-            var (areValid, messages) = await connectTask.ValidateCredentialsAsync(userName, password);
+            var (connected, messages) = connector.ValidateCredentials();
 
-            if (areValid)
+            if (connected)
             {
-                (connected, var message) = await connectTask.ConnectAsync(userName, password);
+                (connected, var message) = await connector.ConnectAsync(userName!, password);
 
                 if (!string.IsNullOrWhiteSpace(message))
                 {

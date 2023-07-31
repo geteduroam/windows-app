@@ -16,7 +16,7 @@ namespace EduRoam.Connect.Eap
         #region Properties
 
         public bool IsOauth { get; set; } // TODO: Setter used for scaffolding to PersistenStorage, need better solution
-        public string ProfileId { get; set; } // TODO: Setter used for scaffolding to PersistenStorage, need better solution
+        public string? ProfileId { get; set; } // TODO: Setter used for scaffolding to PersistenStorage, need better solution
         public List<AuthenticationMethod> AuthenticationMethods { get; }
         public List<CredentialApplicability> CredentialApplicabilities { get; }
         public ProviderInfo InstitutionInfo { get; }
@@ -54,21 +54,21 @@ namespace EduRoam.Connect.Eap
         {
             #region Properties
 
-            public EapConfig EapConfig { get; } // reference to parent EapConfig
+            public EapConfig? EapConfig { get; } // reference to parent EapConfig
             public EapType EapType { get; }
             public InnerAuthType InnerAuthType { get; }
             public List<string> ServerCertificateAuthorities { get; } // base64 encoded DER certificate
             public List<string> ServerNames { get; }
-            public string ClientUserName { get; } // preset inner identity, expect it to have a realm
-            public string ClientPassword { get; } // preset outer identity
-            public string ClientCertificate { get; } // base64 encoded PKCS12 certificate+privkey bundle
-            public string ClientCertificatePassphrase { get; } // passphrase for ^
-            public string ClientOuterIdentity { get; } // expect it to have a realm. Also known as: anonymous identity, routing identity
-            public string ClientInnerIdentitySuffix { get; } // realm
+            public string? ClientUserName { get; } // preset inner identity, expect it to have a realm
+            public string? ClientPassword { get; } // preset outer identity
+            public string? ClientCertificate { get; } // base64 encoded PKCS12 certificate+privkey bundle
+            public string? ClientCertificatePassphrase { get; } // passphrase for ^
+            public string? ClientOuterIdentity { get; } // expect it to have a realm. Also known as: anonymous identity, routing identity
+            public string? ClientInnerIdentitySuffix { get; } // realm
             public bool ClientInnerIdentityHint { get; } // Wether to disallow subrealms or not (see https://github.com/GEANT/CAT/issues/190)
 
-            public bool IsHS20Supported { get => this.EapConfig.CredentialApplicabilities.Any(cred => cred.ConsortiumOid != null); }
-            public bool IsSSIDSupported { get => this.EapConfig.CredentialApplicabilities.Any(cred => cred.Ssid != null && cred.Ssid.Length != 0); }
+            public bool IsHS20Supported { get => this.EapConfig?.CredentialApplicabilities.Any(cred => cred.ConsortiumOid != null) ?? false; }
+            public bool IsSSIDSupported { get => this.EapConfig?.CredentialApplicabilities.Any(cred => cred.Ssid != null && cred.Ssid.Length != 0) ?? false; }
 
             #endregion Properties
 
@@ -77,19 +77,19 @@ namespace EduRoam.Connect.Eap
             // TODO: Also add wired 802.1x support
             public List<string> SSIDs
             {
-                get => this.EapConfig.CredentialApplicabilities
+                get => this.EapConfig?.CredentialApplicabilities
                     .Where(cred => cred.NetworkType == IEEE802x.IEEE80211)
                     .Where(cred => cred.MinRsnProto != "TKIP") // Too old and insecure
                     .Where(cred => cred.Ssid != null) // Filter out HS20 entries, those have no SSID
                     .Select(cred => cred.Ssid!)
-                    .ToList();
+                    .ToList() ?? new List<string>();
             }
             public List<string> ConsortiumOIDs
             {
-                get => this.EapConfig.CredentialApplicabilities
+                get => this.EapConfig?.CredentialApplicabilities
                     .Where(cred => cred.ConsortiumOid != null)
                     .Select(cred => cred.ConsortiumOid!)
-                    .ToList();
+                    .ToList() ?? new List<string>();
             }
             public DateTime? ClientCertificateNotBefore
             {
@@ -109,11 +109,14 @@ namespace EduRoam.Connect.Eap
             }
 
             private byte[] ClientCertificateRaw
-            { get => Convert.FromBase64String(this.ClientCertificate); }
+            {
+                get => Convert.FromBase64String(this.ClientCertificate ?? string.Empty);
+            }
+
             private bool CertificateIsValid
             {
                 get => VerifyCertificateBundle(
-                        Convert.FromBase64String(this.ClientCertificate),
+                        Convert.FromBase64String(this.ClientCertificate ?? string.Empty),
                         this.ClientCertificatePassphrase);
             }
 
@@ -366,7 +369,7 @@ namespace EduRoam.Connect.Eap
             ) : this(null, eapType, innerAuthType, serverCertificateAuthorities, serverName, clientUserName, clientPassword, clientCertificate, clientCertificatePassphrase, clientOuterIdentity, innerIdentitySuffix, innerIdentityHint) { }
 
             private AuthenticationMethod(
-                EapConfig eapConfig,
+                EapConfig? eapConfig,
                 EapType eapType,
                 InnerAuthType innerAuthType,
                 List<string> serverCertificateAuthorities,
@@ -631,9 +634,9 @@ namespace EduRoam.Connect.Eap
                 {
                     "IEEE80211" =>
                         CredentialApplicability.IEEE80211(
-                            (string?)credentialApplicabilityXml?.Elements().FirstOrDefault(nameIs("SSID")),
-                            (string?)credentialApplicabilityXml?.Elements().FirstOrDefault(nameIs("ConsortiumOID")),
-                            (string?)credentialApplicabilityXml?.Elements().FirstOrDefault(nameIs("MinRSNProto"))
+                            (string)credentialApplicabilityXml?.Elements().FirstOrDefault(nameIs("SSID")),
+                            (string)credentialApplicabilityXml?.Elements().FirstOrDefault(nameIs("ConsortiumOID")),
+                            (string)credentialApplicabilityXml?.Elements().FirstOrDefault(nameIs("MinRSNProto"))
                         ),
                     "IEEE8023" =>
                         CredentialApplicability.IEEE8023(
@@ -762,11 +765,11 @@ namespace EduRoam.Connect.Eap
         /// </summary>
         public string RequiredAnonymousIdentRealm
         {
-            get => !string.IsNullOrEmpty(SupportedAuthenticationMethods.First().ClientOuterIdentity)
-                && SupportedAuthenticationMethods.First().EapType == EapType.PEAP
-                && SupportedAuthenticationMethods.First().InnerAuthType == InnerAuthType.EAP_MSCHAPv2
-                ? SupportedAuthenticationMethods.First().ClientOuterIdentity.Contains("@")
-                    ? SupportedAuthenticationMethods.First().ClientOuterIdentity.Substring(SupportedAuthenticationMethods.First().ClientOuterIdentity.IndexOf("@"))
+            get => !string.IsNullOrEmpty(this.SupportedAuthenticationMethods.First().ClientOuterIdentity)
+                && this.SupportedAuthenticationMethods.First().EapType == EapType.PEAP
+                && this.SupportedAuthenticationMethods.First().InnerAuthType == InnerAuthType.EAP_MSCHAPv2
+                ? this.SupportedAuthenticationMethods.First().ClientOuterIdentity.Contains("@")
+                    ? this.SupportedAuthenticationMethods.First().ClientOuterIdentity.Substring(this.SupportedAuthenticationMethods.First().ClientOuterIdentity.IndexOf("@"))
                     : ""
                 : null
                 ;
@@ -811,7 +814,10 @@ namespace EduRoam.Connect.Eap
                 .Where(authMethod => authMethod != null)
                 .Select(authMethod => authMethod!);
 
-            if (!authMethods.Any()) throw new ArgumentException("No authentication accepts the passphrase");
+            if (!authMethods.Any())
+            {
+                throw new ArgumentException("No authentication accepts the passphrase");
+            }
 
             return new EapConfig(
                 authMethods.ToList(),

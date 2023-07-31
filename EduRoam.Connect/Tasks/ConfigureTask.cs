@@ -1,16 +1,17 @@
 ﻿using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Store;
+using EduRoam.Connect.Tasks.Connectors;
 
 namespace EduRoam.Connect.Tasks
 {
-    public class ResolveConfigurationTask
+    public class ConfigureTask
     {
         private EapConfig? eapConfig;
 
         private readonly BaseConfigStore store = new RegistryStore();
 
-        public ResolveConfigurationTask(EapConfig eapConfig)
+        public ConfigureTask(EapConfig eapConfig)
         {
             this.eapConfig = eapConfig;
         }
@@ -20,7 +21,7 @@ namespace EduRoam.Connect.Tasks
         /// </summary>
         /// <param name="forceConfiguration"></param>
         /// <returns></returns>
-        public bool ResolveCertificates(bool forceConfiguration)
+        public bool ConfigureCertificates(bool forceConfiguration)
         {
             var certificatesNotInstalled = this.GetNotInstalledCertificates();
 
@@ -55,11 +56,9 @@ namespace EduRoam.Connect.Tasks
             return true;
         }
 
-        private IEnumerable<CertificateInstaller> GetNotInstalledCertificates()
+        public Connector? GetConnector(EapConfig eapConfig)
         {
-            var installers = ConnectToEduroam.EnumerateCAInstallers(this.eapConfig!).ToList();
-            var certificatesNotInstalled = installers.Where(installer => !installer.IsInstalled);
-            return certificatesNotInstalled;
+            return Connector.GetInstance(eapConfig);
         }
 
         /// <summary>
@@ -70,32 +69,24 @@ namespace EduRoam.Connect.Tasks
         ///     Force automatic configuration (for example install certificates) 
         ///     if the profile is not already configured (fully).
         /// </param>
-        /// <exception cref="ArgumentException"
-        /// <exception cref="ApiParsingException" />
-        /// <exception cref="ApiUnreachableException" />
-        /// <exception cref="UnknownInstituteException" />
-        /// <exception cref="UnknownProfileException" />
-        /// <exception cref="EduroamAppUserException"/>
-        public bool ResolveConfiguration(bool forceConfiguration = true)
+        public async Task<bool> ConfigureAsyncOld(bool forceConfiguration = false)
         {
-            if (!this.CheckIfEapConfigIsSupported())
+            var connector = Connector.GetInstance(this.eapConfig);
+            if (connector != null)
             {
-                return false;
+                var (succeeded, _) = await connector.ConfigureAsync(forceConfiguration);
+
+                return succeeded;
             }
 
-            return !this.GetNotInstalledCertificates().Any();
+            return false;
         }
 
-        private bool CheckIfEapConfigIsSupported()
+        private IEnumerable<CertificateInstaller> GetNotInstalledCertificates()
         {
-            if (!EduRoamNetwork.IsEapConfigSupported(this.eapConfig!))
-            {
-                ConsoleExtension.WriteError(
-                    "The profile you have selected is not supported by this application.\nNo supported authentification method was found.");
-                return false;
-            }
-            return true;
+            var installers = ConnectToEduroam.EnumerateCAInstallers(this.eapConfig!).ToList();
+            var certificatesNotInstalled = installers.Where(installer => !installer.IsInstalled);
+            return certificatesNotInstalled;
         }
-
     }
 }

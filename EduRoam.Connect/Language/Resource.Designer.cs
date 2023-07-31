@@ -178,6 +178,33 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Everything is configured!\nCould not connect because no EAP Config could be found.
+        /// </summary>
+        public static string ConfiguredButNotConnected {
+            get {
+                return ResourceManager.GetString("ConfiguredButNotConnected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Everything is configured!\nUnable to connect to eduroam, you&apos;re probably out of coverage..
+        /// </summary>
+        public static string ConfiguredButProbablyOutOfCoverage {
+            get {
+                return ResourceManager.GetString("ConfiguredButProbablyOutOfCoverage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Everything is configured!\nUnable to connect to eduroam..
+        /// </summary>
+        public static string ConfiguredButUnableToConnect {
+            get {
+                return ResourceManager.GetString("ConfiguredButUnableToConnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to EAP is configured.
         /// </summary>
         public static string ConfiguredEap {
@@ -340,11 +367,56 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid certificate path.
+        /// </summary>
+        public static string ErrorInvalidCertificatePath {
+            get {
+                return ResourceManager.GetString("ErrorInvalidCertificatePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Username and/or password are not valid.
         /// </summary>
         public static string ErrorInvalidCredentials {
             get {
                 return ResourceManager.GetString("ErrorInvalidCredentials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid eap config provided, this should not happen, please report a bug..
+        /// </summary>
+        public static string ErrorInvalidEapConfig {
+            get {
+                return ResourceManager.GetString("ErrorInvalidEapConfig", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Credentials are not provided.
+        /// </summary>
+        public static string ErrorMissingCredentials {
+            get {
+                return ResourceManager.GetString("ErrorMissingCredentials", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Required CA certificate was not installed, this should not happen, please report a bug.
+        /// </summary>
+        public static string ErrorMissingRequiredCACertificate {
+            get {
+                return ResourceManager.GetString("ErrorMissingRequiredCACertificate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No (valid) client certificate was provided ({0} parameter)..
+        /// </summary>
+        public static string ErrorNoClientCertificateProvided {
+            get {
+                return ResourceManager.GetString("ErrorNoClientCertificateProvided", resourceCulture);
             }
         }
         
@@ -399,6 +471,15 @@ namespace EduRoam.Connect.Language {
         public static string ErrorShowCommandOptions {
             get {
                 return ResourceManager.GetString("ErrorShowCommandOptions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connection of type {0} is not supported (yet)..
+        /// </summary>
+        public static string ErrorUnsupportedConnectionType {
+            get {
+                return ResourceManager.GetString("ErrorUnsupportedConnectionType", resourceCulture);
             }
         }
         
@@ -565,6 +646,15 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Certificate filepath.
+        /// </summary>
+        public static string OptionDescriptionCertificatePath {
+            get {
+                return ResourceManager.GetString("OptionDescriptionCertificatePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Path to EAP config .eap-config..
         /// </summary>
         public static string OptionDescriptionEAPConfig {
@@ -615,6 +705,15 @@ namespace EduRoam.Connect.Language {
         public static string OptionRequired {
             get {
                 return ResourceManager.GetString("OptionRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Certificate passphrase.
+        /// </summary>
+        public static string Passphrase {
+            get {
+                return ResourceManager.GetString("Passphrase", resourceCulture);
             }
         }
         

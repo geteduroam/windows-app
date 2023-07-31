@@ -156,6 +156,15 @@
   <data name="CommandDescriptionUninstall" xml:space="preserve">
     <value>Uninstall application</value>
   </data>
+  <data name="ConfiguredButNotConnected" xml:space="preserve">
+    <value>Everything is configured!\nCould not connect because no EAP Config could be found</value>
+  </data>
+  <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
+    <value>Everything is configured!\nUnable to connect to eduroam, you're probably out of coverage.</value>
+  </data>
+  <data name="ConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Everything is configured!\nUnable to connect to eduroam.</value>
+  </data>
   <data name="ConfiguredEap" xml:space="preserve">
     <value>EAP is configured</value>
   </data>
@@ -210,8 +219,23 @@
   <data name="ErrorInternetConnection" xml:space="preserve">
     <value>Error with internet connection</value>
   </data>
+  <data name="ErrorInvalidCertificatePath" xml:space="preserve">
+    <value>Invalid certificate path</value>
+  </data>
   <data name="ErrorInvalidCredentials" xml:space="preserve">
     <value>Username and/or password are not valid</value>
+  </data>
+  <data name="ErrorInvalidEapConfig" xml:space="preserve">
+    <value>Invalid eap config provided, this should not happen, please report a bug.</value>
+  </data>
+  <data name="ErrorMissingCredentials" xml:space="preserve">
+    <value>Credentials are not provided</value>
+  </data>
+  <data name="ErrorMissingRequiredCACertificate" xml:space="preserve">
+    <value>Required CA certificate was not installed, this should not happen, please report a bug</value>
+  </data>
+  <data name="ErrorNoClientCertificateProvided" xml:space="preserve">
+    <value>No (valid) client certificate was provided ({0} parameter).</value>
   </data>
   <data name="ErrorNoConnection" xml:space="preserve">
     <value>Could not connect. \nException: {0}.</value>
@@ -230,6 +254,9 @@
   </data>
   <data name="ErrorShowCommandOptions" xml:space="preserve">
     <value>Missing options. Provide the {0} option or both {1} and {2} options</value>
+  </data>
+  <data name="ErrorUnsupportedConnectionType" xml:space="preserve">
+    <value>Connection of type {0} is not supported (yet).</value>
   </data>
   <data name="ErrorUnsupportedProfile" xml:space="preserve">
     <value>The profile you have selected is not supported by this application. No supported authentification method was found.</value>
@@ -287,6 +314,9 @@
     <value>n</value>
     <comment>Used for user confirmation, as the 'no' option</comment>
   </data>
+  <data name="OptionDescriptionCertificatePath" xml:space="preserve">
+    <value>Certificate filepath</value>
+  </data>
   <data name="OptionDescriptionEAPConfig" xml:space="preserve">
     <value>Path to EAP config .eap-config.</value>
   </data>
@@ -304,6 +334,9 @@
   </data>
   <data name="OptionRequired" xml:space="preserve">
     <value>Option {0} is required</value>
+  </data>
+  <data name="Passphrase" xml:space="preserve">
+    <value>Certificate passphrase</value>
   </data>
   <data name="Password" xml:space="preserve">
     <value>Password</value>

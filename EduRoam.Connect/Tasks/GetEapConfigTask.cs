@@ -58,15 +58,13 @@ namespace EduRoam.Connect.Tasks
             return eapConfig;
         }
 
-        public async Task<EapConfig?> GetEapConfigAsync()
+        public Task<EapConfig?> GetEapConfigAsync()
         {
             // create and return EapConfig object
-            var eapConfig = await LetsWifi.Instance.RequestAndDownloadEapConfig();
-
-            return eapConfig;
+            return LetsWifi.Instance.RequestAndDownloadEapConfig();
         }
 
-        public async Task<EapConfig?> GetEapConfigAsync(string profileId)
+        public Task<EapConfig?> GetEapConfigAsync(string profileId)
         {
             var getProfilesTask = new GetProfilesTask();
             var profile = getProfilesTask.GetProfile(profileId);
@@ -76,7 +74,7 @@ namespace EduRoam.Connect.Tasks
                 throw new UnknownProfileException(profileId);
             }
 
-            return await ProcessProfileAsync(profile);
+            return ProcessProfileAsync(profile);
         }
 
         private static async Task<EapConfig?> ProcessProfileAsync(IdentityProviderProfile fullProfile)

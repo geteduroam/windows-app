@@ -48,6 +48,11 @@ namespace EduRoam.CLI
                 aliases: new string[] { "-q", "--query" },
                 description: Resource.OptionDescriptionQuery);
 
+        public static Option<FileInfo> GetCertificatePathOption() => new(
+                aliases: new string[] { "-cp", "--certificate-path" },
+                description: Resource.OptionDescriptionCertificatePath
+                );
+
         /// <summary>
         /// Ensure the user has provided an Eap Config option or
         ///  both Institute and Profile options
