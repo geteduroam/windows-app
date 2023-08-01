@@ -43,7 +43,7 @@ namespace EduRoam.Connect.Tasks.Connectors
 
             if (eapConfigWithPassphrase != null)
             {
-                var exception = this.InstallEapConfig(eapConfigWithPassphrase);
+                var exception = InstallEapConfig(eapConfigWithPassphrase);
 
                 if (exception != null)
                 {
