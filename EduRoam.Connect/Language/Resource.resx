@@ -129,11 +129,8 @@
   <data name="CertificatesInstallationStatus" xml:space="preserve">
     <value>{0}, installed: {1}</value>
   </data>
-  <data name="CommandDescriptionConfigure" xml:space="preserve">
-    <value>Configure Wi-Fi based on a institution profile</value>
-  </data>
   <data name="CommandDescriptionConnect" xml:space="preserve">
-    <value>Connect with the current profile</value>
+    <value>Configure Wi-Fi based on a institution profile and connect.</value>
   </data>
   <data name="CommandDescriptionList" xml:space="preserve">
     <value>Get a list of institutions or profiles for a institution.</value>

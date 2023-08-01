@@ -97,16 +97,7 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure Wi-Fi based on a institution profile.
-        /// </summary>
-        public static string CommandDescriptionConfigure {
-            get {
-                return ResourceManager.GetString("CommandDescriptionConfigure", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Connect with the current profile.
+        ///   Looks up a localized string similar to Configure Wi-Fi based on a institution profile and connect..
         /// </summary>
         public static string CommandDescriptionConnect {
             get {
