@@ -107,9 +107,6 @@ namespace EduRoam.CLI.Commands
             {
                 ConsoleExtension.WriteError(Resource.ErrorNoInternet);
             }
-
-
         }
-
     }
 }

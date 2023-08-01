@@ -26,6 +26,5 @@ namespace EduRoam.CLI.Commands
 
             return command;
         }
-
     }
 }

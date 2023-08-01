@@ -54,7 +54,7 @@ namespace EduRoam.CLI.Commands
 
                 if (success)
                 {
-                    await this.ConfigureProfileAsync(eapConfig, certificateFile, force);
+                    await ConfigureProfileAsync(eapConfig, certificateFile, force);
                 }
                 else
                 {
@@ -98,7 +98,7 @@ namespace EduRoam.CLI.Commands
             return certificatesResolved;
         }
 
-        private async Task ConfigureProfileAsync(EapConfig eapConfig, FileInfo? certificateFile, bool force)
+        private static async Task ConfigureProfileAsync(EapConfig eapConfig, FileInfo? certificateFile, bool force)
         {
             var configurationTask = new ConfigureTask(eapConfig);
 
@@ -117,16 +117,16 @@ namespace EduRoam.CLI.Commands
                 switch (connector)
                 {
                     case CredentialsConnector credentialsConnector:
-                        (connected, messages) = await this.ConfigureWithCredentialsAsync(credentialsConnector, force);
+                        (connected, messages) = await ConfigureWithCredentialsAsync(credentialsConnector, force);
                         break;
                     case CertPassConnector certPassConnector:
-                        (connected, messages) = await this.ConfigureWithCertPassAsync(certPassConnector, force);
+                        (connected, messages) = await ConfigureWithCertPassAsync(certPassConnector, force);
                         break;
                     case CertAndCertPassConnector certAndCertPassConnector:
-                        (connected, messages) = await this.ConfigureWithCertAndCertPassAsync(certAndCertPassConnector, certificateFile, force);
+                        (connected, messages) = await ConfigureWithCertAndCertPassAsync(certAndCertPassConnector, certificateFile, force);
                         break;
                     case DefaultConnector defaultConnector:
-                        (connected, messages) = await this.ConfigureAsync(defaultConnector, force);
+                        (connected, messages) = await ConfigureAsync(defaultConnector, force);
                         break;
                     default:
                         messages.Add(string.Format(Resource.ErrorUnsupportedConnectionType, connector.GetType().Name));
@@ -176,12 +176,12 @@ namespace EduRoam.CLI.Commands
             }
         }
 
-        private Task<(bool connected, IList<string> messages)> ConfigureAsync(DefaultConnector connector, bool force)
+        private static Task<(bool connected, IList<string> messages)> ConfigureAsync(DefaultConnector connector, bool force)
         {
             return connector.ConfigureAsync(force);
         }
 
-        private async Task<(bool connected, IList<string> messages)> ConfigureWithCertAndCertPassAsync(CertAndCertPassConnector connector, FileInfo? certificateFile, bool force)
+        private static async Task<(bool connected, IList<string> messages)> ConfigureWithCertAndCertPassAsync(CertAndCertPassConnector connector, FileInfo? certificateFile, bool force)
         {
             if (certificateFile == null)
             {
@@ -204,7 +204,7 @@ namespace EduRoam.CLI.Commands
             return (configured, messages);
         }
 
-        private async Task<(bool connected, IList<string> messages)> ConfigureWithCertPassAsync(CertPassConnector connector, bool force)
+        private static async Task<(bool connected, IList<string> messages)> ConfigureWithCertPassAsync(CertPassConnector connector, bool force)
         {
             Console.Write($"{Resource.Passphrase}: ");
             var passphrase = ReadPassword();
@@ -220,7 +220,7 @@ namespace EduRoam.CLI.Commands
             return (configured, messages);
         }
 
-        private async Task<(bool connected, IList<string> messages)> ConfigureWithCredentialsAsync(CredentialsConnector connector, bool force)
+        private static async Task<(bool connected, IList<string> messages)> ConfigureWithCredentialsAsync(CredentialsConnector connector, bool force)
         {
             Console.WriteLine(Resource.ConnectionUsernameAndPasswordRequired);
             Console.Write($"{Resource.Username}: ");

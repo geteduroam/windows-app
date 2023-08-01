@@ -26,7 +26,6 @@ namespace EduRoam.CLI
             await this.rootCommand.InvokeAsync(args);
         }
 
-
         public static List<ICommand> GetCommandList()
         {
             var assembly = Assembly.GetExecutingAssembly();
@@ -36,9 +35,10 @@ namespace EduRoam.CLI
 
             foreach (var commandClass in commandClasses)
             {
-                var command = Activator.CreateInstance(commandClass) as ICommand;
-
-                if (command == null) { continue; }
+                if (Activator.CreateInstance(commandClass) is not ICommand command)
+                {
+                    continue;
+                }
 
                 commands.Add(command);
             }
