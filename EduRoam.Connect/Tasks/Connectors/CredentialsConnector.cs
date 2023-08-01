@@ -36,6 +36,32 @@ namespace EduRoam.Connect.Tasks.Connectors
             return (true, Array.Empty<string>());
         }
 
+        public override async Task<(bool, IList<string>)> ConfigureAsync(bool forceConfiguration = false)
+        {
+            var (configured, messages) = this.ValidateCredentials();
+
+            if (!configured)
+            {
+                return (configured, messages);
+            }
+
+            (configured, messages) = await base.ConfigureAsync(forceConfiguration);
+
+            if (configured)
+            {
+                var eapConfigWithCredentials = this.eapConfig.WithLoginCredentials(this.Credentials!.UserName!, this.Credentials!.Password);
+
+                var exception = InstallEapConfig(eapConfigWithCredentials);
+                if (exception != null)
+                {
+                    configured = false;
+                    messages = exception.Message.AsListItem();
+                }
+            }
+
+            return (configured, messages);
+        }
+
         public override async Task<(bool connected, IList<string> messages)> ConnectAsync()
         {
             var (connected, messages) = this.ValidateCredentials();
@@ -79,32 +105,6 @@ namespace EduRoam.Connect.Tasks.Connectors
             }
 
             return (connected, message.AsListItem());
-        }
-
-        public override async Task<(bool, IList<string>)> ConfigureAsync(bool forceConfiguration = false)
-        {
-            var (configured, messages) = this.ValidateCredentials();
-
-            if (!configured)
-            {
-                return (configured, messages);
-            }
-
-            (configured, messages) = await base.ConfigureAsync(forceConfiguration);
-
-            if (configured)
-            {
-                var eapConfigWithCredentials = this.eapConfig.WithLoginCredentials(this.Credentials!.UserName!, this.Credentials!.Password);
-
-                var exception = this.InstallEapConfig(eapConfigWithCredentials);
-                if (exception != null)
-                {
-                    configured = false;
-                    messages = exception.Message.AsListItem();
-                }
-            }
-
-            return (configured, messages);
         }
     }
 }

@@ -61,14 +61,21 @@ namespace EduRoam.Connect.Tasks.Connectors
             return installers.Where(installer => !installer.IsInstalled);
         }
 
-        protected Exception? InstallEapConfig(EapConfig eapConfig)
+        protected static Exception? InstallEapConfig(EapConfig eapConfig)
         {
             if (!CheckIfEapConfigIsSupported(eapConfig)) // should have been caught earlier, but check here too for sanity
             {
                 throw new Exception(Resource.ErrorInvalidEapConfig);
             }
 
-            ConnectToEduroam.RemoveAllWLANProfiles();
+            try
+            {
+                ConnectToEduroam.RemoveAllWLANProfiles();
+            }
+            catch (Exception exc)
+            {
+                return exc;
+            }
 
             Exception? lastException = null;
             // Install EAP config as a profile

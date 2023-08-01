@@ -1,4 +1,6 @@
-﻿using EduRoam.Connect;
+﻿using EduRoam.CLI.Commands.Connections;
+using EduRoam.Connect;
+using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Language;
 using EduRoam.Connect.Tasks;
@@ -16,10 +18,47 @@ namespace EduRoam.CLI.Commands
 
         public Command GetCommand()
         {
-            var command = new Command(CommandName, CommandDescription);
+            var instituteOption = Options.GetInstituteOption(optional: true);
+            var profileOption = Options.GetProfileOption(optional: true);
+            var eapConfigFileOption = Options.GetEapConfigOption();
+            var certificatePathOption = Options.GetCertificatePathOption();
+            var forceOption = Options.GetForceOption();
 
-            command.SetHandler(async () =>
+            var command = new Command(CommandName, CommandDescription)
             {
+                instituteOption,
+                profileOption,
+                eapConfigFileOption,
+                certificatePathOption,
+                forceOption
+            };
+
+            command.EnsureProperEapConfigSourceOptionsAreProvided(eapConfigFileOption, instituteOption, profileOption);
+
+            command.SetHandler(async (FileInfo? eapConfigFile, string? institute, string? profileName, FileInfo? certificateFile, bool force) =>
+            {
+                var eapConfig = await GetEapConfigAsync(eapConfigFile, institute, profileName);
+                if (eapConfig == null)
+                {
+                    ConsoleExtension.WriteError(Resource.ErrorEapConfigIsEmpty);
+                    return;
+                }
+
+                if (!EduRoamNetwork.IsEapConfigSupported(eapConfig))
+                {
+                    ConsoleExtension.WriteError(Resource.ErrorUnsupportedProfile);
+                    return;
+                }
+
+                OutputCertificatesStatus(eapConfig);
+                var success = ConfigureCertificates(eapConfig, force);
+
+                if (!success)
+                {
+                    ConsoleExtension.WriteError(Resource.ErrorRequiredCertificatesNotInstalled);
+                    return;
+                }
+
                 var connectTask = new ConnectTask();
 
                 var connector = await connectTask.GetConnectorAsync();
@@ -33,25 +72,16 @@ namespace EduRoam.CLI.Commands
                 {
                     var connected = false;
                     IList<string> messages = new List<string>();
-
-                    switch (connector)
+                    IConnection connection = connector switch
                     {
-                        case CredentialsConnector credentialsConnector:
-                            (connected, messages) = await this.ConnectWithCredentialsAsync(credentialsConnector);
-                            break;
-                        case CertPassConnector certPassConnector:
-                            (connected, messages) = await this.ConnectWithCertPassAsync(certPassConnector);
-                            break;
-                        case CertAndCertPassConnector certAndCertPassConnector:
-                            (connected, messages) = await this.ConnectWithCertAndCertPassAsync(certAndCertPassConnector);
-                            break;
-                        case DefaultConnector defaultConnector:
-                            (connected, messages) = await this.ConnectAsync(defaultConnector);
-                            break;
-                        default:
-                            throw new NotSupportedException(string.Format(Resource.ErrorUnsupportedConnectionType, connector.GetType().Name));
-                    }
+                        CredentialsConnector credentialsConnector => new CredentialsConnection(credentialsConnector),
+                        CertPassConnector certPassConnector => new CertPassConnection(certPassConnector),
+                        CertAndCertPassConnector certAndCertPassConnector => new CertAndCertPassConnection(certAndCertPassConnector, certificateFile),
+                        DefaultConnector defaultConnector => new DefaultConnection(defaultConnector),
+                        _ => throw new NotSupportedException(string.Format(Resource.ErrorUnsupportedConnectionType, connector.GetType().Name)),
+                    };
 
+                    (connected, messages) = await connection.ConfigureAndConnectAsync(force);
                     if (connected)
                     {
                         ConsoleExtension.WriteStatus(string.Join("\n", messages));
@@ -83,96 +113,53 @@ namespace EduRoam.CLI.Commands
                 {
                     ConsoleExtension.WriteError(Resource.ErrorNoInternet);
                 }
-
-            });
+            }, eapConfigFileOption, instituteOption, profileOption, certificatePathOption, forceOption);
 
             return command;
         }
 
-        private Task<(bool connected, IList<string> messages)> ConnectAsync(DefaultConnector connector)
+        private static Task<EapConfig?> GetEapConfigAsync(FileInfo? eapConfigFile, string? institute, string? profileName)
         {
-            return connector.ConnectAsync();
-        }
+            var connectTask = new GetEapConfigTask();
 
-        private async Task<(bool connected, IList<string> messages)> ConnectWithCertAndCertPassAsync(CertAndCertPassConnector connector)
-        {
-            Console.Write($"{Resource.Passphrase}: ");
-            var passphrase = ReadPassword();
-
-            connector.Credentials = new ConnectorCredentials(passphrase);
-
-            var (connected, messages) = connector.ValidateCertificateAndCredentials();
-            if (connected)
+            if (eapConfigFile == null)
             {
-                (connected, messages) = await connector.ConnectAsync();
+                return connectTask.GetEapConfigAsync(institute!, profileName!);
             }
 
-            return (connected, messages);
+            return connectTask.GetEapConfigAsync(eapConfigFile);
         }
 
-        private async Task<(bool connected, IList<string> messages)> ConnectWithCertPassAsync(CertPassConnector connector)
+        private static void OutputCertificatesStatus(EapConfig eapConfig)
         {
-            Console.Write($"{Resource.Passphrase}: ");
-            var passphrase = ReadPassword();
-
-            connector.Credentials = new ConnectorCredentials(passphrase);
-
-            var (connected, messages) = connector.ValidateCredentials();
-            if (connected)
+            ConsoleExtension.WriteStatus(Resource.CertificatesInstallationNotification);
+            var installers = ConnectToEduroam.EnumerateCAInstallers(eapConfig).ToList();
+            foreach (var installer in installers)
             {
-                (connected, messages) = await connector.ConnectAsync();
+                Console.WriteLine();
+                ConsoleExtension.WriteStatus($"* {string.Format(Resource.CertificatesInstallationStatus, installer, Interaction.GetYesNoText(installer.IsInstalled))}");
+                Console.WriteLine();
             }
-
-            return (connected, messages);
         }
 
-        private async Task<(bool connected, IList<string> messages)> ConnectWithCredentialsAsync(CredentialsConnector connector)
+        private static bool ConfigureCertificates(EapConfig eapConfig, bool force)
         {
-            Console.WriteLine(Resource.ConnectionUsernameAndPasswordRequired);
-            Console.Write($"{Resource.Username}: ");
-            var userName = Console.ReadLine();
+            var configurationTask = new ConfigureTask(eapConfig);
 
-            Console.Write($"{Resource.Password}: ");
-            var password = ReadPassword();
+            var certificatesResolved = configurationTask.ConfigureCertificates(force);
 
-            connector.Credentials = new ConnectorCredentials(userName, password);
-
-            var (connected, messages) = connector.ValidateCredentials();
-            if (connected)
+            if (!certificatesResolved && !force)
             {
-                (connected, messages) = await connector.ConnectAsync();
-            }
+                Console.WriteLine(Resource.RequestToInstallCertificates);
+                var confirm = Interaction.GetConfirmation();
 
-            return (connected, messages);
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        /// <remarks>Based on https://stackoverflow.com/a/3404522</remarks>
-        private static string ReadPassword()
-        {
-            var pass = string.Empty;
-            ConsoleKeyInfo keyInfo;
-            do
-            {
-                keyInfo = Console.ReadKey(intercept: true);
-
-                if (keyInfo.Key == ConsoleKey.Backspace && pass.Length > 0)
+                if (confirm)
                 {
-                    Console.Write("\b \b");
-                    pass += pass.Length - 1;
+                    certificatesResolved = configurationTask.ConfigureCertificates(true);
                 }
-                else if (!char.IsControl(keyInfo.KeyChar))
-                {
-                    Console.Write("*");
-                    pass += keyInfo.KeyChar;
-                }
-            } while (keyInfo.Key != ConsoleKey.Enter);
-            Console.WriteLine();
+            }
 
-            return pass;
+            return certificatesResolved;
         }
     }
 }

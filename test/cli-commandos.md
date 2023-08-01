@@ -10,11 +10,10 @@ Voor een overzicht van beschikbare commando's
 "show -i \"Moreelsepark College\" -p \"Mijn Moreelsepark\""
 "show -i \"uninett\" -p Ansatt"
 "show -i \"eduroam USA\" -p \"eduroam USA\""
-"configure -i \"Moreelsepark College\" -p \"Mijn Moreelsepark\""
-"configure -i \"uninett\" -p Ansatt"
-"configure -i \"uninett\" -p \"geteduroam (sertifikat)\""
-"configure -i \"eduroam USA\" -p \"eduroam USA\" \cp \"C:\\Temp\\geteduroam\\geteduroam-test-cert.pfx\""
-"connect"
+"connect -i \"Moreelsepark College\" -p \"Mijn Moreelsepark\""
+"connect -i \"uninett\" -p Ansatt"
+"connect -i \"uninett\" -p \"geteduroam (sertifikat)\""
+"connect -i \"eduroam USA\" -p \"eduroam USA\" \cp \"C:\\Temp\\geteduroam\\geteduroam-test-cert.pfx\""
 "uninstall"
 
 

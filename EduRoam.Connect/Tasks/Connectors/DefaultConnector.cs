@@ -19,7 +19,7 @@ namespace EduRoam.Connect.Tasks.Connectors
 
             if (configured)
             {
-                var exception = this.InstallEapConfig(this.eapConfig);
+                var exception = InstallEapConfig(this.eapConfig);
                 if (exception != null)
                 {
                     configured = false;

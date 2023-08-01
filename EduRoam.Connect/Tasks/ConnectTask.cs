@@ -85,12 +85,6 @@ namespace EduRoam.Connect.Tasks
             return (connected, message.AsListItem());
         }
 
-        public Task<(bool connected, string message)> ConnectAsync(string? userName, SecureString password)
-        {
-            throw new NotImplementedException();
-        }
-
-
         private static async Task<EapConfig?> GetEapConfig()
         {
             var eapConfigTask = new GetEapConfigTask();
