@@ -91,17 +91,39 @@ namespace EduRoam.CLI.Commands
 
         private Task<(bool connected, IList<string> messages)> ConnectAsync(DefaultConnector connector)
         {
-            throw new NotImplementedException();
+            return connector.ConnectAsync();
         }
 
-        private Task<(bool connected, IList<string> messages)> ConnectWithCertAndCertPassAsync(CertAndCertPassConnector connector)
+        private async Task<(bool connected, IList<string> messages)> ConnectWithCertAndCertPassAsync(CertAndCertPassConnector connector)
         {
-            throw new NotImplementedException();
+            Console.Write($"{Resource.Passphrase}: ");
+            var passphrase = ReadPassword();
+
+            connector.Credentials = new ConnectorCredentials(passphrase);
+
+            var (connected, messages) = connector.ValidateCertificateAndCredentials();
+            if (connected)
+            {
+                (connected, messages) = await connector.ConnectAsync();
+            }
+
+            return (connected, messages);
         }
 
-        private Task<(bool connected, IList<string> messages)> ConnectWithCertPassAsync(CertPassConnector connector)
+        private async Task<(bool connected, IList<string> messages)> ConnectWithCertPassAsync(CertPassConnector connector)
         {
-            throw new NotImplementedException();
+            Console.Write($"{Resource.Passphrase}: ");
+            var passphrase = ReadPassword();
+
+            connector.Credentials = new ConnectorCredentials(passphrase);
+
+            var (connected, messages) = connector.ValidateCredentials();
+            if (connected)
+            {
+                (connected, messages) = await connector.ConnectAsync();
+            }
+
+            return (connected, messages);
         }
 
         private async Task<(bool connected, IList<string> messages)> ConnectWithCredentialsAsync(CredentialsConnector connector)
@@ -116,15 +138,9 @@ namespace EduRoam.CLI.Commands
             connector.Credentials = new ConnectorCredentials(userName, password);
 
             var (connected, messages) = connector.ValidateCredentials();
-
             if (connected)
             {
-                (connected, var message) = await connector.ConnectAsync(userName!, password);
-
-                if (!string.IsNullOrWhiteSpace(message))
-                {
-                    messages.Add(message);
-                }
+                (connected, messages) = await connector.ConnectAsync();
             }
 
             return (connected, messages);

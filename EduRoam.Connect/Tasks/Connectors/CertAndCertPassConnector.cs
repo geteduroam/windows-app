@@ -1,6 +1,8 @@
 ﻿using EduRoam.Connect.Eap;
 using EduRoam.Connect.Language;
 
+using System.Diagnostics;
+
 namespace EduRoam.Connect.Tasks.Connectors
 {
     public class CertAndCertPassConnector : Connector
@@ -25,7 +27,7 @@ namespace EduRoam.Connect.Tasks.Connectors
                 messages.Add(Resource.ErrorInvalidCredentials);
             }
 
-            if (this.CertificatePath == null || !this.CertificatePath.Exists)
+            if ((this.CertificatePath == null || !this.CertificatePath.Exists) && (this.eapConfig.))
             {
                 isValid = false;
                 messages.Add(Resource.ErrorInvalidCertificatePath);
@@ -64,6 +66,51 @@ namespace EduRoam.Connect.Tasks.Connectors
             }
 
             return (configured, messages);
+        }
+
+        public override async Task<(bool connected, IList<string> messages)> ConnectAsync()
+        {
+            var (connected, messages) = this.ValidateCertificateAndCredentials();
+
+            if (!connected)
+            {
+                return (connected, messages);
+            }
+
+            Debug.Assert(
+                !this.eapConfig.NeedsClientCertificatePassphrase && !this.eapConfig.NeedsLoginCredentials,
+                "Cannot configure EAP config that still needs credentials"
+            );
+
+            if (!EduRoamNetwork.IsWlanServiceApiAvailable())
+            {
+                // TODO: update this when wired x802 is a thing
+                return (false, Resource.ErrorWirelessUnavailable.AsListItem());
+            }
+
+            var eapConfigWithPassphrase = this.eapConfig.WithClientCertificate(this.CertificatePath!.FullName, this.Credentials!.Password.ToString()!);
+
+            connected = await Task.Run(ConnectToEduroam.TryToConnect);
+            var message = string.Empty;
+
+            if (connected)
+            {
+                message = Resource.Connected;
+            }
+            else
+            {
+                if (EduRoamNetwork.IsNetworkInRange(eapConfigWithPassphrase))
+                {
+                    message = Resource.ErrorConfiguredButUnableToConnect;
+                }
+                else
+                {
+                    // Hs2 is not enumerable
+                    message = Resource.ErrorConfiguredButProbablyOutOfCoverage;
+                }
+            }
+
+            return (connected, message.AsListItem());
         }
     }
 }

@@ -189,10 +189,10 @@ namespace EduRoam.CLI.Commands
                 return (false, string.Format(Resource.ErrorNoClientCertificateProvided, string.Join(", ", certificatePathOption.Aliases)).AsListItem());
             }
 
-            Console.Write($"{Resource.Passphrase}: ");
-            var passphrase = ReadPassword();
+            //Console.Write($"{Resource.Passphrase}: ");
+            //var passphrase = ReadPassword();
 
-            connector.Credentials = new ConnectorCredentials(passphrase);
+            //connector.Credentials = new ConnectorCredentials(passphrase);
             connector.CertificatePath = certificateFile;
 
             var (configured, messages) = connector.ValidateCertificateAndCredentials();

@@ -36,10 +36,14 @@ namespace EduRoam.Connect.Tasks.Connectors
             return (true, Array.Empty<string>());
         }
 
-        public async Task<(bool connected, string message)> ConnectAsync(string userName, string password)
+        public override async Task<(bool connected, IList<string> messages)> ConnectAsync()
         {
-            var connected = false;
-            var message = string.Empty;
+            var (connected, messages) = this.ValidateCredentials();
+
+            if (!connected)
+            {
+                return (connected, messages);
+            }
 
             Debug.Assert(
                 !this.eapConfig.NeedsClientCertificatePassphrase && !this.eapConfig.NeedsLoginCredentials,
@@ -49,12 +53,13 @@ namespace EduRoam.Connect.Tasks.Connectors
             if (!EduRoamNetwork.IsWlanServiceApiAvailable())
             {
                 // TODO: update this when wired x802 is a thing
-                return (connected, Resource.ErrorWirelessUnavailable);
+                return (false, Resource.ErrorWirelessUnavailable.AsListItem());
             }
 
-            var eapConfigWithCredentials = this.eapConfig.WithLoginCredentials(userName, password.ToString()!);
+            var eapConfigWithCredentials = this.eapConfig.WithLoginCredentials(this.Credentials!.UserName!, this.Credentials.Password.ToString()!);
 
             connected = await Task.Run(ConnectToEduroam.TryToConnect);
+            var message = string.Empty;
 
             if (connected)
             {
@@ -62,7 +67,7 @@ namespace EduRoam.Connect.Tasks.Connectors
             }
             else
             {
-                if (EduRoamNetwork.IsNetworkInRange(this.eapConfig))
+                if (EduRoamNetwork.IsNetworkInRange(eapConfigWithCredentials))
                 {
                     message = Resource.ErrorConfiguredButUnableToConnect;
                 }
@@ -73,7 +78,7 @@ namespace EduRoam.Connect.Tasks.Connectors
                 }
             }
 
-            return (connected, message);
+            return (connected, message.AsListItem());
         }
 
         public override async Task<(bool, IList<string>)> ConfigureAsync(bool forceConfiguration = false)

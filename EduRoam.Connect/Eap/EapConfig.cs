@@ -146,7 +146,9 @@ namespace EduRoam.Connect.Eap
 
                     // sets the friendly name of certificate
                     if (string.IsNullOrEmpty(cert.FriendlyName))
+                    {
                         cert.FriendlyName = cert.GetNameInfo(X509NameType.SimpleName, false);
+                    }
 
                     yield return cert;
                 }
@@ -159,7 +161,9 @@ namespace EduRoam.Connect.Eap
             public X509Certificate2? ClientCertificateAsX509Certificate2()
             {
                 if (string.IsNullOrEmpty(this.ClientCertificate))
+                {
                     return null;
+                }
 
                 try
                 {
@@ -170,14 +174,18 @@ namespace EduRoam.Connect.Eap
 
                     // sets the friendly name of certificate
                     if (string.IsNullOrEmpty(cert.FriendlyName))
+                    {
                         cert.FriendlyName = cert.GetNameInfo(X509NameType.SimpleName, forIssuer: false);
+                    }
 
                     return cert;
                 }
                 catch (CryptographicException ex)
                 {
                     if ((ex.HResult & 0xFFFF) == 0x56)
+                    {
                         return null; // wrong passphrase
+                    }
 
                     throw new EduroamAppUserException("corrupt client certificate",
                         "EAP profile has an malformed or corrupted client certificate");
@@ -294,7 +302,7 @@ namespace EduRoam.Connect.Eap
                     : null
                     ;
             public AuthenticationMethod WithEapConfig(EapConfig eapConfig)
-                => new AuthenticationMethod(
+                => new(
                         eapConfig,
                         this.EapType,
                         this.InnerAuthType,
@@ -324,7 +332,10 @@ namespace EduRoam.Connect.Eap
                 }
                 catch (CryptographicException ex)
                 {
-                    if ((ex.HResult & 0xFFFF) == 0x56) return false; // wrong passphrase
+                    if ((ex.HResult & 0xFFFF) == 0x56)
+                    {
+                        return false; // wrong passphrase
+                    }
 
                     Debug.WriteLine("THIS SHOULD NOT HAPPEN");
                     Debug.Print(ex.ToString());
@@ -344,9 +355,14 @@ namespace EduRoam.Connect.Eap
             private static bool VerifyCertificateBundle(string filePath, string? passphrase = null)
             {
                 if (filePath == null)
+                {
                     throw new ArgumentNullException(paramName: nameof(filePath));
+                }
+
                 if (!File.Exists(filePath))
+                {
                     throw new ArgumentException(paramName: nameof(filePath), message: "file not found");
+                }
 
                 return VerifyCertificateBundle(File.ReadAllBytes(filePath), passphrase);
             }
@@ -689,7 +705,6 @@ namespace EduRoam.Connect.Eap
                 );
             }
 
-
             // create EapConfig object and adds the info
             return new EapConfig(
                 authMethods,
@@ -872,7 +887,9 @@ namespace EduRoam.Connect.Eap
             {
                 var first = suffi.First();
                 if (suffi.All(suffix => suffix == first))
+                {
                     suffix = first;
+                }
             }
             return (suffix, hint);
         }

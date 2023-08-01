@@ -268,6 +268,15 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Client credential is not valid yet.
+        /// </summary>
+        public static string ErrorClientCredentialNotValidYes {
+            get {
+                return ResourceManager.GetString("ErrorClientCredentialNotValidYes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Everything is configured!\nCould not connect because EAP Config could no be found.
         /// </summary>
         public static string ErrorConfiguredButNotConnected {

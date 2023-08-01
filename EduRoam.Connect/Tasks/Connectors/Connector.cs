@@ -2,7 +2,6 @@
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Language;
 
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 
 namespace EduRoam.Connect.Tasks.Connectors
@@ -38,51 +37,7 @@ namespace EduRoam.Connect.Tasks.Connectors
             return Task.FromResult<(bool, IList<string>)>((succes, message.AsListItem()));
         }
 
-        /// <summary>
-        /// Connect by a institutes profile
-        /// </summary>
-        /// <returns>True if a connection could be established, false otherwise</returns>
-        /// <exception cref="EduroamAppUserException" />
-        public virtual async Task<(bool connected, IList<string> messages)> ConnectAsync()
-        {
-            Debug.Assert(
-                    !this.eapConfig.NeedsClientCertificatePassphrase && !this.eapConfig.NeedsLoginCredentials,
-                    "Cannot configure EAP config that still needs credentials"
-                );
-
-            if (!EduRoamNetwork.IsWlanServiceApiAvailable())
-            {
-                // TODO: update this when wired x802 is a thing
-                return (false, Resource.ErrorWirelessUnavailable.AsListItem());
-            }
-
-            var connected = await Task.Run(ConnectToEduroam.TryToConnect);
-            var message = string.Empty;
-
-            if (connected)
-            {
-                message = Resource.Connected;
-            }
-            else
-            {
-                if (this.eapConfig == null)
-                {
-                    message = Resource.ErrorConfiguredButNotConnected;
-
-                }
-                else if (EduRoamNetwork.IsNetworkInRange(this.eapConfig))
-                {
-                    message = Resource.ErrorConfiguredButUnableToConnect;
-                }
-                else
-                {
-                    // Hs2 is not enumerable
-                    message = Resource.ErrorConfiguredButProbablyOutOfCoverage;
-                }
-            }
-
-            return (connected, message.AsListItem());
-        }
+        public abstract Task<(bool connected, IList<string> messages)> ConnectAsync();
 
         protected static bool CheckIfEapConfigIsSupported([NotNullWhen(true)] EapConfig? eapConfig)
         {

@@ -2,7 +2,7 @@
   "profiles": {
     "EduRoam.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "configure -i \"uninett\" -p Ansatt"
+      "commandLineArgs": "connect"
     }
   }
 }

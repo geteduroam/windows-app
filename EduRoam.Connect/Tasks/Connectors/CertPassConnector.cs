@@ -54,5 +54,39 @@ namespace EduRoam.Connect.Tasks.Connectors
 
             return (configured, messages);
         }
+
+        public override async Task<(bool connected, IList<string> messages)> ConnectAsync()
+        {
+            var (connected, messages) = this.ValidateCredentials();
+
+            if (!connected)
+            {
+                return (connected, messages);
+            }
+
+            var eapConfigWithPassphrase = this.eapConfig.WithClientCertificatePassphrase(this.Credentials!.Password.ToString()!);
+
+            connected = await Task.Run(ConnectToEduroam.TryToConnect);
+            var message = string.Empty;
+
+            if (connected)
+            {
+                message = Resource.Connected;
+            }
+            else
+            {
+                if (EduRoamNetwork.IsNetworkInRange(eapConfigWithPassphrase))
+                {
+                    message = Resource.ErrorConfiguredButUnableToConnect;
+                }
+                else
+                {
+                    // Hs2 is not enumerable
+                    message = Resource.ErrorConfiguredButProbablyOutOfCoverage;
+                }
+            }
+
+            return (connected, message.AsListItem());
+        }
     }
 }
