@@ -2,6 +2,7 @@ using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
 using EduRoam.Connect.Install;
+using EduRoam.Connect.Language;
 using EduRoam.Connect.Store;
 
 using Newtonsoft.Json;
@@ -131,7 +132,7 @@ namespace EduRoam.Connect
             catch (HttpRequestException ex)
             {
                 throw new EduroamAppUserException("oauth post error",
-                    userFacingMessage: "Couldn't fetch token json.\nException: " + ex.Message);
+                    userFacingMessage: string.Format(Resource.ErrorCannotFetchTokens, ex.Message));
             }
 
             // process response

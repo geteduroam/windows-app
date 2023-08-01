@@ -67,6 +67,8 @@ namespace EduRoam.Connect.Identity
         /// </summary>
         private static string NormalizeString(string str)
         {
+            var provider = CodePagesEncodingProvider.Instance;
+            Encoding.RegisterProvider(provider);
             // TODO: perhaps allow non-us characters?
             var strippedString = Encoding.ASCII.GetString(Encoding.GetEncoding("Cyrillic").GetBytes(str))
                 .ToUpperInvariant()

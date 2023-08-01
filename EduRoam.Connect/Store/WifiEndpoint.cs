@@ -11,13 +11,13 @@ namespace EduRoam.Connect.Store
             this.EapEndpoint = EapEndpoint;
         }
 
-        [JsonProperty("profileId")]
+        [JsonProperty("Item1")] // For backward compatibility
         public string ProfileId { get; }
 
-        [JsonProperty("tokenEndpoint")]
+        [JsonProperty("Item2")] // For backward compatibility
         public Uri TokenEndpoint { get; }
 
-        [JsonProperty("eapEndpoint")]
+        [JsonProperty("Item3")] // For backward compatibility
         public Uri EapEndpoint { get; }
     }
 }

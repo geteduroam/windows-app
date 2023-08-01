@@ -1,4 +1,5 @@
 using EduRoam.Connect.Eap;
+using EduRoam.Connect.Language;
 using EduRoam.Connect.Store;
 
 using ManagedNativeWifi;
@@ -291,7 +292,7 @@ namespace EduRoam.Connect
 
             if (this.store.ConfiguredWLANProfiles.Any())
             {
-                throw new Exception("Some WLAN profile could not be removed");
+                throw new Exception(Resource.ErrorCannotRemoveWLANProfile);
             }
         }
 

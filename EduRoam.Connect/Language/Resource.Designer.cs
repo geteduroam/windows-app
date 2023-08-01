@@ -268,6 +268,24 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t fetch token json.\nException: {0}.
+        /// </summary>
+        public static string ErrorCannotFetchTokens {
+            get {
+                return ResourceManager.GetString("ErrorCannotFetchTokens", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Some WLAN profile could not be removed.
+        /// </summary>
+        public static string ErrorCannotRemoveWLANProfile {
+            get {
+                return ResourceManager.GetString("ErrorCannotRemoveWLANProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Client credential is not valid yet.
         /// </summary>
         public static string ErrorClientCredentialNotValidYes {

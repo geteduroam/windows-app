@@ -186,6 +186,12 @@
   <data name="ErrorApi" xml:space="preserve">
     <value>API error</value>
   </data>
+  <data name="ErrorCannotFetchTokens" xml:space="preserve">
+    <value>Couldn't fetch token json.\nException: {0}</value>
+  </data>
+  <data name="ErrorCannotRemoveWLANProfile" xml:space="preserve">
+    <value>Some WLAN profile could not be removed</value>
+  </data>
   <data name="ErrorClientCredentialNotValidYes" xml:space="preserve">
     <value>Client credential is not valid yet</value>
   </data>

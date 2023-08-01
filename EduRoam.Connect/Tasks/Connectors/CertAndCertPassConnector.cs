@@ -27,7 +27,7 @@ namespace EduRoam.Connect.Tasks.Connectors
                 messages.Add(Resource.ErrorInvalidCredentials);
             }
 
-            if ((this.CertificatePath == null || !this.CertificatePath.Exists) && (this.eapConfig.))
+            if ((this.CertificatePath == null || !this.CertificatePath.Exists))
             {
                 isValid = false;
                 messages.Add(Resource.ErrorInvalidCertificatePath);
