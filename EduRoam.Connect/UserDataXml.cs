@@ -23,22 +23,22 @@ namespace EduRoam.Connect
     {
         // Namespaces:
 
-        static readonly XNamespace nsEHUC = "http://www.microsoft.com/provisioning/EapHostUserCredentials";
-        static readonly XNamespace nsEC = "http://www.microsoft.com/provisioning/EapCommon";
-        static readonly XNamespace nsBEMUC = "http://www.microsoft.com/provisioning/BaseEapMethodUserCredentials";
-        static readonly XNamespace nsEUP = "http://www.microsoft.com/provisioning/EapUserPropertiesV1";
-        static readonly XNamespace nsXSI = "http://www.w3.org/2001/XMLSchema-instance";
-        static readonly XNamespace nsBEUP = "http://www.microsoft.com/provisioning/BaseEapUserPropertiesV1";
+        private static readonly XNamespace nsEHUC = "http://www.microsoft.com/provisioning/EapHostUserCredentials";
+        private static readonly XNamespace nsEC = "http://www.microsoft.com/provisioning/EapCommon";
+        private static readonly XNamespace nsBEMUC = "http://www.microsoft.com/provisioning/BaseEapMethodUserCredentials";
+        private static readonly XNamespace nsEUP = "http://www.microsoft.com/provisioning/EapUserPropertiesV1";
+        private static readonly XNamespace nsXSI = "http://www.w3.org/2001/XMLSchema-instance";
+        private static readonly XNamespace nsBEUP = "http://www.microsoft.com/provisioning/BaseEapUserPropertiesV1";
 
         // PEAP / MSCHAPv2 specific
-        static readonly XNamespace nsMPUP = "http://www.microsoft.com/provisioning/MsPeapUserPropertiesV1";
-        static readonly XNamespace nsMCUP = "http://www.microsoft.com/provisioning/MsChapV2UserPropertiesV1";
+        private static readonly XNamespace nsMPUP = "http://www.microsoft.com/provisioning/MsPeapUserPropertiesV1";
+        private static readonly XNamespace nsMCUP = "http://www.microsoft.com/provisioning/MsChapV2UserPropertiesV1";
 
         // TTLS specific
-        static readonly XNamespace nsTTLS = "http://www.microsoft.com/provisioning/EapTtlsUserPropertiesV1";
+        private static readonly XNamespace nsTTLS = "http://www.microsoft.com/provisioning/EapTtlsUserPropertiesV1";
 
         // TLS specific
-        static readonly XNamespace nsTLS = "http://www.microsoft.com/provisioning/EapTlsUserPropertiesV1";
+        private static readonly XNamespace nsTLS = "http://www.microsoft.com/provisioning/EapTlsUserPropertiesV1";
 
         /// <summary>
         /// Generates user data xml.
@@ -85,12 +85,12 @@ namespace EduRoam.Connect
             return newUserData != null ? newUserData.ToString() : "";
         }
         private static XElement EapUserData(
-            string innerIdentity,
-            string password,
-            string outerIdentity,
+            string? innerIdentity,
+            string? password,
+            string? outerIdentity,
             EapType eapType,
             InnerAuthType innerAuthType,
-            string userCertFingerprint = null)
+            string? userCertFingerprint = null)
         {
             return (eapType, innerAuthType) switch
             {
@@ -129,7 +129,7 @@ namespace EduRoam.Connect
                             new XElement(nsTLS + "Username", outerIdentity), // TODO: test if this gets used
                             new XElement(nsTLS + "UserCert", // xs:hexBinary
                                                              // format fingerprint:
-                                Regex.Replace(Regex.Replace(userCertFingerprint, " ", ""), ".{2}", "$0 ")
+                                Regex.Replace(Regex.Replace(userCertFingerprint ?? string.Empty, " ", ""), ".{2}", "$0 ")
                                     .ToUpperInvariant().Trim()
                             )
                         )
@@ -144,7 +144,6 @@ namespace EduRoam.Connect
                         new XElement(nsTTLS + "Username", innerIdentity), // outerIdentity is configured in ProfileXml
                         new XElement(nsTTLS + "Password", password)
                     ),
-
 
                 (EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => // TODO: matches schema, but produces an error
 
@@ -179,8 +178,7 @@ namespace EduRoam.Connect
             };
         }
 
-        public static bool IsSupported(EapConfig.AuthenticationMethod authMethod)
-            => IsSupported(authMethod.EapType, authMethod.InnerAuthType);
+        public static bool IsSupported(EapConfig.AuthenticationMethod authMethod) => IsSupported(authMethod.EapType, authMethod.InnerAuthType);
 
         private static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
         {

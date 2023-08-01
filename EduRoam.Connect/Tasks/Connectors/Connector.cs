@@ -43,7 +43,7 @@ namespace EduRoam.Connect.Tasks.Connectors
         /// </summary>
         /// <returns>True if a connection could be established, false otherwise</returns>
         /// <exception cref="EduroamAppUserException" />
-        public async Task<(bool connected, IList<string> messages)> ConnectAsync()
+        public virtual async Task<(bool connected, IList<string> messages)> ConnectAsync()
         {
             Debug.Assert(
                     !this.eapConfig.NeedsClientCertificatePassphrase && !this.eapConfig.NeedsLoginCredentials,

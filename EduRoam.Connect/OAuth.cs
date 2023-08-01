@@ -22,9 +22,9 @@ namespace EduRoam.Connect
         private readonly Uri redirectUri; // uri to locally hosted servers
         private readonly Uri authEndpoint; // used to get authorization code through oauth
                                            // state created by CreateAuthUri
-        private string codeVerifier;
-        private string codeChallenge;
-        private string state;
+        private string? codeVerifier;
+        private string? codeChallenge;
+        private string? state;
 
         /// <summary>
         /// Class used for OAuth process
@@ -66,42 +66,48 @@ namespace EduRoam.Connect
             return new Uri(authUri);
         }
 
-        public Uri GetRedirectUri()
-            => this.redirectUri;
-
+        public Uri GetRedirectUri() => this.redirectUri;
 
         /// <summary>
         /// Extracts the authorization code from the response url.
         /// </summary>
         /// <param name="responseUrl">URL response from authentication.</param>
         /// <returns>(string authorizationCode, string codeVerifier)</returns>
-        public (string, string) ParseAndExtractAuthorizationCode(Uri responseUrl)
+        public (string?, string?) ParseAndExtractAuthorizationCode(Uri? responseUrl)
         {
             // check if url is valid
             if (!(responseUrl?.IsWellFormedOriginalString() ?? false)
                     || string.IsNullOrEmpty(responseUrl?.ToString()))
+            {
                 throw new EduroamAppUserException("oauth empty reponse url",
                     userFacingMessage: "HTTP request returned nothing valid.");
+            }
 
             // Extract query parameters from response url
             var queryParams = HttpUtility.ParseQueryString(responseUrl.Query);
 
             // check if user chose to reject authorization
             if (queryParams.Get("error") == "access_denied")
+            {
                 throw new EduroamAppUserException("oauth access denied",
                     userFacingMessage: "Authorization rejected. Please try again.");
+            }
 
             // get and check state from response url and compares it to original state
             var state = queryParams.Get("state");
             if (state != this.state)
+            {
                 throw new EduroamAppUserException("oauth state mismatch",
                     userFacingMessage: "State from request and response do not match. Aborting operation.");
+            }
 
             // get and check code from response url
             var code = queryParams.Get("code");
             if (string.IsNullOrEmpty(code))
+            {
                 throw new EduroamAppUserException("oauth code missing",
                     userFacingMessage: "Response string doesn't contain code. Aborting operation.");
+            }
 
             return (code, this.codeVerifier);
         }
@@ -160,7 +166,8 @@ namespace EduRoam.Connect
 
             return string.Join("&",
                 parameters.AllKeys
-                    .Select(key => (key, value: parameters[key]))
+                    .Where(key => !string.IsNullOrWhiteSpace(key))
+                    .Select(key => (key: key!, value: parameters[key]))
                     .Select(i => string.Concat(HttpUtility.UrlEncode(i.key), "=", HttpUtility.UrlEncode(i.value)))
             );
         }

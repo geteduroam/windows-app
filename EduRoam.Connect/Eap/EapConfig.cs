@@ -634,9 +634,9 @@ namespace EduRoam.Connect.Eap
                 {
                     "IEEE80211" =>
                         CredentialApplicability.IEEE80211(
-                            (string)credentialApplicabilityXml?.Elements().FirstOrDefault(nameIs("SSID")),
-                            (string)credentialApplicabilityXml?.Elements().FirstOrDefault(nameIs("ConsortiumOID")),
-                            (string)credentialApplicabilityXml?.Elements().FirstOrDefault(nameIs("MinRSNProto"))
+                            (string?)credentialApplicabilityXml?.Elements().FirstOrDefault(nameIs("SSID")),
+                            (string?)credentialApplicabilityXml?.Elements().FirstOrDefault(nameIs("ConsortiumOID")),
+                            (string?)credentialApplicabilityXml?.Elements().FirstOrDefault(nameIs("MinRSNProto"))
                         ),
                     "IEEE8023" =>
                         CredentialApplicability.IEEE8023(
@@ -763,16 +763,15 @@ namespace EduRoam.Connect.Eap
         /// This is not enforced, the realm is simply dropped if needed, but this variable can be used to warn the user if the anonymous ident is modified
         /// Empty string means the username is required to not have a realm, null means that no realm is required
         /// </summary>
-        public string RequiredAnonymousIdentRealm
+        public string? RequiredAnonymousIdentRealm
         {
             get => !string.IsNullOrEmpty(this.SupportedAuthenticationMethods.First().ClientOuterIdentity)
                 && this.SupportedAuthenticationMethods.First().EapType == EapType.PEAP
                 && this.SupportedAuthenticationMethods.First().InnerAuthType == InnerAuthType.EAP_MSCHAPv2
-                ? this.SupportedAuthenticationMethods.First().ClientOuterIdentity.Contains("@")
-                    ? this.SupportedAuthenticationMethods.First().ClientOuterIdentity.Substring(this.SupportedAuthenticationMethods.First().ClientOuterIdentity.IndexOf("@"))
+                ? this.SupportedAuthenticationMethods.First().ClientOuterIdentity?.Contains('@') ?? false
+                    ? this.SupportedAuthenticationMethods.First().ClientOuterIdentity!.Substring(this.SupportedAuthenticationMethods.First().ClientOuterIdentity!.IndexOf('@'))
                     : ""
-                : null
-                ;
+                : null;
         }
 
         /// <summary>
