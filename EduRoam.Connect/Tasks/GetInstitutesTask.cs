@@ -19,6 +19,7 @@ namespace EduRoam.Connect.Tasks
             using var idpDownloader = new IdentityProviderDownloader();
 
             await idpDownloader.LoadProviders(useGeodata: true);
+
             if (idpDownloader.Loaded)
             {
                 var providers = idpDownloader.ClosestProviders;

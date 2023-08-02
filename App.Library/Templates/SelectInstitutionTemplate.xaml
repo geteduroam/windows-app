@@ -61,7 +61,7 @@
                 BorderThickness="0"
                 IsTabStop="False"
                 ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
-                ItemsSource="{Binding Institutions}"
+                ItemsSource="{Binding Institutions.Result}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 ScrollViewer.VerticalScrollBarVisibility="Visible"
                 SelectedItem="{Binding Owner.State.SelectedIdentityProvider}" />

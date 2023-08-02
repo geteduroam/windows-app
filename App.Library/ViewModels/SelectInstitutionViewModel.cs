@@ -9,17 +9,13 @@ namespace App.Library.ViewModels
 {
     public class SelectInstitutionViewModel : BaseViewModel
     {
-        private readonly IdentityProviderDownloader idpDownloader;
-
         private string searchText;
 
-        private readonly GetInstitutesTask institutesProvider = new();
-
-        public SelectInstitutionViewModel(MainViewModel owner, IdentityProviderDownloader idpDownloader)
+        public SelectInstitutionViewModel(MainViewModel owner)
             : base(owner)
         {
-            this.idpDownloader = idpDownloader;
             this.searchText = string.Empty;
+            this.Institutions = new NotifyTaskCompletion<ObservableCollection<IdentityProvider>>(this.GetInstitutionsAsync());
         }
 
         public string SearchText
@@ -32,20 +28,17 @@ namespace App.Library.ViewModels
             }
         }
 
-        public ObservableCollection<IdentityProvider> Institutions
+        public NotifyTaskCompletion<ObservableCollection<IdentityProvider>> Institutions
         {
-            get
-            {
-                if (string.IsNullOrEmpty(this.searchText))
-                {
-                    return new ObservableCollection<IdentityProvider>(this.idpDownloader.ClosestProviders);
-                }
+            get; private set;
+        }
 
-                return new ObservableCollection<IdentityProvider>(
-                    this.idpDownloader.ClosestProviders.Where(
-                        x => x.Name.ToLowerInvariant()
-                              .StartsWith(this.searchText.ToLowerInvariant())));
-            }
+        public async Task<ObservableCollection<IdentityProvider>> GetInstitutionsAsync()
+        {
+            var institutesTask = new GetInstitutesTask();
+
+            var institutes = await institutesTask.GetAsync(this.searchText);
+            return new ObservableCollection<IdentityProvider>(institutes);
         }
 
         protected override bool CanNavigateNextAsync()

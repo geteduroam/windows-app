@@ -34,7 +34,7 @@ namespace App.Library.ViewModels
                     await this.idpDownloader.LoadProviders(useGeodata: true);
                     this.IsLoading = false;
 
-                    this.SetActiveContent(new SelectInstitutionViewModel(this, this.idpDownloader));
+                    this.SetActiveContent(new SelectInstitutionViewModel(this));
                     this.CallPropertyChanged(string.Empty);
                     this.NewProfileCommand.RaiseCanExecuteChanged();
                 });
@@ -70,7 +70,7 @@ namespace App.Library.ViewModels
 
         private void NewProfileCommandAction()
         {
-            this.SetActiveContent(new SelectInstitutionViewModel(this, this.idpDownloader));
+            this.SetActiveContent(new SelectInstitutionViewModel(this));
         }
 
         public void Dispose()
@@ -119,8 +119,8 @@ namespace App.Library.ViewModels
 
         public void Restart()
         {
-            State.Reset();
-            this.ActiveContent = new SelectInstitutionViewModel(this, this.idpDownloader);
+            this.State.Reset();
+            this.ActiveContent = new SelectInstitutionViewModel(this);
             this.CallPropertyChanged(nameof(this.ActiveContent));
         }
 
@@ -138,7 +138,7 @@ namespace App.Library.ViewModels
         /// <exception cref="XmlException">Parsing eap-config failed</exception>
         public async Task<bool> HandleProfileSelect(
         IdentityProviderProfile profile,
-        string eapConfigXml = null,
+        string? eapConfigXml = null,
         bool skipOverview = false)
         {
             this.IsLoading = true;

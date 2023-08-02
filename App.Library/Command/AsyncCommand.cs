@@ -8,17 +8,17 @@ namespace App.Library.Command
     {
         private readonly Func<Task> execute;
 
-        private readonly Func<bool> canExecute;
+        private readonly Func<bool>? canExecute;
 
         private bool isExecuting;
 
-        public AsyncCommand(Func<Task> execute, Func<bool> canExecute = null)
+        public AsyncCommand(Func<Task> execute, Func<bool>? canExecute = null)
         {
             this.execute = execute;
             this.canExecute = canExecute;
         }
 
-        public event EventHandler CanExecuteChanged
+        public event EventHandler? CanExecuteChanged
         {
             add => CommandManager.RequerySuggested += value;
             remove => CommandManager.RequerySuggested -= value;
@@ -54,17 +54,17 @@ namespace App.Library.Command
 
         #region Explicit implementations
 
-        bool ICommand.CanExecute(object parameter)
+        bool ICommand.CanExecute(object? parameter)
         {
             return this.CanExecute();
         }
 
-        void ICommand.Execute(object parameter)
+        void ICommand.Execute(object? parameter)
         {
             FireAndForgetSafeAsync(this.ExecuteAsync());
         }
 
-        private static async void FireAndForgetSafeAsync(Task task, Action<Exception> handleErrorAction = null)
+        private static async void FireAndForgetSafeAsync(Task task, Action<Exception>? handleErrorAction = null)
         {
             try
             {
