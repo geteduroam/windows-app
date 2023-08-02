@@ -112,7 +112,6 @@ namespace EduRoam.Connect
             return (code, this.codeVerifier);
         }
 
-
         /// <summary>
         /// Generates a random code challenge base to use for the code challenge.
         /// </summary>

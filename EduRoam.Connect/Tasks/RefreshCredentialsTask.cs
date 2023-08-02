@@ -22,14 +22,14 @@ namespace EduRoam.Connect.Tasks
 
                 switch (response)
                 {
-                    case LetsWifi.RefreshResponse.Success:
-                    case LetsWifi.RefreshResponse.UpdatedEapXml: // Should never happen due to onlyLetsWifi=true
+                    case RefreshResponse.Success:
+                    case RefreshResponse.UpdatedEapXml: // Should never happen due to onlyLetsWifi=true
                         return GetExpirationInfo();
-                    case LetsWifi.RefreshResponse.StillValid: // should never happend due to force=true
-                    case LetsWifi.RefreshResponse.AccessDenied:
-                    case LetsWifi.RefreshResponse.NewRootCaRequired:
-                    case LetsWifi.RefreshResponse.NotRefreshable:
-                    case LetsWifi.RefreshResponse.Failed:
+                    case RefreshResponse.StillValid: // should never happend due to force=true
+                    case RefreshResponse.AccessDenied:
+                    case RefreshResponse.NewRootCaRequired:
+                    case RefreshResponse.NotRefreshable:
+                    case RefreshResponse.Failed:
                         break;
                 }
 

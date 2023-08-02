@@ -16,12 +16,15 @@ using System.Security.Cryptography.X509Certificates;
 namespace EduRoam.Connect
 {
     // https://github.com/geteduroam/lets-wifi
-    public partial class LetsWifi
+    public class LetsWifi
     {
         // tokens to access API, valid for a small time window
-        private string AccessToken;
-        private string AccessTokenType;
-        private DateTime AccessTokenValidUntill;
+        private string? AccessToken { get; set; }
+
+        private string? AccessTokenType { get; set; }
+
+        private DateTime? AccessTokenValidUntill { get; set; }
+
         private readonly BaseConfigStore store;
 
         private LetsWifi()
@@ -29,7 +32,7 @@ namespace EduRoam.Connect
             this.store = new RegistryStore();
         }
 
-        public static LetsWifi Instance => new LetsWifi();
+        public static LetsWifi Instance => new();
 
         private string? ProfileID { get => this.store.WifiEndpoint?.ProfileId; }
 
@@ -70,9 +73,9 @@ namespace EduRoam.Connect
                     {
                         foreach (var attr in attrs.ConstructorArguments)
                         {
-                            if (attr.Value is string)
+                            if (attr.Value is string versionNumber)
                             {
-                                return (string)attr.Value;
+                                return versionNumber;
                             }
                         }
                     }
@@ -154,9 +157,9 @@ namespace EduRoam.Connect
         private void SetAccessTokensFromJson(string jsonResponse)
         {
             // Parse json response to retrieve authorization tokens
-            string accessToken;
-            string accessTokenType;
-            string refreshToken;
+            string? accessToken;
+            string? accessTokenType;
+            string? refreshToken;
             int? accessTokenExpiresIn;
 
             JObject tokenJson;
@@ -176,11 +179,16 @@ namespace EduRoam.Connect
 
             if (string.IsNullOrEmpty(accessToken)
                 || string.IsNullOrEmpty(accessTokenType)
-                || accessTokenExpiresIn == null) throw new ApiParsingException("Missing required fields in OAuth response");
+                || accessTokenExpiresIn == null)
+            {
+                throw new ApiParsingException("Missing required fields in OAuth response");
+            }
 
             // if we have enough headroom, have our token expire earlier
             if (accessTokenExpiresIn.Value > 60)
+            {
                 accessTokenExpiresIn -= 10; // reduces chance of error
+            }
 
             this.AccessToken = accessToken;
             this.AccessTokenType = accessTokenType;
@@ -194,7 +202,10 @@ namespace EduRoam.Connect
         /// <returns></returns>
         public async Task<bool> RefreshTokens()
         {
-            if (!this.CanRefresh) return false;
+            if (!this.CanRefresh)
+            {
+                return false;
+            }
 
             var tokenFormData = new NameValueCollection() {
                 { "grant_type", "refresh_token" },

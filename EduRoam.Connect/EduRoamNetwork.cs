@@ -201,7 +201,6 @@ namespace EduRoam.Connect
                         throw;
                     }
 
-
                     Debug.WriteLine("THIS SHOULD NOT HAPPEN");
                     Debug.Assert(false);
 
@@ -221,15 +220,18 @@ namespace EduRoam.Connect
 
             // https://docs.microsoft.com/en-us/windows/win32/api/wlanapi/nf-wlanapi-wlansetprofile
             if (!NativeWifi.SetProfile(
-                this.InterfaceId,
-                forAllUsers
-                    ? ProfileType.AllUser
-                    : ProfileType.PerUser, // TODO: make this option work and set as default
-                profileXml,
-                SecurityType,
-                Overwrite)) throw new Exception(
+                    this.InterfaceId,
+                    forAllUsers
+                        ? ProfileType.AllUser
+                        : ProfileType.PerUser, // TODO: make this option work and set as default
+                    profileXml,
+                    SecurityType,
+                    Overwrite))
+            {
+                throw new Exception(
                     "Unable to install " + (hs20 ? "Passpoint " : "SSID ") + profileName
                 );
+            }
 
             var configuredWLANProfile = new WLANProfile(this.InterfaceId, profileName, hs20);
             this.store.AddConfiguredWLANProfile(configuredWLANProfile);
@@ -246,7 +248,9 @@ namespace EduRoam.Connect
         public void InstallUserData(WLANProfile profile, string userDataXml, bool forAllUsers)
         {
             if (profile.InterfaceId != this.InterfaceId)
+            {
                 throw new ArgumentException("Provided profile is not for the same interface as this network");
+            }
 
             if (NativeWifi.SetProfileEapXmlUserData(
                 profile.InterfaceId,
@@ -310,7 +314,6 @@ namespace EduRoam.Connect
                 timeout: TimeSpan.FromSeconds(8));
         }
 
-
         // static interface:
 
         /// <summary>
@@ -321,7 +324,10 @@ namespace EduRoam.Connect
         {
             // NativeWifi will throw if service is not available
             if (!IsWlanServiceApiAvailable())
+            {
                 return Enumerable.Empty<EduRoamNetwork>();
+            }
+
             PruneStaleProfiles();
 
             // TODO: multiple profiles on a single interface creates duplicate work further down
@@ -349,7 +355,10 @@ namespace EduRoam.Connect
         {
             // NativeWifi will throw if service is not available
             if (!IsWlanServiceApiAvailable())
+            {
                 return Enumerable.Empty<EduRoamNetwork>();
+            }
+
             PruneStaleProfiles();
 
             // join configured profiles
@@ -392,7 +401,9 @@ namespace EduRoam.Connect
                 if (installedProfiles.Any(ppack
                         => configuredProfile.InterfaceId == ppack.Interface.Id
                         && configuredProfile.ProfileName == ppack.Name))
+                {
                     continue; // ignore
+                }
 
                 // else remove
                 Debug.WriteLine("Removing stale profile from persisting store called {0} on interface {1}",
@@ -438,7 +449,9 @@ namespace EduRoam.Connect
             catch (Win32Exception ex) // in case it doesn't get wrapped in RELEASE
             {
                 if (ex.NativeErrorCode == 1062) // ERROR_SERVICE_NOT_ACTIVE
+                {
                     return false;
+                }
 
                 Debug.WriteLine("THIS SHOULD NOT HAPPEN");
                 Debug.Print(ex.ToString());
@@ -448,7 +461,6 @@ namespace EduRoam.Connect
             return true;
         }
 
-
         /// <summary>
         /// Gets all available network packs with a profile configured
         /// </summary>
@@ -456,14 +468,15 @@ namespace EduRoam.Connect
         private static IEnumerable<AvailableNetworkPack> GetAllAvailableNetworkPacksWithProfiles()
         {
             if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
+            {
                 return Enumerable.Empty<AvailableNetworkPack>();
+            }
 
             // TODO, maybe join in the profile pack?
 
             return NativeWifi.EnumerateAvailableNetworks()
                 .Where(network => !string.IsNullOrEmpty(network.ProfileName));
         }
-
 
         /// <summary>
         /// Gets all installed profile packs on the machine
@@ -472,7 +485,9 @@ namespace EduRoam.Connect
         private static IEnumerable<ProfilePack> GetAllInstalledProfilePacks()
         {
             if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
+            {
                 return Enumerable.Empty<ProfilePack>();
+            }
 
             // List all WLAN profiles installed on machine
             return NativeWifi.EnumerateProfiles();
@@ -485,7 +500,9 @@ namespace EduRoam.Connect
         private static IEnumerable<(ProfilePack ppack, AvailableNetworkPack network)> GetAllNetworkProfilePackPairs()
         {
             if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
+            {
                 return Enumerable.Empty<(ProfilePack, AvailableNetworkPack)>();
+            }
 
             // List all WLAN profiles installed on machine
             var allProfilePacks = NativeWifi.EnumerateProfiles().ToList();

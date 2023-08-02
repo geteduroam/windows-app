@@ -154,13 +154,16 @@
     <value>Uninstall application</value>
   </data>
   <data name="ConfiguredButNotConnected" xml:space="preserve">
-    <value>Everything is configured!\nCould not connect because no EAP Config could be found</value>
+    <value>Everything is configured!
+Could not connect because no EAP Config could be found</value>
   </data>
   <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>Everything is configured!\nUnable to connect to eduroam, you're probably out of coverage.</value>
+    <value>Everything is configured!
+Unable to connect to eduroam, you're probably out of coverage.</value>
   </data>
   <data name="ConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Everything is configured!\nUnable to connect to eduroam.</value>
+    <value>Everything is configured!
+Unable to connect to eduroam.</value>
   </data>
   <data name="ConfiguredEap" xml:space="preserve">
     <value>EAP is configured</value>
@@ -184,7 +187,8 @@
     <value>API error</value>
   </data>
   <data name="ErrorCannotFetchTokens" xml:space="preserve">
-    <value>Couldn't fetch token json.\nException: {0}</value>
+    <value>Couldn't fetch token json.
+Exception: {0}</value>
   </data>
   <data name="ErrorCannotRemoveWLANProfile" xml:space="preserve">
     <value>Some WLAN profile could not be removed</value>
@@ -193,13 +197,16 @@
     <value>Client credential is not valid yet</value>
   </data>
   <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
-    <value>Everything is configured!\nCould not connect because EAP Config could no be found</value>
+    <value>Everything is configured!
+Could not connect because EAP Config could no be found</value>
   </data>
   <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>Everything is configured!\nUnable to connect to eduroam, you're probably out of coverage.</value>
+    <value>Everything is configured!
+Unable to connect to eduroam, you're probably out of coverage.</value>
   </data>
   <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Everything is configured!\nUnable to connect to eduroam.</value>
+    <value>Everything is configured!
+Unable to connect to eduroam.</value>
   </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>Username must contain @ exactly once</value>
@@ -241,10 +248,11 @@
     <value>Required CA certificate was not installed, this should not happen, please report a bug</value>
   </data>
   <data name="ErrorNoClientCertificateProvided" xml:space="preserve">
-    <value>No (valid) client certificate was provided ({0} parameter).</value>
+    <value>No (valid) client certificate was provided ({0} parameter.</value>
   </data>
   <data name="ErrorNoConnection" xml:space="preserve">
-    <value>Could not connect. \nException: {0}.</value>
+    <value>Could not connect. 
+Exception: {0}.</value>
   </data>
   <data name="ErrorNoInternet" xml:space="preserve">
     <value>No internet connection</value>

@@ -45,7 +45,7 @@ namespace EduRoam.Connect
         }
 
         /// <summary>
-        /// 
+        /// Attempt to install the certificate
         /// </summary>
         /// <exception cref="UserAbortException" />
         public void AttemptInstallCertificate()

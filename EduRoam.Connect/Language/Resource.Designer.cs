@@ -169,7 +169,8 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Everything is configured!\nCould not connect because no EAP Config could be found.
+        ///   Looks up a localized string similar to Everything is configured!
+        ///Could not connect because no EAP Config could be found.
         /// </summary>
         public static string ConfiguredButNotConnected {
             get {
@@ -178,7 +179,8 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Everything is configured!\nUnable to connect to eduroam, you&apos;re probably out of coverage..
+        ///   Looks up a localized string similar to Everything is configured!
+        ///Unable to connect to eduroam, you&apos;re probably out of coverage..
         /// </summary>
         public static string ConfiguredButProbablyOutOfCoverage {
             get {
@@ -187,7 +189,8 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Everything is configured!\nUnable to connect to eduroam..
+        ///   Looks up a localized string similar to Everything is configured!
+        ///Unable to connect to eduroam..
         /// </summary>
         public static string ConfiguredButUnableToConnect {
             get {
@@ -259,7 +262,8 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Couldn&apos;t fetch token json.\nException: {0}.
+        ///   Looks up a localized string similar to Couldn&apos;t fetch token json.
+        ///Exception: {0}.
         /// </summary>
         public static string ErrorCannotFetchTokens {
             get {
@@ -286,7 +290,8 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Everything is configured!\nCould not connect because EAP Config could no be found.
+        ///   Looks up a localized string similar to Everything is configured!
+        ///Could not connect because EAP Config could no be found.
         /// </summary>
         public static string ErrorConfiguredButNotConnected {
             get {
@@ -295,7 +300,8 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Everything is configured!\nUnable to connect to eduroam, you&apos;re probably out of coverage..
+        ///   Looks up a localized string similar to Everything is configured!
+        ///Unable to connect to eduroam, you&apos;re probably out of coverage..
         /// </summary>
         public static string ErrorConfiguredButProbablyOutOfCoverage {
             get {
@@ -304,7 +310,8 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Everything is configured!\nUnable to connect to eduroam..
+        ///   Looks up a localized string similar to Everything is configured!
+        ///Unable to connect to eduroam..
         /// </summary>
         public static string ErrorConfiguredButUnableToConnect {
             get {
@@ -430,7 +437,7 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No (valid) client certificate was provided ({0} parameter)..
+        ///   Looks up a localized string similar to No (valid) client certificate was provided ({0} parameter..
         /// </summary>
         public static string ErrorNoClientCertificateProvided {
             get {
@@ -439,7 +446,8 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not connect. \nException: {0}..
+        ///   Looks up a localized string similar to Could not connect. 
+        ///Exception: {0}..
         /// </summary>
         public static string ErrorNoConnection {
             get {

@@ -107,10 +107,7 @@ namespace EduRoam.Connect
             if (handleResult == 0)
             {
                 // freezes main thread so ListenerCallback function can finish
-                if (this.mainThread != null)
-                {
-                    this.mainThread.WaitOne();
-                }
+                this.mainThread?.WaitOne();
             }
 
             // closes HTTP listener
@@ -124,7 +121,10 @@ namespace EduRoam.Connect
         private async void ListenerCallback(IAsyncResult result)
         {
             // cancels and returns if cancellation is requested
-            if (this.CancelTokenSource != null && this.CancelTokenSource.Token.IsCancellationRequested) return;
+            if (this.CancelTokenSource != null && this.CancelTokenSource.Token.IsCancellationRequested)
+            {
+                return;
+            }
 
             // sets the callback listener equals to the http listener
             var callbackListener = (HttpListener?)result.AsyncState;
@@ -143,7 +143,7 @@ namespace EduRoam.Connect
 
             // Parse the result and download the eap config if successfull
             string? authorizationCode = null;
-            string codeVerifier;
+            string? codeVerifier;
             try
             {
                 (authorizationCode, codeVerifier) = this.oauth.ParseAndExtractAuthorizationCode(responseUrl);
