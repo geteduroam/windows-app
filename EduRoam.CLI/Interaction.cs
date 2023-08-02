@@ -1,4 +1,4 @@
-﻿using EduRoam.Connect.Language;
+﻿using EduRoam.Localization;
 
 namespace EduRoam.CLI
 {

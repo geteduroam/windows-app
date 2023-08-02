@@ -1,7 +1,7 @@
 ﻿using EduRoam.Connect;
 using EduRoam.Connect.Exceptions;
-using EduRoam.Connect.Language;
 using EduRoam.Connect.Tasks;
+using EduRoam.Localization;
 
 using System.CommandLine;
 

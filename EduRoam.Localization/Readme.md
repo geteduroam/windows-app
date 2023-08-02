@@ -1,10 +1,10 @@
 ﻿# Language
-Titles, labels, error messages etc. are stored in the Resources .resx files (one per language).
+Titles, labels, error messages etc. are stored in the Resources .resx files (one per culture).
 
 Resources are bound in xaml by adding the following namespace in the top (for example <Window> or <ResourceDictionary>) element:
-```xmlns:lang = "clr-namespace:App.Library.Language"```
+```xmlns:lang = "clr-namespace:EduRoam.Localization;assembly=EduRoam.Localization"```
 
-Bind a resource using:
+Then, bind a resource using:
 ```{x:Static lang:Resources.<resource>}```
 
 For example:
@@ -12,7 +12,10 @@ For example:
 Text="{x:Static lang:Resources.Loading}"
 ````
 
-## Adding a new language
+## Adding a new culture
 1. Copy an existing .resx file. (e.g. Resources.nl-nl.resx)
 1. Update the culture in the new filename, and remove the " - Copy" part.
 1. Open the new .resx and update the resources for the new language.
+
+# Important
+When updating only resources in culture specific resource files (for example Resources.nl-nl.resx) a Rebuild of the apps is necessary to reflect the update(s). Only a Build will not suffice.

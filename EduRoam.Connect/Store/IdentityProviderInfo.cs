@@ -1,5 +1,5 @@
 ﻿using EduRoam.Connect.Eap;
-using EduRoam.Connect.Language;
+using EduRoam.Localization;
 
 namespace EduRoam.Connect.Store
 {

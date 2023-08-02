@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\App.Library\App.Library.csproj" />
+    <ProjectReference Include="..\EduRoam.Localization\EduRoam.Localization.csproj" />
   </ItemGroup>
 
   <ItemGroup>

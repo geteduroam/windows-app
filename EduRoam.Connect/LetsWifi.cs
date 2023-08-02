@@ -2,8 +2,8 @@ using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
 using EduRoam.Connect.Install;
-using EduRoam.Connect.Language;
 using EduRoam.Connect.Store;
+using EduRoam.Localization;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

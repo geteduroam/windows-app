@@ -7,7 +7,7 @@
     xmlns:local="clr-namespace:App.Library"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:templates="clr-namespace:App.Library.Templates"
-    xmlns:lang = "clr-namespace:App.Library.Language"
+    xmlns:lang = "clr-namespace:EduRoam.Localization;assembly=EduRoam.Localization"
     Title="geteduroam"
     Width="420"
     Height="600"

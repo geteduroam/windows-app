@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\EduRoam.Connect\EduRoam.Connect.csproj" />
+    <ProjectReference Include="..\EduRoam.Localization\EduRoam.Localization.csproj" />
   </ItemGroup>
 
   <ItemGroup>

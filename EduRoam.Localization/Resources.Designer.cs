@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace EduRoam.Connect.Language {
+namespace EduRoam.Localization {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace EduRoam.Connect.Language {
         public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("EduRoam.Connect.Language.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("EduRoam.Localization.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,7 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to geteduroam CLI.
+        ///   Looks up a localized string similar to Eduroam.
         /// </summary>
         public static string AppTitle {
             get {
@@ -75,6 +75,24 @@ namespace EduRoam.Connect.Language {
         public static string AreYouSure {
             get {
                 return ResourceManager.GetString("AreYouSure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string ButtonNext {
+            get {
+                return ResourceManager.GetString("ButtonNext", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Previous.
+        /// </summary>
+        public static string ButtonPrevious {
+            get {
+                return ResourceManager.GetString("ButtonPrevious", resourceCulture);
             }
         }
         
@@ -93,6 +111,24 @@ namespace EduRoam.Connect.Language {
         public static string CertificatesInstallationStatus {
             get {
                 return ResourceManager.GetString("CertificatesInstallationStatus", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to certificates are installed.
+        /// </summary>
+        public static string CertificateTitleInstalled {
+            get {
+                return ResourceManager.GetString("CertificateTitleInstalled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In order to continue you have to install the listed certificates.
+        /// </summary>
+        public static string CertificateTitleStart {
+            get {
+                return ResourceManager.GetString("CertificateTitleStart", resourceCulture);
             }
         }
         
@@ -231,6 +267,15 @@ namespace EduRoam.Connect.Language {
         public static string ConnectionUsernameAndPasswordRequired {
             get {
                 return ResourceManager.GetString("ConnectionUsernameAndPasswordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect to eduroam.
+        /// </summary>
+        public static string ConnectToEduroam {
+            get {
+                return ResourceManager.GetString("ConnectToEduroam", resourceCulture);
             }
         }
         
@@ -645,6 +690,15 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading.
+        /// </summary>
+        public static string Loading {
+            get {
+                return ResourceManager.GetString("Loading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} more minutes.
         /// </summary>
         public static string MinutesLeft {
@@ -762,6 +816,42 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contact Information.
+        /// </summary>
+        public static string ProfileContactInfo {
+            get {
+                return ResourceManager.GetString("ProfileContactInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string ProfileEmail {
+            get {
+                return ResourceManager.GetString("ProfileEmail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Not affiliated with institution?.
+        /// </summary>
+        public static string ProfileNotAffiliatedInstitution {
+            get {
+                return ResourceManager.GetString("ProfileNotAffiliatedInstitution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone.
+        /// </summary>
+        public static string ProfilePhone {
+            get {
+                return ResourceManager.GetString("ProfilePhone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This will remove all configuration for &apos;{0}&apos;..
         /// </summary>
         public static string ProfileRemoveConfirmation {
@@ -771,11 +861,83 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select other institution.
+        /// </summary>
+        public static string ProfileSelectOtherInstitution {
+            get {
+                return ResourceManager.GetString("ProfileSelectOtherInstitution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Web.
+        /// </summary>
+        public static string ProfileWeb {
+            get {
+                return ResourceManager.GetString("ProfileWeb", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click here to be redirected to the insitutions site for more info on how to connect. When you click the link this application will close..
+        /// </summary>
+        public static string RedirectText {
+            get {
+                return ResourceManager.GetString("RedirectText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redirect.
+        /// </summary>
+        public static string RedirectTitle {
+            get {
+                return ResourceManager.GetString("RedirectTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Install all required certificates?.
         /// </summary>
         public static string RequestToInstallCertificates {
             get {
                 return ResourceManager.GetString("RequestToInstallCertificates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string Search {
+            get {
+                return ResourceManager.GetString("Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select institution.
+        /// </summary>
+        public static string SelectInstitution {
+            get {
+                return ResourceManager.GetString("SelectInstitution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select profile.
+        /// </summary>
+        public static string SelectProfile {
+            get {
+                return ResourceManager.GetString("SelectProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Terms of Use.
+        /// </summary>
+        public static string TermsOfUseTitle {
+            get {
+                return ResourceManager.GetString("TermsOfUseTitle", resourceCulture);
             }
         }
         

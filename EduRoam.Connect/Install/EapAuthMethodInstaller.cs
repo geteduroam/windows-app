@@ -1,6 +1,6 @@
 ﻿using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Install;
-using EduRoam.Connect.Language;
+using EduRoam.Localization;
 
 using System.Diagnostics;
 

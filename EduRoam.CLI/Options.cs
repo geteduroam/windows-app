@@ -1,4 +1,4 @@
-﻿using EduRoam.Connect.Language;
+﻿using EduRoam.Localization;
 
 using System.CommandLine;
 using System.CommandLine.Parsing;

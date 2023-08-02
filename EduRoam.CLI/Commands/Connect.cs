@@ -2,9 +2,9 @@
 using EduRoam.Connect;
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
-using EduRoam.Connect.Language;
 using EduRoam.Connect.Tasks;
 using EduRoam.Connect.Tasks.Connectors;
+using EduRoam.Localization;
 
 using System.CommandLine;
 

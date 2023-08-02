@@ -1,6 +1,6 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using EduRoam.CLI;
-using EduRoam.Connect.Language;
+using EduRoam.Localization;
 
 public class Program
 {

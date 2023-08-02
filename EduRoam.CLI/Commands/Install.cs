@@ -1,5 +1,5 @@
-﻿using EduRoam.Connect.Language;
-using EduRoam.Connect.Tasks;
+﻿using EduRoam.Connect.Tasks;
+using EduRoam.Localization;
 
 using System.CommandLine;
 

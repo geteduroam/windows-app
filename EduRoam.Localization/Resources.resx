@@ -118,16 +118,28 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppTitle" xml:space="preserve">
-    <value>geteduroam CLI</value>
+    <value>Eduroam</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
     <value>Are you sure you want to continue?</value>
+  </data>
+  <data name="ButtonNext" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="ButtonPrevious" xml:space="preserve">
+    <value>Previous</value>
   </data>
   <data name="CertificatesInstallationNotification" xml:space="preserve">
     <value>In order to continue the following certificates have to be installed.</value>
   </data>
   <data name="CertificatesInstallationStatus" xml:space="preserve">
     <value>{0}, installed: {1}</value>
+  </data>
+  <data name="CertificateTitleInstalled" xml:space="preserve">
+    <value>certificates are installed</value>
+  </data>
+  <data name="CertificateTitleStart" xml:space="preserve">
+    <value>In order to continue you have to install the listed certificates</value>
   </data>
   <data name="CommandDescriptionConnect" xml:space="preserve">
     <value>Configure Wi-Fi based on a institution profile and connect.</value>
@@ -176,6 +188,9 @@ Unable to connect to eduroam.</value>
   </data>
   <data name="ConnectionUsernameAndPasswordRequired" xml:space="preserve">
     <value>Please provide a username and password to connect.</value>
+  </data>
+  <data name="ConnectToEduroam" xml:space="preserve">
+    <value>Connect to eduroam</value>
   </data>
   <data name="DaysLeft" xml:space="preserve">
     <value>{0} more days</value>
@@ -317,6 +332,9 @@ Exception: {0}.</value>
   <data name="LabelWeb" xml:space="preserve">
     <value>Web</value>
   </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Loading</value>
+  </data>
   <data name="MinutesLeft" xml:space="preserve">
     <value>{0} more minutes</value>
   </data>
@@ -358,11 +376,47 @@ Exception: {0}.</value>
   <data name="Password" xml:space="preserve">
     <value>Password</value>
   </data>
+  <data name="ProfileContactInfo" xml:space="preserve">
+    <value>Contact Information</value>
+  </data>
+  <data name="ProfileEmail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="ProfileNotAffiliatedInstitution" xml:space="preserve">
+    <value>Not affiliated with institution?</value>
+  </data>
+  <data name="ProfilePhone" xml:space="preserve">
+    <value>Phone</value>
+  </data>
   <data name="ProfileRemoveConfirmation" xml:space="preserve">
     <value>This will remove all configuration for '{0}'.</value>
   </data>
+  <data name="ProfileSelectOtherInstitution" xml:space="preserve">
+    <value>Select other institution</value>
+  </data>
+  <data name="ProfileWeb" xml:space="preserve">
+    <value>Web</value>
+  </data>
+  <data name="RedirectText" xml:space="preserve">
+    <value>Click here to be redirected to the insitutions site for more info on how to connect. When you click the link this application will close.</value>
+  </data>
+  <data name="RedirectTitle" xml:space="preserve">
+    <value>Redirect</value>
+  </data>
   <data name="RequestToInstallCertificates" xml:space="preserve">
     <value>Install all required certificates?</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SelectInstitution" xml:space="preserve">
+    <value>Select institution</value>
+  </data>
+  <data name="SelectProfile" xml:space="preserve">
+    <value>Select profile</value>
+  </data>
+  <data name="TermsOfUseTitle" xml:space="preserve">
+    <value>Terms of Use</value>
   </data>
   <data name="UninstallNotification" xml:space="preserve">
     <value>The application and its configuration have been uninstalled.</value>

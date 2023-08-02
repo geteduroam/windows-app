@@ -1,5 +1,5 @@
-﻿using EduRoam.Connect.Language;
-using EduRoam.Connect.Tasks.Connectors;
+﻿using EduRoam.Connect.Tasks.Connectors;
+using EduRoam.Localization;
 
 using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
 

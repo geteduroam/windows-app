@@ -16,6 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\EduRoam.Localization\EduRoam.Localization.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="Interop.IWshRuntimeLibrary">
       <HintPath>..\App.Library\obj\Debug\net6.0-windows\Interop.IWshRuntimeLibrary.dll</HintPath>
     </Reference>
@@ -27,22 +31,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Update="Language\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Language\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <CustomToolNamespace>EduRoam.Connect.Language</CustomToolNamespace>
     </EmbeddedResource>
   </ItemGroup>
 

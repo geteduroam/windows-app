@@ -121,57 +121,57 @@
     <value>Eduroam</value>
   </data>
   <data name="ButtonNext" xml:space="preserve">
-    <value>Next</value>
+    <value>Volgende</value>
   </data>
   <data name="ButtonPrevious" xml:space="preserve">
-    <value>Previous</value>
+    <value>Vorige</value>
   </data>
   <data name="CertificateTitleInstalled" xml:space="preserve">
-    <value>certificates are installed</value>
+    <value>Alle certificaten zijn geïnstalleerd</value>
   </data>
   <data name="CertificateTitleStart" xml:space="preserve">
-    <value>In order to continue you have to install the listed certificates</value>
+    <value>Om door te gaan moet u de vermelde certificaten installeren</value>
   </data>
   <data name="ConnectToEduroam" xml:space="preserve">
-    <value>Connect to eduroam</value>
+    <value>Verbind met eduroam</value>
   </data>
   <data name="Loading" xml:space="preserve">
-    <value>Loading</value>
+    <value>Even geduld...</value>
   </data>
   <data name="ProfileContactInfo" xml:space="preserve">
-    <value>Contact Information</value>
+    <value>Contactgegevens</value>
   </data>
   <data name="ProfileEmail" xml:space="preserve">
     <value>Email</value>
   </data>
   <data name="ProfileNotAffiliatedInstitution" xml:space="preserve">
-    <value>Not affiliated with institution?</value>
+    <value>Niet aangesloten bij een instelling?</value>
   </data>
   <data name="ProfilePhone" xml:space="preserve">
-    <value>Phone</value>
+    <value>Telefoon</value>
   </data>
   <data name="ProfileSelectOtherInstitution" xml:space="preserve">
-    <value>Select other institution</value>
+    <value>Selecteer een andere instelling</value>
   </data>
   <data name="ProfileWeb" xml:space="preserve">
     <value>Web</value>
   </data>
   <data name="RedirectText" xml:space="preserve">
-    <value>Click here to be redirected to the insitutions site for more info on how to connect. When you click the link this application will close.</value>
+    <value>Klik hier om doorverwezen te worden naar de site van de instelling voor meer informatie over hoe u verbinding kunt maken. Wanneer u op de link klikt, wordt deze toepassing gesloten.</value>
   </data>
   <data name="RedirectTitle" xml:space="preserve">
     <value>Redirect</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>Search</value>
+    <value>Zoeken</value>
   </data>
   <data name="SelectInstitution" xml:space="preserve">
-    <value>Select institution</value>
+    <value>Selecteer instelling</value>
   </data>
   <data name="SelectProfile" xml:space="preserve">
-    <value>Select profile</value>
+    <value>Selecteer profiel</value>
   </data>
   <data name="TermsOfUseTitle" xml:space="preserve">
-    <value>Terms of Use</value>
+    <value>Gebruiksvoorwaarden</value>
   </data>
 </root>

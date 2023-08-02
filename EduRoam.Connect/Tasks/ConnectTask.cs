@@ -1,8 +1,8 @@
 ﻿using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
-using EduRoam.Connect.Language;
 using EduRoam.Connect.Tasks.Connectors;
+using EduRoam.Localization;
 
 using System.Security;
 

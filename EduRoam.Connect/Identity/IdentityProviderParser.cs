@@ -1,6 +1,6 @@
 using DuoVia.FuzzyStrings;
 
-using EduRoam.Connect.Language;
+using EduRoam.Localization;
 
 using System.Text;
 

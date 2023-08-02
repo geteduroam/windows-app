@@ -1,6 +1,6 @@
 ﻿using EduRoam.Connect.Eap;
 using EduRoam.Connect.Identity;
-using EduRoam.Connect.Language;
+using EduRoam.Localization;
 
 using System.Diagnostics;
 

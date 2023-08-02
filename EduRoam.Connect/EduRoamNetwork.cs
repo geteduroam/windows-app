@@ -1,6 +1,6 @@
 using EduRoam.Connect.Eap;
-using EduRoam.Connect.Language;
 using EduRoam.Connect.Store;
+using EduRoam.Localization;
 
 using ManagedNativeWifi;
 

@@ -4,7 +4,7 @@
     xmlns:templates="clr-namespace:App.Library.Templates"
     xmlns:viewModels="clr-namespace:App.Library.ViewModels"
     xmlns:Converters="clr-namespace:App.Library.Converters"
-    xmlns:lang = "clr-namespace:App.Library.Language">
+    xmlns:lang = "clr-namespace:EduRoam.Localization;assembly=EduRoam.Localization">
 
     <templates:LocalDataTemplateSelector x:Key="LocalDataTemplateSelector" />
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />

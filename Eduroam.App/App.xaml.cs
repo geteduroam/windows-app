@@ -3,7 +3,7 @@
 using System.Linq;
 using System.Windows;
 
-using LanguageResources = App.Library.Language.Resources;
+using LanguageResources = EduRoam.Localization.Resources;
 
 namespace Eduroam.App
 {
@@ -14,7 +14,7 @@ namespace Eduroam.App
     {
         private void App_OnStartup(object sender, StartupEventArgs e)
         {
-            LanguageResources.Culture = System.Globalization.CultureInfo.CurrentUICulture;
+            LanguageResources.Culture = System.Globalization.CultureInfo.GetCultureInfo(1043); //CurrentUICulture;
 
             if (e.Args.Any()
                 && CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args))

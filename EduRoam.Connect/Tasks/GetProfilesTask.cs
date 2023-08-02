@@ -1,7 +1,7 @@
 ﻿using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
-using EduRoam.Connect.Language;
 using EduRoam.Connect.Store;
+using EduRoam.Localization;
 
 namespace EduRoam.Connect.Tasks
 {
