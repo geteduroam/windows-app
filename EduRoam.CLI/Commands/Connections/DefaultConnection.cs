@@ -1,5 +1,7 @@
 ﻿using EduRoam.Connect.Tasks.Connectors;
 
+using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
+
 namespace EduRoam.CLI.Commands.Connections
 {
     internal class DefaultConnection : IConnection
@@ -11,13 +13,13 @@ namespace EduRoam.CLI.Commands.Connections
             this.connector = connector;
         }
 
-        public async Task<(bool connected, IList<string> messages)> ConfigureAndConnectAsync(bool force)
+        public async Task<TaskStatus> ConfigureAndConnectAsync(bool force)
         {
-            var (configured, messages) = await this.connector.ConfigureAsync(force);
+            var status = await this.connector.ConfigureAsync(force);
 
-            if (!configured)
+            if (!status.Success)
             {
-                return (configured, messages);
+                return status;
             }
 
             return await this.connector.ConnectAsync();

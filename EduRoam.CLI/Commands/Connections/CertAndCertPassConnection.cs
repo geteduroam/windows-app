@@ -1,6 +1,7 @@
-﻿using EduRoam.Connect;
-using EduRoam.Connect.Language;
+﻿using EduRoam.Connect.Language;
 using EduRoam.Connect.Tasks.Connectors;
+
+using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
 
 namespace EduRoam.CLI.Commands.Connections
 {
@@ -15,12 +16,15 @@ namespace EduRoam.CLI.Commands.Connections
             this.certificateFile = certificateFile;
         }
 
-        public async Task<(bool connected, IList<string> messages)> ConfigureAndConnectAsync(bool force)
+        public async Task<TaskStatus> ConfigureAndConnectAsync(bool force)
         {
+            var status = TaskStatus.AsFailure();
+
             if (this.certificateFile == null)
             {
                 var certificatePathOption = Options.GetCertificatePathOption();
-                return (false, string.Format(Resource.ErrorNoClientCertificateProvided, string.Join(", ", certificatePathOption.Aliases)).AsListItem());
+                status.Errors.Add(string.Format(Resource.ErrorNoClientCertificateProvided, string.Join(", ", certificatePathOption.Aliases)));
+                return status;
             }
 
             Console.Write($"{Resource.Passphrase}: ");
@@ -29,17 +33,17 @@ namespace EduRoam.CLI.Commands.Connections
             this.connector.Credentials = new ConnectorCredentials(passphrase);
             this.connector.CertificatePath = this.certificateFile;
 
-            var (validCredentials, messages) = this.connector.ValidateCertificateAndCredentials();
-            if (!validCredentials)
+            status = this.connector.ValidateCertificateAndCredentials();
+            if (!status.Success)
             {
-                return (validCredentials, messages);
+                return status;
             }
 
-            (var configured, messages) = await this.connector.ConfigureAsync(force);
+            status = await this.connector.ConfigureAsync(force);
 
-            if (!configured)
+            if (!status.Success)
             {
-                return (configured, messages);
+                return status;
             }
 
             return await this.connector.ConnectAsync();

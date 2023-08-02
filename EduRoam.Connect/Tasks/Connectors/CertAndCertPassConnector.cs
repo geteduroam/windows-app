@@ -16,40 +16,39 @@ namespace EduRoam.Connect.Tasks.Connectors
         public ConnectorCredentials? Credentials { get; set; }
         public FileInfo? CertificatePath { get; set; }
 
-        public (bool, IList<string>) ValidateCertificateAndCredentials()
+        public TaskStatus ValidateCertificateAndCredentials()
         {
-            var isValid = true;
-            var messages = new List<string>();
+            var status = new TaskStatus(true);
 
             if (this.Credentials == null || this.Credentials.Password.Length == 0)
             {
-                isValid = false;
-                messages.Add(Resource.ErrorInvalidCredentials);
+                status.Success = false;
+                status.Errors.Add(Resource.ErrorInvalidCredentials);
             }
 
             if ((this.CertificatePath == null || !this.CertificatePath.Exists))
             {
-                isValid = false;
-                messages.Add(Resource.ErrorInvalidCertificatePath);
+                status.Success = false;
+                status.Errors.Add(Resource.ErrorInvalidCertificatePath);
             }
 
-            return (isValid, messages);
+            return status;
         }
 
-        public override async Task<(bool, IList<string>)> ConfigureAsync(bool forceConfiguration = false)
+        public override async Task<TaskStatus> ConfigureAsync(bool forceConfiguration = false)
         {
-            var (configured, messages) = this.ValidateCertificateAndCredentials();
+            var status = this.ValidateCertificateAndCredentials();
 
-            if (!configured)
+            if (!status.Success)
             {
-                return (configured, messages);
+                return status;
             }
 
-            (configured, messages) = await base.ConfigureAsync(forceConfiguration);
+            status = await base.ConfigureAsync(forceConfiguration);
 
-            if (!configured)
+            if (!status.Success)
             {
-                return (configured, messages);
+                return status;
             }
 
             var eapConfigWithPassphrase = this.eapConfig.WithClientCertificate(this.CertificatePath!.FullName, this.Credentials!.Password.ToString()!);
@@ -60,21 +59,21 @@ namespace EduRoam.Connect.Tasks.Connectors
 
                 if (exception != null)
                 {
-                    configured = false;
-                    messages = exception.Message.AsListItem();
+                    status.Success = false;
+                    status.Errors.Add(exception.Message);
                 }
             }
 
-            return (configured, messages);
+            return status;
         }
 
-        public override async Task<(bool connected, IList<string> messages)> ConnectAsync()
+        public override async Task<TaskStatus> ConnectAsync()
         {
-            var (connected, messages) = this.ValidateCertificateAndCredentials();
+            var status = this.ValidateCertificateAndCredentials();
 
-            if (!connected)
+            if (!status.Success)
             {
-                return (connected, messages);
+                return status;
             }
 
             Debug.Assert(
@@ -85,32 +84,34 @@ namespace EduRoam.Connect.Tasks.Connectors
             if (!EduRoamNetwork.IsWlanServiceApiAvailable())
             {
                 // TODO: update this when wired x802 is a thing
-                return (false, Resource.ErrorWirelessUnavailable.AsListItem());
+                status.Success = false;
+                status.Errors.Add(Resource.ErrorWirelessUnavailable);
+
+                return status;
             }
 
             var eapConfigWithPassphrase = this.eapConfig.WithClientCertificate(this.CertificatePath!.FullName, this.Credentials!.Password.ToString()!);
 
-            connected = await Task.Run(ConnectToEduroam.TryToConnect);
-            var message = string.Empty;
+            status.Success = await Task.Run(ConnectToEduroam.TryToConnect);
 
-            if (connected)
+            if (status.Success)
             {
-                message = Resource.Connected;
+                status.Messages.Add(Resource.Connected);
             }
             else
             {
                 if (EduRoamNetwork.IsNetworkInRange(eapConfigWithPassphrase))
                 {
-                    message = Resource.ErrorConfiguredButUnableToConnect;
+                    status.Errors.Add(Resource.ErrorConfiguredButUnableToConnect);
                 }
                 else
                 {
                     // Hs2 is not enumerable
-                    message = Resource.ErrorConfiguredButProbablyOutOfCoverage;
+                    status.Errors.Add(Resource.ErrorConfiguredButProbablyOutOfCoverage);
                 }
             }
 
-            return (connected, message.AsListItem());
+            return status;
         }
     }
 }

@@ -17,58 +17,83 @@ namespace EduRoam.Connect.Tasks.Connectors
 
         public ConnectorCredentials? Credentials { get; set; }
 
-        public (bool, IList<string>) ValidateCredentials()
+        public TaskStatus ValidateCredentials()
         {
+            var status = new TaskStatus(false);
+
             if (this.Credentials == null || string.IsNullOrWhiteSpace(this.Credentials.UserName) || this.Credentials.Password.Length == 0)
             {
-                return (false, Resource.ErrorInvalidCredentials.AsListItem());
+                status.Errors.Add(Resource.ErrorInvalidCredentials);
+                return status;
             }
 
             var (realm, hint) = this.eapConfig.GetClientInnerIdentityRestrictions();
 
             var brokenRules = IdentityProviderParser.GetRulesBrokenOnUsername(this.Credentials.UserName, realm, hint);
-
             if (brokenRules.Any())
             {
-                return (false, brokenRules.ToList());
+                status.Errors = brokenRules.ToList();
+                return status;
             }
 
-            return (true, Array.Empty<string>());
+            if (this.eapConfig.RequiredAnonymousIdentRealm != null) // required realm can be empty string!
+            {
+                // Windows will set the realm itself for PEAP-EAP-MSCHAPv2
+                // If the realm does not match, AND ALL OTHER TESTS ARE OK (no broken rules),
+                // warn the user if the realms mismatch, but don't prevent connecting.
+                var fullUsername = this.Credentials.UserName;
+                var userRealm = fullUsername.Contains('@')
+                    ? fullUsername.Substring(fullUsername.IndexOf('@'))
+                    : "";
+
+                if (this.eapConfig.RequiredAnonymousIdentRealm != userRealm)
+                {
+                    var strProfileRealm = string.IsNullOrEmpty(this.eapConfig.RequiredAnonymousIdentRealm)
+                        ? "realmless"
+                        : "\"" + this.eapConfig.RequiredAnonymousIdentRealm + "\"";
+
+                    status.Errors.Add(string.Format(Resource.WarnRealmMismatch, userRealm, strProfileRealm));
+                    return status;
+                }
+            }
+
+            status.Success = true;
+            return status;
         }
 
-        public override async Task<(bool, IList<string>)> ConfigureAsync(bool forceConfiguration = false)
+        public override async Task<TaskStatus> ConfigureAsync(bool forceConfiguration = false)
         {
-            var (configured, messages) = this.ValidateCredentials();
+            var status = this.ValidateCredentials();
 
-            if (!configured)
+            if (!status.Success)
             {
-                return (configured, messages);
+                return status;
             }
 
-            (configured, messages) = await base.ConfigureAsync(forceConfiguration);
+            status = await base.ConfigureAsync(forceConfiguration);
 
-            if (configured)
+            if (status.Success)
             {
                 var eapConfigWithCredentials = this.eapConfig.WithLoginCredentials(this.Credentials!.UserName!, this.Credentials!.Password);
 
                 var exception = InstallEapConfig(eapConfigWithCredentials);
                 if (exception != null)
                 {
-                    configured = false;
-                    messages = exception.Message.AsListItem();
+                    status.Success = false;
+                    status.Errors.Add(exception.Message);
                 }
             }
 
-            return (configured, messages);
+            return status;
         }
 
-        public override async Task<(bool connected, IList<string> messages)> ConnectAsync()
+        public override async Task<TaskStatus> ConnectAsync()
         {
-            var (connected, messages) = this.ValidateCredentials();
+            var status = this.ValidateCredentials();
 
-            if (!connected)
+            if (!status.Success)
             {
-                return (connected, messages);
+                return status;
             }
 
             Debug.Assert(
@@ -79,32 +104,33 @@ namespace EduRoam.Connect.Tasks.Connectors
             if (!EduRoamNetwork.IsWlanServiceApiAvailable())
             {
                 // TODO: update this when wired x802 is a thing
-                return (false, Resource.ErrorWirelessUnavailable.AsListItem());
+                status.Success = false;
+                status.Errors.Add(Resource.ErrorWirelessUnavailable);
+                return status;
             }
 
             var eapConfigWithCredentials = this.eapConfig.WithLoginCredentials(this.Credentials!.UserName!, this.Credentials.Password.ToString()!);
 
-            connected = await Task.Run(ConnectToEduroam.TryToConnect);
-            var message = string.Empty;
+            status.Success = await Task.Run(ConnectToEduroam.TryToConnect);
 
-            if (connected)
+            if (status.Success)
             {
-                message = Resource.Connected;
+                status.Messages.Add(Resource.Connected);
             }
             else
             {
                 if (EduRoamNetwork.IsNetworkInRange(eapConfigWithCredentials))
                 {
-                    message = Resource.ErrorConfiguredButUnableToConnect;
+                    status.Errors.Add(Resource.ErrorConfiguredButUnableToConnect);
                 }
                 else
                 {
                     // Hs2 is not enumerable
-                    message = Resource.ErrorConfiguredButProbablyOutOfCoverage;
+                    status.Errors.Add(Resource.ErrorConfiguredButProbablyOutOfCoverage);
                 }
             }
 
-            return (connected, message.AsListItem());
+            return status;
         }
     }
 }

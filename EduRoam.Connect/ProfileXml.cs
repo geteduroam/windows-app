@@ -1,9 +1,6 @@
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
@@ -23,38 +20,38 @@ namespace EduRoam.Connect
     /// C:\Windows\schemas\EAPMethods
     /// C:\Windows\schemas\EAPHost
     /// </remarks>
-    class ProfileXml
+    public class ProfileXml
     {
         // Namespaces:
 
         // WLANProfile
-        static readonly XNamespace nsWLAN = "http://www.microsoft.com/networking/WLAN/profile/v1";
-        static readonly XNamespace nsOneX = "http://www.microsoft.com/networking/OneX/v1";
-        static readonly XNamespace nsEHC = "http://www.microsoft.com/provisioning/EapHostConfig";
-        static readonly XNamespace nsEC = "http://www.microsoft.com/provisioning/EapCommon";
-        static readonly XNamespace nsBECP = "http://www.microsoft.com/provisioning/BaseEapConnectionPropertiesV1";
+        private static readonly XNamespace nsWLAN = "http://www.microsoft.com/networking/WLAN/profile/v1";
+        private static readonly XNamespace nsOneX = "http://www.microsoft.com/networking/OneX/v1";
+        private static readonly XNamespace nsEHC = "http://www.microsoft.com/provisioning/EapHostConfig";
+        private static readonly XNamespace nsEC = "http://www.microsoft.com/provisioning/EapCommon";
+        private static readonly XNamespace nsBECP = "http://www.microsoft.com/provisioning/BaseEapConnectionPropertiesV1";
 
-        //static readonly XNamespace nsHSP = "http://www.microsoft.com/networking/WLAN/HotspotProfile/v1";
+        private static readonly XNamespace nsHSP = "http://www.microsoft.com/networking/WLAN/HotspotProfile/v1";
 
         // TLS specific
-        static readonly XNamespace nsETCPv1 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV1";
-        static readonly XNamespace nsETCPv2 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV2";
-        static readonly XNamespace nsETCPv3 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV3";
+        private static readonly XNamespace nsETCPv1 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV1";
+        private static readonly XNamespace nsETCPv2 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV2";
+        private static readonly XNamespace nsETCPv3 = "http://www.microsoft.com/provisioning/EapTlsConnectionPropertiesV3";
 
         // MSCHAPv2 specific
-        static readonly XNamespace nsMPCPv1 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV1";
-        static readonly XNamespace nsMPCPv2 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV2";
-        static readonly XNamespace nsMPCPv3 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV3";
-        static readonly XNamespace nsMCCP = "http://www.microsoft.com/provisioning/MsChapV2ConnectionPropertiesV1";
+        private static readonly XNamespace nsMPCPv1 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV1";
+        private static readonly XNamespace nsMPCPv2 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV2";
+        private static readonly XNamespace nsMPCPv3 = "http://www.microsoft.com/provisioning/MsPeapConnectionPropertiesV3";
+        private static readonly XNamespace nsMCCP = "http://www.microsoft.com/provisioning/MsChapV2ConnectionPropertiesV1";
 
         // TTLS specific
-        static readonly XNamespace nsTTLS = "http://www.microsoft.com/provisioning/EapTtlsConnectionPropertiesV1";
+        private static readonly XNamespace nsTTLS = "http://www.microsoft.com/provisioning/EapTtlsConnectionPropertiesV1";
 
         private static readonly string[] PREFERRED_SSIDS = new string[] { "eduroam", "govroam" };
 
-        public static ValueTuple<string, string> CreateSSIDProfileXml(EapConfig.AuthenticationMethod authMethod, string ssid)
+        public static ValueTuple<string, string> CreateSSIDProfileXml(Eap.AuthenticationMethod authMethod, string ssid)
             => CreateProfileXml(authMethod, withSSID: ssid);
-        public static ValueTuple<string, string> CreateHS20ProfileXml(EapConfig.AuthenticationMethod authMethod)
+        public static ValueTuple<string, string> CreateHS20ProfileXml(Eap.AuthenticationMethod authMethod)
             => CreateProfileXml(authMethod, withHS20: true);
 
         /// <summary>
@@ -65,19 +62,30 @@ namespace EduRoam.Connect
         /// <param name="withHS20">If to install as hotspot 2.0 profile or not (separate profile from normal eap)</param>
         /// <returns>A tuple containing the profile name and the WLANProfile XML data</returns>
         private static ValueTuple<string, string> CreateProfileXml(
-            EapConfig.AuthenticationMethod authMethod,
-            string withSSID = null,
+            Eap.AuthenticationMethod authMethod,
+            string? withSSID = null,
             bool withHS20 = false,
             bool hiddenNetwork = false)
         {
             if (withHS20 && withSSID != null)
+            {
                 throw new ArgumentException("Cannot configure with both SSID and HS20"); // we can, but the result is confusing
+            }
+
             if (withSSID != null && !authMethod.IsSSIDSupported)
+            {
                 throw new ArgumentException("Cannot configure " + nameof(authMethod) + " with SSID because it doesn't support SSID configuration");
+            }
+
             if (withHS20 && !authMethod.IsHS20Supported)
+            {
                 throw new ArgumentException("Cannot configure " + nameof(authMethod) + " with Hotspot 2.0 because it doesn't support Hotspot 2.0 configuration");
+            }
+
             if (withSSID != null && !authMethod.SSIDs.Any((ssid) => withSSID == ssid))
+            {
                 throw new ArgumentException("The ssid is not used by the authentication method");
+            }
 
             if (authMethod.ServerNames.Count == 0 || authMethod.ServerCertificateAuthorities.Count == 0)
             {
@@ -85,12 +93,20 @@ namespace EduRoam.Connect
             }
 
             // Decide the profile name, which is the unique identifier for this profile
-            string profileName = null;
+            var profileName = string.Empty;
             if (withHS20 && string.IsNullOrWhiteSpace(profileName))
-                profileName = authMethod.EapConfig.InstitutionInfo.DisplayName;
+            {
+                profileName = authMethod.EapConfig?.InstitutionInfo.DisplayName ?? string.Empty;
+            }
+
             if (withSSID != null && string.IsNullOrWhiteSpace(profileName))
+            {
                 profileName = withSSID;
-            if (string.IsNullOrWhiteSpace(profileName)) foreach (string preferredSSID in PREFERRED_SSIDS)
+            }
+
+            if (string.IsNullOrWhiteSpace(profileName))
+            {
+                foreach (var preferredSSID in PREFERRED_SSIDS)
                 {
                     if (authMethod.SSIDs.Contains(preferredSSID))
                     {
@@ -98,6 +114,8 @@ namespace EduRoam.Connect
                         break;
                     }
                 }
+            }
+
             if (string.IsNullOrWhiteSpace(profileName) && authMethod.SSIDs.Any())
             {
                 profileName = authMethod.SSIDs.First();
@@ -106,7 +124,7 @@ namespace EduRoam.Connect
             {
                 profileName = authMethod.ConsortiumOIDs.First();
             }
-            if (withHS20 && authMethod.SSIDs.Contains(profileName))
+            if (withHS20 && !string.IsNullOrWhiteSpace(profileName) && authMethod.SSIDs.Contains(profileName))
             {
                 // since profileName is the unique identifier of the profile. avoid collisions with the profiles per ssid
                 profileName += " via Passpoint"; // GEANT convention as fallback
@@ -115,14 +133,15 @@ namespace EduRoam.Connect
             // Construct XML document
             XElement ssidConfigElement;
             XElement hs2Element, roamingConsortiumElement;
-            XElement newProfile =
+
+            var newProfile =
                 new XElement(nsWLAN + "WLANProfile",
                     new XElement(nsWLAN + "name", profileName),
                     ssidConfigElement =
                     new XElement(nsWLAN + "SSIDConfig"),
                     hs2Element =
                     new XElement(nsWLAN + "Hotspot2",
-                        new XElement(nsWLAN + "DomainName", authMethod.EapConfig.InstitutionInfo.InstId),
+                        new XElement(nsWLAN + "DomainName", authMethod.EapConfig?.InstitutionInfo.InstId),
                         //new XElement(nsWLAN + "NAIRealm", ), // A list of Network Access Identifier (NAI) Realm identifiers. Entries in this list are usually of the form user@domain.
                         // new XElement(nsWLAN + "Network3GPP", ), // A list of Public Land Mobile Network (PLMN) IDs.
                         roamingConsortiumElement =
@@ -160,7 +179,6 @@ namespace EduRoam.Connect
                     )
                 );
 
-
             // Add all the supported SSIDs, if we have none, assume we're doing HS20 if we got this far and nobody stopped us
             var ssids = authMethod.SSIDs.Any() ? authMethod.SSIDs : new List<string> { "#Passpoint" };
             ssids.ForEach(ssid => // This element supports up to 25 SSIDs in the v1 namespace and up to additional 10000 SSIDs in the v2 namespace.
@@ -180,7 +198,10 @@ namespace EduRoam.Connect
                     new XElement(nsWLAN + "OUI", oui)
                 ));
             // ... or remove it if it shouldn't be there
-            if (!withHS20) hs2Element.Remove();
+            if (!withHS20)
+            {
+                hs2Element.Remove();
+            }
 
             // return xml as string
             return (profileName, newProfile.ToString());
@@ -189,20 +210,20 @@ namespace EduRoam.Connect
         private static XElement CreateEapConfiguration(
             EapType eapType,
             InnerAuthType innerAuthType,
-            string outerIdentity,
+            string? outerIdentity,
             List<string> serverNames,
             List<string> caThumbprints)
         {
             // Typically, this should be on ALWAYS, BUT:
             // If the outer type is TTLS, we recursively get back here again,
             // and we cannot do inner validation.
-            bool enableServerValidation = serverNames.Any() || caThumbprints.Any();
+            var enableServerValidation = serverNames.Any() || caThumbprints.Any();
 
             // creates the root xml strucure, with references to some of its descendants
-            XElement configElement;
-            XElement serverValidationElement;
-            XElement caHashListElement = null; // eapType == eapType.TLS only
-            XElement eapConfiguration =
+            XElement? configElement;
+            XElement? serverValidationElement;
+            XElement? caHashListElement = null; // eapType == eapType.TLS only
+            var eapConfiguration =
                 new XElement(nsEHC + "EapHostConfig",
                     new XElement(nsEHC + "EapMethod",
                         new XElement(nsEC + "Type", (int)eapType),
@@ -215,8 +236,8 @@ namespace EduRoam.Connect
                 );
 
             // namespace element local names dependant on EAP type
-            XNamespace nsEapType;
-            string thumbprintNodeName;
+            XNamespace? nsEapType;
+            string? thumbprintNodeName;
 
             if ((eapType, innerAuthType) == (EapType.TLS, InnerAuthType.None))
             {
@@ -257,8 +278,11 @@ namespace EduRoam.Connect
                 // MSCHAPv2 as outer EAP type should only be used in a TTLS tunnel
                 // It does not support server validation
                 if (enableServerValidation)
+                {
                     throw new EduroamAppUserException("not supported",
                         "MSCHAPv2 as outer EAP does not support server validation");
+                }
+
                 nsEapType = null;
                 thumbprintNodeName = null;
                 serverValidationElement = null;
@@ -281,7 +305,7 @@ namespace EduRoam.Connect
 
                 // Windows wants to add the realm itself, we must only set the local part
                 // This appears to be the case for PEAP-EAP-MSCHAPv2
-                string anonymousUserName = !string.IsNullOrEmpty(outerIdentity) && outerIdentity.Contains("@")
+                var anonymousUserName = !string.IsNullOrEmpty(outerIdentity) && outerIdentity.Contains('@')
                     ? outerIdentity.Substring(0, outerIdentity.IndexOf("@"))
                     : outerIdentity
                     ;
@@ -409,7 +433,7 @@ namespace EduRoam.Connect
             if (caThumbprints.Any())
             {
                 // Format the CA thumbprints into xs:element type="hexBinary"
-                List<string> formattedThumbprints = caThumbprints
+                var formattedThumbprints = caThumbprints
                     .Select(thumb => Regex.Replace(thumb, " ", ""))
                     .Select(thumb => Regex.Replace(thumb, ".{2}", "$0 "))
                     .Select(thumb => thumb.ToUpperInvariant())
@@ -419,12 +443,16 @@ namespace EduRoam.Connect
                 // Write the CA thumbprints to their proper places in the XML:
 
                 if (serverValidationElement != null) // Not on bare MSCHAPv2
+                {
                     formattedThumbprints.ForEach(thumb =>
                         serverValidationElement.Add(new XElement(nsEapType + thumbprintNodeName, thumb)));
+                }
 
                 if (caHashListElement != null) // TLS only
+                {
                     formattedThumbprints.ForEach(thumb =>
                         caHashListElement.Add(new XElement(nsETCPv3 + "IssuerHash", thumb)));
+                }
             }
 
             return eapConfiguration;
@@ -435,10 +463,10 @@ namespace EduRoam.Connect
         /// </summary>
         /// <param name="authMethod"></param>
         /// <returns></returns>
-        public static bool IsSupported(EapConfig.AuthenticationMethod authMethod)
+        public static bool IsSupported(Eap.AuthenticationMethod authMethod)
         {
             // check if it has a supported
-            if (authMethod.EapConfig.CredentialApplicabilities
+            if (authMethod.EapConfig != null && authMethod.EapConfig.CredentialApplicabilities
                 .Where(cred => cred.NetworkType == IEEE802x.IEEE80211)
                 .Where(cred => cred.MinRsnProto != "TKIP") // too insecure
                 .Any())

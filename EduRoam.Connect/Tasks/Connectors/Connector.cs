@@ -27,17 +27,17 @@ namespace EduRoam.Connect.Tasks.Connectors
 
         public abstract ConnectionType ConnectionType { get; }
 
-        public virtual Task<(bool, IList<string>)> ConfigureAsync(bool forceConfiguration = false)
+        public virtual Task<TaskStatus> ConfigureAsync(bool forceConfiguration = false)
         {
             var certificatesNotInstalled = this.GetNotInstalledCertificates();
 
             var succes = !certificatesNotInstalled.Any();
             var message = succes ? Resource.ConfiguredEap : Resource.ErrorRequiredCertificatesNotInstalled;
 
-            return Task.FromResult<(bool, IList<string>)>((succes, message.AsListItem()));
+            return Task.FromResult<TaskStatus>(TaskStatus.AsSuccess(message));
         }
 
-        public abstract Task<(bool connected, IList<string> messages)> ConnectAsync();
+        public abstract Task<TaskStatus> ConnectAsync();
 
         protected static bool CheckIfEapConfigIsSupported([NotNullWhen(true)] EapConfig? eapConfig)
         {

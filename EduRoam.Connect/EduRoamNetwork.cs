@@ -76,7 +76,7 @@ namespace EduRoam.Connect
         /// </summary>
         /// <param name="authMethod">The Authentification method to check</param>
         /// <returns>True if supported</returns>
-        public static bool IsAuthMethodSupported(EapConfig.AuthenticationMethod authMethod)
+        public static bool IsAuthMethodSupported(Eap.AuthenticationMethod authMethod)
         {
             _ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
             return ProfileXml.IsSupported(authMethod)
@@ -92,7 +92,7 @@ namespace EduRoam.Connect
         /// <param name="forAllUsers">Install for all users or only the current user</param>
         /// <returns>(success with ssid, success with hotspot2)</returns>
         /// <remarks><paramref name="forAllUsers"/> is ignored because it currently must be true for profiles and false for eapxml</remarks>
-        public void InstallProfiles(EapConfig.AuthenticationMethod authMethod, bool forAllUsers = true)
+        public void InstallProfiles(Eap.AuthenticationMethod authMethod, bool forAllUsers = true)
         {
             _ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
 

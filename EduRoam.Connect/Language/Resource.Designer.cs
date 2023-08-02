@@ -880,6 +880,15 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to /!\ The realm for the OuterIdentity will be set to &quot;{0}&quot; but the profile specified &quot;{1}&quot;.
+        /// </summary>
+        public static string WarnRealmMismatch {
+            get {
+                return ResourceManager.GetString("WarnRealmMismatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ✓.
         /// </summary>
         public static string Yes {

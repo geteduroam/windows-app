@@ -18,13 +18,13 @@ namespace EduRoam.Connect
         private bool hasInstalledCertificates = false;
 
         // reference to the EAP config
-        public EapConfig.AuthenticationMethod AuthMethod { get; }
+        public Eap.AuthenticationMethod AuthMethod { get; }
 
         /// <summary>
         /// Constructs a EapAuthMethodInstaller
         /// </summary>
         /// <param name="authMethod">The authentification method to attempt to install</param>
-        public EapAuthMethodInstaller(EapConfig.AuthenticationMethod authMethod)
+        public EapAuthMethodInstaller(Eap.AuthenticationMethod authMethod)
         {
             this.AuthMethod = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
         }

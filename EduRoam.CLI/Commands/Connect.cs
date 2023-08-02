@@ -70,7 +70,6 @@ namespace EduRoam.CLI.Commands
 
                 try
                 {
-                    var connected = false;
                     IList<string> messages = new List<string>();
                     IConnection connection = connector switch
                     {
@@ -81,8 +80,8 @@ namespace EduRoam.CLI.Commands
                         _ => throw new NotSupportedException(string.Format(Resource.ErrorUnsupportedConnectionType, connector.GetType().Name)),
                     };
 
-                    (connected, messages) = await connection.ConfigureAndConnectAsync(force);
-                    if (connected)
+                    var status = await connection.ConfigureAndConnectAsync(force);
+                    if (status.Success)
                     {
                         ConsoleExtension.WriteStatus(string.Join("\n", messages));
                     }
@@ -148,7 +147,7 @@ namespace EduRoam.CLI.Commands
 
             var certificatesResolved = configurationTask.ConfigureCertificates(force);
 
-            if (!certificatesResolved && !force)
+            if (!certificatesResolved.Success && !force)
             {
                 Console.WriteLine(Resource.RequestToInstallCertificates);
                 var confirm = Interaction.GetConfirmation();
@@ -159,7 +158,7 @@ namespace EduRoam.CLI.Commands
                 }
             }
 
-            return certificatesResolved;
+            return certificatesResolved.Success;
         }
     }
 }

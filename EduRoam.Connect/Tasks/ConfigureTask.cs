@@ -21,7 +21,7 @@ namespace EduRoam.Connect.Tasks
         /// </summary>
         /// <param name="forceConfiguration"></param>
         /// <returns></returns>
-        public bool ConfigureCertificates(bool forceConfiguration)
+        public TaskStatus ConfigureCertificates(bool forceConfiguration)
         {
             var certificatesNotInstalled = this.GetNotInstalledCertificates();
 
@@ -29,7 +29,7 @@ namespace EduRoam.Connect.Tasks
             {
                 if (!forceConfiguration)
                 {
-                    return false;
+                    return TaskStatus.AsFailure();
                 }
                 else
                 {
@@ -48,12 +48,12 @@ namespace EduRoam.Connect.Tasks
                     }
                     catch (UserAbortException)
                     {
-                        return false;
+                        return TaskStatus.AsFailure();
                     }
                 }
             }
 
-            return true;
+            return TaskStatus.AsSuccess();
         }
 
         public Connector? GetConnector()

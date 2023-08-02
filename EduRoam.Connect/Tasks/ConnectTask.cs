@@ -17,18 +17,18 @@ namespace EduRoam.Connect.Tasks
             return Connector.GetInstance(eapConfig);
         }
 
-        public async Task<(bool, IList<string>)> ValidateCredentialsAsync(string? userName, SecureString password)
+        public async Task<TaskStatus> ValidateCredentialsAsync(string? userName, SecureString password)
         {
             if (string.IsNullOrWhiteSpace(userName) || password.Length == 0)
             {
-                return (false, Resource.ErrorInvalidCredentials.AsListItem());
+                return TaskStatus.AsFailure(Resource.ErrorInvalidCredentials);
             }
 
             var eapConfig = await GetEapConfig();
             if (eapConfig == null)
             {
                 // this should never happen, because this method should only be called after a connection type is determined based upon GetConnectionTypeAsync().
-                return (false, Resource.ErrorConfiguredButNotConnected.AsListItem());
+                return TaskStatus.AsFailure(Resource.ErrorConfiguredButNotConnected);
             }
 
             var (realm, hint) = eapConfig.GetClientInnerIdentityRestrictions();
@@ -37,10 +37,10 @@ namespace EduRoam.Connect.Tasks
 
             if (brokenRules.Any())
             {
-                return (false, brokenRules.ToList());
+                return TaskStatus.AsFailure(brokenRules.ToArray());
             }
 
-            return (true, Array.Empty<string>());
+            return TaskStatus.AsSuccess();
         }
 
         /// <summary>
@@ -48,41 +48,41 @@ namespace EduRoam.Connect.Tasks
         /// </summary>
         /// <returns>True if a connection could be established, false otherwise</returns>
         /// <exception cref="EduroamAppUserException" />
-        public async Task<(bool connected, IList<string> messages)> ConnectAsync()
+        public async Task<TaskStatus> ConnectAsync()
         {
             if (!EduRoamNetwork.IsWlanServiceApiAvailable())
             {
                 // TODO: update this when wired x802 is a thing
-                return (false, Resource.ErrorWirelessUnavailable.AsListItem());
+                return TaskStatus.AsFailure(Resource.ErrorWirelessUnavailable);
             }
 
-            var connected = await Task.Run(ConnectToEduroam.TryToConnect);
-            var message = string.Empty;
+            var status = new TaskStatus();
+            status.Success = await Task.Run(ConnectToEduroam.TryToConnect);
 
-            if (connected)
+            if (status.Success)
             {
-                message = Resource.Connected;
+                status.Messages.Add(Resource.Connected);
             }
             else
             {
                 var eapConfig = await GetEapConfig();
                 if (eapConfig == null)
                 {
-                    message = Resource.ErrorConfiguredButNotConnected;
+                    status.Errors.Add(Resource.ErrorConfiguredButNotConnected);
 
                 }
                 else if (EduRoamNetwork.IsNetworkInRange(eapConfig))
                 {
-                    message = Resource.ErrorConfiguredButUnableToConnect;
+                    status.Errors.Add(Resource.ErrorConfiguredButUnableToConnect);
                 }
                 else
                 {
                     // Hs2 is not enumerable
-                    message = Resource.ErrorConfiguredButProbablyOutOfCoverage;
+                    status.Errors.Add(Resource.ErrorConfiguredButProbablyOutOfCoverage);
                 }
             }
 
-            return (connected, message.AsListItem());
+            return status;
         }
 
         private static async Task<EapConfig?> GetEapConfig()

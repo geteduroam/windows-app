@@ -47,7 +47,7 @@ namespace EduRoam.Connect.Store
             this.EapConfigXml = eapConfigXml;
         }
 
-        public static IdentityProviderInfo From(EapConfig.AuthenticationMethod? authMethod)
+        public static IdentityProviderInfo From(Eap.AuthenticationMethod? authMethod)
         {
             if (authMethod == null)
             {

@@ -45,7 +45,7 @@ namespace EduRoam.Connect
         /// </summary>
         /// <param name="authMethod">authMethod</param>
         /// <returns>Complete user data xml as string.</returns>
-        public static string CreateUserDataXml(EapConfig.AuthenticationMethod authMethod)
+        public static string CreateUserDataXml(Eap.AuthenticationMethod authMethod)
         {
             _ = authMethod ?? throw new ArgumentNullException(nameof(authMethod));
             using var userCert = authMethod.ClientCertificateAsX509Certificate2();
@@ -178,7 +178,7 @@ namespace EduRoam.Connect
             };
         }
 
-        public static bool IsSupported(EapConfig.AuthenticationMethod authMethod) => IsSupported(authMethod.EapType, authMethod.InnerAuthType);
+        public static bool IsSupported(Eap.AuthenticationMethod authMethod) => IsSupported(authMethod.EapType, authMethod.InnerAuthType);
 
         private static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
         {

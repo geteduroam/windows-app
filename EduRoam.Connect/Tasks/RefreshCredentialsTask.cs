@@ -16,29 +16,28 @@ namespace EduRoam.Connect.Tasks
         /// <exception cref="ApiParsingException"/>
         public async Task<string> RefreshAsync()
         {
-            var response = LetsWifi.RefreshResponse.Failed;
-
             try
             {
-                response = await LetsWifi.Instance.RefreshAndInstallEapConfig(force: true, onlyLetsWifi: true);
+                var response = await LetsWifi.Instance.RefreshAndInstallEapConfig(force: true, onlyLetsWifi: true);
+
+                switch (response)
+                {
+                    case LetsWifi.RefreshResponse.Success:
+                    case LetsWifi.RefreshResponse.UpdatedEapXml: // Should never happen due to onlyLetsWifi=true
+                        return GetExpirationInfo();
+                    case LetsWifi.RefreshResponse.StillValid: // should never happend due to force=true
+                    case LetsWifi.RefreshResponse.AccessDenied:
+                    case LetsWifi.RefreshResponse.NewRootCaRequired:
+                    case LetsWifi.RefreshResponse.NotRefreshable:
+                    case LetsWifi.RefreshResponse.Failed:
+                        break;
+                }
+
             }
             catch (HttpRequestException)
             {
                 await this.ReauthenticateAsync();
                 return string.Empty;
-            }
-
-            switch (response)
-            {
-                case LetsWifi.RefreshResponse.Success:
-                case LetsWifi.RefreshResponse.UpdatedEapXml: // Should never happen due to onlyLetsWifi=true
-                    return this.GetExpirationInfo();
-                case LetsWifi.RefreshResponse.StillValid: // should never happend due to force=true
-                case LetsWifi.RefreshResponse.AccessDenied:
-                case LetsWifi.RefreshResponse.NewRootCaRequired:
-                case LetsWifi.RefreshResponse.NotRefreshable:
-                case LetsWifi.RefreshResponse.Failed:
-                    break;
             }
 
             return string.Empty;
@@ -62,7 +61,7 @@ namespace EduRoam.Connect.Tasks
         /// <summary>
 		/// Loads info regarding the certficate of the persising store and displays it to the usr
 		/// </summary>
-		private string GetExpirationInfo()
+		private static string GetExpirationInfo()
         {
             if (RegistryStore.Instance.IdentityProvider?.NotAfter != null)
             {

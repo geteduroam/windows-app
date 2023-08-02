@@ -13,21 +13,21 @@ namespace EduRoam.Connect.Tasks.Connectors
 
         public override ConnectionType ConnectionType => ConnectionType.Default;
 
-        public override async Task<(bool, IList<string>)> ConfigureAsync(bool forceConfiguration = false)
+        public override async Task<TaskStatus> ConfigureAsync(bool forceConfiguration = false)
         {
-            var (configured, messages) = await base.ConfigureAsync(forceConfiguration);
+            var status = await base.ConfigureAsync(forceConfiguration);
 
-            if (configured)
+            if (status.Success)
             {
                 var exception = InstallEapConfig(this.eapConfig);
                 if (exception != null)
                 {
-                    configured = false;
-                    messages = exception.Message.AsListItem();
+                    status.Success = false;
+                    status.Errors.Add(exception.Message);
                 }
             }
 
-            return (configured, messages);
+            return status;
         }
 
         /// <summary>
@@ -35,8 +35,10 @@ namespace EduRoam.Connect.Tasks.Connectors
         /// </summary>
         /// <returns>True if a connection could be established, false otherwise</returns>
         /// <exception cref="EduroamAppUserException" />
-        public override async Task<(bool connected, IList<string> messages)> ConnectAsync()
+        public override async Task<TaskStatus> ConnectAsync()
         {
+            var status = TaskStatus.AsFailure();
+
             Debug.Assert(
                     !this.eapConfig.NeedsClientCertificatePassphrase && !this.eapConfig.NeedsLoginCredentials,
                     "Cannot configure EAP config that still needs credentials"
@@ -45,7 +47,8 @@ namespace EduRoam.Connect.Tasks.Connectors
             if (!EduRoamNetwork.IsWlanServiceApiAvailable())
             {
                 // TODO: update this when wired x802 is a thing
-                return (false, Resource.ErrorWirelessUnavailable.AsListItem());
+                status.Errors.Add(Resource.ErrorWirelessUnavailable);
+                return status;
             }
 
             foreach (var authMethod in this.eapConfig.SupportedAuthenticationMethods)
@@ -57,36 +60,36 @@ namespace EduRoam.Connect.Tasks.Connectors
                 if (DateTime.Now <= certValid)
                 {
                     // dispatch the event which creates the clock the end user sees
-                    return (false, Resource.ErrorClientCredentialNotValidYes.AsListItem());
+                    status.Errors.Add(Resource.ErrorClientCredentialNotValidYes);
+                    return status;
                 }
             }
 
-            var connected = await Task.Run(ConnectToEduroam.TryToConnect);
-            var message = string.Empty;
+            status.Success = await Task.Run(ConnectToEduroam.TryToConnect);
 
-            if (connected)
+            if (status.Success)
             {
-                message = Resource.Connected;
+                status.Messages.Add(Resource.Connected);
             }
             else
             {
                 if (this.eapConfig == null)
                 {
-                    message = Resource.ErrorConfiguredButNotConnected;
+                    status.Errors.Add(Resource.ErrorConfiguredButNotConnected);
 
                 }
                 else if (EduRoamNetwork.IsNetworkInRange(this.eapConfig))
                 {
-                    message = Resource.ErrorConfiguredButUnableToConnect;
+                    status.Errors.Add(Resource.ErrorConfiguredButUnableToConnect);
                 }
                 else
                 {
                     // Hs2 is not enumerable
-                    message = Resource.ErrorConfiguredButProbablyOutOfCoverage;
+                    status.Errors.Add(Resource.ErrorConfiguredButProbablyOutOfCoverage);
                 }
             }
 
-            return (connected, message.AsListItem());
+            return status;
         }
 
     }

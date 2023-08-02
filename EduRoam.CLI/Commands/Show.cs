@@ -135,7 +135,7 @@ namespace EduRoam.CLI.Commands
             || !string.IsNullOrEmpty(config.InstitutionInfo.Phone)
             || !string.IsNullOrEmpty(config.InstitutionInfo.TermsOfUse);
 
-        private static bool HasContactInfo(EapConfig.ProviderInfo info)
+        private static bool HasContactInfo(ProviderInfo info)
         {
             var hasWebAddress = !string.IsNullOrEmpty(info.WebAddress);
             var hasEmailAddress = !string.IsNullOrEmpty(info.EmailAddress);

@@ -392,6 +392,9 @@
   <data name="WarningUninstallCertificates" xml:space="preserve">
     <value>This means uninstalling all the trusted root certificates installed by this application.</value>
   </data>
+  <data name="WarnRealmMismatch" xml:space="preserve">
+    <value>/!\ The realm for the OuterIdentity will be set to "{0}" but the profile specified "{1}"</value>
+  </data>
   <data name="Yes" xml:space="preserve">
     <value>✓</value>
   </data>
