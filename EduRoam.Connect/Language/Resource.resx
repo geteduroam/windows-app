@@ -132,6 +132,9 @@
   <data name="CommandDescriptionConnect" xml:space="preserve">
     <value>Configure Wi-Fi based on a institution profile and connect.</value>
   </data>
+  <data name="CommandDescriptionInstall" xml:space="preserve">
+    <value>Install this binary to %USER%/AppData/Local</value>
+  </data>
   <data name="CommandDescriptionList" xml:space="preserve">
     <value>Get a list of institutions or profiles for a institution.</value>
   </data>

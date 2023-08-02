@@ -106,6 +106,15 @@ namespace EduRoam.Connect.Language {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Install this binary to %USER%/AppData/Local.
+        /// </summary>
+        public static string CommandDescriptionInstall {
+            get {
+                return ResourceManager.GetString("CommandDescriptionInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Get a list of institutions or profiles for a institution..
         /// </summary>
         public static string CommandDescriptionList {
