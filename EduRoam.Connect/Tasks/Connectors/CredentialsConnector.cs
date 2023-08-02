@@ -19,9 +19,9 @@ namespace EduRoam.Connect.Tasks.Connectors
 
         public TaskStatus ValidateCredentials()
         {
-            var status = new TaskStatus(false);
+            var status = TaskStatus.AsFailure();
 
-            if (this.Credentials == null || string.IsNullOrWhiteSpace(this.Credentials.UserName) || this.Credentials.Password.Length == 0)
+            if (this.Credentials == null || string.IsNullOrWhiteSpace(this.Credentials.UserName) || string.IsNullOrWhiteSpace(this.Credentials.Password))
             {
                 status.Errors.Add(Resource.ErrorInvalidCredentials);
                 return status;

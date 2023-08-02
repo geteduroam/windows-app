@@ -20,7 +20,7 @@ namespace EduRoam.Connect.Tasks.Connectors
         {
             var status = new TaskStatus(true);
 
-            if (this.Credentials == null || this.Credentials.Password.Length == 0)
+            if (this.Credentials == null || string.IsNullOrWhiteSpace(this.Credentials.Password))
             {
                 status.Success = false;
                 status.Errors.Add(Resource.ErrorInvalidCredentials);
