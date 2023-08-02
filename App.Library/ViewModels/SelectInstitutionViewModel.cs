@@ -1,4 +1,5 @@
 ﻿using EduRoam.Connect.Identity;
+using EduRoam.Connect.Tasks;
 
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -11,6 +12,8 @@ namespace App.Library.ViewModels
         private readonly IdentityProviderDownloader idpDownloader;
 
         private string searchText;
+
+        private readonly GetInstitutesTask institutesProvider = new();
 
         public SelectInstitutionViewModel(MainViewModel owner, IdentityProviderDownloader idpDownloader)
             : base(owner)

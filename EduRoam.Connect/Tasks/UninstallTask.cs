@@ -20,7 +20,7 @@ namespace EduRoam.Connect.Tasks
                         var extinguishMe = new ProcessStartInfo
                         {
                             FileName = "mshta",
-                            Arguments = $"vbscript:Execute(\"msgbox \"\"{Resource.UninstallNotification}\"\", 0, \"\"{Resource.UninstallNotificationTitle}\"\":close\")",
+                            Arguments = $"vbscript:Execute(\"msgbox \"\"{Resources.UninstallNotification}\"\", 0, \"\"{Resources.UninstallNotificationTitle}\"\":close\")",
                             WindowStyle = ProcessWindowStyle.Normal, // Shows a console in the taskbar, but it's hidden
                             CreateNoWindow = true,
                             WorkingDirectory = "C:\\"
@@ -32,7 +32,7 @@ namespace EduRoam.Connect.Tasks
                         var extinguishMe = new ProcessStartInfo
                         {
                             FileName = "mshta",
-                            Arguments = $"vbscript:Execute(\"msgbox \"\"{Resource.UninstallNotification}\"\", 0, \"\"{Resource.UninstallNotificationTitle}\"\":close\")",
+                            Arguments = $"vbscript:Execute(\"msgbox \"\"{Resources.UninstallNotification}\"\", 0, \"\"{Resources.UninstallNotificationTitle}\"\":close\")",
                             WindowStyle = ProcessWindowStyle.Normal, // Shows a console in the taskbar, but it's hidden
                             CreateNoWindow = true,
                             WorkingDirectory = "C:\\"

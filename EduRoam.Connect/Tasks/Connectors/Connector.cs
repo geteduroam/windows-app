@@ -32,7 +32,7 @@ namespace EduRoam.Connect.Tasks.Connectors
             var certificatesNotInstalled = this.GetNotInstalledCertificates();
 
             var succes = !certificatesNotInstalled.Any();
-            var message = succes ? Resource.ConfiguredEap : Resource.ErrorRequiredCertificatesNotInstalled;
+            var message = succes ? Resources.ConfiguredEap : Resources.ErrorRequiredCertificatesNotInstalled;
 
             return Task.FromResult<TaskStatus>(TaskStatus.AsSuccess(message));
         }
@@ -65,7 +65,7 @@ namespace EduRoam.Connect.Tasks.Connectors
         {
             if (!CheckIfEapConfigIsSupported(eapConfig)) // should have been caught earlier, but check here too for sanity
             {
-                throw new Exception(Resource.ErrorInvalidEapConfig);
+                throw new Exception(Resources.ErrorInvalidEapConfig);
             }
 
             try
@@ -97,7 +97,7 @@ namespace EduRoam.Connect.Tasks.Connectors
                 }
                 catch (UserAbortException ex)
                 {
-                    lastException = new Exception(Resource.ErrorMissingRequiredCACertificate, ex);
+                    lastException = new Exception(Resources.ErrorMissingRequiredCACertificate, ex);
                     // failed, try the next method
                 }
                 catch (Exception e)

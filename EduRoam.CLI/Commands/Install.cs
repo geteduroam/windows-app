@@ -9,7 +9,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "install";
 
-        public static readonly string CommandDescription = Resource.CommandDescriptionInstall;
+        public static readonly string CommandDescription = Resources.CommandDescriptionInstall;
 
         public Command GetCommand()
         {
@@ -20,7 +20,7 @@ namespace EduRoam.CLI.Commands
                 var installTask = new InstallTask();
                 installTask.Install();
 
-                Console.WriteLine(Resource.Done);
+                Console.WriteLine(Resources.Done);
             });
 
             return command;

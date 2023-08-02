@@ -23,11 +23,11 @@ namespace EduRoam.CLI.Commands.Connections
             if (this.certificateFile == null)
             {
                 var certificatePathOption = Options.GetCertificatePathOption();
-                status.Errors.Add(string.Format(Resource.ErrorNoClientCertificateProvided, string.Join(", ", certificatePathOption.Aliases)));
+                status.Errors.Add(string.Format(Resources.ErrorNoClientCertificateProvided, string.Join(", ", certificatePathOption.Aliases)));
                 return status;
             }
 
-            Console.Write($"{Resource.Passphrase}: ");
+            Console.Write($"{Resources.Passphrase}: ");
             var passphrase = Input.ReadPassword();
 
             this.connector.Credentials = new ConnectorCredentials(passphrase);

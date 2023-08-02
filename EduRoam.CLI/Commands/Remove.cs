@@ -9,7 +9,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "remove";
 
-        public static readonly string CommandDescription = Resource.CommandDescriptionRemove;
+        public static readonly string CommandDescription = Resources.CommandDescriptionRemove;
 
         public Command GetCommand()
         {
@@ -19,7 +19,7 @@ namespace EduRoam.CLI.Commands
             {
                 var profilesTask = new GetProfilesTask();
 
-                Console.Write(Resource.ProfileRemoveConfirmation, profilesTask.GetCurrentProfileName());
+                Console.Write(Resources.ProfileRemoveConfirmation, profilesTask.GetCurrentProfileName());
                 var confirmed = Interaction.GetConfirmation();
 
                 if (confirmed)

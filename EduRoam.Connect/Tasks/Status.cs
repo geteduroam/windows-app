@@ -24,15 +24,15 @@ namespace EduRoam.Connect.Tasks
 
                     if (diffDate.Value.Days > 1)
                     {
-                        return string.Format(Resource.DaysLeft, diffDate.Value.Days.ToString(CultureInfo.InvariantCulture));
+                        return string.Format(Resources.DaysLeft, diffDate.Value.Days.ToString(CultureInfo.InvariantCulture));
                     }
                     else if (diffDate.Value.Hours > 1)
                     {
-                        return string.Format(Resource.HoursLeft, diffDate.Value.Hours.ToString(CultureInfo.InvariantCulture));
+                        return string.Format(Resources.HoursLeft, diffDate.Value.Hours.ToString(CultureInfo.InvariantCulture));
                     }
                     else
                     {
-                        return string.Format(Resource.MinutesLeft, diffDate.Value.Minutes.ToString(CultureInfo.InvariantCulture));
+                        return string.Format(Resources.MinutesLeft, diffDate.Value.Minutes.ToString(CultureInfo.InvariantCulture));
                     }
                 }
 
@@ -47,17 +47,17 @@ namespace EduRoam.Connect.Tasks
                 if (versionNumber == null)
                 {
 #if DEBUG
-                    return Resource.VersionDebugNoVersion;
+                    return Resources.VersionDebugNoVersion;
 #else
-                    return Resource.VersionReleaseNoVersion;
+                    return Resources.VersionReleaseNoVersion;
 #endif
                 }
                 else
                 {
 #if DEBUG
-                    return string.Format(Resource.VersionDebug, versionNumber);
+                    return string.Format(Resources.VersionDebug, versionNumber);
 #else
-				    return string.Format(Resource.VersionRelease, versionNumber);
+				    return string.Format(Resources.VersionRelease, versionNumber);
 #endif
                 }
             }

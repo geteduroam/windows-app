@@ -68,7 +68,7 @@ namespace EduRoam.Connect.Tasks
                 var statusTask = new StatusTask();
                 var status = statusTask.GetStatus();
 
-                return $"{Resource.LabelAccountValidFor}: {status.TimeLeft}";
+                return $"{Resources.LabelAccountValidFor}: {status.TimeLeft}";
 
             }
 

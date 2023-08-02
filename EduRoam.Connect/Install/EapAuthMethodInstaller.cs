@@ -1,5 +1,4 @@
-﻿using EduRoam.Connect.Eap;
-using EduRoam.Connect.Exceptions;
+﻿using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Install;
 using EduRoam.Connect.Language;
 
@@ -40,7 +39,7 @@ namespace EduRoam.Connect
         {
             if (this.AuthMethod.NeedsClientCertificate)
             {
-                throw new EduroamAppUserException(Resource.ErrorNoClientCertificateProvided);
+                throw new EduroamAppUserException(Resources.ErrorNoClientCertificateProvided);
             }
 
             // get all CAs from Authentication method
@@ -77,8 +76,8 @@ namespace EduRoam.Connect
         {
             if (!this.hasInstalledCertificates)
             {
-                throw new EduroamAppUserException(Resource.WarningMissingCertificates,
-                    Resource.WarningInstallCertificates);
+                throw new EduroamAppUserException(Resources.WarningMissingCertificates,
+                    Resources.WarningInstallCertificates);
             }
 
             // Install wlan profile

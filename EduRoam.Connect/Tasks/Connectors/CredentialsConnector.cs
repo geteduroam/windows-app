@@ -23,7 +23,7 @@ namespace EduRoam.Connect.Tasks.Connectors
 
             if (this.Credentials == null || string.IsNullOrWhiteSpace(this.Credentials.UserName) || string.IsNullOrWhiteSpace(this.Credentials.Password))
             {
-                status.Errors.Add(Resource.ErrorInvalidCredentials);
+                status.Errors.Add(Resources.ErrorInvalidCredentials);
                 return status;
             }
 
@@ -52,7 +52,7 @@ namespace EduRoam.Connect.Tasks.Connectors
                         ? "realmless"
                         : "\"" + this.eapConfig.RequiredAnonymousIdentRealm + "\"";
 
-                    status.Errors.Add(string.Format(Resource.WarnRealmMismatch, userRealm, strProfileRealm));
+                    status.Errors.Add(string.Format(Resources.WarnRealmMismatch, userRealm, strProfileRealm));
                     return status;
                 }
             }
@@ -105,7 +105,7 @@ namespace EduRoam.Connect.Tasks.Connectors
             {
                 // TODO: update this when wired x802 is a thing
                 status.Success = false;
-                status.Errors.Add(Resource.ErrorWirelessUnavailable);
+                status.Errors.Add(Resources.ErrorWirelessUnavailable);
                 return status;
             }
 
@@ -115,18 +115,18 @@ namespace EduRoam.Connect.Tasks.Connectors
 
             if (status.Success)
             {
-                status.Messages.Add(Resource.Connected);
+                status.Messages.Add(Resources.Connected);
             }
             else
             {
                 if (EduRoamNetwork.IsNetworkInRange(eapConfigWithCredentials))
                 {
-                    status.Errors.Add(Resource.ErrorConfiguredButUnableToConnect);
+                    status.Errors.Add(Resources.ErrorConfiguredButUnableToConnect);
                 }
                 else
                 {
                     // Hs2 is not enumerable
-                    status.Errors.Add(Resource.ErrorConfiguredButProbablyOutOfCoverage);
+                    status.Errors.Add(Resources.ErrorConfiguredButProbablyOutOfCoverage);
                 }
             }
 

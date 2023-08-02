@@ -11,46 +11,46 @@ namespace EduRoam.CLI
         {
             if (optional)
             {
-                return new(aliases: new string[] { "-i", "--institute" }, description: Resource.OptionDescriptionInstitute);
+                return new(aliases: new string[] { "-i", "--institute" }, description: Resources.OptionDescriptionInstitute);
             }
 
             return new(
                 aliases: new string[] { "-i", "--institute" },
                 parseArgument: NonEmptyString,
                 isDefault: true,
-                description: Resource.OptionDescriptionInstitute);
+                description: Resources.OptionDescriptionInstitute);
         }
 
         public static Option<string> GetProfileOption(bool optional = false)
         {
             if (optional)
             {
-                return new(aliases: new string[] { "-p", "--profile" }, description: Resource.OptionDescriptionProfile);
+                return new(aliases: new string[] { "-p", "--profile" }, description: Resources.OptionDescriptionProfile);
             }
 
             return new(
                 aliases: new string[] { "-p", "--profile" },
                 parseArgument: NonEmptyString,
                 isDefault: true,
-                description: Resource.OptionDescriptionProfile);
+                description: Resources.OptionDescriptionProfile);
         }
 
         public static Option<FileInfo> GetEapConfigOption() => new(
                 aliases: new string[] { "-c", "--config" },
-                description: Resource.OptionDescriptionEAPConfig);
+                description: Resources.OptionDescriptionEAPConfig);
 
         public static Option<bool> GetForceOption() => new(
                 aliases: new string[] { "-f", "--force" },
-                description: Resource.OptionDescriptionForce,
+                description: Resources.OptionDescriptionForce,
                 getDefaultValue: () => false);
 
         public static Option<string> GetQueryOption() => new(
                 aliases: new string[] { "-q", "--query" },
-                description: Resource.OptionDescriptionQuery);
+                description: Resources.OptionDescriptionQuery);
 
         public static Option<FileInfo> GetCertificatePathOption() => new(
                 aliases: new string[] { "-cp", "--certificate-path" },
-                description: Resource.OptionDescriptionCertificatePath
+                description: Resources.OptionDescriptionCertificatePath
                 );
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace EduRoam.CLI
 
                 if (eapConfigFileArgValue == null && (string.IsNullOrWhiteSpace(instituteOptionValue) || string.IsNullOrWhiteSpace(profileOptionValue)))
                 {
-                    validator.ErrorMessage = string.Format(Resource.ErrorShowCommandOptions, string.Join("\\", eapConfigFileOption.Aliases), string.Join("\\", instituteOption.Aliases), string.Join("\\", profileOption.Aliases));
+                    validator.ErrorMessage = string.Format(Resources.ErrorShowCommandOptions, string.Join("\\", eapConfigFileOption.Aliases), string.Join("\\", instituteOption.Aliases), string.Join("\\", profileOption.Aliases));
                 }
             });
         }
@@ -80,7 +80,7 @@ namespace EduRoam.CLI
         {
             if (!result.Tokens.Any())
             {
-                result.ErrorMessage = string.Format(Resource.OptionRequired, result.Argument.Name);
+                result.ErrorMessage = string.Format(Resources.OptionRequired, result.Argument.Name);
                 return string.Empty;
             }
 
@@ -88,7 +88,7 @@ namespace EduRoam.CLI
 
             if (string.IsNullOrWhiteSpace(value))
             {
-                result.ErrorMessage = string.Format(Resource.ErrorOptionIsEmpty, result.Argument.HelpName);
+                result.ErrorMessage = string.Format(Resources.ErrorOptionIsEmpty, result.Argument.HelpName);
                 return string.Empty;
 
             }

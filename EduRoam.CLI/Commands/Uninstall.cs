@@ -11,7 +11,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "uninstall";
 
-        public static readonly string CommandDescription = Resource.CommandDescriptionUninstall;
+        public static readonly string CommandDescription = Resources.CommandDescriptionUninstall;
 
         public Command GetCommand()
         {
@@ -19,11 +19,11 @@ namespace EduRoam.CLI.Commands
 
             command.SetHandler(() =>
             {
-                ConsoleExtension.WriteWarning(Resource.WarningUninstall);
+                ConsoleExtension.WriteWarning(Resources.WarningUninstall);
 
                 if (CertificateStore.AnyRootCaInstalledByUs())
                 {
-                    ConsoleExtension.WriteWarning(Resource.WarningUninstallCertificates);
+                    ConsoleExtension.WriteWarning(Resources.WarningUninstallCertificates);
                     Console.WriteLine();
                 }
                 Console.WriteLine();
@@ -37,7 +37,7 @@ namespace EduRoam.CLI.Commands
                 }
                 else
                 {
-                    ConsoleExtension.WriteError(Resource.ErrorNotUninstalled);
+                    ConsoleExtension.WriteError(Resources.ErrorNotUninstalled);
                 }
             });
 

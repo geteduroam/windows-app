@@ -9,7 +9,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "reauthenticate";
 
-        public static readonly string CommandDescription = Resource.CommandDescriptionReauthenticate;
+        public static readonly string CommandDescription = Resources.CommandDescriptionReauthenticate;
 
         public Command GetCommand()
         {
@@ -20,7 +20,7 @@ namespace EduRoam.CLI.Commands
                 var task = new RefreshCredentialsTask();
                 await task.ReauthenticateAsync();
 
-                Console.WriteLine(Resource.Done);
+                Console.WriteLine(Resources.Done);
 
             });
 

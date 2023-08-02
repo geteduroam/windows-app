@@ -6,16 +6,16 @@ namespace EduRoam.CLI
     {
         public static bool GetConfirmation()
         {
-            Console.Write($"{Resource.AreYouSure} ({Resource.IsSure.ToLower()}/{Resource.NotSure.ToUpper()})");
+            Console.Write($"{Resources.AreYouSure} ({Resources.IsSure.ToLower()}/{Resources.NotSure.ToUpper()})");
 
-            var choice = Console.ReadLine() ?? Resource.NotSure.ToUpper();
+            var choice = Console.ReadLine() ?? Resources.NotSure.ToUpper();
 
-            return (choice.Trim().ToString().Equals(Resource.IsSure, StringComparison.CurrentCultureIgnoreCase));
+            return (choice.Trim().ToString().Equals(Resources.IsSure, StringComparison.CurrentCultureIgnoreCase));
         }
 
         public static string GetYesNoText(bool status)
         {
-            return status ? Resource.Yes : Resource.No;
+            return status ? Resources.Yes : Resources.No;
         }
     }
 }

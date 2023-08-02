@@ -9,7 +9,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "refresh";
 
-        public static readonly string CommandDescription = Resource.CommandDescriptionRefresh;
+        public static readonly string CommandDescription = Resources.CommandDescriptionRefresh;
 
         public Command GetCommand()
         {

@@ -1,13 +1,13 @@
-﻿using System;
+﻿using CsvHelper;
+using CsvHelper.Configuration;
+
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
-using CsvHelper;
-using CsvHelper.Configuration;
 
 namespace App.Library.Language
 {
@@ -38,31 +38,26 @@ namespace App.Library.Language
         }
 
         /// <summary />
-        public string this[string key]
-        {
-            get
-            {
-                if (this.activeStrings.TryGetValue(key, out var item))
-                {
-                    return Debugger.IsAttached
-                               ? $"{this.preFix}{this.ReplaceTokenStrings(item)}"
-                               : this.ReplaceTokenStrings(item);
-                }
+        //public string this[string key]
+        //{
+        //    get
+        //    {
+        //        if (this.activeStrings.TryGetValue(key, out var item))
+        //        {
+        //            return Debugger.IsAttached
+        //                       ? $"{this.preFix}{this.ReplaceTokenStrings(item)}"
+        //                       : this.ReplaceTokenStrings(item);
+        //        }
 
-                return string.Format(CultureInfo.CurrentCulture, "{0} not found", key);
-            }
-        }
+        //        return string.Format(CultureInfo.CurrentCulture, "{0} not found", key);
+        //    }
+        //}
 
         /// <summary />
         public void SetLanguageId(string newLanguageId)
         {
             this.languageId = newLanguageId;
             this.activeStrings = this.allStrings[this.languageId];
-        }
-
-        public Dictionary<string, string> GetActiveStrings()
-        {
-            return this.activeStrings;
         }
 
         /// <summary />
@@ -156,7 +151,7 @@ namespace App.Library.Language
                    && end > start)
             {
                 var subKey = parentKey.Substring(start + TokenStart.Length, end - (start + TokenStart.Length));
-                var value = this[subKey];
+                var value = ""; //this[subKey];
 
                 parentKey = parentKey.Replace(TokenStart + subKey + TokenEnd, value);
 

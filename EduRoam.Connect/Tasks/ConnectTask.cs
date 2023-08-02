@@ -21,14 +21,14 @@ namespace EduRoam.Connect.Tasks
         {
             if (string.IsNullOrWhiteSpace(userName) || password.Length == 0)
             {
-                return TaskStatus.AsFailure(Resource.ErrorInvalidCredentials);
+                return TaskStatus.AsFailure(Resources.ErrorInvalidCredentials);
             }
 
             var eapConfig = await GetEapConfig();
             if (eapConfig == null)
             {
                 // this should never happen, because this method should only be called after a connection type is determined based upon GetConnectionTypeAsync().
-                return TaskStatus.AsFailure(Resource.ErrorConfiguredButNotConnected);
+                return TaskStatus.AsFailure(Resources.ErrorConfiguredButNotConnected);
             }
 
             var (realm, hint) = eapConfig.GetClientInnerIdentityRestrictions();
@@ -53,7 +53,7 @@ namespace EduRoam.Connect.Tasks
             if (!EduRoamNetwork.IsWlanServiceApiAvailable())
             {
                 // TODO: update this when wired x802 is a thing
-                return TaskStatus.AsFailure(Resource.ErrorWirelessUnavailable);
+                return TaskStatus.AsFailure(Resources.ErrorWirelessUnavailable);
             }
 
             var status = new TaskStatus();
@@ -61,24 +61,24 @@ namespace EduRoam.Connect.Tasks
 
             if (status.Success)
             {
-                status.Messages.Add(Resource.Connected);
+                status.Messages.Add(Resources.Connected);
             }
             else
             {
                 var eapConfig = await GetEapConfig();
                 if (eapConfig == null)
                 {
-                    status.Errors.Add(Resource.ErrorConfiguredButNotConnected);
+                    status.Errors.Add(Resources.ErrorConfiguredButNotConnected);
 
                 }
                 else if (EduRoamNetwork.IsNetworkInRange(eapConfig))
                 {
-                    status.Errors.Add(Resource.ErrorConfiguredButUnableToConnect);
+                    status.Errors.Add(Resources.ErrorConfiguredButUnableToConnect);
                 }
                 else
                 {
                     // Hs2 is not enumerable
-                    status.Errors.Add(Resource.ErrorConfiguredButProbablyOutOfCoverage);
+                    status.Errors.Add(Resources.ErrorConfiguredButProbablyOutOfCoverage);
                 }
             }
 

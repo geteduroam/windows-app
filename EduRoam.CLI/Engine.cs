@@ -12,7 +12,7 @@ namespace EduRoam.CLI
 
         public Engine()
         {
-            this.rootCommand = new RootCommand(Resource.AppTitle);
+            this.rootCommand = new RootCommand(Resources.AppTitle);
             var commandsList = GetCommandList();
 
             foreach (var command in commandsList)

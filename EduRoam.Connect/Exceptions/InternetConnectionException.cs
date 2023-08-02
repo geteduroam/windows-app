@@ -7,7 +7,7 @@ namespace EduRoam.Connect.Exceptions
     [Serializable]
     public class InternetConnectionException : Exception
     {
-        private static readonly string DefaultMessage = Resource.ErrorInternetConnection;
+        private static readonly string DefaultMessage = Resources.ErrorInternetConnection;
 
         public InternetConnectionException() : base(DefaultMessage) { }
 

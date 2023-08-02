@@ -47,7 +47,7 @@ namespace EduRoam.Connect.Tasks.Connectors
             if (!EduRoamNetwork.IsWlanServiceApiAvailable())
             {
                 // TODO: update this when wired x802 is a thing
-                status.Errors.Add(Resource.ErrorWirelessUnavailable);
+                status.Errors.Add(Resources.ErrorWirelessUnavailable);
                 return status;
             }
 
@@ -60,7 +60,7 @@ namespace EduRoam.Connect.Tasks.Connectors
                 if (DateTime.Now <= certValid)
                 {
                     // dispatch the event which creates the clock the end user sees
-                    status.Errors.Add(Resource.ErrorClientCredentialNotValidYes);
+                    status.Errors.Add(Resources.ErrorClientCredentialNotValidYes);
                     return status;
                 }
             }
@@ -69,23 +69,23 @@ namespace EduRoam.Connect.Tasks.Connectors
 
             if (status.Success)
             {
-                status.Messages.Add(Resource.Connected);
+                status.Messages.Add(Resources.Connected);
             }
             else
             {
                 if (this.eapConfig == null)
                 {
-                    status.Errors.Add(Resource.ErrorConfiguredButNotConnected);
+                    status.Errors.Add(Resources.ErrorConfiguredButNotConnected);
 
                 }
                 else if (EduRoamNetwork.IsNetworkInRange(this.eapConfig))
                 {
-                    status.Errors.Add(Resource.ErrorConfiguredButUnableToConnect);
+                    status.Errors.Add(Resources.ErrorConfiguredButUnableToConnect);
                 }
                 else
                 {
                     // Hs2 is not enumerable
-                    status.Errors.Add(Resource.ErrorConfiguredButProbablyOutOfCoverage);
+                    status.Errors.Add(Resources.ErrorConfiguredButProbablyOutOfCoverage);
                 }
             }
 

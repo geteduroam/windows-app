@@ -17,7 +17,7 @@ namespace EduRoam.Connect.Tasks.Connectors
         {
             if (this.Credentials == null || string.IsNullOrWhiteSpace(this.Credentials.Password))
             {
-                return TaskStatus.AsFailure(Resource.ErrorInvalidCredentials);
+                return TaskStatus.AsFailure(Resources.ErrorInvalidCredentials);
             }
 
             return TaskStatus.AsSuccess();
@@ -70,18 +70,18 @@ namespace EduRoam.Connect.Tasks.Connectors
 
             if (status.Success)
             {
-                status.Messages.Add(Resource.Connected);
+                status.Messages.Add(Resources.Connected);
             }
             else
             {
                 if (EduRoamNetwork.IsNetworkInRange(eapConfigWithPassphrase))
                 {
-                    status.Errors.Add(Resource.ErrorConfiguredButUnableToConnect);
+                    status.Errors.Add(Resources.ErrorConfiguredButUnableToConnect);
                 }
                 else
                 {
                     // Hs2 is not enumerable
-                    status.Errors.Add(Resource.ErrorConfiguredButProbablyOutOfCoverage);
+                    status.Errors.Add(Resources.ErrorConfiguredButProbablyOutOfCoverage);
                 }
             }
 

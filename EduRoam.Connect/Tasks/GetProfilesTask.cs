@@ -57,7 +57,7 @@ namespace EduRoam.Connect.Tasks
 
         public string GetCurrentProfileName()
         {
-            return this.store.IdentityProvider?.DisplayName ?? Resource.DefaultIdentityProvider;
+            return this.store.IdentityProvider?.DisplayName ?? Resources.DefaultIdentityProvider;
         }
     }
 }

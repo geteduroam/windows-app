@@ -115,7 +115,7 @@ namespace EduRoam.Connect.Identity
             // checks that special characters are not adjacent to each other
             if (username.Contains("..") || username.Contains(".@") || username.Contains("@."))
             {
-                yield return Resource.ErrorCredentialsSpecialCharacters;
+                yield return Resources.ErrorCredentialsSpecialCharacters;
             }
             else
             {
@@ -123,7 +123,7 @@ namespace EduRoam.Connect.Identity
                 var index = username.IndexOf('@');
                 if (index == -1 || index != username.LastIndexOf('@'))
                 {
-                    yield return Resource.ErrorCredentialsAtChar;
+                    yield return Resources.ErrorCredentialsAtChar;
                 }
             }
 
@@ -133,7 +133,7 @@ namespace EduRoam.Connect.Identity
                 // no specific realm set, only check that the username does not end with dot or whitespace
                 if (username[^1] == '.' || username[^1] == ' ')
                 {
-                    yield return Resource.ErrorCredentialsEndsWith;
+                    yield return Resources.ErrorCredentialsEndsWith;
                 }
             }
             else
@@ -144,8 +144,8 @@ namespace EduRoam.Connect.Identity
                     && (noSubDomainInRealm || !username.EndsWith("." + requiredRealm, StringComparison.Ordinal)))
                 {
                     yield return noSubDomainInRealm
-                        ? string.Format(Resource.ErrorCredentialsEndWithRealmNoSubdomain, requiredRealm)
-                        : string.Format(Resource.ErrorCredentialsEndWithRealm, requiredRealm);
+                        ? string.Format(Resources.ErrorCredentialsEndWithRealmNoSubdomain, requiredRealm)
+                        : string.Format(Resources.ErrorCredentialsEndWithRealm, requiredRealm);
                 }
             }
         }

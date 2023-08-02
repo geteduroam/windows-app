@@ -16,11 +16,11 @@ namespace EduRoam.CLI.Commands.Connections
 
         public async Task<TaskStatus> ConfigureAndConnectAsync(bool force)
         {
-            Console.WriteLine(Resource.ConnectionUsernameAndPasswordRequired);
-            Console.Write($"{Resource.Username}: ");
+            Console.WriteLine(Resources.ConnectionUsernameAndPasswordRequired);
+            Console.Write($"{Resources.Username}: ");
             var userName = Console.ReadLine();
 
-            Console.Write($"{Resource.Password}: ");
+            Console.Write($"{Resources.Password}: ");
             var password = Input.ReadPassword();
 
             this.connector.Credentials = new ConnectorCredentials(userName, password);

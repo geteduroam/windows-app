@@ -10,7 +10,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "status";
 
-        public static readonly string CommandDescription = Resource.CommandDescriptionStatus;
+        public static readonly string CommandDescription = Resources.CommandDescriptionStatus;
 
         public Command GetCommand()
         {
@@ -24,13 +24,13 @@ namespace EduRoam.CLI.Commands
                 Console.WriteLine();
                 ConsoleExtension.WriteStatus("***********************************************");
                 ConsoleExtension.WriteStatus("* ");
-                ConsoleExtension.WriteStatus($"* {Resource.LabelProfile}: {status.ProfileName}");
+                ConsoleExtension.WriteStatus($"* {Resources.LabelProfile}: {status.ProfileName}");
                 ConsoleExtension.WriteStatus("* ");
-                ConsoleExtension.WriteStatus($"* {Resource.LabelAccountValidFor}: {status.TimeLeft}");
+                ConsoleExtension.WriteStatus($"* {Resources.LabelAccountValidFor}: {status.TimeLeft}");
                 ConsoleExtension.WriteStatus("* ");
                 ConsoleExtension.WriteStatus("* ");
-                ConsoleExtension.WriteStatus($"* {Resource.LabelHelp}: {Resource.HelpUrl}");
-                ConsoleExtension.WriteStatus($"* {Resource.LabelVersion}: {status.Version}");
+                ConsoleExtension.WriteStatus($"* {Resources.LabelHelp}: {Resources.HelpUrl}");
+                ConsoleExtension.WriteStatus($"* {Resources.LabelVersion}: {status.Version}");
                 ConsoleExtension.WriteStatus("***********************************************");
                 Console.WriteLine();
             });

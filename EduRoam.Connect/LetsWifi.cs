@@ -135,7 +135,7 @@ namespace EduRoam.Connect
             catch (HttpRequestException ex)
             {
                 throw new EduroamAppUserException("oauth post error",
-                    userFacingMessage: string.Format(Resource.ErrorCannotFetchTokens, ex.Message));
+                    userFacingMessage: string.Format(Resources.ErrorCannotFetchTokens, ex.Message));
             }
 
             // process response

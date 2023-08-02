@@ -8,7 +8,7 @@ public class Program
 
     public static async Task Main(string[] args)
     {
-        Resource.Culture = System.Globalization.CultureInfo.CurrentUICulture;
+        Resources.Culture = System.Globalization.CultureInfo.CurrentUICulture;
 
         await Engine.Run(args);
     }

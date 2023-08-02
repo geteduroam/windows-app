@@ -11,7 +11,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "list";
 
-        public static readonly string CommandDescription = Resource.CommandDescriptionList;
+        public static readonly string CommandDescription = Resources.CommandDescriptionList;
 
         public Command GetCommand()
         {
@@ -57,7 +57,7 @@ namespace EduRoam.CLI.Commands
                 }
                 else
                 {
-                    ConsoleExtension.WriteWarning(Resource.WarningNoProfilesFound);
+                    ConsoleExtension.WriteWarning(Resources.WarningNoProfilesFound);
                 }
             }
             catch (Exception exc) when (exc is UnknownInstituteException || exc is UnknownProfileException)
@@ -68,12 +68,12 @@ namespace EduRoam.CLI.Commands
             {
                 // Must never happen, because if the discovery is reached,
                 // it must be parseable. Logging has been done upstream.
-                ConsoleExtension.WriteError(Resource.ErrorApi);
+                ConsoleExtension.WriteError(Resources.ErrorApi);
                 ConsoleExtension.WriteError(e.Message, e.GetType().ToString());
             }
             catch (ApiUnreachableException)
             {
-                ConsoleExtension.WriteError(Resource.ErrorNoInternet);
+                ConsoleExtension.WriteError(Resources.ErrorNoInternet);
             }
         }
 
@@ -93,19 +93,19 @@ namespace EduRoam.CLI.Commands
                 }
                 else
                 {
-                    ConsoleExtension.WriteWarning(Resource.WarningNoInstitutesFound);
+                    ConsoleExtension.WriteWarning(Resources.WarningNoInstitutesFound);
                 }
             }
             catch (ApiParsingException e)
             {
                 // Must never happen, because if the discovery is reached,
                 // it must be parseable. Logging has been done upstream.
-                ConsoleExtension.WriteError(Resource.ErrorApi);
+                ConsoleExtension.WriteError(Resources.ErrorApi);
                 ConsoleExtension.WriteError(e.Message, e.GetType().ToString());
             }
             catch (ApiUnreachableException)
             {
-                ConsoleExtension.WriteError(Resource.ErrorNoInternet);
+                ConsoleExtension.WriteError(Resources.ErrorNoInternet);
             }
         }
     }

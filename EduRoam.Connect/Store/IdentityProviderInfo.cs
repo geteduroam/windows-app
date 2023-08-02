@@ -57,7 +57,7 @@ namespace EduRoam.Connect.Store
             var eapConfig = authMethod.EapConfig;
 
             return eapConfig == null
-                ? throw new ArgumentException(Resource.ErrorEapConfigIsEmpty)
+                ? throw new ArgumentException(Resources.ErrorEapConfigIsEmpty)
                 : new IdentityProviderInfo(
                    eapConfig.InstitutionInfo.DisplayName,
                    eapConfig.InstitutionInfo.EmailAddress,

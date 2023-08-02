@@ -16,7 +16,7 @@ namespace EduRoam.CLI.Commands.Connections
 
         public async Task<TaskStatus> ConfigureAndConnectAsync(bool force)
         {
-            Console.Write($"{Resource.Passphrase}: ");
+            Console.Write($"{Resources.Passphrase}: ");
             var passphrase = Input.ReadPassword();
 
             this.connector.Credentials = new ConnectorCredentials(passphrase);

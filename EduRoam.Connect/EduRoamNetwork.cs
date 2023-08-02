@@ -296,7 +296,7 @@ namespace EduRoam.Connect
 
             if (this.store.ConfiguredWLANProfiles.Any())
             {
-                throw new Exception(Resource.ErrorCannotRemoveWLANProfile);
+                throw new Exception(Resources.ErrorCannotRemoveWLANProfile);
             }
         }
 

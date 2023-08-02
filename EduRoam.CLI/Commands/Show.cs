@@ -12,7 +12,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "show";
 
-        public static readonly string CommandDescription = Resource.CommandDescriptionShow;
+        public static readonly string CommandDescription = Resources.CommandDescriptionShow;
 
         public Command GetCommand()
         {
@@ -48,7 +48,7 @@ namespace EduRoam.CLI.Commands
 
                     if (eapConfig == null || !HasInfo(eapConfig))
                     {
-                        Console.WriteLine(Resource.NoEAPConfig);
+                        Console.WriteLine(Resources.NoEAPConfig);
                     }
                     else
                     {
@@ -68,12 +68,12 @@ namespace EduRoam.CLI.Commands
                 {
                     // Must never happen, because if the discovery is reached,
                     // it must be parseable. Logging has been done upstream.
-                    ConsoleExtension.WriteError(Resource.ErrorApi);
+                    ConsoleExtension.WriteError(Resources.ErrorApi);
                     ConsoleExtension.WriteError(e.Message, e.GetType().ToString());
                 }
                 catch (ApiUnreachableException)
                 {
-                    ConsoleExtension.WriteError(Resource.ErrorNoInternet);
+                    ConsoleExtension.WriteError(Resources.ErrorNoInternet);
                 }
 
             }, eapConfigFileOption, instituteOption, profileOption);
@@ -92,18 +92,18 @@ namespace EduRoam.CLI.Commands
             ConsoleExtension.WriteStatus($"* {institutionInfo.Description}");
             if (!HasContactInfo(eapConfig.InstitutionInfo))
             {
-                ConsoleExtension.WriteStatusIf(!string.IsNullOrEmpty(institutionInfo.WebAddress), $"* {Resource.LabelWeb}: {institutionInfo.WebAddress}");
-                ConsoleExtension.WriteStatusIf(!string.IsNullOrEmpty(institutionInfo.EmailAddress), $"* {Resource.LabelEmail}: {institutionInfo.EmailAddress}");
-                ConsoleExtension.WriteStatusIf(!string.IsNullOrEmpty(institutionInfo.Phone), $"* {Resource.LabelPhone}: {institutionInfo.Phone}");
+                ConsoleExtension.WriteStatusIf(!string.IsNullOrEmpty(institutionInfo.WebAddress), $"* {Resources.LabelWeb}: {institutionInfo.WebAddress}");
+                ConsoleExtension.WriteStatusIf(!string.IsNullOrEmpty(institutionInfo.EmailAddress), $"* {Resources.LabelEmail}: {institutionInfo.EmailAddress}");
+                ConsoleExtension.WriteStatusIf(!string.IsNullOrEmpty(institutionInfo.Phone), $"* {Resources.LabelPhone}: {institutionInfo.Phone}");
             }
 
             ConsoleExtension.WriteStatus("* ");
-            ConsoleExtension.WriteStatus($"* {Resource.LabelSupported}: {Interaction.GetYesNoText(supported)}");
+            ConsoleExtension.WriteStatus($"* {Resources.LabelSupported}: {Interaction.GetYesNoText(supported)}");
 
             if (!string.IsNullOrWhiteSpace(institutionInfo.TermsOfUse))
             {
                 ConsoleExtension.WriteStatus("* ");
-                ConsoleExtension.WriteStatus($"* {Resource.LabelTermsOfUse}:");
+                ConsoleExtension.WriteStatus($"* {Resources.LabelTermsOfUse}:");
                 ConsoleExtension.WriteStatus($"* {institutionInfo.TermsOfUse.Trim()}");
                 ConsoleExtension.WriteStatus("* ");
             }
@@ -116,7 +116,7 @@ namespace EduRoam.CLI.Commands
         {
             if (!EduRoamNetwork.IsEapConfigSupported(eapConfig))
             {
-                ConsoleExtension.WriteError(Resource.ErrorUnsupportedProfile);
+                ConsoleExtension.WriteError(Resources.ErrorUnsupportedProfile);
                 return false;
             }
             return true;

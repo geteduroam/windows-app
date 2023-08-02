@@ -14,7 +14,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "connect";
 
-        public static readonly string CommandDescription = Resource.CommandDescriptionConnect;
+        public static readonly string CommandDescription = Resources.CommandDescriptionConnect;
 
         public Command GetCommand()
         {
@@ -40,13 +40,13 @@ namespace EduRoam.CLI.Commands
                 var eapConfig = await GetEapConfigAsync(eapConfigFile, institute, profileName);
                 if (eapConfig == null)
                 {
-                    ConsoleExtension.WriteError(Resource.ErrorEapConfigIsEmpty);
+                    ConsoleExtension.WriteError(Resources.ErrorEapConfigIsEmpty);
                     return;
                 }
 
                 if (!EduRoamNetwork.IsEapConfigSupported(eapConfig))
                 {
-                    ConsoleExtension.WriteError(Resource.ErrorUnsupportedProfile);
+                    ConsoleExtension.WriteError(Resources.ErrorUnsupportedProfile);
                     return;
                 }
 
@@ -55,7 +55,7 @@ namespace EduRoam.CLI.Commands
 
                 if (!success)
                 {
-                    ConsoleExtension.WriteError(Resource.ErrorRequiredCertificatesNotInstalled);
+                    ConsoleExtension.WriteError(Resources.ErrorRequiredCertificatesNotInstalled);
                     return;
                 }
 
@@ -64,7 +64,7 @@ namespace EduRoam.CLI.Commands
                 var connector = await connectTask.GetConnectorAsync();
                 if (connector == null)
                 {
-                    ConsoleExtension.WriteError(Resource.ErrorEapConfigIsEmpty);
+                    ConsoleExtension.WriteError(Resources.ErrorEapConfigIsEmpty);
                     return;
                 }
 
@@ -77,7 +77,7 @@ namespace EduRoam.CLI.Commands
                         CertPassConnector certPassConnector => new CertPassConnection(certPassConnector),
                         CertAndCertPassConnector certAndCertPassConnector => new CertAndCertPassConnection(certAndCertPassConnector, certificateFile),
                         DefaultConnector defaultConnector => new DefaultConnection(defaultConnector),
-                        _ => throw new NotSupportedException(string.Format(Resource.ErrorUnsupportedConnectionType, connector.GetType().Name)),
+                        _ => throw new NotSupportedException(string.Format(Resources.ErrorUnsupportedConnectionType, connector.GetType().Name)),
                     };
 
                     var status = await connection.ConfigureAndConnectAsync(force);
@@ -94,7 +94,7 @@ namespace EduRoam.CLI.Commands
                 catch (EduroamAppUserException ex)
                 {
                     // TODO, NICE TO HAVE: log the error
-                    ConsoleExtension.WriteError(Resource.ErrorNoConnection, ex.UserFacingMessage);
+                    ConsoleExtension.WriteError(Resources.ErrorNoConnection, ex.UserFacingMessage);
                 }
 
                 catch (ArgumentException exc)
@@ -105,12 +105,12 @@ namespace EduRoam.CLI.Commands
                 {
                     // Must never happen, because if the discovery is reached,
                     // it must be parseable. Logging has been done upstream.
-                    ConsoleExtension.WriteError(Resource.ErrorApi);
+                    ConsoleExtension.WriteError(Resources.ErrorApi);
                     ConsoleExtension.WriteError(e.Message, e.GetType().ToString());
                 }
                 catch (ApiUnreachableException)
                 {
-                    ConsoleExtension.WriteError(Resource.ErrorNoInternet);
+                    ConsoleExtension.WriteError(Resources.ErrorNoInternet);
                 }
             }, eapConfigFileOption, instituteOption, profileOption, certificatePathOption, forceOption);
 
@@ -131,12 +131,12 @@ namespace EduRoam.CLI.Commands
 
         private static void OutputCertificatesStatus(EapConfig eapConfig)
         {
-            ConsoleExtension.WriteStatus(Resource.CertificatesInstallationNotification);
+            ConsoleExtension.WriteStatus(Resources.CertificatesInstallationNotification);
             var installers = ConnectToEduroam.EnumerateCAInstallers(eapConfig).ToList();
             foreach (var installer in installers)
             {
                 Console.WriteLine();
-                ConsoleExtension.WriteStatus($"* {string.Format(Resource.CertificatesInstallationStatus, installer, Interaction.GetYesNoText(installer.IsInstalled))}");
+                ConsoleExtension.WriteStatus($"* {string.Format(Resources.CertificatesInstallationStatus, installer, Interaction.GetYesNoText(installer.IsInstalled))}");
                 Console.WriteLine();
             }
         }
@@ -149,7 +149,7 @@ namespace EduRoam.CLI.Commands
 
             if (!certificatesResolved.Success && !force)
             {
-                Console.WriteLine(Resource.RequestToInstallCertificates);
+                Console.WriteLine(Resources.RequestToInstallCertificates);
                 var confirm = Interaction.GetConfirmation();
 
                 if (confirm)
