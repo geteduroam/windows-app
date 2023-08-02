@@ -1,5 +1,4 @@
 ﻿using App.Library.Command;
-using App.Library.Language;
 
 using EduRoam.Connect;
 using EduRoam.Connect.Eap;
@@ -23,7 +22,6 @@ namespace App.Library.ViewModels
 
         public MainViewModel()
         {
-            this.LanguageText = new LanguageText(@"App.Library.Language.LanguageTexts.csv", "EN");
             this.NewProfileCommand = new DelegateCommand(this.NewProfileCommandAction, this.CanNewProfileCommandAction);
             this.idpDownloader = new IdentityProviderDownloader();
             this.State = new ApplicationState();
@@ -43,8 +41,6 @@ namespace App.Library.ViewModels
         }
 
         public ApplicationState State { get; private set; }
-
-        public ILanguageText LanguageText { get; }
 
         public BaseViewModel ActiveContent { get; private set; }
 

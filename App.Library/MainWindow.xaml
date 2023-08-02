@@ -7,6 +7,7 @@
     xmlns:local="clr-namespace:App.Library"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:templates="clr-namespace:App.Library.Templates"
+    xmlns:lang = "clr-namespace:App.Library.Language"
     Title="geteduroam"
     Width="420"
     Height="600"
@@ -59,7 +60,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 FontSize="24"
-                Text="{Binding LanguageText[Loading]}"
+                Text="{x:Static lang:Resources.Loading}"
                 TextAlignment="Center" />
         </Grid>
 
@@ -87,7 +88,7 @@
                 Style="{DynamicResource BlueButtonStyle}">
                 <TextBlock
                     x:Name="tbNewProfile"
-                    Text="{Binding LanguageText[ConnectToEduroam]}"
+                    Text="{x:Static lang:Resources.ConnectToEduroam}"
                     TextAlignment="Center"
                     TextWrapping="Wrap" />
             </Button>
@@ -107,7 +108,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Command="{Binding ActiveContent.PreviousCommand}"
-                    Content="{Binding LanguageText[ButtonPrevious]}"
+                    Content="{x:Static lang:Resources.ButtonPrevious}"
                     Style="{DynamicResource BlueButtonStyle}" />
 
                 <Button
@@ -117,7 +118,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Command="{Binding ActiveContent.NextCommand}"
-                    Content="{Binding LanguageText[ButtonNext]}"
+                    Content="{x:Static lang:Resources.ButtonNext}"
                     IsDefault="true"
                     Style="{DynamicResource BlueButtonStyle}" />
             </StackPanel>

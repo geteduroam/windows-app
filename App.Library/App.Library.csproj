@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <None Remove="Images\eduroam_logo.png" />
-    <None Remove="Language\LanguageTexts.csv" />
   </ItemGroup>
 
   <ItemGroup>
@@ -25,7 +24,6 @@
 
   <ItemGroup>
     <Resource Include="Images\eduroam_logo.png" />
-    <EmbeddedResource Include="Language\LanguageTexts.csv" />
   </ItemGroup>
 
   <ItemGroup>
@@ -38,18 +36,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Language\Resource.Designer.cs">
+    <Compile Update="Language\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>Resource.resx</DependentUpon>
+      <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Language\Resource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    <EmbeddedResource Update="Language\Resources.nl-nl.resx">
+      <Generator></Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Language\Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>

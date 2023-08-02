@@ -22,24 +22,24 @@ namespace App.Library.Language {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resource {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resource() {
+        internal Resources() {
         }
         
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("App.Library.Language.Resource", typeof(Resource).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("App.Library.Language.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace App.Library.Language {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Eduroam.
         /// </summary>
-        internal static string AppTitle {
+        public static string AppTitle {
             get {
                 return ResourceManager.GetString("AppTitle", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Next.
         /// </summary>
-        internal static string ButtonNext {
+        public static string ButtonNext {
             get {
                 return ResourceManager.GetString("ButtonNext", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Previous.
         /// </summary>
-        internal static string ButtonPrevious {
+        public static string ButtonPrevious {
             get {
                 return ResourceManager.GetString("ButtonPrevious", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to certificates are installed.
         /// </summary>
-        internal static string CertificateTitleInstalled {
+        public static string CertificateTitleInstalled {
             get {
                 return ResourceManager.GetString("CertificateTitleInstalled", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to In order to continue you have to install the listed certificates.
         /// </summary>
-        internal static string CertificateTitleStart {
+        public static string CertificateTitleStart {
             get {
                 return ResourceManager.GetString("CertificateTitleStart", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Connect to eduroam.
         /// </summary>
-        internal static string ConnectToEduroam {
+        public static string ConnectToEduroam {
             get {
                 return ResourceManager.GetString("ConnectToEduroam", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Loading.
         /// </summary>
-        internal static string Loading {
+        public static string Loading {
             get {
                 return ResourceManager.GetString("Loading", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Contact Information.
         /// </summary>
-        internal static string ProfileContactInfo {
+        public static string ProfileContactInfo {
             get {
                 return ResourceManager.GetString("ProfileContactInfo", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
-        internal static string ProfileEmail {
+        public static string ProfileEmail {
             get {
                 return ResourceManager.GetString("ProfileEmail", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Not affiliated with institution?.
         /// </summary>
-        internal static string ProfileNotAffiliatedInstitution {
+        public static string ProfileNotAffiliatedInstitution {
             get {
                 return ResourceManager.GetString("ProfileNotAffiliatedInstitution", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Phone.
         /// </summary>
-        internal static string ProfilePhone {
+        public static string ProfilePhone {
             get {
                 return ResourceManager.GetString("ProfilePhone", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Select other institution.
         /// </summary>
-        internal static string ProfileSelectOtherInstitution {
+        public static string ProfileSelectOtherInstitution {
             get {
                 return ResourceManager.GetString("ProfileSelectOtherInstitution", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Web.
         /// </summary>
-        internal static string ProfileWeb {
+        public static string ProfileWeb {
             get {
                 return ResourceManager.GetString("ProfileWeb", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Click here to be redirected to the insitutions site for more info on how to connect. When you click the link this application will close..
         /// </summary>
-        internal static string RedirectText {
+        public static string RedirectText {
             get {
                 return ResourceManager.GetString("RedirectText", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Redirect.
         /// </summary>
-        internal static string RedirectTitle {
+        public static string RedirectTitle {
             get {
                 return ResourceManager.GetString("RedirectTitle", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Search.
         /// </summary>
-        internal static string Search {
+        public static string Search {
             get {
                 return ResourceManager.GetString("Search", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Select institution.
         /// </summary>
-        internal static string SelectInstitution {
+        public static string SelectInstitution {
             get {
                 return ResourceManager.GetString("SelectInstitution", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Select profile.
         /// </summary>
-        internal static string SelectProfile {
+        public static string SelectProfile {
             get {
                 return ResourceManager.GetString("SelectProfile", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace App.Library.Language {
         /// <summary>
         ///   Looks up a localized string similar to Terms of Use.
         /// </summary>
-        internal static string TermsOfUseTitle {
+        public static string TermsOfUseTitle {
             get {
                 return ResourceManager.GetString("TermsOfUseTitle", resourceCulture);
             }

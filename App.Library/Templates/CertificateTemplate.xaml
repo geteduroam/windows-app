@@ -3,7 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:templates="clr-namespace:App.Library.Templates"
     xmlns:viewModels="clr-namespace:App.Library.ViewModels"
-    xmlns:Converters="clr-namespace:App.Library.Converters">
+    xmlns:Converters="clr-namespace:App.Library.Converters"
+    xmlns:lang = "clr-namespace:App.Library.Language">
 
     <templates:LocalDataTemplateSelector x:Key="LocalDataTemplateSelector" />
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
@@ -22,7 +23,7 @@
             <TextBlock
                 Grid.Row="0"
                 Margin="8,0,8,16"
-                Text="{Binding LanguageText[CertificateTitleStart]}"
+                Text="{x:Static lang:Resources.CertificateTitleStart}"
                 TextAlignment="Center"
                 Style="{DynamicResource TextBlockLarge}"
                 Visibility="{Binding AllCertificatesAreInstalled, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
@@ -31,7 +32,7 @@
             <TextBlock
                 Grid.Row="0"
                 Margin="8,0,8,16"
-                Text="{Binding LanguageText[CertificateTitleInstalled]}"
+                Text="{x:Static lang:Resources.CertificateTitleInstalled}"
                 TextAlignment="Center"
                 Style="{DynamicResource TextBlockLarge}"
                 Visibility="{Binding AllCertificatesAreInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"

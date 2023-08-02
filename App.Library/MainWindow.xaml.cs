@@ -1,7 +1,6 @@
-﻿using System.ComponentModel;
+﻿using App.Library.ViewModels;
 
-using App.Library.ViewModels;
-
+using System.ComponentModel;
 using System.Windows;
 
 namespace App.Library
@@ -16,6 +15,7 @@ namespace App.Library
         public MainWindow()
         {
             this.InitializeComponent();
+
             this.MainViewModel = new MainViewModel();
             this.DataContext = this.MainViewModel;
         }

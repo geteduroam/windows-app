@@ -4,25 +4,20 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
 using App.Library.Command;
-using App.Library.Language;
+
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace App.Library.ViewModels;
 
 public abstract class BaseViewModel : NotifyPropertyChanged
 {
-    public ILanguageText LanguageText { get; }
-
     public MainViewModel Owner { get; }
 
     protected BaseViewModel(MainViewModel owner)
     {
         this.Owner = owner;
-        this.LanguageText = owner.LanguageText;
         this.NextCommand = new AsyncCommand(this.ExecuteNavigateNextActionAsync, this.CanNavigateNextAsync);
         this.PreviousCommand = new AsyncCommand(this.ExecuteNavigatePreviousActionAsync, this.CanNavigatePrevious);
     }
@@ -42,8 +37,8 @@ public abstract class BaseViewModel : NotifyPropertyChanged
 
     protected virtual Task NavigatePreviousAsync()
     {
-       this.Owner.SetPreviousActiveContent();
-       return Task.CompletedTask;
+        this.Owner.SetPreviousActiveContent();
+        return Task.CompletedTask;
     }
 
     public bool IsLoading { get; protected set; }
