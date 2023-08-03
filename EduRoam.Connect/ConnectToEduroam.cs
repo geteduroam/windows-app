@@ -12,7 +12,7 @@ namespace EduRoam.Connect
     /// - setting user data
     /// - connecting to a network
     /// </summary>
-    public static partial class ConnectToEduroam
+    internal static partial class ConnectToEduroam
     {
         /// <summary>
         /// Checks the EAP config to see if there is any issues
@@ -20,7 +20,7 @@ namespace EduRoam.Connect
         /// TODO: use this in ui
         /// </summary>
         /// <returns>A tuple on the form: (bool isCritical, string description)</returns>
-        public static IEnumerable<ValueTuple<bool, string>> LookForWarningsInEapConfig(EapConfig eapConfig)
+        internal static IEnumerable<ValueTuple<bool, string>> LookForWarningsInEapConfig(EapConfig eapConfig)
         {
             _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
 
@@ -96,7 +96,7 @@ namespace EduRoam.Connect
         /// <summary>
         /// Enumerates the CAs which the eapConfig in question defines, wrapped a install helper class
         /// </summary>
-        public static IEnumerable<CertificateInstaller> EnumerateCAInstallers(EapConfig eapConfig)
+        internal static IEnumerable<CertificateInstaller> EnumerateCAInstallers(EapConfig eapConfig)
         {
             _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
             return EnumerateCAs(eapConfig)
@@ -107,7 +107,7 @@ namespace EduRoam.Connect
         /// Deletes all network profile matching ssid, which is "eduroam" by default
         /// </summary>
         /// <returns>True if all profile deletions were succesful</returns>
-        public static void RemoveAllWLANProfiles()
+        internal static void RemoveAllWLANProfiles()
         {
             Exception? ex = null;
             foreach (var network in EduRoamNetwork.GetAll())
@@ -129,7 +129,7 @@ namespace EduRoam.Connect
         /// Attempts to connects to any eduroam wireless LAN, in succession
         /// </summary>
         /// <returns>True if successfully connected. False if not.</returns>
-        public static async Task<bool> TryToConnect()
+        internal static async Task<bool> TryToConnect()
         {
             // gets updated eduroam network packs
             foreach (var network in EduRoamNetwork.GetConfigured())

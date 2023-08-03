@@ -107,7 +107,7 @@ namespace EduRoam.Connect.Tasks
             {
                 Debug.WriteLine(nameof(eapConfigXml) + " was not set", category: nameof(HandleProfileSelectAsync));
 
-                var eapConfigTask = new GetEapConfigTask();
+                var eapConfigTask = new EapConfigTask();
 
                 try
                 {

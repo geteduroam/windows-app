@@ -3,7 +3,7 @@ using EduRoam.Connect.Identity;
 
 namespace EduRoam.Connect.Tasks
 {
-    public class GetInstitutesTask
+    public class InstitutesTask
     {
         /// <summary>
         /// Get a list of Identity Providers.

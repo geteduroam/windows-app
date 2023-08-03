@@ -2,6 +2,7 @@
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Store;
 using EduRoam.Connect.Tasks.Connectors;
+using EduRoam.Localization;
 
 namespace EduRoam.Connect.Tasks
 {
@@ -14,6 +15,16 @@ namespace EduRoam.Connect.Tasks
         public ConfigureTask(EapConfig eapConfig)
         {
             this.eapConfig = eapConfig;
+        }
+
+        public IList<CertificateInstaller> GetCertificateInstallers()
+        {
+            if (this.eapConfig == null)
+            {
+                throw new ArgumentException(Resources.ErrorEapConfigIsEmpty);
+            }
+
+            return ConnectToEduroam.EnumerateCAInstallers(this.eapConfig).ToList();
         }
 
         /// <summary>

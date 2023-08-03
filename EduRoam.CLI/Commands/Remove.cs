@@ -17,7 +17,7 @@ namespace EduRoam.CLI.Commands
 
             command.SetHandler(() =>
             {
-                var profilesTask = new GetProfilesTask();
+                var profilesTask = new ProfilesTask();
 
                 Console.Write(Resources.ProfileRemoveConfirmation, profilesTask.GetCurrentProfileName());
                 var confirmed = Interaction.GetConfirmation();

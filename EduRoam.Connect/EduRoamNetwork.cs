@@ -64,7 +64,7 @@ namespace EduRoam.Connect
         /// </summary>
         /// <param name="eapConfig">The EAP config to check</param>
         /// <returns>True if it contains a supported type</returns>
-        public static bool IsEapConfigSupported(EapConfig eapConfig)
+        internal static bool IsEapConfigSupported(EapConfig eapConfig)
         {
             return eapConfig?.AuthenticationMethods
                 .Where(IsAuthMethodSupported).Any()

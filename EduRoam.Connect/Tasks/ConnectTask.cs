@@ -1,5 +1,4 @@
-﻿using EduRoam.Connect.Eap;
-using EduRoam.Connect.Exceptions;
+﻿using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
 using EduRoam.Connect.Tasks.Connectors;
 using EduRoam.Localization;
@@ -10,21 +9,21 @@ namespace EduRoam.Connect.Tasks
 {
     public class ConnectTask
     {
-        public async Task<Connector?> GetConnectorAsync()
+        public static async Task<Connector?> GetConnectorAsync()
         {
-            var eapConfig = await GetEapConfig();
+            var eapConfig = await EapConfigTask.GetEapConfigAsync();
 
             return Connector.GetInstance(eapConfig);
         }
 
-        public async Task<TaskStatus> ValidateCredentialsAsync(string? userName, SecureString password)
+        public static async Task<TaskStatus> ValidateCredentialsAsync(string? userName, SecureString password)
         {
             if (string.IsNullOrWhiteSpace(userName) || password.Length == 0)
             {
                 return TaskStatus.AsFailure(Resources.ErrorInvalidCredentials);
             }
 
-            var eapConfig = await GetEapConfig();
+            var eapConfig = await EapConfigTask.GetEapConfigAsync();
             if (eapConfig == null)
             {
                 // this should never happen, because this method should only be called after a connection type is determined based upon GetConnectionTypeAsync().
@@ -48,7 +47,7 @@ namespace EduRoam.Connect.Tasks
         /// </summary>
         /// <returns>True if a connection could be established, false otherwise</returns>
         /// <exception cref="EduroamAppUserException" />
-        public async Task<TaskStatus> ConnectAsync()
+        public static async Task<TaskStatus> ConnectAsync()
         {
             if (!EduRoamNetwork.IsWlanServiceApiAvailable())
             {
@@ -56,8 +55,10 @@ namespace EduRoam.Connect.Tasks
                 return TaskStatus.AsFailure(Resources.ErrorWirelessUnavailable);
             }
 
-            var status = new TaskStatus();
-            status.Success = await Task.Run(ConnectToEduroam.TryToConnect);
+            var status = new TaskStatus()
+            {
+                Success = await Task.Run(ConnectToEduroam.TryToConnect)
+            };
 
             if (status.Success)
             {
@@ -65,7 +66,7 @@ namespace EduRoam.Connect.Tasks
             }
             else
             {
-                var eapConfig = await GetEapConfig();
+                var eapConfig = await EapConfigTask.GetEapConfigAsync();
                 if (eapConfig == null)
                 {
                     status.Errors.Add(Resources.ErrorConfiguredButNotConnected);
@@ -83,13 +84,6 @@ namespace EduRoam.Connect.Tasks
             }
 
             return status;
-        }
-
-        private static async Task<EapConfig?> GetEapConfig()
-        {
-            var eapConfigTask = new GetEapConfigTask();
-
-            return await eapConfigTask.GetEapConfigAsync();
         }
     }
 }

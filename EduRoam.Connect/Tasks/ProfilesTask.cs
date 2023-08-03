@@ -5,7 +5,7 @@ using EduRoam.Localization;
 
 namespace EduRoam.Connect.Tasks
 {
-    public class GetProfilesTask
+    public class ProfilesTask
     {
         private readonly BaseConfigStore store = new RegistryStore();
 

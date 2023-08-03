@@ -1041,6 +1041,24 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No supported authentification method was found..
+        /// </summary>
+        public static string WarningNoSupportedAuthenticationMethod {
+            get {
+                return ResourceManager.GetString("WarningNoSupportedAuthenticationMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The profile you have selected is not supported by this application..
+        /// </summary>
+        public static string WarningProfileNotSupported {
+            get {
+                return ResourceManager.GetString("WarningProfileNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You are currently in the process of completly uninstalling geteduroam.
         /// </summary>
         public static string WarningUninstall {

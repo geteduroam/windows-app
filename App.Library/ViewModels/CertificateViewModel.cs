@@ -1,9 +1,9 @@
-﻿using System.Collections.ObjectModel;
+﻿using EduRoam.Connect.Eap;
+using EduRoam.Connect.Tasks;
+
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-
-using EduRoam.Connect;
-using EduRoam.Connect.Eap;
 
 namespace App.Library.ViewModels
 {
@@ -13,9 +13,11 @@ namespace App.Library.ViewModels
             : base(owner)
         {
             //todo maybe subscribe to NotifyChanged or custom event to trigger AllInstalled
+            var configureTask = new ConfigureTask(eapConfig);
+            var installers = configureTask.GetCertificateInstallers();
+
             this.Installers = new ObservableCollection<CertificateInstallerViewModel>(
-                ConnectToEduroam.EnumerateCAInstallers(eapConfig)
-                                .Select(x => new CertificateInstallerViewModel(x)));
+                installers.Select(x => new CertificateInstallerViewModel(x)));
         }
 
         public ObservableCollection<CertificateInstallerViewModel> Installers { get; }

@@ -1,10 +1,11 @@
 ﻿using App.Library.Command;
 
-using EduRoam.Connect;
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
 using EduRoam.Connect.Install;
+using EduRoam.Connect.Tasks;
+using EduRoam.Localization;
 
 using System;
 using System.Diagnostics;
@@ -50,11 +51,11 @@ namespace App.Library.ViewModels
 
         public static bool CheckIfEapConfigIsSupported(EapConfig eapConfig)
         {
-            if (!EduRoamNetwork.IsEapConfigSupported(eapConfig))
+            if (!EapConfigTask.IsEapConfigSupported(eapConfig))
             {
                 MessageBox.Show(
-                    "The profile you have selected is not supported by this application.",
-                    "No supported authentification method was found.",
+                    Resources.WarningProfileNotSupported,
+                    Resources.WarningNoSupportedAuthenticationMethod,
                     MessageBoxButton.OK,
                     MessageBoxImage.Exclamation);
                 return false;
@@ -137,12 +138,12 @@ namespace App.Library.ViewModels
         /// <returns>True if function navigated somewhere</returns>
         /// <exception cref="XmlException">Parsing eap-config failed</exception>
         public async Task<bool> HandleProfileSelect(
-        IdentityProviderProfile profile,
-        string? eapConfigXml = null,
-        bool skipOverview = false)
+            IdentityProviderProfile profile,
+            string? eapConfigXml = null,
+            bool skipOverview = false)
         {
             this.IsLoading = true;
-            EapConfig eapConfig;
+            EapConfig? eapConfig;
 
             if (!string.IsNullOrEmpty(eapConfigXml))
             {
@@ -182,18 +183,20 @@ namespace App.Library.ViewModels
                 if (eapConfig.HasInfo
                     && !skipOverview)
                 {
-                    SetActiveContent(new ProfileViewModel(this, eapConfig));
+                    this.SetActiveContent(new ProfileViewModel(this, eapConfig));
                     return true;
                 }
 
-                if (ConnectToEduroam.EnumerateCAInstallers(eapConfig)
-                                    .Any(installer => installer.IsInstalledByUs || !installer.IsInstalled))
+                var configureTask = new ConfigureTask(eapConfig);
+                var installers = configureTask.GetCertificateInstallers();
+
+                if (installers.Any(installer => installer.IsInstalledByUs || !installer.IsInstalled))
                 {
-                    SetActiveContent(new CertificateViewModel(this, eapConfig));
+                    this.SetActiveContent(new CertificateViewModel(this, eapConfig));
                     return true;
                 }
 
-                SetActiveContent(new LoginViewModel(this, eapConfig));
+                this.SetActiveContent(new LoginViewModel(this, eapConfig));
                 return true;
             }
 
@@ -205,7 +208,7 @@ namespace App.Library.ViewModels
 
             if (profile?.OAuth ?? false)
             {
-                SetActiveContent(new OAuthViewModel(this, profile));
+                this.SetActiveContent(new OAuthViewModel(this, profile));
                 return true;
             }
 
@@ -218,7 +221,7 @@ namespace App.Library.ViewModels
         /// </summary>
         /// <returns>EapConfig object.</returns>
         /// <exception cref="EduroamAppUserException">description</exception>
-        public async Task<EapConfig> DownloadEapConfig(IdentityProviderProfile profile)
+        public async Task<EapConfig?> DownloadEapConfig(IdentityProviderProfile profile)
         {
             if (string.IsNullOrEmpty(profile?.Id))
             {

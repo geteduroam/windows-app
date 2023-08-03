@@ -4,7 +4,7 @@ using EduRoam.Connect.Identity;
 
 namespace EduRoam.Connect.Tasks
 {
-    public class GetEapConfigTask
+    public class EapConfigTask
     {
         /// <summary>
         /// Connect by a institutes profile
@@ -21,7 +21,7 @@ namespace EduRoam.Connect.Tasks
         /// <exception cref="UnknownInstituteException" />
         /// <exception cref="UnknownProfileException" />
         /// <exception cref="EduroamAppUserException"/>
-        public async Task<EapConfig?> GetEapConfigAsync(string nameOfinstitute, string profileName)
+        public static async Task<EapConfig?> GetEapConfigAsync(string nameOfinstitute, string profileName)
         {
             if (string.IsNullOrWhiteSpace(nameOfinstitute))
             {
@@ -32,7 +32,7 @@ namespace EduRoam.Connect.Tasks
                 throw new ArgumentNullException(nameof(profileName));
             }
 
-            var getProfilesTask = new GetProfilesTask();
+            var getProfilesTask = new ProfilesTask();
             var profiles = await getProfilesTask.GetProfilesAsync(nameOfinstitute);
             var profile = profiles.FirstOrDefault(p => p.Name.Equals(profileName, StringComparison.InvariantCultureIgnoreCase));
 
@@ -46,7 +46,7 @@ namespace EduRoam.Connect.Tasks
 
         }
 
-        public async Task<EapConfig?> GetEapConfigAsync(FileInfo eapConfigPath)
+        public static async Task<EapConfig?> GetEapConfigAsync(FileInfo eapConfigPath)
         {
             var filePath = eapConfigPath.FullName;
             var eapConfigContent = await File.ReadAllTextAsync(filePath);
@@ -58,7 +58,7 @@ namespace EduRoam.Connect.Tasks
             return eapConfig;
         }
 
-        public Task<EapConfig?> GetEapConfigAsync()
+        public static Task<EapConfig?> GetEapConfigAsync()
         {
             // create and return EapConfig object
             return LetsWifi.Instance.RequestAndDownloadEapConfig();
@@ -66,7 +66,7 @@ namespace EduRoam.Connect.Tasks
 
         public Task<EapConfig?> GetEapConfigAsync(string profileId)
         {
-            var getProfilesTask = new GetProfilesTask();
+            var getProfilesTask = new ProfilesTask();
             var profile = getProfilesTask.GetProfile(profileId);
 
             if (profile == null)
@@ -75,6 +75,11 @@ namespace EduRoam.Connect.Tasks
             }
 
             return ProcessProfileAsync(profile);
+        }
+
+        public static bool IsEapConfigSupported(EapConfig eapConfig)
+        {
+            return EduRoamNetwork.IsEapConfigSupported(eapConfig);
         }
 
         private static async Task<EapConfig?> ProcessProfileAsync(IdentityProviderProfile fullProfile)

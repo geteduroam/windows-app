@@ -44,7 +44,7 @@ namespace EduRoam.CLI.Commands
                     return;
                 }
 
-                if (!EduRoamNetwork.IsEapConfigSupported(eapConfig))
+                if (!EapConfigTask.IsEapConfigSupported(eapConfig))
                 {
                     ConsoleExtension.WriteError(Resources.ErrorUnsupportedProfile);
                     return;
@@ -59,9 +59,7 @@ namespace EduRoam.CLI.Commands
                     return;
                 }
 
-                var connectTask = new ConnectTask();
-
-                var connector = await connectTask.GetConnectorAsync();
+                var connector = await ConnectTask.GetConnectorAsync();
                 if (connector == null)
                 {
                     ConsoleExtension.WriteError(Resources.ErrorEapConfigIsEmpty);
@@ -119,20 +117,20 @@ namespace EduRoam.CLI.Commands
 
         private static Task<EapConfig?> GetEapConfigAsync(FileInfo? eapConfigFile, string? institute, string? profileName)
         {
-            var connectTask = new GetEapConfigTask();
-
             if (eapConfigFile == null)
             {
-                return connectTask.GetEapConfigAsync(institute!, profileName!);
+                return EapConfigTask.GetEapConfigAsync(institute!, profileName!);
             }
 
-            return connectTask.GetEapConfigAsync(eapConfigFile);
+            return EapConfigTask.GetEapConfigAsync(eapConfigFile);
         }
 
         private static void OutputCertificatesStatus(EapConfig eapConfig)
         {
             ConsoleExtension.WriteStatus(Resources.CertificatesInstallationNotification);
-            var installers = ConnectToEduroam.EnumerateCAInstallers(eapConfig).ToList();
+
+            var configureTask = new ConfigureTask(eapConfig);
+            var installers = configureTask.GetCertificateInstallers();
             foreach (var installer in installers)
             {
                 Console.WriteLine();

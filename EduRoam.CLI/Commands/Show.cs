@@ -33,17 +33,15 @@ namespace EduRoam.CLI.Commands
             {
                 try
                 {
-                    var connectTask = new GetEapConfigTask();
-
                     EapConfig? eapConfig;
 
                     if (eapConfigFile == null)
                     {
-                        eapConfig = await connectTask.GetEapConfigAsync(institute!, profileName!);
+                        eapConfig = await EapConfigTask.GetEapConfigAsync(institute!, profileName!);
                     }
                     else
                     {
-                        eapConfig = await connectTask.GetEapConfigAsync(eapConfigFile);
+                        eapConfig = await EapConfigTask.GetEapConfigAsync(eapConfigFile);
                     }
 
                     if (eapConfig == null || !HasInfo(eapConfig))
@@ -114,7 +112,7 @@ namespace EduRoam.CLI.Commands
 
         private static bool CheckIfEapConfigIsSupported(EapConfig eapConfig)
         {
-            if (!EduRoamNetwork.IsEapConfigSupported(eapConfig))
+            if (!EapConfigTask.IsEapConfigSupported(eapConfig))
             {
                 ConsoleExtension.WriteError(Resources.ErrorUnsupportedProfile);
                 return false;

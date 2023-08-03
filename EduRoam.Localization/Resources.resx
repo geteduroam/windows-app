@@ -451,6 +451,12 @@ Exception: {0}.</value>
   <data name="WarningNoProfilesFound" xml:space="preserve">
     <value>No profiles found</value>
   </data>
+  <data name="WarningNoSupportedAuthenticationMethod" xml:space="preserve">
+    <value>No supported authentification method was found.</value>
+  </data>
+  <data name="WarningProfileNotSupported" xml:space="preserve">
+    <value>The profile you have selected is not supported by this application.</value>
+  </data>
   <data name="WarningUninstall" xml:space="preserve">
     <value>You are currently in the process of completly uninstalling geteduroam</value>
   </data>
