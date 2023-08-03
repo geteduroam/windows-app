@@ -11,7 +11,7 @@ namespace EduRoam.Connect
     /// Performs necessary steps in order to let the user authenticate through Feide. The actual browser
     /// authentication has to be performed between GetAuthUri and GetEapConfigString.
     /// </summary>
-    public class OAuth
+    internal class OAuth
     {
         // static config
         private const string ResponseType = "code";
@@ -32,7 +32,7 @@ namespace EduRoam.Connect
         /// <param name="authEndpoint">Authorization Endpoint.</param>
         /// <param name="tokenEndpoint">Token Endpoint.</param>
         /// <param name="generatorEndpoint"> Generator endpoint for eap-config (resource endpoint).</param>
-        public OAuth(Uri authEndpoint)
+        internal OAuth(Uri authEndpoint)
         {
             this.authEndpoint = authEndpoint;
 

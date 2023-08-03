@@ -330,7 +330,7 @@ namespace EduRoam.Connect.Eap
         #endregion Credentials
 
         // Constructor
-        public AuthenticationMethod(
+        internal AuthenticationMethod(
             EapType eapType,
             InnerAuthType innerAuthType,
             List<string> serverCertificateAuthorities,

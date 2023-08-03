@@ -16,7 +16,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace EduRoam.Connect
 {
     // https://github.com/geteduroam/lets-wifi
-    public class LetsWifi
+    internal class LetsWifi
     {
         // tokens to access API, valid for a small time window
         private string? AccessToken { get; set; }
@@ -32,7 +32,7 @@ namespace EduRoam.Connect
             this.store = new RegistryStore();
         }
 
-        public static LetsWifi Instance => new();
+        internal static LetsWifi Instance => new();
 
         private string? ProfileID { get => this.store.WifiEndpoint?.ProfileId; }
 

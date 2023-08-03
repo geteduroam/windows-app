@@ -45,7 +45,7 @@ namespace EduRoam.Connect
         /// </summary>
         /// <param name="authMethod">authMethod</param>
         /// <returns>Complete user data xml as string.</returns>
-        public static string CreateUserDataXml(Eap.AuthenticationMethod authMethod)
+        internal static string CreateUserDataXml(AuthenticationMethod authMethod)
         {
             _ = authMethod ?? throw new ArgumentNullException(nameof(authMethod));
             using var userCert = authMethod.ClientCertificateAsX509Certificate2();
@@ -84,6 +84,7 @@ namespace EduRoam.Connect
             // returns xml as string if not null
             return newUserData != null ? newUserData.ToString() : "";
         }
+
         private static XElement EapUserData(
             string? innerIdentity,
             string? password,
@@ -178,7 +179,7 @@ namespace EduRoam.Connect
             };
         }
 
-        public static bool IsSupported(Eap.AuthenticationMethod authMethod) => IsSupported(authMethod.EapType, authMethod.InnerAuthType);
+        public static bool IsSupported(AuthenticationMethod authMethod) => IsSupported(authMethod.EapType, authMethod.InnerAuthType);
 
         private static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
         {

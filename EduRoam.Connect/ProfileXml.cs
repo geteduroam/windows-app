@@ -49,9 +49,9 @@ namespace EduRoam.Connect
 
         private static readonly string[] PREFERRED_SSIDS = new string[] { "eduroam", "govroam" };
 
-        public static ValueTuple<string, string> CreateSSIDProfileXml(Eap.AuthenticationMethod authMethod, string ssid)
+        internal static ValueTuple<string, string> CreateSSIDProfileXml(AuthenticationMethod authMethod, string ssid)
             => CreateProfileXml(authMethod, withSSID: ssid);
-        public static ValueTuple<string, string> CreateHS20ProfileXml(Eap.AuthenticationMethod authMethod)
+        internal static ValueTuple<string, string> CreateHS20ProfileXml(AuthenticationMethod authMethod)
             => CreateProfileXml(authMethod, withHS20: true);
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace EduRoam.Connect
         /// <param name="withHS20">If to install as hotspot 2.0 profile or not (separate profile from normal eap)</param>
         /// <returns>A tuple containing the profile name and the WLANProfile XML data</returns>
         private static ValueTuple<string, string> CreateProfileXml(
-            Eap.AuthenticationMethod authMethod,
+            AuthenticationMethod authMethod,
             string? withSSID = null,
             bool withHS20 = false,
             bool hiddenNetwork = false)
@@ -463,7 +463,7 @@ namespace EduRoam.Connect
         /// </summary>
         /// <param name="authMethod"></param>
         /// <returns></returns>
-        public static bool IsSupported(Eap.AuthenticationMethod authMethod)
+        public static bool IsSupported(AuthenticationMethod authMethod)
         {
             // check if it has a supported
             if (authMethod.EapConfig != null && authMethod.EapConfig.CredentialApplicabilities

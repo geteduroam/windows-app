@@ -8,14 +8,14 @@ using System.Text;
 
 namespace EduRoam.Connect
 {
-    public class OAuthHandler
+    internal class OAuthHandler
     {
         private readonly IdentityProviderProfile profile;
         private readonly Uri prefix;
         private readonly Uri authUri;
         private readonly OAuth oauth;
 
-        public OAuthHandler(IdentityProviderProfile profile)
+        internal OAuthHandler(IdentityProviderProfile profile)
         {
             if (!profile.OAuth)
             {
