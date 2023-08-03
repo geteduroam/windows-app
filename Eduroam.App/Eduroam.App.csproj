@@ -7,6 +7,7 @@
     <UseWPF>true</UseWPF>
     <StartupObject>Eduroam.App.App</StartupObject>
     <ApplicationIcon>geteduroam.ico</ApplicationIcon>
+	<AssemblyName>geteduroam</AssemblyName>
     <Configurations>Debug;Release;DebugArm</Configurations>
     <Platforms>AnyCPU;ARM32</Platforms>
   </PropertyGroup>

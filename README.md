@@ -4,11 +4,12 @@ This application helps set up eduroam on end-users' computers by automatically f
 
 ## Structure
 
-* **EduRoam.App**:      The "eduroam" app.
-* **GovRoam.App**:      The "govroam" app.
-* **App.Library**:		The Wpf graphical user interface
-* **EduRoam.CLI**:      The command line interface
-* **EduRoam.Connect**:  The logic interfacing with the discovery api, and the logic to parse and configure the various profiles into windows.
+* **EduRoam.App**:           The "eduroam" app.
+* **GovRoam.App**:           The "govroam" app.
+* **App.Library**:		     The Wpf graphical user interface
+* **EduRoam.CLI**:           The command line interface
+* **EduRoam.Connect**:       The logic interfacing with the discovery api, and the logic to parse and configure the various profiles into windows.
+* **EduRoam.Localization**:  The localization resources
 
 ## Supported authentication modes
 
@@ -40,7 +41,7 @@ A tray icon for running in the background can be enabled through a project flag,
 ### Prerequisites
 
  * Visual Studio 2019/2022 (https://visualstudio.microsoft.com/downloads/) with C# 8.0
- * .NET Framework 4.7.1
+ * .NET Core 6
 
 
 ### Running the app
@@ -74,14 +75,18 @@ For more information, [check this guide from Digicert](https://www.digicert.com/
 
 These dependencies are managed with `NuGet`, native to Visual Studio. The exception being ManagedNativeWifi which has been cloned and patched.
 
- * ManagedNativeWifi by emoacht (https://github.com/emoacht/ManagedNativeWifi) ~ [LICENSE](Licenses/ManagedNativeWifi_LICENSE.md)
- * Newtonsoft.Json by JamesNK (https://github.com/JamesNK/Newtonsoft.Json) ~ [LICENSE](Licenses/Newtonsoft.Json_LICENSE.md)
- * Fody (https://github.com/Fody/Fody) ~ [LICENSE](Licenses/Fody_LICENSE.md)
- * Costura (https://github.com/Fody/Costura) ~ [LICENSE](Licenses/Costura_LICENSE.md)
- * DuoVia.FuzzyString by Tyler Jensen (https://www.nuget.org/packages/System.Collections.Immutable/) ~ Apache-2.0
- * System.Collections.Immutable (https://www.nuget.org/packages/System.Collections.Immutable/) ~ MIT LICENSE
- * SingleInstanceApp (https://github.com/taylorjonl/SingleInstanceApp)
-
+* Costura (https://github.com/Fody/Costura) ~ [LICENSE](Licenses/Costura_LICENSE.md)
+* Fody (https://github.com/Fody/Fody) ~ [LICENSE](Licenses/Fody_LICENSE.md)
+* DuoVia.FuzzyString by Tyler Jensen (https://www.nuget.org/packages/System.Collections.Immutable/) ~ Apache-2.0
+* Geolocation by Schott Schluer (https://github.com/scottschluer/geolocation) ~ [LICENSE](https://www.nuget.org/packages/Geolocation/1.2.1/license)
+* ManagedNativeWifi by emoacht (https://github.com/emoacht/ManagedNativeWifi) ~ [LICENSE](Licenses/ManagedNativeWifi_LICENSE.md)
+* Newtonsoft.Json by JamesNK (https://github.com/JamesNK/Newtonsoft.Json) ~ [LICENSE](Licenses/Newtonsoft.Json_LICENSE.md)
+* SingleInstanceApp by Taylor Jonl (https://github.com/taylorjonl/SingleInstanceApp) 
+* System.Collections.Immutable (https://www.nuget.org/packages/System.Collections.Immutable/) ~ MIT LICENSE
+* System.CommandLine (https://github.com/dotnet/command-line-api) ~ MIT LICENSE
+* System.Runtime.InteropServices (https://dot.net/) ~ [LICENSE](https://dotnet.microsoft.com/en-us/dotnet_library_license.htm)
+* TaskScheduler by David Hall (https://github.com/dahall/taskscheduler) ~ MIT LICENSE
+ 
 ## License
 
 This project is licensed under the BSD 3-Clause License - see the [LICENSE.md](LICENSE.md) file for details.
