@@ -1,4 +1,6 @@
-﻿using EduRoam.Connect.Identity;
+﻿using App.Library.Binding;
+
+using EduRoam.Connect.Identity;
 using EduRoam.Connect.Tasks;
 
 using System.Collections.ObjectModel;
@@ -15,7 +17,7 @@ namespace App.Library.ViewModels
             : base(owner)
         {
             this.searchText = string.Empty;
-            this.Institutions = new NotifyTaskCompletion<ObservableCollection<IdentityProvider>>(this.GetInstitutionsAsync());
+            this.Institutions = new AsyncProperty<ObservableCollection<IdentityProvider>>(this.GetInstitutionsAsync());
         }
 
         public string SearchText
@@ -28,7 +30,7 @@ namespace App.Library.ViewModels
             }
         }
 
-        public NotifyTaskCompletion<ObservableCollection<IdentityProvider>> Institutions
+        public AsyncProperty<ObservableCollection<IdentityProvider>> Institutions
         {
             get; private set;
         }
