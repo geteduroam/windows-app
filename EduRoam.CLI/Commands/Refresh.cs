@@ -13,18 +13,24 @@ namespace EduRoam.CLI.Commands
 
         public Command GetCommand()
         {
-            var command = new Command(CommandName, CommandDescription);
+            var forceOption = Options.GetForceOption();
+            forceOption.AddAlias("refresh-force");
 
-            command.SetHandler(async () =>
+            var command = new Command(CommandName, CommandDescription)
+            {
+                forceOption
+            };
+
+            command.SetHandler(async (bool force) =>
             {
                 var task = new RefreshCredentialsTask();
-                var message = await task.RefreshAsync();
+                var message = await task.RefreshAsync(force);
 
                 if (!string.IsNullOrWhiteSpace(message))
                 {
                     Console.WriteLine(message);
                 }
-            });
+            }, forceOption);
 
             return command;
         }

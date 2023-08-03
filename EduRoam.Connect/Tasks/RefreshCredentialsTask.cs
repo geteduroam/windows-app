@@ -14,11 +14,11 @@ namespace EduRoam.Connect.Tasks
         /// </summary>
         /// <returns></returns>
         /// <exception cref="ApiParsingException"/>
-        public async Task<string> RefreshAsync()
+        public async Task<string> RefreshAsync(bool force)
         {
             try
             {
-                var response = await LetsWifi.Instance.RefreshAndInstallEapConfig(force: true, onlyLetsWifi: true);
+                var response = await LetsWifi.Instance.RefreshAndInstallEapConfig(force, onlyLetsWifi: true);
 
                 switch (response)
                 {
