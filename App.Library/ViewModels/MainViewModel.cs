@@ -43,7 +43,7 @@ namespace App.Library.ViewModels
 
         public ApplicationState State { get; private set; }
 
-        public BaseViewModel ActiveContent { get; private set; }
+        public BaseViewModel? ActiveContent { get; private set; }
 
         public DelegateCommand NewProfileCommand { get; protected set; }
 
@@ -53,7 +53,7 @@ namespace App.Library.ViewModels
         {
             if (!EapConfigTask.IsEapConfigSupported(eapConfig))
             {
-                MessageBox.Show(
+                _ = MessageBox.Show(
                     Resources.WarningProfileNotSupported,
                     Resources.WarningNoSupportedAuthenticationMethod,
                     MessageBoxButton.OK,
@@ -137,83 +137,81 @@ namespace App.Library.ViewModels
         /// <param name="skipOverview"></param>
         /// <returns>True if function navigated somewhere</returns>
         /// <exception cref="XmlException">Parsing eap-config failed</exception>
-        public async Task<bool> HandleProfileSelect(
-            IdentityProviderProfile profile,
+        public async Task HandleProfileSelect(
+            string profileId,
             string? eapConfigXml = null,
             bool skipOverview = false)
         {
-            this.IsLoading = true;
+            IdentityProviderProfile? profile;
             EapConfig? eapConfig;
 
-            if (!string.IsNullOrEmpty(eapConfigXml))
+            this.IsLoading = true;
+
+            try
+            {
+                profile = this.idpDownloader.GetProfileFromId(profileId);
+
+                if (profile == null)
+                {
+                    MessageBox.Show(Resources.ErrorUnknownProfile, caption: "geteduroam - Exception");
+                    return;
+                }
+
+                this.State.SelectedProfile = profile;
+            }
+            catch (EduroamAppUserException ex) // TODO: catch this on some higher level
+            {
+                MessageBox.Show(ex.UserFacingMessage, caption: "geteduroam - Exception");
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(eapConfigXml))
             {
                 // TODO: ^perhaps reuse logic from PersistingStore.IsReinstallable
                 Debug.WriteLine(nameof(eapConfigXml) + " was set", category: nameof(this.HandleProfileSelect));
 
-                eapConfig = null;
-                //eapConfig = EapConfig.FromXmlData(eapConfigXml);
-                //eapConfig.ProfileId = profile.Id;
+                eapConfig = EapConfig.FromXmlData(eapConfigXml);
+                eapConfig.ProfileId = profileId;
+            }
+
+            Debug.WriteLine(nameof(eapConfigXml) + " was not set", category: nameof(this.HandleProfileSelect));
+
+            if (profile.OAuth)
+            {
+                this.SetActiveContent(new OAuthViewModel(this));
+            }
+            else if (!string.IsNullOrWhiteSpace(profile.Redirect))
+            {
+                this.SetActiveContent(new RedirectViewModel(this, new Uri(profile.Redirect)));
             }
             else
             {
-                Debug.WriteLine(nameof(eapConfigXml) + " was not set", category: nameof(this.HandleProfileSelect));
+                var eapConfiguration = new EapConfigTask();
 
-                profile = this.idpDownloader.GetProfileFromId(profile.Id);
-                try
+                eapConfig = await eapConfiguration.GetEapConfigAsync(profile.Id);
+                if (eapConfig != null)
                 {
-                    eapConfig = await this.DownloadEapConfig(profile);
-                }
-                catch (EduroamAppUserException ex) // TODO: catch this on some higher level
-                {
-                    MessageBox.Show(ex.UserFacingMessage, caption: "geteduroam - Exception");
-                    eapConfig = null;
+                    if (eapConfig.HasInfo && !skipOverview)
+                    {
+                        this.SetActiveContent(new ProfileViewModel(this, eapConfig));
+                    }
+                    else
+                    {
+                        var configureTask = new ConfigureTask(eapConfig);
+                        var installers = configureTask.GetCertificateInstallers();
+
+                        if (installers.Any(installer => installer.IsInstalledByUs || !installer.IsInstalled))
+                        {
+                            this.SetActiveContent(new CertificateViewModel(this, eapConfig));
+                        }
+                        else
+                        {
+                            this.SetActiveContent(new LoginViewModel(this, eapConfig));
+                        }
+                    }
+
                 }
             }
-
-            //// reenable buttons after LoadPageLoading() disables them
-            //btnBack.IsEnabled = true;
-            //btnNext.IsEnabled = true;
-
-            if (eapConfig != null)
-            {
-                if (!CheckIfEapConfigIsSupported(eapConfig))
-                {
-                    return false;
-                }
-
-                if (eapConfig.HasInfo
-                    && !skipOverview)
-                {
-                    this.SetActiveContent(new ProfileViewModel(this, eapConfig));
-                    return true;
-                }
-
-                var configureTask = new ConfigureTask(eapConfig);
-                var installers = configureTask.GetCertificateInstallers();
-
-                if (installers.Any(installer => installer.IsInstalledByUs || !installer.IsInstalled))
-                {
-                    this.SetActiveContent(new CertificateViewModel(this, eapConfig));
-                    return true;
-                }
-
-                this.SetActiveContent(new LoginViewModel(this, eapConfig));
-                return true;
-            }
-
-            if (!string.IsNullOrEmpty(profile?.Redirect))
-            {
-                this.SetActiveContent(new RedirectViewModel(this, new Uri(profile.Redirect)));
-                return true;
-            }
-
-            if (profile?.OAuth ?? false)
-            {
-                this.SetActiveContent(new OAuthViewModel(this, profile));
-                return true;
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -222,9 +220,9 @@ namespace App.Library.ViewModels
         /// </summary>
         /// <returns>EapConfig object.</returns>
         /// <exception cref="EduroamAppUserException">description</exception>
-        public async Task<EapConfig?> DownloadEapConfig(IdentityProviderProfile profile)
+        private async Task<EapConfig?> DownloadEapConfig(IdentityProviderProfile profile)
         {
-            if (string.IsNullOrEmpty(profile?.Id))
+            if (string.IsNullOrWhiteSpace(profile?.Id))
             {
                 return null;
             }

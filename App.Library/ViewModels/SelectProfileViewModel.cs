@@ -24,15 +24,7 @@ namespace App.Library.ViewModels
 
         protected override async Task NavigateNextAsync()
         {
-            // if profile could not be handled then return to form
-            var result = await this.Owner.HandleProfileSelect(this.Owner.State.SelectedProfile!);
-            //if (!await HandleProfileSelect(profileId)) 
-            if (!result)
-            {
-                //todo what todo? stay here?
-                //LoadPageSelectProfile(refresh: false);
-            }
-            //return Task.CompletedTask;
+            await this.Owner.HandleProfileSelect(this.Owner.State.SelectedProfile!.Id);
         }
     }
 }

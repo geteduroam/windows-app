@@ -582,6 +582,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unknown profile.
+        /// </summary>
+        public static string ErrorUnknownProfile {
+            get {
+                return ResourceManager.GetString("ErrorUnknownProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connection of type {0} is not supported (yet)..
         /// </summary>
         public static string ErrorUnsupportedConnectionType {

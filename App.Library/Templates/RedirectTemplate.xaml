@@ -7,6 +7,7 @@
     <DataTemplate DataType="{x:Type viewModels:RedirectViewModel}">
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                
                 <TextBlock
                     x:Name="tbTitle"
                     Margin="5"
@@ -14,6 +15,7 @@
                     Text="{x:Static lang:Resources.RedirectTitle}"
                     TextAlignment="Center"
                     TextWrapping="Wrap" />
+                
                 <TextBlock
                     x:Name="tbRedirect"
                     Margin="5"

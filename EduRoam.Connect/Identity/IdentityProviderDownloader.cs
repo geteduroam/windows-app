@@ -253,10 +253,11 @@ namespace EduRoam.Connect.Identity
 
         /// <summary>
         /// Find IdentityProviderProfile by profileId string
-        /// </summary>
-        /// <exception cref="NullReferenceException">If LoadProviders() was not called or threw an exception</exception>
+        /// </summary>        
         /// <param name="profileId"></param>
         /// <returns>The IdentityProviderProfile with the given profileId</returns>
+        /// 
+        /// <exception cref="EduroamAppUserException">If LoadProviders() was not called or threw an exception</exception>
         public IdentityProviderProfile? GetProfileFromId(string profileId)
         {
             if (!this.Loaded)
@@ -284,6 +285,7 @@ namespace EduRoam.Connect.Identity
         /// <param name="url">Url that must be retrieved</param>
         /// <param name="accept">Content-Type to be expected, null for no check</param>
         /// <returns>HTTP body</returns>
+        /// 
         /// <exception cref="HttpRequestException">Anything that went wrong attempting HTTP request, including DNS</exception>
         /// <exception cref="ApiParsingException">Content-Type did not match accept</exception>
         private async static Task<string> DownloadUrlAsString(Uri url, string[]? accept = null, string? accessToken = null)

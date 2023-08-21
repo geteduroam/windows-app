@@ -68,26 +68,7 @@ namespace App.Library.ViewModels
 
                 if (!string.IsNullOrEmpty(autoProfile.Id))
                 {
-                    this.Owner.State.SelectedProfile = autoProfile;
-
-                    if (autoProfile.OAuth)
-                    {
-                        this.Owner.SetActiveContent(new OAuthViewModel(this.Owner));
-                    }
-                    else
-                    {
-                        var eapConfiguration = new EapConfigTask();
-
-                        var eapConfig = await eapConfiguration.GetEapConfigAsync(autoProfile.Id);
-                        if (eapConfig != null)
-                        {
-                            this.Owner.State.SelectedProfile = autoProfile;
-                            this.Owner.SetActiveContent(new ProfileViewModel(this.Owner, eapConfig));
-
-                            return;
-                        }
-                    }
-                    // if profile could not be handled then stay at current form
+                    await this.Owner.HandleProfileSelect(autoProfile.Id);
                 }
             }
             else
