@@ -8,16 +8,16 @@ namespace App.Library
 {
     public class ApplicationState : NotifyPropertyChanged
     {
-        private IdentityProvider selectedIdentityProvider;
+        private IdentityProvider? selectedIdentityProvider;
 
-        private IdentityProviderProfile selectedProfile;
+        private IdentityProviderProfile? selectedProfile;
 
         public ApplicationState()
         {
             this.NavigationHistory = new Stack<BaseViewModel>();
         }
 
-        public IdentityProvider SelectedIdentityProvider
+        public IdentityProvider? SelectedIdentityProvider
         {
             get
             {
@@ -30,7 +30,7 @@ namespace App.Library
             }
         }
 
-        public IdentityProviderProfile SelectedProfile
+        public IdentityProviderProfile? SelectedProfile
         {
             get
             {
@@ -45,9 +45,9 @@ namespace App.Library
 
         public void Reset()
         {
-            SelectedIdentityProvider = null;
-            SelectedProfile = null;
-            NavigationHistory.Clear();
+            this.SelectedIdentityProvider = null;
+            this.SelectedProfile = null;
+            this.NavigationHistory.Clear();
         }
 
         public Stack<BaseViewModel> NavigationHistory { get; }

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-
-using App.Library.Command;
+﻿using App.Library.Command;
 
 using EduRoam.Connect.Eap;
+
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace App.Library.ViewModels
 {
@@ -53,7 +53,7 @@ namespace App.Library.ViewModels
 
         public string EmailAddress => this.eapConfig.InstitutionInfo.EmailAddress;
 
-        public bool EmailIsValid => !(this.EmailAddress.Contains(" ") || !this.EmailAddress.Contains("@"));
+        public bool EmailIsValid => !(this.EmailAddress.Contains(' ') || !this.EmailAddress.Contains('@'));
 
         public string Phone => this.eapConfig.InstitutionInfo.Phone;
 
@@ -85,7 +85,7 @@ namespace App.Library.ViewModels
 
         private void SelectOtherInstitution()
         {
-           this.Owner.Restart();
+            this.Owner.Restart();
         }
 
         protected override bool CanNavigateNextAsync()
@@ -96,7 +96,7 @@ namespace App.Library.ViewModels
         protected override Task NavigateNextAsync()
         {
             //todo ShowTou was always true in old situation, What to do?
-            
+
             //if (pageProfileOverview.ShowTou)
             //{
             //    LoadPageTermsOfUse();

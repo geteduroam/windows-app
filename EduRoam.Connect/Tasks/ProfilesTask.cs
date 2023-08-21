@@ -48,10 +48,11 @@ namespace EduRoam.Connect.Tasks
             return Enumerable.Empty<IdentityProviderProfile>();
         }
 
-        public static IdentityProviderProfile? GetProfile(string profileId)
+        public static async Task<IdentityProviderProfile?> GetProfileAsync(string profileId)
         {
             using var idpDownloader = new IdentityProviderDownloader();
 
+            await idpDownloader.LoadProviders(useGeodata: true);
             return idpDownloader.GetProfileFromId(profileId);
         }
 

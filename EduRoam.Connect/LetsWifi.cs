@@ -32,7 +32,9 @@ namespace EduRoam.Connect
             this.store = new RegistryStore();
         }
 
-        internal static LetsWifi Instance => new();
+        private static LetsWifi instance = new LetsWifi();
+
+        internal static LetsWifi Instance => instance;
 
         private string? ProfileID { get => this.store.WifiEndpoint?.ProfileId; }
 

@@ -39,7 +39,7 @@ namespace EduRoam.Connect
         /// <summary>
         /// Cancellation thread (Optional)
         /// </summary>
-        private ManualResetEvent? CancelThread { get; set; }
+        public ManualResetEvent? CancelThread { get; set; }
 
         /// <summary>
         /// Creates cancellation token, used when cancelling BeginGetContext method. (Optional)
@@ -49,7 +49,7 @@ namespace EduRoam.Connect
         /// <summary>
         /// Main thread (Optional)
         /// </summary>
-        private ManualResetEvent? mainThread { get; set; }
+        public ManualResetEvent? MainThread { get; set; }
 
         public async Task Handle()
         {
@@ -107,7 +107,7 @@ namespace EduRoam.Connect
             if (handleResult == 0)
             {
                 // freezes main thread so ListenerCallback function can finish
-                this.mainThread?.WaitOne();
+                this.MainThread?.WaitOne();
             }
 
             // closes HTTP listener
@@ -197,10 +197,10 @@ namespace EduRoam.Connect
             }
             finally
             {
-                if (this.mainThread != null)
+                if (this.MainThread != null)
                 {
                     // resumes main thread
-                    this.mainThread?.Set();
+                    this.MainThread?.Set();
                 }
             }
         }

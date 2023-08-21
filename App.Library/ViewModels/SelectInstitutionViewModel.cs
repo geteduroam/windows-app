@@ -64,19 +64,21 @@ namespace App.Library.ViewModels
             }
             else if (availableProfiles == 1) // skip the profile select and go with the first one
             {
-                var autoProfileId = this.Owner.State.SelectedIdentityProvider.Profiles.Single()
-                                        .Id;
+                var autoProfile = this.Owner.State.SelectedIdentityProvider.Profiles.Single();
 
-                if (!string.IsNullOrEmpty(autoProfileId))
+                if (!string.IsNullOrEmpty(autoProfile.Id))
                 {
+                    var eapConfiguration = new EapConfigTask(new System.Threading.ManualResetEvent(false), new System.Threading.ManualResetEvent(false));
 
-                    var eapConfig = await EapConfigTask.GetEapConfigAsync(autoProfileId);
+                    var eapConfig = await eapConfiguration.GetEapConfigAsync(autoProfile.Id);
                     if (eapConfig != null)
                     {
-                        //LoadPageSelectInstitution(refresh: false);
+                        this.Owner.State.SelectedProfile = autoProfile;
+                        this.Owner.SetActiveContent(new ProfileViewModel(this.Owner, eapConfig));
+
                         return;
                     }
-                    // if profile could not be handled then return to form
+                    // if profile could not be handled then stay at current form
                 }
             }
             else
@@ -105,7 +107,7 @@ namespace App.Library.ViewModels
                 throw new ArgumentNullException(nameof(profileId));
             }
 
-            var profile = ProfilesTask.GetProfile(profileId);
+            var profile = await ProfilesTask.GetProfileAsync(profileId);
 
             if (!string.IsNullOrWhiteSpace(eapConfigXml))
             {
@@ -121,7 +123,8 @@ namespace App.Library.ViewModels
 
                 try
                 {
-                    eapConfig = await EapConfigTask.GetEapConfigAsync(profileId);
+                    var eapConfiguration = new EapConfigTask(new System.Threading.ManualResetEvent(false), new System.Threading.ManualResetEvent(false));
+                    eapConfig = await eapConfiguration.GetEapConfigAsync(profileId);
                 }
                 catch (UnknownProfileException)
                 {
