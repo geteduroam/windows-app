@@ -358,6 +358,13 @@ Exception: {0}.</value>
     <value>n</value>
     <comment>Used for user confirmation, as the 'no' option</comment>
   </data>
+  <data name="OAuthExplanation" xml:space="preserve">
+    <value>To continue you need to authenticate in your browser, a window should have opened automatically.</value>
+  </data>
+  <data name="OAuthTitle" xml:space="preserve">
+    <value>Waiting ...</value>
+    <comment>O</comment>
+  </data>
   <data name="OptionDescriptionCertificatePath" xml:space="preserve">
     <value>Certificate filepath</value>
   </data>

@@ -16,6 +16,7 @@
                     <ColumnDefinition Width="6*" />
                     <ColumnDefinition Width="4*" />
                 </Grid.ColumnDefinitions>
+                
                 <TextBlock
                     x:Name="tbCertificate"
                     Margin="5"
@@ -23,6 +24,7 @@
                     Text="{Binding Text}"
                     TextAlignment="Left"
                     TextWrapping="Wrap" />
+                
                 <Button
                     x:Name="btnInstall"
                     Grid.Column="1"

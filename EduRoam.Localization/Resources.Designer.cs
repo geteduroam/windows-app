@@ -762,6 +762,24 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to To continue you need to authenticate in your browser, a window should have opened automatically..
+        /// </summary>
+        public static string OAuthExplanation {
+            get {
+                return ResourceManager.GetString("OAuthExplanation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting ....
+        /// </summary>
+        public static string OAuthTitle {
+            get {
+                return ResourceManager.GetString("OAuthTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Certificate filepath.
         /// </summary>
         public static string OptionDescriptionCertificatePath {

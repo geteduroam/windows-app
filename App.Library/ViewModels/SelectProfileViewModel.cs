@@ -15,7 +15,7 @@ namespace App.Library.ViewModels
             //this.NextCommand = new DelegateCommand(this.Next, this.CanGoNext);
         }
 
-        public List<IdentityProviderProfile> Profiles => this.Owner.State.SelectedIdentityProvider.Profiles;
+        public List<IdentityProviderProfile> Profiles => this.Owner.State.SelectedIdentityProvider?.Profiles ?? new List<IdentityProviderProfile>();
 
         protected override bool CanNavigateNextAsync()
         {
@@ -25,7 +25,7 @@ namespace App.Library.ViewModels
         protected override async Task NavigateNextAsync()
         {
             // if profile could not be handled then return to form
-            var result = await this.Owner.HandleProfileSelect(this.Owner.State.SelectedProfile);
+            var result = await this.Owner.HandleProfileSelect(this.Owner.State.SelectedProfile!);
             //if (!await HandleProfileSelect(profileId)) 
             if (!result)
             {

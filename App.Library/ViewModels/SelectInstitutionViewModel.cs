@@ -56,7 +56,7 @@ namespace App.Library.ViewModels
 
         protected override async Task NavigateNextAsync()
         {
-            var availableProfiles = this.Owner.State.SelectedIdentityProvider.Profiles.Count;
+            var availableProfiles = this.Owner.State.SelectedIdentityProvider?.Profiles.Count ?? 0;
 
             if (availableProfiles == 0)
             {
@@ -64,19 +64,28 @@ namespace App.Library.ViewModels
             }
             else if (availableProfiles == 1) // skip the profile select and go with the first one
             {
-                var autoProfile = this.Owner.State.SelectedIdentityProvider.Profiles.Single();
+                var autoProfile = this.Owner.State.SelectedIdentityProvider!.Profiles.Single();
 
                 if (!string.IsNullOrEmpty(autoProfile.Id))
                 {
-                    var eapConfiguration = new EapConfigTask(new System.Threading.ManualResetEvent(false), new System.Threading.ManualResetEvent(false));
+                    this.Owner.State.SelectedProfile = autoProfile;
 
-                    var eapConfig = await eapConfiguration.GetEapConfigAsync(autoProfile.Id);
-                    if (eapConfig != null)
+                    if (autoProfile.OAuth)
                     {
-                        this.Owner.State.SelectedProfile = autoProfile;
-                        this.Owner.SetActiveContent(new ProfileViewModel(this.Owner, eapConfig));
+                        this.Owner.SetActiveContent(new OAuthViewModel(this.Owner));
+                    }
+                    else
+                    {
+                        var eapConfiguration = new EapConfigTask();
 
-                        return;
+                        var eapConfig = await eapConfiguration.GetEapConfigAsync(autoProfile.Id);
+                        if (eapConfig != null)
+                        {
+                            this.Owner.State.SelectedProfile = autoProfile;
+                            this.Owner.SetActiveContent(new ProfileViewModel(this.Owner, eapConfig));
+
+                            return;
+                        }
                     }
                     // if profile could not be handled then stay at current form
                 }
