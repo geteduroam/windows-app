@@ -150,8 +150,9 @@ namespace App.Library.ViewModels
                 // TODO: ^perhaps reuse logic from PersistingStore.IsReinstallable
                 Debug.WriteLine(nameof(eapConfigXml) + " was set", category: nameof(this.HandleProfileSelect));
 
-                eapConfig = EapConfig.FromXmlData(eapConfigXml);
-                eapConfig.ProfileId = profile.Id;
+                eapConfig = null;
+                //eapConfig = EapConfig.FromXmlData(eapConfigXml);
+                //eapConfig.ProfileId = profile.Id;
             }
             else
             {

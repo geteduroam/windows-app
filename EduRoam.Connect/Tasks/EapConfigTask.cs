@@ -64,10 +64,9 @@ namespace EduRoam.Connect.Tasks
             return LetsWifi.Instance.RequestAndDownloadEapConfig();
         }
 
-        public Task<EapConfig?> GetEapConfigAsync(string profileId)
+        public static Task<EapConfig?> GetEapConfigAsync(string profileId)
         {
-            var getProfilesTask = new ProfilesTask();
-            var profile = getProfilesTask.GetProfile(profileId);
+            var profile = ProfilesTask.GetProfile(profileId);
 
             if (profile == null)
             {

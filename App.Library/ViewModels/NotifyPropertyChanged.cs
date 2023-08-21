@@ -8,12 +8,12 @@ namespace App.Library.ViewModels
         /// <summary>
         /// Called when a property changes
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Calls the PropertyChanged event
         /// </summary>
-        public virtual void CallPropertyChanged([CallerMemberName] string propertyName = null)
+        public virtual void CallPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             var handler = this.PropertyChanged;
             handler?.Invoke(this, new PropertyChangedEventArgs(propertyName));

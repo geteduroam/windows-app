@@ -53,7 +53,7 @@
             this.NetworkId = networkId;
         }
 
-        public static CredentialApplicability IEEE80211(
+        internal static CredentialApplicability IEEE80211(
             string ssid,
             string consortiumOid,
             string minRsnProto)
@@ -66,7 +66,7 @@
                 null);
         }
 
-        public static CredentialApplicability IEEE8023(
+        internal static CredentialApplicability IEEE8023(
             string networkId)
         {
             return new CredentialApplicability(

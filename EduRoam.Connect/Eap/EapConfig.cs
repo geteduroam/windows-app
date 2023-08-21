@@ -305,7 +305,7 @@ namespace EduRoam.Connect.Eap
         /// <param name="passphrase">the passphrase to the certificate file in question</param>
         /// <returns>Clone of this object with the appropriate properties set</returns>
         /// <exception cref="ArgumentException">The client certificate was not accepted by any authentication method</exception>
-        public EapConfig WithClientCertificate(string certificatePath, string? certificatePassphrase = null)
+        internal EapConfig WithClientCertificate(string certificatePath, string? certificatePassphrase = null)
         {
             var authMethods = this.AuthenticationMethods.Select(authMethod => authMethod.WithClientCertificate(certificatePath, certificatePassphrase))
                 .Where(authMethod => authMethod != null)
@@ -331,7 +331,7 @@ namespace EduRoam.Connect.Eap
         /// <param name="passphrase">the passphrase to the certificate</param>
         /// <returns>Clone of this object with the appropriate properties set</returns>
         /// <exception cref="ArgumentException">The client certificate was not accepted by any authentication method</exception>
-        public EapConfig WithClientCertificatePassphrase(string certificatePassphrase)
+        internal EapConfig WithClientCertificatePassphrase(string certificatePassphrase)
         {
             var authMethods = this.AuthenticationMethods.Select(authMethod => authMethod.WithClientCertificatePassphrase(certificatePassphrase))
                 .Where(authMethod => authMethod != null)
@@ -357,7 +357,7 @@ namespace EduRoam.Connect.Eap
         /// <param name="password">The passpword for inner auth</param>
         /// <returns>Clone of this object with the appropriate properties set</returns>
         /// <exception cref="ArgumentException">The client certificate was not accepted by any authentication method</exception>
-        public EapConfig WithLoginCredentials(string username, string password)
+        internal EapConfig WithLoginCredentials(string username, string password)
         {
             var authMethods = this.AuthenticationMethods.Select(authMethod => authMethod.WithLoginCredentials(username, password))
                 .Where(authMethod => authMethod != null)

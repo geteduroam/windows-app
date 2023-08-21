@@ -23,8 +23,7 @@ namespace EduRoam.CLI.Commands
 
             command.SetHandler(async (bool force) =>
             {
-                var task = new RefreshCredentialsTask();
-                var message = await task.RefreshAsync(force);
+                var message = await RefreshTask.RefreshAsync(force);
 
                 if (!string.IsNullOrWhiteSpace(message))
                 {
