@@ -19,6 +19,7 @@ namespace App.Library.ViewModels
             this.NavigateWebCommand = new DelegateCommand(this.NavigateWeb, this.CanNavigateWeb);
             this.OpenEmailCommand = new DelegateCommand(this.OpenEmail, this.CanOpenEmail);
             this.SelectOtherInstitutionCommand = new DelegateCommand(this.SelectOtherInstitution, () => true);
+            this.ShowTermsOfUseCommand = new DelegateCommand(this.ShowTermsOfUse, () => true);
 
             //todo ExtractFlag?
             //todo CopyToClipboard WebAddress / Phone / Email?
@@ -29,6 +30,8 @@ namespace App.Library.ViewModels
         public DelegateCommand OpenEmailCommand { get; private set; }
 
         public DelegateCommand SelectOtherInstitutionCommand { get; private set; }
+
+        public DelegateCommand ShowTermsOfUseCommand { get; private set; }
 
         public string Name => this.eapConfig.InstitutionInfo.DisplayName;
 
@@ -123,6 +126,11 @@ namespace App.Library.ViewModels
 
             //byte[] logoBytes = eapConfig.InstitutionInfo.LogoData;
             //string logoMimeType = eapConfig.InstitutionInfo.LogoMimeType;
+        }
+
+        private void ShowTermsOfUse()
+        {
+            this.Owner.SetActiveContent(new TermsOfUseViewModel(this.Owner, this.eapConfig));
         }
     }
 }

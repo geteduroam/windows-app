@@ -280,6 +280,33 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Terms of Use.
+        /// </summary>
+        public static string ConsentMain {
+            get {
+                return ResourceManager.GetString("ConsentMain", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to of the institution.
+        /// </summary>
+        public static string ConsentPost {
+            get {
+                return ResourceManager.GetString("ConsentPost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to By clicking &apos;Next&apos; you agree to the.
+        /// </summary>
+        public static string ConsentPre {
+            get {
+                return ResourceManager.GetString("ConsentPre", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} more days.
         /// </summary>
         public static string DaysLeft {

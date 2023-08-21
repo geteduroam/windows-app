@@ -192,6 +192,15 @@ Unable to connect to eduroam.</value>
   <data name="ConnectToEduroam" xml:space="preserve">
     <value>Connect to eduroam</value>
   </data>
+  <data name="ConsentMain" xml:space="preserve">
+    <value>Terms of Use</value>
+  </data>
+  <data name="ConsentPost" xml:space="preserve">
+    <value>of the institution</value>
+  </data>
+  <data name="ConsentPre" xml:space="preserve">
+    <value>By clicking 'Next' you agree to the</value>
+  </data>
   <data name="DaysLeft" xml:space="preserve">
     <value>{0} more days</value>
   </data>

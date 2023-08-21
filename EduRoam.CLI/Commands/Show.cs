@@ -37,7 +37,8 @@ namespace EduRoam.CLI.Commands
 
                     if (eapConfigFile == null)
                     {
-                        eapConfig = await EapConfigTask.GetEapConfigAsync(institute!, profileName!);
+                        var eapConfiguration = new EapConfigTask();
+                        eapConfig = await eapConfiguration.GetEapConfigAsync(institute!, profileName!);
                     }
                     else
                     {

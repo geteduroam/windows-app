@@ -117,9 +117,11 @@ namespace EduRoam.CLI.Commands
 
         private static Task<EapConfig?> GetEapConfigAsync(FileInfo? eapConfigFile, string? institute, string? profileName)
         {
+            var eapConfiguration = new EapConfigTask();
+
             if (eapConfigFile == null)
             {
-                return EapConfigTask.GetEapConfigAsync(institute!, profileName!);
+                return eapConfiguration.GetEapConfigAsync(institute!, profileName!);
             }
 
             return EapConfigTask.GetEapConfigAsync(eapConfigFile);
