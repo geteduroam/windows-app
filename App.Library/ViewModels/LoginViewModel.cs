@@ -1,6 +1,7 @@
-﻿using EduRoam.Connect.Eap;
+﻿using App.Library.Connections;
 
-using System;
+using EduRoam.Connect.Eap;
+
 using System.Threading.Tasks;
 
 namespace App.Library.ViewModels
@@ -9,20 +10,29 @@ namespace App.Library.ViewModels
     {
         private string userName = string.Empty;
         private string password = string.Empty;
+        private readonly EapConfig eapConfig;
 
         public LoginViewModel(MainViewModel owner, EapConfig eapConfig)
             : base(owner)
         {
+            this.eapConfig = eapConfig;
         }
 
         protected override bool CanNavigateNextAsync()
         {
-            return !string.IsNullOrWhiteSpace(this.userName); // && !string.IsNullOrWhiteSpace(this.password);
+            return !string.IsNullOrWhiteSpace(this.userName) && !string.IsNullOrWhiteSpace(this.password);
         }
 
-        protected override Task NavigateNextAsync()
+        protected override async Task NavigateNextAsync()
         {
-            throw new NotImplementedException();
+            // Connect
+            var connectionProperties = new ConnectionProperties()
+            {
+                UserName = this.userName,
+                Password = this.password
+            };
+
+            await this.Owner.ConnectAsync(this.eapConfig, connectionProperties);
         }
 
         public bool ShowRules

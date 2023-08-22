@@ -1,13 +1,17 @@
 ﻿using App.Library.Command;
+using App.Library.Connections;
 
+using EduRoam.Connect;
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
 using EduRoam.Connect.Install;
 using EduRoam.Connect.Tasks;
+using EduRoam.Connect.Tasks.Connectors;
 using EduRoam.Localization;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -211,6 +215,60 @@ namespace App.Library.ViewModels
                     }
 
                 }
+            }
+        }
+
+        public async Task ConnectAsync(EapConfig eapConfig, ConnectionProperties connectionProperties)
+        {
+            // Connect
+            var configure = new ConfigureTask(eapConfig);
+
+            var connector = configure.GetConnector();
+
+            try
+            {
+                IList<string> messages = new List<string>();
+
+                IConnection connection = connector switch
+                {
+                    CredentialsConnector credentialsConnector => new CredentialsConnection(credentialsConnector),
+                    CertPassConnector certPassConnector => new CertPassConnection(certPassConnector),
+                    CertAndCertPassConnector certAndCertPassConnector => new CertAndCertPassConnection(certAndCertPassConnector),
+                    DefaultConnector defaultConnector => new DefaultConnection(defaultConnector),
+                    _ => throw new NotSupportedException(string.Format(Resources.ErrorUnsupportedConnectionType, connector?.GetType().Name)),
+                };
+
+                var status = await connection.ConfigureAndConnectAsync(connectionProperties);
+                if (status.Success)
+                {
+                    ConsoleExtension.WriteStatus(string.Join("\n", messages));
+                }
+                else
+                {
+                    ConsoleExtension.WriteError(string.Join("\n", messages));
+                }
+
+            }
+            catch (EduroamAppUserException ex)
+            {
+                // TODO, NICE TO HAVE: log the error
+                ConsoleExtension.WriteError(Resources.ErrorNoConnection, ex.UserFacingMessage);
+            }
+
+            catch (ArgumentException exc)
+            {
+                ConsoleExtension.WriteError(exc.Message);
+            }
+            catch (ApiParsingException e)
+            {
+                // Must never happen, because if the discovery is reached,
+                // it must be parseable. Logging has been done upstream.
+                ConsoleExtension.WriteError(Resources.ErrorApi);
+                ConsoleExtension.WriteError(e.Message, e.GetType().ToString());
+            }
+            catch (ApiUnreachableException)
+            {
+                ConsoleExtension.WriteError(Resources.ErrorNoInternet);
             }
         }
 
