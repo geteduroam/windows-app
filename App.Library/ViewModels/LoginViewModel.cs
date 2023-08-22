@@ -7,6 +7,9 @@ namespace App.Library.ViewModels
 {
     public class LoginViewModel : BaseViewModel
     {
+        private string userName = string.Empty;
+        private string password = string.Empty;
+
         public LoginViewModel(MainViewModel owner, EapConfig eapConfig)
             : base(owner)
         {
@@ -14,7 +17,7 @@ namespace App.Library.ViewModels
 
         protected override bool CanNavigateNextAsync()
         {
-            return false;
+            return !string.IsNullOrWhiteSpace(this.userName); // && !string.IsNullOrWhiteSpace(this.password);
         }
 
         protected override Task NavigateNextAsync()
@@ -27,6 +30,34 @@ namespace App.Library.ViewModels
             get
             {
                 return false;
+            }
+        }
+
+        public string UserName
+        {
+            get
+            {
+                return this.userName;
+
+            }
+            set
+            {
+                this.userName = value;
+                this.CallPropertyChanged();
+            }
+        }
+
+        public string Password
+        {
+            get
+            {
+                return this.password;
+
+            }
+            set
+            {
+                this.password = value;
+                this.CallPropertyChanged();
             }
         }
     }

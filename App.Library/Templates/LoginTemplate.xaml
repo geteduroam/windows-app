@@ -36,7 +36,7 @@
                        Grid.Row="1"
                        Grid.ColumnSpan="3"/>
 
-            <TextBox x:Name="tbUsername" Text="" Padding="2,3,2,3" Height="Auto" MinHeight="24" Margin="5" Grid.ColumnSpan="1" Grid.Column="1" Grid.Row="2" />
+            <TextBox x:Name="tbUsername" Text="{Binding UserName}" Padding="2,3,2,3" Height="Auto" MinHeight="24" Margin="5" Grid.ColumnSpan="1" Grid.Column="1" Grid.Row="2" />
             <TextBlock IsHitTestVisible="False" x:Name="tbRealm" TextWrapping="Wrap" Foreground="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" Text="@example.com" TextAlignment="Right" Margin="0,9,10,0" Grid.Column="1" Grid.Row="2"/>
             <TextBlock IsHitTestVisible="False" Text="{x:Static lang:Resources.CredentialsUsernameLabel}" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Column="0" Grid.Row="2"/>
 
