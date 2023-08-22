@@ -6,7 +6,10 @@
         <ResourceDictionary Source="CertificateTemplate.xaml" />
         <ResourceDictionary Source="CertificateInstallerTemplate.xaml" />
         <ResourceDictionary Source="ProfileTemplate.xaml" />
-        <ResourceDictionary Source="LoginTemplate.xaml" />
+        <ResourceDictionary Source="ConnectTemplate.xaml" />
+        <ResourceDictionary Source="ConnectWithCertificatePassphraseTemplate.xaml" />
+        <ResourceDictionary Source="ConnectWithCredentialsTemplate.xaml" />
+        <ResourceDictionary Source="ConnectWithLocalCertificatePassphraseTemplate.xaml" />
         <ResourceDictionary Source="OAuthTemplate.xaml" />
         <ResourceDictionary Source="TermsOfUseTemplate.xaml" />
     </ResourceDictionary.MergedDictionaries>

@@ -9,6 +9,8 @@ namespace App.Library.ViewModels
 {
     public class CertificateViewModel : BaseViewModel
     {
+        private readonly EapConfig eapConfig;
+
         public CertificateViewModel(MainViewModel owner, EapConfig eapConfig)
             : base(owner)
         {
@@ -18,11 +20,12 @@ namespace App.Library.ViewModels
 
             this.Installers = new ObservableCollection<CertificateInstallerViewModel>(
                 installers.Select(x => new CertificateInstallerViewModel(x)));
+            this.eapConfig = eapConfig;
         }
 
         public ObservableCollection<CertificateInstallerViewModel> Installers { get; }
 
-        public bool AllCertificatesAreInstalled => Installers.All(x => x.IsInstalled);
+        public bool AllCertificatesAreInstalled => this.Installers.All(x => x.IsInstalled);
 
         protected override bool CanNavigateNextAsync()
         {
@@ -31,7 +34,8 @@ namespace App.Library.ViewModels
 
         protected override Task NavigateNextAsync()
         {
-            throw new System.NotImplementedException();
+            this.Owner.Connect(this.eapConfig);
+            return Task.CompletedTask;
         }
     }
 }

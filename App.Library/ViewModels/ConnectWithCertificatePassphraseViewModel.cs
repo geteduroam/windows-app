@@ -1,38 +1,45 @@
 ﻿using App.Library.Connections;
 
 using EduRoam.Connect.Eap;
+using EduRoam.Connect.Tasks.Connectors;
 
+using System;
 using System.Threading.Tasks;
+
+using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
 
 namespace App.Library.ViewModels
 {
-    public class LoginViewModel : BaseViewModel
+    public class ConnectWithCertificatePassphraseViewModel : BaseViewModel
     {
         private string userName = string.Empty;
         private string password = string.Empty;
-        private readonly EapConfig eapConfig;
 
-        public LoginViewModel(MainViewModel owner, EapConfig eapConfig)
+        private readonly EapConfig eapConfig;
+        private readonly CertPassConnection connection;
+
+        private TaskStatus? connectionStatus;
+
+        public ConnectWithCertificatePassphraseViewModel(MainViewModel owner, EapConfig eapConfig, CertPassConnector connector)
             : base(owner)
         {
             this.eapConfig = eapConfig;
+            this.connection = new CertPassConnection(connector);
         }
 
         protected override bool CanNavigateNextAsync()
         {
-            return !string.IsNullOrWhiteSpace(this.userName) && !string.IsNullOrWhiteSpace(this.password);
+            return (
+                !this.eapConfig.NeedsLoginCredentials ||
+                (!string.IsNullOrWhiteSpace(this.userName) && !string.IsNullOrWhiteSpace(this.password))
+                );
         }
 
         protected override async Task NavigateNextAsync()
         {
             // Connect
-            var connectionProperties = new ConnectionProperties()
-            {
-                UserName = this.userName,
-                Password = this.password
-            };
-
-            await this.Owner.ConnectAsync(this.eapConfig, connectionProperties);
+            throw new NotImplementedException();
+            this.CallPropertyChanged();
         }
 
         public bool ShowRules
@@ -57,6 +64,8 @@ namespace App.Library.ViewModels
             }
         }
 
+        public bool UserNameRequired => this.eapConfig.NeedsLoginCredentials;
+
         public string Password
         {
             get
@@ -70,5 +79,11 @@ namespace App.Library.ViewModels
                 this.CallPropertyChanged();
             }
         }
+
+        public bool Connected => this.connectionStatus?.Success ?? false;
+
+        public TaskStatus? ConnectionStatus => this.connectionStatus;
+
+        public bool PasswordRequired => this.eapConfig.NeedsLoginCredentials;
     }
 }

@@ -118,7 +118,7 @@ namespace App.Library.ViewModels
                 return Task.CompletedTask;
             }
 
-            this.Owner.SetActiveContent(new LoginViewModel(this.Owner, this.eapConfig));
+            this.Owner.Connect(this.eapConfig);
             return Task.CompletedTask;
         }
 
