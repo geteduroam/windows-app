@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using EduRoam.Connect.Eap;
 
-using EduRoam.Connect.Eap;
+using System;
+using System.Threading.Tasks;
 
 namespace App.Library.ViewModels
 {
@@ -14,12 +14,20 @@ namespace App.Library.ViewModels
 
         protected override bool CanNavigateNextAsync()
         {
-            throw new NotImplementedException();
+            return false;
         }
 
         protected override Task NavigateNextAsync()
         {
             throw new NotImplementedException();
+        }
+
+        public bool ShowRules
+        {
+            get
+            {
+                return false;
+            }
         }
     }
 }

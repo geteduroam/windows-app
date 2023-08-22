@@ -1,9 +1,11 @@
 ﻿using App.Library.Command;
 
 using EduRoam.Connect.Eap;
+using EduRoam.Connect.Tasks;
 
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace App.Library.ViewModels
@@ -95,7 +97,7 @@ namespace App.Library.ViewModels
 
         protected override bool CanNavigateNextAsync()
         {
-            return false;
+            return string.IsNullOrWhiteSpace(this.Owner.State.SelectedProfile?.Redirect);
         }
 
         protected override Task NavigateNextAsync()
@@ -107,14 +109,16 @@ namespace App.Library.ViewModels
             //    LoadPageTermsOfUse();
             //    break;
             //}
-            //if (ConnectToEduroam.EnumerateCAInstallers(eapConfig)
-            //.Any(installer => installer.IsInstalledByUs || !installer.IsInstalled))
-            //{
-            //    LoadPageCertificateOverview();
-            //    break;
-            //}
+            var configureTask = new ConfigureTask(this.eapConfig);
+            var installers = configureTask.GetCertificateInstallers();
 
-            //LoadPageLogin();
+            if (installers.Any(installer => installer.IsInstalledByUs || !installer.IsInstalled))
+            {
+                this.Owner.SetActiveContent(new CertificateViewModel(this.Owner, this.eapConfig));
+                return Task.CompletedTask;
+            }
+
+            this.Owner.SetActiveContent(new LoginViewModel(this.Owner, this.eapConfig));
             return Task.CompletedTask;
         }
 
@@ -124,7 +128,7 @@ namespace App.Library.ViewModels
         private void LoadProviderLogo()
         {
             //todo svg support imageConverter,
-            //todo seperate image not override eduram logo
+            //todo separate image not override eduram logo
 
             //byte[] logoBytes = eapConfig.InstitutionInfo.LogoData;
             //string logoMimeType = eapConfig.InstitutionInfo.LogoMimeType;

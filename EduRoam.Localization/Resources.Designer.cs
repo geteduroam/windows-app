@@ -307,6 +307,33 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter your username and password.
+        /// </summary>
+        public static string CredentialsLabel {
+            get {
+                return ResourceManager.GetString("CredentialsLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password:.
+        /// </summary>
+        public static string CredentialsPasswordLabel {
+            get {
+                return ResourceManager.GetString("CredentialsPasswordLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username:.
+        /// </summary>
+        public static string CredentialsUsernameLabel {
+            get {
+                return ResourceManager.GetString("CredentialsUsernameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} more days.
         /// </summary>
         public static string DaysLeft {
@@ -731,6 +758,15 @@ namespace EduRoam.Localization {
         public static string Loading {
             get {
                 return ResourceManager.GetString("Loading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login.
+        /// </summary>
+        public static string LoginTitle {
+            get {
+                return ResourceManager.GetString("LoginTitle", resourceCulture);
             }
         }
         
