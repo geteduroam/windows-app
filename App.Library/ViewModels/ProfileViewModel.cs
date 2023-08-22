@@ -73,7 +73,8 @@ namespace App.Library.ViewModels
 
         private void NavigateWeb()
         {
-            Process.Start(new ProcessStartInfo(new Uri(this.WebAddress).ToString()));
+            var openWebPageCommand = new Uri(this.WebAddress).ToString();
+            Process.Start(new ProcessStartInfo(openWebPageCommand) { UseShellExecute = true });
         }
 
         private bool CanOpenEmail()
@@ -83,7 +84,8 @@ namespace App.Library.ViewModels
 
         private void OpenEmail()
         {
-            Process.Start(new ProcessStartInfo(new Uri("mailto:" + this.EmailAddress).ToString()));
+            var sendMailCommand = new Uri("mailto:" + this.EmailAddress).ToString();
+            Process.Start(new ProcessStartInfo(sendMailCommand) { UseShellExecute = true });
         }
 
         private void SelectOtherInstitution()
