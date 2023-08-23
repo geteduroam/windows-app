@@ -83,7 +83,7 @@ namespace App.Library.ViewModels
                 this.connectionStatus = TaskStatus.AsFailure(exc.Message);
             }
 
-            this.CallPropertyChanged();
+            this.CallPropertyChanged(nameof(this.Messages));
         }
 
         public bool Connected => this.connectionStatus?.Success ?? false;

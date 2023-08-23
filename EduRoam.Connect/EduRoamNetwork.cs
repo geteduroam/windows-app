@@ -7,6 +7,7 @@ using ManagedNativeWifi;
 using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.NetworkInformation;
 using System.Reflection;
 
@@ -33,6 +34,7 @@ namespace EduRoam.Connect
 
         public string ProfileName { get => this.ProfilePack?.Name ?? this.NetworkPack?.ProfileName ?? ""; }
 
+        [MemberNotNullWhen(true, nameof(this.NetworkPack))]
         public bool IsAvailable { get => this.NetworkPack != null; }
 
         private EduRoamNetwork(Guid interfaceId)
@@ -43,10 +45,10 @@ namespace EduRoam.Connect
         }
 
         private EduRoamNetwork(
-            AvailableNetworkPack networkPack,
+            AvailableNetworkPack? networkPack,
             ProfilePack? profilePack,
             object? _ = null) // last argument is ConfiguredWLANProfile
-            : this(profilePack?.Interface.Id ?? networkPack.Interface.Id)
+            : this(profilePack?.Interface.Id ?? networkPack?.Interface.Id ?? throw new ArgumentNullException("Network and Profile Interface id's"))
         {
             Debug.Assert((networkPack, profilePack) != (null, null));
             Debug.Assert(
@@ -96,7 +98,7 @@ namespace EduRoam.Connect
         {
             _ = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
 
-            RegistryStore.Instance.UpdateIdentity(authMethod.ClientUserName, IdentityProviderInfo.From(authMethod));
+            RegistryStore.Instance.UpdateIdentity(authMethod.ClientUserName ?? string.Empty, IdentityProviderInfo.From(authMethod));
 
             var ssids = authMethod.SSIDs;
 
@@ -337,7 +339,8 @@ namespace EduRoam.Connect
                 .ToList();
 
             var configuredInterfaces = availableNetworks
-                .Select(network => network.NetworkPack.Interface.Id)
+                .Where(network => network.NetworkPack != null)
+                .Select(network => network.NetworkPack!.Interface.Id)
                 .ToImmutableHashSet();
 
             // These are not available, but they are configurable
@@ -497,11 +500,11 @@ namespace EduRoam.Connect
         /// Gets all installed profile packs on the machine along with their network packs if available
         /// </summary>
         /// <returns>Profile packs with optional network pack</returns>
-        private static IEnumerable<(ProfilePack ppack, AvailableNetworkPack network)> GetAllNetworkProfilePackPairs()
+        private static IEnumerable<(ProfilePack ppack, AvailableNetworkPack? network)> GetAllNetworkProfilePackPairs()
         {
             if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
             {
-                return Enumerable.Empty<(ProfilePack, AvailableNetworkPack)>();
+                return Enumerable.Empty<(ProfilePack, AvailableNetworkPack?)>();
             }
 
             // List all WLAN profiles installed on machine
@@ -509,7 +512,7 @@ namespace EduRoam.Connect
 
             // inner join with available networks (in range)
             var availableProfileNetworks = allProfilePacks
-                .Join(GetAllAvailableNetworkPacksWithProfiles(),
+                .Join<ProfilePack, AvailableNetworkPack, (string, Guid id), (ProfilePack ppack, AvailableNetworkPack? network)>(GetAllAvailableNetworkPacksWithProfiles(),
                     ppack => (ppack.Name, ppack.Interface.Id),
                     network => (network.ProfileName, network.Interface.Id),
                     (ppack, network) => (ppack, network))
@@ -523,9 +526,12 @@ namespace EduRoam.Connect
             // filter out the available profile packs from all profile packs
             var unavailableProfiles = allProfilePacks
                 .Where(ppack => !availableProfilePacks.Contains(ppack))
-                .Select(ppack => (ppack, (AvailableNetworkPack)null));
+                .Select(ppack => (ppack, network: (AvailableNetworkPack?)null))
+                .ToList();
 
-            return availableProfileNetworks.Concat(unavailableProfiles);
+            return availableProfileNetworks
+                .Concat(unavailableProfiles)
+                .Where(profile => profile.ppack.Interface?.Id != null || profile.network?.Interface?.Id != null);
         }
 
         /// <summary>
@@ -537,7 +543,9 @@ namespace EduRoam.Connect
             IEnumerable<string> ssids)
         {
             if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
+            {
                 return Enumerable.Empty<AvailableNetworkPack>().OrderBy(_ => false);
+            }
 
             return NativeWifi.EnumerateAvailableNetworks()
                 .Where(network => ssids.Contains(network.Ssid.ToString()))

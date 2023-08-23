@@ -33,7 +33,9 @@ namespace EduRoam.Connect
             if (!eapConfig.AuthenticationMethods
                     .Where(EduRoamNetwork.IsAuthMethodSupported)
                     .All(authMethod => authMethod.ServerCertificateAuthorities.Any()))
+            {
                 yield return (true, "This configuration is missing Certificate Authorities");
+            }
 
             var CAs = EnumerateCAs(eapConfig).ToList();
 
@@ -110,7 +112,8 @@ namespace EduRoam.Connect
         internal static void RemoveAllWLANProfiles()
         {
             Exception? ex = null;
-            foreach (var network in EduRoamNetwork.GetAll())
+            var allNetworks = EduRoamNetwork.GetAll();
+            foreach (var network in allNetworks)
             {
                 try
                 {
@@ -122,7 +125,10 @@ namespace EduRoam.Connect
                 }
             }
 
-            if (ex != null) throw ex;
+            if (ex != null)
+            {
+                throw ex;
+            }
         }
 
         /// <summary>
