@@ -27,11 +27,18 @@ namespace App.Library.ViewModels
         {
             this.eapConfig = eapConfig;
             this.connection = new DefaultConnection(connector);
+
+            Task.Run(this.ConnectAsync);
         }
 
         protected override bool CanNavigateNextAsync()
         {
             return true;
+        }
+
+        protected override Task NavigateNextAsync()
+        {
+            return Task.CompletedTask;
         }
 
         public string Status
@@ -50,12 +57,7 @@ namespace App.Library.ViewModels
             }
         }
 
-        protected override Task NavigateNextAsync()
-        {
-            return Task.CompletedTask;
-        }
-
-        protected async Task Connect()
+        protected async Task ConnectAsync()
         {
             // Connect
             try

@@ -52,7 +52,7 @@ namespace EduRoam.Connect.Tasks.Connectors
                         ? "realmless"
                         : "\"" + this.eapConfig.RequiredAnonymousIdentRealm + "\"";
 
-                    status.Errors.Add(string.Format(Resources.WarnRealmMismatch, userRealm, strProfileRealm));
+                    status.Errors = string.Format(Resources.WarnRealmMismatch, userRealm, strProfileRealm).AsListItem();
                     return status;
                 }
             }
