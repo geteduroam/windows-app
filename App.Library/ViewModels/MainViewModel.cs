@@ -25,6 +25,7 @@ namespace App.Library.ViewModels
         public MainViewModel()
         {
             this.NewProfileCommand = new DelegateCommand(this.NewProfileCommandAction, this.CanNewProfileCommandAction);
+            this.ToggleMenuCommand = new DelegateCommand(this.ToggleMenu);
             this.idpDownloader = new IdentityProviderDownloader();
             this.State = new ApplicationState();
 
@@ -47,6 +48,8 @@ namespace App.Library.ViewModels
         public BaseViewModel? ActiveContent { get; private set; }
 
         public DelegateCommand NewProfileCommand { get; protected set; }
+
+        public DelegateCommand ToggleMenuCommand { get; protected set; }
 
         public bool IsLoading { get; private set; }
 
@@ -124,6 +127,27 @@ namespace App.Library.ViewModels
             this.State.Reset();
             this.ActiveContent = new SelectInstitutionViewModel(this);
             this.CallPropertyChanged(nameof(this.ActiveContent));
+        }
+
+        private bool showMenu = false;
+
+        public bool ShowMenu
+        {
+            get
+            {
+                Debug.WriteLine($"Show menu: {this.showMenu}");
+                return this.showMenu;
+            }
+            set
+            {
+                this.showMenu = value;
+            }
+        }
+
+        public void ToggleMenu()
+        {
+            this.ShowMenu = true;
+            this.CallPropertyChanged(nameof(this.ShowMenu));
         }
 
         //todo Move to a better place

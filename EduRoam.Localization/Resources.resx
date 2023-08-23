@@ -404,6 +404,9 @@ Exception: {0}.</value>
   <data name="Passphrase" xml:space="preserve">
     <value>Certificate passphrase</value>
   </data>
+  <data name="PassphraseLabel" xml:space="preserve">
+    <value>Enter password for the certificate</value>
+  </data>
   <data name="Password" xml:space="preserve">
     <value>Password</value>
   </data>
@@ -457,6 +460,9 @@ Exception: {0}.</value>
   </data>
   <data name="Username" xml:space="preserve">
     <value>Username</value>
+  </data>
+  <data name="UserNameWatermark" xml:space="preserve">
+    <value>@example.com</value>
   </data>
   <data name="VersionDebug" xml:space="preserve">
     <value>{0}+Debug</value>

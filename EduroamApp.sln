@@ -31,7 +31,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{2CFFF257-3
 		test\example.eap-config = test\example.eap-config
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduRoam.Localization", "EduRoam.Localization\EduRoam.Localization.csproj", "{060966DA-5E9F-4043-9B99-8C61D310203E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EduRoam.Localization", "EduRoam.Localization\EduRoam.Localization.csproj", "{060966DA-5E9F-4043-9B99-8C61D310203E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

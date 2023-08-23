@@ -24,5 +24,10 @@ namespace App.Library
         {
             this.MainViewModel.Dispose();
         }
+
+        private void btnMenu_Click(object sender, RoutedEventArgs e)
+        {
+            this.ctMenuSettings.IsOpen = true;
+        }
     }
 }

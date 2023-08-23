@@ -50,23 +50,7 @@ namespace App.Library.ViewModels
             }
         }
 
-        public string UserName
-        {
-            get
-            {
-                return this.userName;
-
-            }
-            set
-            {
-                this.userName = value;
-                this.CallPropertyChanged();
-            }
-        }
-
-        public bool UserNameRequired => this.eapConfig.NeedsLoginCredentials;
-
-        public string Password
+        public string Passphrase
         {
             get
             {

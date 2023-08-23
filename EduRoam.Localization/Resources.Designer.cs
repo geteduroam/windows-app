@@ -897,6 +897,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enter password for the certificate.
+        /// </summary>
+        public static string PassphraseLabel {
+            get {
+                return ResourceManager.GetString("PassphraseLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
         public static string Password {
@@ -1055,6 +1064,15 @@ namespace EduRoam.Localization {
         public static string Username {
             get {
                 return ResourceManager.GetString("Username", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to @example.com.
+        /// </summary>
+        public static string UserNameWatermark {
+            get {
+                return ResourceManager.GetString("UserNameWatermark", resourceCulture);
             }
         }
         
