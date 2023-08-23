@@ -13,7 +13,34 @@
     
     <DataTemplate DataType="{x:Type viewModels:ConnectWithCertificatePassphraseViewModel}">
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" KeyboardNavigation.IsTabStop="False">
+            <!--<Grid x:Name="gridCertPassword" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="Enter password for the certificate" TextWrapping="Wrap" TextAlignment="Center" Margin="5" Grid.ColumnSpan="3"/>
 
+                <PasswordBox x:Name="pbCertPassword" Padding="2,3,2,3" Height="Auto" MinHeight="24"  Margin="5" Password="" Grid.ColumnSpan="1" Grid.Row="1" Grid.Column="1" PasswordChanged="pbCertPassword_PasswordChanged" GotFocus="pbCertPassword_GotFocus"/>
+                <TextBox x:Name="tbCertPassword" Margin="5" Visibility="Hidden" Grid.ColumnSpan="1" Grid.Row="1" Grid.Column="1"/>
+                <TextBlock IsHitTestVisible="False" Text="Password" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray" Grid.ColumnSpan="1" Grid.Row="1" Grid.Column="1">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Text, ElementName=tbCertPassword}" Value="">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>-->
+            
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>

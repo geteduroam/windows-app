@@ -15,17 +15,17 @@
             </Grid.RowDefinitions>
             
             <TextBlock Grid.Row="0"
-                       Margin="8,0,8,16"
-                       FontSize="24"
                        Text="{x:Static lang:Resources.LoginTitle}"
                        TextAlignment="Center"
-                       TextWrapping="Wrap" />
+                       TextWrapping="Wrap" 
+                       Margin="8,0,8,16"
+                       FontSize="24" />
 
-            <ScrollViewer Grid.Row="1"
-                          Margin="20,0,0,0"
-                          VerticalScrollBarVisibility="Auto">
-                <ListBox ItemsSource="{Binding Messages}"/>
-            </ScrollViewer>
+            <TextBlock Grid.Row="1" 
+                       Text="{Binding Status}" 
+                       TextWrapping="Wrap" 
+                       TextAlignment="Center" 
+                       Margin="5" />
         </Grid>
     </DataTemplate>
 

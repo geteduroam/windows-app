@@ -8,6 +8,7 @@ using EduRoam.Localization;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
@@ -33,16 +34,28 @@ namespace App.Library.ViewModels
             return true;
         }
 
-        public IEnumerable<string> Messages
+        public string Status
         {
             get
             {
-                Debug.WriteLine(string.Join(',', this.connectionStatus?.Messages ?? Array.Empty<string>()));
-                return this.connectionStatus?.Messages ?? Array.Empty<string>();
+                if (this.connectionStatus == null)
+                {
+                    return "";
+                }
+                if (this.connectionStatus.Success)
+                {
+                    return string.Join("\n", this.connectionStatus.Messages);
+                }
+                return string.Join("\n", this.connectionStatus.Errors.Concat(this.connectionStatus.Warnings));
             }
         }
 
-        protected override async Task NavigateNextAsync()
+        protected override Task NavigateNextAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        protected async Task Connect()
         {
             // Connect
             try
@@ -83,12 +96,11 @@ namespace App.Library.ViewModels
                 this.connectionStatus = TaskStatus.AsFailure(exc.Message);
             }
 
-            this.CallPropertyChanged(nameof(this.Messages));
+            this.CallPropertyChanged(nameof(this.Status));
         }
 
         public bool Connected => this.connectionStatus?.Success ?? false;
 
         public TaskStatus? ConnectionStatus => this.connectionStatus;
-
     }
 }

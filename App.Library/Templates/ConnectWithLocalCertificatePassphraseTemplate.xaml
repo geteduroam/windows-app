@@ -13,7 +13,30 @@
     
     <DataTemplate DataType="{x:Type viewModels:ConnectWithLocalCertificatePassphraseViewModel}">
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" KeyboardNavigation.IsTabStop="False">
+            <!--<Grid x:Name="gridCertBrowser" Margin="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="4*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <TextBlock Text="This profile requires a local certificate" TextWrapping="Wrap" TextAlignment="Center" Margin="5" Grid.ColumnSpan="3"/>
 
+                <TextBlock IsHitTestVisible="False" Text="Certificate:" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="1" Grid.Column="0"/>
+                <TextBox x:Name="tbCertBrowser" Padding="2,3,2,3" Height="Auto" MinHeight="24"  Margin="5" Grid.ColumnSpan="1" Grid.Column="1" Grid.Row="1" IsEnabled="False"/>
+                <Button x:Name="btnFile" Style="{StaticResource WhiteButtonStyle}" Content="Browse" 
+                        Height="24" VerticalAlignment="Center" Margin="0,5" Click="btnFile_Click" Grid.ColumnSpan="1" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" Width="60"/>
+
+                <PasswordBox x:Name="pbCertBrowserPassword" Padding="2,3,2,3" Height="Auto" MinHeight="24"  Margin="5" Grid.ColumnSpan="1" Grid.Row="2" Grid.Column="1"  PasswordChanged="pbCertBrowserPassword_PasswordChanged" GotFocus="pbCertBrowserPassword_GotFocus"/>
+                <TextBlock IsHitTestVisible="False" Text="Password:" VerticalAlignment="Center" HorizontalAlignment="Right" Grid.Row="2" Grid.Column="0"/>
+
+            </Grid>-->
+            
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
