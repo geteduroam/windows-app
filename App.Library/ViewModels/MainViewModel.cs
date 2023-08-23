@@ -1,4 +1,5 @@
 ﻿using App.Library.Command;
+using App.Library.Utility;
 
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
@@ -9,7 +10,9 @@ using EduRoam.Connect.Tasks.Connectors;
 using EduRoam.Localization;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,7 +28,6 @@ namespace App.Library.ViewModels
         public MainViewModel()
         {
             this.NewProfileCommand = new DelegateCommand(this.NewProfileCommandAction, this.CanNewProfileCommandAction);
-            this.ToggleMenuCommand = new DelegateCommand(this.ToggleMenu);
             this.idpDownloader = new IdentityProviderDownloader();
             this.State = new ApplicationState();
 
@@ -48,8 +50,6 @@ namespace App.Library.ViewModels
         public BaseViewModel? ActiveContent { get; private set; }
 
         public DelegateCommand NewProfileCommand { get; protected set; }
-
-        public DelegateCommand ToggleMenuCommand { get; protected set; }
 
         public bool IsLoading { get; private set; }
 
@@ -127,27 +127,6 @@ namespace App.Library.ViewModels
             this.State.Reset();
             this.ActiveContent = new SelectInstitutionViewModel(this);
             this.CallPropertyChanged(nameof(this.ActiveContent));
-        }
-
-        private bool showMenu = false;
-
-        public bool ShowMenu
-        {
-            get
-            {
-                Debug.WriteLine($"Show menu: {this.showMenu}");
-                return this.showMenu;
-            }
-            set
-            {
-                this.showMenu = value;
-            }
-        }
-
-        public void ToggleMenu()
-        {
-            this.ShowMenu = true;
-            this.CallPropertyChanged(nameof(this.ShowMenu));
         }
 
         //todo Move to a better place
@@ -307,6 +286,97 @@ namespace App.Library.ViewModels
                     + "Exception: "
                     + e.Message);
             }
+        }
+
+        /// <summary>
+		/// Asks the user to supply a .eap-config file.
+		/// Returns null if user aborted.
+		/// </summary>
+		/// <returns>EapConfig object or null</returns>
+		/// <exception cref="XmlException"></exception>
+		public async Task LoadEapFile()
+        {
+            Debug.WriteLine("LoadEapFile");
+
+            string? filepath;
+            do
+            {
+                filepath = FileDialog.GetFileFromDialog(
+                    Resources.LoadEapFile,
+                    "EAP-CONFIG files (*.eap-config)|*.eap-config|All files (*.*)|*.*");
+
+                if (filepath == null) return; // the user canelled
+            }
+            while (!FileDialog.ValidateFile(filepath, new List<string> { ".eap-config" }));
+
+            // read, validate, parse and return
+            try
+            {
+                var eapConfigurator = new EapConfigTask();
+                // read content of file
+                // create Eap-config and open Profile view
+                var eapConfig = await EapConfigTask.GetEapConfigAsync(new FileInfo(filepath));
+
+                if (eapConfig != null)
+                {
+                    eapConfig.ProfileId = filepath;
+
+                    this.SetActiveContent(new ProfileViewModel(this, eapConfig));
+                }
+            }
+            catch (System.Xml.XmlException xmlEx)
+            {
+                MessageBox.Show(
+                    Resources.ErrorEapConfigCorrupted +
+                    "\nException: " + xmlEx.Message,
+                    "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (ArgumentException argEx)
+            {
+                MessageBox.Show(
+                    Resources.ErrorEapConfigInvalid +
+                    "\nException: " + argEx.Message,
+                    "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        public void Refresh()
+        {
+            Task.Run(() => RefreshTask.RefreshAsync(true));
+        }
+
+        public void Reauthenticate()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveProfile()
+        {
+            var profiler = new ProfilesTask();
+            var profileName = profiler.GetCurrentProfileName();
+            if (MessageBoxResult.OK == MessageBox.Show(
+                    "This will remove all configuration for\r\n" + profileName,
+                    "Remove " + profileName,
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Warning
+                    ))
+            {
+                var remover = new RemoveWiFiConfigurationTask();
+                remover.Remove(omitRootCa: true);
+
+                this.Restart();
+            }
+        }
+
+        public void RemoveCertificates()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Uninstall(Action<bool> afterUninstall)
+        {
+            var uninstaller = new UninstallTask();
+            uninstaller.Uninstall(afterUninstall);
         }
     }
 }

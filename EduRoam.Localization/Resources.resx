@@ -259,6 +259,12 @@ Unable to connect to eduroam.</value>
   <data name="ErrorCredentialsSpecialCharacters" xml:space="preserve">
     <value>Characters such as . and @ can not be adjacent to each other</value>
   </data>
+  <data name="ErrorEapConfigCorrupted" xml:space="preserve">
+    <value>The selected EAP config file is corrupted. Please choose another file.</value>
+  </data>
+  <data name="ErrorEapConfigInvalid" xml:space="preserve">
+    <value>Could not read from file. Make sure to select a valid EAP config file.</value>
+  </data>
   <data name="ErrorEapConfigIsEmpty" xml:space="preserve">
     <value>Could not connect, EAP Configuration is empty</value>
   </data>
@@ -317,6 +323,9 @@ Exception: {0}.</value>
   <data name="ErrorWirelessUnavailable" xml:space="preserve">
     <value>Wireless is unavailable on this computer</value>
   </data>
+  <data name="FileDialogSelectFile" xml:space="preserve">
+    <value>Please select a file.</value>
+  </data>
   <data name="HelpUrl" xml:space="preserve">
     <value>https://www.geteduroam.app/</value>
   </data>
@@ -353,11 +362,32 @@ Exception: {0}.</value>
   <data name="LabelWeb" xml:space="preserve">
     <value>Web</value>
   </data>
+  <data name="LoadEapFile" xml:space="preserve">
+    <value>Select a EAP Config file</value>
+  </data>
   <data name="Loading" xml:space="preserve">
     <value>Loading</value>
   </data>
   <data name="LoginTitle" xml:space="preserve">
     <value>Login</value>
+  </data>
+  <data name="MenuItemLoadEAP" xml:space="preserve">
+    <value>Load .eap-config file...</value>
+  </data>
+  <data name="MenuItemReauthenticate" xml:space="preserve">
+    <value>Reauthenticate...</value>
+  </data>
+  <data name="MenuItemRefresh" xml:space="preserve">
+    <value>Refresh credential</value>
+  </data>
+  <data name="MenuItemRemoveCertificates" xml:space="preserve">
+    <value>Remove root certificates...</value>
+  </data>
+  <data name="MenuItemRemoveProfile" xml:space="preserve">
+    <value>Remove configured Wi-Fi profile...</value>
+  </data>
+  <data name="MenuItemUninstall" xml:space="preserve">
+    <value>Uninstall application...</value>
   </data>
   <data name="MinutesLeft" xml:space="preserve">
     <value>{0} more minutes</value>
@@ -476,6 +506,9 @@ Exception: {0}.</value>
   <data name="VersionReleaseNoVersion" xml:space="preserve">
     <value>Versionless</value>
   </data>
+  <data name="WarningFileDoesNotExist" xml:space="preserve">
+    <value>The specified file does not exist.</value>
+  </data>
   <data name="WarningInstallCertificates" xml:space="preserve">
     <value>You must first install certificates with InstallCertificates</value>
   </data>
@@ -499,6 +532,9 @@ Exception: {0}.</value>
   </data>
   <data name="WarningUninstallCertificates" xml:space="preserve">
     <value>This means uninstalling all the trusted root certificates installed by this application.</value>
+  </data>
+  <data name="WarningUnsupportedFileType" xml:space="preserve">
+    <value>The file type you chose is not supported.</value>
   </data>
   <data name="WarnRealmMismatch" xml:space="preserve">
     <value>/!\ The realm for the OuterIdentity will be set to "{0}" but the profile specified "{1}"</value>

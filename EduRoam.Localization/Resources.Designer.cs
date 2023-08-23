@@ -473,6 +473,24 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The selected EAP config file is corrupted. Please choose another file..
+        /// </summary>
+        public static string ErrorEapConfigCorrupted {
+            get {
+                return ResourceManager.GetString("ErrorEapConfigCorrupted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not read from file. Make sure to select a valid EAP config file..
+        /// </summary>
+        public static string ErrorEapConfigInvalid {
+            get {
+                return ResourceManager.GetString("ErrorEapConfigInvalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Could not connect, EAP Configuration is empty.
         /// </summary>
         public static string ErrorEapConfigIsEmpty {
@@ -645,6 +663,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please select a file..
+        /// </summary>
+        public static string FileDialogSelectFile {
+            get {
+                return ResourceManager.GetString("FileDialogSelectFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://www.geteduroam.app/.
         /// </summary>
         public static string HelpUrl {
@@ -753,6 +780,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select a EAP Config file.
+        /// </summary>
+        public static string LoadEapFile {
+            get {
+                return ResourceManager.GetString("LoadEapFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading.
         /// </summary>
         public static string Loading {
@@ -767,6 +803,60 @@ namespace EduRoam.Localization {
         public static string LoginTitle {
             get {
                 return ResourceManager.GetString("LoginTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Load .eap-config file....
+        /// </summary>
+        public static string MenuItemLoadEAP {
+            get {
+                return ResourceManager.GetString("MenuItemLoadEAP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reauthenticate....
+        /// </summary>
+        public static string MenuItemReauthenticate {
+            get {
+                return ResourceManager.GetString("MenuItemReauthenticate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh credential.
+        /// </summary>
+        public static string MenuItemRefresh {
+            get {
+                return ResourceManager.GetString("MenuItemRefresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove root certificates....
+        /// </summary>
+        public static string MenuItemRemoveCertificates {
+            get {
+                return ResourceManager.GetString("MenuItemRemoveCertificates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove configured Wi-Fi profile....
+        /// </summary>
+        public static string MenuItemRemoveProfile {
+            get {
+                return ResourceManager.GetString("MenuItemRemoveProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uninstall application....
+        /// </summary>
+        public static string MenuItemUninstall {
+            get {
+                return ResourceManager.GetString("MenuItemUninstall", resourceCulture);
             }
         }
         
@@ -1113,6 +1203,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The specified file does not exist..
+        /// </summary>
+        public static string WarningFileDoesNotExist {
+            get {
+                return ResourceManager.GetString("WarningFileDoesNotExist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You must first install certificates with InstallCertificates.
         /// </summary>
         public static string WarningInstallCertificates {
@@ -1181,6 +1280,15 @@ namespace EduRoam.Localization {
         public static string WarningUninstallCertificates {
             get {
                 return ResourceManager.GetString("WarningUninstallCertificates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file type you chose is not supported..
+        /// </summary>
+        public static string WarningUnsupportedFileType {
+            get {
+                return ResourceManager.GetString("WarningUnsupportedFileType", resourceCulture);
             }
         }
         

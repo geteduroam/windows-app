@@ -100,7 +100,7 @@
             ContentTemplateSelector="{DynamicResource LocalDataTemplateSelector}" />
 
         <Grid Grid.Row="2" Visibility="{Binding ActiveContent, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-            <Button x:Name="btnMenu2" Width="32" Height="32" Background="Transparent" BorderBrush="Transparent" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12" FontSize="24" Click="btnMenu_Click">
+            <Button x:Name="btnMenu2" Width="32" Height="32" Background="Transparent" BorderBrush="Transparent" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12" FontSize="24" Click="OpenMenu">
                 <Image Width="24" Height="24" Grid.Row="1">
                     <Image.Source>
                         <DrawingImage>
@@ -113,14 +113,14 @@
                 </Image>
                 <Button.ContextMenu>
                     <ContextMenu x:Name="ctMenuSettings">
-                        <MenuItem x:Name="miLoadEapFile" Header="Load .eap-config file..."/>
+                        <MenuItem Header="{x:Static lang:Resources.MenuItemLoadEAP}" Click="LoadEapFile"/>
                         <Separator/>
-                        <MenuItem x:Name="miRefresh" Header="Refresh credential" />
-                        <MenuItem x:Name="miReauthenticate" Header="Reauthenticate..."/>
+                        <MenuItem Header="{x:Static lang:Resources.MenuItemRefresh}" Click="Refresh"/>
+                        <MenuItem Header="{x:Static lang:Resources.MenuItemReauthenticate}" Click="Reauthenticate"/>
                         <Separator/>
-                        <MenuItem x:Name="miRemove" Header="Remove configured Wi-Fi profile..." />
-                        <MenuItem x:Name="miClearRootCerts" Header="Remove root certificates..." />
-                        <MenuItem x:Name="miUninstall" Header="Uninstall application..." />
+                        <MenuItem Header="{x:Static lang:Resources.MenuItemRemoveProfile}" Click="RemoveProfile"/>
+                        <MenuItem Header="{x:Static lang:Resources.MenuItemRemoveCertificates}" Click="RemoveCertificates"/>
+                        <MenuItem Header="{x:Static lang:Resources.MenuItemUninstall}" Click="Uninstall"/>
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>
