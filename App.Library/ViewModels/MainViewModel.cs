@@ -53,6 +53,17 @@ namespace App.Library.ViewModels
 
         public bool IsLoading { get; private set; }
 
+        public string AppVersion
+        {
+            get
+            {
+                var statusTask = new StatusTask();
+                var status = statusTask.GetStatus();
+
+                return status.Version;
+            }
+        }
+
         public bool ShowNavigatePrevious
         {
             get
@@ -143,6 +154,8 @@ namespace App.Library.ViewModels
                     this.IsLoading = false;
                     this.CallPropertyChanged(nameof(this.ActiveContent));
                     this.CallPropertyChanged(nameof(this.IsLoading));
+                    this.CallPropertyChanged(nameof(this.ShowNavigatePrevious));
+                    this.CallPropertyChanged(nameof(this.ShowNavigateNext));
                 });
         }
 

@@ -99,10 +99,24 @@
             Content="{Binding ActiveContent}"
             ContentTemplateSelector="{DynamicResource LocalDataTemplateSelector}" />
 
-        <DockPanel HorizontalAlignment="Stretch" Width="Auto" Grid.Row="2" Visibility="{Binding ActiveContent, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-            <Button x:Name="btnMenu2" Width="32" Height="32" Background="Transparent" BorderBrush="Transparent" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12" FontSize="24" Click="OpenMenu"
-                        Visibility="{Binding ActiveContent.ShowMenu, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <Image Width="24" Height="24" Grid.Row="1">
+        <Grid Grid.Row="2" 
+              Visibility="{Binding ActiveContent, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" 
+              Margin="5, 5, 5, 5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="20" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="32"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="32"/>
+            </Grid.ColumnDefinitions>
+            
+            <Button x:Name="btnMenu2" Width="32" Height="32" Background="Transparent" BorderBrush="Transparent" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="24" Click="OpenMenu"
+                        Visibility="{Binding ActiveContent.ShowMenu, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Grid.Row="0"
+                    Grid.Column="0">
+                <Image Width="24" Height="24">
                     <Image.Source>
                         <DrawingImage>
                             <DrawingImage.Drawing>
@@ -113,8 +127,7 @@
                     </Image.Source>
                 </Image>
                 <Button.ContextMenu>
-                    <ContextMenu x:Name="ctMenuSettings" 
-                                 >
+                    <ContextMenu x:Name="ctMenuSettings" >
                         <MenuItem Header="{x:Static lang:Resources.MenuItemLoadEAP}" Click="LoadEapFile"/>
                         <Separator/>
                         <MenuItem Header="{x:Static lang:Resources.MenuItemRefresh}" Click="Refresh"/>
@@ -127,31 +140,37 @@
                 </Button.ContextMenu>
             </Button>
 
-            <Button
-                    Width="131"
-                    Height="42"
-                    Margin="10,10,10,20"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Command="{Binding ActiveContent.PreviousCommand}"
-                    Content="{x:Static lang:Resources.ButtonPrevious}"
-                    Style="{DynamicResource BlueButtonStyle}"
-                    Visibility="{Binding ShowNavigatePrevious, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Height="42"
+                        Grid.Row="0"
+                        Grid.Column="1">
+                <Button
+                        Width="131"
+                        Height="42"
+                        Margin="10,0,10,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Command="{Binding ActiveContent.PreviousCommand}"
+                        Content="{x:Static lang:Resources.ButtonPrevious}"
+                        Style="{DynamicResource BlueButtonStyle}"
+                        Visibility="{Binding ShowNavigatePrevious, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-            <Button
-                    Width="131"
-                    Height="42"
-                    Margin="10,10,10,20"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Command="{Binding ActiveContent.NextCommand}"
-                    Content="{x:Static lang:Resources.ButtonNext}"
-                    IsDefault="true"
-                    Style="{DynamicResource BlueButtonStyle}" 
-                    Visibility="{Binding ShowNavigateNext, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-
-            <Button Width="32" Height="32" Background="Transparent" BorderBrush="Transparent" Grid.Column="2" x:Name="btnHelp" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="12" Click="OpenHelp"
-                        Visibility="{Binding ActiveContent.ShowHelp, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Button
+                        Width="131"
+                        Height="42"
+                        Margin="10,0,10,0"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Command="{Binding ActiveContent.NextCommand}"
+                        Content="{x:Static lang:Resources.ButtonNext}"
+                        IsDefault="true"
+                        Style="{DynamicResource BlueButtonStyle}" 
+                        Visibility="{Binding ShowNavigateNext, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+            </StackPanel>
+        
+            <Button Width="32" Height="32" Background="Transparent" BorderBrush="Transparent" Click="OpenHelp"
+                    Visibility="{Binding ActiveContent.ShowHelp, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    Grid.Row="0"
+                    Grid.Column="2">
                 <Image Width="24" Height="22" Grid.Row="1">
                     <Image.Source>
                         <DrawingImage>
@@ -163,7 +182,15 @@
                 </Image>
             </Button>
 
-            <Label Grid.Column="2" x:Name="lblVersion" Content="VERSION" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}" FontFamily="Tahoma" FontSize="8"/>
-        </DockPanel>
+            <Label Grid.Row="1" 
+                   Grid.Column="1" 
+                   Grid.ColumnSpan="2"
+                   Content="{Binding AppVersion}" 
+                   HorizontalAlignment="Right" 
+                   VerticalAlignment="Bottom" 
+                   Foreground="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}" 
+                   FontFamily="Tahoma" 
+                   FontSize="8"/>
+        </Grid>
     </Grid>
 </Window>
