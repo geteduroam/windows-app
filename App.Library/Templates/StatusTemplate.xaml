@@ -1,0 +1,22 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:viewModels="clr-namespace:App.Library.ViewModels"
+    xmlns:lang = "clr-namespace:EduRoam.Localization;assembly=EduRoam.Localization">
+
+    <DataTemplate DataType="{x:Type viewModels:StatusViewModel}">
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" KeyboardNavigation.IsTabStop="False">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="1" 
+                   Text="Hello World" 
+                   TextWrapping="Wrap" 
+                   TextAlignment="Center" 
+                   Margin="5" />
+        </Grid>
+    </DataTemplate>
+</ResourceDictionary>

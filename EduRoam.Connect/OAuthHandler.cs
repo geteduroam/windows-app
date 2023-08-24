@@ -69,49 +69,59 @@ namespace EduRoam.Connect
 		/// </summary>
 		private void NonblockingListener()
         {
-            // creates a listener
-            using var listener = new HttpListener();
-            // add prefix to listener
-            listener.Prefixes.Add(this.prefix.ToString());
-            // starts listener
-            listener.Start();
-
-            // creates BeginGetContext task for retrieving HTTP request
-            var result = listener.BeginGetContext(this.ListenerCallback, listener);
-
-            // opens authentication URI in default browser
-            var startInfo = new ProcessStartInfo()
+            try
             {
-                FileName = this.authUri.ToString(),
-                LoadUserProfile = true,
-                UseShellExecute = true,
-            };
+                // creates a listener
+                using var listener = new HttpListener();
+                // add prefix to listener
+                listener.Prefixes.Add(this.prefix.ToString());
+                // starts listener
+                listener.Start();
 
-            using var process = Process.Start(startInfo);
+                // creates BeginGetContext task for retrieving HTTP request
+                var result = listener.BeginGetContext(this.ListenerCallback, listener);
 
-            var processThread = new ManualResetEvent(false);
+                // opens authentication URI in default browser
+                var startInfo = new ProcessStartInfo()
+                {
+                    FileName = this.authUri.ToString(),
+                    LoadUserProfile = true,
+                    UseShellExecute = true,
+                };
 
-            var context = listener.GetContext();
-            var request = context.Request;
+                using var process = Process.Start(startInfo);
 
-            // creates WaitHandle array with two or three tasks: BeginGetContext, Process thread and optionally cancel thread
-            var handles = new List<WaitHandle>() { result.AsyncWaitHandle, processThread };
-            if (this.CancelThread != null)
-            {
-                handles.Add(this.CancelThread);
+                var processThread = new ManualResetEvent(false);
+
+                var context = listener.GetContext();
+                var request = context.Request;
+
+                // creates WaitHandle array with two or three tasks: BeginGetContext, Process thread and optionally cancel thread
+                var handles = new List<WaitHandle>() { result.AsyncWaitHandle, processThread };
+                if (this.CancelThread != null)
+                {
+                    handles.Add(this.CancelThread);
+                }
+                // waits for any task in the handles list to complete, gets array index of the first one to complete
+                var handleResult = WaitHandle.WaitAny(handles.ToArray());
+
+                // if BeginGetContext completes first
+                if (handleResult == 0)
+                {
+                    // freezes main thread so ListenerCallback function can finish
+                    this.MainThread?.WaitOne();
+                }
+
+                // closes HTTP listener
+                listener.Close();
             }
-            // waits for any task in the handles list to complete, gets array index of the first one to complete
-            var handleResult = WaitHandle.WaitAny(handles.ToArray());
-
-            // if BeginGetContext completes first
-            if (handleResult == 0)
+            catch (HttpListenerException listenerExc)
             {
-                // freezes main thread so ListenerCallback function can finish
-                this.MainThread?.WaitOne();
+#if DEBUG
+                Debugger.Break();
+#endif
+                Debug.WriteLine($"Could not open browser window\n{listenerExc.Message}");
             }
-
-            // closes HTTP listener
-            listener.Close();
         }
 
         /// <summary>

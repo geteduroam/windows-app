@@ -36,6 +36,11 @@ namespace App.Library
             this.ctMenuSettings.IsOpen = true;
         }
 
+        private void OpenHelp(object sender, RoutedEventArgs e)
+        {
+            // TODO
+        }
+
         private void LoadEapFile(object sender, RoutedEventArgs e)
         {
             this.MainViewModel.LoadEapFile();

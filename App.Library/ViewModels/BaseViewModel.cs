@@ -26,6 +26,14 @@ public abstract class BaseViewModel : NotifyPropertyChanged
 
     public AsyncCommand PreviousCommand { get; protected set; }
 
+    public virtual bool ShowNavigatePrevious => true;
+
+    public virtual bool ShowNavigateNext => true;
+
+    public virtual bool ShowMenu => false;
+
+    public virtual bool ShowHelp => false;
+
     protected abstract bool CanNavigateNextAsync();
 
     protected abstract Task NavigateNextAsync();

@@ -1,8 +1,7 @@
 ﻿using App.Library.Command;
 
 using EduRoam.Connect;
-
-using System.Threading.Tasks;
+using EduRoam.Connect.Tasks;
 
 namespace App.Library.ViewModels
 {
@@ -29,15 +28,10 @@ namespace App.Library.ViewModels
 
         private void Install()
         {
-            this.CertificateInstaller.AttemptInstallCertificate();
-            if (this.CertificateInstaller.IsInstalledByUs)
-            {
-                // Any CA that we have installed must also be removed by us when it is not needed anymore
-                // so install the geteduroam app when we have installed a CA
-                _ = Task.Run(MainViewModel.SelfInstaller.EnsureIsInstalled);
-            }
+            var configurator = new ConfigureTask();
+            configurator.ConfigureCertificate(this.CertificateInstaller);
 
-            this.CallPropertyChanged();
+            this.CallPropertyChanged(nameof(this.IsInstalled));
         }
     }
 }

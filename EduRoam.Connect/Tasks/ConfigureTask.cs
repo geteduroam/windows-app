@@ -12,7 +12,10 @@ namespace EduRoam.Connect.Tasks
 
         private readonly BaseConfigStore store = new RegistryStore();
 
-        public ConfigureTask(EapConfig eapConfig)
+        public ConfigureTask() : this(null)
+        { }
+
+        public ConfigureTask(EapConfig? eapConfig)
         {
             this.eapConfig = eapConfig;
         }
@@ -66,6 +69,20 @@ namespace EduRoam.Connect.Tasks
 
             return TaskStatus.AsSuccess();
         }
+
+        public TaskStatus ConfigureCertificate(CertificateInstaller installer)
+        {
+            installer.AttemptInstallCertificate();
+
+            if (installer.IsInstalledByUs)
+            {
+                // Any CA that we have installed must also be removed by us when it is not needed anymore
+                this.store.AddInstalledCertificate(installer.Certificate);
+            }
+
+            return TaskStatus.AsSuccess();
+        }
+
 
         public Connector? GetConnector()
         {

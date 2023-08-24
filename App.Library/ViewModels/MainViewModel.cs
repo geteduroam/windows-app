@@ -39,7 +39,7 @@ namespace App.Library.ViewModels
                     await this.idpDownloader.LoadProviders(useGeodata: true);
                     this.IsLoading = false;
 
-                    this.SetActiveContent(new SelectInstitutionViewModel(this));
+                    this.SetActiveContent(new StatusViewModel(this));
                     this.CallPropertyChanged(string.Empty);
                     this.NewProfileCommand.RaiseCanExecuteChanged();
                 });
@@ -52,6 +52,30 @@ namespace App.Library.ViewModels
         public DelegateCommand NewProfileCommand { get; protected set; }
 
         public bool IsLoading { get; private set; }
+
+        public bool ShowNavigatePrevious
+        {
+            get
+            {
+                if (this.ActiveContent == null)
+                {
+                    return false;
+                }
+                return this.ActiveContent.ShowNavigatePrevious;
+            }
+        }
+
+        public bool ShowNavigateNext
+        {
+            get
+            {
+                if (this.ActiveContent == null)
+                {
+                    return false;
+                }
+                return this.ActiveContent.ShowNavigateNext;
+            }
+        }
 
         public static bool CheckIfEapConfigIsSupported(EapConfig eapConfig)
         {
@@ -313,7 +337,6 @@ namespace App.Library.ViewModels
             try
             {
                 var eapConfigurator = new EapConfigTask();
-                // read content of file
                 // create Eap-config and open Profile view
                 var eapConfig = await EapConfigTask.GetEapConfigAsync(new FileInfo(filepath));
 
