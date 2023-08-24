@@ -446,6 +446,9 @@ Exception: {0}.</value>
   <data name="ProfileEmail" xml:space="preserve">
     <value>Email</value>
   </data>
+  <data name="ProfileLabel" xml:space="preserve">
+    <value>Profile name</value>
+  </data>
   <data name="ProfileNotAffiliatedInstitution" xml:space="preserve">
     <value>Not affiliated with institution?</value>
   </data>

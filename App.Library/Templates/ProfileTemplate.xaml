@@ -135,7 +135,6 @@
                     Command="{Binding SelectOtherInstitutionCommand}"
                     Content="{x:Static lang:Resources.ProfileSelectOtherInstitution}"
                     Style="{DynamicResource WhiteButtonStyle}" />
-
             </Grid>
         </Grid>
     </DataTemplate>

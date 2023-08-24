@@ -1,4 +1,5 @@
-﻿using EduRoam.Localization;
+﻿using EduRoam.Connect.Store;
+using EduRoam.Localization;
 
 using System.Globalization;
 
@@ -6,9 +7,13 @@ namespace EduRoam.Connect.Tasks
 {
     public class Status
     {
-        public string? ProfileName { get; set; }
+        public IdentityProviderInfo? Identity { get; set; }
 
-        public DateTime? ExpirationDate { get; set; }
+        public string? ProfileName => this.Identity?.DisplayName;
+
+        public DateTime? ExpirationDate => this.Identity?.NotAfter;
+
+        public bool ActiveProfile => this.Identity != null;
 
         public string TimeLeft
         {

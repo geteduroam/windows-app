@@ -1023,6 +1023,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Profile name.
+        /// </summary>
+        public static string ProfileLabel {
+            get {
+                return ResourceManager.GetString("ProfileLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Not affiliated with institution?.
         /// </summary>
         public static string ProfileNotAffiliatedInstitution {

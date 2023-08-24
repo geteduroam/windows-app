@@ -20,8 +20,7 @@ namespace EduRoam.Connect.Tasks
 
             if (this.IdentityProvider != null)
             {
-                status.ProfileName = this.IdentityProvider.Value.DisplayName;
-                status.ExpirationDate = this.IdentityProvider.Value.NotAfter;
+                status.Identity = this.IdentityProvider.Value;
             }
             return status;
         }

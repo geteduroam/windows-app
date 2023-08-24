@@ -53,7 +53,9 @@ namespace App.Library.ViewModels
 
         public bool IsLoading { get; private set; }
 
+#pragma warning disable CA1822 // Mark members as static
         public string AppVersion
+#pragma warning restore CA1822 // Mark members as static
         {
             get
             {
@@ -162,8 +164,7 @@ namespace App.Library.ViewModels
         public void Restart()
         {
             this.State.Reset();
-            this.ActiveContent = new SelectInstitutionViewModel(this);
-            this.CallPropertyChanged(nameof(this.ActiveContent));
+            this.SetActiveContent(new SelectInstitutionViewModel(this));
         }
 
         //todo Move to a better place
