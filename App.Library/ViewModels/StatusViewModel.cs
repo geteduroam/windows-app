@@ -34,6 +34,7 @@ namespace App.Library.ViewModels
         public override bool ShowMenu => true;
         public override bool ShowHelp => true;
 
+        public bool ShowProfileStatus => this.status.ActiveProfile;
         public string ProfileName => this.status.ProfileName ?? string.Empty;
         public string TimeLeft => this.status.TimeLeft ?? string.Empty;
 

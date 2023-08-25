@@ -4,25 +4,25 @@
     xmlns:viewModels="clr-namespace:App.Library.ViewModels"
     xmlns:lang = "clr-namespace:EduRoam.Localization;assembly=EduRoam.Localization">
 
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    
     <DataTemplate DataType="{x:Type viewModels:StatusViewModel}">
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" KeyboardNavigation.IsTabStop="False">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="48"/>
+                <RowDefinition Height="148"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="1" 
-                       Margin="8,0,8,16" 
+            <TextBlock Grid.Row="0" 
                        TextWrapping="Wrap" 
                        TextAlignment="Center" 
                        Text="{Binding ProfileName}" 
-                       FontSize="24"/>
+                       FontSize="24"
+                       Visibility="{Binding ShowProfileStatus, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-            <StackPanel Grid.Row="2" 
-                        Margin="24,0,24,24">
+            <StackPanel Grid.Row="1"
+                        Visibility="{Binding ShowProfileStatus, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Text="{x:Static lang:Resources.LabelAccountValidFor}" TextWrapping="Wrap" TextAlignment="Center">
                     <TextBlock.Foreground>
                         <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.GrayTextColorKey}}"/>
@@ -34,23 +34,16 @@
                     </TextBlock.Foreground>
                 </TextBlock>
             </StackPanel>
-            
-            <Grid Grid.Row="4" VerticalAlignment="Top" Margin="5,48">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
 
-                <Button Grid.Row="1"
-                        Width="160"
-                        Height="34"
-                        Margin="0,5"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Top"
-                        Command="{Binding SelectOtherInstitutionCommand}"
-                        Content="{x:Static lang:Resources.ProfileSelectOtherInstitution}"
-                        Style="{DynamicResource WhiteButtonStyle}" />           
-            </Grid>
+            <Button Grid.Row="2"
+                    Width="160"
+                    Height="34"
+                    Margin="0,5"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Top"
+                    Command="{Binding SelectOtherInstitutionCommand}"
+                    Content="{x:Static lang:Resources.SelectProfile}"
+                    Style="{DynamicResource BlueButtonStyle}" />
         </Grid>
     </DataTemplate>
 </ResourceDictionary>
