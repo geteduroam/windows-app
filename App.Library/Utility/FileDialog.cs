@@ -62,7 +62,7 @@ namespace App.Library.Utility
             }
 
             // checks if file extension is valid
-            var extensionSupported = fileTypes.Any(fileType => fileType == Path.GetExtension(filePath));
+            var extensionSupported = fileTypes.Any(fileType => string.Equals(fileType, Path.GetExtension(filePath), System.StringComparison.CurrentCultureIgnoreCase));
             if (extensionSupported)
             {
                 return true;

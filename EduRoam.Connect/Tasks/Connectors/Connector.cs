@@ -124,7 +124,6 @@ namespace EduRoam.Connect.Tasks.Connectors
             else if (eapConfig.NeedsClientCertificate)
             {
                 return new CertAndCertPassConnector(eapConfig);
-
             }
             // case where eapconfig needs only cert password
             else if (eapConfig.NeedsClientCertificatePassphrase)

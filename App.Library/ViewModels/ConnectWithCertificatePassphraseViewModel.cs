@@ -3,43 +3,24 @@
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Tasks.Connectors;
 
-using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-
-using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
 
 namespace App.Library.ViewModels
 {
-    public class ConnectWithCertificatePassphraseViewModel : BaseViewModel
+    internal class ConnectWithCertificatePassphraseViewModel : BaseConnectViewModel
     {
-        private string userName = string.Empty;
-        private string password = string.Empty;
+        private string passphrase = string.Empty;
 
-        private readonly EapConfig eapConfig;
-        private readonly CertPassConnection connection;
-
-        private TaskStatus? connectionStatus;
 
         public ConnectWithCertificatePassphraseViewModel(MainViewModel owner, EapConfig eapConfig, CertPassConnector connector)
-            : base(owner)
+            : base(owner, eapConfig, new CertPassConnection(connector))
         {
-            this.eapConfig = eapConfig;
-            this.connection = new CertPassConnection(connector);
         }
 
         protected override bool CanNavigateNextAsync()
         {
-            return (
-                !this.eapConfig.NeedsLoginCredentials ||
-                (!string.IsNullOrWhiteSpace(this.userName) && !string.IsNullOrWhiteSpace(this.password))
-                );
-        }
-
-        protected override async Task NavigateNextAsync()
-        {
-            // Connect
-            throw new NotImplementedException();
-            this.CallPropertyChanged();
+            return !string.IsNullOrWhiteSpace(this.passphrase);
         }
 
         public bool ShowRules
@@ -54,20 +35,24 @@ namespace App.Library.ViewModels
         {
             get
             {
-                return this.password;
+                return this.passphrase;
 
             }
             set
             {
-                this.password = value;
+                this.passphrase = value;
                 this.CallPropertyChanged();
             }
         }
 
-        public bool Connected => this.connectionStatus?.Success ?? false;
+        protected override async Task ConfigureAndConnectAsync(IList<string> messages)
+        {
+            var connectionProperties = new ConnectionProperties()
+            {
+                Passphrase = this.Passphrase
+            };
 
-        public TaskStatus? ConnectionStatus => this.connectionStatus;
-
-        public bool PasswordRequired => this.eapConfig.NeedsLoginCredentials;
+            this.connectionStatus = await this.connection.ConfigureAndConnectAsync(connectionProperties);
+        }
     }
 }

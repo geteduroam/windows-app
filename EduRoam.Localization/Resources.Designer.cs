@@ -97,6 +97,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Certificate:.
+        /// </summary>
+        public static string CertificateLabel {
+            get {
+                return ResourceManager.GetString("CertificateLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to In order to continue the following certificates have to be installed..
         /// </summary>
         public static string CertificatesInstallationNotification {
@@ -805,6 +814,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select a Client Certificate bundle.
+        /// </summary>
+        public static string LoadCertificateFile {
+            get {
+                return ResourceManager.GetString("LoadCertificateFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select a EAP Config file.
         /// </summary>
         public static string LoadEapFile {
@@ -819,6 +837,15 @@ namespace EduRoam.Localization {
         public static string Loading {
             get {
                 return ResourceManager.GetString("Loading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This profile requires a local certificate.
+        /// </summary>
+        public static string LocalCertificateLabel {
+            get {
+                return ResourceManager.GetString("LocalCertificateLabel", resourceCulture);
             }
         }
         
@@ -1153,6 +1180,15 @@ namespace EduRoam.Localization {
         public static string Search {
             get {
                 return ResourceManager.GetString("Search", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse.
+        /// </summary>
+        public static string SelectFile {
+            get {
+                return ResourceManager.GetString("SelectFile", resourceCulture);
             }
         }
         

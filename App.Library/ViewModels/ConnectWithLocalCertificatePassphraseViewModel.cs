@@ -1,45 +1,35 @@
-﻿using App.Library.Connections;
+﻿using App.Library.Command;
+using App.Library.Connections;
+using App.Library.Utility;
 
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Tasks.Connectors;
+using EduRoam.Localization;
 
-using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
-
-using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
 
 namespace App.Library.ViewModels
 {
-    public class ConnectWithLocalCertificatePassphraseViewModel : BaseViewModel
+    internal class ConnectWithLocalCertificatePassphraseViewModel : BaseConnectViewModel
     {
-        private string userName = string.Empty;
-        private string password = string.Empty;
-
-        private readonly EapConfig eapConfig;
-        private readonly CertAndCertPassConnection connection;
-
-        private TaskStatus? connectionStatus;
+        private FileInfo? clientCertificate;
+        private string passphrase = string.Empty;
 
         public ConnectWithLocalCertificatePassphraseViewModel(MainViewModel owner, EapConfig eapConfig, CertAndCertPassConnector connector)
-            : base(owner)
+            : base(owner, eapConfig, new CertAndCertPassConnection(connector))
         {
-            this.eapConfig = eapConfig;
-            this.connection = new CertAndCertPassConnection(connector);
+            this.SelectLocalCertificateCommand = new DelegateCommand(this.SelectLocalCertificate);
         }
+
+        public DelegateCommand SelectLocalCertificateCommand { get; protected set; }
 
         protected override bool CanNavigateNextAsync()
         {
             return (
-                !this.eapConfig.NeedsLoginCredentials ||
-                (!string.IsNullOrWhiteSpace(this.userName) && !string.IsNullOrWhiteSpace(this.password))
+                (this.clientCertificate != null && this.clientCertificate.Exists) && !string.IsNullOrWhiteSpace(this.passphrase)
                 );
-        }
-
-        protected override async Task NavigateNextAsync()
-        {
-            // Connect
-            throw new NotImplementedException();
-            this.CallPropertyChanged();
         }
 
         public bool ShowRules
@@ -50,40 +40,73 @@ namespace App.Library.ViewModels
             }
         }
 
-        public string UserName
+        public FileInfo? ClientCertificate
         {
             get
             {
-                return this.userName;
+                return this.clientCertificate;
 
             }
             set
             {
-                this.userName = value;
+                this.clientCertificate = value;
                 this.CallPropertyChanged();
             }
         }
 
-        public bool UserNameRequired => this.eapConfig.NeedsLoginCredentials;
+        public string CertificatiePath => this.ClientCertificate?.FullName ?? string.Empty;
 
-        public string Password
+        public string Passphrase
         {
             get
             {
-                return this.password;
+                return this.passphrase;
 
             }
             set
             {
-                this.password = value;
+                this.passphrase = value;
                 this.CallPropertyChanged();
             }
         }
 
-        public bool Connected => this.connectionStatus?.Success ?? false;
+        protected override async Task ConfigureAndConnectAsync(IList<string> messages)
+        {
+            var connectionProperties = new ConnectionProperties()
+            {
+                CertificatePath = this.ClientCertificate,
+                Passphrase = this.Passphrase
+            };
 
-        public TaskStatus? ConnectionStatus => this.connectionStatus;
+            this.connectionStatus = await this.connection.ConfigureAndConnectAsync(connectionProperties);
+        }
 
-        public bool PasswordRequired => this.eapConfig.NeedsLoginCredentials;
+        public void SelectLocalCertificate()
+        {
+            string? filepath;
+            do
+            {
+                filepath = FileDialog.GetFileFromDialog(
+                    Resources.LoadCertificateFile,
+                    "Certificate files (*.PFX, *.P12)|*.pfx;*.p12|All files (*.*)|*.*");
+
+                if (filepath == null)
+                {
+                    return; // the user canelled
+                }
+            }
+            while (!FileDialog.ValidateFile(filepath, new List<string> { ".PFX", "*.P12" }));
+
+            if (filepath == null)
+            {
+                this.ClientCertificate = null;
+            }
+            else
+            {
+                this.ClientCertificate = new FileInfo(filepath);
+            }
+
+            this.CallPropertyChanged(nameof(this.CertificatiePath));
+        }
     }
 }

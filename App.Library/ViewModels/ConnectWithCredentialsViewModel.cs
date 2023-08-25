@@ -1,35 +1,22 @@
 ﻿using App.Library.Connections;
 
 using EduRoam.Connect.Eap;
-using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Tasks.Connectors;
-using EduRoam.Localization;
 
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
-
-using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
 
 namespace App.Library.ViewModels
 {
-    public class ConnectWithCredentialsViewModel : BaseViewModel
+    internal class ConnectWithCredentialsViewModel : BaseConnectViewModel
     {
         private string userName = string.Empty;
         private string password = string.Empty;
 
-        private readonly EapConfig eapConfig;
-
-        private TaskStatus? connectionStatus;
-        private CredentialsConnection connection;
 
         public ConnectWithCredentialsViewModel(MainViewModel owner, EapConfig eapConfig, CredentialsConnector connector)
-            : base(owner)
+            : base(owner, eapConfig, new CredentialsConnection(connector))
         {
-            this.eapConfig = eapConfig;
-            this.connection = new CredentialsConnection(connector);
         }
 
         protected override bool CanNavigateNextAsync()
@@ -83,74 +70,17 @@ namespace App.Library.ViewModels
             }
         }
 
-        public string Status
-        {
-            get
-            {
-                if (this.connectionStatus == null)
-                {
-                    return "";
-                }
-                if (this.connectionStatus.Success)
-                {
-                    return string.Join("\n", this.connectionStatus.Messages);
-                }
-                return string.Join("\n", this.connectionStatus.Errors.Concat(this.connectionStatus.Warnings));
-            }
-        }
-
-        public bool Connected => this.connectionStatus?.Success ?? false;
-
-        public TaskStatus? ConnectionStatus => this.connectionStatus;
-
         public bool PasswordRequired => this.eapConfig.NeedsLoginCredentials;
 
-        protected async Task ConnectAsync()
+        protected override async Task ConfigureAndConnectAsync(IList<string> messages)
         {
-            // Connect
-            try
+            var connectionProperties = new ConnectionProperties()
             {
-                IList<string> messages = new List<string>();
-                var connectionProperties = new ConnectionProperties()
-                {
-                    UserName = this.userName,
-                    Password = this.password
-                };
+                UserName = this.userName,
+                Password = this.password
+            };
 
-                this.connectionStatus = await this.connection.ConfigureAndConnectAsync(connectionProperties);
-
-            }
-            catch (EduroamAppUserException ex)
-            {
-                // TODO, NICE TO HAVE: log the error
-                Debug.WriteLine(Resources.ErrorNoConnection, ex.UserFacingMessage);
-                this.connectionStatus = TaskStatus.AsFailure(ex.UserFacingMessage);
-            }
-
-            catch (ArgumentException exc)
-            {
-                Debug.WriteLine(exc.Message);
-                this.connectionStatus = TaskStatus.AsFailure(exc.Message);
-            }
-            catch (ApiParsingException e)
-            {
-                // Must never happen, because if the discovery is reached,
-                // it must be parseable. Logging has been done upstream.
-                Debug.WriteLine(Resources.ErrorApi);
-                Debug.WriteLine(e.Message, e.GetType().ToString());
-                this.connectionStatus = TaskStatus.AsFailure(Resources.ErrorApi);
-            }
-            catch (ApiUnreachableException)
-            {
-                Debug.WriteLine(Resources.ErrorNoInternet);
-                this.connectionStatus = TaskStatus.AsFailure(Resources.ErrorNoInternet);
-            }
-            catch (Exception exc)
-            {
-                this.connectionStatus = TaskStatus.AsFailure(exc.Message);
-            }
-
-            this.CallPropertyChanged(nameof(this.Status));
+            this.connectionStatus = await this.connection.ConfigureAndConnectAsync(connectionProperties);
         }
     }
 }

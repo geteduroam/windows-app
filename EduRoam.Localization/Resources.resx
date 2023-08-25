@@ -129,6 +129,9 @@
   <data name="ButtonPrevious" xml:space="preserve">
     <value>Previous</value>
   </data>
+  <data name="CertificateLabel" xml:space="preserve">
+    <value>Certificate:</value>
+  </data>
   <data name="CertificatesInstallationNotification" xml:space="preserve">
     <value>In order to continue the following certificates have to be installed.</value>
   </data>
@@ -375,11 +378,17 @@ Exception: {0}</value>
   <data name="LabelWeb" xml:space="preserve">
     <value>Web</value>
   </data>
+  <data name="LoadCertificateFile" xml:space="preserve">
+    <value>Select a Client Certificate bundle</value>
+  </data>
   <data name="LoadEapFile" xml:space="preserve">
     <value>Select a EAP Config file</value>
   </data>
   <data name="Loading" xml:space="preserve">
     <value>Loading</value>
+  </data>
+  <data name="LocalCertificateLabel" xml:space="preserve">
+    <value>This profile requires a local certificate</value>
   </data>
   <data name="LoginTitle" xml:space="preserve">
     <value>Login</value>
@@ -495,6 +504,9 @@ Exception: {0}</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>
+  </data>
+  <data name="SelectFile" xml:space="preserve">
+    <value>Browse</value>
   </data>
   <data name="SelectInstitution" xml:space="preserve">
     <value>Select institution</value>
