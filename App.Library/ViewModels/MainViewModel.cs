@@ -432,7 +432,7 @@ namespace App.Library.ViewModels
 
         public void RemoveCertificates()
         {
-            throw new NotImplementedException();
+            RemoveWiFiConfigurationTask.RemoveCertificates(false);
         }
 
         public void Uninstall(Action<bool> afterUninstall)

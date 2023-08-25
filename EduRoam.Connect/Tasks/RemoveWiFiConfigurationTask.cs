@@ -14,12 +14,17 @@ namespace EduRoam.Connect.Tasks
 		/// on the other, it's a hassle for the user to get too many prompts
 		/// while reinstalling a profile.
 		/// </remarks>
-		public void Remove(bool omitRootCa = false)
+		public static void Remove(bool omitRootCa = false)
         {
             LetsWifi.WipeTokens();
             ConnectToEduroam.RemoveAllWLANProfiles();
-            CertificateStore.UninstallAllInstalledCertificates(omitRootCa: omitRootCa);
             RegistryStore.Instance.ClearIdentity();
+            RemoveCertificates(omitRootCa: omitRootCa);
+        }
+
+        public static void RemoveCertificates(bool omitRootCa = false)
+        {
+            CertificateStore.UninstallAllInstalledCertificates(omitRootCa: omitRootCa);
         }
     }
 }
