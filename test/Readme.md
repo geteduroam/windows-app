@@ -1,3 +1,12 @@
+# Test Eap configurations
+This folder contains 3 Eap configuration templates. These templates can be used to test the following connection flows
+- User has to enter username/password to connect (template - credentials.eap-config)
+- User has to enter a certificate password (template - passphrase.eap-config)
+- User has to select a client certificate (*.pfx) and the certificate's password (template - clientcertificate and passphrase.eap-config)
+
+The templates contains certificates in base64 format. Self signed certificates can be used for testing purposes. Below the Powershell commands to create server/client side certificates.
+
+
 # Create test certificates
 
 ## non-exportable (server side) certificate
