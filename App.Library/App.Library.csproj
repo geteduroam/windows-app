@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Properties\**" />
+    <EmbeddedResource Remove="Properties\**" />
+    <None Remove="Properties\**" />
+    <Page Remove="Properties\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="Images\eduroam_logo.png" />
   </ItemGroup>
 
@@ -34,10 +41,6 @@
   <ItemGroup>
     <ProjectReference Include="..\EduRoam.Connect\EduRoam.Connect.csproj" />
     <ProjectReference Include="..\EduRoam.Localization\EduRoam.Localization.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Properties\" />
   </ItemGroup>
 
 </Project>
