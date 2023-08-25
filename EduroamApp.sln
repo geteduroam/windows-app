@@ -28,11 +28,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{2CFFF257-3B7E-471C-8F24-A3FFB796AC3D}"
 	ProjectSection(SolutionItems) = preProject
 		test\cli-commandos.md = test\cli-commandos.md
-		test\dummy - clientcertificate and passphrase.eap-config = test\dummy - clientcertificate and passphrase.eap-config
-		test\dummy - credentials.eap-config = test\dummy - credentials.eap-config
-		test\dummy.eap-config = test\dummy.eap-config
-		test\dummy - passphrase.eap-config = test\dummy - passphrase.eap-config
 		test\Readme.md = test\Readme.md
+		test\template - clientcertificate and passphrase.eap-config = test\template - clientcertificate and passphrase.eap-config
+		test\template - credentials.eap-config = test\template - credentials.eap-config
+		test\template - passphrase.eap-config = test\template - passphrase.eap-config
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EduRoam.Localization", "EduRoam.Localization\EduRoam.Localization.csproj", "{060966DA-5E9F-4043-9B99-8C61D310203E}"
