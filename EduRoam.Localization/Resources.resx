@@ -222,6 +222,13 @@ Unable to connect to eduroam.</value>
   <data name="ErrorApi" xml:space="preserve">
     <value>API error</value>
   </data>
+  <data name="ErrorCannotConnectWithServer" xml:space="preserve">
+    <value>Couldn't connect to the server.
+
+Make sure that you are connected to the internet, then try again.
+
+Exception: {0}</value>
+  </data>
   <data name="ErrorCannotFetchTokens" xml:space="preserve">
     <value>Couldn't fetch token json.
 Exception: {0}</value>
@@ -316,6 +323,12 @@ Exception: {0}.</value>
   </data>
   <data name="ErrorUnsupportedConnectionType" xml:space="preserve">
     <value>Connection of type {0} is not supported (yet).</value>
+  </data>
+  <data name="ErrorUnsupportedInstituteOrProfile" xml:space="preserve">
+    <value>The institution or profile is either not supported or malformed.
+Please select a different institution or profile.
+
+Exception: {0}</value>
   </data>
   <data name="ErrorUnsupportedProfile" xml:space="preserve">
     <value>The profile you have selected is not supported by this application. No supported authentification method was found.</value>
@@ -469,6 +482,13 @@ Exception: {0}.</value>
   </data>
   <data name="RedirectTitle" xml:space="preserve">
     <value>Redirect</value>
+  </data>
+  <data name="RemoveProfileMessage" xml:space="preserve">
+    <value>This will remove all configuration for
+{0}</value>
+  </data>
+  <data name="RemoveProfileTitle" xml:space="preserve">
+    <value>Remove {0}</value>
   </data>
   <data name="RequestToInstallCertificates" xml:space="preserve">
     <value>Install all required certificates?</value>

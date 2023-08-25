@@ -370,6 +370,19 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Couldn&apos;t connect to the server.
+        ///
+        ///Make sure that you are connected to the internet, then try again.
+        ///
+        ///Exception: {0}.
+        /// </summary>
+        public static string ErrorCannotConnectWithServer {
+            get {
+                return ResourceManager.GetString("ErrorCannotConnectWithServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Couldn&apos;t fetch token json.
         ///Exception: {0}.
         /// </summary>
@@ -641,6 +654,18 @@ namespace EduRoam.Localization {
         public static string ErrorUnsupportedConnectionType {
             get {
                 return ResourceManager.GetString("ErrorUnsupportedConnectionType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The institution or profile is either not supported or malformed.
+        ///Please select a different institution or profile.
+        ///
+        ///Exception: {0}.
+        /// </summary>
+        public static string ErrorUnsupportedInstituteOrProfile {
+            get {
+                return ResourceManager.GetString("ErrorUnsupportedInstituteOrProfile", resourceCulture);
             }
         }
         
@@ -1091,6 +1116,25 @@ namespace EduRoam.Localization {
         public static string RedirectTitle {
             get {
                 return ResourceManager.GetString("RedirectTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This will remove all configuration for
+        ///{0}.
+        /// </summary>
+        public static string RemoveProfileMessage {
+            get {
+                return ResourceManager.GetString("RemoveProfileMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove {0}.
+        /// </summary>
+        public static string RemoveProfileTitle {
+            get {
+                return ResourceManager.GetString("RemoveProfileTitle", resourceCulture);
             }
         }
         

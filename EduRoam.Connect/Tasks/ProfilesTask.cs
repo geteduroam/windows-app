@@ -60,5 +60,11 @@ namespace EduRoam.Connect.Tasks
         {
             return this.store.IdentityProvider?.DisplayName ?? Resources.DefaultIdentityProvider;
         }
+
+        public void RemoveCurrentProfile()
+        {
+            var remover = new RemoveWiFiConfigurationTask();
+            remover.Remove(omitRootCa: true);
+        }
     }
 }

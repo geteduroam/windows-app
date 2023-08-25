@@ -310,19 +310,13 @@ namespace App.Library.ViewModels
             {
                 throw new EduroamAppUserException(
                     "HttpRequestException",
-                    "Couldn't connect to the server.\n\n"
-                    + "Make sure that you are connected to the internet, then try again.\n"
-                    + "Exception: "
-                    + e.Message);
+                    string.Format(Resources.ErrorCannotConnectWithServer, e.Message));
             }
             catch (ApiParsingException e)
             {
                 throw new EduroamAppUserException(
                     "xml parse exception",
-                    "The institution or profile is either not supported or malformed. "
-                    + "Please select a different institution or profile.\n\n"
-                    + "Exception: "
-                    + e.Message);
+                    string.Format(Resources.ErrorUnsupportedInstituteOrProfile, e.Message));
             }
         }
 
@@ -332,49 +326,55 @@ namespace App.Library.ViewModels
 		/// </summary>
 		/// <returns>EapConfig object or null</returns>
 		/// <exception cref="XmlException"></exception>
-		public async Task LoadEapFile()
+		public void LoadEapFile()
         {
-            Debug.WriteLine("LoadEapFile");
-
-            string? filepath;
-            do
+            Task.Run(async () =>
             {
-                filepath = FileDialog.GetFileFromDialog(
-                    Resources.LoadEapFile,
-                    "EAP-CONFIG files (*.eap-config)|*.eap-config|All files (*.*)|*.*");
+                Debug.WriteLine("LoadEapFile");
 
-                if (filepath == null) return; // the user canelled
-            }
-            while (!FileDialog.ValidateFile(filepath, new List<string> { ".eap-config" }));
-
-            // read, validate, parse and return
-            try
-            {
-                var eapConfigurator = new EapConfigTask();
-                // create Eap-config and open Profile view
-                var eapConfig = await EapConfigTask.GetEapConfigAsync(new FileInfo(filepath));
-
-                if (eapConfig != null)
+                string? filepath;
+                do
                 {
-                    eapConfig.ProfileId = filepath;
+                    filepath = FileDialog.GetFileFromDialog(
+                        Resources.LoadEapFile,
+                        "EAP-CONFIG files (*.eap-config)|*.eap-config|All files (*.*)|*.*");
 
-                    this.SetActiveContent(new ProfileViewModel(this, eapConfig));
+                    if (filepath == null)
+                    {
+                        return; // the user canelled
+                    }
                 }
-            }
-            catch (System.Xml.XmlException xmlEx)
-            {
-                MessageBox.Show(
-                    Resources.ErrorEapConfigCorrupted +
-                    "\nException: " + xmlEx.Message,
-                    "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            catch (ArgumentException argEx)
-            {
-                MessageBox.Show(
-                    Resources.ErrorEapConfigInvalid +
-                    "\nException: " + argEx.Message,
-                    "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+                while (!FileDialog.ValidateFile(filepath, new List<string> { ".eap-config" }));
+
+                // read, validate, parse and return
+                try
+                {
+                    var eapConfigurator = new EapConfigTask();
+                    // create Eap-config and open Profile view
+                    var eapConfig = await EapConfigTask.GetEapConfigAsync(new FileInfo(filepath));
+
+                    if (eapConfig != null)
+                    {
+                        eapConfig.ProfileId = filepath;
+
+                        this.SetActiveContent(new ProfileViewModel(this, eapConfig));
+                    }
+                }
+                catch (System.Xml.XmlException xmlEx)
+                {
+                    MessageBox.Show(
+                        Resources.ErrorEapConfigCorrupted +
+                        "\nException: " + xmlEx.Message,
+                        "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+                catch (ArgumentException argEx)
+                {
+                    MessageBox.Show(
+                        Resources.ErrorEapConfigInvalid +
+                        "\nException: " + argEx.Message,
+                        "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            });
         }
 
         public void Refresh()
@@ -391,15 +391,16 @@ namespace App.Library.ViewModels
         {
             var profiler = new ProfilesTask();
             var profileName = profiler.GetCurrentProfileName();
-            if (MessageBoxResult.OK == MessageBox.Show(
-                    "This will remove all configuration for\r\n" + profileName,
-                    "Remove " + profileName,
+
+            var confirmRemoval = MessageBox.Show(
+                    string.Format(Resources.RemoveProfileMessage, profileName),
+                    string.Format(Resources.RemoveProfileTitle, profileName),
                     MessageBoxButton.OKCancel,
-                    MessageBoxImage.Warning
-                    ))
+                    MessageBoxImage.Warning);
+
+            if (confirmRemoval == MessageBoxResult.OK)
             {
-                var remover = new RemoveWiFiConfigurationTask();
-                remover.Remove(omitRootCa: true);
+                profiler.RemoveCurrentProfile();
 
                 this.Restart();
             }
@@ -412,8 +413,7 @@ namespace App.Library.ViewModels
 
         public void Uninstall(Action<bool> afterUninstall)
         {
-            var uninstaller = new UninstallTask();
-            uninstaller.Uninstall(afterUninstall);
+            UninstallTask.Uninstall(afterUninstall);
         }
     }
 }

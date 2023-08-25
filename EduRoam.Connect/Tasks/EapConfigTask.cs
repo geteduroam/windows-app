@@ -1,6 +1,7 @@
 ﻿using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
+using EduRoam.Localization;
 
 namespace EduRoam.Connect.Tasks
 {
@@ -148,16 +149,12 @@ namespace EduRoam.Connect.Tasks
             catch (ApiUnreachableException e)
             {
                 throw new EduroamAppUserException("HttpRequestException",
-                    "Couldn't connect to the server.\n\n" +
-                    "Make sure that you are connected to the internet, then try again.\n" +
-                    "Exception: " + e.Message);
+                    string.Format(Resources.ErrorCannotConnectWithServer, e.Message));
             }
             catch (ApiParsingException e)
             {
                 throw new EduroamAppUserException("xml parse exception",
-                    "The institution or profile is either not supported or malformed. " +
-                    "Please select a different institution or profile.\n\n" +
-                    "Exception: " + e.Message);
+                    string.Format(Resources.ErrorUnsupportedInstituteOrProfile, e.Message));
             }
         }
 
