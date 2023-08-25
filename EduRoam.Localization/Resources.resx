@@ -462,6 +462,9 @@ Exception: {0}</value>
   <data name="Password" xml:space="preserve">
     <value>Password</value>
   </data>
+  <data name="PasswordLabel" xml:space="preserve">
+    <value>Password:</value>
+  </data>
   <data name="ProfileContactInfo" xml:space="preserve">
     <value>Contact Information</value>
   </data>

@@ -55,7 +55,7 @@
                     HorizontalAlignment="Left" Width="60"/>
 
             <Label Grid.Row="3" Grid.Column="0" IsHitTestVisible="False" 
-                   Content="{x:Static lang:Resources.PassphraseLabel}" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                   Content="{x:Static lang:Resources.PasswordLabel}" VerticalAlignment="Center" HorizontalAlignment="Right" />
             <PasswordBox Grid.Row="3" Grid.Column="1" 
                          Padding="2,3,2,3" Height="Auto" MinHeight="24"  Margin="5" b:BindablePasswordBox.BindPassword="true"  
                          b:BindablePasswordBox.BoundPassword="{Binding Path=Passphrase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

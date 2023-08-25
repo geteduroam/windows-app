@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EAPIdentityProviderList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="eap-metadata.xsd">
+  <EAPIdentityProvider version="1" lang="en" ID="uninett.no" namespace="urn:RFC4282:realm">
+    <AuthenticationMethods>
+		<AuthenticationMethod>
+        <EAPMethod>
+          <Type>13</Type>
+        </EAPMethod>
+        <ServerSideCredential>
+          <CA format="X.509" encoding="base64">MIIFaTCCA1GgAwIBAgIUdiZjSkEcDQpUwXK00SACbnPFdIowDQYJKoZIhvcNAQELBQAwTTELMAkGA1UEBhMCTk8xEzARBgNVBAoTClVuaW5ldHQgQVMxKTAnBgNVBAMTIFVuaW5ldHQgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IEcyMCAXDTIwMDEyODEzMDgzMFoYDzIwNzAwMTE1MTMwODMwWjBNMQswCQYDVQQGEwJOTzETMBEGA1UEChMKVW5pbmV0dCBBUzEpMCcGA1UEAxMgVW5pbmV0dCBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkgRzIwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCrngTpnJRyJL7Ob5fQF/9me1/hR9L/PpePCeNdbcuLH4DiTuRDTssR/GycDgHZBSgpFjDu9DvRfqxokypNORx7odTp+hVIAByJcpYVkX77QpbN0EbSq9TodlHUseKP+oceZnV+LtXsbj0CAz8NzqUSeaLOX/kPb2X2k6uKKLno0QfF0LB2wLFGvGkrPw8/yXWHLqbMd6mtHxHwKFsLKLfZCTQoEM5phE3n82HvDHdP7IItlj5SW2rd8cUerzzSB6Pk6NyA8iSDKIcxcNEs9Gitds27a4wzGRX3kIrleolKewxf3XKgaR3tU2KtauqnTPu7FwbgkkCzF11ArPNAhujzumVU7RkEmCOF636OQAFVshJryb7d3UzQdaQLjffWskJ3m+VuwfH+WY79CHLgRFG/jHO6pEyK7myfZAD6qTxhXDJ66WVKrxP2hBCNRMltpJGjRfsGq4yO/4av1+qqhXEBjfhqRkUgZw1shFiQ/+ZOy/AA+1ffAYm6LoFjHhUpd5l2SPo4ejptH8giXMUOYn5CB9yZu3ZkRY6PRuvmFB10JK/g+6M005ZO1vPahKif9ZPtHo7ylnZVlJtGXQ6/+VwzoFueNXCl/uow1XjgyjV4lCTqr9RkAdC6vSp+hqiU3RDhqhFUwCJ2wktad503/H+hhmfhyLNSYUvBevoudvecVQIDAQABoz8wPTAdBgNVHQ4EFgQUsJJe6YgAreufX/7jXFWS4sezFmEwDAYDVR0TBAUwAwEB/zAOBgNVHQ8BAf8EBAMCAYYwDQYJKoZIhvcNAQELBQADggIBAFjBx1Q9l+yjudvrdQsQP8F4F4CA7qr28F21oIDZV/rAuevtV5K2254qIssH3UhlIGv12XAW+/YnDu05/I0sWp+HM2KoVWvcUphu1gQq/WD9bydN79/e6rrJyH7eNyv5CjIyHHvNiqAeKGvy72cImsjZB3JRCbkRgcHwH5/wC+LSZG1sbZ36w7hQcuNfn4sh91tKyaiM9XNiU6FPMOEtzDNI5Zp5actiw2BKIoNRCRfFhha2vg8mxXI/0Y57bWNu6Xnu7g+E85klB0Sg3MzkErAniPl6qPtXIOTy8pLJrn3hwX9ii6gzc2G+37PzlbT2i6zXFOVVY/y8Q9K2r+J+dbdG+QUnHwKwzMO7p2MS3l9salWQu0sfZv8fbXk7+6Xn3CYOTxDAzn7px7DIVKfJREhnSx1AEDLOYt9I53NVXBzyBwIMMXXShuSsZipYgOkENkIvoe2xRxGvz2jjg8yM4jWyOKBp6J3BTOEDyLfjkYqOqSnllhFwHwWdHtQlB85N5xrxUyJlSU/5HR1TjZMzPzExOJX3+rvORBujDoU9aEoQ7cZGJUycDjpEzejrBefa4BksyHHYD0IqqoZkhbQ0geIzW4aWRg4tKhIfSTtT8KQKjxjz6Z3F+0qKszLgj7Iw3Mdjc8KBIjr+YgQjWjg/cj8xxMnE8FAGdCE5o3mkfeBG</CA>
+          <ServerID>eduroam.uninett.no</ServerID>
+        </ServerSideCredential>
+        <ClientCertificate format="X.509" encoding="base64">MIIFaTCCA1GgAwIBAgIUdiZjSkEcDQpUwXK00SACbnPFdIowDQYJKoZIhvcNAQELBQAwTTELMAkGA1UEBhMCTk8xEzARBgNVBAoTClVuaW5ldHQgQVMxKTAnBgNVBAMTIFVuaW5ldHQgQ2VydGlmaWNhdGUgQXV0aG9yaXR5IEcyMCAXDTIwMDEyODEzMDgzMFoYDzIwNzAwMTE1MTMwODMwWjBNMQswCQYDVQQGEwJOTzETMBEGA1UEChMKVW5pbmV0dCBBUzEpMCcGA1UEAxMgVW5pbmV0dCBDZXJ0aWZpY2F0ZSBBdXRob3JpdHkgRzIwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIKAoICAQCrngTpnJRyJL7Ob5fQF/9me1/hR9L/PpePCeNdbcuLH4DiTuRDTssR/GycDgHZBSgpFjDu9DvRfqxokypNORx7odTp+hVIAByJcpYVkX77QpbN0EbSq9TodlHUseKP+oceZnV+LtXsbj0CAz8NzqUSeaLOX/kPb2X2k6uKKLno0QfF0LB2wLFGvGkrPw8/yXWHLqbMd6mtHxHwKFsLKLfZCTQoEM5phE3n82HvDHdP7IItlj5SW2rd8cUerzzSB6Pk6NyA8iSDKIcxcNEs9Gitds27a4wzGRX3kIrleolKewxf3XKgaR3tU2KtauqnTPu7FwbgkkCzF11ArPNAhujzumVU7RkEmCOF636OQAFVshJryb7d3UzQdaQLjffWskJ3m+VuwfH+WY79CHLgRFG/jHO6pEyK7myfZAD6qTxhXDJ66WVKrxP2hBCNRMltpJGjRfsGq4yO/4av1+qqhXEBjfhqRkUgZw1shFiQ/+ZOy/AA+1ffAYm6LoFjHhUpd5l2SPo4ejptH8giXMUOYn5CB9yZu3ZkRY6PRuvmFB10JK/g+6M005ZO1vPahKif9ZPtHo7ylnZVlJtGXQ6/+VwzoFueNXCl/uow1XjgyjV4lCTqr9RkAdC6vSp+hqiU3RDhqhFUwCJ2wktad503/H+hhmfhyLNSYUvBevoudvecVQIDAQABoz8wPTAdBgNVHQ4EFgQUsJJe6YgAreufX/7jXFWS4sezFmEwDAYDVR0TBAUwAwEB/zAOBgNVHQ8BAf8EBAMCAYYwDQYJKoZIhvcNAQELBQADggIBAFjBx1Q9l+yjudvrdQsQP8F4F4CA7qr28F21oIDZV/rAuevtV5K2254qIssH3UhlIGv12XAW+/YnDu05/I0sWp+HM2KoVWvcUphu1gQq/WD9bydN79/e6rrJyH7eNyv5CjIyHHvNiqAeKGvy72cImsjZB3JRCbkRgcHwH5/wC+LSZG1sbZ36w7hQcuNfn4sh91tKyaiM9XNiU6FPMOEtzDNI5Zp5actiw2BKIoNRCRfFhha2vg8mxXI/0Y57bWNu6Xnu7g+E85klB0Sg3MzkErAniPl6qPtXIOTy8pLJrn3hwX9ii6gzc2G+37PzlbT2i6zXFOVVY/y8Q9K2r+J+dbdG+QUnHwKwzMO7p2MS3l9salWQu0sfZv8fbXk7+6Xn3CYOTxDAzn7px7DIVKfJREhnSx1AEDLOYt9I53NVXBzyBwIMMXXShuSsZipYgOkENkIvoe2xRxGvz2jjg8yM4jWyOKBp6J3BTOEDyLfjkYqOqSnllhFwHwWdHtQlB85N5xrxUyJlSU/5HR1TjZMzPzExOJX3+rvORBujDoU9aEoQ7cZGJUycDjpEzejrBefa4BksyHHYD0IqqoZkhbQ0geIzW4aWRg4tKhIfSTtT8KQKjxjz6Z3F+0qKszLgj7Iw3Mdjc8KBIjr+YgQjWjg/cj8xxMnE8FAGdCE5o3mkfeBG<ClientCertificate>
+        <ClientSideCredential>
+          <InnerIdentitySuffix>uninett.no</InnerIdentitySuffix>
+        </ClientSideCredential>
+        <InnerAuthenticationMethod>
+          <EAPMethod>
+            <Type>26</Type>
+          </EAPMethod>
+        </InnerAuthenticationMethod>
+      </AuthenticationMethod>
+    </AuthenticationMethods>
+    <CredentialApplicability>
+      <IEEE80211>
+        <SSID>eduroam</SSID>
+        <MinRSNProto>CCMP</MinRSNProto>
+      </IEEE80211>
+      <IEEE80211>
+        <ConsortiumOID>001bc50460</ConsortiumOID>
+      </IEEE80211>
+    </CredentialApplicability>
+    <ProviderInfo>
+      <DisplayName>Uninett - Employee network</DisplayName>
+      <Description>For Uninett og Norid ansatte. Husk brukernavn er user@uninett.no</Description>
+      <ProviderLocation>
+        <Longitude>10.395212390213032</Longitude>
+        <Latitude>63.41590900140069</Latitude>
+      </ProviderLocation>
+      <ProviderLogo mime="image/svg+xml" encoding="base64">PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8+PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxNDRweCIgaGVpZ2h0PSIzOXB4IiB2aWV3Qm94PSIwIDAgMTQ0IDM5Ij48cGF0aCBmaWxsPSIjZWQxYjM0IiBkPSJNIDEzNywzOSBIIDcgQyAzLDM5IDAsMzYgMCwzMiBWIDcgQyAwLDMgMywwIDcsMCBoIDEzMCBjIDQsMCA3LDMgNyw3IHYgMjUgYyAwLDQgLTMsNyAtNyw3IHoiLz48ZyBmaWxsPSIjZmZmIj48cGF0aCBkPSJtIDI1LDkgaCA1IHYgMTMgYyAwLDUgLTMuNSw4IC05LDggLTUuNSwwIC05LC0zIC05LC04IFYgOSBoIDUgdiAxMyBjIDAsMi41IDEuNSw0IDQsNCAyLDAgNCwtMS41IDQsLTQgeiIvPjxwYXRoIGQ9Ik0gNDYsMzAgMzksMTggViAzMCBIIDM0IFYgOSBoIDUgbCA3LDEyIFYgOSBoIDUgdiAyMSB6Ii8+PHBhdGggZD0iTSA2MSwzMCBIIDU2IFYgOSBoIDUgeiIvPjxwYXRoIGQ9Im0gNjcsOSA5LDEyIFYgOSBaIi8+PHBhdGggZD0ibSA4Miw5IGggMTUgdiA0IEggODcgdiA0IGggOSB2IDQgaCAtOSB2IDUgaCAxMCB2IDQgSCA4MiBaIi8+PHBhdGggZD0ibSAxMTUsOSB2IDQgaCAtNiB2IDE3IGggLTUgViAxMyBIIDk4IFYgOSBaIi8+PHBhdGggZD0ibSAxMzMsOSB2IDQgaCAtNiB2IDE3IGggLTUgViAxMyBoIC02IFYgOSBaIi8+PHBhdGggZD0ibSA2NywxOCB2IDEyIGggOSB6Ii8+PC9nPjwvc3ZnPgo=</ProviderLogo>
+      <TermsOfUse><![CDATA[See www.eduroam.no for Terms of Use.
+]]></TermsOfUse>
+      <Helpdesk>
+        <EmailAddress>kontakt@uninett.no</EmailAddress>
+      </Helpdesk>
+    </ProviderInfo>
+  </EAPIdentityProvider>
+</EAPIdentityProviderList>
+

@@ -41,22 +41,13 @@
                            Grid.Row="1" 
                            Grid.ColumnSpan="3"/>
 
-                <PasswordBox Padding="2,3,2,3" Height="Auto" MinHeight="24"  Margin="5" Grid.Row="2" Grid.Column="1" 
+                <Label Grid.Row="2" Grid.Column="0" IsHitTestVisible="False" 
+                       Content="{x:Static lang:Resources.PasswordLabel}" VerticalAlignment="Center" HorizontalAlignment="Right" />
+                <PasswordBox Grid.Row="2" Grid.Column="1"
+                             Padding="2,3,2,3" Height="Auto" MinHeight="24"  Margin="5"  
                              b:BindablePasswordBox.BindPassword="true"  
                              b:BindablePasswordBox.BoundPassword="{Binding Path=Passphrase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <TextBox Margin="5" Visibility="Hidden" Grid.ColumnSpan="1" Grid.Row="2" Grid.Column="1"/>
-                <!--<TextBlock IsHitTestVisible="False" Text="Password" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray" Grid.ColumnSpan="1" Grid.Row="2" Grid.Column="1">
-                    <TextBlock.Style>
-                        <Style TargetType="{x:Type TextBlock}">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding Text, ElementName=tbCertPassword}" Value="">
-                                    <Setter Property="Visibility" Value="Visible"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </TextBlock.Style>
-                </TextBlock>-->
             </Grid>
 
             <TextBlock Grid.Row="3" 
