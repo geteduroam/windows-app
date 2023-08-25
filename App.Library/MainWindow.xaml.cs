@@ -38,7 +38,7 @@ namespace App.Library
 
         private void OpenHelp(object sender, RoutedEventArgs e)
         {
-            // TODO
+            this.MainViewModel.OpenHelp();
         }
 
         private void LoadEapFile(object sender, RoutedEventArgs e)

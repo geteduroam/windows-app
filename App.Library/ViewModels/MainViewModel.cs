@@ -439,5 +439,10 @@ namespace App.Library.ViewModels
         {
             UninstallTask.Uninstall(afterUninstall);
         }
+
+        internal void OpenHelp()
+        {
+            Process.Start(new ProcessStartInfo(Resources.HelpUrl) { UseShellExecute = true });
+        }
     }
 }
