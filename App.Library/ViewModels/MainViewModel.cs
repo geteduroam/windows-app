@@ -25,12 +25,15 @@ namespace App.Library.ViewModels
 
         public static readonly SelfInstaller SelfInstaller = SelfInstaller.DefaultInstance;
 
+        private Status status;
+
         public MainViewModel()
         {
             this.NewProfileCommand = new DelegateCommand(this.NewProfileCommandAction, this.CanNewProfileCommandAction);
             this.idpDownloader = new IdentityProviderDownloader();
             this.State = new ApplicationState();
 
+            this.status = new StatusTask().GetStatus();
             this.IsLoading = true;
 
             Task.Run(
@@ -344,6 +347,8 @@ namespace App.Library.ViewModels
             }
         }
 
+        public bool CanEapFileBeLoaded => true;
+
         /// <summary>
 		/// Asks the user to supply a .eap-config file.
 		/// Returns null if user aborted.
@@ -401,39 +406,60 @@ namespace App.Library.ViewModels
             });
         }
 
+        public bool IsARefreshPossible => this.status.ActiveProfile;
+
         public void Refresh()
         {
-            Task.Run(() => RefreshTask.RefreshAsync(true));
+            if (this.status.ActiveProfile)
+            {
+                Task.Run(() => RefreshTask.RefreshAsync(true));
+            }
         }
+
+        public bool IsReauthenticatePossible => this.status.ActiveProfile;
 
         public void Reauthenticate()
         {
-            throw new NotImplementedException();
+            if (this.status.ActiveProfile)
+            {
+                var profileId = this.status.Identity.Value.ProfileId!;
+
+                Task.Run(() => this.HandleProfileSelect(profileId));
+            }
         }
+
+        public bool CanProfileBeRemoved => this.status.ActiveProfile;
 
         public void RemoveProfile()
         {
-            var profiler = new ProfilesTask();
-            var profileName = profiler.GetCurrentProfileName();
-
-            var confirmRemoval = MessageBox.Show(
-                    string.Format(Resources.RemoveProfileMessage, profileName),
-                    string.Format(Resources.RemoveProfileTitle, profileName),
-                    MessageBoxButton.OKCancel,
-                    MessageBoxImage.Warning);
-
-            if (confirmRemoval == MessageBoxResult.OK)
+            if (this.status.ActiveProfile)
             {
-                profiler.RemoveCurrentProfile();
+                var profiler = new ProfilesTask();
+                var profileName = profiler.GetCurrentProfileName();
 
-                this.Restart();
+                var confirmRemoval = MessageBox.Show(
+                        string.Format(Resources.RemoveProfileMessage, profileName),
+                        string.Format(Resources.RemoveProfileTitle, profileName),
+                        MessageBoxButton.OKCancel,
+                        MessageBoxImage.Warning);
+
+                if (confirmRemoval == MessageBoxResult.OK)
+                {
+                    profiler.RemoveCurrentProfile();
+
+                    this.Restart();
+                }
             }
         }
+
+        public bool CanCertificatesBeRemoved => this.status.ActiveProfile;
 
         public void RemoveCertificates()
         {
             RemoveWiFiConfigurationTask.RemoveCertificates(false);
         }
+
+        public bool CanAppBeUninstalled => true;
 
         public void Uninstall(Action<bool> afterUninstall)
         {

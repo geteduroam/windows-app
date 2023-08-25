@@ -1,6 +1,7 @@
 ﻿using EduRoam.Connect.Store;
 using EduRoam.Localization;
 
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 
 namespace EduRoam.Connect.Tasks
@@ -13,6 +14,8 @@ namespace EduRoam.Connect.Tasks
 
         public DateTime? ExpirationDate => this.Identity?.NotAfter;
 
+        [MemberNotNullWhen(true, nameof(Identity))]
+        [MemberNotNullWhen(true, nameof(ProfileName))]
         public bool ActiveProfile => this.Identity != null;
 
         public string TimeLeft

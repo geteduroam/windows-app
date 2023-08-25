@@ -32,8 +32,7 @@ namespace EduRoam.CLI.Commands
 
                 if (confirmed)
                 {
-                    var task = new UninstallTask();
-                    task.Uninstall((success) => Console.WriteLine("Ready"));
+                    UninstallTask.Uninstall((success) => Console.WriteLine("Ready"));
                 }
                 else
                 {

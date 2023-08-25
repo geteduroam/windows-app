@@ -63,8 +63,7 @@ namespace EduRoam.Connect.Tasks
 
         public void RemoveCurrentProfile()
         {
-            var remover = new RemoveWiFiConfigurationTask();
-            remover.Remove(omitRootCa: true);
+            RemoveWiFiConfigurationTask.Remove(omitRootCa: true);
         }
     }
 }
