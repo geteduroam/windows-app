@@ -39,7 +39,7 @@ namespace App.Library.ViewModels
                     await this.idpDownloader.LoadProviders(useGeodata: true);
                     this.IsLoading = false;
 
-                    this.SetActiveContent(new StatusViewModel(this));
+                    this.SetStartContent();
                     this.CallPropertyChanged(string.Empty);
                     this.NewProfileCommand.RaiseCanExecuteChanged();
                 });
@@ -87,6 +87,30 @@ namespace App.Library.ViewModels
                     return false;
                 }
                 return this.ActiveContent.ShowNavigateNext;
+            }
+        }
+
+        public void SetStartContent()
+        {
+            var status = new StatusTask().GetStatus();
+
+            if (status.ActiveProfile)
+            {
+                this.SetActiveContent(new StatusViewModel(this));
+            }
+            else
+            {
+                var eapConfig = EapConfigTask.GetBundledEapConfig();
+
+                if (eapConfig != null)
+                {
+
+                    this.SetActiveContent(new ProfileViewModel(this, eapConfig));
+                }
+                else
+                {
+                    this.SetActiveContent(new StatusViewModel(this));
+                }
             }
         }
 

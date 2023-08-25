@@ -3,6 +3,9 @@ using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
 using EduRoam.Localization;
 
+using System.Reflection;
+using System.Xml;
+
 namespace EduRoam.Connect.Tasks
 {
     public class EapConfigTask
@@ -158,5 +161,39 @@ namespace EduRoam.Connect.Tasks
             }
         }
 
+        /// <summary>
+		/// Checks if an EAP-config file exists in the same folder as the executable.
+		/// If the installed app and a EAP-config was bundled in a EXE using 7z, then this case will trigger
+		/// </summary>
+		/// <returns>EapConfig or null</returns>
+		public static EapConfig? GetBundledEapConfig()
+        {
+            var appExeLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+
+            if (appExeLocation == null)
+            {
+                return null;
+            }
+
+            var files = Directory.GetFiles(appExeLocation, "*.eap-config");
+
+            if (!files.Any())
+            {
+                return null;
+            }
+
+            try
+            {
+                var eapConfigContent = File.ReadAllText(files.First());
+                var eapConfig = EapConfig.FromXmlData(eapConfigContent);
+
+                return EduRoamNetwork.IsEapConfigSupported(eapConfig)
+                    ? eapConfig
+                    : null;
+            }
+            catch (XmlException) { }
+
+            return null;
+        }
     }
 }
