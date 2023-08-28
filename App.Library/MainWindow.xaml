@@ -31,7 +31,7 @@
                     <converters:ImageConverter x:Key="ImageConverter" />
                     <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
                     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-                    <b:MainViewModelProxy x:Key="proxy" Data="{Binding}" />
+                    <b:MainViewModelProxy x:Key="proxy" DataCtx="{Binding}" />
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -131,28 +131,27 @@
                     </Image.Source>
                 </Image>
                 <Button.ContextMenu>
-                    <ContextMenu IsOpen="{Binding Data.ShowMenu, Source={StaticResource proxy}}" >
+                    <ContextMenu IsOpen="{Binding DataCtx.ShowMenu, Source={StaticResource proxy}}" >
                         <MenuItem Header="{x:Static lang:Resources.MenuItemLoadEAP}" 
-                                  Command="{Binding Data.LoadEapFileCommand, Source={StaticResource proxy}}"
-                                  IsEnabled="{Binding Data.CanEapFileBeLoaded, Source={StaticResource proxy}}"/>
-                        <!--<MenuItem Header="{Binding Data.LoadEapFileTitle, Source={StaticResource proxy}}" Click="LoadEapFile"/>-->
+                                  Command="{Binding DataCtx.LoadEapFileCommand, Source={StaticResource proxy}}"
+                                  IsEnabled="{Binding DataCtx.CanEapFileBeLoaded, Source={StaticResource proxy}}"/>
                         <Separator/>
                         <MenuItem Header="{x:Static lang:Resources.MenuItemRefresh}" 
-                                  Command="{Binding Data.RefreshCommand, Source={StaticResource proxy}}"
-                                  IsEnabled="{Binding Data.IsARefreshPossible, Source={StaticResource proxy}}"/>
+                                  Command="{Binding DataCtx.RefreshCommand, Source={StaticResource proxy}}"
+                                  IsEnabled="{Binding DataCtx.IsARefreshPossible, Source={StaticResource proxy}}"/>
                         <MenuItem Header="{x:Static lang:Resources.MenuItemReauthenticate}" 
-                                  Command="{Binding Data.ReauthenticateCommand, Source={StaticResource proxy}}"
-                                  IsEnabled="{Binding Data.IsReauthenticatePossible, Source={StaticResource proxy}}"/>
+                                  Command="{Binding DataCtx.ReauthenticateCommand, Source={StaticResource proxy}}"
+                                  IsEnabled="{Binding DataCtx.IsReauthenticatePossible, Source={StaticResource proxy}}"/>
                         <Separator/>
                         <MenuItem Header="{x:Static lang:Resources.MenuItemRemoveProfile}" 
-                                  Command="{Binding Data.RemoveProfileCommand, Source={StaticResource proxy}}"
-                                  IsEnabled="{Binding Data.CanProfileBeRemoved, Source={StaticResource proxy}}"/>
+                                  Command="{Binding DataCtx.RemoveProfileCommand, Source={StaticResource proxy}}"
+                                  IsEnabled="{Binding DataCtx.CanProfileBeRemoved, Source={StaticResource proxy}}"/>
                         <MenuItem Header="{x:Static lang:Resources.MenuItemRemoveCertificates}" 
-                                  Command="{Binding Data.RemoveCertificatesCommand, Source={StaticResource proxy}}"
-                                  IsEnabled="{Binding Data.CanCertificatesBeRemoved, Source={StaticResource proxy}}"/>
+                                  Command="{Binding DataCtx.RemoveCertificatesCommand, Source={StaticResource proxy}}"
+                                  IsEnabled="{Binding DataCtx.CanCertificatesBeRemoved, Source={StaticResource proxy}}"/>
                         <MenuItem Header="{x:Static lang:Resources.MenuItemUninstall}" 
-                                  Command="{Binding Data.UninstallCommand, Source={StaticResource proxy}}"
-                                  IsEnabled="{Binding Data.CanAppBeUninstalled, Source={StaticResource proxy}}"/>
+                                  Command="{Binding DataCtx.UninstallCommand, Source={StaticResource proxy}}"
+                                  IsEnabled="{Binding DataCtx.CanAppBeUninstalled, Source={StaticResource proxy}}"/>
                     </ContextMenu>
                 </Button.ContextMenu>
             </Button>

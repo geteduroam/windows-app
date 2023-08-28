@@ -13,13 +13,13 @@ namespace App.Library.Binding
     public class BindingProxy<T> : Freezable
     {
         /// <summary />
-        public static readonly DependencyProperty DataProperty = DependencyProperty.Register("Data", typeof(object), typeof(BindingProxy<T>),
+        public static readonly DependencyProperty DataProperty = DependencyProperty.Register("DataCtx", typeof(object), typeof(BindingProxy<T>),
             new UIPropertyMetadata(null));
 
         /// <summary >
         ///     DataContext
         /// </summary>
-        public T Data
+        public T DataCtx
         {
             get { return (T)this.GetValue(DataProperty); }
             set { this.SetValue(DataProperty, value); }
