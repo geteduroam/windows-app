@@ -16,7 +16,9 @@ namespace App.Library.Binding
         public static readonly DependencyProperty DataProperty = DependencyProperty.Register("Data", typeof(object), typeof(BindingProxy<T>),
             new UIPropertyMetadata(null));
 
-        /// <summary />
+        /// <summary >
+        ///     DataContext
+        /// </summary>
         public T Data
         {
             get { return (T)this.GetValue(DataProperty); }

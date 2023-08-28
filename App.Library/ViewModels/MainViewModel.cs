@@ -27,14 +27,24 @@ namespace App.Library.ViewModels
 
         private Status status;
 
-        public MainViewModel()
+        public MainViewModel(Action closeApp)
         {
             this.NewProfileCommand = new DelegateCommand(this.NewProfileCommandAction, this.CanNewProfileCommandAction);
+            this.LoadEapFileCommand = new AsyncCommand(this.LoadEapFileAsync);
+            this.RefreshCommand = new AsyncCommand(this.RefreshAsync);
+            this.ReauthenticateCommand = new DelegateCommand(this.Reauthenticate);
+            this.RemoveProfileCommand = new DelegateCommand(this.RemoveProfile);
+            this.RemoveCertificatesCommand = new DelegateCommand(this.RemoveCertificates);
+            this.UninstallCommand = new DelegateCommand(this.Uninstall);
+            this.OpenHelpCommand = new DelegateCommand(this.OpenHelp);
+            this.OpenMenuCommand = new DelegateCommand(this.OpenMenu);
+
             this.idpDownloader = new IdentityProviderDownloader();
             this.State = new ApplicationState();
 
             this.status = new StatusTask().GetStatus();
             this.IsLoading = true;
+            this.CloseApp = closeApp;
 
             Task.Run(
                 async () =>
@@ -54,7 +64,27 @@ namespace App.Library.ViewModels
 
         public DelegateCommand NewProfileCommand { get; protected set; }
 
+        public DelegateCommand OpenMenuCommand { get; protected set; }
+
+        public AsyncCommand LoadEapFileCommand { get; protected set; }
+
+        public AsyncCommand RefreshCommand { get; protected set; }
+
+        public DelegateCommand ReauthenticateCommand { get; protected set; }
+
+        public DelegateCommand RemoveProfileCommand { get; protected set; }
+
+        public DelegateCommand RemoveCertificatesCommand { get; protected set; }
+
+        public DelegateCommand UninstallCommand { get; protected set; }
+
+        public DelegateCommand OpenHelpCommand { get; protected set; }
+
+        public Action CloseApp { get; private set; }
+
         public bool IsLoading { get; private set; }
+
+        public bool ShowMenu { get; set; }
 
 #pragma warning disable CA1822 // Mark members as static
         public string AppVersion
@@ -355,64 +385,61 @@ namespace App.Library.ViewModels
 		/// </summary>
 		/// <returns>EapConfig object or null</returns>
 		/// <exception cref="XmlException"></exception>
-		public void LoadEapFile()
+		public async Task LoadEapFileAsync()
         {
-            Task.Run(async () =>
+            Debug.WriteLine("LoadEapFile");
+
+            string? filepath;
+            do
             {
-                Debug.WriteLine("LoadEapFile");
+                filepath = FileDialog.GetFileFromDialog(
+                    Resources.LoadEapFile,
+                    "EAP-CONFIG files (*.eap-config)|*.eap-config|All files (*.*)|*.*");
 
-                string? filepath;
-                do
+                if (filepath == null)
                 {
-                    filepath = FileDialog.GetFileFromDialog(
-                        Resources.LoadEapFile,
-                        "EAP-CONFIG files (*.eap-config)|*.eap-config|All files (*.*)|*.*");
-
-                    if (filepath == null)
-                    {
-                        return; // the user canelled
-                    }
+                    return; // the user canelled
                 }
-                while (!FileDialog.ValidateFile(filepath, new List<string> { ".eap-config" }));
+            }
+            while (!FileDialog.ValidateFile(filepath, new List<string> { ".eap-config" }));
 
-                // read, validate, parse and return
-                try
+            // read, validate, parse and return
+            try
+            {
+                var eapConfigurator = new EapConfigTask();
+                // create Eap-config and open Profile view
+                var eapConfig = await EapConfigTask.GetEapConfigAsync(new FileInfo(filepath));
+
+                if (eapConfig != null)
                 {
-                    var eapConfigurator = new EapConfigTask();
-                    // create Eap-config and open Profile view
-                    var eapConfig = await EapConfigTask.GetEapConfigAsync(new FileInfo(filepath));
+                    eapConfig.ProfileId = filepath;
 
-                    if (eapConfig != null)
-                    {
-                        eapConfig.ProfileId = filepath;
-
-                        this.SetActiveContent(new ProfileViewModel(this, eapConfig));
-                    }
+                    this.SetActiveContent(new ProfileViewModel(this, eapConfig));
                 }
-                catch (System.Xml.XmlException xmlEx)
-                {
-                    MessageBox.Show(
-                        Resources.ErrorEapConfigCorrupted +
-                        "\nException: " + xmlEx.Message,
-                        "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-                catch (ArgumentException argEx)
-                {
-                    MessageBox.Show(
-                        Resources.ErrorEapConfigInvalid +
-                        "\nException: " + argEx.Message,
-                        "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
-            });
+            }
+            catch (System.Xml.XmlException xmlEx)
+            {
+                MessageBox.Show(
+                    Resources.ErrorEapConfigCorrupted +
+                    "\nException: " + xmlEx.Message,
+                    "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (ArgumentException argEx)
+            {
+                MessageBox.Show(
+                    Resources.ErrorEapConfigInvalid +
+                    "\nException: " + argEx.Message,
+                    "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         public bool IsARefreshPossible => this.status.ActiveProfile;
 
-        public void Refresh()
+        public async Task RefreshAsync()
         {
             if (this.status.ActiveProfile)
             {
-                Task.Run(() => RefreshTask.RefreshAsync(true));
+                await RefreshTask.RefreshAsync(true);
             }
         }
 
@@ -461,12 +488,18 @@ namespace App.Library.ViewModels
 
         public bool CanAppBeUninstalled => true;
 
-        public void Uninstall(Action<bool> afterUninstall)
+        public void Uninstall()
         {
-            UninstallTask.Uninstall(afterUninstall);
+            UninstallTask.Uninstall(_ => this.CloseApp());
         }
 
-        internal void OpenHelp()
+        public void OpenMenu()
+        {
+            this.ShowMenu = true;
+            this.CallPropertyChanged(nameof(this.ShowMenu));
+        }
+
+        public void OpenHelp()
         {
             Process.Start(new ProcessStartInfo(Resources.HelpUrl) { UseShellExecute = true });
         }
