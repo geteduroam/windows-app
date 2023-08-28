@@ -1,4 +1,5 @@
 ﻿using App.Library.Command;
+using App.Library.Images;
 
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Tasks;
@@ -7,6 +8,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 namespace App.Library.ViewModels
 {
@@ -25,6 +27,8 @@ namespace App.Library.ViewModels
 
             //todo ExtractFlag?
             //todo CopyToClipboard WebAddress / Phone / Email?
+            //var dynaImage = new BitmapImage(new Uri(@"file://C:\Temp\clock.jpg"));
+
         }
 
         public DelegateCommand NavigateWebCommand { get; private set; }
@@ -34,6 +38,51 @@ namespace App.Library.ViewModels
         public DelegateCommand SelectOtherInstitutionCommand { get; private set; }
 
         public DelegateCommand ShowTermsOfUseCommand { get; private set; }
+
+        public ProviderInfo InstitutionInfo => this.eapConfig.InstitutionInfo;
+
+        public bool ShowProfileImage => this.ProfileImage != null;
+
+        public BitmapImage? ProfileImage
+        {
+            get
+            {
+                if (this.InstitutionInfo.LogoData.Length > 0)
+                {
+                    var logoBytes = this.InstitutionInfo.LogoData;
+                    var logoMimeType = this.InstitutionInfo.LogoMimeType;
+
+                    if (logoMimeType != "image/svg+xml")
+                    {
+                        return ImageFunctions.LoadImage(logoBytes);
+                    }
+                }
+
+                return null;
+            }
+        }
+
+        public bool ShowProfileWebImage => !string.IsNullOrWhiteSpace(this.ProfileWebImage);
+
+        public string? ProfileWebImage
+        {
+            get
+            {
+                if (this.InstitutionInfo.LogoData.Length > 0)
+                {
+                    var logoBytes = this.InstitutionInfo.LogoData;
+                    var logoMimeType = this.InstitutionInfo.LogoMimeType;
+
+                    if (logoMimeType == "image/svg+xml")
+                    {
+                        return ImageFunctions.GenerateSvgLogoHtml(logoBytes);
+                    }
+
+                }
+
+                return null;
+            }
+        }
 
         public string Name => this.eapConfig.InstitutionInfo.DisplayName;
 
@@ -102,13 +151,6 @@ namespace App.Library.ViewModels
 
         protected override Task NavigateNextAsync()
         {
-            //todo ShowTou was always true in old situation, What to do?
-
-            //if (pageProfileOverview.ShowTou)
-            //{
-            //    LoadPageTermsOfUse();
-            //    break;
-            //}
             var configureTask = new ConfigureTask(this.eapConfig);
             var installers = configureTask.GetCertificateInstallers();
 

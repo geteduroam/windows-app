@@ -2,10 +2,13 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:viewModels="clr-namespace:App.Library.ViewModels"
-    xmlns:lang = "clr-namespace:EduRoam.Localization;assembly=EduRoam.Localization">
+    xmlns:converters="clr-namespace:App.Library.Converters"
+    xmlns:lang = "clr-namespace:EduRoam.Localization;assembly=EduRoam.Localization"
+    xmlns:b = "clr-namespace:App.Library.Binding">
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
-
+    <converters:ImageConverter x:Key="ImageConverter" />
+    
     <DataTemplate DataType="{x:Type viewModels:ProfileViewModel}">
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
             <Grid.RowDefinitions>
@@ -13,11 +16,29 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
+            <Image Grid.Row="0" 
+                   MaxHeight="50" 
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Source="{Binding ProfileImage}" Stretch="Uniform"
+                   Visibility="{Binding ShowProfileImage, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            <WebBrowser Grid.Row="0" 
+                        MaxHeight="50" 
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        b:WebBrowserBinding.BindableSource="{Binding ProfileWebImage}"
+                        Visibility="{Binding ShowProfileWebImage, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                />
+
+            <!--CanGoBack="False"
+                        CanGoForward="False"-->
+
             <TextBlock
-                Grid.Row="0"
+                Grid.Row="1"
                 Margin="8,0,8,16"
                 FontSize="24"
                 Text="{Binding Name}"
@@ -25,7 +46,7 @@
                 TextWrapping="Wrap" />
 
             <TextBlock
-                Grid.Row="1"
+                Grid.Row="2"
                 Margin="5"
                 Text="{Binding Description}"
                 TextAlignment="Center"
@@ -33,7 +54,7 @@
 
             <GroupBox
                 x:Name="grpInfo"
-                Grid.Row="2"
+                Grid.Row="3"
                 Margin="5"
                 Header="Contact info"
                 BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
@@ -104,7 +125,7 @@
                 </Grid>
             </GroupBox>
 
-            <TextBlock TextWrapping="Wrap" TextAlignment="Center" Grid.Row="3" >
+            <TextBlock Grid.Row="4" TextWrapping="Wrap" TextAlignment="Center" >
                 <TextBlock Text="{x:Static lang:Resources.ConsentPre}" />
                 <Hyperlink Command="{Binding ShowTermsOfUseCommand}" NavigateUri="www.google.com" >
                    <TextBlock Text="{x:Static lang:Resources.ConsentMain}" />
@@ -113,7 +134,7 @@
             </TextBlock>
 
             <Grid
-                Grid.Row="4"
+                Grid.Row="5"
                 Margin="5"
                 VerticalAlignment="Bottom">
                 <Grid.RowDefinitions>
