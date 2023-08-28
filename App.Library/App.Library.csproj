@@ -14,6 +14,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="help-icon.png" />
+    <None Remove="menu-icon.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <COMReference Include="IWshRuntimeLibrary">
       <WrapperTool>tlbimp</WrapperTool>
       <VersionMinor>0</VersionMinor>
@@ -33,6 +38,11 @@
   <ItemGroup>
     <ProjectReference Include="..\EduRoam.Connect\EduRoam.Connect.csproj" />
     <ProjectReference Include="..\EduRoam.Localization\EduRoam.Localization.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\help-icon.png" />
+    <Resource Include="Images\menu-icon.png" />
   </ItemGroup>
 
 </Project>
