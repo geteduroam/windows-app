@@ -29,7 +29,11 @@ namespace App.Library.Binding
             if (o is WebBrowser browser)
             {
                 var uri = e.NewValue as string;
-                browser.NavigateToString(uri);
+
+                if (!string.IsNullOrWhiteSpace(uri))
+                {
+                    browser.NavigateToString(uri);
+                }
             }
         }
 

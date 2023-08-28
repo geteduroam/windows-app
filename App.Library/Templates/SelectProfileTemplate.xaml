@@ -10,6 +10,7 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
+            
             <TextBlock
                 x:Name="tbTitle"
                 Grid.Row="0"
@@ -18,6 +19,7 @@
                 Text="{x:Static lang:Resources.SelectProfile}"
                 TextAlignment="Center"
                 TextWrapping="Wrap" />
+            
             <ListBox
                 x:Name="lbProfiles"
                 Grid.Row="1"

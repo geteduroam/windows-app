@@ -34,9 +34,6 @@
                         Visibility="{Binding ShowProfileWebImage, Converter={StaticResource BooleanToVisibilityConverter}}" 
                 />
 
-            <!--CanGoBack="False"
-                        CanGoForward="False"-->
-
             <TextBlock
                 Grid.Row="1"
                 Margin="8,0,8,16"

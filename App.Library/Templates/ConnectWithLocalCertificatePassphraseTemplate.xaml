@@ -52,7 +52,8 @@
                     VerticalAlignment="Center" 
                     Margin="0,5" 
                     Grid.ColumnSpan="1" 
-                    HorizontalAlignment="Left" Width="60"/>
+                    HorizontalAlignment="Left" Width="60"
+                    b:FocusBinding.IsFocused="true"/>
 
             <Label Grid.Row="3" Grid.Column="0" IsHitTestVisible="False" 
                    Content="{x:Static lang:Resources.PasswordLabel}" VerticalAlignment="Center" HorizontalAlignment="Right" />
