@@ -23,7 +23,6 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Styling/Styling.xaml" />
                 <ResourceDictionary Source="Templates/_Index.xaml" />
                 <ResourceDictionary>
                     <templates:LocalDataTemplateSelector x:Key="LocalDataTemplateSelector" />
