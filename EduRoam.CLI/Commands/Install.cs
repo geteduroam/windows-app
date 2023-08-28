@@ -17,8 +17,7 @@ namespace EduRoam.CLI.Commands
 
             command.SetHandler(() =>
             {
-                var installTask = new InstallTask();
-                installTask.Install();
+                InstallTask.Install();
 
                 Console.WriteLine(Resources.Done);
             });

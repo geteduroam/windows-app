@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Eduroam.App": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    }
+  }
+}

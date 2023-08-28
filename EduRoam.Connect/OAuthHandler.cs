@@ -165,8 +165,8 @@ namespace EduRoam.Connect
                     using var response = context.Response;
                     // constructs a response
                     var responseString = Encoding.ASCII.GetBytes(authorizationCode == null
-                        ? Properties.Resources.oauth_rejected
-                        : Properties.Resources.oauth_accepted);
+                        ? OAuthResources.oauth_rejected
+                        : OAuthResources.oauth_accepted);
 
                     // outputs response to web server
                     response.ContentLength64 = responseString.Length;

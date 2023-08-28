@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <Resource Include="geteduroam.ico" />
+    <Resource Include="logo.png" />
   </ItemGroup>
 
   <ItemGroup>

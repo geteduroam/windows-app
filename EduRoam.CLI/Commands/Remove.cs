@@ -24,8 +24,7 @@ namespace EduRoam.CLI.Commands
 
                 if (confirmed)
                 {
-                    var task = new RemoveWiFiConfigurationTask();
-                    task.Remove(omitRootCa: true);
+                    RemoveWiFiConfigurationTask.Remove(omitRootCa: true);
                 }
             });
 

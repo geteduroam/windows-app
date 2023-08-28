@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Reflection;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 
@@ -9,7 +10,44 @@ namespace App.Library.Converters
     // todo svg support?
     public class ImageConverter : IValueConverter
     {
-        private static BitmapImage LoadImageFromBytes(byte[]? imageData)
+        public object? Convert(object value, Type targetType, object? parameter, CultureInfo culture)
+        {
+            if (value is byte[] bytes)
+            {
+                return LoadImageFromBytes(bytes);
+            }
+
+            var valueAsString = value?.ToString();
+
+            if (parameter != null
+                && parameter is string)
+            {
+                valueAsString = parameter.ToString();
+            }
+
+            if (value != null
+                && !string.IsNullOrEmpty(valueAsString))
+            {
+                var sourceAssembly = this.AppSpecific ? Assembly.GetEntryAssembly()!.FullName : Assembly.GetExecutingAssembly()!.FullName;
+                var fileName = $@"pack://application:,,,/{sourceAssembly};component/{valueAsString}";
+                return new BitmapImage(new Uri(fileName));
+            }
+
+            return null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+
+        /// <summary>
+        /// App specific determines if an image is taken from the App assembly (e.g. geteduroam or getgovroam)
+        ///  or from the App.Library assembly
+        /// </summary>
+        public bool AppSpecific { get; set; }
+
+        private static BitmapImage? LoadImageFromBytes(byte[]? imageData)
         {
             if (imageData == null
                 || imageData.Length == 0)
@@ -31,36 +69,6 @@ namespace App.Library.Converters
 
             image.Freeze();
             return image;
-        }
-
-        public object Convert(object value, Type targetType, object? parameter, CultureInfo culture)
-        {
-            if (value is byte[] bytes)
-            {
-                return LoadImageFromBytes(bytes);
-            }
-
-            var valueAsString = value?.ToString();
-
-            if (parameter != null
-                && parameter is string)
-            {
-                valueAsString = parameter.ToString();
-            }
-
-            if (value != null
-                && !string.IsNullOrEmpty(valueAsString))
-            {
-                var fileName = $@"pack://application:,,,/App.Library;component/Images/{valueAsString}";
-                return new BitmapImage(new Uri(fileName));
-            }
-
-            return null;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotSupportedException();
         }
 
         //public static string GenerateSvgLogoHtml(byte[] logo)

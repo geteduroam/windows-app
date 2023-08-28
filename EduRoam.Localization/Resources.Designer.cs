@@ -61,6 +61,31 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Supported CLI commands:
+        ///
+        ///    /? : 
+        ///            Show this help text
+        ///    /help : 
+        ///            Show this help text
+        ///    /install : 
+        ///            Install this binary to %USER%/AppData/Local
+        ///    /uninstall : 
+        ///            Uninstall this binary from %USER%/AppData/Local along
+        ///            with any configured data
+        ///    /background : 
+        ///            Start this application hidden to the tray
+        ///            (works only if run from install directory)
+        ///    /close : 
+        ///            Close the current running instance
+        ///   [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string AppCommandsHelp {
+            get {
+                return ResourceManager.GetString("AppCommandsHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Eduroam.
         /// </summary>
         public static string AppTitle {

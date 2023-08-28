@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:templates="clr-namespace:App.Library.Templates"
     xmlns:lang = "clr-namespace:EduRoam.Localization;assembly=EduRoam.Localization"
-    Title="geteduroam"
+    Title="{Binding AppTitle}"
     Width="420"
     Height="600"
     MinWidth="420"
@@ -29,6 +29,7 @@
                     <templates:LocalDataTemplateSelector x:Key="LocalDataTemplateSelector" />
                     <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
                     <converters:ImageConverter x:Key="ImageConverter" />
+                    <converters:ImageConverter x:Key="AppImageConverter" AppSpecific="True" />
                     <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
                     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
                     <b:MainViewModelProxy x:Key="proxy" DataCtx="{Binding}" />
@@ -45,7 +46,7 @@
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Height="50">
-            <Image Source="{Binding Converter={StaticResource ImageConverter}, ConverterParameter=eduroam_logo.png}" Stretch="Uniform" />
+            <Image Source="{Binding Converter={StaticResource AppImageConverter}, ConverterParameter=logo.png}" Stretch="Uniform" />
         </Grid>
 
         <Grid

@@ -9,7 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="logo.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\App.Library\App.Library.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="logo.png" />
   </ItemGroup>
 
 </Project>
