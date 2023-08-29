@@ -1,6 +1,6 @@
 ﻿using EduRoam.Connect.Tasks.Connectors;
-using EduRoam.Localization;
 
+using SharedResources = EduRoam.Localization.Resources;
 using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
 
 namespace EduRoam.CLI.Commands.Connections
@@ -16,7 +16,7 @@ namespace EduRoam.CLI.Commands.Connections
 
         public async Task<TaskStatus> ConfigureAndConnectAsync(bool force)
         {
-            Console.Write($"{Resources.Passphrase}: ");
+            Console.Write($"{SharedResources.Passphrase}: ");
             var passphrase = Input.ReadPassword();
 
             this.connector.Credentials = new ConnectorCredentials(passphrase);

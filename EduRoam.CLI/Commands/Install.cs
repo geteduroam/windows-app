@@ -1,7 +1,8 @@
 ﻿using EduRoam.Connect.Tasks;
-using EduRoam.Localization;
 
 using System.CommandLine;
+
+using SharedResources = EduRoam.Localization.Resources;
 
 namespace EduRoam.CLI.Commands
 {
@@ -9,7 +10,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "install";
 
-        public static readonly string CommandDescription = Resources.CommandDescriptionInstall;
+        public static readonly string CommandDescription = SharedResources.CommandDescriptionInstall;
 
         public Command GetCommand()
         {
@@ -19,7 +20,7 @@ namespace EduRoam.CLI.Commands
             {
                 InstallTask.Install();
 
-                Console.WriteLine(Resources.Done);
+                Console.WriteLine(SharedResources.Done);
             });
 
             return command;

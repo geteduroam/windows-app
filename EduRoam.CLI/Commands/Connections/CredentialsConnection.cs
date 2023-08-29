@@ -1,6 +1,6 @@
 ﻿using EduRoam.Connect.Tasks.Connectors;
-using EduRoam.Localization;
 
+using SharedResources = EduRoam.Localization.Resources;
 using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
 
 namespace EduRoam.CLI.Commands.Connections
@@ -16,11 +16,11 @@ namespace EduRoam.CLI.Commands.Connections
 
         public async Task<TaskStatus> ConfigureAndConnectAsync(bool force)
         {
-            Console.WriteLine(Resources.ConnectionUsernameAndPasswordRequired);
-            Console.Write($"{Resources.Username}: ");
+            Console.WriteLine(SharedResources.ConnectionUsernameAndPasswordRequired);
+            Console.Write($"{SharedResources.Username}: ");
             var userName = Console.ReadLine();
 
-            Console.Write($"{Resources.Password}: ");
+            Console.Write($"{SharedResources.Password}: ");
             var password = Input.ReadPassword();
 
             this.connector.Credentials = new ConnectorCredentials(userName, password);

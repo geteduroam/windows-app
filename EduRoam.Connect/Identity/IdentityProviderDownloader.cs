@@ -16,12 +16,8 @@ namespace EduRoam.Connect.Identity
     public class IdentityProviderDownloader : IDisposable
     {
         // constants
-        private static readonly Uri GeoApiUrl = new Uri("https://geo.eduroam.app/geoip");
-#if DEBUG
-        private static readonly Uri ProviderApiUrl = new Uri("https://discovery.eduroam.app/v1/discovery.json");
-#else
-		private static readonly Uri ProviderApiUrl = new Uri("https://discovery.eduroam.app/v1/discovery.json");
-#endif
+        private static readonly Uri GeoApiUrl = Configuration.GeoApiUrl;
+        private static readonly Uri ProviderApiUrl = Configuration.ProviderApiUrl;
 
         // http objects
         private static readonly HttpClientHandler Handler = new HttpClientHandler

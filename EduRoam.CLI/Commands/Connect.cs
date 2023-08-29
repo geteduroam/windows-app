@@ -4,9 +4,10 @@ using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Tasks;
 using EduRoam.Connect.Tasks.Connectors;
-using EduRoam.Localization;
 
 using System.CommandLine;
+
+using SharedResources = EduRoam.Localization.Resources;
 
 namespace EduRoam.CLI.Commands
 {
@@ -14,7 +15,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "connect";
 
-        public static readonly string CommandDescription = Resources.CommandDescriptionConnect;
+        public static readonly string CommandDescription = SharedResources.CommandDescriptionConnect;
 
         public Command GetCommand()
         {
@@ -40,13 +41,13 @@ namespace EduRoam.CLI.Commands
                 var eapConfig = await GetEapConfigAsync(eapConfigFile, institute, profileName);
                 if (eapConfig == null)
                 {
-                    ConsoleExtension.WriteError(Resources.ErrorEapConfigIsEmpty);
+                    ConsoleExtension.WriteError(SharedResources.ErrorEapConfigIsEmpty);
                     return;
                 }
 
                 if (!EapConfigTask.IsEapConfigSupported(eapConfig))
                 {
-                    ConsoleExtension.WriteError(Resources.ErrorUnsupportedProfile);
+                    ConsoleExtension.WriteError(SharedResources.ErrorUnsupportedProfile);
                     return;
                 }
 
@@ -55,14 +56,14 @@ namespace EduRoam.CLI.Commands
 
                 if (!success)
                 {
-                    ConsoleExtension.WriteError(Resources.ErrorRequiredCertificatesNotInstalled);
+                    ConsoleExtension.WriteError(SharedResources.ErrorRequiredCertificatesNotInstalled);
                     return;
                 }
 
                 var connector = await ConnectTask.GetConnectorAsync();
                 if (connector == null)
                 {
-                    ConsoleExtension.WriteError(Resources.ErrorEapConfigIsEmpty);
+                    ConsoleExtension.WriteError(SharedResources.ErrorEapConfigIsEmpty);
                     return;
                 }
 
@@ -75,7 +76,7 @@ namespace EduRoam.CLI.Commands
                         CertPassConnector certPassConnector => new CertPassConnection(certPassConnector),
                         CertAndCertPassConnector certAndCertPassConnector => new CertAndCertPassConnection(certAndCertPassConnector, certificateFile),
                         DefaultConnector defaultConnector => new DefaultConnection(defaultConnector),
-                        _ => throw new NotSupportedException(string.Format(Resources.ErrorUnsupportedConnectionType, connector.GetType().Name)),
+                        _ => throw new NotSupportedException(string.Format(SharedResources.ErrorUnsupportedConnectionType, connector.GetType().Name)),
                     };
 
                     var status = await connection.ConfigureAndConnectAsync(force);
@@ -92,7 +93,7 @@ namespace EduRoam.CLI.Commands
                 catch (EduroamAppUserException ex)
                 {
                     // TODO, NICE TO HAVE: log the error
-                    ConsoleExtension.WriteError(Resources.ErrorNoConnection, ex.UserFacingMessage);
+                    ConsoleExtension.WriteError(SharedResources.ErrorNoConnection, ex.UserFacingMessage);
                 }
 
                 catch (ArgumentException exc)
@@ -103,12 +104,12 @@ namespace EduRoam.CLI.Commands
                 {
                     // Must never happen, because if the discovery is reached,
                     // it must be parseable. Logging has been done upstream.
-                    ConsoleExtension.WriteError(Resources.ErrorApi);
+                    ConsoleExtension.WriteError(SharedResources.ErrorApi);
                     ConsoleExtension.WriteError(e.Message, e.GetType().ToString());
                 }
                 catch (ApiUnreachableException)
                 {
-                    ConsoleExtension.WriteError(Resources.ErrorNoInternet);
+                    ConsoleExtension.WriteError(SharedResources.ErrorNoInternet);
                 }
             }, eapConfigFileOption, instituteOption, profileOption, certificatePathOption, forceOption);
 
@@ -129,14 +130,14 @@ namespace EduRoam.CLI.Commands
 
         private static void OutputCertificatesStatus(EapConfig eapConfig)
         {
-            ConsoleExtension.WriteStatus(Resources.CertificatesInstallationNotification);
+            ConsoleExtension.WriteStatus(SharedResources.CertificatesInstallationNotification);
 
             var configureTask = new ConfigureTask(eapConfig);
             var installers = configureTask.GetCertificateInstallers();
             foreach (var installer in installers)
             {
                 Console.WriteLine();
-                ConsoleExtension.WriteStatus($"* {string.Format(Resources.CertificatesInstallationStatus, installer, Interaction.GetYesNoText(installer.IsInstalled))}");
+                ConsoleExtension.WriteStatus($"* {string.Format(SharedResources.CertificatesInstallationStatus, installer, Interaction.GetYesNoText(installer.IsInstalled))}");
                 Console.WriteLine();
             }
         }
@@ -149,7 +150,7 @@ namespace EduRoam.CLI.Commands
 
             if (!certificatesResolved.Success && !force)
             {
-                Console.WriteLine(Resources.RequestToInstallCertificates);
+                Console.WriteLine(SharedResources.RequestToInstallCertificates);
                 var confirm = Interaction.GetConfirmation();
 
                 if (confirm)

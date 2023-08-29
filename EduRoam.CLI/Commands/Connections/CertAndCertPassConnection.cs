@@ -1,6 +1,6 @@
 ﻿using EduRoam.Connect.Tasks.Connectors;
-using EduRoam.Localization;
 
+using SharedResources = EduRoam.Localization.Resources;
 using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
 
 namespace EduRoam.CLI.Commands.Connections
@@ -23,11 +23,11 @@ namespace EduRoam.CLI.Commands.Connections
             if (this.certificateFile == null)
             {
                 var certificatePathOption = Options.GetCertificatePathOption();
-                status.Errors.Add(string.Format(Resources.ErrorNoClientCertificateProvided, string.Join(", ", certificatePathOption.Aliases)));
+                status.Errors.Add(string.Format(SharedResources.ErrorNoClientCertificateProvided, string.Join(", ", certificatePathOption.Aliases)));
                 return status;
             }
 
-            Console.Write($"{Resources.Passphrase}: ");
+            Console.Write($"{SharedResources.Passphrase}: ");
             var passphrase = Input.ReadPassword();
 
             this.connector.Credentials = new ConnectorCredentials(passphrase);

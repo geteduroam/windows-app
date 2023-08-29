@@ -1,9 +1,10 @@
 ﻿using EduRoam.Connect;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Tasks;
-using EduRoam.Localization;
 
 using System.CommandLine;
+
+using SharedResources = EduRoam.Localization.Resources;
 
 namespace EduRoam.CLI.Commands
 {
@@ -11,7 +12,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "list";
 
-        public static readonly string CommandDescription = Resources.CommandDescriptionList;
+        public static readonly string CommandDescription = SharedResources.CommandDescriptionList;
 
         public Command GetCommand()
         {
@@ -57,7 +58,7 @@ namespace EduRoam.CLI.Commands
                 }
                 else
                 {
-                    ConsoleExtension.WriteWarning(Resources.WarningNoProfilesFound);
+                    ConsoleExtension.WriteWarning(SharedResources.WarningNoProfilesFound);
                 }
             }
             catch (Exception exc) when (exc is UnknownInstituteException || exc is UnknownProfileException)
@@ -68,12 +69,12 @@ namespace EduRoam.CLI.Commands
             {
                 // Must never happen, because if the discovery is reached,
                 // it must be parseable. Logging has been done upstream.
-                ConsoleExtension.WriteError(Resources.ErrorApi);
+                ConsoleExtension.WriteError(SharedResources.ErrorApi);
                 ConsoleExtension.WriteError(e.Message, e.GetType().ToString());
             }
             catch (ApiUnreachableException)
             {
-                ConsoleExtension.WriteError(Resources.ErrorNoInternet);
+                ConsoleExtension.WriteError(SharedResources.ErrorNoInternet);
             }
         }
 
@@ -93,19 +94,19 @@ namespace EduRoam.CLI.Commands
                 }
                 else
                 {
-                    ConsoleExtension.WriteWarning(Resources.WarningNoInstitutesFound);
+                    ConsoleExtension.WriteWarning(SharedResources.WarningNoInstitutesFound);
                 }
             }
             catch (ApiParsingException e)
             {
                 // Must never happen, because if the discovery is reached,
                 // it must be parseable. Logging has been done upstream.
-                ConsoleExtension.WriteError(Resources.ErrorApi);
+                ConsoleExtension.WriteError(SharedResources.ErrorApi);
                 ConsoleExtension.WriteError(e.Message, e.GetType().ToString());
             }
             catch (ApiUnreachableException)
             {
-                ConsoleExtension.WriteError(Resources.ErrorNoInternet);
+                ConsoleExtension.WriteError(SharedResources.ErrorNoInternet);
             }
         }
     }

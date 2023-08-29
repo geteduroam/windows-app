@@ -1,7 +1,8 @@
 ﻿using EduRoam.Connect.Tasks;
-using EduRoam.Localization;
 
 using System.CommandLine;
+
+using SharedResources = EduRoam.Localization.Resources;
 
 namespace EduRoam.CLI.Commands
 {
@@ -9,7 +10,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "remove";
 
-        public static readonly string CommandDescription = Resources.CommandDescriptionRemove;
+        public static readonly string CommandDescription = SharedResources.CommandDescriptionRemove;
 
         public Command GetCommand()
         {
@@ -19,7 +20,7 @@ namespace EduRoam.CLI.Commands
             {
                 var profilesTask = new ProfilesTask();
 
-                Console.Write(Resources.ProfileRemoveConfirmation, profilesTask.GetCurrentProfileName());
+                Console.Write(SharedResources.ProfileRemoveConfirmation, profilesTask.GetCurrentProfileName());
                 var confirmed = Interaction.GetConfirmation();
 
                 if (confirmed)

@@ -1,6 +1,7 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using EduRoam.CLI;
-using EduRoam.Localization;
+
+using SharedResources = EduRoam.Localization.Resources;
 
 public class Program
 {
@@ -8,7 +9,7 @@ public class Program
 
     public static async Task Main(string[] args)
     {
-        Resources.Culture = System.Globalization.CultureInfo.CurrentUICulture;
+        SharedResources.Culture = System.Globalization.CultureInfo.CurrentUICulture;
 
         await Engine.Run(args);
     }

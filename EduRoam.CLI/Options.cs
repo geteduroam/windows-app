@@ -1,7 +1,7 @@
-﻿using EduRoam.Localization;
-
-using System.CommandLine;
+﻿using System.CommandLine;
 using System.CommandLine.Parsing;
+
+using SharedResources = EduRoam.Localization.Resources;
 
 namespace EduRoam.CLI
 {
@@ -11,46 +11,46 @@ namespace EduRoam.CLI
         {
             if (optional)
             {
-                return new(aliases: new string[] { "-i", "--institute" }, description: Resources.OptionDescriptionInstitute);
+                return new(aliases: new string[] { "-i", "--institute" }, description: SharedResources.OptionDescriptionInstitute);
             }
 
             return new(
                 aliases: new string[] { "-i", "--institute" },
                 parseArgument: NonEmptyString,
                 isDefault: true,
-                description: Resources.OptionDescriptionInstitute);
+                description: SharedResources.OptionDescriptionInstitute);
         }
 
         public static Option<string> GetProfileOption(bool optional = false)
         {
             if (optional)
             {
-                return new(aliases: new string[] { "-p", "--profile" }, description: Resources.OptionDescriptionProfile);
+                return new(aliases: new string[] { "-p", "--profile" }, description: SharedResources.OptionDescriptionProfile);
             }
 
             return new(
                 aliases: new string[] { "-p", "--profile" },
                 parseArgument: NonEmptyString,
                 isDefault: true,
-                description: Resources.OptionDescriptionProfile);
+                description: SharedResources.OptionDescriptionProfile);
         }
 
         public static Option<FileInfo> GetEapConfigOption() => new(
                 aliases: new string[] { "-c", "--config" },
-                description: Resources.OptionDescriptionEAPConfig);
+                description: SharedResources.OptionDescriptionEAPConfig);
 
         public static Option<bool> GetForceOption() => new(
                 aliases: new string[] { "-f", "--force" },
-                description: Resources.OptionDescriptionForce,
+                description: SharedResources.OptionDescriptionForce,
                 getDefaultValue: () => false);
 
         public static Option<string> GetQueryOption() => new(
                 aliases: new string[] { "-q", "--query" },
-                description: Resources.OptionDescriptionQuery);
+                description: SharedResources.OptionDescriptionQuery);
 
         public static Option<FileInfo> GetCertificatePathOption() => new(
                 aliases: new string[] { "-cp", "--certificate-path" },
-                description: Resources.OptionDescriptionCertificatePath
+                description: SharedResources.OptionDescriptionCertificatePath
                 );
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace EduRoam.CLI
 
                 if (eapConfigFileArgValue == null && (string.IsNullOrWhiteSpace(instituteOptionValue) || string.IsNullOrWhiteSpace(profileOptionValue)))
                 {
-                    validator.ErrorMessage = string.Format(Resources.ErrorShowCommandOptions, string.Join("\\", eapConfigFileOption.Aliases), string.Join("\\", instituteOption.Aliases), string.Join("\\", profileOption.Aliases));
+                    validator.ErrorMessage = string.Format(SharedResources.ErrorShowCommandOptions, string.Join("\\", eapConfigFileOption.Aliases), string.Join("\\", instituteOption.Aliases), string.Join("\\", profileOption.Aliases));
                 }
             });
         }
@@ -80,7 +80,7 @@ namespace EduRoam.CLI
         {
             if (!result.Tokens.Any())
             {
-                result.ErrorMessage = string.Format(Resources.OptionRequired, result.Argument.Name);
+                result.ErrorMessage = string.Format(SharedResources.OptionRequired, result.Argument.Name);
                 return string.Empty;
             }
 
@@ -88,7 +88,7 @@ namespace EduRoam.CLI
 
             if (string.IsNullOrWhiteSpace(value))
             {
-                result.ErrorMessage = string.Format(Resources.ErrorOptionIsEmpty, result.Argument.HelpName);
+                result.ErrorMessage = string.Format(SharedResources.ErrorOptionIsEmpty, result.Argument.HelpName);
                 return string.Empty;
 
             }

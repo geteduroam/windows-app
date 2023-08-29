@@ -1,7 +1,8 @@
 ﻿using EduRoam.Connect.Tasks;
-using EduRoam.Localization;
 
 using System.CommandLine;
+
+using SharedResources = EduRoam.Localization.Resources;
 
 namespace EduRoam.CLI.Commands
 {
@@ -9,7 +10,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "refresh";
 
-        public static readonly string CommandDescription = Resources.CommandDescriptionRefresh;
+        public static readonly string CommandDescription = SharedResources.CommandDescriptionRefresh;
 
         public Command GetCommand()
         {

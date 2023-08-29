@@ -1,4 +1,4 @@
-﻿using EduRoam.Localization;
+﻿using SharedResources = EduRoam.Localization.Resources;
 
 namespace EduRoam.CLI
 {
@@ -6,16 +6,16 @@ namespace EduRoam.CLI
     {
         public static bool GetConfirmation()
         {
-            Console.Write($"{Resources.AreYouSure} ({Resources.IsSure.ToLower()}/{Resources.NotSure.ToUpper()})");
+            Console.Write($"{SharedResources.AreYouSure} ({SharedResources.IsSure.ToLower()}/{SharedResources.NotSure.ToUpper()})");
 
-            var choice = Console.ReadLine() ?? Resources.NotSure.ToUpper();
+            var choice = Console.ReadLine() ?? SharedResources.NotSure.ToUpper();
 
-            return (choice.Trim().ToString().Equals(Resources.IsSure, StringComparison.CurrentCultureIgnoreCase));
+            return (choice.Trim().ToString().Equals(SharedResources.IsSure, StringComparison.CurrentCultureIgnoreCase));
         }
 
         public static string GetYesNoText(bool status)
         {
-            return status ? Resources.Yes : Resources.No;
+            return status ? SharedResources.Yes : SharedResources.No;
         }
     }
 }
