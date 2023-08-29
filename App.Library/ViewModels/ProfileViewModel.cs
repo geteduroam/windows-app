@@ -92,26 +92,28 @@ namespace App.Library.ViewModels
         {
             get
             {
-                var hasWebAddress = !string.IsNullOrEmpty(this.eapConfig.InstitutionInfo.WebAddress);
-                var hasEmailAddress = !string.IsNullOrEmpty(this.eapConfig.InstitutionInfo.EmailAddress);
-                var hasPhone = !string.IsNullOrEmpty(this.eapConfig.InstitutionInfo.Phone);
-                return (hasWebAddress || hasEmailAddress || hasPhone);
+                return (this.HasWebAddress || this.HasEmailAddress || this.HasPhone);
             }
         }
 
+        public bool HasWebAddress => !string.IsNullOrWhiteSpace(this.eapConfig.InstitutionInfo.WebAddress);
         public string WebAddress => this.eapConfig.InstitutionInfo.WebAddress;
 
         public bool WebAddressIsValid =>
             Uri.TryCreate(this.WebAddress, UriKind.Absolute, out var uriResult)
             && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
 
+        public bool HasEmailAddress => !string.IsNullOrWhiteSpace(this.eapConfig.InstitutionInfo.EmailAddress);
+
         public string EmailAddress => this.eapConfig.InstitutionInfo.EmailAddress;
 
         public bool EmailIsValid => !(this.EmailAddress.Contains(' ') || !this.EmailAddress.Contains('@'));
 
+        public bool HasPhone => !string.IsNullOrWhiteSpace(this.eapConfig.InstitutionInfo.Phone);
+
         public string Phone => this.eapConfig.InstitutionInfo.Phone;
 
-        public bool PhoneIsValid => !string.IsNullOrEmpty(this.Phone);
+        public bool PhoneIsValid => !string.IsNullOrWhiteSpace(this.Phone);
 
         public string TermsOfUse => this.eapConfig.InstitutionInfo.TermsOfUse;
 

@@ -55,7 +55,8 @@
                 Margin="5"
                 Header="Contact info"
                 BorderBrush="{DynamicResource {x:Static SystemColors.ActiveBorderBrushKey}}"
-                BorderThickness="1">
+                BorderThickness="1"
+                Visibility="{Binding HasContactInfo, Converter={StaticResource BooleanToVisibilityConverter}}" >
                 <Grid Margin="0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -73,7 +74,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Content="{x:Static lang:Resources.ProfileWeb}"
-                        Visibility="{Binding WebAddressIsValid, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        Visibility="{Binding HasWebAddress, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <Label
                         Grid.Row="1"
                         Grid.Column="0"
@@ -81,14 +82,14 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Content="{x:Static lang:Resources.ProfileEmail}"
-                        Visibility="{Binding EmailIsValid, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        Visibility="{Binding HasEmailAddress, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <Label
                         Grid.Row="2"
                         Grid.Column="0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Content="{x:Static lang:Resources.ProfilePhone}"
-                        Visibility="{Binding PhoneIsValid, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        Visibility="{Binding HasPhone, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                     <TextBlock
                         Grid.Row="0"
@@ -96,8 +97,8 @@
                         VerticalAlignment="Center"
                         Text=""
                         TextWrapping="Wrap"
-                        Visibility="{Binding WebAddressIsValid, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Hyperlink Command="{Binding NavigateWebCommand}">
+                        Visibility="{Binding HasWebAddress, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Hyperlink Command="{Binding NavigateWebCommand}" TextDecorations="None">
                             <TextBlock Text="{Binding WebAddress}" TextWrapping="Wrap" />
                         </Hyperlink>
                     </TextBlock>
@@ -107,8 +108,8 @@
                         Grid.Column="1"
                         VerticalAlignment="Center"
                         TextWrapping="Wrap"
-                        Visibility="{Binding EmailIsValid, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Hyperlink Command="{Binding OpenEmailCommand}">
+                        Visibility="{Binding HasEmailAddress, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Hyperlink Command="{Binding OpenEmailCommand}" TextDecorations="None">
                             <TextBlock Text="{Binding EmailAddress}" TextWrapping="Wrap" />
                         </Hyperlink>
                     </TextBlock>
@@ -118,7 +119,7 @@
                         VerticalAlignment="Center"
                         Text="{Binding Phone}"
                         TextWrapping="Wrap"
-                        Visibility="{Binding PhoneIsValid, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        Visibility="{Binding HasPhone, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </Grid>
             </GroupBox>
 
