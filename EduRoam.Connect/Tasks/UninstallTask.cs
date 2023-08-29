@@ -7,6 +7,13 @@ namespace EduRoam.Connect.Tasks
 {
     public class UninstallTask
     {
+        public static bool AppIsInstalled
+        {
+            get
+            {
+                return SelfInstaller.DefaultInstance.IsInstalled;
+            }
+        }
         public static void Uninstall(Action<bool> shutdown)
         {
             SelfInstaller.DefaultInstance.ExitAndUninstallSelf(

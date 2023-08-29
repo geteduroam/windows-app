@@ -502,7 +502,7 @@ namespace App.Library.ViewModels
             RemoveWiFiConfigurationTask.RemoveCertificates(false);
         }
 
-        public bool CanAppBeUninstalled => true;
+        public bool CanAppBeUninstalled => UninstallTask.AppIsInstalled;
 
         public void Uninstall()
         {
