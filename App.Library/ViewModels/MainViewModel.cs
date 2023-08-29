@@ -14,11 +14,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 
 namespace App.Library.ViewModels
 {
+#pragma warning disable CA1822 // Do not mark members as static, because they are referred to in Views
     public class MainViewModel : NotifyPropertyChanged, IDisposable
     {
         private readonly IdentityProviderDownloader idpDownloader;
@@ -86,9 +88,7 @@ namespace App.Library.ViewModels
 
         public bool ShowMenu { get; set; }
 
-#pragma warning disable CA1822 // Mark members as static
         public string AppVersion
-#pragma warning restore CA1822 // Mark members as static
         {
             get
             {
@@ -96,6 +96,20 @@ namespace App.Library.ViewModels
                 var status = statusTask.GetStatus();
 
                 return status.Version;
+            }
+        }
+
+        public string AppTitle
+        {
+            get
+            {
+                var appAssemblyName = Assembly.GetEntryAssembly()!.GetName();
+
+                if (!string.IsNullOrWhiteSpace(appAssemblyName.CultureName))
+                {
+                    return appAssemblyName.CultureName;
+                }
+                return appAssemblyName.Name ?? "geteduroam";
             }
         }
 
@@ -194,6 +208,8 @@ namespace App.Library.ViewModels
                 this.ActiveContent = viewModel;
                 this.IsLoading = false;
                 this.CallPropertyChanged(nameof(this.ActiveContent));
+                this.CallPropertyChanged(nameof(this.ShowNavigatePrevious));
+                this.CallPropertyChanged(nameof(this.ShowNavigateNext));
             }
         }
 
@@ -504,4 +520,5 @@ namespace App.Library.ViewModels
             Process.Start(new ProcessStartInfo(Resources.HelpUrl) { UseShellExecute = true });
         }
     }
+#pragma warning restore CA1822 // Mark members as static
 }
