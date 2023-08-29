@@ -517,7 +517,12 @@ namespace App.Library.ViewModels
 
         public void OpenHelp()
         {
-            Process.Start(new ProcessStartInfo(Resources.HelpUrl) { UseShellExecute = true });
+            var helpUrl = ApplicationResources.GetString("HelpUrl");
+
+            if (!string.IsNullOrWhiteSpace(helpUrl))
+            {
+                Process.Start(new ProcessStartInfo(helpUrl) { UseShellExecute = true });
+            }
         }
     }
 #pragma warning restore CA1822 // Mark members as static

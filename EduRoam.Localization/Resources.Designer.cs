@@ -731,15 +731,6 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to https://www.geteduroam.app/.
-        /// </summary>
-        public static string HelpUrl {
-            get {
-                return ResourceManager.GetString("HelpUrl", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} more hours.
         /// </summary>
         public static string HoursLeft {

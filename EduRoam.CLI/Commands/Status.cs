@@ -1,8 +1,9 @@
 ﻿using EduRoam.Connect;
 using EduRoam.Connect.Tasks;
-using EduRoam.Localization;
 
 using System.CommandLine;
+
+using SharedResources = EduRoam.Localization.Resources;
 
 namespace EduRoam.CLI.Commands
 {
@@ -10,7 +11,7 @@ namespace EduRoam.CLI.Commands
     {
         public static readonly string CommandName = "status";
 
-        public static readonly string CommandDescription = Resources.CommandDescriptionStatus;
+        public static readonly string CommandDescription = SharedResources.CommandDescriptionStatus;
 
         public Command GetCommand()
         {
@@ -24,13 +25,13 @@ namespace EduRoam.CLI.Commands
                 Console.WriteLine();
                 ConsoleExtension.WriteStatus("***********************************************");
                 ConsoleExtension.WriteStatus("* ");
-                ConsoleExtension.WriteStatus($"* {Resources.LabelProfile}: {status.ProfileName}");
+                ConsoleExtension.WriteStatus($"* {SharedResources.LabelProfile}: {status.ProfileName}");
                 ConsoleExtension.WriteStatus("* ");
-                ConsoleExtension.WriteStatus($"* {Resources.LabelAccountValidFor}: {status.TimeLeft}");
+                ConsoleExtension.WriteStatus($"* {SharedResources.LabelAccountValidFor}: {status.TimeLeft}");
                 ConsoleExtension.WriteStatus("* ");
                 ConsoleExtension.WriteStatus("* ");
-                ConsoleExtension.WriteStatus($"* {Resources.LabelHelp}: {Resources.HelpUrl}");
-                ConsoleExtension.WriteStatus($"* {Resources.LabelVersion}: {status.Version}");
+                ConsoleExtension.WriteStatus($"* {SharedResources.LabelHelp}: {Resources.HelpUrl}");
+                ConsoleExtension.WriteStatus($"* {SharedResources.LabelVersion}: {status.Version}");
                 ConsoleExtension.WriteStatus("***********************************************");
                 Console.WriteLine();
             });

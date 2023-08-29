@@ -367,9 +367,6 @@ Exception: {0}</value>
   <data name="FileDialogSelectFile" xml:space="preserve">
     <value>Please select a file.</value>
   </data>
-  <data name="HelpUrl" xml:space="preserve">
-    <value>https://www.geteduroam.app/</value>
-  </data>
   <data name="HoursLeft" xml:space="preserve">
     <value>{0} more hours</value>
   </data>
