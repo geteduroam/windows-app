@@ -6,7 +6,7 @@
         {
             var status = new TaskStatus(true)
             {
-                Messages = messages
+                Messages = messages.ToList()
             };
 
             return status;
@@ -16,7 +16,7 @@
         {
             var status = new TaskStatus(false)
             {
-                Errors = errors
+                Errors = errors.ToList()
             };
 
             return status;
@@ -37,10 +37,10 @@
 
         public bool Success { get; set; }
 
-        public IList<string> Warnings { get; set; }
+        public List<string> Warnings { get; set; }
 
-        public IList<string> Errors { get; set; }
+        public List<string> Errors { get; set; }
 
-        public IList<string> Messages { get; set; }
+        public List<string> Messages { get; set; }
     }
 }
