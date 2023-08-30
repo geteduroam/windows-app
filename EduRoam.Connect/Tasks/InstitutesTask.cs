@@ -14,7 +14,7 @@ namespace EduRoam.Connect.Tasks
         /// </remarks>
         /// <exception cref="ApiParsingException" />
         /// <exception cref="ApiUnreachableException" />
-        public async Task<IEnumerable<IdentityProvider>> GetAsync(string? query)
+        public static async Task<IEnumerable<IdentityProvider>> GetAsync(string? query)
         {
             using var idpDownloader = new IdentityProviderDownloader();
 

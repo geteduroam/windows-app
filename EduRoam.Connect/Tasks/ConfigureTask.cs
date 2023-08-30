@@ -8,7 +8,7 @@ namespace EduRoam.Connect.Tasks
 {
     public class ConfigureTask
     {
-        private EapConfig? eapConfig;
+        private readonly EapConfig? eapConfig;
 
         private readonly BaseConfigStore store = new RegistryStore();
 
@@ -82,7 +82,6 @@ namespace EduRoam.Connect.Tasks
 
             return TaskStatus.AsSuccess();
         }
-
 
         public Connector? GetConnector()
         {

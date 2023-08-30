@@ -17,7 +17,7 @@ namespace EduRoam.Connect.Tasks
         /// <exception cref="ApiParsingException" />
         /// <exception cref="ApiUnreachableException" />
         /// <exception cref="UnknownInstituteException" />
-        public async Task<IEnumerable<IdentityProviderProfile>> GetProfilesAsync(string institute, string? query = null)
+        public static async Task<IEnumerable<IdentityProviderProfile>> GetProfilesAsync(string institute, string? query = null)
         {
             if (string.IsNullOrWhiteSpace(institute))
             {

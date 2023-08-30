@@ -43,9 +43,7 @@ namespace App.Library.ViewModels
 
         public async Task<ObservableCollection<IdentityProvider>> GetInstitutionsAsync()
         {
-            var institutesTask = new InstitutesTask();
-
-            var institutes = await institutesTask.GetAsync(this.searchText);
+            var institutes = await InstitutesTask.GetAsync(this.searchText);
             return new ObservableCollection<IdentityProvider>(institutes);
         }
 

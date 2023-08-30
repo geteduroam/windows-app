@@ -43,11 +43,9 @@ namespace EduRoam.CLI.Commands
 
         private static async Task ShowProfilesAsync(string institute, string? query = null)
         {
-            var getProfilesTask = new ProfilesTask();
-
             try
             {
-                var profiles = await getProfilesTask.GetProfilesAsync(institute, query);
+                var profiles = await ProfilesTask.GetProfilesAsync(institute, query);
 
                 if (profiles.Any())
                 {
@@ -82,8 +80,7 @@ namespace EduRoam.CLI.Commands
         {
             try
             {
-                var getListTask = new InstitutesTask();
-                var institutes = await getListTask.GetAsync(query);
+                var institutes = await InstitutesTask.GetAsync(query);
 
                 if (institutes.Any())
                 {

@@ -49,8 +49,7 @@ namespace EduRoam.Connect.Tasks
                 throw new ArgumentNullException(nameof(profileName));
             }
 
-            var getProfilesTask = new ProfilesTask();
-            var profiles = await getProfilesTask.GetProfilesAsync(nameOfinstitute);
+            var profiles = await ProfilesTask.GetProfilesAsync(nameOfinstitute);
             var profile = profiles.FirstOrDefault(p => p.Name.Equals(profileName, StringComparison.InvariantCultureIgnoreCase));
 
             if (profile == null)
@@ -83,12 +82,7 @@ namespace EduRoam.Connect.Tasks
 
         public async Task<EapConfig?> GetEapConfigAsync(string profileId)
         {
-            var profile = await ProfilesTask.GetProfileAsync(profileId);
-
-            if (profile == null)
-            {
-                throw new UnknownProfileException(profileId);
-            }
+            var profile = await ProfilesTask.GetProfileAsync(profileId) ?? throw new UnknownProfileException(profileId);
 
             return await this.ProcessProfileAsync(profile);
         }
