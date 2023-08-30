@@ -9,6 +9,8 @@ using App.Library.Command;
 using System.Linq;
 using System.Threading.Tasks;
 
+using SharedResources = EduRoam.Localization.Resources;
+
 namespace App.Library.ViewModels;
 
 public abstract class BaseViewModel : NotifyPropertyChanged
@@ -33,6 +35,10 @@ public abstract class BaseViewModel : NotifyPropertyChanged
     public virtual bool ShowMenu => false;
 
     public virtual bool ShowHelp => false;
+
+    public virtual string PreviousTitle => SharedResources.ButtonPrevious;
+
+    public virtual string NextTitle => SharedResources.ButtonNext;
 
     protected abstract bool CanNavigateNextAsync();
 

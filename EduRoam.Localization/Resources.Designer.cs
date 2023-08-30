@@ -104,6 +104,24 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string ButtonClose {
+            get {
+                return ResourceManager.GetString("ButtonClose", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect.
+        /// </summary>
+        public static string ButtonConnect {
+            get {
+                return ResourceManager.GetString("ButtonConnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Next.
         /// </summary>
         public static string ButtonNext {
@@ -432,6 +450,15 @@ namespace EduRoam.Localization {
         public static string ErrorCannotRemoveWLANProfile {
             get {
                 return ResourceManager.GetString("ErrorCannotRemoveWLANProfile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cannot retrieve profile when offline.
+        /// </summary>
+        public static string ErrorCannotRetrieveProfileWhenOffline {
+            get {
+                return ResourceManager.GetString("ErrorCannotRetrieveProfileWhenOffline", resourceCulture);
             }
         }
         

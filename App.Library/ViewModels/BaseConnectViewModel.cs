@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
+using SharedResources = EduRoam.Localization.Resources;
 using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
 
 namespace App.Library.ViewModels
@@ -29,6 +30,10 @@ namespace App.Library.ViewModels
             this.connection = connection;
         }
 
+        public override string PreviousTitle => SharedResources.ButtonClose;
+
+        public override string NextTitle => SharedResources.ButtonConnect;
+
         protected override bool CanNavigateNextAsync()
         {
             return true;
@@ -37,6 +42,13 @@ namespace App.Library.ViewModels
         protected override Task NavigateNextAsync()
         {
             return this.ConnectAsync();
+        }
+
+        protected override Task NavigatePreviousAsync()
+        {
+            this.Owner.CloseApp();
+
+            return Task.CompletedTask;
         }
 
         public string Status

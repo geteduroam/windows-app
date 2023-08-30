@@ -19,7 +19,6 @@ namespace EduRoam.Connect
         private const string Scope = "eap-metadata";
         public const string clientId = "app.geteduroam.win";
         // instance config
-        private readonly Uri redirectUri; // uri to locally hosted servers
         private readonly Uri authEndpoint; // used to get authorization code through oauth
                                            // state created by CreateAuthUri
         private string? codeVerifier;
@@ -38,7 +37,7 @@ namespace EduRoam.Connect
 
             var rng = new Random();
             var randomPort = rng.Next(49152, 65535);
-            this.redirectUri = new Uri($"http://[::1]:{randomPort}/");
+            this.RedirectUri = new Uri($"http://[::1]:{randomPort}/");
         }
 
         /// <summary>
@@ -58,7 +57,7 @@ namespace EduRoam.Connect
                 { "code_challenge_method", CodeChallengeMethod },
                 { "scope", Scope },
                 { "code_challenge", this.codeChallenge },
-                { "redirect_uri", this.redirectUri.ToString() },
+                { "redirect_uri", this.RedirectUri.ToString() },
                 { "client_id", clientId },
                 { "state", this.state }
             }));
@@ -66,7 +65,7 @@ namespace EduRoam.Connect
             return new Uri(authUri);
         }
 
-        public Uri GetRedirectUri() => this.redirectUri;
+        public Uri RedirectUri { get; private set; }
 
         /// <summary>
         /// Extracts the authorization code from the response url.

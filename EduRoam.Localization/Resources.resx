@@ -148,6 +148,12 @@
   <data name="AreYouSure" xml:space="preserve">
     <value>Are you sure you want to continue?</value>
   </data>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="ButtonConnect" xml:space="preserve">
+    <value>Connect</value>
+  </data>
   <data name="ButtonNext" xml:space="preserve">
     <value>Next</value>
   </data>
@@ -263,6 +269,9 @@ Exception: {0}</value>
   </data>
   <data name="ErrorCannotRemoveWLANProfile" xml:space="preserve">
     <value>Some WLAN profile could not be removed</value>
+  </data>
+  <data name="ErrorCannotRetrieveProfileWhenOffline" xml:space="preserve">
+    <value>Cannot retrieve profile when offline</value>
   </data>
   <data name="ErrorClientCredentialNotValidYes" xml:space="preserve">
     <value>Client credential is not valid yet</value>

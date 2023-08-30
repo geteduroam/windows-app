@@ -11,9 +11,7 @@ namespace EduRoam.Connect
     internal class OAuthHandler
     {
         private readonly IdentityProviderProfile profile;
-        private readonly Uri prefix;
-        private readonly Uri authUri;
-        private readonly OAuth oauth;
+        private OAuth oauth;
 
         internal OAuthHandler(IdentityProviderProfile profile)
         {
@@ -28,10 +26,6 @@ namespace EduRoam.Connect
 
             this.profile = profile;
             this.oauth = new OAuth(new Uri(profile.AuthorizationEndpoint));
-            // The url to send the user to
-            this.authUri = this.oauth.CreateAuthUri();
-            // The url to listen to for the user to be redirected back to
-            this.prefix = this.oauth.GetRedirectUri();
         }
 
         public EapConfig? EapConfig { get; private set; }
@@ -69,58 +63,77 @@ namespace EduRoam.Connect
 		/// </summary>
 		private void NonblockingListener()
         {
-            try
+            var attempts = 0;
+            var isSuccesfull = false;
+
+            do
             {
-                // creates a listener
-                using var listener = new HttpListener();
-                // add prefix to listener
-                listener.Prefixes.Add(this.prefix.ToString());
-                // starts listener
-                listener.Start();
+                attempts++;
 
-                // creates BeginGetContext task for retrieving HTTP request
-                var result = listener.BeginGetContext(this.ListenerCallback, listener);
-
-                // opens authentication URI in default browser
-                var startInfo = new ProcessStartInfo()
+                try
                 {
-                    FileName = this.authUri.ToString(),
-                    LoadUserProfile = true,
-                    UseShellExecute = true,
-                };
+                    // creates a listener
+                    using var listener = new HttpListener();
+                    // add prefix to listener
+                    listener.Prefixes.Add(this.oauth.RedirectUri.ToString());
+                    // starts listener
+                    listener.Start();
 
-                using var process = Process.Start(startInfo);
+                    // creates BeginGetContext task for retrieving HTTP request
+                    var result = listener.BeginGetContext(this.ListenerCallback, listener);
 
-                var processThread = new ManualResetEvent(false);
+                    // opens authentication URI in default browser
+                    var startInfo = new ProcessStartInfo()
+                    {
+                        FileName = this.oauth.CreateAuthUri().ToString(),
+                        LoadUserProfile = true,
+                        UseShellExecute = true,
+                    };
 
-                var context = listener.GetContext();
-                var request = context.Request;
+                    using var process = Process.Start(startInfo);
 
-                // creates WaitHandle array with two or three tasks: BeginGetContext, Process thread and optionally cancel thread
-                var handles = new List<WaitHandle>() { result.AsyncWaitHandle, processThread };
-                if (this.CancelThread != null)
-                {
-                    handles.Add(this.CancelThread);
+                    var processThread = new ManualResetEvent(false);
+
+                    var context = listener.GetContext();
+                    var request = context.Request;
+
+                    // creates WaitHandle array with two or three tasks: BeginGetContext, Process thread and optionally cancel thread
+                    var handles = new List<WaitHandle>() { result.AsyncWaitHandle, processThread };
+                    if (this.CancelThread != null)
+                    {
+                        handles.Add(this.CancelThread);
+                    }
+                    // waits for any task in the handles list to complete, gets array index of the first one to complete
+                    var handleResult = WaitHandle.WaitAny(handles.ToArray());
+
+                    // if BeginGetContext completes first
+                    if (handleResult == 0)
+                    {
+                        // freezes main thread so ListenerCallback function can finish
+                        this.MainThread?.WaitOne();
+                    }
+
+                    // closes HTTP listener
+                    listener.Close();
+
+                    isSuccesfull = true;
                 }
-                // waits for any task in the handles list to complete, gets array index of the first one to complete
-                var handleResult = WaitHandle.WaitAny(handles.ToArray());
-
-                // if BeginGetContext completes first
-                if (handleResult == 0)
+                catch (HttpListenerException)
                 {
-                    // freezes main thread so ListenerCallback function can finish
-                    this.MainThread?.WaitOne();
-                }
-
-                // closes HTTP listener
-                listener.Close();
-            }
-            catch (HttpListenerException listenerExc)
-            {
+                    isSuccesfull = false;
 #if DEBUG
-                Debugger.Break();
+                    Debugger.Break();
 #endif
-                Debug.WriteLine($"Could not open browser window\n{listenerExc.Message}");
+                    // creating a new OAuth object will change the oauth's redirect uri,
+                    //  which hopefully will prevent a HttpListenerException on a new attempt 
+                    this.oauth = new OAuth(new Uri(this.profile.AuthorizationEndpoint));
+                }
+
+            } while (!isSuccesfull && attempts < 4);
+
+            if (!isSuccesfull)
+            {
+                Debug.WriteLine($"Could not open browser window");
             }
         }
 
@@ -181,7 +194,7 @@ namespace EduRoam.Connect
 
             try
             {
-                var success = await LetsWifi.Instance.AuthorizeAccess(this.profile, authorizationCode, codeVerifier, this.prefix);
+                var success = await LetsWifi.Instance.AuthorizeAccess(this.profile, authorizationCode, codeVerifier, this.oauth.RedirectUri);
 
                 this.EapConfig = success ? await LetsWifi.Instance.RequestAndDownloadEapConfig() : null;
             }
