@@ -51,7 +51,7 @@ namespace App.Library.ViewModels
             Task.Run(
                 async () =>
                 {
-                    await this.idpDownloader.LoadProviders(useGeodata: true);
+                    await this.idpDownloader.LoadProviders();
                     this.IsLoading = false;
 
                     this.SetStartContent();

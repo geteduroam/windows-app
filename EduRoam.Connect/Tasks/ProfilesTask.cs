@@ -26,10 +26,10 @@ namespace EduRoam.Connect.Tasks
 
             using var idpDownloader = new IdentityProviderDownloader();
 
-            await idpDownloader.LoadProviders(useGeodata: true);
+            await idpDownloader.LoadProviders();
             if (idpDownloader.Loaded)
             {
-                var provider = idpDownloader.Providers.SingleOrDefault(provider => provider.Name.Equals(institute, StringComparison.InvariantCultureIgnoreCase));
+                var provider = idpDownloader.ClosestProviders.SingleOrDefault(provider => provider.Name.Equals(institute, StringComparison.InvariantCultureIgnoreCase));
 
                 if (provider == null)
                 {
@@ -52,7 +52,7 @@ namespace EduRoam.Connect.Tasks
         {
             using var idpDownloader = new IdentityProviderDownloader();
 
-            await idpDownloader.LoadProviders(useGeodata: true);
+            await idpDownloader.LoadProviders();
             return idpDownloader.GetProfileFromId(profileId);
         }
 

@@ -1,6 +1,4 @@
-﻿using EduRoam.Connect.Device;
-
-// GeoCoordinate => Coordinate
+﻿// GeoCoordinate => Coordinate
 namespace EduRoam.Connect.Identity
 {
     /// <summary>
@@ -11,11 +9,6 @@ namespace EduRoam.Connect.Identity
         // Properties
         public double Lon { get; set; }
         public double Lat { get; set; }
-
-        public GeoCoordinate GeoCoordinate
-        {
-            get => new GeoCoordinate(this.Lat, this.Lon);
-        }
     }
 
 }

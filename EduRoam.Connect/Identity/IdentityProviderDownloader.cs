@@ -1,6 +1,6 @@
-using EduRoam.Connect.Device;
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
+using EduRoam.Localization;
 
 using Newtonsoft.Json;
 
@@ -16,34 +16,28 @@ namespace EduRoam.Connect.Identity
     public class IdentityProviderDownloader : IDisposable
     {
         // constants
-        private static readonly Uri GeoApiUrl = Configuration.GeoApiUrl;
         private static readonly Uri ProviderApiUrl = Configuration.ProviderApiUrl;
 
         // http objects
-        private static readonly HttpClientHandler Handler = new HttpClientHandler
+        private static readonly HttpClientHandler Handler = new()
         {
             AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
             AllowAutoRedirect = true
         };
         private static readonly HttpClient Http = InitializeHttpClient();
-        // private static readonly GeoCoordinateWatcher GeoWatcher = new GeoCoordinateWatcher();
 
         // state
-        private GeoCoordinate coordinates; // Coordinates determined by OS or Web API
         private IdpLocation location; // Location with country name determined by user setting or Web API
-        private Task loadProviderTask;
-        private Task geoWebApiTask;
+        private Task? loadProviderTask;
 
         public IEnumerable<IdentityProvider> Providers { get; private set; }
+
         public IEnumerable<IdentityProvider> ClosestProviders
         {
-            get => this.coordinates != null && !this.coordinates.IsUnknown
-                ? this.Providers.OrderBy(p => p.getDistanceTo(this.coordinates))
-                : this.Providers.OrderByDescending(p => p.Country == this.location.Country)
-                ;
+            get => this.Providers.OrderByDescending(p => p.Country == this.location.Country);
         }
+
         public bool Loaded { get => this.Providers.Any(); }
-        public bool LoadedWithGeo { get => this.Loaded && this.coordinates != null && !this.coordinates.IsUnknown; }
 
         private static HttpClient InitializeHttpClient()
         {
@@ -58,10 +52,6 @@ namespace EduRoam.Connect.Identity
             client.DefaultRequestHeaders.ConnectionClose = true;
             client.Timeout = new TimeSpan(0, 0, 8);
             return client;
-        }
-        static IdentityProviderDownloader()
-        {
-            // _ = Task.Run(() => GeoWatcher.Start(true));
         }
 
         /// <summary>
@@ -79,74 +69,22 @@ namespace EduRoam.Connect.Identity
             var allRegions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.ToString()));
             var regionInfo = allRegions.FirstOrDefault(r => r.GeoId == int.Parse(geoID, CultureInfo.InvariantCulture));
 
-            //Coordinates = GeoWatcher.Position.Location;
             this.location = new IdpLocation
             {
                 Country = regionInfo?.TwoLetterISORegionName
             };
-            Debug.Print("Geolocate OS API found country {0}, coordinates {1}", this.location.Country, this.coordinates);
-
-            //GeoWatcher.PositionChanged += (sender, e) =>
-            //{
-            //    Coordinates = e.Position.Location;
-            //    Debug.Print("Geolocate OS API found country {0}, coordinates {1}", Location.Country, Coordinates);
-            //};
+            Debug.Print("Found country {0}", this.location.Country);
         }
 
         /// <exception cref="ApiParsingException">JSON cannot be deserialized</exception>
         /// <exception cref="ApiUnreachableException">API endpoint cannot be contacted</exception>
-        public async Task LoadProviders(bool useGeodata)
+        public async Task LoadProviders()
         {
             if (this.loadProviderTask == null || this.loadProviderTask.IsCompleted && !this.Providers.Any())
             {
                 this.loadProviderTask = this.LoadProvidersInternal();
             }
-            //if (useGeodata && (GeoWebApiTask == null || GeoWebApiTask.IsCompleted && !LoadedWithGeo))
-            //{
-            //    GeoWebApiTask = LoadGeoWebApi();
-            //}
-
-            //if (GeoWebApiTask != null && !GeoWebApiTask.IsCompleted)
-            //{
-            //    var geoTask = Task.Run(async () =>
-            //    {
-            //        // Run the geolocation code async, but return after 700 milliseconds without aborting it
-            //        // If geolocation is too slow, we don't want to keep the user waiting for that
-            //        try
-            //        {
-            //            await GeoWebApiTask;
-            //        }
-            //        catch (AggregateException ae)
-            //        {
-            //            foreach (var e in ae.InnerExceptions)
-            //            {
-            //                if (e is ApiParsingException) throw e;
-            //                if (e is ApiUnreachableException) throw e;
-            //            }
-            //        }
-            //    });
-
-            //    geoTask.Wait(700);
-            //}
             await this.loadProviderTask;
-        }
-
-        private Task LoadGeoWebApi()
-        {
-            var webTask = Task.Run(async () =>
-            {
-                var apiJson = await DownloadUrlAsString(GeoApiUrl, new string[] { "application/json" }).ConfigureAwait(false);
-                return JsonConvert.DeserializeObject<IdpLocation>(apiJson);
-            });
-
-            return Task.Run(() =>
-            {
-                webTask.Wait();
-                this.location = webTask.Result ?? this.location;
-                this.coordinates = this.location.GeoCoordinate;
-
-                Debug.Print("Geolocate Web API found country {0}, coordinates {1}", this.location.Country, this.coordinates);
-            });
         }
 
         private async Task LoadProvidersInternal()
@@ -211,7 +149,7 @@ namespace EduRoam.Connect.Identity
         /// <exception cref="ApiParsingException">eap-config cannot be parsed as XML</exception>
         public async Task<EapConfig> DownloadEapConfig(string profileId)
         {
-            await this.LoadProviders(useGeodata: false);
+            await this.LoadProviders();
             var profile = this.GetProfileFromId(profileId);
             if (string.IsNullOrEmpty(profile?.EapConfigEndpoint))
             {
@@ -258,7 +196,7 @@ namespace EduRoam.Connect.Identity
         {
             if (!this.Loaded)
             {
-                throw new EduroamAppUserException("not_online", "Cannot retrieve profile when offline");
+                throw new EduroamAppUserException("not_online", Resources.ErrorCannotRetrieveProfileWhenOffline);
             }
 
             foreach (var provider in this.Providers)
@@ -403,7 +341,7 @@ namespace EduRoam.Connect.Identity
         protected virtual void Dispose(bool disposing)
         {
             if (this.disposed) return;
-            // if (disposing) GeoWatcher?.Dispose();
+
             this.disposed = true;
         }
 
