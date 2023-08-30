@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace App.Library.ViewModels
 {
+#pragma warning disable CA1822 // Members are bound by a template and therefore cannot be static
     internal class ConnectWithCredentialsViewModel : BaseConnectViewModel
     {
         private string userName = string.Empty;
         private string password = string.Empty;
-
 
         public ConnectWithCredentialsViewModel(MainViewModel owner, EapConfig eapConfig, CredentialsConnector connector)
             : base(owner, eapConfig, new CredentialsConnection(connector))
@@ -83,4 +83,5 @@ namespace App.Library.ViewModels
             this.connectionStatus = await this.connection.ConfigureAndConnectAsync(connectionProperties);
         }
     }
+#pragma warning restore CA1822 // Mark members as static
 }

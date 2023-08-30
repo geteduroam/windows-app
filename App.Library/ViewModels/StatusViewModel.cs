@@ -9,7 +9,7 @@ namespace App.Library.ViewModels
 {
     internal class StatusViewModel : BaseViewModel
     {
-        private Status status;
+        private readonly Status status;
 
         public StatusViewModel(MainViewModel owner) : base(owner)
         {

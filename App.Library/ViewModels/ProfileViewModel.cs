@@ -166,18 +166,6 @@ namespace App.Library.ViewModels
             return Task.CompletedTask;
         }
 
-        /// <summary>
-        /// Loads the logo form the curent eapconfig if it exists. Else display Eduroam logo.
-        /// </summary>
-        private void LoadProviderLogo()
-        {
-            //todo svg support imageConverter,
-            //todo separate image not override eduram logo
-
-            //byte[] logoBytes = eapConfig.InstitutionInfo.LogoData;
-            //string logoMimeType = eapConfig.InstitutionInfo.LogoMimeType;
-        }
-
         private void ShowTermsOfUse()
         {
             this.Owner.SetActiveContent(new TermsOfUseViewModel(this.Owner, this.eapConfig));

@@ -20,14 +20,14 @@ using System.Windows;
 
 namespace App.Library.ViewModels
 {
-#pragma warning disable CA1822 // Do not mark members as static, because they are referred to in Views
+#pragma warning disable CA1822 // Members are bound by a template and therefore cannot be static
     public class MainViewModel : NotifyPropertyChanged, IDisposable
     {
         private readonly IdentityProviderDownloader idpDownloader;
 
         public static readonly SelfInstaller SelfInstaller = SelfInstaller.DefaultInstance;
 
-        private Status status;
+        private readonly Status status;
 
         public MainViewModel(Action closeApp)
         {

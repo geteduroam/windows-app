@@ -7,12 +7,9 @@ namespace App.Library.ViewModels
 {
     public class SelectProfileViewModel : BaseViewModel
     {
-        public SelectProfileViewModel(MainViewModel owner) //, IdentityProviderDownloader idpDownloader)
+        public SelectProfileViewModel(MainViewModel owner)
             : base(owner)
         {
-            //this.idpDownloader = idpDownloader;
-            //this.searchText = string.Empty;
-            //this.NextCommand = new DelegateCommand(this.Next, this.CanGoNext);
         }
 
         public List<IdentityProviderProfile> Profiles => this.Owner.State.SelectedIdentityProvider?.Profiles ?? new List<IdentityProviderProfile>();

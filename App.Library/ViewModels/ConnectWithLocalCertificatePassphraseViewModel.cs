@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 
 namespace App.Library.ViewModels
 {
+#pragma warning disable CA1822 // Members are bound by a template and therefore cannot be static
     internal class ConnectWithLocalCertificatePassphraseViewModel : BaseConnectViewModel
     {
         private FileInfo? clientCertificate;
@@ -27,9 +28,8 @@ namespace App.Library.ViewModels
 
         protected override bool CanNavigateNextAsync()
         {
-            return (
-                (this.clientCertificate != null && this.clientCertificate.Exists) && !string.IsNullOrWhiteSpace(this.passphrase)
-                );
+            return this.clientCertificate != null && this.clientCertificate.Exists
+                && !string.IsNullOrWhiteSpace(this.passphrase);
         }
 
         public bool ShowRules
@@ -109,4 +109,5 @@ namespace App.Library.ViewModels
             this.CallPropertyChanged(nameof(this.CertificatiePath));
         }
     }
+#pragma warning restore CA1822 // Mark members as static
 }
