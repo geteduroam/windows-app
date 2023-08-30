@@ -32,7 +32,7 @@ namespace EduRoam.Connect
             this.store = new RegistryStore();
         }
 
-        private static LetsWifi instance = new LetsWifi();
+        private static LetsWifi instance = new();
 
         internal static LetsWifi Instance => instance;
 
@@ -219,6 +219,11 @@ namespace EduRoam.Connect
             // TODO on background refresh, internet may be offline, but be back in a few seconds; smart retry needed
             try
             {
+                if (this.TokenEndpoint == null)
+                {
+                    return false;
+                }
+
                 var tokenJson = await IdentityProviderDownloader.PostForm(this.TokenEndpoint, tokenFormData, new string[] { "application/json" });
 
                 // process response

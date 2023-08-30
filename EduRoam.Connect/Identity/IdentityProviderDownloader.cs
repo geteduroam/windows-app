@@ -27,7 +27,7 @@ namespace EduRoam.Connect.Identity
         private static readonly HttpClient Http = InitializeHttpClient();
 
         // state
-        private IdpLocation location; // Location with country name determined by user setting or Web API
+        private readonly IdpLocation location; // Location with country name determined by user setting or Web API
         private Task? loadProviderTask;
 
         public IEnumerable<IdentityProvider> Providers { get; private set; }
@@ -67,11 +67,11 @@ namespace EduRoam.Connect.Identity
             var regKeyGeoId = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Control Panel\International\Geo");
             var geoID = (string?)regKeyGeoId?.GetValue("Nation");
             var allRegions = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(x => new RegionInfo(x.ToString()));
-            var regionInfo = allRegions.FirstOrDefault(r => r.GeoId == int.Parse(geoID, CultureInfo.InvariantCulture));
+            var regionInfo = allRegions.FirstOrDefault(r => geoID != null && r.GeoId == int.Parse(geoID, CultureInfo.InvariantCulture));
 
             this.location = new IdpLocation
             {
-                Country = regionInfo?.TwoLetterISORegionName
+                Country = regionInfo?.TwoLetterISORegionName ?? ""
             };
             Debug.Print("Found country {0}", this.location.Country);
         }
@@ -80,7 +80,7 @@ namespace EduRoam.Connect.Identity
         /// <exception cref="ApiUnreachableException">API endpoint cannot be contacted</exception>
         public async Task LoadProviders()
         {
-            if (this.loadProviderTask == null || this.loadProviderTask.IsCompleted && !this.Providers.Any())
+            if (this.loadProviderTask == null || (this.loadProviderTask.IsCompleted && !this.Providers.Any()))
             {
                 this.loadProviderTask = this.LoadProvidersInternal();
             }
@@ -98,7 +98,7 @@ namespace EduRoam.Connect.Identity
 
                     // gets api instance from json
                     var discovery = JsonConvert.DeserializeObject<DiscoveryApi>(apiJson);
-                    this.Providers = discovery?.Instances;
+                    this.Providers = discovery?.Instances ?? new List<IdentityProvider>();
                 }
             }
             catch (JsonSerializationException e)
@@ -265,11 +265,15 @@ namespace EduRoam.Connect.Identity
         /// <exception cref="ApiParsingException">Content-Type did not match accept</exception>
         public static Task<string> PostForm(Uri url, NameValueCollection data, string[]? accept = null)
         {
-            if (data == null) throw new ArgumentNullException(nameof(data));
+            if (data == null)
+            {
+                throw new ArgumentNullException(nameof(data));
+            }
 
             var list = new List<KeyValuePair<string, string?>>(data.Count);
-            foreach (var key in data.AllKeys)
+            foreach (var key in data.AllKeys.Where(k => !string.IsNullOrWhiteSpace(k)))
             {
+                Debug.Assert(key != null, "data contains meta data items for retrieving a token");
                 list.Add(new KeyValuePair<string, string?>(key, data[key]));
             }
             return PostForm(url, list, accept);
@@ -324,6 +328,13 @@ namespace EduRoam.Connect.Identity
 #pragma warning disable CA2227 // Collection properties should be read only
         private class DiscoveryApi
         {
+            public DiscoveryApi()
+            {
+                this.Version = "";
+                this.Seq = "";
+                this.Instances = new List<IdentityProvider>();
+            }
+
             public string Version { get; set; }
             public string Seq { get; set; }
             public List<IdentityProvider> Instances { get; set; }

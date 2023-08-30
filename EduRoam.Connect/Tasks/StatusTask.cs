@@ -6,13 +6,7 @@ namespace EduRoam.Connect.Tasks
     {
         private readonly BaseConfigStore store = new RegistryStore();
 
-        private IdentityProviderInfo? IdentityProvider
-        {
-            get
-            {
-                return this.store.IdentityProvider;
-            }
-        }
+        private IdentityProviderInfo? IdentityProvider => this.store.IdentityProvider;
 
         public Status GetStatus()
         {
