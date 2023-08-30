@@ -8,7 +8,7 @@ namespace App.Library.Binding
     /// Class that allows to bind to data in cases when DataContext is not inherited
     /// </summary>
     /// <remarks>
-    /// See http://www.thomaslevesque.com/2011/03/21/wpf-how-to-bind-to-data-when-the-datacontext-is-not-inherited/
+    ///  Source: http://www.thomaslevesque.com/2011/03/21/wpf-how-to-bind-to-data-when-the-datacontext-is-not-inherited/ by Thomas Levesque
     /// </remarks>
     public class BindingProxy<T> : Freezable
     {
@@ -25,15 +25,11 @@ namespace App.Library.Binding
             set { this.SetValue(DataProperty, value); }
         }
 
-        #region Overrides of Freezable
-
         /// <summary />
         protected override Freezable CreateInstanceCore()
         {
             return new BindingProxy<T>();
         }
-
-        #endregion
     }
 
     public class MainViewModelProxy : BindingProxy<MainViewModel> { }

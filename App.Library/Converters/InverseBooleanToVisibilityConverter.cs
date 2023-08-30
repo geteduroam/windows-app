@@ -1,13 +1,13 @@
 using System;
-using System.Windows.Controls;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Data;
 
 namespace App.Library.Converters
 {
     public class InverseBooleanToVisibilityConverter : IValueConverter
     {
-        private readonly BooleanToVisibilityConverter converter = new BooleanToVisibilityConverter();
+        private readonly BooleanToVisibilityConverter converter = new();
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

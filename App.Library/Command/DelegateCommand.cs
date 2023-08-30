@@ -14,8 +14,7 @@ namespace App.Library.Command
             this.CanExecuteFunc = canExecute;
         }
 
-        public DelegateCommand(Action<object> commandAction,
-                Func<bool>? canExecute = null)
+        public DelegateCommand(Action<object?> commandAction)
         {
             this.CommandWithParamAction = commandAction;
         }
@@ -30,9 +29,9 @@ namespace App.Library.Command
 
         public Func<bool>? CanExecuteFunc { get; set; }
 
-        public Action<object>? CommandWithParamAction { get; set; }
+        public Action<object?>? CommandWithParamAction { get; set; }
 
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             if (this.CommandWithParamAction != null)
             {
@@ -49,12 +48,12 @@ namespace App.Library.Command
             }
         }
 
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             return this.CanExecuteFunc == null || this.CanExecuteFunc();
         }
 
-        public void RaiseCanExecuteChanged()
+        public static void RaiseCanExecuteChanged()
         {
             CommandManager.InvalidateRequerySuggested();
         }

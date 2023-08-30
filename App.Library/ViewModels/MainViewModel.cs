@@ -56,7 +56,7 @@ namespace App.Library.ViewModels
 
                     this.SetStartContent();
                     this.CallPropertyChanged(string.Empty);
-                    this.NewProfileCommand.RaiseCanExecuteChanged();
+                    DelegateCommand.RaiseCanExecuteChanged();
                 });
         }
 

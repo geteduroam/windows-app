@@ -43,13 +43,6 @@ namespace App.Library.Command
                     this.isExecuting = false;
                 }
             }
-
-            this.RaiseCanExecuteChanged();
-        }
-
-        public void RaiseCanExecuteChanged()
-        {
-            //this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
         #region Explicit implementations

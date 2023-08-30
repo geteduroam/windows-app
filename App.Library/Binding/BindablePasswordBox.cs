@@ -65,7 +65,7 @@ namespace App.Library.Binding
             }
         }
 
-        private static void HandlePasswordChanged(object sender, RoutedEventArgs e)
+        private static void HandlePasswordChanged(object? sender, RoutedEventArgs e)
         {
             if (sender is not PasswordBox box)
             {

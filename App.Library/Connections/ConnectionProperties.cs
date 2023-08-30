@@ -8,12 +8,6 @@ namespace App.Library.Connections
 
         public string? Password { get; set; }
 
-        public string? Passphrase
-        {
-            get { return this.Password; }
-            set { this.Password = value; }
-        }
-
         public FileInfo? CertificatePath { get; set; }
     }
 }

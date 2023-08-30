@@ -75,7 +75,7 @@ namespace App.Library.ViewModels
             var connectionProperties = new ConnectionProperties()
             {
                 CertificatePath = this.ClientCertificate,
-                Passphrase = this.Passphrase
+                Password = this.Passphrase
             };
 
             this.connectionStatus = await this.connection.ConfigureAndConnectAsync(connectionProperties);

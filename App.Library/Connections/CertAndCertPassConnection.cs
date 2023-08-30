@@ -19,7 +19,7 @@ namespace App.Library.Connections
         public async Task<TaskStatus> ConfigureAndConnectAsync(ConnectionProperties properties)
         {
             var certificateFile = properties.CertificatePath ?? throw new ArgumentNullException(nameof(properties));
-            var passphrase = properties.Passphrase ?? throw new ArgumentNullException(nameof(properties));
+            var passphrase = properties.Password ?? throw new ArgumentNullException(nameof(properties));
 
             this.connector.Credentials = new ConnectorCredentials(passphrase);
             this.connector.CertificatePath = certificateFile;
