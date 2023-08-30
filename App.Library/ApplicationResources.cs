@@ -24,7 +24,8 @@ namespace App.Library
                 var resourceManager = new global::System.Resources.ResourceManager(appLocalizationResourcesName.Replace(".resources.", ".", StringComparison.InvariantCultureIgnoreCase), Assembly.GetEntryAssembly()!);
                 return resourceManager.GetString(key);
             }
-            return null;
+
+            throw new System.Resources.MissingManifestResourceException($"Cannot find Resources in {Assembly.GetEntryAssembly()!.GetName().Name}");
         }
     }
 }

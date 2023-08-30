@@ -8,7 +8,7 @@ Then, bind a resource using:
 `{x:Static lang:Resources.<resource>}`
 
 For example:
-``` csharp
+```
 Text="{x:Static lang:Resources.Loading}"
 ```
 
