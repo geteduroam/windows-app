@@ -168,7 +168,7 @@ namespace EduRoam.Connect.Tasks
 		/// <returns>EapConfig or null</returns>
 		public static EapConfig? GetBundledEapConfig()
         {
-            var appExeLocation = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            var appExeLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location);
 
             if (appExeLocation == null)
             {

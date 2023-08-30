@@ -68,7 +68,7 @@ namespace EduRoam.Connect
         {
             get
             {
-                var assembly = Assembly.GetExecutingAssembly();
+                var assembly = Assembly.GetEntryAssembly()!;
                 foreach (var attrs in assembly.CustomAttributes)
                 {
                     if (attrs.AttributeType.Name == "AssemblyFileVersionAttribute")
