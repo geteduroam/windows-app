@@ -4,10 +4,10 @@ This application helps set up eduroam on end-users' computers by automatically f
 
 ## Structure
 
-* **EduRoam.App**:           The "eduroam" app.
-* **GovRoam.App**:           The "govroam" app.
+* **EduRoam.App**:           The "geteduroam" app.
+* **GovRoam.App**:           The "getgovroam" app.
 * **App.Library**:		     The Wpf graphical user interface
-* **EduRoam.CLI**:           The command line interface
+* **EduRoam.CLI**:           The "eduroam" command line interface
 * **EduRoam.Connect**:       The logic interfacing with the discovery api, and the logic to parse and configure the various profiles into windows.
 * **EduRoam.Localization**:  The localization resources
 
@@ -41,13 +41,13 @@ A tray icon for running in the background can be enabled through a project flag,
 ### Prerequisites
 
  * Visual Studio 2019/2022 (https://visualstudio.microsoft.com/downloads/) with C# 8.0
- * .NET Core 6
+ * [.NET Core 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
 
 
-### Running the app
+### Running the apps
 
- * Compile the project to create geteduroam.exe (in WpfApp\bin\Release).
- * This executable can be run independently from the rest of the solution, so you can move it to any desired directory.
+ * Compile the App project (Eduroam.App, Govroam.App or EduRoam.CLI) in Release mode to create geteduroam.exe (in .\bin\Release\net6.0-windows).
+ * This executable can be run independently from the rest of the solution, so you can move the folder its in to any desired directory.
 
 
 ## Signing
@@ -61,7 +61,7 @@ When you have a hardware token, you can sign the application
 
 (actually, just go to **C:\Program Files(x86)** and search for **signtool.exe** and use the one that's in an **x64** directory)
 
-Sign by running in the directory containing geteduroam.exe:
+Sign by running in the directory containing geteduroam.exe/getgovroam.exe:
 
 	"C:\Program Files (x86)\Windows Kits\10\bin\10.x\x64\signtool.exe" sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /a geteduroam.exe
 

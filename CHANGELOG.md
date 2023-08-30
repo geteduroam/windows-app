@@ -6,15 +6,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-No unreleased changes.
+geteduroam 4.0.0 & getgovroam 4.0.0
 
+### Changed
+* Upgrade to .NET 6.0
+* Refactored WPF from using code-behind to MVVM.
+* Refactored configuration/connection logic
+
+### Removed 
+* Geo-location logic
 
 ## [geteduroam 3.2.10](https://github.com/geteduroam/windows-app/releases/tag/geteduroam-3.2.10)
 
-## Fixed
+### Fixed
 * NullPointerException when OuterIdentity is not set
 
-## Changed
+### Changed
 * Updated ManagedNativeWifi, is now a NuGet package
 * Updated NuGet packages
 * Updated target to Visual Studio 2022
@@ -23,11 +30,11 @@ No unreleased changes.
 
 ## [geteduroam 3.2.9](https://github.com/geteduroam/windows-app/releases/tag/geteduroam-3.2.9)
 
-## Fixed
+### Fixed
 * Fix Back button not working after opening an .eap-config file manually
 * Drop realm from OuterIdentity for PEAP-MSCHAPv2, as Windows adds the realm itself
 
-### Changed
+#### Changed
 * Handle discovery "seq" as string, not integer; this prevents a crash when seq cannot be parsed as integer
 * Prevent disabling CA checking; this was not possible but now the code path is also removed
 * Handle more network errors when loading the discovery file

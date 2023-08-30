@@ -6,19 +6,19 @@
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
 		<AssemblyName>getgovroam</AssemblyName>
-		<ApplicationIcon>geteduroam.ico</ApplicationIcon>
+		<ApplicationIcon>getgovroam.ico</ApplicationIcon>
 		<Version>4.0.0.0</Version>
 		<FileVersion>4.0.0.0</FileVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<None Remove="appsettings.json" />
-		<None Remove="geteduroam.ico" />
+		<None Remove="getgovroam.ico" />
 		<None Remove="logo.png" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="geteduroam.ico" />
+		<Content Include="getgovroam.ico" />
 	</ItemGroup>
 
 	<ItemGroup>

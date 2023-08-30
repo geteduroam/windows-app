@@ -46,8 +46,7 @@ namespace EduroamConfigure
                     {
                         foreach (CustomAttributeTypedArgument attr in attrs.ConstructorArguments)
                         {
-                            if (attr.Value is string) 1
-
+                            if (attr.Value is string)
                             {
                                 return (string)attr.Value;
                             }
