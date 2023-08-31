@@ -3,10 +3,5 @@
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="pack://application:,,,/App.Library;component/Styling/Styling.xaml"/>
     </ResourceDictionary.MergedDictionaries>
-	
-    <Style x:Key="ButtonStyle1" TargetType="Button">
-		<Setter Property="Background" Value="red" />
-        <Setter Property="FontSize" Value="50" />
-	</Style>
 
 </ResourceDictionary>

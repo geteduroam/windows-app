@@ -9,6 +9,7 @@
     xmlns:templates="clr-namespace:App.Library.Templates"
     xmlns:lang = "clr-namespace:EduRoam.Localization;assembly=EduRoam.Localization"
     Title="{Binding AppTitle}"
+    FontFamily="{StaticResource default}"
     Width="420"
     Height="600"
     MinWidth="420"
