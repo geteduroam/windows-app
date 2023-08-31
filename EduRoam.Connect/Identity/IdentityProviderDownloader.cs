@@ -16,7 +16,7 @@ namespace EduRoam.Connect.Identity
     public class IdentityProviderDownloader : IDisposable
     {
         // constants
-        private static readonly Uri ProviderApiUrl = Configuration.ProviderApiUrl;
+        private static readonly Uri ProviderApiUrl = new Configuration().ProviderApiUrl;
 
         // http objects
         private static readonly HttpClientHandler Handler = new()
@@ -45,7 +45,7 @@ namespace EduRoam.Connect.Identity
 #if DEBUG
             client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.Instance.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
 #else
-			client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.Instance.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
+            client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.Instance.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
 #endif
             // This client will not be used for subsequent requests,
             // so don't keep the connection open any longer than necessary

@@ -1,63 +1,64 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
-    <Nullable>enable</Nullable>
-    <UseWPF>true</UseWPF>
-    <StartupObject>Eduroam.App.App</StartupObject>
-    <ApplicationIcon>geteduroam.ico</ApplicationIcon>
-	<AssemblyName>geteduroam</AssemblyName>
-    <Configurations>Debug;Release;DebugArm</Configurations>
-    <Platforms>AnyCPU;ARM32</Platforms>
-	<Version>4.0.0.0</Version>
-    <FileVersion>4.0.0.0</FileVersion>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net6.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<UseWPF>true</UseWPF>
+		<StartupObject>Eduroam.App.App</StartupObject>
+		<ApplicationIcon>geteduroam.ico</ApplicationIcon>
+		<AssemblyName>geteduroam</AssemblyName>
+		<Configurations>Debug;Release;DebugArm</Configurations>
+		<Platforms>AnyCPU;ARM32</Platforms>
+		<Version>4.0.0.0</Version>
+		<FileVersion>4.0.0.0</FileVersion>
+		<PublishSingleFile>true</PublishSingleFile>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <None Remove="appsettings.json" />
-    <None Remove="geteduroam.ico" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Remove="appsettings.json" />
+		<None Remove="geteduroam.ico" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Include="geteduroam.ico" />
-  </ItemGroup>
+	<ItemGroup>
+		<Content Include="geteduroam.ico" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Content Include="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Include="appsettings.json">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</EmbeddedResource>
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\App.Library\App.Library.csproj" />
-    <ProjectReference Include="..\EduRoam.Localization\EduRoam.Localization.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\App.Library\App.Library.csproj" />
+		<ProjectReference Include="..\EduRoam.Localization\EduRoam.Localization.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Resource Include="geteduroam.ico" />
-    <Resource Include="logo.png" />
-  </ItemGroup>
+	<ItemGroup>
+		<Resource Include="geteduroam.ico" />
+		<Resource Include="logo.png" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Resources.Designer.cs">
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="Resources.Designer.cs">
+			<DependentUpon>Resources.resx</DependentUpon>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Resources.resx">
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="Resources.resx">
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+			<Generator>PublicResXFileCodeGenerator</Generator>
+		</EmbeddedResource>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Styling\Styling.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+	<ItemGroup>
+		<Page Update="Styling\Styling.xaml">
+			<Generator>MSBuild:Compile</Generator>
+		</Page>
+	</ItemGroup>
 
 </Project>

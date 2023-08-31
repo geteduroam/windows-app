@@ -9,6 +9,7 @@
 		<ApplicationIcon>getgovroam.ico</ApplicationIcon>
 		<Version>4.0.0.0</Version>
 		<FileVersion>4.0.0.0</FileVersion>
+		<PublishSingleFile>true</PublishSingleFile>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -22,9 +23,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="appsettings.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Content>
+		<EmbeddedResource Include="appsettings.json">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</EmbeddedResource>
 	</ItemGroup>
 
 	<ItemGroup>

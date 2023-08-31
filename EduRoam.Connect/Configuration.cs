@@ -1,13 +1,29 @@
 ﻿using Microsoft.Extensions.Configuration;
 
+using System.Diagnostics;
+using System.Reflection;
+
 namespace EduRoam.Connect
 {
     internal class Configuration
     {
-        private static readonly IConfiguration Config = new ConfigurationBuilder().AddJsonFile($"appsettings.json", true, true).Build();
+        private readonly IConfiguration config;
 
-        internal static Uri GeoApiUrl => new(Config.GetSection("App")["GeoApiUrl"] ?? throw new ArgumentNullException(nameof(GeoApiUrl)));
+        internal Configuration()
+        {
+            var config = new ConfigurationBuilder();
 
-        internal static Uri ProviderApiUrl => new(Config.GetSection("App")["ProviderApiUrl"] ?? throw new ArgumentNullException(nameof(ProviderApiUrl)));
+            var assembly = Assembly.GetEntryAssembly()!;
+            var appSettings = assembly.GetManifestResourceNames().FirstOrDefault(resource => resource.EndsWith("appsettings.json")) ?? throw new ArgumentException("Missing appsettings.json");
+
+            using var resourceStream = Assembly.GetEntryAssembly()!.GetManifestResourceStream(appSettings);
+            Debug.Assert(resourceStream != null);
+
+            config.AddJsonStream(resourceStream);
+            this.config = config.Build();
+
+        }
+
+        internal Uri ProviderApiUrl => new(this.config.GetSection("App")["ProviderApiUrl"] ?? throw new ArgumentNullException(nameof(this.ProviderApiUrl)));
     }
 }

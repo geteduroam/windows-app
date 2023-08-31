@@ -8,6 +8,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
 	  <AssemblyName>geteduroam-cli</AssemblyName>
 	  <ApplicationIcon>geteduroam.ico</ApplicationIcon>
+	  <PublishSingleFile>true</PublishSingleFile>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,9 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <EmbeddedResource Include="appsettings.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
     <Content Include="geteduroam.ico" />
   </ItemGroup>
 

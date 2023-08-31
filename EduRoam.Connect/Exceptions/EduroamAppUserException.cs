@@ -3,20 +3,26 @@
 namespace EduRoam.Connect.Exceptions
 {
     [Serializable]
-	public class EduroamAppUserException : Exception
-	{
-		public string UserFacingMessage { get; }
+    public class EduroamAppUserException : Exception
+    {
+        public string UserFacingMessage { get; }
 
-		public EduroamAppUserException(string message, string userFacingMessage = null) : base(message)
-		{
+        public EduroamAppUserException(string message, string? userFacingMessage = null) : base(message)
+        {
 #if DEBUG
-			UserFacingMessage = userFacingMessage ?? ("NON-USER-FACING-MESSAGE: " + message);
+            this.UserFacingMessage = userFacingMessage ?? ("NON-USER-FACING-MESSAGE: " + message);
 #else
-			UserFacingMessage = userFacingMessage ?? "NO REASON PROVIDED"; // TODO: rethink this strategy...
+			this.UserFacingMessage = userFacingMessage ?? "NO REASON PROVIDED"; // TODO: rethink this strategy...
 #endif
-		}
+        }
 
-		protected EduroamAppUserException(SerializationInfo serializationInfo, StreamingContext streamingContext) : base(serializationInfo, streamingContext) { }
-	}
+        protected EduroamAppUserException(SerializationInfo serializationInfo, StreamingContext streamingContext) : base(serializationInfo, streamingContext)
+        {
+            if (string.IsNullOrWhiteSpace(this.UserFacingMessage))
+            {
+                throw new ArgumentOutOfRangeException(nameof(this.UserFacingMessage));
+            }
+        }
+    }
 }
 
