@@ -8,7 +8,8 @@
 		<StartupObject>Eduroam.App.App</StartupObject>
 		<ApplicationIcon>geteduroam.ico</ApplicationIcon>
 		<AssemblyName>geteduroam</AssemblyName>
-		<Configurations>Debug;Release;DebugArm</Configurations>
+		<Configurations>Debug;Release;DebugArm;ReleaseArm</Configurations>
+		<RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
 		<Platforms>AnyCPU;ARM32</Platforms>
 		<Version>4.0.0.0</Version>
 		<FileVersion>4.0.0.0</FileVersion>
