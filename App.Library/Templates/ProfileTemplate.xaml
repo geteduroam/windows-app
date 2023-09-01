@@ -123,7 +123,8 @@
                 </Grid>
             </GroupBox>
 
-            <TextBlock Grid.Row="4" TextWrapping="Wrap" TextAlignment="Center" >
+            <TextBlock Grid.Row="4" TextWrapping="Wrap" TextAlignment="Center" 
+                       Visibility="{Binding HasTermsOfUse, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Text="{x:Static lang:Resources.ConsentPre}" />
                 <Hyperlink Command="{Binding ShowTermsOfUseCommand}" NavigateUri="www.google.com" >
                    <TextBlock Text="{x:Static lang:Resources.ConsentMain}" />
