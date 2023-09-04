@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
 	<UseWindowsForms>true</UseWindowsForms>
+	<RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.230822000" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     <PackageReference Include="TaskScheduler" Version="2.10.1" />
@@ -40,15 +42,6 @@
   <ItemGroup>
     <ProjectReference Include="..\EduRoam.Connect\EduRoam.Connect.csproj" />
     <ProjectReference Include="..\EduRoam.Localization\EduRoam.Localization.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Images\help-icon.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Images\menu-icon.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
   </ItemGroup>
 
 </Project>
