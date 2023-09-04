@@ -5,6 +5,7 @@
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
 		<AssemblyName>getgovroam</AssemblyName>
 		<ApplicationIcon>getgovroam.ico</ApplicationIcon>
 		<Version>4.0.0.0</Version>
@@ -19,7 +20,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="getgovroam.ico" />
+		<Content Include="getgovroam.ico">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>

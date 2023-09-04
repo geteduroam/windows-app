@@ -5,6 +5,7 @@
 		<TargetFramework>net6.0-windows</TargetFramework>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
 		<StartupObject>Eduroam.App.App</StartupObject>
 		<ApplicationIcon>geteduroam.ico</ApplicationIcon>
 		<AssemblyName>geteduroam</AssemblyName>
@@ -22,7 +23,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="geteduroam.ico" />
+		<Content Include="geteduroam.ico">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
 	</ItemGroup>
 
 	<ItemGroup>

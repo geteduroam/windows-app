@@ -2,6 +2,7 @@
 
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Forms;
 
 namespace App.Library
 {
@@ -10,11 +11,24 @@ namespace App.Library
     /// </summary>
     public partial class MainWindow : Window
     {
+        private NotifyIcon notifyIcon;
+
         public readonly MainViewModel MainViewModel;
 
         public MainWindow()
         {
             this.InitializeComponent();
+
+            //            this.ShowInTaskbar = true;
+
+            //#pragma warning disable CA1416 // Validate platform compatibility
+            //            this.notifyIcon = new()
+            //            {
+            //                Icon = new Icon(@"geteduroam.ico"),
+            //                Visible = true,
+            //                Text = "geteduroam"
+            //            };
+            //#pragma warning restore CA1416 // Validate platform compatibility
 
             this.MainViewModel = new MainViewModel(this.Close);
             this.DataContext = this.MainViewModel;
@@ -24,5 +38,7 @@ namespace App.Library
         {
             this.MainViewModel.Dispose();
         }
+
+
     }
 }
