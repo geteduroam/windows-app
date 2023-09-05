@@ -46,7 +46,7 @@ public abstract class BaseViewModel : NotifyPropertyChanged
 
     protected abstract Task NavigateNextAsync();
 
-    public virtual void Search(string query)
+    public virtual void Search()
     {
         // by default, do nothing
     }

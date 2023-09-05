@@ -12,6 +12,8 @@ namespace App.Library
 
         private IdentityProviderProfile? selectedProfile;
 
+        private string searchText = string.Empty;
+
         public ApplicationState()
         {
             this.NavigationHistory = new Stack<BaseViewModel>();
@@ -43,10 +45,24 @@ namespace App.Library
             }
         }
 
+        public string SearchText
+        {
+            get
+            {
+                return this.searchText;
+            }
+            set
+            {
+                this.searchText = value;
+                this.CallPropertyChanged();
+            }
+        }
+
         public void Reset()
         {
             this.SelectedIdentityProvider = null;
             this.SelectedProfile = null;
+            this.searchText = string.Empty;
             this.NavigationHistory.Clear();
         }
 

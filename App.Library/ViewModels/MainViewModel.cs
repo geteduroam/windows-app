@@ -29,8 +29,6 @@ namespace App.Library.ViewModels
 
         private readonly Status status;
 
-        private string searchText;
-
         public MainViewModel(Action closeApp)
         {
             this.NewProfileCommand = new DelegateCommand(this.NewProfileCommandAction, this.CanNewProfileCommandAction);
@@ -42,12 +40,12 @@ namespace App.Library.ViewModels
             this.UninstallCommand = new DelegateCommand(this.Uninstall);
             this.OpenHelpCommand = new DelegateCommand(this.OpenHelp);
             this.OpenMenuCommand = new DelegateCommand(this.OpenMenu);
+            this.GoSearchCommand = new DelegateCommand(this.GoSearch);
 
             this.idpDownloader = new IdentityProviderDownloader();
             this.State = new ApplicationState();
 
             this.status = new StatusTask().GetStatus();
-            this.searchText = string.Empty;
             this.IsLoading = true;
             this.CloseApp = closeApp;
 
@@ -84,6 +82,8 @@ namespace App.Library.ViewModels
         public DelegateCommand UninstallCommand { get; protected set; }
 
         public DelegateCommand OpenHelpCommand { get; protected set; }
+
+        public DelegateCommand GoSearchCommand { get; protected set; }
 
         public Action CloseApp { get; private set; }
 
@@ -154,17 +154,16 @@ namespace App.Library.ViewModels
 
         public string SearchText
         {
-            get => this.searchText;
+            get => this.State.SearchText;
             set
             {
-                this.searchText = value;
+                this.State.SearchText = value;
                 if (this.ActiveContent != null)
                 {
-                    this.ActiveContent.Search(this.searchText);
+                    this.ActiveContent.Search();
                 }
             }
         }
-
 
         public void SetStartContent()
         {
@@ -542,6 +541,14 @@ namespace App.Library.ViewModels
         {
             this.ShowMenu = true;
             this.CallPropertyChanged(nameof(this.ShowMenu));
+        }
+
+        public void GoSearch()
+        {
+            if (this.ActiveContent != null && this.ActiveContent is not SelectInstitutionViewModel)
+            {
+                this.SetActiveContent(new SelectInstitutionViewModel(this));
+            }
         }
 
         public void OpenHelp()

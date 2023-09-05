@@ -79,7 +79,12 @@
                                              FontSize="14"
                                              Background="{DynamicResource BackgroundBrush}"
                                              shell:WindowChrome.IsHitTestVisibleInChrome="True" 
-                                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" >
+                                        <TextBox.InputBindings>
+                                            <KeyBinding Command="{Binding Path=GoSearchCommand}" Key="Enter" />
+                                            <KeyBinding Command="{Binding Path=GoSearchCommand}" Key="Tab" />
+                                        </TextBox.InputBindings>
+                                    </TextBox>
                                     <!--Watermark for textbox-->
                                     <Grid HorizontalAlignment="Left"
                                         VerticalAlignment="Center"

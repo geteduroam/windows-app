@@ -15,19 +15,15 @@ namespace App.Library.ViewModels
 {
     public class SelectInstitutionViewModel : BaseViewModel
     {
-        private string searchText;
-
         public SelectInstitutionViewModel(MainViewModel owner)
             : base(owner)
         {
-            this.searchText = string.Empty;
         }
 
         public override bool ShowSearch => true;
 
-        public override void Search(string query)
+        public override void Search()
         {
-            this.searchText = query;
             this.CallPropertyChanged(nameof(this.Institutions));
         }
 
@@ -41,7 +37,7 @@ namespace App.Library.ViewModels
 
         public async Task<ObservableCollection<IdentityProvider>> GetInstitutionsAsync()
         {
-            var institutes = await InstitutesTask.GetAsync(this.searchText);
+            var institutes = await InstitutesTask.GetAsync(this.Owner.State.SearchText);
             return new ObservableCollection<IdentityProvider>(institutes);
         }
 

@@ -29,6 +29,8 @@ namespace App.Library.ViewModels
             throw new NotImplementedException();
         }
 
+        public override bool ShowSearch => true;
+
         public override bool ShowNavigatePrevious => false;
         public override bool ShowNavigateNext => false;
         public override bool ShowMenu => true;
@@ -42,22 +44,5 @@ namespace App.Library.ViewModels
         {
             this.Owner.Restart();
         }
-
-        //
-        //        if (status.ActiveProfile)
-        //        {
-        //            LoadPageInstalledProfile();
-        //        }
-        //        else if (ExtractedEapConfig != null)
-        //        {
-        //            // loads summary form so user can confirm installation
-        //            eapConfig = ExtractedEapConfig;
-        //            ExtractFlag = true;
-        //            LoadPageProfileOverview();
-        //        }
-        //        else
-        //        {
-        //            LoadPageMainMenu();
-        //        }
     }
 }
