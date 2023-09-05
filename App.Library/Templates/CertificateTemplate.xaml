@@ -25,7 +25,7 @@
                 Margin="8,0,8,16"
                 Text="{x:Static lang:Resources.CertificateTitleStart}"
                 TextAlignment="Center"
-                Style="{DynamicResource TextBlockLarge}"
+                FontSize="{StaticResource Font.Large}"
                 Visibility="{Binding AllCertificatesAreInstalled, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
                 TextWrapping="Wrap"/>
 
@@ -34,7 +34,7 @@
                 Margin="8,0,8,16"
                 Text="{x:Static lang:Resources.CertificateTitleInstalled}"
                 TextAlignment="Center"
-                Style="{DynamicResource TextBlockLarge}"
+                FontSize="{StaticResource Font.Large}"
                 Visibility="{Binding AllCertificatesAreInstalled, Converter={StaticResource BooleanToVisibilityConverter}}"
                 TextWrapping="Wrap"/>
             

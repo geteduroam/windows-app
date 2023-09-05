@@ -11,7 +11,7 @@
                 <TextBlock
                     x:Name="tbTitle"
                     Margin="5"
-                    FontSize="24"
+                    FontSize="{StaticResource Font.Large}"
                     Text="{x:Static lang:Resources.RedirectTitle}"
                     TextAlignment="Center"
                     TextWrapping="Wrap" />

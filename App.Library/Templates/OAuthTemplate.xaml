@@ -13,7 +13,7 @@
 
             <TextBlock Grid.Row="0" 
                Margin="8,0,8,16" 
-               FontSize="24" 
+               FontSize="{StaticResource Font.Large}" 
                Text="{x:Static lang:Resources.OAuthTitle}" 
                TextAlignment="Center" 
                TextWrapping="Wrap" />

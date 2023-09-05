@@ -19,7 +19,7 @@
                        TextAlignment="Center"
                        TextWrapping="Wrap" 
                        Margin="8,0,8,16"
-                       FontSize="24" />
+                       FontSize="{StaticResource Font.Large}" />
 
             <TextBlock Grid.Row="1" 
                        Text="{Binding Status}" 

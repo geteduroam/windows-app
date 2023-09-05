@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:App.Library"
+                    xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:clr="clr-namespace:System;assembly=mscorlib">
+
+    <FontFamily x:Key="Default">Franklin Gothic</FontFamily>
+    <FontFamily x:Key="IconFont">Segoe MDL2 Assets</FontFamily>
+
+    <clr:Double x:Key="Font.Small">8</clr:Double>
+    <clr:Double x:Key="Font.Large">24</clr:Double>
+
+</ResourceDictionary>

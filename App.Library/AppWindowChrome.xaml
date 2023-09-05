@@ -23,17 +23,18 @@
                             <ContentPresenter Content="{TemplateBinding Content}" />
                         </Border>
 
-                        <Grid Margin="10, 1, 150, 0" Background="Transparent" Height="24" 
+                        <Grid Margin="10, 1, 148, 0" Background="Transparent" Height="24" 
                                     HorizontalAlignment="Stretch" VerticalAlignment="Top">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="24" />
                                 <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="40" />
                             </Grid.ColumnDefinitions>
 
-                            <Button Grid.Column="0" Content="&#xE700;" 
+                            <Button Grid.Column="0" 
+                                    x:Name="AppMenu"
+                                    Content="&#xE700;" 
                                     HorizontalAlignment="Left"
-                                    FontSize="14"
                                     Command="{Binding OpenMenuCommand}"
                                     shell:WindowChrome.IsHitTestVisibleInChrome="True"
                                     Style="{DynamicResource GlobalNavStyle}">
@@ -76,7 +77,6 @@
                                     <TextBox x:Name="tbSearch"
                                              Height="20"
                                              Padding="2, 0, 2, 0"
-                                             FontSize="14"
                                              Background="{DynamicResource BackgroundBrush}"
                                              shell:WindowChrome.IsHitTestVisibleInChrome="True" 
                                              Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" >
@@ -112,6 +112,7 @@
                             </Grid>
 
                             <Button Grid.Column="2" 
+                                    x:Name="Help"
                                     Content="&#xE897;"
                                     Command="{Binding OpenHelpCommand}"
                                     shell:WindowChrome.IsHitTestVisibleInChrome="True"
@@ -125,7 +126,6 @@
     </Style>
 
     <Style x:Key="Watermark" TargetType="{x:Type TextBlock}">
-        <Setter Property="FontSize" Value="14" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Foreground" Value="{DynamicResource BlueButtonBrush}" />
         <Setter Property="Visibility" Value="Collapsed" />

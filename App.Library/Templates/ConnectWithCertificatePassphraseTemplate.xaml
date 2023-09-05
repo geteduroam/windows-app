@@ -29,7 +29,7 @@
                 <TextBlock Grid.Row="0"
                            Grid.ColumnSpan="3"
                            Margin="8,0,8,16"
-                           FontSize="24"
+                           FontSize="{StaticResource Font.Large}"
                            Text="{x:Static lang:Resources.LoginTitle}"
                            TextAlignment="Center"
                            TextWrapping="Wrap" />

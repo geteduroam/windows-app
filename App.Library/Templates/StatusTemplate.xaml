@@ -21,7 +21,7 @@
                        TextWrapping="Wrap" 
                        TextAlignment="Center" 
                        Text="{Binding ProfileName}" 
-                       FontSize="24"
+                       FontSize="{StaticResource Font.Large}"
                        Visibility="{Binding ShowProfileStatus, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
             <StackPanel Grid.Row="1"

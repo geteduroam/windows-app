@@ -16,7 +16,7 @@
                 x:Name="tbTitle"
                 Grid.Row="0"
                 Margin="8,22,8,16"
-                FontSize="22"
+                FontSize="{StaticResource Font.Large}"
                 Text="{x:Static lang:Resources.SelectInstitution}"
                 TextAlignment="Center"
                 TextWrapping="Wrap" />
@@ -26,7 +26,6 @@
                 Grid.Row="1"
                 Margin="22,22,22,22"
                 Padding="0"
-                BorderThickness="0"
                 IsTabStop="False"
                 ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                 ItemsSource="{Binding Institutions.Result}"
