@@ -28,6 +28,7 @@
                 <ResourceDictionary>
                     <templates:LocalDataTemplateSelector x:Key="LocalDataTemplateSelector" />
                     <converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+                    <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
                     <converters:ImageConverter x:Key="ImageConverter" />
                     <converters:ImageConverter x:Key="AppImageConverter" AppSpecific="True" />
                     <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />

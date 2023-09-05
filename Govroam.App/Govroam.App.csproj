@@ -16,6 +16,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="application-icon.png" />
 		<None Remove="appsettings.json" />
 		<None Remove="getgovroam.ico" />
 		<None Remove="logo.png" />
@@ -38,6 +39,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Resource Include="application-icon.png" />
 		<Resource Include="logo.png" />
 	</ItemGroup>
 

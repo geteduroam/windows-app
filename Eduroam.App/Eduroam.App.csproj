@@ -18,11 +18,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="application-icon.png" />
 		<None Remove="appsettings.json" />
 		<None Remove="geteduroam.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<Resource Include="application-icon.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Resource>
 		<Content Include="geteduroam.ico">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</Content>

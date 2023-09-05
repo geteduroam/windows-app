@@ -70,30 +70,5 @@ namespace App.Library.Converters
             image.Freeze();
             return image;
         }
-
-        //public static string GenerateSvgLogoHtml(byte[] logo)
-        //{
-        //    string base64 = System.Convert.ToBase64String(logo);
-        //    return
-        //        "<!DOCTYPE html>" +
-        //        "<html oncontextmenu=\"return false;\" ondragstart=\"return false;\">" +
-        //        "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">" +
-        //        "<style>" +
-        //        "html,body {" +
-        //        "margin: 0;" +
-        //        "padding: 0;" +
-        //        "overflow: hidden;" +
-        //        "display: flex;" +
-        //        "justify-content: center;" +
-        //        "}" +
-        //        "img {" +
-        //        "max-width: 100%" +
-        //        "max-height: 100%" +
-        //        "width: auto;" +
-        //        "height: auto;" +
-        //        "}" +
-        //        "</style>" +
-        //        "<img src=\'data:image/svg+xml;base64," + base64 + "\'>";
-        //}
     }
 }
