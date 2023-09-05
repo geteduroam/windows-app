@@ -11,6 +11,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
+using SharedResources = EduRoam.Localization.Resources;
+
 namespace App.Library.ViewModels
 {
     public class SelectInstitutionViewModel : BaseViewModel
@@ -19,6 +21,8 @@ namespace App.Library.ViewModels
             : base(owner)
         {
         }
+
+        public override string PageTitle => SharedResources.SelectInstitution;
 
         public override bool ShowSearch => true;
 

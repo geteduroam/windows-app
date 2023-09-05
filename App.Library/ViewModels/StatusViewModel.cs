@@ -17,6 +17,8 @@ namespace App.Library.ViewModels
             this.status = new StatusTask().GetStatus();
         }
 
+        public override string PageTitle => this.ShowProfileStatus ? this.ProfileName : string.Empty;
+
         public DelegateCommand SelectOtherInstitutionCommand { get; private set; }
 
         protected override bool CanNavigateNextAsync()

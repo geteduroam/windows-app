@@ -116,6 +116,18 @@ namespace App.Library.ViewModels
             }
         }
 
+        public string PageTitle
+        {
+            get
+            {
+                if (this.ActiveContent == null)
+                {
+                    return string.Empty;
+                }
+                return this.ActiveContent.PageTitle;
+            }
+        }
+
         public bool ShowNavigatePrevious
         {
             get

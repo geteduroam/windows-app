@@ -31,6 +31,8 @@ namespace App.Library.ViewModels
 
         }
 
+        public override string PageTitle => this.Name;
+
         public DelegateCommand NavigateWebCommand { get; private set; }
 
         public DelegateCommand OpenEmailCommand { get; private set; }

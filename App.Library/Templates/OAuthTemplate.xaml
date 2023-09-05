@@ -7,18 +7,10 @@
     <DataTemplate DataType="{x:Type viewModels:OAuthViewModel}">
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" 
-               Margin="8,0,8,16" 
-               FontSize="{StaticResource Font.Large}" 
-               Text="{x:Static lang:Resources.OAuthTitle}" 
-               TextAlignment="Center" 
-               TextWrapping="Wrap" />
-
-            <TextBlock Grid.Row="1" 
                        Text="{x:Static lang:Resources.OAuthExplanation}" 
                        TextAlignment="Center"
                        TextWrapping="Wrap" />

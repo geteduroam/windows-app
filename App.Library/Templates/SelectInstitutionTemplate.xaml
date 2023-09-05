@@ -12,15 +12,6 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <TextBlock
-                x:Name="tbTitle"
-                Grid.Row="0"
-                Margin="8,22,8,16"
-                FontSize="{StaticResource Font.Large}"
-                Text="{x:Static lang:Resources.SelectInstitution}"
-                TextAlignment="Center"
-                TextWrapping="Wrap" />
-            
             <ListBox
                 x:Name="lbInstitutions"
                 Grid.Row="1"

@@ -23,6 +23,8 @@ namespace App.Library.ViewModels
             this.eapConfig = eapConfig;
         }
 
+        public override string PageTitle => string.Empty;
+
         public ObservableCollection<CertificateInstallerViewModel> Installers { get; }
 
         public bool AllCertificatesAreInstalled => this.Installers.All(x => x.IsInstalled);

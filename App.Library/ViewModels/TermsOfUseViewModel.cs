@@ -3,6 +3,8 @@
 using System;
 using System.Threading.Tasks;
 
+using SharedResources = EduRoam.Localization.Resources;
+
 namespace App.Library.ViewModels
 {
     public class TermsOfUseViewModel : BaseViewModel
@@ -14,6 +16,8 @@ namespace App.Library.ViewModels
         {
             this.eapConfig = eapConfig;
         }
+
+        public override string PageTitle => SharedResources.TermsOfUseTitle;
 
         protected override bool CanNavigateNextAsync()
         {

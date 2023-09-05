@@ -41,7 +41,8 @@
 
     <Grid Background="{DynamicResource BackgroundBrush}">
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
+            <RowDefinition Height="48" />
+            <RowDefinition Height="26" />
             <RowDefinition Height="*" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -52,7 +53,15 @@
             <Image Source="{Binding Converter={StaticResource AppImageConverter}, ConverterParameter=logo.png}" Stretch="Uniform" />
         </Grid>
 
-        <Grid Grid.Row="1"
+        <TextBlock x:Name="PageTitle"
+                   Grid.Row="1"
+                   FontSize="{StaticResource Font.Large}"
+                   Text="{Binding PageTitle}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   TextAlignment="Center" />      
+
+        <Grid Grid.Row="2"
               Grid.RowSpan="2"
               HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch"

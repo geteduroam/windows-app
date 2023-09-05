@@ -7,16 +7,8 @@
     <DataTemplate DataType="{x:Type viewModels:TermsOfUseViewModel}">
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-
-            <TextBlock Grid.Row="0" 
-                       Margin="8,0,8,16" 
-                       FontSize="{StaticResource Font.Large}" 
-                       Text="{x:Static lang:Resources.TermsOfUseTitle}" 
-                       TextAlignment="Center" 
-                       TextWrapping="Wrap" />  
 
             <TextBlock Grid.Row="1" Text="{Binding TermsOfUse}" 
                        TextAlignment="Center"

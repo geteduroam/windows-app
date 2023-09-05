@@ -11,17 +11,9 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             
-            <TextBlock Grid.Row="0"
-                       Text="{x:Static lang:Resources.LoginTitle}"
-                       TextAlignment="Center"
-                       TextWrapping="Wrap" 
-                       Margin="8,0,8,16"
-                       FontSize="{StaticResource Font.Large}" />
-
-            <TextBlock Grid.Row="1" 
+            <TextBlock Grid.Row="0" 
                        Text="{Binding Status}" 
                        TextWrapping="Wrap" 
                        TextAlignment="Center" 

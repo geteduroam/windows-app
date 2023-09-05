@@ -12,17 +12,9 @@
     <DataTemplate DataType="{x:Type viewModels:StatusViewModel}">
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" KeyboardNavigation.IsTabStop="False">
             <Grid.RowDefinitions>
-                <RowDefinition Height="48"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="48"/>
             </Grid.RowDefinitions>
-
-            <TextBlock Grid.Row="0" 
-                       TextWrapping="Wrap" 
-                       TextAlignment="Center" 
-                       Text="{Binding ProfileName}" 
-                       FontSize="{StaticResource Font.Large}"
-                       Visibility="{Binding ShowProfileStatus, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
             <StackPanel Grid.Row="1"
                         Visibility="{Binding ShowProfileStatus, Converter={StaticResource BooleanToVisibilityConverter}}">

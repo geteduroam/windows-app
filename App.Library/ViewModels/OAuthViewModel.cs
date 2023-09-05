@@ -4,6 +4,8 @@ using EduRoam.Connect.Tasks;
 using System;
 using System.Threading.Tasks;
 
+using SharedResources = EduRoam.Localization.Resources;
+
 namespace App.Library.ViewModels
 {
     public class OAuthViewModel : BaseViewModel
@@ -35,6 +37,8 @@ namespace App.Library.ViewModels
         {
             this.profile = profile;
         }
+
+        public override string PageTitle => SharedResources.OAuthTitle;
 
         protected override bool CanNavigateNextAsync()
         {

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 
+using SharedResources = EduRoam.Localization.Resources;
 namespace App.Library.ViewModels
 {
     public class RedirectViewModel : BaseViewModel
@@ -14,6 +15,8 @@ namespace App.Library.ViewModels
         {
             this.redirectUri = redirectUri;
         }
+
+        public override string PageTitle => SharedResources.RedirectTitle;
 
         protected override bool CanNavigateNextAsync()
         {

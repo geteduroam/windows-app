@@ -30,6 +30,8 @@ namespace App.Library.ViewModels
             this.connection = connection;
         }
 
+        public override string PageTitle => SharedResources.LoginTitle;
+
         public override string PreviousTitle => SharedResources.ButtonClose;
 
         public override string NextTitle => SharedResources.ButtonConnect;
