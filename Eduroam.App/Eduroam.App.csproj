@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net6.0-windows10.0.19041.0</TargetFramework>
+		<TargetFramework>net6.0-windows</TargetFramework>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
 		<UseWindowsForms>true</UseWindowsForms>
@@ -41,6 +41,7 @@
 
 	<ItemGroup>
 		<Resource Include="geteduroam.ico" />
+		<Resource Include="logo.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -49,12 +50,6 @@
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Content Update="logo.png">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Content>
 	</ItemGroup>
 
 	<ItemGroup>
