@@ -26,7 +26,7 @@
                         <Grid Margin="10, 1, 150, 0" Background="Transparent" Height="24" 
                                     HorizontalAlignment="Stretch" VerticalAlignment="Top">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="24" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="50" />
                             </Grid.ColumnDefinitions>
@@ -62,51 +62,50 @@
                                     </ContextMenu>
                                 </Button.ContextMenu>
                             </Button>
-                            <!--<TextBlock  Grid.Column="1" 
-                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}"   
-                                        shell:WindowChrome.IsHitTestVisibleInChrome="True"/>-->
+
                             <Grid Grid.Column="1"
                                   x:Name="SearchPanel"
-                                  Height="20"
-                                  MinWidth="140"
-                                  MaxWidth="240"
+                                  Height="20"                                  
                                   HorizontalAlignment="Stretch"
-                                  VerticalAlignment="Center"  
-                                  Margin="0,2,0,2">
-                                <TextBox x:Name="tbSearch"                                         
-                                    Height="20"
-                                    MinWidth="140"
-                                    MaxWidth="240"
-                                    FontSize="14"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Background="{DynamicResource BackgroundBrush}"
-                                    Text="" 
-                                    shell:WindowChrome.IsHitTestVisibleInChrome="True" />
-                                 <!--Watermark for textbox--> 
-                                <TextBlock
-                                    Height="20"
-                                    FontSize="14"
-                                    Padding="6,0,0,0"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Foreground="{DynamicResource BlueButtonBrush}"
-                                    IsHitTestVisible="False"
-                                    Text="{x:Static lang:Resources.Search}"
-                                    TextAlignment="Center">
-                                    <TextBlock.Style>
-                                        <Style TargetType="{x:Type TextBlock}">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding Text, ElementName=tbSearch}" Value="">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+                                  VerticalAlignment="Center"
+                                  Margin="0,2,0,2"
+                                  Visibility="{Binding ShowSearch, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Grid HorizontalAlignment="Stretch"
+                                      VerticalAlignment="Center"
+                                      MaxWidth="240">
+                                    <TextBox x:Name="tbSearch"
+                                             Height="20"
+                                             Padding="2, 0, 2, 0"
+                                             FontSize="14"
+                                             Background="{DynamicResource BackgroundBrush}"
+                                             shell:WindowChrome.IsHitTestVisibleInChrome="True" 
+                                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
+                                    <!--Watermark for textbox-->
+                                    <Grid HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Margin="8, 0, 0, 0"
+                                        Height="20">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="24" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock
+                                            Grid.Column="0"
+                                            FontFamily="{StaticResource IconFont}"                                            
+                                            Style="{DynamicResource Watermark}">
+                                            <TextBlock.Text>
+                                                &#xE721;
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            Text="{x:Static lang:Resources.Search}"
+                                            Style="{DynamicResource Watermark}"/>
+                                    </Grid>
+                                </Grid>
                             </Grid>
-                        
+
                             <Button Grid.Column="2" 
                                     Content="&#xE897;"
                                     Command="{Binding OpenHelpCommand}"
@@ -118,6 +117,19 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <Style x:Key="Watermark" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource BlueButtonBrush}" />
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Text, ElementName=tbSearch}" Value="">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+        </Style.Triggers>
     </Style>
 
     <Style x:Key="GlobalNavStyle" TargetType="Button">

@@ -23,14 +23,12 @@ namespace App.Library.ViewModels
             this.searchText = string.Empty;
         }
 
-        public string SearchText
+        public override bool ShowSearch => true;
+
+        public override void Search(string query)
         {
-            get => this.searchText;
-            set
-            {
-                this.searchText = value;
-                this.CallPropertyChanged(nameof(this.Institutions));
-            }
+            this.searchText = query;
+            this.CallPropertyChanged(nameof(this.Institutions));
         }
 
         public AsyncProperty<ObservableCollection<IdentityProvider>> Institutions

@@ -32,6 +32,8 @@ public abstract class BaseViewModel : NotifyPropertyChanged
 
     public virtual bool ShowNavigateNext => true;
 
+    public virtual bool ShowSearch => false;
+
     public virtual bool ShowMenu => false;
 
     public virtual bool ShowHelp => false;
@@ -43,6 +45,11 @@ public abstract class BaseViewModel : NotifyPropertyChanged
     protected abstract bool CanNavigateNextAsync();
 
     protected abstract Task NavigateNextAsync();
+
+    public virtual void Search(string query)
+    {
+        // by default, do nothing
+    }
 
     protected virtual bool CanNavigatePrevious()
     {

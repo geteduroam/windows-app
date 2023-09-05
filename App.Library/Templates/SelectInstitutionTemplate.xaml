@@ -9,7 +9,6 @@
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
@@ -21,44 +20,10 @@
                 Text="{x:Static lang:Resources.SelectInstitution}"
                 TextAlignment="Center"
                 TextWrapping="Wrap" />
-
-            <TextBox
-                x:Name="tbSearch"
-                Grid.Row="1"
-                Height="Auto"
-                MinHeight="24"
-                Margin="24,8"
-                Padding="5,6,5,6"
-                FontSize="18"
-                b:FocusBinding.IsFocused="true"
-                Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" />
-
-            <!-- Watermark for textbox -->
-            <TextBlock
-                Grid.Row="1"
-                Margin="32,0,0,0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                FontSize="18"
-                Foreground="DarkGray"
-                IsHitTestVisible="False"
-                Text="{x:Static lang:Resources.Search}"
-                TextAlignment="Center">
-                <TextBlock.Style>
-                    <Style TargetType="{x:Type TextBlock}">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding Text, ElementName=tbSearch}" Value="">
-                                <Setter Property="Visibility" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </TextBlock.Style>
-            </TextBlock>
-
+            
             <ListBox
                 x:Name="lbInstitutions"
-                Grid.Row="2"
+                Grid.Row="1"
                 Margin="22,22,22,22"
                 Padding="0"
                 BorderThickness="0"

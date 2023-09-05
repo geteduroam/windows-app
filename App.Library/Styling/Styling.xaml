@@ -1,10 +1,12 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:App.Library"
-                    xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+                    xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:clr="clr-namespace:System;assembly=mscorlib">
 
     <FontFamily x:Key="default">Franklin Gothic</FontFamily>
-
+    <FontFamily x:Key="IconFont">Segoe MDL2 Assets</FontFamily>
+    
     <SolidColorBrush x:Key="BackgroundBrush" Color="#EBF2F7" />
     <SolidColorBrush x:Key="BlueButtonBrush" Color="#00698F" />
     

@@ -29,6 +29,8 @@ namespace App.Library.ViewModels
 
         private readonly Status status;
 
+        private string searchText;
+
         public MainViewModel(Action closeApp)
         {
             this.NewProfileCommand = new DelegateCommand(this.NewProfileCommandAction, this.CanNewProfileCommandAction);
@@ -45,6 +47,7 @@ namespace App.Library.ViewModels
             this.State = new ApplicationState();
 
             this.status = new StatusTask().GetStatus();
+            this.searchText = string.Empty;
             this.IsLoading = true;
             this.CloseApp = closeApp;
 
@@ -137,6 +140,32 @@ namespace App.Library.ViewModels
             }
         }
 
+        public bool ShowSearch
+        {
+            get
+            {
+                if (this.ActiveContent == null)
+                {
+                    return false;
+                }
+                return this.ActiveContent.ShowSearch;
+            }
+        }
+
+        public string SearchText
+        {
+            get => this.searchText;
+            set
+            {
+                this.searchText = value;
+                if (this.ActiveContent != null)
+                {
+                    this.ActiveContent.Search(this.searchText);
+                }
+            }
+        }
+
+
         public void SetStartContent()
         {
             var status = new StatusTask().GetStatus();
@@ -210,6 +239,7 @@ namespace App.Library.ViewModels
                 this.CallPropertyChanged(nameof(this.ActiveContent));
                 this.CallPropertyChanged(nameof(this.ShowNavigatePrevious));
                 this.CallPropertyChanged(nameof(this.ShowNavigateNext));
+                this.CallPropertyChanged(nameof(this.ShowSearch));
             }
         }
 
@@ -231,6 +261,7 @@ namespace App.Library.ViewModels
                     this.CallPropertyChanged(nameof(this.IsLoading));
                     this.CallPropertyChanged(nameof(this.ShowNavigatePrevious));
                     this.CallPropertyChanged(nameof(this.ShowNavigateNext));
+                    this.CallPropertyChanged(nameof(this.ShowSearch));
                 });
         }
 
@@ -239,8 +270,6 @@ namespace App.Library.ViewModels
             this.State.Reset();
             this.SetActiveContent(new SelectInstitutionViewModel(this));
         }
-
-        //todo Move to a better place
 
         /// <summary>
         /// downloads eap config based on profileId
