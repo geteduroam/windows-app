@@ -247,10 +247,7 @@ namespace App.Library.ViewModels
             {
                 this.ActiveContent = viewModel;
                 this.IsLoading = false;
-                this.CallPropertyChanged(nameof(this.ActiveContent));
-                this.CallPropertyChanged(nameof(this.ShowNavigatePrevious));
-                this.CallPropertyChanged(nameof(this.ShowNavigateNext));
-                this.CallPropertyChanged(nameof(this.ShowSearch));
+                this.CallViewPropertyChanges();
             }
         }
 
@@ -268,12 +265,17 @@ namespace App.Library.ViewModels
 
                     this.ActiveContent = viewModel;
                     this.IsLoading = false;
-                    this.CallPropertyChanged(nameof(this.ActiveContent));
-                    this.CallPropertyChanged(nameof(this.IsLoading));
-                    this.CallPropertyChanged(nameof(this.ShowNavigatePrevious));
-                    this.CallPropertyChanged(nameof(this.ShowNavigateNext));
-                    this.CallPropertyChanged(nameof(this.ShowSearch));
+                    this.CallViewPropertyChanges();
                 });
+        }
+
+        private void CallViewPropertyChanges()
+        {
+            this.CallPropertyChanged(nameof(this.ActiveContent));
+            this.CallPropertyChanged(nameof(this.ShowNavigatePrevious));
+            this.CallPropertyChanged(nameof(this.ShowNavigateNext));
+            this.CallPropertyChanged(nameof(this.ShowSearch));
+            this.CallPropertyChanged(nameof(this.PageTitle));
         }
 
         public void Restart()

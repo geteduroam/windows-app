@@ -77,11 +77,11 @@
                        TextAlignment="Center" />
         </Grid>
 
-        <ContentControl Grid.Row="1"
+        <ContentControl Grid.Row="2"
                         Content="{Binding ActiveContent}"
                         ContentTemplateSelector="{DynamicResource LocalDataTemplateSelector}" />
 
-        <Grid Grid.Row="2" 
+        <Grid Grid.Row="3" 
               Visibility="{Binding ActiveContent, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" 
               Margin="5, 5, 5, 5">
             <Grid.RowDefinitions>
