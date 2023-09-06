@@ -81,18 +81,6 @@
         </Setter>
     </Style>
 
-    <Style x:Key="Watermark" TargetType="{x:Type TextBlock}">
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}" />
-        <Setter Property="Visibility" Value="Collapsed" />
-        <Setter Property="IsHitTestVisible" Value="False" />
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding Text, ElementName=tbSearch}" Value="">
-                <Setter Property="Visibility" Value="Visible" />
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
     <Style x:Key="GlobalNavStyle" TargetType="Button">
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Background" Value="Transparent" />

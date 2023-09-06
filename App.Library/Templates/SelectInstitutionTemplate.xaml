@@ -12,12 +12,14 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <TextBox x:Name="tbSearch"
+            <TextBox x:Name="Search"
                      Grid.Row="0"
-                    Height="20"
-                    Padding="2, 0, 2, 0"
-                    BorderBrush="{StaticResource PrimaryBrush}" 
-                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" >
+                     Height="24"
+                     Padding="4"
+                     BorderBrush="{StaticResource PrimaryBrush}"                     
+                     VerticalAlignment="Center"
+                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                     b:FocusBinding.IsFocused="true">
             </TextBox>
 
             <!--Watermark for textbox-->
@@ -25,7 +27,7 @@
                   HorizontalAlignment="Left"
                   VerticalAlignment="Center"
                   Margin="8, 0, 0, 0"
-                  Height="20">
+                  Height="24">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="24" />
                     <ColumnDefinition Width="*" />
@@ -60,4 +62,15 @@
         </Grid>
     </DataTemplate>
 
+    <Style x:Key="Watermark" TargetType="{x:Type TextBlock}">
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}" />
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="IsHitTestVisible" Value="False" />
+        <Style.Triggers>
+            <DataTrigger Binding="{Binding Text, ElementName=Search}" Value="">
+                <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>
