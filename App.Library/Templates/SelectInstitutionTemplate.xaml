@@ -12,14 +12,20 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <TextBox x:Name="Search"
+            <TextBox x:Name="SearchBox"
                      Grid.Row="0"
                      Height="24"
                      Padding="4"
-                     BorderBrush="{StaticResource PrimaryBrush}"                     
+                     BorderBrush="{StaticResource PrimaryBrush}"   
+                     Opacity="0.5"
                      VerticalAlignment="Center"
                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                      b:FocusBinding.IsFocused="true">
+                <TextBox.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="4"/>
+                    </Style>
+                </TextBox.Resources>
             </TextBox>
 
             <!--Watermark for textbox-->
@@ -29,7 +35,7 @@
                   Margin="8, 0, 0, 0"
                   Height="24">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="24" />
+                    <ColumnDefinition Width="18" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
@@ -68,7 +74,7 @@
         <Setter Property="Visibility" Value="Collapsed" />
         <Setter Property="IsHitTestVisible" Value="False" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Text, ElementName=Search}" Value="">
+            <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
                 <Setter Property="Visibility" Value="Visible" />
             </DataTrigger>
         </Style.Triggers>

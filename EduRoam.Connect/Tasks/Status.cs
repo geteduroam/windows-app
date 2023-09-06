@@ -24,7 +24,7 @@ namespace EduRoam.Connect.Tasks
             {
                 if (this.ExpirationDate == null)
                 {
-                    return "-";
+                    return "";
                 }
                 else
                 {

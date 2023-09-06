@@ -58,13 +58,12 @@
                    TextAlignment="Center" />
 
             <Grid Grid.Row="1"
-              Grid.RowSpan="2"
-              HorizontalAlignment="Stretch"
-              VerticalAlignment="Stretch"
-              Background="{DynamicResource BackgroundBrush}"
-              Opacity="0.5"
-              Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
-              ZIndex="100">
+                  Grid.RowSpan="2"
+                  Opacity="0.5"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  Background="{DynamicResource BackgroundBrush}"
+                  Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock x:Name="Loading" 
                        Margin="5"
                        HorizontalAlignment="Center"

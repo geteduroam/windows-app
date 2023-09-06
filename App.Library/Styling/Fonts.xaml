@@ -7,6 +7,7 @@
     <FontFamily x:Key="Default">Segoe UI</FontFamily>
     <FontFamily x:Key="IconFont">Segoe MDL2 Assets</FontFamily>
 
+    <clr:Double x:Key="Font.Default">14</clr:Double>
     <clr:Double x:Key="Font.Small">8</clr:Double>
     <clr:Double x:Key="Font.Large">24</clr:Double>
 

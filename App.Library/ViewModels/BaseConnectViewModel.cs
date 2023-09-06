@@ -36,21 +36,25 @@ namespace App.Library.ViewModels
 
         public override string NextTitle => SharedResources.ButtonConnect;
 
-        protected override bool CanNavigateNextAsync()
-        {
-            return true;
-        }
+        public override bool ShowNavigatePrevious => this.connectionStatus?.Success == true;
 
-        protected override Task NavigateNextAsync()
-        {
-            return this.ConnectAsync();
-        }
+        public override bool ShowNavigateNext => this.connectionStatus == null || !this.connectionStatus.Success;
 
         protected override Task NavigatePreviousAsync()
         {
             this.Owner.CloseApp();
 
             return Task.CompletedTask;
+        }
+
+        protected override bool CanNavigateNextAsync()
+        {
+            return this.connectionStatus == null;
+        }
+
+        protected override Task NavigateNextAsync()
+        {
+            return this.ConnectAsync();
         }
 
         public string Status

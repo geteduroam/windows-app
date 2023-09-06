@@ -7,8 +7,8 @@
     <Thickness x:Key="Page-Margin" Left="24" Right="24" Top="0" Bottom="0" />
     <Thickness x:Key="PageContent-Margin" Left="0" Right="0" Top="12" Bottom="12" />
 
-    <GridLength x:Key="PageButtons-Height">42</GridLength>
+    <GridLength x:Key="PageTitle-Height">60</GridLength>
+    <GridLength x:Key="PageButtons-Height">48</GridLength>
     <GridLength x:Key="AppVersion-Height">18</GridLength>
-    <GridLength x:Key="PageTitle-Height">24</GridLength>
-
+    
 </ResourceDictionary>

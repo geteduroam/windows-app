@@ -34,11 +34,7 @@ public abstract class BaseViewModel : NotifyPropertyChanged
 
     public virtual bool ShowNavigateNext => true;
 
-    public virtual bool ShowMenu => false;
-
     public virtual bool ShowLogo => false;
-
-    public virtual bool ShowHelp => false;
 
     public virtual string PreviousTitle => SharedResources.ButtonPrevious;
 

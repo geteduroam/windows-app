@@ -97,8 +97,8 @@ namespace EduRoam.Connect.Tasks.Connectors
             }
 
             Debug.Assert(
-                !this.eapConfig.NeedsClientCertificatePassphrase && !this.eapConfig.NeedsLoginCredentials,
-                "Cannot configure EAP config that still needs credentials"
+                !this.eapConfig.NeedsClientCertificatePassphrase,
+                "Cannot configure EAP config that still needs certificate credentials"
             );
 
             if (!EduRoamNetwork.IsWlanServiceApiAvailable())

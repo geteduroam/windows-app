@@ -14,7 +14,7 @@
                     Orientation="Vertical">
             <StackPanel VerticalAlignment="Center"
                         Orientation="Vertical"
-                        Visibility="{Binding ShowProfileStatus, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        Visibility="{Binding ShowTimeLeft, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Text="{x:Static lang:Resources.LabelAccountValidFor}" 
                        TextWrapping="Wrap" 
                        TextAlignment="Center">
@@ -31,29 +31,30 @@
                         <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.GrayTextColorKey}}"/>
                     </TextBlock.Foreground>
                 </TextBlock>
+            </StackPanel>
 
-                <Image Width="160" 
+            <Image Width="160" 
                    Source="{Binding Converter={StaticResource AppImageConverter}, ConverterParameter=application-icon.png}" 
                    HorizontalAlignment="Center"
-                       Margin="0, 24"/>
-
-                <Button Width="160"
-                        Height="34"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Command="{Binding SelectOtherInstitutionCommand}"
-                        Content="{x:Static lang:Resources.ProfileSelectOtherInstitution}"
-                        Style="{DynamicResource WhiteButtonStyle}" />
-            </StackPanel>
+                   Margin="0, 24"/>
 
             <Button Width="160"
                     Height="34"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Command="{Binding SelectOtherInstitutionCommand}"
-                    Content="{x:Static lang:Resources.SelectProfile}"
-                    Style="{DynamicResource BlueButtonStyle}" 
-                    Visibility="{Binding ShowProfileStatus, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                    Command="{Binding SelectOtherInstitutionCommand}">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BlueButtonStyle}">
+                        <Setter Property="Content" Value="{x:Static lang:Resources.ConnectToEduroam}" />
+
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ShowProfileStatus}" Value="True">
+                                <Setter Property="Content" Value="{x:Static lang:Resources.ProfileSelectOtherInstitution}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
         </StackPanel>
 
 

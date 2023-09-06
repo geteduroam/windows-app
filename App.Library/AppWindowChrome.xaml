@@ -9,6 +9,7 @@
     <b:MainViewModelProxy x:Key="proxy" DataCtx="{Binding}" />
 
     <Style x:Key="StandardStyle" TargetType="{x:Type local:MainWindow}">
+        <Setter Property="FontSize" Value="{StaticResource Font.Default}" />
         <Setter Property="shell:WindowChrome.WindowChrome">
             <Setter.Value>
                 <shell:WindowChrome />

@@ -32,15 +32,18 @@ namespace App.Library.ViewModels
         }
 
         public override bool ShowNavigatePrevious => false;
+
         public override bool ShowNavigateNext => false;
-        public override bool ShowMenu => true;
 
         public override bool ShowLogo => true;
-        public override bool ShowHelp => true;
 
         public bool ShowProfileStatus => this.status.ActiveProfile;
+
         public string ProfileName => this.status.ProfileName ?? string.Empty;
-        public string TimeLeft => this.status.TimeLeft ?? string.Empty;
+
+        public bool ShowTimeLeft => !string.IsNullOrWhiteSpace(this.status.TimeLeft);
+
+        public string TimeLeft => this.status.TimeLeft ?? "-";
 
         private void SelectOtherInstitution()
         {
