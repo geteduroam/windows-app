@@ -29,13 +29,18 @@
                     </TextBlock.Foreground>
                 </TextBlock>
             </StackPanel>
-            
+
             <Image Grid.Row="0" Grid.RowSpan="2"
+                   Margin="0,0,0,58"
                 Width="160" 
                 Source="{Binding Converter={StaticResource AppImageConverter}, ConverterParameter=application-icon.png}" 
                 HorizontalAlignment="Center" 
                 VerticalAlignment="Center"
-                Visibility="{Binding ShowProfileStatus, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+                Visibility="{Binding ShowProfileStatus, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                <Image.Effect>
+                    <DropShadowEffect Color="DarkGray" Direction="300" ShadowDepth="4" BlurRadius="10" Opacity="0.5" />
+                </Image.Effect>
+            </Image>
         
             <Button Grid.Row="2"
                     Width="160"
