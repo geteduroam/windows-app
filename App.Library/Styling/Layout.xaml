@@ -4,10 +4,9 @@
                     xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:clr="clr-namespace:System;assembly=mscorlib">
 
-    <FontFamily x:Key="Default">Segoe UI</FontFamily>
-    <FontFamily x:Key="IconFont">Segoe MDL2 Assets</FontFamily>
+    <Thickness x:Key="Page-Margin" Left="4" Right="4" Top="0" Bottom="0" />
 
-    <clr:Double x:Key="Font.Small">8</clr:Double>
-    <clr:Double x:Key="Font.Large">24</clr:Double>
+    <GridLength x:Key="PageLogo-Height">48</GridLength>
+    <GridLength x:Key="PageTitle-Height">24</GridLength>
 
 </ResourceDictionary>

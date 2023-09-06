@@ -11,7 +11,7 @@
     <Style x:Key="StandardStyle" TargetType="{x:Type local:MainWindow}">
         <Setter Property="shell:WindowChrome.WindowChrome">
             <Setter.Value>
-                <shell:WindowChrome CornerRadius="2 " ResizeBorderThickness="2" />
+                <shell:WindowChrome CornerRadius="1" ResizeBorderThickness="1" />
             </Setter.Value>
         </Setter>
         <Setter Property="Template">

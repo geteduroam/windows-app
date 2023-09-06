@@ -4,5 +4,7 @@
         <ResourceDictionary Source="pack://application:,,,/App.Library;component/Styling/Styling.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 
+    <FontFamily x:Key="Default">Franklin Gothic Book</FontFamily>
+    
     <SolidColorBrush x:Key="BackgroundBrush" Color="White" />
 </ResourceDictionary>

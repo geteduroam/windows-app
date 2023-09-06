@@ -5,6 +5,7 @@
                     xmlns:clr="clr-namespace:System;assembly=mscorlib">
 
     <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Layout.xaml" />
         <ResourceDictionary Source="Buttons.xaml" />
         <ResourceDictionary Source="Fonts.xaml" />
     </ResourceDictionary.MergedDictionaries>
