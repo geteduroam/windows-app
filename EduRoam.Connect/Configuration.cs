@@ -21,9 +21,10 @@ namespace EduRoam.Connect
 
             config.AddJsonStream(resourceStream);
             this.config = config.Build();
-
         }
 
         internal Uri ProviderApiUrl => new(this.config.GetSection("App")["ProviderApiUrl"] ?? throw new ArgumentNullException(nameof(this.ProviderApiUrl)));
+
+        internal string AppRegistryNamespace => this.config.GetSection("App")["AppRegistryNamespace"] ?? throw new ArgumentNullException(nameof(this.AppRegistryNamespace));
     }
 }

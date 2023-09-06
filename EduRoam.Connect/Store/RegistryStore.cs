@@ -115,7 +115,7 @@ namespace EduRoam.Connect.Store
             this.UpdateWifiRefreshToken(null);
         }
 
-        private const string AppRegistryNamespace = "HKEY_CURRENT_USER\\Software\\geteduroam";
+        private readonly static string AppRegistryNamespace = new Configuration().AppRegistryNamespace;
 
         private static T? GetValue<T>(string key)
         {
