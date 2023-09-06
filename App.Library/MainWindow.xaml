@@ -13,13 +13,14 @@
     Title="{Binding AppTitle}"
     FontFamily="{StaticResource Default}"
     Style="{DynamicResource StandardStyle}"
+    Background="{DynamicResource BackgroundBrush}" 
     Width="420"
     Height="600"
     MinWidth="420"
     MinHeight="420"
     Closing="MainWindow_OnClosing"
     mc:Ignorable="d">
-    
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -39,29 +40,24 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Background="{DynamicResource BackgroundBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="{StaticResource PageLogo-Height}" />
-            <RowDefinition Height="{StaticResource PageTitle-Height}" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
+    <Grid Background="{DynamicResource BackgroundBrush}" Margin="-1, 0">
+        <Grid Margin="{StaticResource Page-Margin}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="{StaticResource PageTitle-Height}" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="{StaticResource PageButtons-Height}" />
+                <RowDefinition Height="{StaticResource AppVersion-Height}" />
+            </Grid.RowDefinitions>
 
-        <Image x:Name="PageLogo" 
-                   Grid.Row="0" 
-                   Source="{Binding Converter={StaticResource AppImageConverter}, ConverterParameter=logo.png}" 
-                   Stretch="Uniform" />
-        
-        <TextBlock x:Name="PageTitle"
-                   Grid.Row="1"
+            <TextBlock x:Name="PageTitle"
+                   Grid.Row="0"
                    FontSize="{StaticResource Font.Large}"
                    Text="{Binding PageTitle}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
-                   TextAlignment="Center" />      
+                   TextAlignment="Center" />
 
-        <Grid Grid.Row="2"
+            <Grid Grid.Row="1"
               Grid.RowSpan="2"
               HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch"
@@ -69,63 +65,56 @@
               Opacity="0.5"
               Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}"
               ZIndex="100">
-            <TextBlock x:Name="Loading" 
+                <TextBlock x:Name="Loading" 
                        Margin="5"
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"
                        FontSize="{StaticResource Font.Large}"
                        Text="{x:Static lang:Resources.Loading}"
                        TextAlignment="Center" />
-        </Grid>
+            </Grid>
 
-        <ContentControl x:Name="PageContent" 
-                        Grid.Row="2"
+            <ContentControl x:Name="PageContent" 
+                        Grid.Row="1"
+                        Margin="{StaticResource PageContent-Margin}"
                         Content="{Binding ActiveContent}"
                         ContentTemplateSelector="{DynamicResource LocalDataTemplateSelector}" />
 
-        <Grid Grid.Row="3" 
-              Visibility="{Binding ActiveContent, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" 
-              Margin="5, 5, 5, 5">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="42" />
-                <RowDefinition Height="20" />
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="24"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="24"/>
-            </Grid.ColumnDefinitions>
-
-            <StackPanel Grid.Row="0"
-                        Grid.Column="1"
+            <StackPanel Grid.Row="2" 
                         Height="42"
                         Orientation="Horizontal" 
-                        HorizontalAlignment="Center" >
+                        HorizontalAlignment="Center" 
+                        Visibility="{Binding ActiveContent, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}" >
                 <Button x:Name="Previous"
-                    Command="{Binding ActiveContent.PreviousCommand}"
-                    Content="{Binding ActiveContent.PreviousTitle}"
-                    Style="{DynamicResource NavigationButton}" 
-                    Visibility="{Binding ShowNavigatePrevious, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            Command="{Binding ActiveContent.PreviousCommand}"
+                            Content="{Binding ActiveContent.PreviousTitle}"
+                            Style="{DynamicResource NavigationButton}" 
+                            Visibility="{Binding ShowNavigatePrevious, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                 <Button x:Name="Next"                 
-                    Command="{Binding ActiveContent.NextCommand}"
-                    Content="{Binding ActiveContent.NextTitle}"
-                    IsDefault="true"
-                    Style="{DynamicResource NavigationButton}" 
-                    Visibility="{Binding ShowNavigateNext, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                        Command="{Binding ActiveContent.NextCommand}"
+                        Content="{Binding ActiveContent.NextTitle}"
+                        IsDefault="true"
+                        Style="{DynamicResource NavigationButton}" 
+                        Visibility="{Binding ShowNavigateNext, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </StackPanel>
 
+            <Image x:Name="PageLogo" 
+                   Grid.Row="2"
+                   VerticalAlignment="Stretch"
+                   HorizontalAlignment="Right"
+                   Margin="0, 0, -28, 0"
+                   Source="{Binding Converter={StaticResource AppImageConverter}, ConverterParameter=logo.png}" 
+                   Visibility="{Binding ShowLogo, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
             <Label x:Name="AppVersion"
-                Grid.Row="1" 
-                Grid.Column="1" 
-                Grid.ColumnSpan="2"
-                Content="{Binding AppVersion}" 
-                HorizontalAlignment="Right" 
-                VerticalAlignment="Bottom" 
-                Foreground="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}" 
-                FontFamily="Tahoma" 
-                FontSize="{StaticResource Font.Small}"/>
+                        Grid.Row="3" 
+                        Content="{Binding AppVersion}" 
+                        HorizontalAlignment="Right" 
+                        VerticalAlignment="Bottom" 
+                        Foreground="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}" 
+                        FontFamily="Tahoma" 
+                        FontSize="{StaticResource Font.Small}"/>
         </Grid>
     </Grid>
-
 </Window>

@@ -1,9 +1,7 @@
 ﻿<Application x:Class="Eduroam.App.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             Startup="App_OnStartup"
-             xmlns:local="clr-namespace:Eduroam.App"
-             xmlns:Converters="clr-namespace:App.Library.Converters;assembly=App.Library">
+             Startup="App_OnStartup">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

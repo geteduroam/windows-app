@@ -4,11 +4,9 @@
                     xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:clr="clr-namespace:System;assembly=mscorlib">
 
-    <Thickness x:Key="Page-Margin" Left="24" Right="24" Top="0" Bottom="0" />
-    <Thickness x:Key="PageContent-Margin" Left="0" Right="0" Top="12" Bottom="12" />
-
-    <GridLength x:Key="PageButtons-Height">42</GridLength>
-    <GridLength x:Key="AppVersion-Height">18</GridLength>
-    <GridLength x:Key="PageTitle-Height">24</GridLength>
+    <SolidColorBrush x:Key="BackgroundBrush" Color="#EBF2F7" />
+    
+    <SolidColorBrush x:Key="PrimaryBrush" Color="#00698F" />
+    <SolidColorBrush x:Key="SecondaryBrush" Color="#C9DCEB" />
 
 </ResourceDictionary>

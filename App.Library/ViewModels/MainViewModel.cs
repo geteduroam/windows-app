@@ -40,7 +40,6 @@ namespace App.Library.ViewModels
             this.UninstallCommand = new DelegateCommand(this.Uninstall);
             this.OpenHelpCommand = new DelegateCommand(this.OpenHelp);
             this.OpenMenuCommand = new DelegateCommand(this.OpenMenu);
-            this.GoSearchCommand = new DelegateCommand(this.GoSearch);
 
             this.idpDownloader = new IdentityProviderDownloader();
             this.State = new ApplicationState();
@@ -83,13 +82,26 @@ namespace App.Library.ViewModels
 
         public DelegateCommand OpenHelpCommand { get; protected set; }
 
-        public DelegateCommand GoSearchCommand { get; protected set; }
-
         public Action CloseApp { get; private set; }
 
         public bool IsLoading { get; private set; }
 
         public bool ShowMenu { get; set; }
+
+        public bool ShowLogo
+        {
+            get
+            {
+                if (this.ActiveContent == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return this.ActiveContent.ShowLogo;
+                }
+            }
+        }
 
         public string AppVersion
         {
@@ -149,31 +161,6 @@ namespace App.Library.ViewModels
                     return false;
                 }
                 return this.ActiveContent.ShowNavigateNext;
-            }
-        }
-
-        public bool ShowSearch
-        {
-            get
-            {
-                if (this.ActiveContent == null)
-                {
-                    return false;
-                }
-                return this.ActiveContent.ShowSearch;
-            }
-        }
-
-        public string SearchText
-        {
-            get => this.State.SearchText;
-            set
-            {
-                this.State.SearchText = value;
-                if (this.ActiveContent != null)
-                {
-                    this.ActiveContent.Search();
-                }
             }
         }
 
@@ -274,7 +261,7 @@ namespace App.Library.ViewModels
             this.CallPropertyChanged(nameof(this.ActiveContent));
             this.CallPropertyChanged(nameof(this.ShowNavigatePrevious));
             this.CallPropertyChanged(nameof(this.ShowNavigateNext));
-            this.CallPropertyChanged(nameof(this.ShowSearch));
+            this.CallPropertyChanged(nameof(this.ShowLogo));
             this.CallPropertyChanged(nameof(this.PageTitle));
         }
 
@@ -555,14 +542,6 @@ namespace App.Library.ViewModels
         {
             this.ShowMenu = true;
             this.CallPropertyChanged(nameof(this.ShowMenu));
-        }
-
-        public void GoSearch()
-        {
-            if (this.ActiveContent != null && this.ActiveContent is not SelectInstitutionViewModel)
-            {
-                this.SetActiveContent(new SelectInstitutionViewModel(this));
-            }
         }
 
         public void OpenHelp()

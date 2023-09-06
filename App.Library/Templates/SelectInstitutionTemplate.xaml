@@ -12,16 +12,50 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
+            <TextBox x:Name="tbSearch"
+                     Grid.Row="0"
+                    Height="20"
+                    Padding="2, 0, 2, 0"
+                    BorderBrush="{StaticResource PrimaryBrush}" 
+                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" >
+            </TextBox>
+
+            <!--Watermark for textbox-->
+            <Grid Grid.Row="0"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Center"
+                  Margin="8, 0, 0, 0"
+                  Height="20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="24" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock
+                        Grid.Column="0"
+                        FontFamily="{StaticResource IconFont}"                                            
+                        Style="{DynamicResource Watermark}">
+                    <TextBlock.Text>
+                        &#xE721;
+                    </TextBlock.Text>
+                </TextBlock>
+                <TextBlock
+                        Grid.Column="1"
+                        Text="{x:Static lang:Resources.Search}"
+                        Style="{DynamicResource Watermark}"/>
+            </Grid>
+
             <ListBox
                 x:Name="lbInstitutions"
                 Grid.Row="1"
-                Margin="22,22,22,22"
+                Margin="0, 12,0, 0"
                 Padding="0"
                 IsTabStop="False"
                 ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                 ItemsSource="{Binding Institutions.Result}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 ScrollViewer.VerticalScrollBarVisibility="Visible"
+                BorderBrush="{StaticResource SecondaryBrush}" 
                 SelectedItem="{Binding Owner.State.SelectedIdentityProvider}" />
         </Grid>
     </DataTemplate>

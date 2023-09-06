@@ -8,9 +8,8 @@
         <ResourceDictionary Source="Layout.xaml" />
         <ResourceDictionary Source="Buttons.xaml" />
         <ResourceDictionary Source="Fonts.xaml" />
+        <ResourceDictionary Source="Colors.xaml" />
     </ResourceDictionary.MergedDictionaries>
-    
-    <SolidColorBrush x:Key="BackgroundBrush" Color="#EBF2F7" />
     
     <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
         <Setter Property="BorderThickness" Value="1" />

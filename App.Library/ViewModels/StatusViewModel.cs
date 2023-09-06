@@ -31,11 +31,11 @@ namespace App.Library.ViewModels
             throw new NotImplementedException();
         }
 
-        public override bool ShowSearch => true;
-
         public override bool ShowNavigatePrevious => false;
         public override bool ShowNavigateNext => false;
         public override bool ShowMenu => true;
+
+        public override bool ShowLogo => true;
         public override bool ShowHelp => true;
 
         public bool ShowProfileStatus => this.status.ActiveProfile;

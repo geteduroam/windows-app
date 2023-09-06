@@ -11,20 +11,23 @@
     <Style x:Key="StandardStyle" TargetType="{x:Type local:MainWindow}">
         <Setter Property="shell:WindowChrome.WindowChrome">
             <Setter.Value>
-                <shell:WindowChrome CornerRadius="1" ResizeBorderThickness="1" />
+                <shell:WindowChrome />
             </Setter.Value>
         </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:MainWindow}">
-                    <Grid Background="Transparent">
+                    <Grid Background="Transparent" >
                         <Border Background="Transparent"
-                            Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}">
+                                Margin="{Binding Source={x:Static SystemParameters.WindowNonClientFrameThickness}}">
                             <ContentPresenter Content="{TemplateBinding Content}" />
                         </Border>
 
-                        <Grid Margin="10, 1, 148, 0" Background="Transparent" Height="24" 
-                                    HorizontalAlignment="Stretch" VerticalAlignment="Top">
+                        <Grid x:Name="TitleBar" 
+                              Margin="10, 1, 148, 0" Height="24" 
+                              HorizontalAlignment="Stretch" 
+                              VerticalAlignment="Top"
+                              Background="{DynamicResource BackgroundBrush}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="24" />
                                 <ColumnDefinition Width="*" />
@@ -64,53 +67,6 @@
                                 </Button.ContextMenu>
                             </Button>
 
-                            <Grid Grid.Column="1"
-                                  x:Name="SearchPanel"
-                                  Height="20"                                  
-                                  HorizontalAlignment="Stretch"
-                                  VerticalAlignment="Center"
-                                  Margin="0,2,0,2"
-                                  Visibility="{Binding ShowSearch, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Grid HorizontalAlignment="Stretch"
-                                      VerticalAlignment="Center"
-                                      MaxWidth="240">
-                                    <TextBox x:Name="tbSearch"
-                                             Height="20"
-                                             Padding="2, 0, 2, 0"
-                                             Background="{DynamicResource BackgroundBrush}"
-                                             shell:WindowChrome.IsHitTestVisibleInChrome="True" 
-                                             Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" >
-                                        <TextBox.InputBindings>
-                                            <KeyBinding Command="{Binding Path=GoSearchCommand}" Key="Enter" />
-                                            <KeyBinding Command="{Binding Path=GoSearchCommand}" Key="Tab" />
-                                        </TextBox.InputBindings>
-                                    </TextBox>
-                                    <!--Watermark for textbox-->
-                                    <Grid HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        Margin="8, 0, 0, 0"
-                                        Height="20">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="24" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-
-                                        <TextBlock
-                                            Grid.Column="0"
-                                            FontFamily="{StaticResource IconFont}"                                            
-                                            Style="{DynamicResource Watermark}">
-                                            <TextBlock.Text>
-                                                &#xE721;
-                                            </TextBlock.Text>
-                                        </TextBlock>
-                                        <TextBlock
-                                            Grid.Column="1"
-                                            Text="{x:Static lang:Resources.Search}"
-                                            Style="{DynamicResource Watermark}"/>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-
                             <Button Grid.Column="2" 
                                     x:Name="Help"
                                     Content="&#xE897;"
@@ -127,7 +83,7 @@
 
     <Style x:Key="Watermark" TargetType="{x:Type TextBlock}">
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Foreground" Value="{DynamicResource BlueButtonBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}" />
         <Setter Property="Visibility" Value="Collapsed" />
         <Setter Property="IsHitTestVisible" Value="False" />
         <Style.Triggers>
