@@ -10,43 +10,52 @@
     <converters:ImageConverter x:Key="AppImageConverter" AppSpecific="True" />
 
     <DataTemplate DataType="{x:Type viewModels:StatusViewModel}">
-        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" KeyboardNavigation.IsTabStop="False">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="48"/>
-            </Grid.RowDefinitions>
-
-            <StackPanel Grid.Row="1"
+        <StackPanel VerticalAlignment="Center"
+                    Orientation="Vertical">
+            <StackPanel VerticalAlignment="Center"
+                        Orientation="Vertical"
                         Visibility="{Binding ShowProfileStatus, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock Text="{x:Static lang:Resources.LabelAccountValidFor}" TextWrapping="Wrap" TextAlignment="Center">
+                <TextBlock Text="{x:Static lang:Resources.LabelAccountValidFor}" 
+                       TextWrapping="Wrap" 
+                       TextAlignment="Center">
                     <TextBlock.Foreground>
                         <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.GrayTextColorKey}}"/>
                     </TextBlock.Foreground>
                 </TextBlock>
-                <TextBlock Text="{Binding TimeLeft}" TextWrapping="Wrap" TextAlignment="Center" FontWeight="Bold">
+
+                <TextBlock Text="{Binding TimeLeft}" 
+                       TextWrapping="Wrap" 
+                       TextAlignment="Center" 
+                       FontWeight="Bold">
                     <TextBlock.Foreground>
                         <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.GrayTextColorKey}}"/>
                     </TextBlock.Foreground>
                 </TextBlock>
+
+                <Image Width="160" 
+                   Source="{Binding Converter={StaticResource AppImageConverter}, ConverterParameter=application-icon.png}" 
+                   HorizontalAlignment="Center"
+                       Margin="0, 24"/>
+
+                <Button Width="160"
+                        Height="34"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Command="{Binding SelectOtherInstitutionCommand}"
+                        Content="{x:Static lang:Resources.ProfileSelectOtherInstitution}"
+                        Style="{DynamicResource WhiteButtonStyle}" />
             </StackPanel>
 
-            <Image Grid.Row="0" Grid.RowSpan="2"
-                   Margin="0,0,0,58"
-                Width="160" 
-                Source="{Binding Converter={StaticResource AppImageConverter}, ConverterParameter=application-icon.png}" 
-                HorizontalAlignment="Center" 
-                VerticalAlignment="Center"
-                Visibility="{Binding ShowProfileStatus, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
-        
-            <Button Grid.Row="2"
-                    Width="160"
+            <Button Width="160"
                     Height="34"
-                    Margin="0,5"
                     HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
+                    VerticalAlignment="Center"
                     Command="{Binding SelectOtherInstitutionCommand}"
                     Content="{x:Static lang:Resources.SelectProfile}"
-                    Style="{DynamicResource BlueButtonStyle}" />
-        </Grid>
+                    Style="{DynamicResource BlueButtonStyle}" 
+                    Visibility="{Binding ShowProfileStatus, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+        </StackPanel>
+
+
     </DataTemplate>
 </ResourceDictionary>

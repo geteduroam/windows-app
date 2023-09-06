@@ -80,7 +80,8 @@
                         Content="{Binding ActiveContent}"
                         ContentTemplateSelector="{DynamicResource LocalDataTemplateSelector}" />
 
-            <StackPanel Grid.Row="2" 
+            <StackPanel x:Name="Buttons" 
+                        Grid.Row="2" 
                         Height="42"
                         Orientation="Horizontal" 
                         HorizontalAlignment="Center" 
@@ -99,14 +100,6 @@
                         Visibility="{Binding ShowNavigateNext, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </StackPanel>
 
-            <Image x:Name="PageLogo" 
-                   Grid.Row="2"
-                   VerticalAlignment="Stretch"
-                   HorizontalAlignment="Right"
-                   Margin="0, 0, -28, 0"
-                   Source="{Binding Converter={StaticResource AppImageConverter}, ConverterParameter=logo.png}" 
-                   Visibility="{Binding ShowLogo, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-
             <Label x:Name="AppVersion"
                         Grid.Row="3" 
                         Content="{Binding AppVersion}" 
@@ -115,6 +108,20 @@
                         Foreground="{DynamicResource {x:Static SystemColors.InactiveCaptionBrushKey}}" 
                         FontFamily="Tahoma" 
                         FontSize="{StaticResource Font.Small}"/>
+        </Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="42" />
+                <RowDefinition Height="72" />
+            </Grid.RowDefinitions>
+
+            <Image x:Name="PageLogo" 
+                   Grid.Row="1"
+                   VerticalAlignment="Stretch"
+                   HorizontalAlignment="Right"
+                   Source="{Binding Converter={StaticResource AppImageConverter}, ConverterParameter=logo.png}" 
+                   Visibility="{Binding ShowLogo, Converter={StaticResource BooleanToVisibilityConverter}}"/>
         </Grid>
     </Grid>
 </Window>

@@ -515,7 +515,7 @@ Exception: {0}</value>
     <value>This will remove all configuration for '{0}'.</value>
   </data>
   <data name="ProfileSelectOtherInstitution" xml:space="preserve">
-    <value>Select other institution</value>
+    <value>Select another profile</value>
   </data>
   <data name="ProfileWeb" xml:space="preserve">
     <value>Web</value>

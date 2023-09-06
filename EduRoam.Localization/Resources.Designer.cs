@@ -1163,7 +1163,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select other institution.
+        ///   Looks up a localized string similar to Select another profile.
         /// </summary>
         public static string ProfileSelectOtherInstitution {
             get {
