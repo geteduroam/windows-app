@@ -154,6 +154,9 @@
   <data name="ButtonConnect" xml:space="preserve">
     <value>Connect</value>
   </data>
+  <data name="ButtonInstall" xml:space="preserve">
+    <value>Install</value>
+  </data>
   <data name="ButtonNext" xml:space="preserve">
     <value>Next</value>
   </data>

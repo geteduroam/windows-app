@@ -40,7 +40,7 @@
         </ResourceDictionary>
     </Window.Resources>
 
-    <Grid Background="{DynamicResource BackgroundBrush}" Margin="-1, 0">
+    <Grid Background="{DynamicResource BackgroundBrush}" Margin="-1, -1">
         <Grid Margin="{StaticResource Page-Margin}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="{StaticResource PageTitle-Height}" />

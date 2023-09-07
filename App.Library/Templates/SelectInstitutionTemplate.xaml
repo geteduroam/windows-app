@@ -17,7 +17,6 @@
                      Height="24"
                      Padding="4"
                      BorderBrush="{StaticResource PrimaryBrush}"   
-                     Opacity="0.5"
                      VerticalAlignment="Center"
                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                      b:FocusBinding.IsFocused="true">
@@ -42,10 +41,8 @@
                 <TextBlock
                         Grid.Column="0"
                         FontFamily="{StaticResource IconFont}"                                            
-                        Style="{DynamicResource Watermark}">
-                    <TextBlock.Text>
-                        &#xE721;
-                    </TextBlock.Text>
+                        Style="{DynamicResource Watermark}"
+                        Text="{StaticResource SearchIcon}">
                 </TextBlock>
                 <TextBlock
                         Grid.Column="1"
@@ -70,9 +67,9 @@
 
     <Style x:Key="Watermark" TargetType="{x:Type TextBlock}">
         <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Foreground" Value="{DynamicResource PrimaryBrush}" />
         <Setter Property="Visibility" Value="Collapsed" />
         <Setter Property="IsHitTestVisible" Value="False" />
+        <Setter Property="Opacity" Value="0.4" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
                 <Setter Property="Visibility" Value="Visible" />

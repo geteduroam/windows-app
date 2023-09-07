@@ -2,7 +2,6 @@
 
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Forms;
 
 namespace App.Library
 {
@@ -11,7 +10,7 @@ namespace App.Library
     /// </summary>
     public partial class MainWindow : Window
     {
-        private NotifyIcon notifyIcon;
+        // private NotifyIcon notifyIcon;
 
         public readonly MainViewModel MainViewModel;
 
@@ -38,7 +37,5 @@ namespace App.Library
         {
             this.MainViewModel.Dispose();
         }
-
-
     }
 }
