@@ -45,7 +45,7 @@
                     Command="{Binding SelectOtherInstitutionCommand}">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BlueButtonStyle}">
-                        <Setter Property="Content" Value="{x:Static lang:Resources.ConnectToEduroam}" />
+                        <Setter Property="Content" Value="{Binding ConnectToResource}" />
 
                         <Style.Triggers>
                             <DataTrigger Binding="{Binding ShowProfileStatus}" Value="True">

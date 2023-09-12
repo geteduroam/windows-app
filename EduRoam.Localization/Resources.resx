@@ -226,9 +226,6 @@ Unable to connect to eduroam.</value>
   <data name="ConnectionUsernameAndPasswordRequired" xml:space="preserve">
     <value>Please provide a username and password to connect.</value>
   </data>
-  <data name="ConnectToEduroam" xml:space="preserve">
-    <value>Connect to eduroam</value>
-  </data>
   <data name="ConsentMain" xml:space="preserve">
     <value>Terms of Use</value>
   </data>

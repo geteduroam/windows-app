@@ -61,6 +61,15 @@ namespace Eduroam.App {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connect to eduroam.
+        /// </summary>
+        public static string ButtonAppConnect {
+            get {
+                return ResourceManager.GetString("ButtonAppConnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://www.geteduroam.app/.
         /// </summary>
         public static string HelpUrl {

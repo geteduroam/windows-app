@@ -332,15 +332,6 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect to eduroam.
-        /// </summary>
-        public static string ConnectToEduroam {
-            get {
-                return ResourceManager.GetString("ConnectToEduroam", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Terms of Use.
         /// </summary>
         public static string ConsentMain {

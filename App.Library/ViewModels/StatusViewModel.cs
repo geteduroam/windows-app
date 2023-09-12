@@ -1,6 +1,7 @@
 ﻿using App.Library.Command;
 
 using EduRoam.Connect.Tasks;
+using EduRoam.Localization;
 
 using System;
 using System.Threading.Tasks;
@@ -44,6 +45,8 @@ namespace App.Library.ViewModels
         public bool ShowTimeLeft => !string.IsNullOrWhiteSpace(this.status.TimeLeft);
 
         public string TimeLeft => this.status.TimeLeft ?? "-";
+
+        public string ConnectToResource => ApplicationResources.GetString("ButtonAppConnect") ?? "...";
 
         private void SelectOtherInstitution()
         {

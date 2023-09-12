@@ -61,6 +61,15 @@ namespace Govroam.App {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connect to govroam.
+        /// </summary>
+        public static string ButtonAppConnect {
+            get {
+                return ResourceManager.GetString("ButtonAppConnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://govroam.nl/support/.
         /// </summary>
         public static string HelpUrl {
