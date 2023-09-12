@@ -2,8 +2,10 @@
 
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Tasks.Connectors;
+using EduRoam.Localization;
 
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace App.Library.ViewModels
@@ -17,6 +19,17 @@ namespace App.Library.ViewModels
         public ConnectWithCredentialsViewModel(MainViewModel owner, EapConfig eapConfig, CredentialsConnector connector)
             : base(owner, eapConfig, new CredentialsConnection(connector))
         {
+            var (realm, hint) = this.eapConfig.GetClientInnerIdentityRestrictions();
+
+            Debug.WriteLine(hint);
+
+            if (hint)
+            {
+                this.Realm = string.IsNullOrWhiteSpace(realm) ? Resources.UserNameWatermark : $"@{realm}";
+            } else
+            {
+                this.Realm = "";
+            }
         }
 
         protected override bool CanNavigateNextAsync()
@@ -68,6 +81,11 @@ namespace App.Library.ViewModels
                 this.password = value;
                 this.CallPropertyChanged();
             }
+        }
+
+        public string Realm
+        {
+            get;
         }
 
         public bool PasswordRequired => this.eapConfig.NeedsLoginCredentials;
