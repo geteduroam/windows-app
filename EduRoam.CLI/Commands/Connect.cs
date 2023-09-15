@@ -5,7 +5,11 @@ using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Tasks;
 using EduRoam.Connect.Tasks.Connectors;
 
+using System;
+using System.Collections.Generic;
 using System.CommandLine;
+using System.IO;
+using System.Threading.Tasks;
 
 using SharedResources = EduRoam.Localization.Resources;
 
@@ -116,16 +120,16 @@ namespace EduRoam.CLI.Commands
             return command;
         }
 
-        private static Task<EapConfig?> GetEapConfigAsync(FileInfo? eapConfigFile, string? institute, string? profileName)
+        private static async Task<EapConfig?> GetEapConfigAsync(FileInfo? eapConfigFile, string? institute, string? profileName)
         {
             var eapConfiguration = new EapConfigTask();
 
             if (eapConfigFile == null)
             {
-                return eapConfiguration.GetEapConfigAsync(institute!, profileName!);
+                return await eapConfiguration.GetEapConfigAsync(institute!, profileName!);
             }
 
-            return EapConfigTask.GetEapConfigAsync(eapConfigFile);
+            return EapConfigTask.GetEapConfig(eapConfigFile);
         }
 
         private static void OutputCertificatesStatus(EapConfig eapConfig)

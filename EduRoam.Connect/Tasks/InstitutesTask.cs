@@ -1,6 +1,10 @@
 ﻿using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
 
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 namespace EduRoam.Connect.Tasks
 {
     public class InstitutesTask

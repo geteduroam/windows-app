@@ -2,7 +2,10 @@
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Tasks;
 
+using System;
 using System.CommandLine;
+using System.Linq;
+using System.Threading.Tasks;
 
 using SharedResources = EduRoam.Localization.Resources;
 

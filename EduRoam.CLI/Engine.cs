@@ -1,7 +1,11 @@
 ﻿using EduRoam.CLI.Commands;
 
+using System;
+using System.Collections.Generic;
 using System.CommandLine;
+using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 using SharedResources = EduRoam.Localization.Resources;
 

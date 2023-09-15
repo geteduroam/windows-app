@@ -6,8 +6,10 @@ using IWshRuntimeLibrary;
 using Microsoft.Win32;
 using Microsoft.Win32.TaskScheduler;
 
+using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 
 namespace EduRoam.Connect.Install

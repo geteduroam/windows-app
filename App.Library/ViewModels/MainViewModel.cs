@@ -230,12 +230,16 @@ namespace App.Library.ViewModels
 
         public void SetPreviousActiveContent()
         {
-            if (this.State.NavigationHistory.TryPop(out var viewModel))
+            if (!this.State.NavigationHistory.Any())
             {
-                this.ActiveContent = viewModel;
-                this.IsLoading = false;
-                this.CallViewPropertyChanges();
+                return;
             }
+
+            var viewModel = this.State.NavigationHistory.Pop();
+
+            this.ActiveContent = viewModel;
+            this.IsLoading = false;
+            this.CallViewPropertyChanges();
         }
 
         public void SetActiveContent(BaseViewModel viewModel)
@@ -453,7 +457,7 @@ namespace App.Library.ViewModels
             {
                 var eapConfigurator = new EapConfigTask();
                 // create Eap-config and open Profile view
-                var eapConfig = await EapConfigTask.GetEapConfigAsync(new FileInfo(filepath));
+                var eapConfig = EapConfigTask.GetEapConfig(new FileInfo(filepath));
 
                 if (eapConfig != null)
                 {

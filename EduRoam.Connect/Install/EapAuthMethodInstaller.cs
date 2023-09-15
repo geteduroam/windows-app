@@ -2,6 +2,7 @@
 using EduRoam.Connect.Install;
 using EduRoam.Localization;
 
+using System;
 using System.Diagnostics;
 
 namespace EduRoam.Connect

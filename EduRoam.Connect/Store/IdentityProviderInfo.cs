@@ -1,6 +1,8 @@
 ﻿using EduRoam.Connect.Eap;
 using EduRoam.Localization;
 
+using System;
+
 namespace EduRoam.Connect.Store
 {
     public readonly struct IdentityProviderInfo

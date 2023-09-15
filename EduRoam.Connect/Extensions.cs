@@ -1,4 +1,6 @@
-﻿namespace EduRoam.Connect
+﻿using System.Collections.Generic;
+
+namespace EduRoam.Connect
 {
     public static class Extensions
     {

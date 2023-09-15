@@ -1,5 +1,7 @@
 ﻿using System.CommandLine;
 using System.CommandLine.Parsing;
+using System.IO;
+using System.Linq;
 
 using SharedResources = EduRoam.Localization.Resources;
 

@@ -1,4 +1,6 @@
 // GeoCoordinate => Coordinate
+using System.Collections.Generic;
+
 namespace EduRoam.Connect.Identity
 {
 

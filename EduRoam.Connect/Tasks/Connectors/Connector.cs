@@ -2,7 +2,11 @@
 using EduRoam.Connect.Exceptions;
 using EduRoam.Localization;
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace EduRoam.Connect.Tasks.Connectors
 {

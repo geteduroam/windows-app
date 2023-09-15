@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "EduRoam.CLI": {
-      "commandName": "Project",
-      "commandLineArgs": "list"
-    }
-  }
-}

@@ -1,5 +1,6 @@
 ﻿using EduRoam.Connect.Exceptions;
 
+using System;
 using System.Runtime.Serialization;
 
 namespace EduRoam.Connect.Exceptions

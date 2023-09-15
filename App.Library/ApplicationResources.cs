@@ -21,7 +21,7 @@ namespace App.Library
 
             if (appLocalizationResourcesName != null)
             {
-                var resourceManager = new global::System.Resources.ResourceManager(appLocalizationResourcesName.Replace(".resources.", ".", StringComparison.InvariantCultureIgnoreCase), Assembly.GetEntryAssembly()!);
+                var resourceManager = new global::System.Resources.ResourceManager(appLocalizationResourcesName.Replace(".Resources.", "."), Assembly.GetEntryAssembly()!);
                 return resourceManager.GetString(key);
             }
 

@@ -2,6 +2,7 @@
 using EduRoam.Connect.Install;
 using EduRoam.Connect.Tasks;
 
+using System;
 using System.CommandLine;
 
 using SharedResources = EduRoam.Localization.Resources;

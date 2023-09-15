@@ -3,7 +3,12 @@ using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
 using EduRoam.Localization;
 
+using System;
+using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace EduRoam.Connect.Tasks
@@ -62,10 +67,10 @@ namespace EduRoam.Connect.Tasks
 
         }
 
-        public static async Task<EapConfig?> GetEapConfigAsync(FileInfo eapConfigPath)
+        public static EapConfig? GetEapConfig(FileInfo eapConfigPath)
         {
             var filePath = eapConfigPath.FullName;
-            var eapConfigContent = await File.ReadAllTextAsync(filePath);
+            var eapConfigContent = File.ReadAllText(filePath);
 
             // create and return EapConfig object
             var eapConfig = EapConfig.FromXmlData(eapConfigContent);

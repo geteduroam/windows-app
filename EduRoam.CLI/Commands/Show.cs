@@ -3,7 +3,9 @@ using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Tasks;
 
+using System;
 using System.CommandLine;
+using System.IO;
 
 using SharedResources = EduRoam.Localization.Resources;
 
@@ -43,7 +45,7 @@ namespace EduRoam.CLI.Commands
                     }
                     else
                     {
-                        eapConfig = await EapConfigTask.GetEapConfigAsync(eapConfigFile);
+                        eapConfig = EapConfigTask.GetEapConfig(eapConfigFile);
                     }
 
                     if (eapConfig == null || !HasInfo(eapConfig))

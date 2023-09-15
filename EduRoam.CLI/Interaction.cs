@@ -1,4 +1,6 @@
-﻿using SharedResources = EduRoam.Localization.Resources;
+﻿using System;
+
+using SharedResources = EduRoam.Localization.Resources;
 
 namespace EduRoam.CLI
 {

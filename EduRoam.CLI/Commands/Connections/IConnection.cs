@@ -1,4 +1,6 @@
-﻿using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
+﻿using System.Threading.Tasks;
+
+using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
 
 namespace EduRoam.CLI.Commands.Connections
 {

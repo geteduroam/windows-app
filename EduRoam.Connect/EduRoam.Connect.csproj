@@ -1,54 +1,40 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<LangVersion>latest</LangVersion>
 		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <DefineConstants>$(DefineConstants)</DefineConstants>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <DefineConstants>$(DefineConstants)</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="DuoVia.FuzzyStrings" Version="2.1.0" />
 		<PackageReference Include="ManagedNativeWifi" Version="2.5.0" />
-		<PackageReference Include="Microsoft.Extensions.Configuration" Version="7.0.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.4">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
+		<PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
 		<PackageReference Include="TaskScheduler" Version="2.10.1" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\EduRoam.Localization\EduRoam.Localization.csproj" />
+	  <ProjectReference Include="..\EduRoam.Localization\EduRoam.Localization.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<COMReference Include="IWshRuntimeLibrary">
-			<Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
-			<VersionMajor>1</VersionMajor>
-			<VersionMinor>0</VersionMinor>
-			<Lcid>0</Lcid>
-			<WrapperTool>tlbimp</WrapperTool>
-			<Isolated>False</Isolated>
-			<EmbedInteropTypes>True</EmbedInteropTypes>
-		</COMReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Compile Update="OAuthResources.Designer.cs">
-			<DependentUpon>OAuthResources.resx</DependentUpon>
-			<DesignTime>True</DesignTime>
-			<AutoGen>True</AutoGen>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Update="OAuthResources.resx">
-			<LastGenOutput>OAuthResources.Designer.cs</LastGenOutput>
-			<Generator>ResXFileCodeGenerator</Generator>
-		</EmbeddedResource>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Folder Include="Properties\" />
+	  <Reference Include="Interop.IWshRuntimeLibrary">
+	    <HintPath>..\WpfApp\obj\Debug\Interop.IWshRuntimeLibrary.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 </Project>

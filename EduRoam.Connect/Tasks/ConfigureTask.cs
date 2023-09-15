@@ -4,6 +4,10 @@ using EduRoam.Connect.Store;
 using EduRoam.Connect.Tasks.Connectors;
 using EduRoam.Localization;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 namespace EduRoam.Connect.Tasks
 {
     public class ConfigureTask

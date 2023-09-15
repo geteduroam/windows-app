@@ -2,6 +2,9 @@ using DuoVia.FuzzyStrings;
 
 using EduRoam.Localization;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace EduRoam.Connect.Identity
@@ -67,8 +70,6 @@ namespace EduRoam.Connect.Identity
         /// </summary>
         private static string NormalizeString(string str)
         {
-            var provider = CodePagesEncodingProvider.Instance;
-            Encoding.RegisterProvider(provider);
             // TODO: perhaps allow non-us characters?
             var strippedString = Encoding.ASCII.GetString(Encoding.GetEncoding("Cyrillic").GetBytes(str))
                 .ToUpperInvariant()
@@ -131,7 +132,8 @@ namespace EduRoam.Connect.Identity
             if (string.IsNullOrEmpty(requiredRealm))
             {
                 // no specific realm set, only check that the username does not end with dot or whitespace
-                if (username[^1] == '.' || username[^1] == ' ')
+                var userNameEnding = username[username.Length - 1];
+                if (userNameEnding == '.' || userNameEnding == ' ')
                 {
                     yield return Resources.ErrorCredentialsEndsWith;
                 }

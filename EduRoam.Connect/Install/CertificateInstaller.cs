@@ -2,6 +2,7 @@
 using EduRoam.Connect.Install;
 using EduRoam.Connect.Store;
 
+using System;
 using System.Security.Cryptography.X509Certificates;
 
 namespace EduRoam.Connect

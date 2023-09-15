@@ -1,4 +1,6 @@
-﻿namespace EduRoam.Connect.Store
+﻿using System;
+
+namespace EduRoam.Connect.Store
 {
     public readonly struct WLANProfile
     {

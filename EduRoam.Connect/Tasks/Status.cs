@@ -1,6 +1,7 @@
 ﻿using EduRoam.Connect.Store;
 using EduRoam.Localization;
 
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 

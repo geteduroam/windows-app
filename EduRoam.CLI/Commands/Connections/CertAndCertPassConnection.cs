@@ -1,5 +1,9 @@
 ﻿using EduRoam.Connect.Tasks.Connectors;
 
+using System;
+using System.IO;
+using System.Threading.Tasks;
+
 using SharedResources = EduRoam.Localization.Resources;
 using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
 

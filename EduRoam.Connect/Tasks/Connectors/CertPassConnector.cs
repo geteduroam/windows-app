@@ -1,6 +1,8 @@
 ﻿using EduRoam.Connect.Eap;
 using EduRoam.Localization;
 
+using System.Threading.Tasks;
+
 namespace EduRoam.Connect.Tasks.Connectors
 {
     public class CertPassConnector : Connector

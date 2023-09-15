@@ -3,6 +3,11 @@ using EduRoam.Connect.Identity;
 using EduRoam.Connect.Store;
 using EduRoam.Localization;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
 namespace EduRoam.Connect.Tasks
 {
     public class ProfilesTask
@@ -41,7 +46,8 @@ namespace EduRoam.Connect.Tasks
                 {
                     return profiles;
                 }
-                return profiles.Where(provider => provider.Name.Contains(query, StringComparison.CurrentCultureIgnoreCase));
+                
+                return profiles.Where(provider => provider.Name.ToUpper().Contains(query)); // somehow cannot use Contains(string, StringComparer.CurrentCultureIgnoreCase)
 
             }
 

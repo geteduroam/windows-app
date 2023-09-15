@@ -1,7 +1,11 @@
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Install;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 
 namespace EduRoam.Connect
 {
@@ -91,8 +95,7 @@ namespace EduRoam.Connect
                 .Where(CertificateStore.CertificateIsRootCA);
 
             return rootCACertificates
-                .DistinctBy(cert => cert.Thumbprint);
-            // .GroupBy(cert => cert!.Thumbprint, (key, certs) => certs.FirstOrDefault()); // distinct, alternative is to use DistinctBy in MoreLINQ
+                .GroupBy(cert => cert.Thumbprint, (key, certs) => certs.FirstOrDefault()); // distinct, alternative is to use DistinctBy in MoreLINQ
         }
 
         /// <summary>

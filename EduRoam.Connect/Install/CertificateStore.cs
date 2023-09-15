@@ -1,7 +1,10 @@
 ﻿using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Store;
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 

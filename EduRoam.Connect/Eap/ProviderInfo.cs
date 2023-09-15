@@ -1,4 +1,6 @@
-﻿namespace EduRoam.Connect.Eap
+﻿using System;
+
+namespace EduRoam.Connect.Eap
 {
 
     /// <summary>

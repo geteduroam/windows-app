@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 
+using System;
+
 namespace EduRoam.Connect.Store
 {
     public class WifiEndpoint

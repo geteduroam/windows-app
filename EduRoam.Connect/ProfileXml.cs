@@ -1,6 +1,9 @@
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 

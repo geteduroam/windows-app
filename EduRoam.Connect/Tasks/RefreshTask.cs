@@ -2,6 +2,9 @@
 using EduRoam.Connect.Store;
 using EduRoam.Localization;
 
+using System.Net.Http;
+using System.Threading.Tasks;
+
 namespace EduRoam.Connect.Tasks
 {
     public class RefreshTask

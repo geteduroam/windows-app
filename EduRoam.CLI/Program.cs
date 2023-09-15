@@ -1,16 +1,24 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using EduRoam.CLI;
 
+using System;
+using System.Threading.Tasks;
+
 using SharedResources = EduRoam.Localization.Resources;
 
-public class Program
+namespace EduRoam.CLI
 {
-    private static Engine Engine => new Engine();
-
-    public static async Task Main(string[] args)
+    internal class Program
     {
-        SharedResources.Culture = System.Globalization.CultureInfo.CurrentUICulture;
+        private static Engine Engine => new Engine();
 
-        await Engine.Run(args);
+        public static async Task Main(string[] args)
+        {
+            SharedResources.Culture = System.Globalization.CultureInfo.CurrentUICulture;
+
+            await Engine.Run(args);
+
+            Console.Read();
+        }
     }
 }

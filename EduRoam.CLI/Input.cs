@@ -1,4 +1,6 @@
-﻿namespace EduRoam.CLI
+﻿using System;
+
+namespace EduRoam.CLI
 {
     internal static class Input
     {

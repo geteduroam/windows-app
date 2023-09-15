@@ -1,6 +1,8 @@
 using EduRoam.Connect.Exceptions;
 
+using System;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;

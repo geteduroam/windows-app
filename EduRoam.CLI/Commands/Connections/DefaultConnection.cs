@@ -1,5 +1,7 @@
 ﻿using EduRoam.Connect.Tasks.Connectors;
 
+using System.Threading.Tasks;
+
 using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
 
 namespace EduRoam.CLI.Commands.Connections

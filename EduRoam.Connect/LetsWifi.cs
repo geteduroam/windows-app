@@ -8,10 +8,14 @@ using EduRoam.Localization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 
 namespace EduRoam.Connect
 {

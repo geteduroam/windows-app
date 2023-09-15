@@ -1,4 +1,7 @@
-﻿namespace EduRoam.Connect.Tasks
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace EduRoam.Connect.Tasks
 {
     public class TaskStatus
     {

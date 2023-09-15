@@ -1,4 +1,6 @@
-﻿namespace EduRoam.Connect
+﻿using System;
+
+namespace EduRoam.Connect
 {
     public static class ConsoleExtension
     {

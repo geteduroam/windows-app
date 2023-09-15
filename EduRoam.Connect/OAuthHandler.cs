@@ -2,9 +2,13 @@
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
 
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace EduRoam.Connect
 {

@@ -3,7 +3,9 @@ using EduRoam.Connect.Identity;
 using EduRoam.Connect.Tasks.Connectors;
 using EduRoam.Localization;
 
+using System.Linq;
 using System.Security;
+using System.Threading.Tasks;
 
 namespace EduRoam.Connect.Tasks
 {

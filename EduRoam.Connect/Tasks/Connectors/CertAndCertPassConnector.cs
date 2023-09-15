@@ -2,6 +2,8 @@
 using EduRoam.Localization;
 
 using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace EduRoam.Connect.Tasks.Connectors
 {
