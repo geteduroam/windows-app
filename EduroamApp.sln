@@ -38,6 +38,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduRoam.CLI", "EduRoam.CLI\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{6E59533B-0393-4FC5-993F-3133A80B558A}"
 	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 		FodyWeavers.xml = FodyWeavers.xml
 	EndProjectSection
 EndProject

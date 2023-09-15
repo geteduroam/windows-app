@@ -1,5 +1,7 @@
 ﻿using App.Library;
 
+using Microsoft.Extensions.DependencyInjection;
+
 using System.Linq;
 using System.Windows;
 
@@ -12,6 +14,8 @@ namespace Eduroam.App
     /// </summary>
     public partial class App : Application
     {
+        private ServiceProvider serviceProvider;
+
         private void App_OnStartup(object sender, StartupEventArgs e)
         {
             LanguageResources.Culture = System.Globalization.CultureInfo.CurrentUICulture;
@@ -21,9 +25,11 @@ namespace Eduroam.App
             {
                 this.Shutdown(1);
             }
+            
+            this.serviceProvider = ServicesConfiguration.ConfigureServices();
 
-            var mainWindow = new MainWindow();
+            var mainWindow = this.serviceProvider.GetService<MainWindow>();
             mainWindow.Show();
-        }
+        }        
     }
 }

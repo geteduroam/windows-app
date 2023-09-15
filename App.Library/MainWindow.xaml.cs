@@ -1,5 +1,7 @@
 ﻿using App.Library.ViewModels;
 
+using Microsoft.Extensions.Logging;
+
 using System.ComponentModel;
 using System.Windows;
 
@@ -14,8 +16,12 @@ namespace App.Library
 
         public readonly MainViewModel MainViewModel;
 
-        public MainWindow()
+        private readonly ILogger<MainWindow> logger;
+
+        public MainWindow(ILogger<MainWindow> logger) : base() 
         {
+            this.logger = logger; 
+
             this.InitializeComponent();
 
             //            this.ShowInTaskbar = true;
@@ -31,11 +37,20 @@ namespace App.Library
 
             this.MainViewModel = new MainViewModel(this.Close);
             this.DataContext = this.MainViewModel;
+
+            this.Dispatcher.UnhandledException += this.Dispatcher_UnhandledException;
+        }
+
+        private void Dispatcher_UnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            this.logger.LogCritical(e.Exception, "Exception not handled by the app");
         }
 
         private void MainWindow_OnClosing(object? sender, CancelEventArgs e)
         {
             this.MainViewModel.Dispose();
         }
+
+
     }
 }
