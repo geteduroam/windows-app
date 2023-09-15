@@ -36,6 +36,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Govroam.App", "Govroam.App\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduRoam.CLI", "EduRoam.CLI\EduRoam.CLI.csproj", "{4657E4BD-FFEB-42BB-BAE2-4EFE553CBA96}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{6E59533B-0393-4FC5-993F-3133A80B558A}"
+	ProjectSection(SolutionItems) = preProject
+		FodyWeavers.xml = FodyWeavers.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

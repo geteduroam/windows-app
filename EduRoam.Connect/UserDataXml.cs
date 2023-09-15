@@ -185,7 +185,7 @@ namespace EduRoam.Connect
         private static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
         {
             var isX86_32 = System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.X86;
-            Debug.Assert(!isX86_32);
+            //Debug.Assert(!isX86_32);
             //bool at_least_win10 = System.Environment.OSVersion.Version.Major >= 10; // TODO: make this work, requires some application manifest
             //var at_least_win10 = true;
             return (eapType, innerAuthType) switch

@@ -5,8 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Security.Principal;
 
 using InstalledCertificate = EduRoam.Connect.Store.Certificate;
 
@@ -18,13 +20,31 @@ namespace EduRoam.Connect.Install
 
         // Used to install root CAs to verify server certificates with
         public static readonly StoreName RootCaStoreName = StoreName.Root;
+        public static readonly StoreName InterCaStoreName = StoreName.CertificateAuthority;
+        public static readonly StoreName UserCertStoreName = StoreName.My;
+
+#if DEBUG
+        public static readonly StoreLocation RootCaStoreLocation = StoreLocation.LocalMachine; // NICE TO HAVE: make this configurable to LocalMachine
+                                                                                              // Used to install CAs to verify server certificates with
+        public static readonly StoreLocation InterCaStoreLocation = StoreLocation.LocalMachine; // NICE TO HAVE: make this configurable to LocalMachine
+                                                                                               // Used to install TLS client certificates
+        public static readonly StoreLocation UserCertStoreLocation = StoreLocation.LocalMachine;
+#else
         public static readonly StoreLocation RootCaStoreLocation = StoreLocation.CurrentUser; // NICE TO HAVE: make this configurable to LocalMachine
                                                                                               // Used to install CAs to verify server certificates with
-        public static readonly StoreName InterCaStoreName = StoreName.CertificateAuthority;
         public static readonly StoreLocation InterCaStoreLocation = StoreLocation.CurrentUser; // NICE TO HAVE: make this configurable to LocalMachine
                                                                                                // Used to install TLS client certificates
-        public static readonly StoreName UserCertStoreName = StoreName.My;
         public static readonly StoreLocation UserCertStoreLocation = StoreLocation.CurrentUser;
+#endif
+
+        public static bool IsAdministrator()
+        {
+            using (var identity = WindowsIdentity.GetCurrent())
+            {
+                var principal = new WindowsPrincipal(identity);
+                return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
+        }
 
         /// <summary>
         /// Installs the certificate into the certificate store chosen.
@@ -37,6 +57,8 @@ namespace EduRoam.Connect.Install
         public static void InstallCertificate(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation)
         {
             _ = cert ?? throw new ArgumentNullException(paramName: nameof(cert));
+
+            var isAdmin = IsAdministrator();
 
             if (IsCertificateInstalled(cert, storeName, storeLocation))
             {
