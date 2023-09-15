@@ -260,3 +260,4 @@ paket-files/
 __pycache__/
 *.pyc
 /test/example.eap-config
+/Eduroam.App/appsettings.test.json
