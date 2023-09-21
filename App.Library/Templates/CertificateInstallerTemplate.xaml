@@ -2,7 +2,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Converters="clr-namespace:App.Library.Converters"
-    xmlns:viewModels="clr-namespace:App.Library.ViewModels">
+    xmlns:viewModels="clr-namespace:App.Library.ViewModels"
+    xmlns:lang="clr-namespace:EduRoam.Localization;assembly=EduRoam.Localization">
 
     <Converters:InverseBooleanConverter x:Key="InverseBooleanConverter" />
 
@@ -27,10 +28,11 @@
                 
                 <Button
                     x:Name="btnInstall"
+                    Content="{x:Static lang:Resources.ButtonInstall}"
                     Grid.Column="1"
                     Width="80"
                     Height="40"
-                    VerticalAlignment="Top"
+                    VerticalAlignment="Top"                    
                     Command="{Binding InstallCommand}"
                     IsEnabled="{Binding IsInstalled, Converter={StaticResource InverseBooleanConverter}}"
                     Style="{DynamicResource InstallButtonStyle}" />
