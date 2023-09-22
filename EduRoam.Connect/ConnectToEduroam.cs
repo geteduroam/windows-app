@@ -105,7 +105,7 @@ namespace EduRoam.Connect
         {
             _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
             return EnumerateCAs(eapConfig)
-                .Select(cert => new CertificateInstaller(cert, CertificateStore.RootCaStoreName, CertificateStore.RootCaStoreLocation));
+                .Select(cert => new CertificateInstaller(cert, CertificateStore.RootCaStoreName, CertificateStore.CertStoreLocation));
         }
 
         /// <summary>

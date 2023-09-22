@@ -1,5 +1,7 @@
 ﻿using EduRoam.Connect.Store;
 
+using System.Security.Principal;
+
 namespace EduRoam.Connect.Tasks
 {
     public class StatusTask
@@ -17,6 +19,17 @@ namespace EduRoam.Connect.Tasks
                 status.Identity = this.IdentityProvider.Value;
             }
             return status;
+        }
+
+        public static bool RunAsAdministrator
+        {
+            get
+            {
+                using var identity = WindowsIdentity.GetCurrent();
+
+                var principal = new WindowsPrincipal(identity);
+                return principal.IsInRole(WindowsBuiltInRole.Administrator);
+            }
         }
     }
 }

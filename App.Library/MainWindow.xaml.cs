@@ -18,7 +18,7 @@ namespace App.Library
 
         private readonly ILogger<MainWindow> logger;
 
-        public MainWindow(ILogger<MainWindow> logger) : base() 
+        public MainWindow(ILogger<MainWindow> logger, MainViewModel mainViewModel) : base() 
         {
             this.logger = logger; 
 
@@ -35,7 +35,9 @@ namespace App.Library
             //            };
             //#pragma warning restore CA1416 // Validate platform compatibility
 
-            this.MainViewModel = new MainViewModel(this.Close);
+            this.MainViewModel = mainViewModel;
+            this.MainViewModel.CloseApp = this.Close;
+
             this.DataContext = this.MainViewModel;
 
             this.Dispatcher.UnhandledException += this.Dispatcher_UnhandledException;

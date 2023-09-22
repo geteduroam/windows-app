@@ -14,7 +14,7 @@ using InstalledCertificate = EduRoam.Connect.Store.Certificate;
 
 namespace EduRoam.Connect.Install
 {
-    public static class CertificateStore
+    public class CertificateStore
     {
         // Certificate stores:
 
@@ -23,28 +23,9 @@ namespace EduRoam.Connect.Install
         public static readonly StoreName InterCaStoreName = StoreName.CertificateAuthority;
         public static readonly StoreName UserCertStoreName = StoreName.My;
 
-#if DEBUG
-        public static readonly StoreLocation RootCaStoreLocation = StoreLocation.LocalMachine; // NICE TO HAVE: make this configurable to LocalMachine
-                                                                                              // Used to install CAs to verify server certificates with
-        public static readonly StoreLocation InterCaStoreLocation = StoreLocation.LocalMachine; // NICE TO HAVE: make this configurable to LocalMachine
-                                                                                               // Used to install TLS client certificates
-        public static readonly StoreLocation UserCertStoreLocation = StoreLocation.LocalMachine;
-#else
-        public static readonly StoreLocation RootCaStoreLocation = StoreLocation.CurrentUser; // NICE TO HAVE: make this configurable to LocalMachine
-                                                                                              // Used to install CAs to verify server certificates with
-        public static readonly StoreLocation InterCaStoreLocation = StoreLocation.CurrentUser; // NICE TO HAVE: make this configurable to LocalMachine
-                                                                                               // Used to install TLS client certificates
-        public static readonly StoreLocation UserCertStoreLocation = StoreLocation.CurrentUser;
-#endif
 
-        public static bool IsAdministrator()
-        {
-            using (var identity = WindowsIdentity.GetCurrent())
-            {
-                var principal = new WindowsPrincipal(identity);
-                return principal.IsInRole(WindowsBuiltInRole.Administrator);
-            }
-        }
+        public static readonly StoreLocation CertStoreLocation = new Configuration().CertificateStore;
+        public static readonly StoreLocation UserCertStoreLocation = StoreLocation.CurrentUser;
 
         /// <summary>
         /// Installs the certificate into the certificate store chosen.
@@ -57,8 +38,6 @@ namespace EduRoam.Connect.Install
         public static void InstallCertificate(X509Certificate2 cert, StoreName storeName, StoreLocation storeLocation)
         {
             _ = cert ?? throw new ArgumentNullException(paramName: nameof(cert));
-
-            var isAdmin = IsAdministrator();
 
             if (IsCertificateInstalled(cert, storeName, storeLocation))
             {
@@ -77,7 +56,7 @@ namespace EduRoam.Connect.Install
                 certStore.Add(cert);
                 // ^ Will produce a popup prompt when installing to the root store
                 // if the certificate is not already installed
-                // There fore you should predict this
+                // Therefor you should predict this
                 // and warn+instruct the user
             }
             catch (CryptographicException ex)

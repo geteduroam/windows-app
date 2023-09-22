@@ -9,6 +9,8 @@ using EduRoam.Connect.Tasks;
 using EduRoam.Connect.Tasks.Connectors;
 using EduRoam.Localization;
 
+using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -29,10 +31,10 @@ namespace App.Library.ViewModels
 
         private readonly Status status;
 
-        public MainViewModel(Action closeApp)
+        public MainViewModel(ILogger<MainViewModel> logger)
         {
             this.NewProfileCommand = new DelegateCommand(this.NewProfileCommandAction, this.CanNewProfileCommandAction);
-            this.LoadEapFileCommand = new AsyncCommand(this.LoadEapFileAsync);
+            this.LoadEapFileCommand = new DelegateCommand(this.LoadEapFile);
             this.RefreshCommand = new AsyncCommand(this.RefreshAsync);
             this.ReauthenticateCommand = new DelegateCommand(this.Reauthenticate);
             this.RemoveProfileCommand = new DelegateCommand(this.RemoveProfile);
@@ -46,7 +48,9 @@ namespace App.Library.ViewModels
 
             this.status = new StatusTask().GetStatus();
             this.IsLoading = true;
-            this.CloseApp = closeApp;
+            this.Logger = logger;
+
+            this.Logger.LogInformation($"{this.AppTitle}, version: {this.AppVersion}, run as admin: {StatusTask.RunAsAdministrator}");
 
             Task.Run(
                 async () =>
@@ -58,6 +62,7 @@ namespace App.Library.ViewModels
                     this.CallPropertyChanged(string.Empty);
                     DelegateCommand.RaiseCanExecuteChanged();
                 });
+
         }
 
         public ApplicationState State { get; private set; }
@@ -68,7 +73,7 @@ namespace App.Library.ViewModels
 
         public DelegateCommand OpenMenuCommand { get; protected set; }
 
-        public AsyncCommand LoadEapFileCommand { get; protected set; }
+        public DelegateCommand LoadEapFileCommand { get; protected set; }
 
         public AsyncCommand RefreshCommand { get; protected set; }
 
@@ -82,7 +87,7 @@ namespace App.Library.ViewModels
 
         public DelegateCommand OpenHelpCommand { get; protected set; }
 
-        public Action CloseApp { get; private set; }
+        public Action CloseApp { get; set; }
 
         public bool IsLoading { get; private set; }
 
@@ -307,22 +312,23 @@ namespace App.Library.ViewModels
 
                 this.State.SelectedProfile = profile;
             }
-            catch (EduroamAppUserException ex) // TODO: catch this on some higher level
+            catch (EduroamAppUserException eauExc)
             {
-                MessageBox.Show(ex.UserFacingMessage, caption: "geteduroam - Exception");
+                this.Logger.LogError(eauExc, "geteduroam - Exception");
+                MessageBox.Show(eauExc.UserFacingMessage, caption: "geteduroam - Exception");
                 return;
             }
 
             if (!string.IsNullOrWhiteSpace(eapConfigXml))
             {
                 // TODO: ^perhaps reuse logic from PersistingStore.IsReinstallable
-                Debug.WriteLine(nameof(eapConfigXml) + " was set", category: nameof(this.HandleProfileSelect));
+                this.Logger.LogInformation($"category: ${nameof(this.HandleProfileSelect)} {nameof(eapConfigXml)} was set");
 
                 eapConfig = EapConfig.FromXmlData(eapConfigXml);
                 eapConfig.ProfileId = profileId;
             }
 
-            Debug.WriteLine(nameof(eapConfigXml) + " was not set", category: nameof(this.HandleProfileSelect));
+            this.Logger.LogInformation($"category: ${nameof(this.HandleProfileSelect)} {nameof(eapConfigXml)} was not set");
 
             if (profile.OAuth)
             {
@@ -388,44 +394,6 @@ namespace App.Library.ViewModels
             }
         }
 
-        /// <summary>
-        /// Gets EAP-config file, either directly or after browser authentication.
-        /// Prepares for redirect if no EAP-config.
-        /// </summary>
-        /// <returns>EapConfig object.</returns>
-        /// <exception cref="EduroamAppUserException">description</exception>
-        private async Task<EapConfig?> DownloadEapConfig(IdentityProviderProfile profile)
-        {
-            if (string.IsNullOrWhiteSpace(profile?.Id))
-            {
-                return null;
-            }
-
-            // if OAuth
-            if (profile.OAuth
-                || !string.IsNullOrEmpty(profile.Redirect))
-            {
-                return null;
-            }
-
-            try
-            {
-                return await Task.Run(() => this.idpDownloader.DownloadEapConfig(profile.Id));
-            }
-            catch (ApiUnreachableException e)
-            {
-                throw new EduroamAppUserException(
-                    "HttpRequestException",
-                    string.Format(Resources.ErrorCannotConnectWithServer, e.Message));
-            }
-            catch (ApiParsingException e)
-            {
-                throw new EduroamAppUserException(
-                    "xml parse exception",
-                    string.Format(Resources.ErrorUnsupportedInstituteOrProfile, e.Message));
-            }
-        }
-
         public bool CanEapFileBeLoaded => true;
 
         /// <summary>
@@ -434,7 +402,7 @@ namespace App.Library.ViewModels
 		/// </summary>
 		/// <returns>EapConfig object or null</returns>
 		/// <exception cref="XmlException"></exception>
-		public async Task LoadEapFileAsync()
+		public void LoadEapFile()
         {
             Debug.WriteLine("LoadEapFile");
 
@@ -536,6 +504,8 @@ namespace App.Library.ViewModels
         }
 
         public bool CanAppBeUninstalled => UninstallTask.AppIsInstalled;
+
+        public ILogger<MainViewModel> Logger { get; }
 
         public void Uninstall()
         {

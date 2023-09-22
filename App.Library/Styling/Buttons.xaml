@@ -2,7 +2,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:App.Library"
                     xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:clr="clr-namespace:System;assembly=mscorlib">
+                    xmlns:clr="clr-namespace:System;assembly=mscorlib"
+                    xmlns:lang="clr-namespace:EduRoam.Localization;assembly=EduRoam.Localization">
 
     <FontFamily x:Key="IconFont">Segoe MDL2 Assets</FontFamily>
 
@@ -82,7 +83,7 @@
         <Setter Property="OverridesDefaultStyle" Value="True" />
         <Setter Property="Background" Value="White" />
         <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
-        <Setter Property="Content" Value="{DynamicResource ButtonInstall}" />
+        <Setter Property="Content" Value="{x:Static lang:Resources.ButtonInstall}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">

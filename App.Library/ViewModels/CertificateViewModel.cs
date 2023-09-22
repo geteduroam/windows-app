@@ -19,7 +19,7 @@ namespace App.Library.ViewModels
             var installers = configureTask.GetCertificateInstallers();
 
             this.Installers = new ObservableCollection<CertificateInstallerViewModel>(
-                installers.Select(x => new CertificateInstallerViewModel(x)));
+                installers.Select(installer => new CertificateInstallerViewModel(installer)));
             this.eapConfig = eapConfig;
         }
 
@@ -27,7 +27,7 @@ namespace App.Library.ViewModels
 
         public ObservableCollection<CertificateInstallerViewModel> Installers { get; }
 
-        public bool AllCertificatesAreInstalled => this.Installers.All(x => x.IsInstalled);
+        public bool AllCertificatesAreInstalled => this.Installers.All(installer => installer.IsInstalled);
 
         protected override bool CanNavigateNextAsync()
         {

@@ -4,9 +4,10 @@ using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Localization;
 
+using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -83,33 +84,33 @@ namespace App.Library.ViewModels
                 await this.ConfigureAndConnectAsync(messages);
 
             }
-            catch (EduroamAppUserException ex)
+            catch (EduroamAppUserException eauExc)
             {
-                // TODO, NICE TO HAVE: log the error
-                Debug.WriteLine(Resources.ErrorNoConnection, ex.UserFacingMessage);
-                this.connectionStatus = TaskStatus.AsFailure(ex.UserFacingMessage);
+                this.Owner.Logger.LogError(eauExc, Resources.ErrorNoConnection, eauExc.UserFacingMessage);
+                this.connectionStatus = TaskStatus.AsFailure(eauExc.UserFacingMessage);
             }
 
             catch (ArgumentException exc)
             {
-                Debug.WriteLine(exc.Message);
+                this.Owner.Logger.LogError(exc, exc.Message);
                 this.connectionStatus = TaskStatus.AsFailure(exc.Message);
             }
-            catch (ApiParsingException e)
+            catch (ApiParsingException apExc)
             {
                 // Must never happen, because if the discovery is reached,
                 // it must be parseable. Logging has been done upstream.
-                Debug.WriteLine(Resources.ErrorApi);
-                Debug.WriteLine(e.Message, e.GetType().ToString());
+                this.Owner.Logger.LogError(Resources.ErrorApi);
+                this.Owner.Logger.LogError(apExc, apExc.Message);
                 this.connectionStatus = TaskStatus.AsFailure(Resources.ErrorApi);
             }
-            catch (ApiUnreachableException)
+            catch (ApiUnreachableException auExc)
             {
-                Debug.WriteLine(Resources.ErrorNoInternet);
+                this.Owner.Logger.LogError(auExc, Resources.ErrorNoInternet);
                 this.connectionStatus = TaskStatus.AsFailure(Resources.ErrorNoInternet);
             }
             catch (Exception exc)
             {
+                this.Owner.Logger.LogError(exc, "Cannot connect");
                 this.connectionStatus = TaskStatus.AsFailure(exc.Message);
             }
 

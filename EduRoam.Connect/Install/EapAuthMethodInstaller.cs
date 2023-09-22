@@ -50,7 +50,7 @@ namespace EduRoam.Connect
                 var isRootCA = cert.Subject == cert.Issuer;
                 CertificateStore.InstallCertificate(cert,
                     isRootCA ? CertificateStore.RootCaStoreName : CertificateStore.InterCaStoreName,
-                    isRootCA ? CertificateStore.RootCaStoreLocation : CertificateStore.InterCaStoreLocation);
+                    CertificateStore.CertStoreLocation);
             }
 
             // Install client certificate if any
