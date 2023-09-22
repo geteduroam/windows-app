@@ -83,6 +83,7 @@ namespace App.Library.ViewModels
 
                 await this.ConfigureAndConnectAsync(messages);
 
+                this.Owner.Logger.LogInformation($"(Attempt to) connect to {this.eapConfig.InstitutionInfo.DisplayName} (profile id: {this.eapConfig.ProfileId})");
             }
             catch (EduroamAppUserException eauExc)
             {

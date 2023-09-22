@@ -322,13 +322,13 @@ namespace App.Library.ViewModels
             if (!string.IsNullOrWhiteSpace(eapConfigXml))
             {
                 // TODO: ^perhaps reuse logic from PersistingStore.IsReinstallable
-                this.Logger.LogInformation($"category: ${nameof(this.HandleProfileSelect)} {nameof(eapConfigXml)} was set");
+                this.Logger.LogInformation($"category: {nameof(this.HandleProfileSelect)}, {nameof(eapConfigXml)} was set");
 
                 eapConfig = EapConfig.FromXmlData(eapConfigXml);
                 eapConfig.ProfileId = profileId;
             }
 
-            this.Logger.LogInformation($"category: ${nameof(this.HandleProfileSelect)} {nameof(eapConfigXml)} was not set");
+            this.Logger.LogInformation($"category: {nameof(this.HandleProfileSelect)}, {nameof(eapConfigXml)} was not set");
 
             if (profile.OAuth)
             {
