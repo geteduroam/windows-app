@@ -82,6 +82,7 @@
     <EmbeddedResource Include="appsettings.json" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
     <Content Include="geteduroam.ico" />
   </ItemGroup>
   <ItemGroup>

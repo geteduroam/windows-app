@@ -117,6 +117,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="application-icon.png" />
+    <Resource Include="FodyWeavers.xml" />
     <Content Include="getgovroam.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

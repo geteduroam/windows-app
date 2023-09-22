@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="application-icon.png" />
+    <Resource Include="FodyWeavers.xml" />
     <Content Include="geteduroam.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
