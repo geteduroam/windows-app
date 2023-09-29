@@ -5,7 +5,7 @@ using System.Linq;
 
 using SharedResources = EduRoam.Localization.Resources;
 
-namespace EduRoam.CLI
+namespace EduRoam.CLI.Commands
 {
     public static class Options
     {

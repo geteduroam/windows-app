@@ -4,18 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4657E4BD-FFEB-42BB-BAE2-4EFE553CBA96}</ProjectGuid>
+    <ProjectGuid>{3A836BA4-B012-47DB-8FFF-B66D1672D43F}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>EduRoam.CLI</RootNamespace>
-    <AssemblyName>eduroam-cli</AssemblyName>
+    <RootNamespace>App.MsiCreator</RootNamespace>
+    <AssemblyName>App.MsiCreator</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -36,67 +32,27 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationIcon>geteduroam.ico</ApplicationIcon>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Commands\Connect.cs" />
-    <Compile Include="Commands\Connections\CertAndCertPassConnection.cs" />
-    <Compile Include="Commands\Connections\CertPassConnection.cs" />
-    <Compile Include="Commands\Connections\CredentialsConnection.cs" />
-    <Compile Include="Commands\Connections\DefaultConnection.cs" />
-    <Compile Include="Commands\Connections\IConnection.cs" />
+    <Compile Include="Commands\CreateMsi.cs" />
     <Compile Include="Commands\ICommand.cs" />
-    <Compile Include="Commands\Install.cs" />
-    <Compile Include="Commands\List.cs" />
-    <Compile Include="Commands\Refresh.cs" />
-    <Compile Include="Commands\Remove.cs" />
-    <Compile Include="Commands\Show.cs" />
-    <Compile Include="Commands\Status.cs" />
-    <Compile Include="Commands\Uninstall.cs" />
-    <Compile Include="Engine.cs" />
-    <Compile Include="Input.cs" />
-    <Compile Include="Interaction.cs" />
     <Compile Include="Commands\Options.cs" />
+    <Compile Include="Engine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources.Designer.cs" />
-    <Compile Include="ServicesConfiguration.cs" />
+    <None Include="wix\$(ProjectName).g.wxs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <EmbeddedResource Include="appsettings.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="FodyWeavers.xml" />
-    <Content Include="geteduroam.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources.resx" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\EduRoam.Connect\EduRoam.Connect.csproj">
-      <Project>{738d8145-ae85-4d16-9ddb-ce6f7825434d}</Project>
-      <Name>EduRoam.Connect</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EduRoam.Localization\EduRoam.Localization.csproj">
-      <Project>{a13e5e20-857e-49ed-b307-bb2a73896902}</Project>
-      <Name>EduRoam.Localization</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Costura.Fody">
@@ -109,15 +65,18 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection">
-      <Version>7.0.0</Version>
-    </PackageReference>
-    <PackageReference Include="NLog.Extensions.Logging">
-      <Version>5.3.4</Version>
-    </PackageReference>
     <PackageReference Include="System.CommandLine">
       <Version>2.0.0-beta4.22272.1</Version>
     </PackageReference>
+    <PackageReference Include="WixSharp">
+      <Version>1.22.1</Version>
+    </PackageReference>
+    <PackageReference Include="WixSharp.wix.bin">
+      <Version>3.14.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
