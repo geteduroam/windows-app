@@ -261,3 +261,5 @@ __pycache__/
 *.pyc
 /test/example.eap-config
 /Eduroam.App/appsettings.test.json
+/App.MsiCreator/geteduroam.ico
+/App.MsiCreator/geteduroam.msi

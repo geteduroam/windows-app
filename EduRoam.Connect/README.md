@@ -6,7 +6,8 @@ In case of issues with the eduroam WIFI network,
 
 The wlanreport shows details of all (WIFI) networks
 
-[More information](https://learn.microsoft.com/en-us/windows-server/networking/technologies/extensible-authentication-protocol/configure-eap-profiles?tabs=netsh-wifi%2Cpowershell-vpn%2Csettings-wifi%2Cgroup-policy-wifi)
-
-[OneX xml - EAP Configuration](https://learn.microsoft.com/en-us/windows/win32/nativewifi/onexschema-schema)
-[EAP Certificate filtering](https://learn.microsoft.com/en-us/windows/client-management/mdm/eap-configuration#eap-certificate-filtering)
+# Further reading
+- [802.1X Authenticated Wireless Deployment Guide](https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2008-R2-and-2008/dd283093(v=ws.10))
+- [Configure EAP profiles and settings in Windows](https://learn.microsoft.com/en-us/windows-server/networking/technologies/extensible-authentication-protocol/configure-eap-profiles?tabs=netsh-wifi%2Cpowershell-vpn%2Csettings-wifi%2Cgroup-policy-wifi)
+- [OneX xml - EAP Configuration](https://learn.microsoft.com/en-us/windows/win32/nativewifi/onexschema-schema)
+- [EAP Certificate filtering](https://learn.microsoft.com/en-us/windows/client-management/mdm/eap-configuration#eap-certificate-filtering)

@@ -12,6 +12,8 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -45,10 +47,23 @@
   <ItemGroup>
     <Compile Include="Commands\CreateMsi.cs" />
     <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\MsiTemplate.cs" />
     <Compile Include="Commands\Options.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Templates\geteduroam-cli\geteduroam.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\geteduroam\geteduroam.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\getgovroam\getgovroam.ico">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Templates\geteduroam-cli\geteduroam-installer.json" />
+    <None Include="Templates\geteduroam\geteduroam-installer.json" />
+    <None Include="Templates\getgovroam\getgovroam-installer.json" />
     <None Include="wix\$(ProjectName).g.wxs" />
   </ItemGroup>
   <ItemGroup>
@@ -64,6 +79,9 @@
       <Version>6.8.0</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
     </PackageReference>
     <PackageReference Include="System.CommandLine">
       <Version>2.0.0-beta4.22272.1</Version>
