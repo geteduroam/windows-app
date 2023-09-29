@@ -25,11 +25,11 @@ namespace Eduroam.App
             {
                 this.Shutdown(1);
             }
-            
+
             this.serviceProvider = ServicesConfiguration.ConfigureServices();
 
             var mainWindow = this.serviceProvider.GetService<MainWindow>();
             mainWindow.Show();
-        }        
+        }
     }
 }

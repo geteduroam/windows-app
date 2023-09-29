@@ -117,10 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AppTitle" xml:space="preserve">
+    <value>eduroam</value>
+  </data>
   <data name="ButtonAppConnect" xml:space="preserve">
     <value>Connect to eduroam</value>
   </data>
+  <data name="Connected" xml:space="preserve">
+    <value>You are now connected to eduroam.</value>
+  </data>
+  <data name="DefaultIdentityProvider" xml:space="preserve">
+    <value>geteduroam</value>
+  </data>
   <data name="HelpUrl" xml:space="preserve">
     <value>https://www.geteduroam.app/</value>
+  </data>
+  <data name="UninstallNotificationTitle" xml:space="preserve">
+    <value>Uninstall geteduroam</value>
   </data>
 </root>

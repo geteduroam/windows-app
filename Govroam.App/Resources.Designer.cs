@@ -61,6 +61,15 @@ namespace Govroam.App {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to govroam.
+        /// </summary>
+        public static string AppTitle {
+            get {
+                return ResourceManager.GetString("AppTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connect to govroam.
         /// </summary>
         public static string ButtonAppConnect {
@@ -70,11 +79,38 @@ namespace Govroam.App {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You are now connected to govroam..
+        /// </summary>
+        public static string Connected {
+            get {
+                return ResourceManager.GetString("Connected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to getgovroam.
+        /// </summary>
+        public static string DefaultIdentityProvider {
+            get {
+                return ResourceManager.GetString("DefaultIdentityProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://govroam.nl/support/.
         /// </summary>
         public static string HelpUrl {
             get {
                 return ResourceManager.GetString("HelpUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uninstall getgovroam.
+        /// </summary>
+        public static string UninstallNotificationTitle {
+            get {
+                return ResourceManager.GetString("UninstallNotificationTitle", resourceCulture);
             }
         }
     }

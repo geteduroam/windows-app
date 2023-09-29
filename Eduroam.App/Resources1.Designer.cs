@@ -61,6 +61,15 @@ namespace Eduroam.App {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to eduroam.
+        /// </summary>
+        public static string AppTitle {
+            get {
+                return ResourceManager.GetString("AppTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connect to eduroam.
         /// </summary>
         public static string ButtonAppConnect {
@@ -70,11 +79,38 @@ namespace Eduroam.App {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You are now connected to eduroam..
+        /// </summary>
+        public static string Connected {
+            get {
+                return ResourceManager.GetString("Connected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to geteduroam.
+        /// </summary>
+        public static string DefaultIdentityProvider {
+            get {
+                return ResourceManager.GetString("DefaultIdentityProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to https://www.geteduroam.app/.
         /// </summary>
         public static string HelpUrl {
             get {
                 return ResourceManager.GetString("HelpUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uninstall geteduroam.
+        /// </summary>
+        public static string UninstallNotificationTitle {
+            get {
+                return ResourceManager.GetString("UninstallNotificationTitle", resourceCulture);
             }
         }
     }

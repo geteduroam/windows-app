@@ -56,7 +56,6 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationResources.cs" />
     <Compile Include="ApplicationState.cs" />
     <Compile Include="CommandLineArgumentsHandler.cs" />
     <Compile Include="MainWindow.xaml.cs">

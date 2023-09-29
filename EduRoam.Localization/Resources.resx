@@ -142,9 +142,6 @@
             Will refresh the profile even if the validity period
             of the current client certificate has more than a 3rd left</value>
   </data>
-  <data name="AppTitle" xml:space="preserve">
-    <value>Eduroam</value>
-  </data>
   <data name="AreYouSure" xml:space="preserve">
     <value>Are you sure you want to continue?</value>
   </data>
@@ -220,9 +217,6 @@ Unable to connect to eduroam.</value>
   <data name="ConfiguredEap" xml:space="preserve">
     <value>EAP is configured</value>
   </data>
-  <data name="Connected" xml:space="preserve">
-    <value>You are now connected to EduRoam.</value>
-  </data>
   <data name="ConnectionUsernameAndPasswordRequired" xml:space="preserve">
     <value>Please provide a username and password to connect.</value>
   </data>
@@ -246,9 +240,6 @@ Unable to connect to eduroam.</value>
   </data>
   <data name="DaysLeft" xml:space="preserve">
     <value>{0} more days</value>
-  </data>
-  <data name="DefaultIdentityProvider" xml:space="preserve">
-    <value>geteduroam</value>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Done</value>
@@ -553,9 +544,6 @@ Exception: {0}</value>
   </data>
   <data name="UninstallNotification" xml:space="preserve">
     <value>The application and its configuration have been uninstalled.</value>
-  </data>
-  <data name="UninstallNotificationTitle" xml:space="preserve">
-    <value>Uninstall geteduroam</value>
   </data>
   <data name="Username" xml:space="preserve">
     <value>Username</value>

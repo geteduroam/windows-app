@@ -46,7 +46,7 @@ namespace EduRoam.Connect.Tasks
                 {
                     return profiles;
                 }
-                
+
                 return profiles.Where(provider => provider.Name.ToUpper().Contains(query)); // somehow cannot use Contains(string, StringComparer.CurrentCultureIgnoreCase)
 
             }
@@ -64,7 +64,7 @@ namespace EduRoam.Connect.Tasks
 
         public string GetCurrentProfileName()
         {
-            return this.store.IdentityProvider?.DisplayName ?? Resources.DefaultIdentityProvider;
+            return this.store.IdentityProvider?.DisplayName ?? ApplicationResources.GetString("DefaultIdentityProvider");
         }
 
         public void RemoveCurrentProfile()

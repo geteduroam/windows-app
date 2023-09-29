@@ -5,10 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Security.Principal;
 
 using InstalledCertificate = EduRoam.Connect.Store.Certificate;
 
@@ -22,7 +20,6 @@ namespace EduRoam.Connect.Install
         public static readonly StoreName RootCaStoreName = StoreName.Root;
         public static readonly StoreName InterCaStoreName = StoreName.CertificateAuthority;
         public static readonly StoreName UserCertStoreName = StoreName.My;
-
 
         public static readonly StoreLocation CertStoreLocation = new Configuration().CertificateStore;
         public static readonly StoreLocation UserCertStoreLocation = StoreLocation.CurrentUser;

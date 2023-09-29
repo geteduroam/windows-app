@@ -1,4 +1,5 @@
 ﻿using EduRoam.CLI.Commands;
+using EduRoam.Localization;
 
 using System;
 using System.Collections.Generic;
@@ -6,8 +7,6 @@ using System.CommandLine;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-
-using SharedResources = EduRoam.Localization.Resources;
 
 namespace EduRoam.CLI
 {
@@ -17,7 +16,7 @@ namespace EduRoam.CLI
 
         public Engine()
         {
-            this.rootCommand = new RootCommand(SharedResources.AppTitle);
+            this.rootCommand = new RootCommand(ApplicationResources.GetString("AppTitle"));
             var commandsList = GetCommandList();
 
             foreach (var command in commandsList)

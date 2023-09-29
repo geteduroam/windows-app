@@ -86,15 +86,6 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Eduroam.
-        /// </summary>
-        public static string AppTitle {
-            get {
-                return ResourceManager.GetString("AppTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to continue?.
         /// </summary>
         public static string AreYouSure {
@@ -314,15 +305,6 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You are now connected to EduRoam..
-        /// </summary>
-        public static string Connected {
-            get {
-                return ResourceManager.GetString("Connected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Please provide a username and password to connect..
         /// </summary>
         public static string ConnectionUsernameAndPasswordRequired {
@@ -391,15 +373,6 @@ namespace EduRoam.Localization {
         public static string DaysLeft {
             get {
                 return ResourceManager.GetString("DaysLeft", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to geteduroam.
-        /// </summary>
-        public static string DefaultIdentityProvider {
-            get {
-                return ResourceManager.GetString("DefaultIdentityProvider", resourceCulture);
             }
         }
         
@@ -1277,15 +1250,6 @@ namespace EduRoam.Localization {
         public static string UninstallNotification {
             get {
                 return ResourceManager.GetString("UninstallNotification", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Uninstall geteduroam.
-        /// </summary>
-        public static string UninstallNotificationTitle {
-            get {
-                return ResourceManager.GetString("UninstallNotificationTitle", resourceCulture);
             }
         }
         

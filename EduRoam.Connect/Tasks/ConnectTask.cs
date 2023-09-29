@@ -64,7 +64,7 @@ namespace EduRoam.Connect.Tasks
 
             if (status.Success)
             {
-                status.Messages.Add(Resources.Connected);
+                status.Messages.Add(ApplicationResources.GetString("Connected"));
             }
             else
             {

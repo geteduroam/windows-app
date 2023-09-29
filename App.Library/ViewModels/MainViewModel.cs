@@ -327,8 +327,10 @@ namespace App.Library.ViewModels
                 eapConfig = EapConfig.FromXmlData(eapConfigXml);
                 eapConfig.ProfileId = profileId;
             }
-
-            this.Logger.LogInformation($"category: {nameof(this.HandleProfileSelect)}, {nameof(eapConfigXml)} was not set");
+            else
+            {
+                this.Logger.LogInformation($"category: {nameof(this.HandleProfileSelect)}, {nameof(eapConfigXml)} was not set");
+            }
 
             if (profile.OAuth)
             {
