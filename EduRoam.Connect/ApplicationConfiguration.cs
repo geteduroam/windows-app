@@ -17,6 +17,8 @@ namespace EduRoam.Connect
             using var resourceStream = Assembly.GetEntryAssembly()!.GetManifestResourceStream(appSettings);
             Debug.Assert(resourceStream != null);
 
+            // ManagedNativeWifi.NativeWifi.ThrowsOnAnyFailure = true;
+
             return new ConfigurationBuilder().AddJsonStream(resourceStream)
                                             .AddJsonFile($"appsettings.test.json", true, true)
                                             .Build();

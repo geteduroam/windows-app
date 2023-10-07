@@ -61,6 +61,7 @@ namespace EduRoam.Connect
                 if (clientCert != null)
                 {
                     CertificateStore.InstallCertificate(clientCert, CertificateStore.UserCertStoreName, CertificateStore.UserCertStoreLocation);
+                    //CertificateStore.InstallCertificate(clientCert, CertificateStore.UserCertStoreName, CertificateStore.CertStoreLocation);
                 }
             }
 

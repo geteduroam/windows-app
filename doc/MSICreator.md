@@ -1,0 +1,1 @@
+ -t "C:\Projects\Surf\Surf\windows-app\App.MsiCreator\Templates\geteduroam\geteduroam-installer2.json" -e "C:\Temp\Surf\geteduroam.exe"

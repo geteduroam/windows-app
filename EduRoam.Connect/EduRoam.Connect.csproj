@@ -15,8 +15,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Remove="EapHostUserCredentials.xsd" />
+	  <None Remove="WLANProfile-v1.xsd" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="DocumentFormat.OpenXml" Version="2.20.0" />
 		<PackageReference Include="DuoVia.FuzzyStrings" Version="2.1.0" />
-		<PackageReference Include="ManagedNativeWifi" Version="2.5.0" />
+		<PackageReference Include="ManagedNativeWifi" Version="2.3.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.4">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -42,6 +48,11 @@
 			<Isolated>False</Isolated>
 			<EmbedInteropTypes>True</EmbedInteropTypes>
 		</COMReference>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="EapHostUserCredentials.xsd" />
+	  <EmbeddedResource Include="WLANProfile-v1.xsd" />
 	</ItemGroup>
 
 </Project>

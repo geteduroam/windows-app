@@ -2,8 +2,6 @@ using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 
 using System;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace EduRoam.Connect
@@ -58,7 +56,7 @@ namespace EduRoam.Connect
                     new XElement(nsEHUC + "EapMethod",
                         new XElement(nsEC + "Type", (int)authMethod.EapType),
                         new XElement(nsEC + "AuthorId", authMethod.EapType == EapType.TTLS ? 311 : 0)
-                    //new XElement(nsEC + "AuthorId", "67532") // geant link
+                    // new XElement(nsEC + "AuthorId", "67532") // geant link
                     ),
                     new XElement(nsEHUC + "Credentials",
                         new XAttribute(XNamespace.Xmlns + "eapuser", nsEUP),
@@ -67,6 +65,7 @@ namespace EduRoam.Connect
                         new XAttribute(XNamespace.Xmlns + "MsPeap", nsMPUP),
                         new XAttribute(XNamespace.Xmlns + "MsChapV2", nsMCUP),
                         new XAttribute(XNamespace.Xmlns + "eapTtls", nsTTLS),
+                        // new XAttribute(XNamespace.Xmlns + "eaptls", nsTLS),
                         EapUserData(
                             authMethod.ClientUserName,
                             authMethod.ClientPassword,
@@ -129,10 +128,7 @@ namespace EduRoam.Connect
                         new XElement(nsBEUP + "Type", (int)EapType.TLS),
                         new XElement(nsTLS + "EapType",
                             new XElement(nsTLS + "Username", outerIdentity), // TODO: test if this gets used
-                            new XElement(nsTLS + "UserCert", // xs:hexBinary
-                                                             // format fingerprint:
-                                Regex.Replace(Regex.Replace(userCertFingerprint ?? string.Empty, " ", ""), ".{2}", "$0 ")
-                                    .ToUpperInvariant().Trim()
+                            new XElement(nsTLS + "UserCert", userCertFingerprint?.ToHexBinary()
                             )
                         )
                     ),

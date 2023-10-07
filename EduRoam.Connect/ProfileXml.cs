@@ -1,10 +1,13 @@
+using DocumentFormat.OpenXml;
+
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Reflection;
 using System.Xml.Linq;
 
 namespace EduRoam.Connect
@@ -165,7 +168,8 @@ namespace EduRoam.Connect
                             new XElement(nsWLAN + "PMKCacheSize", "128"),
                             new XElement(nsWLAN + "preAuthMode", "disabled"),
                             new XElement(nsOneX + "OneX",
-                                new XElement(nsOneX + "authMode", "user"),
+                                //new XElement(nsOneX + "cacheUserData", "true"),
+                                new XElement(nsOneX + "authMode", "user"), // machineOrUser
                                 new XElement(nsOneX + "EAPConfig",
                                     CreateEapConfiguration(
                                         eapType: authMethod.EapType,
@@ -206,8 +210,24 @@ namespace EduRoam.Connect
                 hs2Element.Remove();
             }
 
-            // return xml as string
-            return (profileName, newProfile.ToString());
+            var profileXml = newProfile.ToString();
+
+            using var profileSchema = ReadProfileSchema("WLANProfile-v1.xsd");
+            var isValid = Validator.ValidateXml(profileXml, profileSchema);
+
+            if (!isValid)
+            {
+                throw new WLANProfileException("WLAN profile (xml) is invalid");
+            }
+
+            return (profileName, profileXml);
+        }
+
+        private static Stream ReadProfileSchema(string WLANProfileSchemaResource)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+
+            return assembly.GetManifestResourceStream($"EduRoam.Connect.{WLANProfileSchemaResource}");
         }
 
         private static XElement CreateEapConfiguration(
@@ -272,7 +292,7 @@ namespace EduRoam.Connect
                                     new XElement(nsETCPv3 + "CAHashList", new XAttribute("Enabled", "true"))
                                 )
                             )
-                        )
+                            )
                     )
                 );
             }
@@ -437,11 +457,8 @@ namespace EduRoam.Connect
             {
                 // Format the CA thumbprints into xs:element type="hexBinary"
                 var formattedThumbprints = caThumbprints
-                    .Select(thumb => Regex.Replace(thumb, " ", ""))
-                    .Select(thumb => Regex.Replace(thumb, ".{2}", "$0 "))
-                    .Select(thumb => thumb.ToUpperInvariant())
-                    .Select(thumb => thumb.Trim())
-                    .ToList();
+                 .Select(thumb => thumb.ToHexBinary())
+                 .ToList();
 
                 // Write the CA thumbprints to their proper places in the XML:
 
