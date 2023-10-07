@@ -2,6 +2,7 @@ using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 
 using System;
+using System.Diagnostics;
 using System.Xml.Linq;
 
 namespace EduRoam.Connect
@@ -56,7 +57,7 @@ namespace EduRoam.Connect
                     new XElement(nsEHUC + "EapMethod",
                         new XElement(nsEC + "Type", (int)authMethod.EapType),
                         new XElement(nsEC + "AuthorId", authMethod.EapType == EapType.TTLS ? 311 : 0)
-                    // new XElement(nsEC + "AuthorId", "67532") // geant link
+                    //new XElement(nsEC + "AuthorId", "67532") // geant link
                     ),
                     new XElement(nsEHUC + "Credentials",
                         new XAttribute(XNamespace.Xmlns + "eapuser", nsEUP),
@@ -65,7 +66,6 @@ namespace EduRoam.Connect
                         new XAttribute(XNamespace.Xmlns + "MsPeap", nsMPUP),
                         new XAttribute(XNamespace.Xmlns + "MsChapV2", nsMCUP),
                         new XAttribute(XNamespace.Xmlns + "eapTtls", nsTTLS),
-                        // new XAttribute(XNamespace.Xmlns + "eaptls", nsTLS),
                         EapUserData(
                             authMethod.ClientUserName,
                             authMethod.ClientPassword,
@@ -128,8 +128,7 @@ namespace EduRoam.Connect
                         new XElement(nsBEUP + "Type", (int)EapType.TLS),
                         new XElement(nsTLS + "EapType",
                             new XElement(nsTLS + "Username", outerIdentity), // TODO: test if this gets used
-                            new XElement(nsTLS + "UserCert", userCertFingerprint?.ToHexBinary()
-                            )
+                            new XElement(nsTLS + "UserCert", userCertFingerprint?.ToHexBinary())
                         )
                     ),
 
@@ -181,7 +180,7 @@ namespace EduRoam.Connect
         private static bool IsSupported(EapType eapType, InnerAuthType innerAuthType)
         {
             var isX86_32 = System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.X86;
-            //Debug.Assert(!isX86_32);
+            Debug.Assert(!isX86_32);
             //bool at_least_win10 = System.Environment.OSVersion.Version.Major >= 10; // TODO: make this work, requires some application manifest
             //var at_least_win10 = true;
             return (eapType, innerAuthType) switch

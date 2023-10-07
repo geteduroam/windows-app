@@ -1,5 +1,7 @@
 ﻿using App.Library.ViewModels;
 
+using EduRoam.Connect.Tasks;
+
 using Microsoft.Extensions.Logging;
 
 using System.ComponentModel;
@@ -18,9 +20,9 @@ namespace App.Library
 
         private readonly ILogger<MainWindow> logger;
 
-        public MainWindow(ILogger<MainWindow> logger, MainViewModel mainViewModel) : base() 
+        public MainWindow(ILogger<MainWindow> logger, MainViewModel mainViewModel) : base()
         {
-            this.logger = logger; 
+            this.logger = logger;
 
             this.InitializeComponent();
 
@@ -41,6 +43,11 @@ namespace App.Library
             this.DataContext = this.MainViewModel;
 
             this.Dispatcher.UnhandledException += this.Dispatcher_UnhandledException;
+
+            if (!StatusTask.RunAsAdministrator)
+            {
+                MessageBox.Show("Run application as administrator", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
         }
 
         private void Dispatcher_UnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

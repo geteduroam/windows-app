@@ -53,7 +53,7 @@ namespace EduRoam.Connect.Install
                 certStore.Add(cert);
                 // ^ Will produce a popup prompt when installing to the root store
                 // if the certificate is not already installed
-                // Therefor you should predict this
+                // There fore you should predict this
                 // and warn+instruct the user
             }
             catch (CryptographicException ex)

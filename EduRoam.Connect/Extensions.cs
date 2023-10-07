@@ -18,6 +18,4 @@ namespace EduRoam.Connect
             return value.Trim();
         }
     }
-
-
 }

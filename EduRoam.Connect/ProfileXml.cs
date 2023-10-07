@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace EduRoam.Connect
@@ -169,7 +170,7 @@ namespace EduRoam.Connect
                             new XElement(nsWLAN + "preAuthMode", "disabled"),
                             new XElement(nsOneX + "OneX",
                                 //new XElement(nsOneX + "cacheUserData", "true"),
-                                new XElement(nsOneX + "authMode", "user"), // machineOrUser
+                                new XElement(nsOneX + "authMode", "machineOrUser"), // user 
                                 new XElement(nsOneX + "EAPConfig",
                                     CreateEapConfiguration(
                                         eapType: authMethod.EapType,
@@ -292,7 +293,7 @@ namespace EduRoam.Connect
                                     new XElement(nsETCPv3 + "CAHashList", new XAttribute("Enabled", "true"))
                                 )
                             )
-                            )
+                        )
                     )
                 );
             }
@@ -457,8 +458,11 @@ namespace EduRoam.Connect
             {
                 // Format the CA thumbprints into xs:element type="hexBinary"
                 var formattedThumbprints = caThumbprints
-                 .Select(thumb => thumb.ToHexBinary())
-                 .ToList();
+                    .Select(thumb => Regex.Replace(thumb, " ", ""))
+                    .Select(thumb => Regex.Replace(thumb, ".{2}", "$0 "))
+                    .Select(thumb => thumb.ToUpperInvariant())
+                    .Select(thumb => thumb.Trim())
+                    .ToList();
 
                 // Write the CA thumbprints to their proper places in the XML:
 
