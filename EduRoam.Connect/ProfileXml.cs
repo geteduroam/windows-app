@@ -170,7 +170,7 @@ namespace EduRoam.Connect
                             new XElement(nsWLAN + "preAuthMode", "disabled"),
                             new XElement(nsOneX + "OneX",
                                 //new XElement(nsOneX + "cacheUserData", "true"),
-                                new XElement(nsOneX + "authMode", "machineOrUser"), // user 
+                                new XElement(nsOneX + "authMode", "user"), // user 
                                 new XElement(nsOneX + "EAPConfig",
                                     CreateEapConfiguration(
                                         eapType: authMethod.EapType,

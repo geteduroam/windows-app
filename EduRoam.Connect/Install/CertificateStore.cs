@@ -21,7 +21,7 @@ namespace EduRoam.Connect.Install
         public static readonly StoreName InterCaStoreName = StoreName.CertificateAuthority;
         public static readonly StoreName UserCertStoreName = StoreName.My;
 
-        public static readonly StoreLocation CertStoreLocation = StoreLocation.LocalMachine; //new Configuration().CertificateStore;
+        public static readonly StoreLocation CertStoreLocation = StoreLocation.CurrentUser; //new Configuration().CertificateStore;
         public static readonly StoreLocation UserCertStoreLocation = StoreLocation.CurrentUser;
 
         /// <summary>
