@@ -64,7 +64,6 @@
     <None Include="Templates\geteduroam-cli\geteduroam-installer.json" />
     <None Include="Templates\geteduroam\geteduroam-installer.json" />
     <None Include="Templates\getgovroam\getgovroam-installer.json" />
-    <None Include="wix\$(ProjectName).g.wxs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -95,6 +94,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="wix\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
