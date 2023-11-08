@@ -43,11 +43,6 @@ namespace App.Library
             this.DataContext = this.MainViewModel;
 
             this.Dispatcher.UnhandledException += this.Dispatcher_UnhandledException;
-
-            if (!StatusTask.RunAsAdministrator)
-            {
-                MessageBox.Show("Run application as administrator", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
         }
 
         private void Dispatcher_UnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
