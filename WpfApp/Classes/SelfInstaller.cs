@@ -181,7 +181,7 @@ namespace WpfApp
 			if (IsRunningInInstallLocation) return; // TODO: some flow to update itself
 			if (IsInstalled)
 			{
-				// TODO: assemblyversion instad of file date
+				// TODO: assemblyversion instead of file date
 				var d1 = File.GetLastWriteTime(ThisExePath);
 				var d2 = File.GetLastWriteTime(InstallExePath);
 				if (DateTime.Compare(d1, d2) <= 0)
@@ -205,7 +205,7 @@ namespace WpfApp
 		/// </summary>
 		private void InstallToUserLocal()
 		{
-			// avoid uneccesary/illegal updates
+			// avoid unnecessary/illegal updates
 			if (IsRunningInInstallLocation) // sanity check, should never happen
 				throw new EduroamConfigure.EduroamAppUserException("already installed", // TODO: use a more fitting exception?
 					"This application has already been installed. " +
@@ -220,7 +220,7 @@ namespace WpfApp
 			File.Copy(ThisExePath, InstallExePath, overwrite: true); // BAD: keeps NTFS streams which we don't want
 			*/
 			//
-			// Reading and writing manually works better, because then the resulting .exe can be openend
+			// Reading and writing manually works better, because then the resulting .exe can be opened
 			// at startup or by the scheduler without the user getting "Are you sure you want to run this software?"
 			var binaryExe = File.ReadAllBytes(ThisExePath);
 			File.WriteAllBytes(InstallExePath, binaryExe);
@@ -300,7 +300,7 @@ namespace WpfApp
 		/// Uninstalls the program.
 		/// </summary>
 		/// <typeparam name="T">return value</typeparam>
-		/// <param name="shutdownAction">a action which will shut down the application in the way you want, recieves true on successfull uninstall</param>
+		/// <param name="shutdownAction">a action which will shut down the application in the way you want, receives true on successful uninstall</param>
 		/// <param name="doDeleteSelf">whether to schedule a deletion of InstallExePath</param>
 		/// <returns>T</returns>
 		public void ExitAndUninstallSelf(Action<bool> shutdownAction, bool doDeleteSelf = false)

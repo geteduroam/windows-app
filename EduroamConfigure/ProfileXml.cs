@@ -195,7 +195,7 @@ namespace EduroamConfigure
 			// and we cannot do inner validation.
 			bool enableServerValidation = serverNames.Any() || caThumbprints.Any();
 
-			// creates the root xml strucure, with references to some of its descendants
+			// creates the root xml structure, with references to some of its descendants
 			XElement configElement;
 			XElement serverValidationElement;
 			XElement caHashListElement = null; // eapType == eapType.TLS only
@@ -211,7 +211,7 @@ namespace EduroamConfigure
 					new XElement(nsEHC + "Config")
 				);
 
-			// namespace element local names dependant on EAP type
+			// namespace element local names dependent on EAP type
 			XNamespace nsEapType;
 			string thumbprintNodeName;
 

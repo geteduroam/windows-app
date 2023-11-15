@@ -147,7 +147,7 @@ namespace WpfApp
 		/// Refresh the profile if needed and report to the user if running persistent
 		/// </summary>
 		/// <param name="f">Function to show user a message in the tray icon</param>
-		/// <param name="force">Wether to force a reinstall even if the current certificate still is valid for quote some time</param>
+		/// <param name="force">Whether to force a reinstall even if the current certificate still is valid for quote some time</param>
 		/// <exception cref="ApiException">The API did something unexpected</exception>
 		private static async void RefreshInstalledProfile(bool force)
 		{
@@ -187,7 +187,7 @@ namespace WpfApp
 		public static void PromptAndUninstallSelf(Action<bool> shutdown)
 		{
 			var choice = MessageBox.Show(
-				"You are currently in the process of completly uninstalling geteduroam.\n" +
+				"You are currently in the process of completely uninstalling geteduroam.\n" +
 				(CertificateStore.AnyRootCaInstalledByUs()
 					? "This means uninstalling all the trusted root certificates installed by this application.\n\n"
 					: "\n") +

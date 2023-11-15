@@ -9,7 +9,7 @@ namespace EduroamConfigure
 	public static class IdentityProviderParser
 	{
 		/// <summary>
-		/// Searches thourgh the list of providers, intended for user-facing search interfaces.
+		/// Searches through the list of providers, intended for user-facing search interfaces.
 		/// </summary>
 		/// <param name="providers">List of providers to query</param>
 		/// <param name="searchString">Query string</param>
@@ -28,7 +28,7 @@ namespace EduroamConfigure
 
 			// NICE TO HAVE: add realms/domain as possible match
 
-			// Lexically sort by prioritized criterias.
+			// Lexically sort by prioritized criteria.
 			var sortedList = providers
 				// Precompute compute the normalized name
 				.Select(provider => (nname: NormalizeString(provider.Name), provider))
@@ -98,7 +98,7 @@ namespace EduroamConfigure
 		/// </summary>
 		/// <param name="username">user[@realm]</param>
 		/// <param name="requiredRealm">the realm required for the username, empty for any realm, null for no realm needed</param>
-		/// <param name="noSubDomainInRealm">Wether to allow subdomains in the realm</param>
+		/// <param name="noSubDomainInRealm">Whether to allow subdomains in the realm</param>
 		/// <returns>nothing if no rules are broken, otherwise descriptions of rulse being broken</returns>
 		public static IEnumerable<string> GetRulesBrokenOnUsername(string username, string requiredRealm, bool noSubDomainInRealm)
 		{

@@ -50,7 +50,7 @@ namespace WpfApp.Menu
 
 		private void Load()
 		{
-			// Collaps everything before deciding what to show
+			// Collapse everything before deciding what to show
 			gridCred.Visibility = Visibility.Collapsed;
 			gridCertPassword.Visibility = Visibility.Collapsed;
 			gridCertBrowser.Visibility = Visibility.Collapsed;
@@ -112,7 +112,7 @@ namespace WpfApp.Menu
 			// case where no extra info is needed to connect
 			else
 			{
-				// just connnect
+				// just connect
 				conType = ConType.Nothing;
 				ConnectClick();
 			}
@@ -167,7 +167,7 @@ namespace WpfApp.Menu
 
 			// if username does not contain '@' and realm is given then show realm added to end
 			// right now only make the realm visible if we must show the hint or the username is not focused,
-			// otherwise we may inadvertedly prevent the user from remembering to use a subdomain
+			// otherwise we may inadvertently prevent the user from remembering to use a subdomain
 			// however, if the hint is already visible, we may as well keep it visible if the conditions still match
 			if (!String.IsNullOrEmpty(realm) && !username.Contains('@') &&
 				(hint || !tbUsername.IsFocused || tbRealm.Visibility == Visibility.Visible))
@@ -533,7 +533,7 @@ namespace WpfApp.Menu
 					ConnectClick();
 				});
 			}
-			// if still not vaid yet
+			// if still not valid
 			else
 			{
 				this.Dispatcher.Invoke(() =>

@@ -16,7 +16,7 @@
             <Hyperlink x:Name="hlink" RequestNavigate="Hyperlink_redirect">
                here
             </Hyperlink>
-            to be redirected to the insitutions site for more info on how to connect. When you click the link this application will close.
+            to be redirected to the institutions site for more info on how to connect. When you click the link this application will close.
         </TextBlock>
     </StackPanel>
 </Page>

@@ -144,7 +144,7 @@ namespace WpfApp.Menu
 			// gets the URL of the target web site
 			responseUrl = request.Url;
 
-			// Parse the result and download the eap config if successfull
+			// Parse the result and download the eap config if successful
 			string authorizationCode = null;
 			string codeVerifier;
 			try

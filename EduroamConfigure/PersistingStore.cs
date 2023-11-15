@@ -39,7 +39,7 @@ namespace EduroamConfigure
 		}
 
 		/// <summary>
-		/// Check if there is installed any valid (not neccesarily tested) connection
+		/// Check if there is installed any valid (not necessarily tested) connection
 		/// </summary>
 		public static bool AnyValidWLANProfile
 		{

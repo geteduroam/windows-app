@@ -68,7 +68,7 @@ namespace EduroamConfigure
 			public string ClientCertificatePassphrase { get; } // passphrase for ^
 			public string ClientOuterIdentity { get; } // expect it to have a realm. Also known as: anonymous identity, routing identity
 			public string ClientInnerIdentitySuffix { get; } // realm
-			public bool ClientInnerIdentityHint { get; } // Wether to disallow subrealms or not (see https://github.com/GEANT/CAT/issues/190)
+			public bool ClientInnerIdentityHint { get; } // Whether to disallow subrealms or not (see https://github.com/GEANT/CAT/issues/190)
 
 			public bool IsHS20Supported { get => EapConfig.CredentialApplicabilities.Any(cred => cred.ConsortiumOid != null); }
 			public bool IsSSIDSupported { get => EapConfig.CredentialApplicabilities.Any(cred => cred.Ssid != null && cred.Ssid.Length != 0); }
@@ -186,7 +186,7 @@ namespace EduroamConfigure
 			#endregion CertExport
 			#region Verification
 
-			// methods to check if the authentification method is complete, and methods to mend it
+			// methods to check if the authentication method is complete, and methods to mend it
 
 			/// <summary>
 			/// If this returns true, then the user must provide the login credentials
@@ -531,7 +531,7 @@ namespace EduroamConfigure
 			// Outdated: https://tools.ietf.org/id/draft-winter-opsawg-eap-metadata-00.html
 
 			// TODO: validate the file first. use schema?
-			// TODO: add a test on this function using fuzzing accoring to schema
+			// TODO: add a test on this function using fuzzing according to schema
 
 			static Func<XElement, bool> nameIs(string name) => // shorthand lambda
 				element => element.Name.LocalName == name;
@@ -715,7 +715,7 @@ namespace EduroamConfigure
 		/// Refer to frmSummary.InstallEapConfig to see how to use it (TODO: actually explain when finalized)
 		/// </summary>
 		/// <param name="eapConfig">EapConfig object</param>
-		/// <returns>Enumeration of EapAuthMethodInstaller intances for each supported authentification method in eapConfig</returns>
+		/// <returns>Enumeration of EapAuthMethodInstaller instances for each supported authentication method in eapConfig</returns>
 		public IEnumerable<AuthenticationMethod> SupportedAuthenticationMethods
 		{
 			get => AuthenticationMethods.Where(EduroamNetwork.IsAuthMethodSupported);
@@ -879,8 +879,8 @@ namespace EduroamConfigure
 	}
 
 	/// <summary>
-	/// The type of authentification used in the inner tunnel.
-	/// Also known as stage 2 authentification.
+	/// The type of authentication used in the inner tunnel.
+	/// Also known as stage 2 authentication.
 	/// </summary>
 	public enum InnerAuthType
 	{

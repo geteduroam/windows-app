@@ -13,7 +13,7 @@ namespace EduroamConfigure
 	{
 		/// <summary>
 		/// Installs the certificate into the certificate store chosen.
-		/// If the certificate is sucessfully installed, this will be recorded in the Persistant Storage
+		/// If the certificate is successfully installed, this will be recorded in the Persistent Storage
 		/// </summary>
 		/// <param name="cert">Certificate to install</param>
 		/// <param name="storeName">The certificate store to use</param>
@@ -181,7 +181,7 @@ namespace EduroamConfigure
 		}
 
 		/// <summary>
-		/// Uses the persistant storage to uninstall all known installed certificates
+		/// Uses the persistent storage to uninstall all known installed certificates
 		/// </summary>
 		/// <returns>true on success</returns>
 		public static bool UninstallAllInstalledCertificates(bool omitRootCa, bool abortOnFail = false, bool omitNotInstalledByUs = true)

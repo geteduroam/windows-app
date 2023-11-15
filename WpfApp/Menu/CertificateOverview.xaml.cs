@@ -58,13 +58,13 @@ namespace WpfApp.Menu
 			};
 			// Subscribe to CertificateGrid so 'Install certificate' events gets noticed by this page.
 			// TODO: Pass function to CertificateGrid that can notify the page instead of using
-			// subcription for obesrver/observable stuff.
+			// subscription for obesrver/observable stuff.
 			unsubscriber = grid.Subscribe(this);
 			AddToStack(grid);
 		}
 
 		/// <summary>
-		/// Adds a Seperator ( a straight, gray horizontal line) to the stpCerts stackpanel
+		/// Adds a Separator ( a straight, gray horizontal line) to the stpCerts stackpanel
 		/// </summary>
 		private void AddSeparator()
 		{
