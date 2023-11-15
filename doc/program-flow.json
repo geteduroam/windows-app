@@ -2502,7 +2502,7 @@
       "boundElementIds": [],
       "fontSize": 20,
       "fontFamily": 1,
-      "text": "IF USERINPUT NOT REQUIRED,\nCONNECT IMMEDIATLY\n[ bundled user cert or oauth ]",
+      "text": "IF USERINPUT NOT REQUIRED,\nCONNECT IMMEDIATELY\n[ bundled user cert or oauth ]",
       "baseline": 68,
       "textAlign": "left",
       "verticalAlign": "top"

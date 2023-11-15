@@ -159,7 +159,7 @@ namespace EduroamConfigure
 
 		/// <summary>
 		/// A class which helps you install one of the authMethods
-		/// in a EapConfig, designed to be interactive wiht the user.
+		/// in a EapConfig, designed to be interactive with the user.
 		/// </summary>
 		public class EapAuthMethodInstaller
 		{
@@ -173,7 +173,7 @@ namespace EduroamConfigure
 			/// <summary>
 			/// Constructs a EapAuthMethodInstaller
 			/// </summary>
-			/// <param name="authMethod">The authentification method to attempt to install</param>
+			/// <param name="authMethod">The authentication method to attempt to install</param>
 			public EapAuthMethodInstaller(EapConfig.AuthenticationMethod authMethod)
 			{
 				AuthMethod = authMethod ?? throw new ArgumentNullException(paramName: nameof(authMethod));
@@ -247,7 +247,7 @@ namespace EduroamConfigure
 		/// <summary>
 		/// Deletes all network profile matching ssid, which is "eduroam" by default
 		/// </summary>
-		/// <returns>True if all profile deletions were succesful</returns>
+		/// <returns>True if all profile deletions were successful</returns>
 		public static void RemoveAllWLANProfiles()
 		{
 			Exception ex = null;

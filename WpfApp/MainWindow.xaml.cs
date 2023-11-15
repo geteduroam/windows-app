@@ -65,7 +65,7 @@ namespace WpfApp
 		private InstalledProfile pageInstalledProfile;
 		// this contains the 'active' eapConfig that is being used
 		private EapConfig eapConfig;
-		// If theres is a bundled config file then it is stored in this variable
+		// If there is a bundled config file then it is stored in this variable
 		public EapConfig ExtractedEapConfig { get; set; }
 		//ExtractFlag decides if the "Not affiliated with this institution? choose another one" text and button shows up on ProfileOverview or not
 		public bool ExtractFlag { get; set; }
@@ -295,7 +295,7 @@ namespace WpfApp
 			UpdateBackButton();
 		}
 		/// <summary>
-		/// Hide back button if theres no page to go back to
+		/// Hide back button if there's no page to go back to
 		/// </summary>
 		private void UpdateBackButton()
 		{
@@ -310,7 +310,7 @@ namespace WpfApp
 			{
 				MessageBox.Show(
 					"The profile you have selected is not supported by this application.",
-					"No supported authentification method was found.",
+					"No supported authentication method was found.",
 					MessageBoxButton.OK, MessageBoxImage.Exclamation);
 				return false;
 			}
@@ -319,7 +319,7 @@ namespace WpfApp
 
 		/// <summary>
 		/// downloads eap config based on profileId
-		/// seperated into its own function as this can happen either through
+		/// separated into its own function as this can happen either through
 		/// user selecting a profile or a profile being autoselected
 		/// </summary>
 		/// <param name="profileId"></param>
@@ -359,7 +359,7 @@ namespace WpfApp
 				}
 			}
 
-			// reenable buttons after LoadPageLoading() disables them
+			// re-enable buttons after LoadPageLoading() disables them
 			btnBack.IsEnabled = true;
 			btnNext.IsEnabled = true;
 
@@ -533,7 +533,7 @@ namespace WpfApp
 		}
 
 		/// <summary>
-		/// Loads the logo form the curent eapconfig if it exists.
+		/// Loads the logo form the current eapconfig if it exists.
 		/// Else display Eduroam logo.
 		/// </summary>
 		public void LoadProviderLogo()
@@ -830,7 +830,7 @@ namespace WpfApp
 
 
 		/// <summary>
-		/// Disables WPF history nagivation.
+		/// Disables WPF history navigation.
 		/// </summary>
 		private void Main_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
 		{
@@ -890,7 +890,7 @@ namespace WpfApp
 				case LetsWifi.RefreshResponse.UpdatedEapXml: // Should never happen due to onlyLetsWifi=true
 					pageInstalledProfile.LoadCertInfo();
 					break;
-				case LetsWifi.RefreshResponse.StillValid: // should never happend due to force=true
+				case LetsWifi.RefreshResponse.StillValid: // should never happen due to force=true
 				case LetsWifi.RefreshResponse.AccessDenied:
 				case LetsWifi.RefreshResponse.NewRootCaRequired:
 				case LetsWifi.RefreshResponse.NotRefreshable:

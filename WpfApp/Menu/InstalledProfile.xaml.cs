@@ -46,7 +46,7 @@ namespace WpfApp.Menu
 		}
 
 		/// <summary>
-		/// Loads info regarding the certficate of the persising store and displays it to the usr
+		/// Loads info regarding the certificate of the persising store and displays it to the usr
 		/// </summary>
 		public void LoadCertInfo()
 		{

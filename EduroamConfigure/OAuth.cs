@@ -80,7 +80,7 @@ namespace EduroamConfigure
 			// check if url is valid
 			if (!(responseUrl?.IsWellFormedOriginalString() ?? false)
 					|| string.IsNullOrEmpty(responseUrl?.ToString()))
-				throw new EduroamAppUserException("oauth empty reponse url",
+				throw new EduroamAppUserException("oauth empty response url",
 					userFacingMessage: "HTTP request returned nothing valid.");
 
 			// Extract query parameters from response url

@@ -54,7 +54,7 @@ namespace EduroamConfigure
 		}
 
 		/// <summary>
-		/// Checks if eapConfig contains any supported authentification methods.
+		/// Checks if eapConfig contains any supported authentication methods.
 		/// If no such method exists, then warn the user before trying to install the config.
 		/// </summary>
 		/// <param name="eapConfig">The EAP config to check</param>
@@ -69,7 +69,7 @@ namespace EduroamConfigure
 		/// <summary>
 		/// Checks if authMethod is supported.
 		/// </summary>
-		/// <param name="authMethod">The Authentification method to check</param>
+		/// <param name="authMethod">The Authentication method to check</param>
 		/// <returns>True if supported</returns>
 		public static bool IsAuthMethodSupported(EapConfig.AuthenticationMethod authMethod)
 		{
@@ -104,7 +104,7 @@ namespace EduroamConfigure
 				try
 				{
 					// forAllUsers must be true when installing the profile, but false when installing userdata
-					// Otherwise the profile is installed but doens't work.  We don't know why.
+					// Otherwise the profile is installed but doesn't work.  We don't know why.
 					profile = InstallProfile(profileName, profileXml, hs20: false, forAllUsers: true);
 					// forAllUsers does not work with EAP-TLS, probably because the certificate is in the personal store
 					// Same for all methods where the CA is not public
@@ -127,7 +127,7 @@ namespace EduroamConfigure
 				try
 				{
 					// forAllUsers must be true when installing the profile, but false when installing userdata
-					// Otherwise the profile is installed but doens't work.  We don't know why.
+					// Otherwise the profile is installed but doesn't work.  We don't know why.
 					profile = InstallProfile(profileName, profileXml, hs20: true, forAllUsers: true);
 					// forAllUsers does not work with EAP-TLS, probably because the certificate is in the personal store
 					// Same for all methods where the CA is not public
@@ -170,7 +170,7 @@ namespace EduroamConfigure
 					// https://answers.microsoft.com/en-us/msoffice/forum/msoffice_onenote-mso_amobile-msoversion_other/error-code-80004005/ba567a2a-e037-40c3-9a5e-428030db6223
 
 					// When HS20 is not supported, an exception is thrown with these values
-					// We ignore the error, except if no SSID was configured (ignored in the stanza ealier)
+					// We ignore the error, except if no SSID was configured (ignored in the stanza earlier)
 					// 1206 == ManagedNativeWifi.Win32.NativeMethod.ERROR_BAD_PROFILE
 					if (e.ErrorCode == -2147467259 && e.NativeErrorCode == 1206)
 					{
@@ -254,7 +254,7 @@ namespace EduroamConfigure
 					,
 				userDataXml))
 			{
-				if (!profile.HasUserData) // ommit uneccesary writes
+				if (!profile.HasUserData) // omit unnecessary writes
 				{
 					PersistingStore.ConfiguredWLANProfiles = PersistingStore.ConfiguredWLANProfiles
 						.Remove(profile)
@@ -270,9 +270,9 @@ namespace EduroamConfigure
 		/// <summary>
 		/// Attempts to delete any previously installed network profiles
 		/// </summary>
-		/// <returns>True if ANY profile was deleted succesfully</returns>
+		/// <returns>True if ANY profile was deleted successfully</returns>
 		/// <remarks>
-		/// True does not mean all the profiles has been deleted. Check IsConfigured ot verify this.
+		/// True does not mean all the profiles has been deleted. Check IsConfigured or verify this.
 		/// </remarks>
 		public void RemoveInstalledProfiles()
 		{
@@ -399,7 +399,7 @@ namespace EduroamConfigure
 		}
 
 		/// <summary>
-		/// Tries to access the wireless interfaces and reports wether the service is available or not
+		/// Tries to access the wireless interfaces and reports whether the service is available or not
 		/// If this returns false, then no interfaces nor packs will be available to configure
 		/// </summary>
 		/// <returns>True if wireless service is available</returns>

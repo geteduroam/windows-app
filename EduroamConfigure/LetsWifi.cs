@@ -118,7 +118,7 @@ namespace EduroamConfigure
 		/// Parse a json response and store the tokens provided
 		/// </summary>
 		/// <param name="jsonResponse"></param>
-		/// <exception cref="ApiParsingException">Misformed JSON or missing requird fields</exception>
+		/// <exception cref="ApiParsingException">Malformed JSON or missing required fields</exception>
 		private static void SetAccessTokensFromJson(string jsonResponse)
 		{
 			// Parse json response to retrieve authorization tokens
@@ -218,7 +218,7 @@ namespace EduroamConfigure
 		/// Either refreshes the stored Eapconfig XML (for TTLS and PEAP), or requests
 		/// a new EAP config (TLS) from LetsWifi using the refresh token, then installs it.
 		/// </summary>
-		/// <param name="force">Wether to force a reinstall even if the current certificate still is valid for quote some time</param>
+		/// <param name="force">Whether to force a reinstall even if the current certificate still is valid for quote some time</param>
 		/// <returns>An enum describing the result</returns>
 		/// <exception cref="ApiParsingException">JSON cannot be deserialized</exception>
 		public static async Task<RefreshResponse> RefreshAndInstallEapConfig(bool force = false, bool onlyLetsWifi = false)
@@ -259,7 +259,7 @@ namespace EduroamConfigure
 			if (!PersistingStore.IsRefreshable)
 				return RefreshResponse.NotRefreshable;
 
-			// should never be null since the check above was successfull
+			// should never be null since the check above was successful
 			var profileInfo = PersistingStore.IdentityProvider
 				?? throw new NullReferenceException(nameof(PersistingStore.IdentityProvider) + " was null");
 
