@@ -55,7 +55,8 @@
                    Text="{Binding PageTitle}"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
-                   TextAlignment="Center" />
+                   TextAlignment="Center" 
+                   TextWrapping ="Wrap" />
 
             <Grid Grid.Row="1"
                   Grid.RowSpan="2"
