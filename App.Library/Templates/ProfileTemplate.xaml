@@ -138,8 +138,9 @@
                     TextWrapping="Wrap" />
                 <Button
                     Grid.Row="1"
-                    Width="160"
+                    Width="Auto"
                     Height="34"
+                    Padding="15 0 15 0"
                     Margin="0,5"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Top"

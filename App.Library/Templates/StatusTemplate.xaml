@@ -38,11 +38,12 @@
                    HorizontalAlignment="Center"
                    Margin="0, 24"/>
 
-            <Button Width="160"
-                    Height="34"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Command="{Binding SelectOtherInstitutionCommand}">
+            <Button Width="Auto"
+                Height="34"
+                Padding="15 0 15 0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Command="{Binding SelectOtherInstitutionCommand}">  
                 <Button.Style>
                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BlueButtonStyle}">
                         <Setter Property="Content" Value="{Binding ConnectToResource}" />
