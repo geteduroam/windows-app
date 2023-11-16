@@ -120,6 +120,9 @@
   <data name="AppTitle" xml:space="preserve">
     <value>Eduroam</value>
   </data>
+  <data name="ButtonBack" xml:space="preserve">
+    <value>Terug</value>
+  </data>
   <data name="ButtonNext" xml:space="preserve">
     <value>Volgende</value>
   </data>

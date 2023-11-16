@@ -160,6 +160,9 @@
   <data name="ButtonPrevious" xml:space="preserve">
     <value>Previous</value>
   </data>
+  <data name="ButtonBack" xml:space="preserve">
+    <value>Back</value>
+  </data>
   <data name="CertificateLabel" xml:space="preserve">
     <value>Certificate:</value>
   </data>

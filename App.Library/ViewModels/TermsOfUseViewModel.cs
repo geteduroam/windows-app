@@ -19,6 +19,10 @@ namespace App.Library.ViewModels
 
         public override string PageTitle => SharedResources.TermsOfUseTitle;
 
+        public override string PreviousTitle => SharedResources.ButtonBack;
+
+        public override bool ShowNavigateNext => false;
+
         protected override bool CanNavigateNextAsync()
         {
             return false;
