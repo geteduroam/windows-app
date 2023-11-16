@@ -10,9 +10,11 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="1" Text="{Binding TermsOfUse}" 
-                       TextAlignment="Center"
-                       TextWrapping="Wrap" />
+            <ScrollViewer>
+                <TextBlock Grid.Row="1" Text="{Binding TermsOfUse}" 
+                           TextAlignment="Center" 
+                           TextWrapping="Wrap" />
+            </ScrollViewer>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>
