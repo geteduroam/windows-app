@@ -94,7 +94,7 @@ namespace App.Library.ViewModels
         {
             var connectionProperties = new ConnectionProperties()
             {
-                UserName = this.userName,
+                UserName = this.userName.EndsWith(this.Realm) ? this.userName : this.userName + this.Realm,
                 Password = this.password
             };
 
