@@ -74,6 +74,26 @@
                        TextAlignment="Center" />
             </Grid>
 
+            <Grid Grid.Row="1"
+                  Grid.RowSpan="2"
+                  Opacity="0.5"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  Background="{DynamicResource BackgroundBrush}"
+                  Visibility="{Binding IsConnected, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+
+                <StackPanel Orientation="Vertical" Margin="0,-80,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Image Width="160" 
+                           Source="{Binding Converter={StaticResource AppImageConverter}, ConverterParameter=application-icon.png}" 
+                           Margin="0, 24"/>
+                    <TextBlock x:Name="WaitingConnection" 
+                               Margin="5"
+                               FontSize="{StaticResource Font.Default}"
+                               Text="{x:Static lang:Resources.NoConnection}"
+                               TextAlignment="Center" />
+                </StackPanel>
+            </Grid>
+
             <ContentControl x:Name="PageContent" 
                         Grid.Row="1"
                         Margin="{StaticResource PageContent-Margin}"

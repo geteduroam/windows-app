@@ -17,8 +17,11 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+
+using NETWORKLIST;
 
 namespace App.Library.ViewModels
 {
@@ -30,6 +33,8 @@ namespace App.Library.ViewModels
         public static readonly SelfInstaller SelfInstaller = SelfInstaller.DefaultInstance;
 
         private readonly Status status;
+
+        private readonly INetworkListManager networkListManager;
 
         public MainViewModel(ILogger<MainViewModel> logger)
         {
@@ -48,22 +53,33 @@ namespace App.Library.ViewModels
 
             this.status = new StatusTask().GetStatus();
             this.IsLoading = true;
+            this.IsConnected = false;
+
             this.Logger = logger;
+            this.networkListManager = new NetworkListManager();
 
             this.Logger.LogInformation($"{this.AppTitle}, version: {this.AppVersion}, run as admin: {StatusTask.RunAsAdministrator}");
 
             Task.Run(
                 async () =>
                 {
-                    await this.idpDownloader.LoadProviders();
-                    this.IsLoading = false;
+                    while (!this.CheckIsConnected())
+                    {   
+                        Thread.Sleep(1000);
+                    }
 
+                    await this.idpDownloader.LoadProviders();
+
+                    this.IsLoading = false;
+                    this.IsConnected = true;
                     this.SetStartContent();
                     this.CallPropertyChanged(string.Empty);
                     DelegateCommand.RaiseCanExecuteChanged();
                 });
 
         }
+
+        public bool IsConnected { get; set; }
 
         public ApplicationState State { get; private set; }
 
@@ -89,7 +105,17 @@ namespace App.Library.ViewModels
 
         public Action CloseApp { get; set; }
 
-        public bool IsLoading { get; private set; }
+        private bool _isLoading { get; set; }
+        public bool IsLoading {
+            get
+            {
+                return (!IsConnected && _isLoading) ? false : _isLoading;
+            }
+            private set
+            {
+                _isLoading = value;
+            }
+        }
 
         public bool ShowMenu { get; set; }
 
@@ -528,6 +554,11 @@ namespace App.Library.ViewModels
             {
                 Process.Start(new ProcessStartInfo(helpUrl) { UseShellExecute = true });
             }
+        }
+
+        public bool CheckIsConnected()
+        {
+            return this.networkListManager.IsConnectedToInternet;
         }
     }
 #pragma warning restore CA1822 // Mark members as static

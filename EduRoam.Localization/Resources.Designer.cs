@@ -956,6 +956,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to eduroam requires an active internet connection..
+        /// </summary>
+        public static string NoConnection {
+            get {
+                return ResourceManager.GetString("NoConnection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No EAP Config info to show.
         /// </summary>
         public static string NoEAPConfig {

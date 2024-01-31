@@ -602,4 +602,7 @@ Exception: {0}</value>
   <data name="Yes" xml:space="preserve">
     <value>✓</value>
   </data>
+  <data name="NoConnection" xml:space="preserve">
+    <value>eduroam requires an active internet connection.</value>
+  </data>
 </root>

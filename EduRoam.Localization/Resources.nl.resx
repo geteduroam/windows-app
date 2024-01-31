@@ -141,6 +141,9 @@
   <data name="Loading" xml:space="preserve">
     <value>Even geduld...</value>
   </data>
+  <data name="NoConnection" xml:space="preserve">
+    <value>eduroam vereist een actieve internetverbinding</value>
+  </data>
   <data name="ProfileContactInfo" xml:space="preserve">
     <value>Contactgegevens</value>
   </data>
