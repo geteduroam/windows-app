@@ -44,6 +44,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{6E59533B
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.MsiCreator", "App.MsiCreator\App.MsiCreator.csproj", "{3A836BA4-B012-47DB-8FFF-B66D1672D43F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Settings", "App.Settings\App.Settings.csproj", "{27378484-7AB6-4625-8906-9F87B66F7461}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -276,6 +278,30 @@ Global
 		{3A836BA4-B012-47DB-8FFF-B66D1672D43F}.Release|x64.Build.0 = Release|Any CPU
 		{3A836BA4-B012-47DB-8FFF-B66D1672D43F}.Release|x86.ActiveCfg = Release|Any CPU
 		{3A836BA4-B012-47DB-8FFF-B66D1672D43F}.Release|x86.Build.0 = Release|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.Debug|ARM32.ActiveCfg = Debug|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.Debug|ARM32.Build.0 = Debug|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.Debug|x64.Build.0 = Debug|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.Debug|x86.Build.0 = Debug|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.DebugArm|Any CPU.ActiveCfg = Debug|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.DebugArm|Any CPU.Build.0 = Debug|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.DebugArm|ARM32.ActiveCfg = Debug|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.DebugArm|ARM32.Build.0 = Debug|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.DebugArm|x64.ActiveCfg = Debug|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.DebugArm|x64.Build.0 = Debug|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.DebugArm|x86.ActiveCfg = Debug|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.DebugArm|x86.Build.0 = Debug|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.Release|ARM32.ActiveCfg = Release|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.Release|ARM32.Build.0 = Release|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.Release|x64.ActiveCfg = Release|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.Release|x64.Build.0 = Release|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.Release|x86.ActiveCfg = Release|Any CPU
+		{27378484-7AB6-4625-8906-9F87B66F7461}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

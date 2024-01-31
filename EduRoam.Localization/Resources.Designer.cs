@@ -323,6 +323,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Connect to eduroam.
+        /// </summary>
+        public static string ConnectToEduroam {
+            get {
+                return ResourceManager.GetString("ConnectToEduroam", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Terms of Use.
         /// </summary>
         public static string ConsentMain {
@@ -592,7 +601,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid eap config provided, this should not happen, please report a bug..
+        ///   Looks up a localized string similar to Invalid EAP config provided, this should not happen, please report a bug..
         /// </summary>
         public static string ErrorInvalidEapConfig {
             get {
@@ -1218,7 +1227,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search.
+        ///   Looks up a localized string similar to Search your organisation.
         /// </summary>
         public static string Search {
             get {

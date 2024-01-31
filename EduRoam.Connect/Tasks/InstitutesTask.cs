@@ -29,7 +29,7 @@ namespace EduRoam.Connect.Tasks
                 var providers = idpDownloader.ClosestProviders;
                 if (string.IsNullOrWhiteSpace(query))
                 {
-                    return providers;
+                    return Enumerable.Empty<IdentityProvider>(); ;
                 }
                 return IdentityProviderParser.SortByQuery(providers, query);
             }

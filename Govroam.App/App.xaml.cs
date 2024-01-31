@@ -1,4 +1,5 @@
 ﻿using App.Library;
+using App.Settings;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,6 +20,7 @@ namespace Govroam.App
         private void App_OnStartup(object sender, StartupEventArgs e)
         {
             LanguageResources.Culture = System.Globalization.CultureInfo.CurrentUICulture;
+            Settings.OAuthClientId = "app.getgovroam.win";
 
             if (e.Args.Any()
                 && CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args))

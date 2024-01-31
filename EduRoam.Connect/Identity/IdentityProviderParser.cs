@@ -36,6 +36,9 @@ namespace EduRoam.Connect.Identity
                 // Precompute compute the normalized name
                 .Select(provider => (nname: NormalizeString(provider.Name), provider))
 
+                // Actually search for the searchterm
+                .Where(p => p.nname.Contains(query))
+
                 // name contains a word equal to the exact search string
                 .OrderByDescending(p => p.nname.Split(null).Contains(query))
 

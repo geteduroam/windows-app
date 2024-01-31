@@ -319,7 +319,7 @@ Unable to connect to eduroam.</value>
     <value>Username and/or password are not valid</value>
   </data>
   <data name="ErrorInvalidEapConfig" xml:space="preserve">
-    <value>Invalid eap config provided, this should not happen, please report a bug.</value>
+    <value>Invalid EAP config provided, this should not happen, please report a bug.</value>
   </data>
   <data name="ErrorMissingCredentials" xml:space="preserve">
     <value>Credentials are not provided</value>
@@ -531,7 +531,7 @@ Exception: {0}</value>
     <value>Install all required certificates?</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>Search</value>
+    <value>Search your organisation</value>
   </data>
   <data name="SelectFile" xml:space="preserve">
     <value>Browse</value>
@@ -604,5 +604,8 @@ Exception: {0}</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
     <value>eduroam requires an active internet connection.</value>
+  </data>
+  <data name="ConnectToEduroam" xml:space="preserve">
+    <value>Connect to eduroam</value>
   </data>
 </root>

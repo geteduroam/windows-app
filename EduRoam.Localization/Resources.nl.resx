@@ -139,10 +139,10 @@
     <value>Verbind met eduroam</value>
   </data>
   <data name="Loading" xml:space="preserve">
-    <value>Even geduld...</value>
+    <value>Even geduld</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
-    <value>eduroam vereist een actieve internetverbinding</value>
+    <value>eduroam vereist een actieve internetverbinding.</value>
   </data>
   <data name="ProfileContactInfo" xml:space="preserve">
     <value>Contactgegevens</value>
@@ -151,13 +151,13 @@
     <value>Email</value>
   </data>
   <data name="ProfileNotAffiliatedInstitution" xml:space="preserve">
-    <value>Niet aangesloten bij een instelling?</value>
+    <value>Niet aangesloten bij een organisatie?</value>
   </data>
   <data name="ProfilePhone" xml:space="preserve">
     <value>Telefoon</value>
   </data>
   <data name="ProfileSelectOtherInstitution" xml:space="preserve">
-    <value>Selecteer een andere instelling</value>
+    <value>Selecteer een andere organisatie</value>
   </data>
   <data name="ProfileWeb" xml:space="preserve">
     <value>Web</value>
@@ -169,15 +169,440 @@
     <value>Redirect</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>Zoeken</value>
+    <value>Zoek jouw organisatie</value>
   </data>
   <data name="SelectInstitution" xml:space="preserve">
-    <value>Selecteer instelling</value>
+    <value>Selecteer organisatie</value>
   </data>
   <data name="SelectProfile" xml:space="preserve">
     <value>Selecteer profiel</value>
   </data>
   <data name="TermsOfUseTitle" xml:space="preserve">
     <value>Gebruiksvoorwaarden</value>
+  </data>
+  <data name="AreYouSure" xml:space="preserve">
+    <value>Weet je zeker dat je wilt doorgaan?</value>
+  </data>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>Sluiten</value>
+  </data>
+  <data name="ButtonConnect" xml:space="preserve">
+    <value>Verbind</value>
+  </data>
+  <data name="ButtonInstall" xml:space="preserve">
+    <value>Installeer</value>
+  </data>
+  <data name="CertificateLabel" xml:space="preserve">
+    <value>Certificaat:</value>
+  </data>
+  <data name="CertificatesInstallationNotification" xml:space="preserve">
+    <value>Om door te gaan moeten de volgende certificaten zijn geïnstalleerd.</value>
+  </data>
+  <data name="CertificatesInstallationStatus" xml:space="preserve">
+    <value>{0}, geïnstalleerd: {1}</value>
+  </data>
+  <data name="CommandDescriptionConnect" xml:space="preserve">
+    <value>Configureer Wi-Fi gebasseerd op een organisatie profiel en verbind.</value>
+  </data>
+  <data name="CommandDescriptionInstall" xml:space="preserve">
+    <value>Installeer dit bestand in %USER%/AppData/Local</value>
+  </data>
+  <data name="CommandDescriptionReauthenticate" xml:space="preserve">
+    <value>Opnieuw inloggen</value>
+  </data>
+  <data name="CommandDescriptionStatus" xml:space="preserve">
+    <value>Toon status</value>
+  </data>
+  <data name="CommandDescriptionUninstall" xml:space="preserve">
+    <value>Application deïnstalleren</value>
+  </data>
+  <data name="ConfiguredEap" xml:space="preserve">
+    <value>EAP is geconfigureerd</value>
+  </data>
+  <data name="ConnectionUsernameAndPasswordRequired" xml:space="preserve">
+    <value>Geef je gebruikersnaam en wachtwoord op om te verbinden.</value>
+  </data>
+  <data name="ConsentPre" xml:space="preserve">
+    <value>Door op 'Volgende' te klikken ga je akkoord met</value>
+  </data>
+  <data name="CredentialsLabel" xml:space="preserve">
+    <value>Vul je gebruikersnaam en wachtwoord in</value>
+  </data>
+  <data name="CredentialsPasswordLabel" xml:space="preserve">
+    <value>Wachtwoord:</value>
+  </data>
+  <data name="CredentialsUsernameLabel" xml:space="preserve">
+    <value>Gebruikersnaam:</value>
+  </data>
+  <data name="DaysLeft" xml:space="preserve">
+    <value>{0} dagen over</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>Klaar</value>
+  </data>
+  <data name="ErrorApi" xml:space="preserve">
+    <value>API foutmelding</value>
+  </data>
+  <data name="OptionDescriptionCertificatePath" xml:space="preserve">
+    <value>Certificaat bestandslocatie</value>
+  </data>
+  <data name="OAuthTitle" xml:space="preserve">
+    <value>Wachten ...</value>
+  </data>
+  <data name="ProfileLabel" xml:space="preserve">
+    <value>Profiel naam</value>
+  </data>
+  <data name="ProfileRemoveConfirmation" xml:space="preserve">
+    <value>Dit verwijdert alle configuraties voor '{0}'.</value>
+  </data>
+  <data name="RemoveProfileTitle" xml:space="preserve">
+    <value>Verwijder {0}</value>
+  </data>
+  <data name="RequestToInstallCertificates" xml:space="preserve">
+    <value>Alle benodigde certificaten installeren?</value>
+  </data>
+  <data name="SelectFile" xml:space="preserve">
+    <value>Bladeren</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Gebruikersnaam</value>
+  </data>
+  <data name="UserNameWatermark" xml:space="preserve">
+    <value>@voorbeeld.nl</value>
+  </data>
+  <data name="CommandDescriptionShow" xml:space="preserve">
+    <value>Toon EAP Config informatie</value>
+  </data>
+  <data name="CommandDescriptionRefresh" xml:space="preserve">
+    <value>Ververs inloggegevens</value>
+  </data>
+  <data name="ConfiguredButNotConnected" xml:space="preserve">
+    <value>Alles is geconfigureerd!
+Kon geen verbinding maken omdat er geen EAP-configuratie kon worden gevonden</value>
+  </data>
+  <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
+    <value>Alles is geconfigureerd!
+Kan geen verbinding maken met eduroam, waarschijnlijk heb je geen bereik.</value>
+  </data>
+  <data name="ConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Alles is geconfigureerd!
+Kan geen verbinding maken met eduroam.</value>
+  </data>
+  <data name="ConsentMain" xml:space="preserve">
+    <value>Gebruiksvoorwaarden</value>
+  </data>
+  <data name="ConsentPost" xml:space="preserve">
+    <value>van de organisatie</value>
+  </data>
+  <data name="ErrorCannotConnectWithServer" xml:space="preserve">
+    <value>Kan geen verbinding maken met de server.
+
+Zorg ervoor dat je verbinding hebt met internet en probeer het opnieuw.
+
+Uitzondering: {0}</value>
+  </data>
+  <data name="ErrorCannotFetchTokens" xml:space="preserve">
+    <value>Kan token-json niet ophalen.
+Uitzondering: {0}</value>
+  </data>
+  <data name="ErrorCannotRemoveWLANProfile" xml:space="preserve">
+    <value>Sommige WLAN-profielen konden niet worden verwijderd</value>
+  </data>
+  <data name="ErrorCannotRetrieveProfileWhenOffline" xml:space="preserve">
+    <value>Kan profiel niet ophalen wanneer je offline bent</value>
+  </data>
+  <data name="ErrorClientCredentialNotValidYes" xml:space="preserve">
+    <value>Client gegevens zijn nog niet geldig</value>
+  </data>
+  <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
+    <value>Alles is geconfigureerd!
+Kan geen verbinding maken omdat EAP Config niet kan worden gevonden</value>
+  </data>
+  <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
+    <value>Alles is geconfigureerd!
+Kan geen verbinding maken met eduroam, waarschijnlijk heb je geen bereik.</value>
+  </data>
+  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Alles is geconfigureerd!
+Kan geen verbinding maken met eduroam.</value>
+  </data>
+  <data name="ErrorCredentialsAtChar" xml:space="preserve">
+    <value>De gebruikersnaam moet precies één keer @ bevatten</value>
+  </data>
+  <data name="ErrorCredentialsEndsWith" xml:space="preserve">
+    <value>De gebruikersnaam mag niet eindigen met een punt of witruimte</value>
+  </data>
+  <data name="ErrorCredentialsEndWithRealm" xml:space="preserve">
+    <value>Gebruikersnaam moet eindigen op .{0} of @{0}</value>
+  </data>
+  <data name="ErrorCredentialsEndWithRealmNoSubdomain" xml:space="preserve">
+    <value>Gebruikersnaam moet eindigen op @{0}</value>
+  </data>
+  <data name="ErrorCredentialsSpecialCharacters" xml:space="preserve">
+    <value>Karakters zoals . en @ kunnen niet naast elkaar liggen</value>
+  </data>
+  <data name="ErrorEapConfigCorrupted" xml:space="preserve">
+    <value>Het geselecteerde EAP-configuratiebestand is beschadigd. Kies een ander bestand.</value>
+  </data>
+  <data name="ErrorEapConfigInvalid" xml:space="preserve">
+    <value>Kon niet uit bestand lezen. Zorg ervoor dat u een geldig EAP-configuratiebestand selecteert.</value>
+  </data>
+  <data name="ErrorEapConfigIsEmpty" xml:space="preserve">
+    <value>Kon geen verbinding maken, EAP-configuratie is leeg</value>
+  </data>
+  <data name="ErrorEapNotConfigured" xml:space="preserve">
+    <value>EAP kan niet worden geconfigureerd</value>
+  </data>
+  <data name="ErrorInternetConnection" xml:space="preserve">
+    <value>Fout met internetverbinding</value>
+  </data>
+  <data name="ErrorInvalidCertificatePath" xml:space="preserve">
+    <value>Ongeldig certificaatpad</value>
+  </data>
+  <data name="ErrorInvalidCredentials" xml:space="preserve">
+    <value>Gebruikersnaam en/of wachtwoord zijn niet geldig</value>
+  </data>
+  <data name="ErrorInvalidEapConfig" xml:space="preserve">
+    <value>Ongeldige EAP-configuratie opgegeven. Dit zou niet mogen gebeuren. Rapporteer een bug.</value>
+  </data>
+  <data name="ErrorMissingCredentials" xml:space="preserve">
+    <value>Geen login gegevens opgegeven</value>
+  </data>
+  <data name="ErrorMissingRequiredCACertificate" xml:space="preserve">
+    <value>Het vereiste CA-certificaat is niet geïnstalleerd. Dit zou niet moeten gebeuren. Rapporteer een bug</value>
+  </data>
+  <data name="ErrorNoClientCertificateProvided" xml:space="preserve">
+    <value>Er is geen (geldig) clientcertificaat opgegeven (parameter {0}.</value>
+  </data>
+  <data name="ErrorNoConnection" xml:space="preserve">
+    <value>Kon niet verbinden.
+Uitzondering: {0}.</value>
+  </data>
+  <data name="ErrorNoInternet" xml:space="preserve">
+    <value>Geen internet verbinding</value>
+  </data>
+  <data name="ErrorNotUninstalled" xml:space="preserve">
+    <value>geteduroam is niet verwijderd.</value>
+  </data>
+  <data name="ErrorOptionIsEmpty" xml:space="preserve">
+    <value>De optiewaarde van {0} mag niet leeg zijn of alleen witruimte</value>
+  </data>
+  <data name="MenuItemUninstall" xml:space="preserve">
+    <value>Deïnstalleer applicatie...</value>
+  </data>
+  <data name="MenuItemRemoveCertificates" xml:space="preserve">
+    <value>Verwijder root certificaten...</value>
+  </data>
+  <data name="LoginTitle" xml:space="preserve">
+    <value>Inloggen</value>
+  </data>
+  <data name="MenuItemLoadEAP" xml:space="preserve">
+    <value>Laad .eap-config bestand...</value>
+  </data>
+  <data name="MenuItemReauthenticate" xml:space="preserve">
+    <value>Opnieuw inloggen...</value>
+  </data>
+  <data name="MenuItemRefresh" xml:space="preserve">
+    <value>Inloggegevens verversen</value>
+  </data>
+  <data name="MenuItemRemoveProfile" xml:space="preserve">
+    <value>Verwijder geconfigureerde Wi-Fi profiel...</value>
+  </data>
+  <data name="MinutesLeft" xml:space="preserve">
+    <value>{0} minuten resterend</value>
+  </data>
+  <data name="NoEAPConfig" xml:space="preserve">
+    <value>Geen EAP-Config informatie om te tonen</value>
+  </data>
+  <data name="NotSure" xml:space="preserve">
+    <value>n</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>x</value>
+  </data>
+  <data name="OAuthExplanation" xml:space="preserve">
+    <value>Om verder te gaan moet u zich authenticeren in uw browser. Er zou automatisch een venster moeten zijn geopend.</value>
+  </data>
+  <data name="OptionDescriptionEAPConfig" xml:space="preserve">
+    <value>Pad naar EAP-config .eap-config.</value>
+  </data>
+  <data name="OptionDescriptionForce" xml:space="preserve">
+    <value>Forceer actie.</value>
+  </data>
+  <data name="OptionDescriptionInstitute" xml:space="preserve">
+    <value>De naam van de organisatie om me te verbinden.</value>
+  </data>
+  <data name="OptionDescriptionProfile" xml:space="preserve">
+    <value>Organisatie profiel om mee te verbinden.</value>
+  </data>
+  <data name="OptionRequired" xml:space="preserve">
+    <value>Optie {0} is verplicht</value>
+  </data>
+  <data name="Passphrase" xml:space="preserve">
+    <value>Wachtwoordzin voor certificaat</value>
+  </data>
+  <data name="PassphraseLabel" xml:space="preserve">
+    <value>Voer het wachtwoord voor het certificaat in</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Wachtwoord</value>
+  </data>
+  <data name="PasswordLabel" xml:space="preserve">
+    <value>Wachtwoord:</value>
+  </data>
+  <data name="RemoveProfileMessage" xml:space="preserve">
+    <value>Hiermee wordt alle configuratie voor verwijderd
+{0}</value>
+  </data>
+  <data name="UninstallNotification" xml:space="preserve">
+    <value>De applicatie en de configuratie ervan zijn verwijderd.</value>
+  </data>
+  <data name="WarningNoInstitutesFound" xml:space="preserve">
+    <value>Geen organisaties gevonden</value>
+  </data>
+  <data name="WarningNoProfilesFound" xml:space="preserve">
+    <value>Geen profielen gevonden</value>
+  </data>
+  <data name="WarningMissingCertificates" xml:space="preserve">
+    <value>Missende certificaten</value>
+  </data>
+  <data name="WarningInstallCertificates" xml:space="preserve">
+    <value>Je moet eerst certificaten installeren met InstallCertificates</value>
+  </data>
+  <data name="WarningFileDoesNotExist" xml:space="preserve">
+    <value>Het opgegeven bestand bestaat niet.</value>
+  </data>
+  <data name="CommandDescriptionList" xml:space="preserve">
+    <value>Ontvang een lijst met organisaties of profielen voor een organisatie.</value>
+  </data>
+  <data name="CommandDescriptionRemove" xml:space="preserve">
+    <value>Verwijder het geconfigureerde Wi-Fi-profiel en/of rootcertificaten</value>
+  </data>
+  <data name="AppCommandsHelp" xml:space="preserve">
+    <value>Ondersteunde CLI-opdrachten:
+
+    /? :
+            Toon deze helptekst
+    /hulp :
+            Toon deze helptekst
+    /installeren:
+            Installeer dit binaire bestand op %USER%/AppData/Local
+    /verwijderen:
+            Verwijder dit binaire bestand uit %USER%/AppData/Local
+            met eventuele geconfigureerde gegevens
+    /achtergrond:
+            Start deze applicatie verborgen in de lade
+            (werkt alleen als het vanuit de installatiemap wordt uitgevoerd)
+    /dichtbij :
+            Sluit het huidige actieve exemplaar
+    /vernieuwen:
+            Vernieuw het gebruikerscertificaat met behulp van het vernieuwingstoken.
+            Wordt automatisch aangeroepen door een geplande taak in Windows.
+    /vernieuwingskracht:
+            Vernieuw het gebruikerscertificaat met behulp van het vernieuwingstoken.
+            Zal het profiel vernieuwen, zelfs als de geldigheidsperiode is verstreken
+            van het huidige clientcertificaat heeft nog meer dan een derde over</value>
+  </data>
+  <data name="ErrorRequiredCertificatesNotInstalled" xml:space="preserve">
+    <value>Niet alle vereiste certificaten zijn geïnstalleerd.</value>
+  </data>
+  <data name="ErrorShowCommandOptions" xml:space="preserve">
+    <value>Ontbrekende opties. Geef de optie {0} of zowel de opties {1} als {2} op</value>
+  </data>
+  <data name="ErrorUnknownProfile" xml:space="preserve">
+    <value>Onbekend profiel</value>
+  </data>
+  <data name="ErrorUnsupportedConnectionType" xml:space="preserve">
+    <value>Verbinding van type {0} wordt (nog) niet ondersteund.</value>
+  </data>
+  <data name="ErrorUnsupportedInstituteOrProfile" xml:space="preserve">
+    <value>De organisatie of het profiel wordt niet ondersteund of is verkeerd ingedeeld.
+Selecteer een andere organisatie of profiel.
+
+Uitzondering: {0}</value>
+  </data>
+  <data name="ErrorUnsupportedProfile" xml:space="preserve">
+    <value>Het profiel dat u heeft geselecteerd, wordt niet ondersteund door deze applicatie. Er is geen ondersteunde authenticatiemethode gevonden.</value>
+  </data>
+  <data name="ErrorWirelessUnavailable" xml:space="preserve">
+    <value>Draadloos is niet beschikbaar op deze computer</value>
+  </data>
+  <data name="FileDialogSelectFile" xml:space="preserve">
+    <value>Selecteer een bestand.</value>
+  </data>
+  <data name="HoursLeft" xml:space="preserve">
+    <value>{0} uur over</value>
+  </data>
+  <data name="IsSure" xml:space="preserve">
+    <value>j</value>
+  </data>
+  <data name="LabelAccountValidFor" xml:space="preserve">
+    <value>Uw account is geldig voor</value>
+  </data>
+  <data name="LabelEmail" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="LabelHelp" xml:space="preserve">
+    <value>Help</value>
+  </data>
+  <data name="LabelPhone" xml:space="preserve">
+    <value>Telefoon</value>
+  </data>
+  <data name="LabelProfile" xml:space="preserve">
+    <value>Profiel</value>
+  </data>
+  <data name="LabelSupported" xml:space="preserve">
+    <value>Ondersteund</value>
+  </data>
+  <data name="LabelTermsOfUse" xml:space="preserve">
+    <value>Gebruiksvoorwaarden</value>
+  </data>
+  <data name="LabelVersion" xml:space="preserve">
+    <value>App versie</value>
+  </data>
+  <data name="LabelWeb" xml:space="preserve">
+    <value>Web</value>
+  </data>
+  <data name="LoadCertificateFile" xml:space="preserve">
+    <value>Selecteer een clientcertificaatbundel</value>
+  </data>
+  <data name="LoadEapFile" xml:space="preserve">
+    <value>Selecteer een EAP-configuratiebestand</value>
+  </data>
+  <data name="LocalCertificateLabel" xml:space="preserve">
+    <value>Voor dit profiel is een lokaal certificaat vereist</value>
+  </data>
+  <data name="OptionDescriptionQuery" xml:space="preserve">
+    <value>Zoek om items te filteren</value>
+  </data>
+  <data name="VersionDebug" xml:space="preserve">
+    <value>{0}+Debug</value>
+  </data>
+  <data name="VersionDebugNoVersion" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="VersionRelease" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="WarningNoSupportedAuthenticationMethod" xml:space="preserve">
+    <value>Er is geen ondersteunde authenticatiemethode gevonden.</value>
+  </data>
+  <data name="WarningProfileNotSupported" xml:space="preserve">
+    <value>Het profiel dat u heeft geselecteerd, wordt niet ondersteund door deze applicatie.</value>
+  </data>
+  <data name="WarningUninstall" xml:space="preserve">
+    <value>U bent momenteel bezig met het volledig verwijderen van geteduroam</value>
+  </data>
+  <data name="WarningUninstallCertificates" xml:space="preserve">
+    <value>Dit betekent dat alle vertrouwde rootcertificaten die door deze applicatie zijn geïnstalleerd, moeten worden verwijderd.</value>
+  </data>
+  <data name="WarningUnsupportedFileType" xml:space="preserve">
+    <value>Het door u gekozen bestandstype wordt niet ondersteund.</value>
+  </data>
+  <data name="WarnRealmMismatch" xml:space="preserve">
+    <value>/!\ Het domein voor de OuterIdentity wordt ingesteld op "{0}", maar het profiel specificeert "{1}"</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>✓</value>
   </data>
 </root>

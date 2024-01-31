@@ -1,3 +1,5 @@
+using App.Settings;
+
 using EduRoam.Connect.Exceptions;
 
 using System;
@@ -19,7 +21,7 @@ namespace EduRoam.Connect
         private const string ResponseType = "code";
         private const string CodeChallengeMethod = "S256";
         private const string Scope = "eap-metadata";
-        public const string clientId = "app.geteduroam.win";
+        public static string clientId = Settings.OAuthClientId;
         // instance config
         private readonly Uri authEndpoint; // used to get authorization code through oauth
                                            // state created by CreateAuthUri
