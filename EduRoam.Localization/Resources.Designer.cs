@@ -740,6 +740,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to example.
+        /// </summary>
+        public static string ExampleRealm {
+            get {
+                return ResourceManager.GetString("ExampleRealm", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please select a file..
         /// </summary>
         public static string FileDialogSelectFile {
