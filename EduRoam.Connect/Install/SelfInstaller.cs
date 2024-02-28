@@ -1,3 +1,5 @@
+using App.Settings;
+
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Store;
 
@@ -38,10 +40,10 @@ namespace EduRoam.Connect.Install
         private static AssemblyName AssemblyName => Assembly.GetExecutingAssembly().GetName();
 
         public static SelfInstaller DefaultInstance => new(
-            applicationIdentifier: "geteduroam",
+            applicationIdentifier: Settings.ApplicationIdentifier,
             applicationMetadata: new ApplicationMeta()
             {
-                DisplayName = "geteduroam",  // [REQUIRED] ProductName
+                DisplayName = Settings.ApplicationIdentifier,  // [REQUIRED] ProductName
                 Publisher = "SURF",  // [REQUIRED] Manufacturer
                 Version = AssemblyName.Version?.ToString() ?? "",
                 VersionMajor = AssemblyName.Version?.Major.ToString(CultureInfo.InvariantCulture) ?? "",

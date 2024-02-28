@@ -1,4 +1,6 @@
-﻿using EduRoam.Connect.Eap;
+﻿using App.Settings;
+
+using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
 
@@ -182,8 +184,8 @@ namespace EduRoam.Connect
                     using var response = context.Response;
                     // constructs a response
                     var responseString = Encoding.ASCII.GetBytes(authorizationCode == null
-                        ? OAuthResources.oauth_rejected
-                        : OAuthResources.oauth_accepted);
+                        ? (Settings.ApplicationIdentifier == "geteduroam" ? OAuthResources.oauth_rejected_geteduroam : OAuthResources.oauth_rejected_getgovroam)
+                        : (Settings.ApplicationIdentifier == "geteduroam" ? OAuthResources.oauth_accepted_geteduroam : OAuthResources.oauth_accepted_getgovroam));
 
                     // outputs response to web server
                     response.ContentLength64 = responseString.Length;

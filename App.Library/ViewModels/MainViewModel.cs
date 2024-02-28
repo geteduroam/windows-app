@@ -36,6 +36,7 @@ namespace App.Library.ViewModels
 
         private readonly INetworkListManager networkListManager;
 
+
         public MainViewModel(ILogger<MainViewModel> logger)
         {
             this.NewProfileCommand = new DelegateCommand(this.NewProfileCommandAction, this.CanNewProfileCommandAction);

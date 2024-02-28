@@ -21,6 +21,7 @@ namespace Govroam.App
         {
             LanguageResources.Culture = System.Globalization.CultureInfo.CurrentUICulture;
             Settings.OAuthClientId = "app.getgovroam.win";
+            Settings.ApplicationIdentifier = "getgovroam";
 
             if (e.Args.Any()
                 && CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args))

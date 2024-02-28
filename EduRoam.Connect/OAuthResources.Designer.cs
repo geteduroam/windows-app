@@ -79,9 +79,9 @@ namespace EduRoam.Connect {
         ///          return to the app.
         ///    [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string oauth_accepted {
+        internal static string oauth_accepted_geteduroam {
             get {
-                return ResourceManager.GetString("oauth_accepted", resourceCulture);
+                return ResourceManager.GetString("oauth_accepted_geteduroam", resourceCulture);
             }
         }
         
@@ -104,9 +104,24 @@ namespace EduRoam.Connect {
         ///          return to the app.
         /// [rest of string was truncated]&quot;;.
         /// </summary>
-        internal static string oauth_rejected {
+        internal static string oauth_rejected_geteduroam {
             get {
-                return ResourceManager.GetString("oauth_rejected", resourceCulture);
+                return ResourceManager.GetString("oauth_rejected_geteduroam", resourceCulture);
+            }
+        }
+
+        internal static string oauth_accepted_getgovroam
+        {
+            get
+            {
+                return ResourceManager.GetString("oauth_accepted_getgovroam", resourceCulture);
+            }
+        }
+        internal static string oauth_rejected_getgovroam
+        {
+            get
+            {
+                return ResourceManager.GetString("oauth_rejected_getgovroam", resourceCulture);
             }
         }
     }
