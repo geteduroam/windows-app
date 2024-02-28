@@ -6,7 +6,10 @@ using EduRoam.Localization;
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 
 namespace App.Library.ViewModels
 {
@@ -30,6 +33,8 @@ namespace App.Library.ViewModels
             {
                 this.Realm = "";
             }
+
+            this.MeasureRealmString();
         }
 
         protected override bool CanNavigateNextAsync()
@@ -99,6 +104,23 @@ namespace App.Library.ViewModels
             };
 
             this.connectionStatus = await this.connection.ConfigureAndConnectAsync(connectionProperties);
+        }
+        public Thickness RealmPadding { get; set; }
+
+        public void MeasureRealmString()
+        {
+#pragma warning disable CS0618 // Type or member is obsolete
+            var ft = new FormattedText(
+                this.Realm,
+                CultureInfo.CurrentCulture,
+                FlowDirection.LeftToRight,
+                new Typeface("Segoe UI"),
+                14,
+                Brushes.Black);
+#pragma warning restore CS0618 // Type or member is obsolete
+
+            this.RealmPadding = new Thickness(2, 3, ft.Width, 3);
+            
         }
     }
 #pragma warning restore CA1822 // Mark members as static
