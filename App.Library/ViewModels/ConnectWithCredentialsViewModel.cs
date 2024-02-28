@@ -25,8 +25,9 @@ namespace App.Library.ViewModels
 
             if (hint)
             {
-                this.Realm = string.IsNullOrWhiteSpace(realm) ? Resources.UserNameWatermark : $"@{realm}";
-            } else
+                this.Realm = string.IsNullOrWhiteSpace(realm) ? Resources.UserNameWatermark : $"{Resources.ExampleRealm}@{realm}";
+            } 
+            else
             {
                 this.Realm = "";
             }

@@ -608,4 +608,7 @@ Exception: {0}</value>
   <data name="ConnectToEduroam" xml:space="preserve">
     <value>Connect to eduroam</value>
   </data>
+  <data name="ExampleRealm" xml:space="preserve">
+    <value>example</value>
+  </data>
 </root>

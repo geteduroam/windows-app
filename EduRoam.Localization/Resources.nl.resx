@@ -605,4 +605,7 @@ Uitzondering: {0}</value>
   <data name="Yes" xml:space="preserve">
     <value>✓</value>
   </data>
+  <data name="ExampleRealm" xml:space="preserve">
+    <value>voorbeeld</value>
+  </data>
 </root>
