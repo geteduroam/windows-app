@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppCommandsHelp" xml:space="preserve">
+    <value>أوامر CLI المدعومة:
+    /? : 
+            أظهر نص المساعدة هذا
+    /help : 
+           أظهر نص المساعدة هذا
+    /install : 
+            Install this binary to %USER%/AppData/Local
+    /uninstall : 
+            Uninstall this binary from %USER%/AppData/Local along
+            with any configured data
+    /background : 
+            Start this application hidden to the tray
+            (works only if run from install directory)
+    /close : 
+            Close the current running instance
+    /refresh : 
+            Refresh the user certificate using the refresh token.
+            Is called automatically by a scheduled task in windows.
+    /refresh-force : 
+            Refresh the user certificate using the refresh token.
+            Will refresh the profile even if the validity period
+            of the current client certificate has more than a 3rd left</value>
+  </data>
+  <data name="AreYouSure" xml:space="preserve">
+    <value>هل أنت متأكد أنك تريد الاستمرار؟</value>
+  </data>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>إغلاق</value>
+  </data>
+  <data name="ButtonConnect" xml:space="preserve">
+    <value>اتصال</value>
+  </data>
+  <data name="ButtonInstall" xml:space="preserve">
+    <value>تثبيت</value>
+  </data>
+  <data name="ButtonNext" xml:space="preserve">
+    <value>التالي</value>
+  </data>
+  <data name="ButtonPrevious" xml:space="preserve">
+    <value>السابق</value>
+  </data>
+  <data name="ButtonBack" xml:space="preserve">
+    <value>الرجوع</value>
+  </data>
+  <data name="CertificateLabel" xml:space="preserve">
+    <value>شهادة:</value>
+  </data>
+  <data name="CertificatesInstallationNotification" xml:space="preserve">
+    <value>للمتابعة، يجب تثبيت الشهادات التالية.</value>
+  </data>
+  <data name="CertificatesInstallationStatus" xml:space="preserve">
+    <value>{0}, تم التثبيت: {1}</value>
+  </data>
+  <data name="CertificateTitleInstalled" xml:space="preserve">
+    <value>تم تثبيت الشهادات</value>
+  </data>
+  <data name="CertificateTitleStart" xml:space="preserve">
+    <value>للمتابعة، يجب تثبيت الشهادات المُدرجة.</value>
+  </data>
+  <data name="CommandDescriptionConnect" xml:space="preserve">
+    <value>قم بضبط إعدادات شبكة Wi-Fi استنادًا إلى ملف المؤسسة ثم قم بالاتصال.</value>
+  </data>
+  <data name="CommandDescriptionInstall" xml:space="preserve">
+    <value>قم بتثبيت هذا البرنامج في  %USER%/AppData/Local</value>
+  </data>
+  <data name="CommandDescriptionList" xml:space="preserve">
+    <value>احصل على قائمة المؤسسات أو الملفات التعريفية لمؤسسة ما</value>
+  </data>
+  <data name="CommandDescriptionReauthenticate" xml:space="preserve">
+    <value>إعادة المصادقة</value>
+  </data>
+  <data name="CommandDescriptionRefresh" xml:space="preserve">
+    <value>تحديث بيانات الاعتماد</value>
+  </data>
+  <data name="CommandDescriptionRemove" xml:space="preserve">
+    <value>إزالة ملف ضبط الشبكة اللاسلكية Wi-Fi المُعين و/أو الشهادات الجذرية root certificates</value>
+  </data>
+  <data name="CommandDescriptionShow" xml:space="preserve">
+    <value>عرض معلومات EAP config </value>
+  </data>
+  <data name="CommandDescriptionStatus" xml:space="preserve">
+    <value>عرض الحالة</value>
+  </data>
+  <data name="CommandDescriptionUninstall" xml:space="preserve">
+    <value>إلغاء تثبيت التطبيق</value>
+  </data>
+  <data name="ConfiguredButNotConnected" xml:space="preserve">
+    <value>تم ضبط اعدادات كل شيء!
+تعذر الاتصال بسبب عدم العثور على ضبط EAP.</value>
+  </data>
+  <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
+    <value>تم ضبط اعدادات كل شيء! 
+تعذر الاتصال بشبكة eduroam، ربما تكون خارج نطاق التغطية.</value>
+  </data>
+  <data name="ConfiguredButUnableToConnect" xml:space="preserve">
+    <value>تم ضبط اعدادات كل شيء! 
+تعذر الاتصال بشبكة eduroam.</value>
+  </data>
+  <data name="ConfiguredEap" xml:space="preserve">
+    <value>تم ضبط EAP.</value>
+  </data>
+  <data name="ConnectionUsernameAndPasswordRequired" xml:space="preserve">
+    <value>الرجاء توفير اسم المستخدم وكلمة المرور للاتصال.</value>
+  </data>
+  <data name="ConsentMain" xml:space="preserve">
+    <value>شروط الاستخدام</value>
+  </data>
+  <data name="ConsentPost" xml:space="preserve">
+    <value>للمؤسسة</value>
+  </data>
+  <data name="ConsentPre" xml:space="preserve">
+    <value>بالنقر على 'التالي'، أنت توافق على</value>
+  </data>
+  <data name="CredentialsLabel" xml:space="preserve">
+    <value>أدخل اسم المستخدم وكلمة المرور الخاصة بك.</value>
+  </data>
+  <data name="CredentialsPasswordLabel" xml:space="preserve">
+    <value>كلمة المرور:</value>
+  </data>
+  <data name="CredentialsUsernameLabel" xml:space="preserve">
+    <value>اسم المستخدم:</value>
+  </data>
+  <data name="DaysLeft" xml:space="preserve">
+    <value>{0} أيام إضافية</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>انتهى</value>
+  </data>
+  <data name="ErrorApi" xml:space="preserve">
+    <value>خطأ في API</value>
+  </data>
+  <data name="ErrorCannotConnectWithServer" xml:space="preserve">
+    <value>تعذر الاتصال بالخادم.
+
+تأكد من أنك متصل بالإنترنت، ثم حاول مرة أخرى.
+
+استثناء: {0}</value>
+  </data>
+  <data name="ErrorCannotFetchTokens" xml:space="preserve">
+    <value>تعذر جلب رمز  Token لـ JSON .
+
+استثناء: {0}</value>
+  </data>
+  <data name="ErrorCannotRemoveWLANProfile" xml:space="preserve">
+    <value>لا يمكن إزالة بعض ملفات تعريف WLAN</value>
+  </data>
+  <data name="ErrorCannotRetrieveProfileWhenOffline" xml:space="preserve">
+    <value>لا يمكن استرداد الملف التعريفي عندما تكون غير متصل بالإنترنت</value>
+  </data>
+  <data name="ErrorClientCredentialNotValidYes" xml:space="preserve">
+    <value>بيانات اعتماد العميل ليست صالحة بعد</value>
+  </data>
+  <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
+    <value>تم ضبط كل شيء!
+تعذر الاتصال بسبب عدم العثور على إعدادات EAP</value>
+  </data>
+  <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
+    <value>تم ضبط كل شيء! 
+تعذر الاتصال بشبكة eduroam، ربما تكون خارج نطاق التغطية.</value>
+  </data>
+  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
+    <value>تم ضبط كل شيء! 
+تعذر الاتصال بشبكة eduroam.</value>
+  </data>
+  <data name="ErrorCredentialsAtChar" xml:space="preserve">
+    <value>يجب أن يحتوي اسم المستخدم على الرمز "@" مرة واحدة فقط</value>
+  </data>
+  <data name="ErrorCredentialsEndsWith" xml:space="preserve">
+    <value>لا يمكن أن ينتهي اسم المستخدم بفاصلة أو مسافة</value>
+  </data>
+  <data name="ErrorCredentialsEndWithRealm" xml:space="preserve">
+    <value>يجب أن ينتهي اسم المستخدم بالنقطة . {0} أو @ {0}</value>
+  </data>
+  <data name="ErrorCredentialsEndWithRealmNoSubdomain" xml:space="preserve">
+    <value>يجب أن ينتهي اسم المستخدم بالرمز "@" {0}</value>
+  </data>
+  <data name="ErrorCredentialsSpecialCharacters" xml:space="preserve">
+    <value>لا يمكن أن تكون الرموز  مثل "." و "@" متجاورة</value>
+  </data>
+  <data name="ErrorEapConfigCorrupted" xml:space="preserve">
+    <value>تم تلف ملف ضبط EAP المحدد. يرجى اختيار ملف آخر.</value>
+  </data>
+  <data name="ErrorEapConfigInvalid" xml:space="preserve">
+    <value>لا يمكن القراءة من الملف. تأكد من تحديد ملف ضبط EAP صالح.</value>
+  </data>
+  <data name="ErrorEapConfigIsEmpty" xml:space="preserve">
+    <value>تعذر الاتصال، لا يوجد ضبط EAP </value>
+  </data>
+  <data name="ErrorEapNotConfigured" xml:space="preserve">
+    <value>لا يمكن ضبط EAP</value>
+  </data>
+  <data name="ErrorInternetConnection" xml:space="preserve">
+    <value>خطأ في اتصال الإنترنت</value>
+  </data>
+  <data name="ErrorInvalidCertificatePath" xml:space="preserve">
+    <value>مسار ملف الشهادة غير صالح</value>
+  </data>
+  <data name="ErrorInvalidCredentials" xml:space="preserve">
+    <value>اسم المستخدم و/أو كلمة المرور غير صالحة</value>
+  </data>
+  <data name="ErrorInvalidEapConfig" xml:space="preserve">
+    <value>ضبط اعدادات EAP غير صالح ، هذا لا ينبغي أن يحدث، يرجى الإبلاغ عن الخطأ.</value>
+  </data>
+  <data name="ErrorMissingCredentials" xml:space="preserve">
+    <value>لم يتم توفير بيانات الاعتماد</value>
+  </data>
+  <data name="ErrorMissingRequiredCACertificate" xml:space="preserve">
+    <value>لم يتم تثبيت شهادة CA المطلوبة، لا ينبغي أن يحدث هذا، يرجى الإبلاغ عن خطأ</value>
+  </data>
+  <data name="ErrorNoClientCertificateProvided" xml:space="preserve">
+    <value>لم يتم توفير شهادة عميل (صالحة) ({0} parameter.</value>
+  </data>
+  <data name="ErrorNoConnection" xml:space="preserve">
+    <value>تعذر الاتصال.
+استثناء: {0}.</value>
+  </data>
+  <data name="ErrorNoInternet" xml:space="preserve">
+    <value>لا يوجد اتصال بالإنترنت</value>
+  </data>
+  <data name="ErrorNotUninstalled" xml:space="preserve">
+    <value>لم يتم إلغاء تثبيت geteduroam.</value>
+  </data>
+  <data name="ErrorOptionIsEmpty" xml:space="preserve">
+    <value>لا يمكن أن تكون قيمة خيار {0} فارغة أو مسافة بيضاء فقط</value>
+  </data>
+  <data name="ErrorRequiredCertificatesNotInstalled" xml:space="preserve">
+    <value>لم يتم تثبيت كافة الشهادات المطلوبة.</value>
+  </data>
+  <data name="ErrorShowCommandOptions" xml:space="preserve">
+    <value>خيارات مفقودة. قم بتوفير الخيار {0} أو كلا الخيارين{1}و{2} </value>
+  </data>
+  <data name="ErrorUnknownProfile" xml:space="preserve">
+    <value>ملف غير معروف</value>
+  </data>
+  <data name="ErrorUnsupportedConnectionType" xml:space="preserve">
+    <value>الاتصال من النوع {0} غير مدعوم (حتى الآن).</value>
+  </data>
+  <data name="ErrorUnsupportedInstituteOrProfile" xml:space="preserve">
+    <value>المؤسسة أو الملف التعريفي إما غير مدعوم أو تالف.
+الرجاء تحديد مؤسسة أو ملف تعريف مختلف..
+
+استثناء: {0}</value>
+  </data>
+  <data name="ErrorUnsupportedProfile" xml:space="preserve">
+    <value>الملف الذي اخترته غير مدعوم من قبل هذا التطبيق. لم يتم العثور على طريقة مصادقة معتمدة.</value>
+  </data>
+  <data name="ErrorWirelessUnavailable" xml:space="preserve">
+    <value>الاتصال اللاسلكي غير متاح على هذا الكمبيوتر</value>
+  </data>
+  <data name="FileDialogSelectFile" xml:space="preserve">
+    <value>الرجاء اختيار ملف.</value>
+  </data>
+  <data name="HoursLeft" xml:space="preserve">
+    <value>{0} ساعات إضافية</value>
+  </data>
+  <data name="IsSure" xml:space="preserve">
+    <value>نعم</value>
+  </data>
+  <data name="LabelAccountValidFor" xml:space="preserve">
+    <value>حسابك صالح لـ</value>
+  </data>
+  <data name="LabelEmail" xml:space="preserve">
+    <value>البريد الإلكتروني</value>
+  </data>
+  <data name="LabelHelp" xml:space="preserve">
+    <value>مساعدة</value>
+  </data>
+  <data name="LabelPhone" xml:space="preserve">
+    <value>الهاتف</value>
+  </data>
+  <data name="LabelProfile" xml:space="preserve">
+    <value>الملف الشخصي</value>
+  </data>
+  <data name="LabelSupported" xml:space="preserve">
+    <value>مدعوم</value>
+  </data>
+  <data name="LabelTermsOfUse" xml:space="preserve">
+    <value>شروط الاستخدام</value>
+  </data>
+  <data name="LabelVersion" xml:space="preserve">
+    <value>إصدار التطبيق</value>
+  </data>
+  <data name="LabelWeb" xml:space="preserve">
+    <value>الموقع</value>
+  </data>
+  <data name="LoadCertificateFile" xml:space="preserve">
+    <value>اختيار حزمة شهادة العميل Client Certificate</value>
+  </data>
+  <data name="LoadEapFile" xml:space="preserve">
+    <value>اختيار ملف ضبط EAP</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>جاري التحميل</value>
+  </data>
+  <data name="LocalCertificateLabel" xml:space="preserve">
+    <value>يتطلب هذا الملف التعريفي شهادة محلية</value>
+  </data>
+  <data name="LoginTitle" xml:space="preserve">
+    <value>تسجيل الدخول</value>
+  </data>
+  <data name="MenuItemLoadEAP" xml:space="preserve">
+    <value>تحميل ملف .eap-config...</value>
+  </data>
+  <data name="MenuItemReauthenticate" xml:space="preserve">
+    <value>إعادة المصادقة</value>
+  </data>
+  <data name="MenuItemRefresh" xml:space="preserve">
+    <value>تحديث بيانات الاعتماد</value>
+  </data>
+  <data name="MenuItemRemoveCertificates" xml:space="preserve">
+    <value>حذف شهادات الجذر</value>
+  </data>
+  <data name="MenuItemRemoveProfile" xml:space="preserve">
+    <value>إزالة ملف ضبط إعدادات شبكة الوايفاي...</value>
+  </data>
+  <data name="MenuItemUninstall" xml:space="preserve">
+    <value>إلغاء تثبيت التطبيق...</value>
+  </data>
+  <data name="MinutesLeft" xml:space="preserve">
+    <value>{0}دقائق إضافية</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>نعم</value>
+    <comment>Used for user confirmation, as the 'yes' option</comment>
+  </data>
+  <data name="NoEAPConfig" xml:space="preserve">
+    <value>لا توجد معلومات ضبط EAP لعرضها.</value>
+  </data>
+  <data name="NotSure" xml:space="preserve">
+    <value>لا</value>
+    <comment>Used for user confirmation, as the 'no' option</comment>
+  </data>
+  <data name="OAuthExplanation" xml:space="preserve">
+    <value>للمتابعة، تحتاج إلى المصادقة في متصفحك، ومن المفترض أن يتم فتح نافذة تلقائيًا.</value>
+  </data>
+  <data name="OAuthTitle" xml:space="preserve">
+    <value>في الانتظار...</value>
+    <comment>O</comment>
+  </data>
+  <data name="OptionDescriptionCertificatePath" xml:space="preserve">
+    <value>مسار ملف الشهادة</value>
+  </data>
+  <data name="OptionDescriptionEAPConfig" xml:space="preserve">
+    <value>المسار إلى ملف ضبط eap-config EAP. </value>
+  </data>
+  <data name="OptionDescriptionForce" xml:space="preserve">
+    <value>إجبار التنفيذ.</value>
+  </data>
+  <data name="OptionDescriptionInstitute" xml:space="preserve">
+    <value>اسم المؤسسة للاتصال بها.</value>
+  </data>
+  <data name="OptionDescriptionProfile" xml:space="preserve">
+    <value>ملف المؤسسة للاتصال بها.</value>
+  </data>
+  <data name="OptionDescriptionQuery" xml:space="preserve">
+    <value>استعلام لتصفية العناصر</value>
+  </data>
+  <data name="OptionRequired" xml:space="preserve">
+    <value>الخيار {0} مطلوب</value>
+  </data>
+  <data name="Passphrase" xml:space="preserve">
+    <value>كلمة مرور الشهادة passphrase</value>
+  </data>
+  <data name="PassphraseLabel" xml:space="preserve">
+    <value>أدخل كلمة المرور للشهادة</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>كلمة المرور</value>
+  </data>
+  <data name="PasswordLabel" xml:space="preserve">
+    <value>كلمة المرور:</value>
+  </data>
+  <data name="ProfileContactInfo" xml:space="preserve">
+    <value>معلومات الاتصال</value>
+  </data>
+  <data name="ProfileEmail" xml:space="preserve">
+    <value>البريد الالكتروني</value>
+  </data>
+  <data name="ProfileLabel" xml:space="preserve">
+    <value>اسم الملف التعريفي</value>
+  </data>
+  <data name="ProfileNotAffiliatedInstitution" xml:space="preserve">
+    <value>غير تابع لمؤسسة؟</value>
+  </data>
+  <data name="ProfilePhone" xml:space="preserve">
+    <value>الهاتف</value>
+  </data>
+  <data name="ProfileRemoveConfirmation" xml:space="preserve">
+    <value>سيؤدي هذا إلى إزالة كافة الإعدادات لـ '{0}'.</value>
+  </data>
+  <data name="ProfileSelectOtherInstitution" xml:space="preserve">
+    <value>حدد ملف تعريف آخر</value>
+  </data>
+  <data name="ProfileWeb" xml:space="preserve">
+    <value>موقع</value>
+  </data>
+  <data name="RedirectText" xml:space="preserve">
+    <value>انقر هنا لتوجيهك إلى موقع المؤسسة للمزيد من المعلومات حول كيفية الاتصال. عند النقر على الرابط، سيتم إغلاق هذا التطبيق.</value>
+  </data>
+  <data name="RedirectTitle" xml:space="preserve">
+    <value>إعادة التوجيه</value>
+  </data>
+  <data name="RemoveProfileMessage" xml:space="preserve">
+    <value>سيؤدي هذا إلى إزالة كافة الاعدادات لـ
+{0}</value>
+  </data>
+  <data name="RemoveProfileTitle" xml:space="preserve">
+    <value>إزالة{0}</value>
+  </data>
+  <data name="RequestToInstallCertificates" xml:space="preserve">
+    <value> تثبيت جميع الشهادات المطلوبة؟</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>ابحث عن مؤسستك</value>
+  </data>
+  <data name="SelectFile" xml:space="preserve">
+    <value>تصفح</value>
+  </data>
+  <data name="SelectInstitution" xml:space="preserve">
+    <value>اختيار المؤسسة</value>
+  </data>
+  <data name="SelectProfile" xml:space="preserve">
+    <value>اختيار الملف التعريفي</value>
+  </data>
+  <data name="TermsOfUseTitle" xml:space="preserve">
+    <value>شروط الاستخدام</value>
+  </data>
+  <data name="UninstallNotification" xml:space="preserve">
+    <value>تمت إزالة تثبيت التطبيق وإعدادات الضبط.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>اسم المستخدم</value>
+  </data>
+  <data name="UserNameWatermark" xml:space="preserve">
+    <value>@example.com</value>
+  </data>
+  <data name="VersionDebug" xml:space="preserve">
+    <value>{0}+تصحيح</value>
+  </data>
+  <data name="VersionDebugNoVersion" xml:space="preserve">
+    <value>تصحيح</value>
+  </data>
+  <data name="VersionRelease" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="VersionReleaseNoVersion" xml:space="preserve">
+    <value>بدون إصدار</value>
+  </data>
+  <data name="WarningFileDoesNotExist" xml:space="preserve">
+    <value>الملف المحدد غير موجود.</value>
+  </data>
+  <data name="WarningInstallCertificates" xml:space="preserve">
+    <value>يجب عليك أولاً تثبيت الشهادات باستخدام InstallCertificates</value>
+  </data>
+  <data name="WarningMissingCertificates" xml:space="preserve">
+    <value>الشهادات المفقودة</value>
+  </data>
+  <data name="WarningNoInstitutesFound" xml:space="preserve">
+    <value>لم يتم العثور على المؤسسات</value>
+  </data>
+  <data name="WarningNoProfilesFound" xml:space="preserve">
+    <value>لم يتم العثور على أي ملفات تعريف</value>
+  </data>
+  <data name="WarningNoSupportedAuthenticationMethod" xml:space="preserve">
+    <value>لم يتم العثور على طريقة مصادقة معتمدة.</value>
+  </data>
+  <data name="WarningProfileNotSupported" xml:space="preserve">
+    <value>ملف التعريف الذي حددته غير مدعوم من قبل هذا التطبيق.</value>
+  </data>
+  <data name="WarningUninstall" xml:space="preserve">
+    <value>أنت حاليًا تقوم بإلغاء تثبيت geteduroam بالكامل</value>
+  </data>
+  <data name="WarningUninstallCertificates" xml:space="preserve">
+    <value>وهذا يعني إلغاء تثبيت جميع شهادات الجذر الموثوقة التي تم تثبيتها بواسطة هذا التطبيق.</value>
+  </data>
+  <data name="WarningUnsupportedFileType" xml:space="preserve">
+    <value>نوع الملف الذي اخترته غير مدعوم.</value>
+  </data>
+  <data name="WarnRealmMismatch" xml:space="preserve">
+    <value>/!\ سيتم تعيين نطاق OuterIdentity على "{0}" ولكن تم تحديد ملف التعريف "{1}"</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>✓</value>
+  </data>
+  <data name="NoConnection" xml:space="preserve">
+    <value>يتطلب eduroam اتصالاً نشطًا بالإنترنت.</value>
+  </data>
+  <data name="ConnectToEduroam" xml:space="preserve">
+    <value>الاتصال بـ eduroam</value>
+  </data>
+</root>

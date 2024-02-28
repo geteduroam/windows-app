@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppCommandsHelp" xml:space="preserve">
+    <value>Commandes CLI prises en charge :
+
+/? :
+    Afficher ce texte d'aide
+/help :
+    Afficher ce texte d'aide
+/install :
+    Installez ce binaire sur %USER%/AppData/Local
+/uninstall :
+     Désinstallez ce binaire de %USER%/AppData/Local avec
+avec toutes les données configurées
+/background :
+    Démarrez cette application cachée dans la barre d'état
+(fonctionne uniquement s'il est exécuté à partir du répertoire d'installation)
+/close :
+     Fermer l'instance en cours d'exécution
+/refresh :
+     Actualisez le certificat utilisateur à l'aide du jeton d'actualisation.
+     Est appelé automatiquement par une tâche planifiée dans Windows.
+/refresh-force :
+     Actualisez le certificat utilisateur à l'aide du jeton d'actualisation.
+     Actualisera le profil même si la période de validité
+du certificat client actuel en a plus d'un tiers</value>
+  </data>
+  <data name="AreYouSure" xml:space="preserve">
+    <value>Etes-vous sur de vouloir continuer?</value>
+  </data>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="ButtonConnect" xml:space="preserve">
+    <value>Connecter</value>
+  </data>
+  <data name="ButtonInstall" xml:space="preserve">
+    <value>Installer</value>
+  </data>
+  <data name="ButtonNext" xml:space="preserve">
+    <value>Suivant</value>
+  </data>
+  <data name="ButtonPrevious" xml:space="preserve">
+    <value>Précédent</value>
+  </data>
+  <data name="ButtonBack" xml:space="preserve">
+    <value>Retour</value>
+  </data>
+  <data name="CertificateLabel" xml:space="preserve">
+    <value>Certificat</value>
+  </data>
+  <data name="CertificatesInstallationNotification" xml:space="preserve">
+    <value>Afin de continuer, les certificats suivants doivent être installés.</value>
+  </data>
+  <data name="CertificatesInstallationStatus" xml:space="preserve">
+    <value>{0}, Installé: {1}</value>
+  </data>
+  <data name="CertificateTitleInstalled" xml:space="preserve">
+    <value>les certificats sont installés</value>
+  </data>
+  <data name="CertificateTitleStart" xml:space="preserve">
+    <value>Pour continuer, vous devez installer les certificats répertoriés</value>
+  </data>
+  <data name="CommandDescriptionConnect" xml:space="preserve">
+    <value>Configurez le Wi-Fi en fonction d'un profil d'établissement et connectez-vous.</value>
+  </data>
+  <data name="CommandDescriptionInstall" xml:space="preserve">
+    <value>Installez ce binaire sur %USER%/AppData/Local</value>
+  </data>
+  <data name="CommandDescriptionList" xml:space="preserve">
+    <value>Obtenez une liste d'établissements ou de profils pour un établissement.</value>
+  </data>
+  <data name="CommandDescriptionReauthenticate" xml:space="preserve">
+    <value>Réauthentifier</value>
+  </data>
+  <data name="CommandDescriptionRefresh" xml:space="preserve">
+    <value>Actualiser les identifiants</value>
+  </data>
+  <data name="CommandDescriptionRemove" xml:space="preserve">
+    <value>Supprimer le profil Wi-Fi configuré et/ou les certificats racine</value>
+  </data>
+  <data name="CommandDescriptionShow" xml:space="preserve">
+    <value>Supprimer le profil Wi-Fi configuré et/ou les certificats racine</value>
+  </data>
+  <data name="CommandDescriptionStatus" xml:space="preserve">
+    <value>Afficher l'état</value>
+  </data>
+  <data name="CommandDescriptionUninstall" xml:space="preserve">
+    <value>Désinstaller l'application</value>
+  </data>
+  <data name="ConfiguredButNotConnected" xml:space="preserve">
+    <value>Tout est configuré !
+Impossible de se connecter car aucune configuration EAP n'a pu être trouvée</value>
+  </data>
+  <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
+    <value>Tout est configuré ! Impossible de vous connecter à eduroam, vous êtes probablement hors de couverture.</value>
+  </data>
+  <data name="ConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Tout est configuré ! Impossible de se connecter à eduroam.</value>
+  </data>
+  <data name="ConfiguredEap" xml:space="preserve">
+    <value>EAP est configuré</value>
+  </data>
+  <data name="ConnectionUsernameAndPasswordRequired" xml:space="preserve">
+    <value>Veuillez fournir un nom d'utilisateur et un mot de passe pour vous connecter.</value>
+  </data>
+  <data name="ConsentMain" xml:space="preserve">
+    <value>Conditions d'utilisation</value>
+  </data>
+  <data name="ConsentPost" xml:space="preserve">
+    <value>de l'établissement</value>
+  </data>
+  <data name="ConsentPre" xml:space="preserve">
+    <value>En cliquant sur « Suivant », vous acceptez</value>
+  </data>
+  <data name="CredentialsLabel" xml:space="preserve">
+    <value>Entrez votre nom d'utilisateur et votre mot de passe</value>
+  </data>
+  <data name="CredentialsPasswordLabel" xml:space="preserve">
+    <value>mot de passe:</value>
+  </data>
+  <data name="CredentialsUsernameLabel" xml:space="preserve">
+    <value>Nom d'utilisateur:</value>
+  </data>
+  <data name="DaysLeft" xml:space="preserve">
+    <value>{0}jours en plus</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>Terminer</value>
+  </data>
+  <data name="ErrorApi" xml:space="preserve">
+    <value>erreur API</value>
+  </data>
+  <data name="ErrorCannotConnectWithServer" xml:space="preserve">
+    <value>Impossible de se connecter au serveur.
+
+Assurez-vous que vous êtes connecté à Internet, puis réessayez.
+
+Exception: {0}</value>
+  </data>
+  <data name="ErrorCannotFetchTokens" xml:space="preserve">
+    <value>Impossible de récupérer le jeton JSON.
+Exception: {0}</value>
+  </data>
+  <data name="ErrorCannotRemoveWLANProfile" xml:space="preserve">
+    <value>Certains profils WLAN n'ont pas pu être supprimés</value>
+  </data>
+  <data name="ErrorCannotRetrieveProfileWhenOffline" xml:space="preserve">
+    <value>Impossible de récupérer le profil en mode hors connexion</value>
+  </data>
+  <data name="ErrorClientCredentialNotValidYes" xml:space="preserve">
+    <value>Les informations d'identification du client ne sont pas encore valides</value>
+  </data>
+  <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
+    <value>Tout est configuré !
+Impossible de se connecter car la configuration EAP est introuvable</value>
+  </data>
+  <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
+    <value>Tout est configuré !
+Impossible de vous connecter à eduroam, vous êtes probablement hors de couverture.</value>
+  </data>
+  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Tout est configuré !
+Impossible de se connecter à eduroam.</value>
+  </data>
+  <data name="ErrorCredentialsAtChar" xml:space="preserve">
+    <value>Le nom d'utilisateur doit contenir @ une fois</value>
+  </data>
+  <data name="ErrorCredentialsEndsWith" xml:space="preserve">
+    <value>Le nom d'utilisateur ne peut pas se terminer par un point ou un espace</value>
+  </data>
+  <data name="ErrorCredentialsEndWithRealm" xml:space="preserve">
+    <value>Le nom d'utilisateur doit se terminer par .{0} ou @{0}</value>
+  </data>
+  <data name="ErrorCredentialsEndWithRealmNoSubdomain" xml:space="preserve">
+    <value>Le nom d'utilisateur doit se terminer par @ {0}</value>
+  </data>
+  <data name="ErrorCredentialsSpecialCharacters" xml:space="preserve">
+    <value>Des personnages tels que . et @ ne peuvent pas être adjacents l'un à l'autre</value>
+  </data>
+  <data name="ErrorEapConfigCorrupted" xml:space="preserve">
+    <value>Le fichier de configuration EAP sélectionné est corrompu. Veuillez choisir un autre fichier.</value>
+  </data>
+  <data name="ErrorEapConfigInvalid" xml:space="preserve">
+    <value>Impossible de lire le fichier. Assurez-vous de sélectionner un fichier de configuration EAP valide.</value>
+  </data>
+  <data name="ErrorEapConfigIsEmpty" xml:space="preserve">
+    <value>Impossible de se connecter, la configuration EAP est vide</value>
+  </data>
+  <data name="ErrorEapNotConfigured" xml:space="preserve">
+    <value>EAP n'a pas pu être configuré</value>
+  </data>
+  <data name="ErrorInternetConnection" xml:space="preserve">
+    <value>Erreur avec la connexion Internet</value>
+  </data>
+  <data name="ErrorInvalidCertificatePath" xml:space="preserve">
+    <value>Chemin de certificat invalide</value>
+  </data>
+  <data name="ErrorInvalidCredentials" xml:space="preserve">
+    <value>Le nom d'utilisateur et/ou le mot de passe ne sont pas valides</value>
+  </data>
+  <data name="ErrorInvalidEapConfig" xml:space="preserve">
+    <value>Configuration EAP fournie non valide. Cela ne devrait pas se produire, veuillez signaler un bug.</value>
+  </data>
+  <data name="ErrorMissingCredentials" xml:space="preserve">
+    <value>Les informations d'identification ne sont pas fournies</value>
+  </data>
+  <data name="ErrorMissingRequiredCACertificate" xml:space="preserve">
+    <value>Le certificat CA requis n'a pas été installé, cela ne devrait pas se produire, veuillez signaler un bug</value>
+  </data>
+  <data name="ErrorNoClientCertificateProvided" xml:space="preserve">
+    <value>Aucun certificat client (valide) n'a été fourni ({0}paramètre.</value>
+  </data>
+  <data name="ErrorNoConnection" xml:space="preserve">
+    <value>N'a pas pu se connecter.
+Exception: {0}.</value>
+  </data>
+  <data name="ErrorNoInternet" xml:space="preserve">
+    <value>Pas de connexion Internet</value>
+  </data>
+  <data name="ErrorNotUninstalled" xml:space="preserve">
+    <value>geteduroam n'a pas été désinstallé.</value>
+  </data>
+  <data name="ErrorOptionIsEmpty" xml:space="preserve">
+    <value>{0}la valeur de l'option ne peut pas être vide ou uniquement des espaces</value>
+  </data>
+  <data name="ErrorRequiredCertificatesNotInstalled" xml:space="preserve">
+    <value>Tous les certificats requis ne sont pas installés.</value>
+  </data>
+  <data name="ErrorShowCommandOptions" xml:space="preserve">
+    <value>Options manquantes. Fournir l'option {0} ou les deux {1} et les options {2}</value>
+  </data>
+  <data name="ErrorUnknownProfile" xml:space="preserve">
+    <value>Profil inconnu</value>
+  </data>
+  <data name="ErrorUnsupportedConnectionType" xml:space="preserve">
+    <value>La connexion de type {0} n'est pas (encore) prise en charge.</value>
+  </data>
+  <data name="ErrorUnsupportedInstituteOrProfile" xml:space="preserve">
+    <value>L'institution ou le profil n'est pas pris en charge ou est mal formé.
+Veuillez sélectionner une autre institution ou un autre profil.
+
+Exception: {0}</value>
+  </data>
+  <data name="ErrorUnsupportedProfile" xml:space="preserve">
+    <value>Le profil que vous avez sélectionné n'est pas pris en charge par cette application. Aucune méthode d'authentification prise en charge n'a été trouvée.</value>
+  </data>
+  <data name="ErrorWirelessUnavailable" xml:space="preserve">
+    <value>Le sans fil n'est pas disponible sur cet ordinateur</value>
+  </data>
+  <data name="FileDialogSelectFile" xml:space="preserve">
+    <value>Veuillez sélectionner un fichier.</value>
+  </data>
+  <data name="HoursLeft" xml:space="preserve">
+    <value>{0}plus d'heures</value>
+  </data>
+  <data name="IsSure" xml:space="preserve">
+    <value>y</value>
+  </data>
+  <data name="LabelAccountValidFor" xml:space="preserve">
+    <value>Votre compte est valable pour</value>
+  </data>
+  <data name="LabelEmail" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="LabelHelp" xml:space="preserve">
+    <value>Aide</value>
+  </data>
+  <data name="LabelPhone" xml:space="preserve">
+    <value>Téléphone</value>
+  </data>
+  <data name="LabelProfile" xml:space="preserve">
+    <value>Profil</value>
+  </data>
+  <data name="LabelSupported" xml:space="preserve">
+    <value>Prise en charge</value>
+  </data>
+  <data name="LabelTermsOfUse" xml:space="preserve">
+    <value>Conditions d'utilisation</value>
+  </data>
+  <data name="LabelVersion" xml:space="preserve">
+    <value>Version de l'application</value>
+  </data>
+  <data name="LabelWeb" xml:space="preserve">
+    <value>Web</value>
+  </data>
+  <data name="LoadCertificateFile" xml:space="preserve">
+    <value>Sélectionnez un ensemble de certificats clients</value>
+  </data>
+  <data name="LoadEapFile" xml:space="preserve">
+    <value>Sélectionnez un fichier de configuration EAP</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Chargement</value>
+  </data>
+  <data name="LocalCertificateLabel" xml:space="preserve">
+    <value>Ce profil nécessite un certificat local</value>
+  </data>
+  <data name="LoginTitle" xml:space="preserve">
+    <value>Se connecter</value>
+  </data>
+  <data name="MenuItemLoadEAP" xml:space="preserve">
+    <value>Chargez le fichier .eap-config...</value>
+  </data>
+  <data name="MenuItemReauthenticate" xml:space="preserve">
+    <value>Réauthentifier...</value>
+  </data>
+  <data name="MenuItemRefresh" xml:space="preserve">
+    <value>Actualiser les informations d'identification</value>
+  </data>
+  <data name="MenuItemRemoveCertificates" xml:space="preserve">
+    <value>Supprimer les certificats racine...</value>
+  </data>
+  <data name="MenuItemRemoveProfile" xml:space="preserve">
+    <value>Supprimer le profil Wi-Fi configuré...</value>
+  </data>
+  <data name="MenuItemUninstall" xml:space="preserve">
+    <value>Désinstaller l'application...</value>
+  </data>
+  <data name="MinutesLeft" xml:space="preserve">
+    <value>{0}minutes supplémentaires</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>x</value>
+    <comment>Used for user confirmation, as the 'yes' option</comment>
+  </data>
+  <data name="NoEAPConfig" xml:space="preserve">
+    <value>Aucune information de configuration EAP à afficher</value>
+  </data>
+  <data name="NotSure" xml:space="preserve">
+    <value>n</value>
+    <comment>Used for user confirmation, as the 'no' option</comment>
+  </data>
+  <data name="OAuthExplanation" xml:space="preserve">
+    <value>Pour continuer vous devez vous authentifier dans votre navigateur, une fenêtre devrait s'ouvrir automatiquement.</value>
+  </data>
+  <data name="OAuthTitle" xml:space="preserve">
+    <value>attente ...</value>
+    <comment>O</comment>
+  </data>
+  <data name="OptionDescriptionCertificatePath" xml:space="preserve">
+    <value>Chemin du fichier de certificat</value>
+  </data>
+  <data name="OptionDescriptionEAPConfig" xml:space="preserve">
+    <value>Chemin d'accès à la configuration EAP .eap-config.</value>
+  </data>
+  <data name="OptionDescriptionForce" xml:space="preserve">
+    <value>Forcer l’action.</value>
+  </data>
+  <data name="OptionDescriptionInstitute" xml:space="preserve">
+    <value>Le nom de l'établissement auquel se connecter.</value>
+  </data>
+  <data name="OptionDescriptionProfile" xml:space="preserve">
+    <value>Profil de l'établissement auquel se connecter.</value>
+  </data>
+  <data name="OptionDescriptionQuery" xml:space="preserve">
+    <value>Requête pour filtrer les éléments</value>
+  </data>
+  <data name="OptionRequired" xml:space="preserve">
+    <value>L'option {0} est requise</value>
+  </data>
+  <data name="Passphrase" xml:space="preserve">
+    <value>Phrase secrète du certificat</value>
+  </data>
+  <data name="PassphraseLabel" xml:space="preserve">
+    <value>Entrez le mot de passe pour le certificat</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Mot de passe</value>
+  </data>
+  <data name="PasswordLabel" xml:space="preserve">
+    <value>Mot de passe: </value>
+  </data>
+  <data name="ProfileContactInfo" xml:space="preserve">
+    <value>Coordonnées</value>
+  </data>
+  <data name="ProfileEmail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="ProfileLabel" xml:space="preserve">
+    <value>Nom du Profil</value>
+  </data>
+  <data name="ProfileNotAffiliatedInstitution" xml:space="preserve">
+    <value>Vous n'êtes pas affilié à un établissement ?</value>
+  </data>
+  <data name="ProfilePhone" xml:space="preserve">
+    <value>Téléphone</value>
+  </data>
+  <data name="ProfileRemoveConfirmation" xml:space="preserve">
+    <value>Cela supprimera toute la configuration de '{0}'.</value>
+  </data>
+  <data name="ProfileSelectOtherInstitution" xml:space="preserve">
+    <value>Sélectionnez un autre profil</value>
+  </data>
+  <data name="ProfileWeb" xml:space="preserve">
+    <value>Web</value>
+  </data>
+  <data name="RedirectText" xml:space="preserve">
+    <value>Cliquez ici pour être redirigé vers le site des établissements pour plus d'informations sur la façon de vous connecter. Lorsque vous cliquez sur le lien, cette application se fermera.</value>
+  </data>
+  <data name="RedirectTitle" xml:space="preserve">
+    <value>Redirection</value>
+  </data>
+  <data name="RemoveProfileMessage" xml:space="preserve">
+    <value>Cela supprimera toute la configuration pour
+{0}</value>
+  </data>
+  <data name="RemoveProfileTitle" xml:space="preserve">
+    <value>Retirer {0}</value>
+  </data>
+  <data name="RequestToInstallCertificates" xml:space="preserve">
+    <value>Installer tous les certificats requis ?</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Recherchez votre organisation</value>
+  </data>
+  <data name="SelectFile" xml:space="preserve">
+    <value>Parcourir</value>
+  </data>
+  <data name="SelectInstitution" xml:space="preserve">
+    <value>Sélectionner un établissement</value>
+  </data>
+  <data name="SelectProfile" xml:space="preserve">
+    <value>Sélectionner un Profil</value>
+  </data>
+  <data name="TermsOfUseTitle" xml:space="preserve">
+    <value>Condition d'utilisation</value>
+  </data>
+  <data name="UninstallNotification" xml:space="preserve">
+    <value>L'application et sa configuration ont été désinstallées.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Nom d'utilisateur</value>
+  </data>
+  <data name="UserNameWatermark" xml:space="preserve">
+    <value>@example.com</value>
+  </data>
+  <data name="VersionDebug" xml:space="preserve">
+    <value>{0}+Debug</value>
+  </data>
+  <data name="VersionDebugNoVersion" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="VersionRelease" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="VersionReleaseNoVersion" xml:space="preserve">
+    <value>Sans version</value>
+  </data>
+  <data name="WarningFileDoesNotExist" xml:space="preserve">
+    <value>Le fichier spécifié n'existe pas.</value>
+  </data>
+  <data name="WarningInstallCertificates" xml:space="preserve">
+    <value>Vous devez d'abord installer les certificats avec InstallCertificates</value>
+  </data>
+  <data name="WarningMissingCertificates" xml:space="preserve">
+    <value>Certificats manquants</value>
+  </data>
+  <data name="WarningNoInstitutesFound" xml:space="preserve">
+    <value>Aucun institut trouvé</value>
+  </data>
+  <data name="WarningNoProfilesFound" xml:space="preserve">
+    <value>Aucun profil trouvé</value>
+  </data>
+  <data name="WarningNoSupportedAuthenticationMethod" xml:space="preserve">
+    <value>Aucune méthode d'authentification prise en charge n'a été trouvée.</value>
+  </data>
+  <data name="WarningProfileNotSupported" xml:space="preserve">
+    <value>Le profil que vous avez sélectionné n'est pas pris en charge par cette application.</value>
+  </data>
+  <data name="WarningUninstall" xml:space="preserve">
+    <value>Vous êtes actuellement en train de désinstaller complètement geteduroam</value>
+  </data>
+  <data name="WarningUninstallCertificates" xml:space="preserve">
+    <value>Cela signifie désinstaller tous les certificats racines de confiance installés par cette application.</value>
+  </data>
+  <data name="WarningUnsupportedFileType" xml:space="preserve">
+    <value>Le type de fichier que vous avez choisi n'est pas pris en charge.</value>
+  </data>
+  <data name="WarnRealmMismatch" xml:space="preserve">
+    <value>/!\ Le domaine de OuterIdentity sera défini sur "{0}" mais le profil spécifié "{1}"</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>✓</value>
+  </data>
+  <data name="NoConnection" xml:space="preserve">
+    <value>eduroam nécessite une connexion Internet active.</value>
+  </data>
+  <data name="ConnectToEduroam" xml:space="preserve">
+    <value>Se connecter à eduroam</value>
+  </data>
+</root>

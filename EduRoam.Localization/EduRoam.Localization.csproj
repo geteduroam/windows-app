@@ -16,7 +16,7 @@
 
 	<ItemGroup>
 	  <EmbeddedResource Update="Resources.nl.resx">
-	    <Generator></Generator>
+	    <SubType>Designer</SubType>
 	  </EmbeddedResource>
 	  <EmbeddedResource Update="Resources.resx">
 	    <Generator>PublicResXFileCodeGenerator</Generator>

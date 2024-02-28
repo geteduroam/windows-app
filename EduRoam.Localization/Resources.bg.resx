@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppCommandsHelp" xml:space="preserve">
+    <value>Supported CLI commands:
+
+/? : 
+Show this help text
+/help : 
+Show this help text
+/install : 
+Install this binary to %USER%/AppData/Local
+/uninstall : 
+Uninstall this binary from %USER%/AppData/Local along
+with any configured data
+/background : 
+Start this application hidden to the tray
+(works only if run from install directory)
+/close : 
+Close the current running instance
+/refresh : 
+Refresh the user certificate using the refresh token.
+Is called automatically by a scheduled task in windows.
+/refresh-force : 
+Refresh the user certificate using the refresh token.
+Will refresh the profile even if the validity period
+of the current client certificate has more than a 3rd left</value>
+  </data>
+  <data name="AreYouSure" xml:space="preserve">
+    <value>Сигурни ли сте, че искате да продължите?</value>
+  </data>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>Затваряне</value>
+  </data>
+  <data name="ButtonConnect" xml:space="preserve">
+    <value>Свързване</value>
+  </data>
+  <data name="ButtonInstall" xml:space="preserve">
+    <value>Инсталиране</value>
+  </data>
+  <data name="ButtonNext" xml:space="preserve">
+    <value>Следващ</value>
+  </data>
+  <data name="ButtonPrevious" xml:space="preserve">
+    <value>Предишен</value>
+  </data>
+  <data name="ButtonBack" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="CertificateLabel" xml:space="preserve">
+    <value>Сертификат:</value>
+  </data>
+  <data name="CertificatesInstallationNotification" xml:space="preserve">
+    <value>За да продължите, трябва да бъдат инсталирани следните сертификати.</value>
+  </data>
+  <data name="CertificatesInstallationStatus" xml:space="preserve">
+    <value>{0}, инсталирани: {1}</value>
+  </data>
+  <data name="CertificateTitleInstalled" xml:space="preserve">
+    <value>сертификатите са инсталирани</value>
+  </data>
+  <data name="CertificateTitleStart" xml:space="preserve">
+    <value>За да продължите, трябва да инсталирате сертификатите от списъка</value>
+  </data>
+  <data name="CommandDescriptionConnect" xml:space="preserve">
+    <value>Конфигурирайте Wi-Fi на базата на профила на организацията и се свържете.</value>
+  </data>
+  <data name="CommandDescriptionInstall" xml:space="preserve">
+    <value>Инсталирайте този файл в %USER%/AppData/Local</value>
+  </data>
+  <data name="CommandDescriptionList" xml:space="preserve">
+    <value>Вземете списък с организациите или с профилите на организация.</value>
+  </data>
+  <data name="CommandDescriptionReauthenticate" xml:space="preserve">
+    <value>Повторна автентикация</value>
+  </data>
+  <data name="CommandDescriptionRefresh" xml:space="preserve">
+    <value>Опреснете идентификационните данни</value>
+  </data>
+  <data name="CommandDescriptionRemove" xml:space="preserve">
+    <value>Премахнете конфигурирания Wi-Fi профил и/или root сертификатите</value>
+  </data>
+  <data name="CommandDescriptionShow" xml:space="preserve">
+    <value>Показване на информацията за конфигурацията на EAP</value>
+  </data>
+  <data name="CommandDescriptionStatus" xml:space="preserve">
+    <value>Показване на състояние</value>
+  </data>
+  <data name="CommandDescriptionUninstall" xml:space="preserve">
+    <value>Деинсталиране на приложение</value>
+  </data>
+  <data name="ConfiguredButNotConnected" xml:space="preserve">
+    <value>Всчико е конфигурирано!
+Не може да се свържете, защото не може да бъде намерена EAP конфигурация.</value>
+  </data>
+  <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
+    <value>Всичко е конфигурирано!
+Не може да се свържете с eduroam. Вероятно нямате покритие.</value>
+  </data>
+  <data name="ConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Всичко е конфигурирано!
+Не може да се свърже с eduroam.</value>
+  </data>
+  <data name="ConfiguredEap" xml:space="preserve">
+    <value>EAP е конфигуриран</value>
+  </data>
+  <data name="ConnectionUsernameAndPasswordRequired" xml:space="preserve">
+    <value>Моля, въведете потребителско име и парола, за да се свържете.</value>
+  </data>
+  <data name="ConsentMain" xml:space="preserve">
+    <value>Условия за ползване</value>
+  </data>
+  <data name="ConsentPost" xml:space="preserve">
+    <value>на организацията</value>
+  </data>
+  <data name="ConsentPre" xml:space="preserve">
+    <value>Натискайки 'Следващ', Вие се съгласявате, че</value>
+  </data>
+  <data name="CredentialsLabel" xml:space="preserve">
+    <value>Въведете потребителското име и паролата си</value>
+  </data>
+  <data name="CredentialsPasswordLabel" xml:space="preserve">
+    <value>Парола:</value>
+  </data>
+  <data name="CredentialsUsernameLabel" xml:space="preserve">
+    <value>Потребителско име:</value>
+  </data>
+  <data name="DaysLeft" xml:space="preserve">
+    <value>{0} повече дни</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>Готово</value>
+  </data>
+  <data name="ErrorApi" xml:space="preserve">
+    <value>API грешка</value>
+  </data>
+  <data name="ErrorCannotConnectWithServer" xml:space="preserve">
+    <value>Не може да се свържете със сървъра.
+
+Уверете се, че сте свързани с интернет, и опитайте отново.
+
+Изключение: {0}</value>
+  </data>
+  <data name="ErrorCannotFetchTokens" xml:space="preserve">
+    <value>Не може да извлече token json.
+Изключение: {0}</value>
+  </data>
+  <data name="ErrorCannotRemoveWLANProfile" xml:space="preserve">
+    <value>Някакъв WLAN профил не може да бъде премахнат</value>
+  </data>
+  <data name="ErrorCannotRetrieveProfileWhenOffline" xml:space="preserve">
+    <value>Не може да се извлече профил, когато сте офлайн</value>
+  </data>
+  <data name="ErrorClientCredentialNotValidYes" xml:space="preserve">
+    <value>Идентификационните данни на клиента все още не са валидни.</value>
+  </data>
+  <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
+    <value>Всчико е конфигурирано!
+Не може да се свържете, защото не може да бъде намерена EAP конфигурация.</value>
+  </data>
+  <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
+    <value>Всичко е конфигурирано!
+Не може да се свържете с eduroam. Вероятно нямате покритие.</value>
+  </data>
+  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Всичко е конфигурирано!
+Не може да се свърже с eduroam.</value>
+  </data>
+  <data name="ErrorCredentialsAtChar" xml:space="preserve">
+    <value>Потребителското име трябва да съдържа само един път @</value>
+  </data>
+  <data name="ErrorCredentialsEndsWith" xml:space="preserve">
+    <value>Потребителското име не може да завършва с точка или интервал</value>
+  </data>
+  <data name="ErrorCredentialsEndWithRealm" xml:space="preserve">
+    <value>Потребителското име трябва да завършва с .{0} или @{0}</value>
+  </data>
+  <data name="ErrorCredentialsEndWithRealmNoSubdomain" xml:space="preserve">
+    <value>Потребителското име трябва да завършва с @{0}</value>
+  </data>
+  <data name="ErrorCredentialsSpecialCharacters" xml:space="preserve">
+    <value>Символи като . и @ не може да бъдат един до друг. </value>
+  </data>
+  <data name="ErrorEapConfigCorrupted" xml:space="preserve">
+    <value>Посоченият конфигурационен файл на EAP е счупен. Моля, изберете друг файл.</value>
+  </data>
+  <data name="ErrorEapConfigInvalid" xml:space="preserve">
+    <value>Не може да се чете от файла. Уверете се, че сте посочили валиден конфигурационен файл на EAP.</value>
+  </data>
+  <data name="ErrorEapConfigIsEmpty" xml:space="preserve">
+    <value>Не може да се свърже, конфигигурацията на EAP е празна</value>
+  </data>
+  <data name="ErrorEapNotConfigured" xml:space="preserve">
+    <value>EAP не може да бъде конфигуриран</value>
+  </data>
+  <data name="ErrorInternetConnection" xml:space="preserve">
+    <value>Грешка при свързване с интернет</value>
+  </data>
+  <data name="ErrorInvalidCertificatePath" xml:space="preserve">
+    <value>Невалиден път до сертификат</value>
+  </data>
+  <data name="ErrorInvalidCredentials" xml:space="preserve">
+    <value>Потребителското име и/или паролата са невалидни</value>
+  </data>
+  <data name="ErrorInvalidEapConfig" xml:space="preserve">
+    <value>Предоставена е невалидна EAP конфигурация. Моля, докладвайте за грешка.</value>
+  </data>
+  <data name="ErrorMissingCredentials" xml:space="preserve">
+    <value>Не са предоставени идентификационни данни</value>
+  </data>
+  <data name="ErrorMissingRequiredCACertificate" xml:space="preserve">
+    <value>Необходимият CA сертификат не е инсталиран. Моля, докладвайте за грешка</value>
+  </data>
+  <data name="ErrorNoClientCertificateProvided" xml:space="preserve">
+    <value>Не е предоставен (валиден) клиентски сертификат ({0} параметър.</value>
+  </data>
+  <data name="ErrorNoConnection" xml:space="preserve">
+    <value>Не може да се свърже.
+Изключение: {0}.</value>
+  </data>
+  <data name="ErrorNoInternet" xml:space="preserve">
+    <value>Няма връзка с интернет</value>
+  </data>
+  <data name="ErrorNotUninstalled" xml:space="preserve">
+    <value>geteduroam не е деинсталиран.</value>
+  </data>
+  <data name="ErrorOptionIsEmpty" xml:space="preserve">
+    <value>стойността на опцията {0} не може да бъде празна или само интервал</value>
+  </data>
+  <data name="ErrorRequiredCertificatesNotInstalled" xml:space="preserve">
+    <value>Не всички необходими сертификати са инсталирани.</value>
+  </data>
+  <data name="ErrorShowCommandOptions" xml:space="preserve">
+    <value>Липсват опции. Осигурете опция {0} или опции {1} и {2}</value>
+  </data>
+  <data name="ErrorUnknownProfile" xml:space="preserve">
+    <value>Неизвестен профил</value>
+  </data>
+  <data name="ErrorUnsupportedConnectionType" xml:space="preserve">
+    <value>Свързване на тип {0} (все още) не се поддържа.</value>
+  </data>
+  <data name="ErrorUnsupportedInstituteOrProfile" xml:space="preserve">
+    <value>Организацията или профилът не се поддържат  или са изменени.
+Моля, посочете друга организация или профил.
+
+Изключение: {0}</value>
+  </data>
+  <data name="ErrorUnsupportedProfile" xml:space="preserve">
+    <value>Профилът, който сте посочили, не се поддържа от приложението. Не е намерен метод за автентикация.</value>
+  </data>
+  <data name="ErrorWirelessUnavailable" xml:space="preserve">
+    <value>На този компютър не е налична безжична връзка</value>
+  </data>
+  <data name="FileDialogSelectFile" xml:space="preserve">
+    <value>Моля, изберете файл.</value>
+  </data>
+  <data name="HoursLeft" xml:space="preserve">
+    <value>{0} повече часа</value>
+  </data>
+  <data name="IsSure" xml:space="preserve">
+    <value>y</value>
+  </data>
+  <data name="LabelAccountValidFor" xml:space="preserve">
+    <value>Вашият акаунт е валиден за</value>
+  </data>
+  <data name="LabelEmail" xml:space="preserve">
+    <value>И-мейл</value>
+  </data>
+  <data name="LabelHelp" xml:space="preserve">
+    <value>Помощ</value>
+  </data>
+  <data name="LabelPhone" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="LabelProfile" xml:space="preserve">
+    <value>Профил</value>
+  </data>
+  <data name="LabelSupported" xml:space="preserve">
+    <value>Поддържан</value>
+  </data>
+  <data name="LabelTermsOfUse" xml:space="preserve">
+    <value>Условия за ползване</value>
+  </data>
+  <data name="LabelVersion" xml:space="preserve">
+    <value>Версия на приложението</value>
+  </data>
+  <data name="LabelWeb" xml:space="preserve">
+    <value>Уеб</value>
+  </data>
+  <data name="LoadCertificateFile" xml:space="preserve">
+    <value>Посочете Client Certificate bundle</value>
+  </data>
+  <data name="LoadEapFile" xml:space="preserve">
+    <value>Изберете конфигурационния файл на EAP</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Зареждане</value>
+  </data>
+  <data name="LocalCertificateLabel" xml:space="preserve">
+    <value>Този профил изисква локален сертификат</value>
+  </data>
+  <data name="LoginTitle" xml:space="preserve">
+    <value>Влизане</value>
+  </data>
+  <data name="MenuItemLoadEAP" xml:space="preserve">
+    <value>Заредете файл .eap-config...</value>
+  </data>
+  <data name="MenuItemReauthenticate" xml:space="preserve">
+    <value>Повторна автентикация...</value>
+  </data>
+  <data name="MenuItemRefresh" xml:space="preserve">
+    <value>Опреснете идентификационните данни</value>
+  </data>
+  <data name="MenuItemRemoveCertificates" xml:space="preserve">
+    <value>Премахнете root сертификатите... </value>
+  </data>
+  <data name="MenuItemRemoveProfile" xml:space="preserve">
+    <value>Премахнете конфигурирания Wi-Fi профил...</value>
+  </data>
+  <data name="MenuItemUninstall" xml:space="preserve">
+    <value>Деинсталиране на приложение... </value>
+  </data>
+  <data name="MinutesLeft" xml:space="preserve">
+    <value>{0} повече минути</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>x</value>
+    <comment>Used for user confirmation, as the 'yes' option</comment>
+  </data>
+  <data name="NoEAPConfig" xml:space="preserve">
+    <value>Няма информация за EAP Config, която да бъде показана</value>
+  </data>
+  <data name="NotSure" xml:space="preserve">
+    <value>n</value>
+    <comment>Used for user confirmation, as the 'no' option</comment>
+  </data>
+  <data name="OAuthExplanation" xml:space="preserve">
+    <value>За да продължите, трябва да се автентикирате в браузъра си. Трябва автоматично да се отвори прозорец.</value>
+  </data>
+  <data name="OAuthTitle" xml:space="preserve">
+    <value>Изчакайте ...</value>
+    <comment>O</comment>
+  </data>
+  <data name="OptionDescriptionCertificatePath" xml:space="preserve">
+    <value>Път до файла със сертификата</value>
+  </data>
+  <data name="OptionDescriptionEAPConfig" xml:space="preserve">
+    <value>Път до конфигурацията на EAP .eap-config.</value>
+  </data>
+  <data name="OptionDescriptionForce" xml:space="preserve">
+    <value>Принудително действие.</value>
+  </data>
+  <data name="OptionDescriptionInstitute" xml:space="preserve">
+    <value>Име на организацията, с която да се свържете.</value>
+  </data>
+  <data name="OptionDescriptionProfile" xml:space="preserve">
+    <value>Профил на организацията, чрез който да се свържете.</value>
+  </data>
+  <data name="OptionDescriptionQuery" xml:space="preserve">
+    <value>Заявка за филтриране на елементи</value>
+  </data>
+  <data name="OptionRequired" xml:space="preserve">
+    <value>Изисква се опция {0}</value>
+  </data>
+  <data name="Passphrase" xml:space="preserve">
+    <value>Фраза за сертификата</value>
+  </data>
+  <data name="PassphraseLabel" xml:space="preserve">
+    <value>Въведете паролата за сертификата</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Парола</value>
+  </data>
+  <data name="PasswordLabel" xml:space="preserve">
+    <value>Парола:</value>
+  </data>
+  <data name="ProfileContactInfo" xml:space="preserve">
+    <value>Контакти</value>
+  </data>
+  <data name="ProfileEmail" xml:space="preserve">
+    <value>Имейл</value>
+  </data>
+  <data name="ProfileLabel" xml:space="preserve">
+    <value>Име на профил</value>
+  </data>
+  <data name="ProfileNotAffiliatedInstitution" xml:space="preserve">
+    <value>Не сте присъединен към организация?</value>
+  </data>
+  <data name="ProfilePhone" xml:space="preserve">
+    <value>Телефон</value>
+  </data>
+  <data name="ProfileRemoveConfirmation" xml:space="preserve">
+    <value>Това ще премахне цялата конфигурация за '{0}'.</value>
+  </data>
+  <data name="ProfileSelectOtherInstitution" xml:space="preserve">
+    <value>Изберете друг профил</value>
+  </data>
+  <data name="ProfileWeb" xml:space="preserve">
+    <value>Уеб</value>
+  </data>
+  <data name="RedirectText" xml:space="preserve">
+    <value>За повече информация относно как да се свържете кликнете тук и ще бъдете пренасочени към сайта на организацията . Когато кликнете върху връзката, това приложение ще се затвори.</value>
+  </data>
+  <data name="RedirectTitle" xml:space="preserve">
+    <value>Пренасочване</value>
+  </data>
+  <data name="RemoveProfileMessage" xml:space="preserve">
+    <value>Това ще премахне цялата конфигурация за
+{0}</value>
+  </data>
+  <data name="RemoveProfileTitle" xml:space="preserve">
+    <value>Премахнете {0}</value>
+  </data>
+  <data name="RequestToInstallCertificates" xml:space="preserve">
+    <value>Инсталирахте ли всички необходими сертификати?</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Потърсете Вашата организация</value>
+  </data>
+  <data name="SelectFile" xml:space="preserve">
+    <value>Разгледайте</value>
+  </data>
+  <data name="SelectInstitution" xml:space="preserve">
+    <value>Изберете организация</value>
+  </data>
+  <data name="SelectProfile" xml:space="preserve">
+    <value>Изберете профил</value>
+  </data>
+  <data name="TermsOfUseTitle" xml:space="preserve">
+    <value>Условия за ползване</value>
+  </data>
+  <data name="UninstallNotification" xml:space="preserve">
+    <value>Приложението и неговата конфигурация са деинсталирани.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Потребителско име</value>
+  </data>
+  <data name="UserNameWatermark" xml:space="preserve">
+    <value>@example.com</value>
+  </data>
+  <data name="VersionDebug" xml:space="preserve">
+    <value>{0}+Отстраняване на грешки</value>
+  </data>
+  <data name="VersionDebugNoVersion" xml:space="preserve">
+    <value>Отстраняване на грешки</value>
+  </data>
+  <data name="VersionRelease" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="VersionReleaseNoVersion" xml:space="preserve">
+    <value>Без версия</value>
+  </data>
+  <data name="WarningFileDoesNotExist" xml:space="preserve">
+    <value>Посоченият файл не съществува.</value>
+  </data>
+  <data name="WarningInstallCertificates" xml:space="preserve">
+    <value>Първо трябва да инсталирате сертификатите от InstallCertificates</value>
+  </data>
+  <data name="WarningMissingCertificates" xml:space="preserve">
+    <value>Липсват сертификати</value>
+  </data>
+  <data name="WarningNoInstitutesFound" xml:space="preserve">
+    <value>Не са намерени организации</value>
+  </data>
+  <data name="WarningNoProfilesFound" xml:space="preserve">
+    <value>Не са намерени профили</value>
+  </data>
+  <data name="WarningNoSupportedAuthenticationMethod" xml:space="preserve">
+    <value>Не е намерен метод за автентикация.</value>
+  </data>
+  <data name="WarningProfileNotSupported" xml:space="preserve">
+    <value>Профилът, който сте посочили, не се поддържа от това приложение.</value>
+  </data>
+  <data name="WarningUninstall" xml:space="preserve">
+    <value>В момента тече процес на пълно деинсталиране на geteduroam</value>
+  </data>
+  <data name="WarningUninstallCertificates" xml:space="preserve">
+    <value>Това означава деинсталиране на всички trusted root certificates, инсталирани от това приложение.</value>
+  </data>
+  <data name="WarningUnsupportedFileType" xml:space="preserve">
+    <value>Не се поддържа типа на файла, който сте избрали.</value>
+  </data>
+  <data name="WarnRealmMismatch" xml:space="preserve">
+    <value>/!\  Домейна за OuterIdentity ще бъде променен на "{0}" освен специфицирания профил "{1}"</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>✓</value>
+  </data>
+  <data name="NoConnection" xml:space="preserve">
+    <value>eduroam изисква активна интернет връзка.</value>
+  </data>
+  <data name="ConnectToEduroam" xml:space="preserve">
+    <value>Свързване с eduroam</value>
+  </data>
+</root>

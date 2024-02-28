@@ -1,0 +1,610 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppCommandsHelp" xml:space="preserve">
+    <value>Toetatud CLI käsud:
+
+    /? : 
+            Näita seda abiteksti
+    /help : 
+            Näita seda abiteksti
+    /install : 
+            Paigalda programm sihtkohta: %USER%/AppData/Local
+    /uninstall : 
+            Eemalda programm sihtkohast %USER%/AppData/Local along
+            koos seadistusandmetega
+    /background : 
+            Käivita rakendus taustal
+            (toimib ainult paigalduskataloogist käivitatuna)
+    /close : 
+            Sule parajasti töötav paigaldis
+    /refresh : 
+            Uuenduskoodi kasutades uuenda kasutajasertifikaat
+            Käivitatakse automaatselt Windowsis ajastatud toiminguga.
+    /refresh-force : 
+            Uuenduskoodi kasutades uuenda kasutajasertifikaat.
+            Uuendab profiili ka siis, kui kliendisertifikaadi kehtivusperioodist 
+            on rohkem kui 1/3 veel ees.</value>
+  </data>
+  <data name="AreYouSure" xml:space="preserve">
+    <value>Kas oled kindel, et soovid jätkata?</value>
+  </data>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>Sulge</value>
+  </data>
+  <data name="ButtonConnect" xml:space="preserve">
+    <value>Ühenda</value>
+  </data>
+  <data name="ButtonInstall" xml:space="preserve">
+    <value>Paigalda</value>
+  </data>
+  <data name="ButtonNext" xml:space="preserve">
+    <value>Järgmine</value>
+  </data>
+  <data name="ButtonPrevious" xml:space="preserve">
+    <value>Eelmine</value>
+  </data>
+  <data name="ButtonBack" xml:space="preserve">
+    <value>Tagasi</value>
+  </data>
+  <data name="CertificateLabel" xml:space="preserve">
+    <value>Sertifikaat:</value>
+  </data>
+  <data name="CertificatesInstallationNotification" xml:space="preserve">
+    <value>Jätkamiseks tuleb paigaldada järgmised sertifikaadid.</value>
+  </data>
+  <data name="CertificatesInstallationStatus" xml:space="preserve">
+    <value>{0}, paigaldatud: {1}</value>
+  </data>
+  <data name="CertificateTitleInstalled" xml:space="preserve">
+    <value>sertifikaadid on paigaldatud</value>
+  </data>
+  <data name="CertificateTitleStart" xml:space="preserve">
+    <value>Jätkamiseks tuleb paigaldada loetletud sertifikaadid.</value>
+  </data>
+  <data name="CommandDescriptionConnect" xml:space="preserve">
+    <value>Seadista Wi-Fi vastavalt asutuse profiilile ja ühenda.</value>
+  </data>
+  <data name="CommandDescriptionInstall" xml:space="preserve">
+    <value>Paigalda see programm sihtkohta: %USER%/AppData/Local</value>
+  </data>
+  <data name="CommandDescriptionList" xml:space="preserve">
+    <value>Hangi asutuste nimekiri või asutuse profiilid.</value>
+  </data>
+  <data name="CommandDescriptionReauthenticate" xml:space="preserve">
+    <value>Autendi uuesti</value>
+  </data>
+  <data name="CommandDescriptionRefresh" xml:space="preserve">
+    <value>Uuenda kasutajakonto andmeid</value>
+  </data>
+  <data name="CommandDescriptionRemove" xml:space="preserve">
+    <value>Kustuta seadistatud Wi-Fi profiil ja/või juursertifikaadid</value>
+  </data>
+  <data name="CommandDescriptionShow" xml:space="preserve">
+    <value>Näita EAP Config (seadistamise) teavet</value>
+  </data>
+  <data name="CommandDescriptionStatus" xml:space="preserve">
+    <value>Näita olekut</value>
+  </data>
+  <data name="CommandDescriptionUninstall" xml:space="preserve">
+    <value>Eemalda rakendus</value>
+  </data>
+  <data name="ConfiguredButNotConnected" xml:space="preserve">
+    <value>Kõik on seadistatud.
+Ei saanud ühendada, sest ei leitud EAP Config (seadistust).</value>
+  </data>
+  <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
+    <value>Kõik on seadistatud.
+Ei saa eduroamiga ühendada, oled arvatavasti väljaspool leviala.</value>
+  </data>
+  <data name="ConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Kõik on seadistatud.
+Ei saa eduroamiga ühendada.</value>
+  </data>
+  <data name="ConfiguredEap" xml:space="preserve">
+    <value>EAP on seadistatud</value>
+  </data>
+  <data name="ConnectionUsernameAndPasswordRequired" xml:space="preserve">
+    <value>Palun sisesta ühendamiseks kasutajanimi ja parool.</value>
+  </data>
+  <data name="ConsentMain" xml:space="preserve">
+    <value>Kasutustingimustega</value>
+  </data>
+  <data name="ConsentPost" xml:space="preserve">
+    <value>asutuse</value>
+  </data>
+  <data name="ConsentPre" xml:space="preserve">
+    <value>Klõpsates 'Järgmine' nõustud</value>
+  </data>
+  <data name="CredentialsLabel" xml:space="preserve">
+    <value>Sisesta oma kasutajanimi ja parool</value>
+  </data>
+  <data name="CredentialsPasswordLabel" xml:space="preserve">
+    <value>Parool:</value>
+  </data>
+  <data name="CredentialsUsernameLabel" xml:space="preserve">
+    <value>Kasutajanimi:</value>
+  </data>
+  <data name="DaysLeft" xml:space="preserve">
+    <value>{0} päeva veel</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>Tehtud</value>
+  </data>
+  <data name="ErrorApi" xml:space="preserve">
+    <value>API viga</value>
+  </data>
+  <data name="ErrorCannotConnectWithServer" xml:space="preserve">
+    <value>Ei saanud serveriga ühenduda.
+
+Kontrolli, kas Sul on internetiühendus olemas, seejärel proovi uuesti.
+
+Erand: {0}</value>
+  </data>
+  <data name="ErrorCannotFetchTokens" xml:space="preserve">
+    <value>Ei saanud kätte koodi  json'i.
+Erand: {0}</value>
+  </data>
+  <data name="ErrorCannotRemoveWLANProfile" xml:space="preserve">
+    <value>Mõnda WiFi profiili ei saanud eemaldada</value>
+  </data>
+  <data name="ErrorCannotRetrieveProfileWhenOffline" xml:space="preserve">
+    <value>Ei saa profiili tuua, kui võrguühendust ei ole</value>
+  </data>
+  <data name="ErrorClientCredentialNotValidYes" xml:space="preserve">
+    <value>Kliendi kasutajaandmed ei ole veel valideeritud</value>
+  </data>
+  <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
+    <value>Kõik on seadistatud.
+Ei saanud ühendada, sest ei leitud EAP Config (seadistust).</value>
+  </data>
+  <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
+    <value>Kõik on seadistatud.
+Ei saa eduroamiga ühendada, oled arvatavasti väljaspool leviala.</value>
+  </data>
+  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Kõik on seadistatud.
+Ei saa eduroamiga ühendada.</value>
+  </data>
+  <data name="ErrorCredentialsAtChar" xml:space="preserve">
+    <value>Kasutajanimes peab olema üksainus @</value>
+  </data>
+  <data name="ErrorCredentialsEndsWith" xml:space="preserve">
+    <value>Kasutajanimi ei tohi lõppeda punkti ega tühikuga</value>
+  </data>
+  <data name="ErrorCredentialsEndWithRealm" xml:space="preserve">
+    <value>Kasutajanime lõpus peab olema .{0} või @{0}</value>
+  </data>
+  <data name="ErrorCredentialsEndWithRealmNoSubdomain" xml:space="preserve">
+    <value>Kasutajanime lõpus peab olema @{0}</value>
+  </data>
+  <data name="ErrorCredentialsSpecialCharacters" xml:space="preserve">
+    <value>Sümbolid . ja @ ei tohi olla kõrvuti</value>
+  </data>
+  <data name="ErrorEapConfigCorrupted" xml:space="preserve">
+    <value>Valitud EAP seadistusfail on vigane. Palun vali muu fail.</value>
+  </data>
+  <data name="ErrorEapConfigInvalid" xml:space="preserve">
+    <value>Faili ei saa lugeda. Palun vali kehtiv EAP seadistusfail.</value>
+  </data>
+  <data name="ErrorEapConfigIsEmpty" xml:space="preserve">
+    <value>Ei saanud ühendada, EAP seadistus on tühi.</value>
+  </data>
+  <data name="ErrorEapNotConfigured" xml:space="preserve">
+    <value>EAP-d ei saanud seadistada</value>
+  </data>
+  <data name="ErrorInternetConnection" xml:space="preserve">
+    <value>Internetiühenduse viga</value>
+  </data>
+  <data name="ErrorInvalidCertificatePath" xml:space="preserve">
+    <value>Vale sertifikaaditee</value>
+  </data>
+  <data name="ErrorInvalidCredentials" xml:space="preserve">
+    <value>Kasutajanimi ja/või parool ei ole kehtiv</value>
+  </data>
+  <data name="ErrorInvalidEapConfig" xml:space="preserve">
+    <value>Vigane EAP seadistus; seda ei tohiks juhtuda. Palun saada vearaport.</value>
+  </data>
+  <data name="ErrorMissingCredentials" xml:space="preserve">
+    <value>Kasutajaandmeid ei ole antud</value>
+  </data>
+  <data name="ErrorMissingRequiredCACertificate" xml:space="preserve">
+    <value>Nõutavat CA sertikaati ei paigaldatud; seda ei tohiks juhtuda. Palun saada vearaport.</value>
+  </data>
+  <data name="ErrorNoClientCertificateProvided" xml:space="preserve">
+    <value>Ei esitatud (kehtivat) kliendisertifikaati ({0} parameeter.</value>
+  </data>
+  <data name="ErrorNoConnection" xml:space="preserve">
+    <value>Ei saanud ühendada. 
+Erand: {0}.</value>
+  </data>
+  <data name="ErrorNoInternet" xml:space="preserve">
+    <value>Internetiühendust ei ole</value>
+  </data>
+  <data name="ErrorNotUninstalled" xml:space="preserve">
+    <value>geteduroam'i ei ole eemaldatud.</value>
+  </data>
+  <data name="ErrorOptionIsEmpty" xml:space="preserve">
+    <value>{0} valikväärtus ei tohi olla tühi ega koosneda tühikust</value>
+  </data>
+  <data name="ErrorRequiredCertificatesNotInstalled" xml:space="preserve">
+    <value>Kõiki nõutud sertifikaate ei ole paigaldatud.</value>
+  </data>
+  <data name="ErrorShowCommandOptions" xml:space="preserve">
+    <value>Puuduvad valikud. Tee valik {0} või valikud  {1} ja  {2}</value>
+  </data>
+  <data name="ErrorUnknownProfile" xml:space="preserve">
+    <value>Tundmatu profiil</value>
+  </data>
+  <data name="ErrorUnsupportedConnectionType" xml:space="preserve">
+    <value>Tüübiga {0} ühendus ei ole (veel) toetatud.</value>
+  </data>
+  <data name="ErrorUnsupportedInstituteOrProfile" xml:space="preserve">
+    <value>Asutus või profiil ei ole kas toetatud või on vigane.
+Palun vali muu asutus või profiil.
+
+Erand: {0}</value>
+  </data>
+  <data name="ErrorUnsupportedProfile" xml:space="preserve">
+    <value>Rakendus ei toeta Su valitud profiili. Ei leitud toetatud autentimismeetodit.</value>
+  </data>
+  <data name="ErrorWirelessUnavailable" xml:space="preserve">
+    <value>Traadita ühendus ei ole sellel arvutil kasutatav</value>
+  </data>
+  <data name="FileDialogSelectFile" xml:space="preserve">
+    <value>Palun vali fail</value>
+  </data>
+  <data name="HoursLeft" xml:space="preserve">
+    <value>{0} tundi veel</value>
+  </data>
+  <data name="IsSure" xml:space="preserve">
+    <value>jah</value>
+  </data>
+  <data name="LabelAccountValidFor" xml:space="preserve">
+    <value>Su konto kehtib: </value>
+  </data>
+  <data name="LabelEmail" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="LabelHelp" xml:space="preserve">
+    <value>Abi</value>
+  </data>
+  <data name="LabelPhone" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="LabelProfile" xml:space="preserve">
+    <value>Profiil</value>
+  </data>
+  <data name="LabelSupported" xml:space="preserve">
+    <value>Toetatud</value>
+  </data>
+  <data name="LabelTermsOfUse" xml:space="preserve">
+    <value>Kasutustingimused</value>
+  </data>
+  <data name="LabelVersion" xml:space="preserve">
+    <value>Rakenduse versioon</value>
+  </data>
+  <data name="LabelWeb" xml:space="preserve">
+    <value>Veeb</value>
+  </data>
+  <data name="LoadCertificateFile" xml:space="preserve">
+    <value>Vali kliendisertifikaadi kimp</value>
+  </data>
+  <data name="LoadEapFile" xml:space="preserve">
+    <value>Vali EAP Config (seadistus)fail</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Laadimine</value>
+  </data>
+  <data name="LocalCertificateLabel" xml:space="preserve">
+    <value>See profiil vajab lokaalset sertifikaati</value>
+  </data>
+  <data name="LoginTitle" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="MenuItemLoadEAP" xml:space="preserve">
+    <value>Lae fail .eap-config...</value>
+  </data>
+  <data name="MenuItemReauthenticate" xml:space="preserve">
+    <value>Autendi uuesti...</value>
+  </data>
+  <data name="MenuItemRefresh" xml:space="preserve">
+    <value>Uuenda kasutajakonto andmeid</value>
+  </data>
+  <data name="MenuItemRemoveCertificates" xml:space="preserve">
+    <value>Eemalda juursertifikaadid...</value>
+  </data>
+  <data name="MenuItemRemoveProfile" xml:space="preserve">
+    <value>Eemalda seadistatud Wi-Fi profiil...</value>
+  </data>
+  <data name="MenuItemUninstall" xml:space="preserve">
+    <value>Eemalda rakendus...</value>
+  </data>
+  <data name="MinutesLeft" xml:space="preserve">
+    <value>{0} minutit veel</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>ei</value>
+    <comment>Used for user confirmation, as the 'yes' option</comment>
+  </data>
+  <data name="NoEAPConfig" xml:space="preserve">
+    <value>Ei ole EAP Config (seadistamise) teavet, mida näidata</value>
+  </data>
+  <data name="NotSure" xml:space="preserve">
+    <value>ei ole kindel</value>
+    <comment>Used for user confirmation, as the 'no' option</comment>
+  </data>
+  <data name="OAuthExplanation" xml:space="preserve">
+    <value>Jätkamiseks pead end brauseris autentima, aken peaks olema automaatselt avanenud</value>
+  </data>
+  <data name="OAuthTitle" xml:space="preserve">
+    <value>Ootel...</value>
+    <comment>O</comment>
+  </data>
+  <data name="OptionDescriptionCertificatePath" xml:space="preserve">
+    <value>Sertifikaadi asukoht (filepath)</value>
+  </data>
+  <data name="OptionDescriptionEAPConfig" xml:space="preserve">
+    <value>EAP seadistuse .eap-config asukoht.</value>
+  </data>
+  <data name="OptionDescriptionForce" xml:space="preserve">
+    <value>Sundteostamine.</value>
+  </data>
+  <data name="OptionDescriptionInstitute" xml:space="preserve">
+    <value>Asutus, millega ühendada.</value>
+  </data>
+  <data name="OptionDescriptionProfile" xml:space="preserve">
+    <value>Asutuse profiil, millega ühendada.</value>
+  </data>
+  <data name="OptionDescriptionQuery" xml:space="preserve">
+    <value>Päring üksuste filtreerimiseks</value>
+  </data>
+  <data name="OptionRequired" xml:space="preserve">
+    <value>Nõutud on valik {0}</value>
+  </data>
+  <data name="Passphrase" xml:space="preserve">
+    <value>Sertifikaadi parool</value>
+  </data>
+  <data name="PassphraseLabel" xml:space="preserve">
+    <value>Sisesta sertifikaadi parool</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Parool</value>
+  </data>
+  <data name="PasswordLabel" xml:space="preserve">
+    <value>Parool:</value>
+  </data>
+  <data name="ProfileContactInfo" xml:space="preserve">
+    <value>Kontaktteave</value>
+  </data>
+  <data name="ProfileEmail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="ProfileLabel" xml:space="preserve">
+    <value>Profiili nimi</value>
+  </data>
+  <data name="ProfileNotAffiliatedInstitution" xml:space="preserve">
+    <value>EI ole asutusega seotud?</value>
+  </data>
+  <data name="ProfilePhone" xml:space="preserve">
+    <value>Telefon</value>
+  </data>
+  <data name="ProfileRemoveConfirmation" xml:space="preserve">
+    <value>See eemaldab seadistuse '{0}' jaoks.</value>
+  </data>
+  <data name="ProfileSelectOtherInstitution" xml:space="preserve">
+    <value>Vali muu profiil</value>
+  </data>
+  <data name="ProfileWeb" xml:space="preserve">
+    <value>Veeb</value>
+  </data>
+  <data name="RedirectText" xml:space="preserve">
+    <value>Asutuse ühendumisjuhendile suundumiseks klõpsa siia. Lingile klõpsamise järel praegune rakendus sulgub.</value>
+  </data>
+  <data name="RedirectTitle" xml:space="preserve">
+    <value>Suuna ümber</value>
+  </data>
+  <data name="RemoveProfileMessage" xml:space="preserve">
+    <value>See eemaldab seadistuse '{0}' jaoks.</value>
+  </data>
+  <data name="RemoveProfileTitle" xml:space="preserve">
+    <value>Eemalda {0}</value>
+  </data>
+  <data name="RequestToInstallCertificates" xml:space="preserve">
+    <value>Paigalda kõik nõutud sertifikaadid?</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Otsi oma asutust</value>
+  </data>
+  <data name="SelectFile" xml:space="preserve">
+    <value>Lehitse</value>
+  </data>
+  <data name="SelectInstitution" xml:space="preserve">
+    <value>Vali asutus</value>
+  </data>
+  <data name="SelectProfile" xml:space="preserve">
+    <value>Vali profiil</value>
+  </data>
+  <data name="TermsOfUseTitle" xml:space="preserve">
+    <value>Kasutustingimused</value>
+  </data>
+  <data name="UninstallNotification" xml:space="preserve">
+    <value>Rakendus ja selle seadistused on eemaldatud.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Kasutajanimi</value>
+  </data>
+  <data name="UserNameWatermark" xml:space="preserve">
+    <value>@example.com</value>
+  </data>
+  <data name="VersionDebug" xml:space="preserve">
+    <value>{0}+Debug</value>
+  </data>
+  <data name="VersionDebugNoVersion" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="VersionRelease" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="VersionReleaseNoVersion" xml:space="preserve">
+    <value>Versionless</value>
+  </data>
+  <data name="WarningFileDoesNotExist" xml:space="preserve">
+    <value>Seda faili ei ole.</value>
+  </data>
+  <data name="WarningInstallCertificates" xml:space="preserve">
+    <value>Esmalt pead paigaldama sertifikaadid - InstallCertificates</value>
+  </data>
+  <data name="WarningMissingCertificates" xml:space="preserve">
+    <value>Sertifikaate on puudu</value>
+  </data>
+  <data name="WarningNoInstitutesFound" xml:space="preserve">
+    <value>Asutusi ei leitud</value>
+  </data>
+  <data name="WarningNoProfilesFound" xml:space="preserve">
+    <value>Profiile ei leitud</value>
+  </data>
+  <data name="WarningNoSupportedAuthenticationMethod" xml:space="preserve">
+    <value>Toetatud autentimismeetodit ei leitud.</value>
+  </data>
+  <data name="WarningProfileNotSupported" xml:space="preserve">
+    <value>Valitud profiili see rakendus ei toeta.</value>
+  </data>
+  <data name="WarningUninstall" xml:space="preserve">
+    <value>Oled geteduroami täielikult eemaldamas.</value>
+  </data>
+  <data name="WarningUninstallCertificates" xml:space="preserve">
+    <value>See tähendab rakenduse poolt paigaldatud usaldatud juursertifikaatide eemaldamist.</value>
+  </data>
+  <data name="WarningUnsupportedFileType" xml:space="preserve">
+    <value>Valitud failitüüp ei ole toetatud.</value>
+  </data>
+  <data name="WarnRealmMismatch" xml:space="preserve">
+    <value>/!\ Välise identiteedi (OuterIdentity) domeeniks pannakse  "{0}", kuid profiilis on määratud "{1}"</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>✓</value>
+  </data>
+  <data name="NoConnection" xml:space="preserve">
+    <value>eduroam vajab toimivat internetiühendust.</value>
+  </data>
+  <data name="ConnectToEduroam" xml:space="preserve">
+    <value>Ühenda eduroamiga</value>
+  </data>
+</root>

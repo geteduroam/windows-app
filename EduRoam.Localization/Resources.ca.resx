@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppCommandsHelp" xml:space="preserve">
+    <value>Comandes de consola reconegudes:
+
+    /? : 
+           Mostra el text d'ajuda
+    /help : 
+            Mostra el text d'ajuda
+    /install : 
+            Instal·la aquest binari a %USER%/AppData/Local
+    /uninstall : 
+            Elimina aquest binari de %USER%/AppData/Local juntament
+            amb tota la configuració
+    /background : 
+            Iniciar la aplicació oculta
+            (només funciona si s'arrenca al directori d'instal·lació)
+    /close : 
+            Tanca la instancia activa
+    /refresh : 
+            Actualiza el certificat d'usuari amb un token d'actualització.
+            S'activa automàticament per una tasca programada.
+    /refresh-force : 
+            Actualiza el certificat d'usuari amb un token d'actualització.
+            Actualitzarà el perfil encara que el període de validesa
+            del certificat actual tingui una 3a part restant.</value>
+  </data>
+  <data name="AreYouSure" xml:space="preserve">
+    <value>Segur que voleu continuar?</value>
+  </data>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>Tanca</value>
+  </data>
+  <data name="ButtonConnect" xml:space="preserve">
+    <value>Connecta</value>
+  </data>
+  <data name="ButtonInstall" xml:space="preserve">
+    <value>Instal·la</value>
+  </data>
+  <data name="ButtonNext" xml:space="preserve">
+    <value>Següent</value>
+  </data>
+  <data name="ButtonPrevious" xml:space="preserve">
+    <value>Anterior</value>
+  </data>
+  <data name="ButtonBack" xml:space="preserve">
+    <value>Enrera</value>
+  </data>
+  <data name="CertificateLabel" xml:space="preserve">
+    <value>Certificat:</value>
+  </data>
+  <data name="CertificatesInstallationNotification" xml:space="preserve">
+    <value>Per poder continuar els certificats següents s'han d'instal·lar.</value>
+  </data>
+  <data name="CertificatesInstallationStatus" xml:space="preserve">
+    <value>{0}, instal·lat: {1}</value>
+  </data>
+  <data name="CertificateTitleInstalled" xml:space="preserve">
+    <value>certificats han estat instal·lats</value>
+  </data>
+  <data name="CertificateTitleStart" xml:space="preserve">
+    <value>Per a continuar heu d'instal·lar els certificats de la llista</value>
+  </data>
+  <data name="CommandDescriptionConnect" xml:space="preserve">
+    <value>Configurar el Wi-Fi a partir del perfil d'una institució i connectar</value>
+  </data>
+  <data name="CommandDescriptionInstall" xml:space="preserve">
+    <value>Instal·lar aquest binari a %USER%/AppData/Local</value>
+  </data>
+  <data name="CommandDescriptionList" xml:space="preserve">
+    <value>Obtenir un llistat d'institucions o perfils per a una institució.</value>
+  </data>
+  <data name="CommandDescriptionReauthenticate" xml:space="preserve">
+    <value>Autenticar de nou</value>
+  </data>
+  <data name="CommandDescriptionRefresh" xml:space="preserve">
+    <value>Actualitzar credencials</value>
+  </data>
+  <data name="CommandDescriptionRemove" xml:space="preserve">
+    <value>Esborrar el perfil Wi-Fi configurat i/o els certificats arrel</value>
+  </data>
+  <data name="CommandDescriptionShow" xml:space="preserve">
+    <value>Mostrar informació de la configuració EAP</value>
+  </data>
+  <data name="CommandDescriptionStatus" xml:space="preserve">
+    <value>Mostrar l'estat</value>
+  </data>
+  <data name="CommandDescriptionUninstall" xml:space="preserve">
+    <value>Desinstal·lar l'aplicació</value>
+  </data>
+  <data name="ConfiguredButNotConnected" xml:space="preserve">
+    <value>Tot està configurat!
+No s'ha pogut connectar perquè no s'ha trobat cap configuració EAP.</value>
+  </data>
+  <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
+    <value>Tot està configurat!
+No es pot connectar a eduroam, probablement estàs fora de cobertura.</value>
+  </data>
+  <data name="ConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Tot està configurat!
+No es pot connectar a eduroam.</value>
+  </data>
+  <data name="ConfiguredEap" xml:space="preserve">
+    <value>EAP està configurat.</value>
+  </data>
+  <data name="ConnectionUsernameAndPasswordRequired" xml:space="preserve">
+    <value>Si us plau, proporcioneu un nom d'usuari i una contrasenya per connectar.</value>
+  </data>
+  <data name="ConsentMain" xml:space="preserve">
+    <value>Termes d'ús</value>
+  </data>
+  <data name="ConsentPost" xml:space="preserve">
+    <value>de la institució</value>
+  </data>
+  <data name="ConsentPre" xml:space="preserve">
+    <value>Fent clic a 'Següent' acceptes el</value>
+  </data>
+  <data name="CredentialsLabel" xml:space="preserve">
+    <value>Introdueix el teu nom d'usuari i contrasenya</value>
+  </data>
+  <data name="CredentialsPasswordLabel" xml:space="preserve">
+    <value>Contrasenya:</value>
+  </data>
+  <data name="CredentialsUsernameLabel" xml:space="preserve">
+    <value>Nom d'usuari:</value>
+  </data>
+  <data name="DaysLeft" xml:space="preserve">
+    <value>{0} dies més</value>
+  </data>
+  <data name="Done" xml:space="preserve">
+    <value>Fet</value>
+  </data>
+  <data name="ErrorApi" xml:space="preserve">
+    <value>Error a l'API</value>
+  </data>
+  <data name="ErrorCannotConnectWithServer" xml:space="preserve">
+    <value>No s'ha pogut connectar al servidor.
+
+Assegura't que estàs connectat a internet i torna-ho a provar.
+
+Excepció: {0}</value>
+  </data>
+  <data name="ErrorCannotFetchTokens" xml:space="preserve">
+    <value>No s'ha pogut obtenir el token json.
+Excepció: {0}</value>
+  </data>
+  <data name="ErrorCannotRemoveWLANProfile" xml:space="preserve">
+    <value>Alguns perfils WLAN no es poden eliminar.</value>
+  </data>
+  <data name="ErrorCannotRetrieveProfileWhenOffline" xml:space="preserve">
+    <value>No es pot recuperar el perfil quan estàs fora de línia.</value>
+  </data>
+  <data name="ErrorClientCredentialNotValidYes" xml:space="preserve">
+    <value>Credencials del client encara no són vàlides.</value>
+  </data>
+  <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
+    <value>Tot està configurat!
+No s'ha pogut connectar perquè no s'ha trobat cap configuració EAP.</value>
+  </data>
+  <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
+    <value>Tot està configurat!
+No es pot connectar a eduroam, probablement estàs fora de cobertura.</value>
+  </data>
+  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Tot està configurat!
+No es pot connectar a eduroam.</value>
+  </data>
+  <data name="ErrorCredentialsAtChar" xml:space="preserve">
+    <value>El nom d'usuari ha de contenir @ exactament una vegada.</value>
+  </data>
+  <data name="ErrorCredentialsEndsWith" xml:space="preserve">
+    <value>El nom d'usuari no pot acabar amb un punt o un espai en blanc</value>
+  </data>
+  <data name="ErrorCredentialsEndWithRealm" xml:space="preserve">
+    <value>El nom d'usuari ha de finalitzar amb .{0} o @{0}</value>
+  </data>
+  <data name="ErrorCredentialsEndWithRealmNoSubdomain" xml:space="preserve">
+    <value>El nom d'usuari ha de finalitzar amb @{0}</value>
+  </data>
+  <data name="ErrorCredentialsSpecialCharacters" xml:space="preserve">
+    <value>Els caràcters com . i @ no poden estar de costat.</value>
+  </data>
+  <data name="ErrorEapConfigCorrupted" xml:space="preserve">
+    <value>El fitxer de configuració EAP triat està corrupte. Si us plau, escolliu un altre fitxer.</value>
+  </data>
+  <data name="ErrorEapConfigInvalid" xml:space="preserve">
+    <value>No s'ha pogut llegir del fitxer. Assegureu-vos de seleccionar un fitxer de configuració EAP vàlid.</value>
+  </data>
+  <data name="ErrorEapConfigIsEmpty" xml:space="preserve">
+    <value>No s'ha pogut connectar, la configuració EAP està buida.</value>
+  </data>
+  <data name="ErrorEapNotConfigured" xml:space="preserve">
+    <value>L'EAP no s'ha pogut configurar.</value>
+  </data>
+  <data name="ErrorInternetConnection" xml:space="preserve">
+    <value>Error amb la connexió a internet</value>
+  </data>
+  <data name="ErrorInvalidCertificatePath" xml:space="preserve">
+    <value>Ubicació del certificat no vàlida</value>
+  </data>
+  <data name="ErrorInvalidCredentials" xml:space="preserve">
+    <value>Nom d'usuari i/o contrasenya no són vàlids</value>
+  </data>
+  <data name="ErrorInvalidEapConfig" xml:space="preserve">
+    <value>Configuració EAP proporcionada no vàlida, això no hauria de passar, si us plau, informeu d'un error.</value>
+  </data>
+  <data name="ErrorMissingCredentials" xml:space="preserve">
+    <value>No s'han proporcionat credencials</value>
+  </data>
+  <data name="ErrorMissingRequiredCACertificate" xml:space="preserve">
+    <value>No s'ha instal·lat el certificat CA requerit, això no hauria de passar, si us plau, informeu d'un error.</value>
+  </data>
+  <data name="ErrorNoClientCertificateProvided" xml:space="preserve">
+    <value>No s'ha proporcionat cap certificat de client (vàlid) ({0} paràmetre.</value>
+  </data>
+  <data name="ErrorNoConnection" xml:space="preserve">
+    <value>No s'ha pogut connectar.
+Excepció: {0}.</value>
+  </data>
+  <data name="ErrorNoInternet" xml:space="preserve">
+    <value>Sense connexió a internet</value>
+  </data>
+  <data name="ErrorNotUninstalled" xml:space="preserve">
+    <value>geteduroam no s'ha desinstal·lat.</value>
+  </data>
+  <data name="ErrorOptionIsEmpty" xml:space="preserve">
+    <value>l'opció {0}  no pot ser buida o amb només espais en blanc</value>
+  </data>
+  <data name="ErrorRequiredCertificatesNotInstalled" xml:space="preserve">
+    <value>No s'han instal·lat tots els certificats requerits.</value>
+  </data>
+  <data name="ErrorShowCommandOptions" xml:space="preserve">
+    <value>Hi manquen opcions. Proporcioneu l'opció {0} o bé ambdues opcions {1} i {2}</value>
+  </data>
+  <data name="ErrorUnknownProfile" xml:space="preserve">
+    <value>Perfil desconegut</value>
+  </data>
+  <data name="ErrorUnsupportedConnectionType" xml:space="preserve">
+    <value>Connexió de tipus {0} no és compatible (encara).</value>
+  </data>
+  <data name="ErrorUnsupportedInstituteOrProfile" xml:space="preserve">
+    <value>La institució o perfil no és compatible o està fet malbé.
+Si us plau, seleccioneu una institució o perfil diferent.
+
+Excepció: {0}</value>
+  </data>
+  <data name="ErrorUnsupportedProfile" xml:space="preserve">
+    <value>El perfil que heu seleccionat no és compatible amb aquesta aplicació. No s'ha trobat cap mètode d'autenticació compatible.</value>
+  </data>
+  <data name="ErrorWirelessUnavailable" xml:space="preserve">
+    <value>La connexió sense fil no està disponible en aquest ordinador.</value>
+  </data>
+  <data name="FileDialogSelectFile" xml:space="preserve">
+    <value>Si us plau, seleccioneu un fitxer.</value>
+  </data>
+  <data name="HoursLeft" xml:space="preserve">
+    <value>{0} hores més</value>
+  </data>
+  <data name="IsSure" xml:space="preserve">
+    <value>i</value>
+  </data>
+  <data name="LabelAccountValidFor" xml:space="preserve">
+    <value>El vostre compte és vàlid per a</value>
+  </data>
+  <data name="LabelEmail" xml:space="preserve">
+    <value>E-mail</value>
+  </data>
+  <data name="LabelHelp" xml:space="preserve">
+    <value>Ajuda</value>
+  </data>
+  <data name="LabelPhone" xml:space="preserve">
+    <value>Telèfon</value>
+  </data>
+  <data name="LabelProfile" xml:space="preserve">
+    <value>Perfil</value>
+  </data>
+  <data name="LabelSupported" xml:space="preserve">
+    <value>Suportat</value>
+  </data>
+  <data name="LabelTermsOfUse" xml:space="preserve">
+    <value>Termes d'ús</value>
+  </data>
+  <data name="LabelVersion" xml:space="preserve">
+    <value>Versió de l'aplicació</value>
+  </data>
+  <data name="LabelWeb" xml:space="preserve">
+    <value>Web</value>
+  </data>
+  <data name="LoadCertificateFile" xml:space="preserve">
+    <value>Seleccioneu un paquet de certificat de client</value>
+  </data>
+  <data name="LoadEapFile" xml:space="preserve">
+    <value>Seleccioneu un fitxer de configuració EAP</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Carregant</value>
+  </data>
+  <data name="LocalCertificateLabel" xml:space="preserve">
+    <value>Aquest perfil requereix un certificat local.</value>
+  </data>
+  <data name="LoginTitle" xml:space="preserve">
+    <value>Iniciar sessió</value>
+  </data>
+  <data name="MenuItemLoadEAP" xml:space="preserve">
+    <value>Carrega el fitxer .eap-config...</value>
+  </data>
+  <data name="MenuItemReauthenticate" xml:space="preserve">
+    <value>Autenticar de nou...</value>
+  </data>
+  <data name="MenuItemRefresh" xml:space="preserve">
+    <value>Actualitzar credencials</value>
+  </data>
+  <data name="MenuItemRemoveCertificates" xml:space="preserve">
+    <value>Eliminar certificats arrel...</value>
+  </data>
+  <data name="MenuItemRemoveProfile" xml:space="preserve">
+    <value>Eliminar el perfil de Wi-Fi configurat...</value>
+  </data>
+  <data name="MenuItemUninstall" xml:space="preserve">
+    <value>Desinstal·lar l'aplicació...</value>
+  </data>
+  <data name="MinutesLeft" xml:space="preserve">
+    <value>{0} minuts més</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>x</value>
+    <comment>Used for user confirmation, as the 'yes' option</comment>
+  </data>
+  <data name="NoEAPConfig" xml:space="preserve">
+    <value>No hi ha informació de configuració de l'EAP per mostrar.</value>
+  </data>
+  <data name="NotSure" xml:space="preserve">
+    <value>n</value>
+    <comment>Used for user confirmation, as the 'no' option</comment>
+  </data>
+  <data name="OAuthExplanation" xml:space="preserve">
+    <value>Per continuar, necessiteu autenticar-vos al vostre navegador, hauria d'haver-se obert una finestra automàticament.</value>
+  </data>
+  <data name="OAuthTitle" xml:space="preserve">
+    <value>Esperant...</value>
+    <comment>O</comment>
+  </data>
+  <data name="OptionDescriptionCertificatePath" xml:space="preserve">
+    <value>Ruta del certificat</value>
+  </data>
+  <data name="OptionDescriptionEAPConfig" xml:space="preserve">
+    <value>Ubicació de la configuració EAP .eap-config.</value>
+  </data>
+  <data name="OptionDescriptionForce" xml:space="preserve">
+    <value>Forçar l'acció.</value>
+  </data>
+  <data name="OptionDescriptionInstitute" xml:space="preserve">
+    <value>El nom de la institució a la qual connectar-se.</value>
+  </data>
+  <data name="OptionDescriptionProfile" xml:space="preserve">
+    <value>Perfil de la institució per a connectar-se.</value>
+  </data>
+  <data name="OptionDescriptionQuery" xml:space="preserve">
+    <value>Consulta per filtrar elements</value>
+  </data>
+  <data name="OptionRequired" xml:space="preserve">
+    <value>L'pció {0} és obligatòria</value>
+  </data>
+  <data name="Passphrase" xml:space="preserve">
+    <value>Contrasenya del certificat</value>
+  </data>
+  <data name="PassphraseLabel" xml:space="preserve">
+    <value>Introduïu la contrasenya per al certificat</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Contrasenya</value>
+  </data>
+  <data name="PasswordLabel" xml:space="preserve">
+    <value>Contrasenya:</value>
+  </data>
+  <data name="ProfileContactInfo" xml:space="preserve">
+    <value>Informació de contacte</value>
+  </data>
+  <data name="ProfileEmail" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="ProfileLabel" xml:space="preserve">
+    <value>Nom de perfil</value>
+  </data>
+  <data name="ProfileNotAffiliatedInstitution" xml:space="preserve">
+    <value>No esteu afiliat a la institució?</value>
+  </data>
+  <data name="ProfilePhone" xml:space="preserve">
+    <value>Telèfon</value>
+  </data>
+  <data name="ProfileRemoveConfirmation" xml:space="preserve">
+    <value>Això eliminarà tota la configuració per a '{0}'.</value>
+  </data>
+  <data name="ProfileSelectOtherInstitution" xml:space="preserve">
+    <value>Seleccioneu un altre perfil</value>
+  </data>
+  <data name="ProfileWeb" xml:space="preserve">
+    <value>Web</value>
+  </data>
+  <data name="RedirectText" xml:space="preserve">
+    <value>Feu clic aquí per ser redirigit al lloc web de les institucions per obtenir més informació sobre com connectar. Quan feu clic a l'enllaç, aquesta aplicació es tancarà.</value>
+  </data>
+  <data name="RedirectTitle" xml:space="preserve">
+    <value>Redirigeix</value>
+  </data>
+  <data name="RemoveProfileMessage" xml:space="preserve">
+    <value>Això eliminarà tota la configuració per a 
+'{0}'</value>
+  </data>
+  <data name="RemoveProfileTitle" xml:space="preserve">
+    <value>Elimina {0}</value>
+  </data>
+  <data name="RequestToInstallCertificates" xml:space="preserve">
+    <value>Instal·lar tots els certificats necessaris?</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Cerqueu la vostra organització</value>
+  </data>
+  <data name="SelectFile" xml:space="preserve">
+    <value>Navegar</value>
+  </data>
+  <data name="SelectInstitution" xml:space="preserve">
+    <value>Seleccionar institució</value>
+  </data>
+  <data name="SelectProfile" xml:space="preserve">
+    <value>Seleccionar perfil</value>
+  </data>
+  <data name="TermsOfUseTitle" xml:space="preserve">
+    <value>Termes d'ús</value>
+  </data>
+  <data name="UninstallNotification" xml:space="preserve">
+    <value>L'aplicació i la seva configuració s'han desinstal·lat.</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Nom d'usuari</value>
+  </data>
+  <data name="UserNameWatermark" xml:space="preserve">
+    <value>@exemple.com</value>
+  </data>
+  <data name="VersionDebug" xml:space="preserve">
+    <value>{0}+Debug</value>
+  </data>
+  <data name="VersionDebugNoVersion" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="VersionRelease" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="VersionReleaseNoVersion" xml:space="preserve">
+    <value>Versió sense número</value>
+  </data>
+  <data name="WarningFileDoesNotExist" xml:space="preserve">
+    <value>El fitxer especificat no existeix.</value>
+  </data>
+  <data name="WarningInstallCertificates" xml:space="preserve">
+    <value>Cal que primerament instal·leu els certificats amb InstallCertificates.</value>
+  </data>
+  <data name="WarningMissingCertificates" xml:space="preserve">
+    <value>Certificats que falten</value>
+  </data>
+  <data name="WarningNoInstitutesFound" xml:space="preserve">
+    <value>No s'han trobat institucions</value>
+  </data>
+  <data name="WarningNoProfilesFound" xml:space="preserve">
+    <value>No s'han trobat perfils</value>
+  </data>
+  <data name="WarningNoSupportedAuthenticationMethod" xml:space="preserve">
+    <value>No s'ha trobat cap mètode d'autenticació compatible.</value>
+  </data>
+  <data name="WarningProfileNotSupported" xml:space="preserve">
+    <value>El perfil que heu seleccionat no és compatible amb aquesta aplicació.</value>
+  </data>
+  <data name="WarningUninstall" xml:space="preserve">
+    <value>Esteu actualment en el procés de desinstal·lació completa de geteduroam.</value>
+  </data>
+  <data name="WarningUninstallCertificates" xml:space="preserve">
+    <value>Això significa desinstal·lar tots els certificats arrel de confiança instal·lats per aquesta aplicació.</value>
+  </data>
+  <data name="WarningUnsupportedFileType" xml:space="preserve">
+    <value>El tipus de fitxer que has triat no és compatible.</value>
+  </data>
+  <data name="WarnRealmMismatch" xml:space="preserve">
+    <value>/!\ El domini per a la Identitat Exterior s'establirà a "{0}" però heu especificat el perfil "{1}"</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>✓</value>
+  </data>
+  <data name="NoConnection" xml:space="preserve">
+    <value>eduroam requereix una connexió a internet activa.</value>
+  </data>
+  <data name="ConnectToEduroam" xml:space="preserve">
+    <value>Connecta't a eduroam</value>
+  </data>
+</root>
