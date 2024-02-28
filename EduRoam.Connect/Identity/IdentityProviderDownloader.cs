@@ -1,3 +1,5 @@
+using App.Settings;
+
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Localization;
@@ -48,9 +50,9 @@ namespace EduRoam.Connect.Identity
         {
             var client = new HttpClient(Handler, false);
 #if DEBUG
-            client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.Instance.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
+            client.DefaultRequestHeaders.Add("User-Agent", $"{Settings.ApplicationIdentifier}-win/" + LetsWifi.Instance.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
 #else
-            client.DefaultRequestHeaders.Add("User-Agent", "geteduroam-win/" + LetsWifi.Instance.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
+            client.DefaultRequestHeaders.Add("User-Agent", $"{Settings.ApplicationIdentifier}-win/" + LetsWifi.Instance.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
 #endif
             // This client will not be used for subsequent requests,
             // so don't keep the connection open any longer than necessary

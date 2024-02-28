@@ -1,9 +1,12 @@
 ﻿using EduRoam.Connect.Eap;
 using EduRoam.Connect.Tasks;
 
+using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace App.Library.ViewModels
 {
@@ -21,6 +24,18 @@ namespace App.Library.ViewModels
             this.Installers = new ObservableCollection<CertificateInstallerViewModel>(
                 installers.Select(installer => new CertificateInstallerViewModel(installer)));
             this.eapConfig = eapConfig;
+
+            this.Owner.PropertyChanged += SkipInstallCertificatesIfInstalled;
+
+        }
+
+        public void SkipInstallCertificatesIfInstalled(object sender, PropertyChangedEventArgs e)
+        {
+            this.Owner.PropertyChanged -= SkipInstallCertificatesIfInstalled;
+            if (this.CanNavigateNextAsync())
+            {
+                this.NavigateNextAsync();
+            }
         }
 
         public override string PageTitle => string.Empty;
@@ -28,6 +43,7 @@ namespace App.Library.ViewModels
         public ObservableCollection<CertificateInstallerViewModel> Installers { get; }
 
         public bool AllCertificatesAreInstalled => this.Installers.All(installer => installer.IsInstalled);
+
 
         protected override bool CanNavigateNextAsync()
         {
