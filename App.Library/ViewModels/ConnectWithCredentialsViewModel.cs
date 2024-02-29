@@ -25,11 +25,13 @@ namespace App.Library.ViewModels
 
             if (hint)
             {
-                this.Realm = string.IsNullOrWhiteSpace(realm) ? Resources.UserNameWatermark : $"{Resources.ExampleRealm}@{realm}";
+                this.Realm = string.IsNullOrWhiteSpace(realm) ? Resources.UserNameWatermark : $"@{realm}";
+                this.RealmPlaceholder =$"{Resources.ExampleRealm}@{this.Realm}";
             } 
             else
             {
                 this.Realm = "";
+                this.RealmPlaceholder = "";
             }
         }
 
@@ -85,6 +87,11 @@ namespace App.Library.ViewModels
         }
 
         public string Realm
+        {
+            get;
+        }
+
+        public string RealmPlaceholder
         {
             get;
         }
