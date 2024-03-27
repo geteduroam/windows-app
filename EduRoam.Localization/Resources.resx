@@ -611,4 +611,7 @@ Exception: {0}</value>
   <data name="ExampleRealm" xml:space="preserve">
     <value>example</value>
   </data>
+  <data name="ProfileRenewCertificate" xml:space="preserve">
+    <value>Renew account</value>
+  </data>
 </root>

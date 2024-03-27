@@ -608,4 +608,7 @@ Uitzondering: {0}</value>
   <data name="ExampleRealm" xml:space="preserve">
     <value>voorbeeld</value>
   </data>
+  <data name="ProfileRenewCertificate" xml:space="preserve">
+    <value>Vernieuw account</value>
+  </data>
 </root>

@@ -1172,6 +1172,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Renew account.
+        /// </summary>
+        public static string ProfileRenewCertificate {
+            get {
+                return ResourceManager.GetString("ProfileRenewCertificate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select another profile.
         /// </summary>
         public static string ProfileSelectOtherInstitution {

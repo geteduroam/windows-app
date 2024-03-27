@@ -1,10 +1,11 @@
-﻿<ResourceDictionary 
+﻿
+<ResourceDictionary 
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:viewModels="clr-namespace:App.Library.ViewModels"
     xmlns:lang = "clr-namespace:EduRoam.Localization;assembly=EduRoam.Localization"
     xmlns:converters="clr-namespace:App.Library.Converters">
-
+    
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
     <converters:ImageConverter x:Key="AppImageConverter" AppSpecific="True" />
@@ -53,6 +54,21 @@
                                 <Setter Property="Content" Value="{x:Static lang:Resources.ProfileSelectOtherInstitution}" />
                             </DataTrigger>
                         </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+
+            <Button Width="Auto"
+                Height="34"
+                Padding="15 0 15 0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Margin="0, 14"
+                Command="{Binding RenewAccountCommand}"
+                Visibility="{Binding ShowRenewButton, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource RedButtonStyle}">
+                        <Setter Property="Content" Value="{x:Static lang:Resources.ProfileRenewCertificate}" />
                     </Style>
                 </Button.Style>
             </Button>
