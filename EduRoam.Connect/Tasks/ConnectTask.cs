@@ -1,4 +1,6 @@
-﻿using EduRoam.Connect.Exceptions;
+﻿using App.Settings;
+
+using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
 using EduRoam.Connect.Tasks.Connectors;
 using EduRoam.Localization;
@@ -76,12 +78,12 @@ namespace EduRoam.Connect.Tasks
                 }
                 else if (EduRoamNetwork.IsNetworkInRange(eapConfig))
                 {
-                    status.Errors.Add(Resources.ErrorConfiguredButUnableToConnect);
+                    status.Errors.Add(string.Format(Resources.ErrorConfiguredButUnableToConnect, Settings.ApplicationIdentifier));
                 }
                 else
                 {
                     // Hs2 is not enumerable
-                    status.Errors.Add(Resources.ErrorConfiguredButProbablyOutOfCoverage);
+                    status.Errors.Add(string.Format(Resources.ErrorConfiguredButProbablyOutOfCoverage, Settings.ApplicationIdentifier));
                 }
             }
 
