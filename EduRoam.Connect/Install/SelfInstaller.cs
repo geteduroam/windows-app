@@ -259,11 +259,6 @@ namespace EduRoam.Connect.Install
 
             task.Actions.Add(new ExecAction(this.InstallExePath, arguments: "/Refresh"));
 
-            /*
-   task.Triggers.Add(new DailyTrigger(daysInterval: 3) { // every 3 days
-       StartBoundary = DateTime.Today.AddHours(12) }); // around noon
-   */
-
             // TODO: switch from the schedule below to the schedule above when certificate lifetime is extended for production
 
             // Every day, six times
@@ -280,6 +275,11 @@ namespace EduRoam.Connect.Install
             task.Triggers.Add(new DailyTrigger(daysInterval: 1)
             { StartBoundary = DateTime.Today.AddHours(20) });
 
+            /*
+            task.Triggers.Add(new DailyTrigger(daysInterval: 3) { // every 3 days
+            StartBoundary = DateTime.Today.AddHours(12) }); // around noon
+            */
+
             try
             {
                 ts.RootFolder.RegisterTaskDefinition(this.ScheduledTaskName, task);
@@ -288,6 +288,35 @@ namespace EduRoam.Connect.Install
             {
                 // TODO: we were not allowed to create the scheduled task
             }
+
+            // create a second scheduled task to make toast
+            using var toastService = new TaskService();
+            var toastTask = toastService.NewTask();
+            toastTask.Settings.AllowDemandStart = true;
+            toastTask.Settings.StartWhenAvailable = true; // run as soon as possible after a scheduled start is missed
+            toastTask.Settings.DisallowStartIfOnBatteries = false;
+
+            if (this.applicationMetadata.Publisher != null)
+            {
+                toastTask.RegistrationInfo.Author = this.applicationMetadata.Publisher;
+            }
+
+            toastTask.Actions.Add(new ExecAction(this.InstallExePath, arguments: "/check-certificate"));
+
+            toastTask.Triggers.Add(new DailyTrigger(1)
+            {
+                StartBoundary = DateTime.Today.AddHours(12)
+            });
+
+            try
+            {
+                toastService.RootFolder.RegisterTaskDefinition(this.ScheduledTaskName + " - Toast", toastTask);
+            } catch(UnauthorizedAccessException)
+            {
+                // TODO: we were not allowed to create the scheduled task
+            }
+
+
         }
 
         /// <summary>

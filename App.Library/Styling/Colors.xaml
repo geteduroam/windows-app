@@ -8,5 +8,6 @@
     
     <SolidColorBrush x:Key="PrimaryBrush" Color="#00698F" />
     <SolidColorBrush x:Key="SecondaryBrush" Color="#C9DCEB" />
+    <SolidColorBrush x:Key="RedBrush" Color="#D00000" />
 
 </ResourceDictionary>
