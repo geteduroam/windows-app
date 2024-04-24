@@ -66,11 +66,20 @@ namespace App.Library.ViewModels
             set
             {
                 this.userName = value;
+
+                if (!this.RealmAppended || string.IsNullOrEmpty(this.userName))
+                {
+                    this.RealmAppended = true;
+                    this.userName = value + this.Realm;
+                }
+
                 this.CallPropertyChanged();
             }
         }
 
         public bool UserNameRequired => this.eapConfig.NeedsLoginCredentials;
+
+        public bool RealmAppended { get; set; }
 
         public string Password
         {
@@ -102,7 +111,7 @@ namespace App.Library.ViewModels
         {
             var connectionProperties = new ConnectionProperties()
             {
-                UserName = this.userName.EndsWith(this.Realm) ? this.userName : this.userName + this.Realm,
+                UserName = this.userName.Contains("@") ? this.userName : this.userName + this.Realm,
                 Password = this.password
             };
 
