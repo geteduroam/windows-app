@@ -72,6 +72,20 @@
                     </Style>
                 </Button.Style>
             </Button>
+            <Button Width="Auto"
+                Height="34"
+                Padding="15 0 15 0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Margin="0, 14"
+                Command="{Binding RenewAccountCommand}"
+                Visibility="{Binding ShowRepairButton, Converter={StaticResource BooleanToVisibilityConverter}}">    
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource WhiteButtonStyle}">
+                        <Setter Property="Content" Value="{x:Static lang:Resources.ProfileRepairCertificate}" />
+                    </Style>
+                </Button.Style>
+            </Button>
         </StackPanel>
 
 

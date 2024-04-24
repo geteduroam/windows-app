@@ -1181,6 +1181,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Repair your account.
+        /// </summary>
+        public static string ProfileRepairCertificate {
+            get {
+                return ResourceManager.GetString("ProfileRepairCertificate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select another profile.
         /// </summary>
         public static string ProfileSelectOtherInstitution {

@@ -65,6 +65,8 @@ namespace App.Library.ViewModels
             } 
         }
 
+        public bool ShowRepairButton => !this.ShowRenewButton;
+
         public string TimeLeft => this.status.TimeLeft ?? "-";
 
         public string ConnectToResource => ApplicationResources.GetString("ButtonAppConnect") ?? "...";

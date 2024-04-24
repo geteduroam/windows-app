@@ -4,6 +4,6 @@
     {
         public static string OAuthClientId { get; set; } = "app.geteduroam.win";
         public static string ApplicationIdentifier { get; set; } = "geteduroam";
-        public static int DaysLeftForNotification { get; set; } = 337;
+        public static int DaysLeftForNotification { get; set; } = 10;
     }
 }

@@ -611,4 +611,7 @@ Uitzondering: {0}</value>
   <data name="ProfileRenewCertificate" xml:space="preserve">
     <value>Vernieuw account</value>
   </data>
+  <data name="ProfileRepairCertificate" xml:space="preserve">
+    <value>Repareer je account</value>
+  </data>
 </root>
