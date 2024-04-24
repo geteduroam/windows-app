@@ -4,7 +4,10 @@ using EduRoam.Connect.Tasks;
 using EduRoam.Localization;
 
 using System;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace App.Library.ViewModels
 {
@@ -15,12 +18,15 @@ namespace App.Library.ViewModels
         public StatusViewModel(MainViewModel owner) : base(owner)
         {
             this.SelectOtherInstitutionCommand = new DelegateCommand(this.SelectOtherInstitution, () => true);
+            this.RenewAccountCommand = new DelegateCommand(this.Reauthenticate, () => true);
             this.status = new StatusTask().GetStatus();
         }
 
         public override string PageTitle => this.ShowProfileStatus ? this.ProfileName : string.Empty;
 
         public DelegateCommand SelectOtherInstitutionCommand { get; private set; }
+
+        public DelegateCommand RenewAccountCommand { get; private set; }
 
         protected override bool CanNavigateNextAsync()
         {
@@ -44,6 +50,23 @@ namespace App.Library.ViewModels
 
         public bool ShowTimeLeft => !string.IsNullOrWhiteSpace(this.status.TimeLeft);
 
+        public bool ShowRenewButton { 
+            get {
+                try
+                {
+                    var diffDate = (this.status.ExpirationDate - DateTime.Now);
+                    if (!diffDate.HasValue || !this.ShowProfileStatus) return false;
+
+                    return ((this.status.ExpirationDate - DateTime.Now).Value.Days <= Settings.Settings.DaysLeftForNotification);
+                } catch(Exception ex)
+                {
+                    return false;
+                }
+            } 
+        }
+
+        public bool ShowRepairButton => !this.ShowRenewButton;
+
         public string TimeLeft => this.status.TimeLeft ?? "-";
 
         public string ConnectToResource => ApplicationResources.GetString("ButtonAppConnect") ?? "...";
@@ -51,6 +74,12 @@ namespace App.Library.ViewModels
         private void SelectOtherInstitution()
         {
             this.Owner.Restart();
+        }   
+        
+        private void Reauthenticate()
+        {
+            this.Owner.RemoveCertificates();
+            this.Owner.Reauthenticate();
         }
     }
 }

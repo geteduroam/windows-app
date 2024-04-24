@@ -1,6 +1,8 @@
 ﻿using EduRoam.Connect.Tasks;
 using EduRoam.Localization;
 
+using Microsoft.Toolkit.Uwp.Notifications;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -50,6 +52,27 @@ namespace App.Library
             {
                 Task.Run(async () => { await RefreshTask.RefreshAsync(force: contains("/refresh-force")); });
 
+                return true;
+            }
+
+            if(contains("/check-certificate"))
+            {
+                var st = new StatusTask();
+                var gst = st.GetStatus();
+                var diffDate = (gst.ExpirationDate - DateTime.Now).Value.Days;
+
+                if (diffDate <= Settings.Settings.DaysLeftForNotification)
+                {
+                    new ToastContentBuilder()
+                        .AddText($"Your {Settings.Settings.ApplicationIdentifier} certificate is about to expire.")
+                        .AddText($"You have {diffDate} days left, please renew your certificate.")
+                        .AddButton(new ToastButton()
+                            .SetContent("Renew certificate")
+                            .SetBackgroundActivation()
+                         )
+                        .Show();
+                }
+            
                 return true;
             }
 
