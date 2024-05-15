@@ -464,7 +464,7 @@ namespace EduRoam.Localization {
         
         /// <summary>
         ///   Looks up a localized string similar to Everything is configured!
-        ///Could not connect because EAP Config could no be found.
+        ///Could not connect because EAP Config could not be found.
         /// </summary>
         public static string ErrorConfiguredButNotConnected {
             get {
@@ -473,8 +473,9 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Everything is configured!
-        ///Unable to connect to eduroam, you&apos;re probably out of coverage..
+        ///   Looks up a localized string similar to Everything is set up correctly!
+        ///
+        ///However, we&apos;re currently unable to connect to {0}, the network is out of range. Once in range, your system will connect to {0}..
         /// </summary>
         public static string ErrorConfiguredButProbablyOutOfCoverage {
             get {
@@ -483,8 +484,9 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Everything is configured!
-        ///Unable to connect to eduroam..
+        ///   Looks up a localized string similar to Everything is set up correctly!
+        ///
+        ///However, we&apos;re currently unable to connect to {0}, even though it&apos;s in range. You can still connect by manually selecting it in your Windows settings..
         /// </summary>
         public static string ErrorConfiguredButUnableToConnect {
             get {

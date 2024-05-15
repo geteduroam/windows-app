@@ -272,15 +272,17 @@ Exception: {0}</value>
   </data>
   <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
     <value>Everything is configured!
-Could not connect because EAP Config could no be found</value>
+Could not connect because EAP Config could not be found</value>
   </data>
   <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>Everything is configured!
-Unable to connect to eduroam, you're probably out of coverage.</value>
+    <value>Everything is set up correctly!
+
+However, we're currently unable to connect to {0}, the network is out of range. Once in range, your system will connect to {0}.</value>
   </data>
   <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Everything is configured!
-Unable to connect to eduroam.</value>
+    <value>Everything is set up correctly!
+
+However, we're currently unable to connect to {0}, even though it's in range. You can still connect by manually selecting it in your Windows settings.</value>
   </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>Username must contain @ exactly once</value>
