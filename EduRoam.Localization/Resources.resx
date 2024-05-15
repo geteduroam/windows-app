@@ -268,7 +268,7 @@ Exception: {0}</value>
     <value>Cannot retrieve profile when offline</value>
   </data>
   <data name="ErrorClientCredentialNotValidYes" xml:space="preserve">
-    <value>Client credential is not valid yet</value>
+    <value>Client credentials are not yet valid. They will become valid on {0}.</value>
   </data>
   <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
     <value>Everything is configured!

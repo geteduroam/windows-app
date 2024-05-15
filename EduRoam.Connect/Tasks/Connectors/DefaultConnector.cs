@@ -3,7 +3,10 @@ using EduRoam.Localization;
 
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
+
+using EduRoam.Connect.Exceptions;
 
 namespace EduRoam.Connect.Tasks.Connectors
 {
@@ -62,7 +65,7 @@ namespace EduRoam.Connect.Tasks.Connectors
                 if (DateTime.Now <= certValid)
                 {
                     // dispatch the event which creates the clock the end user sees
-                    status.Errors.Add(Resources.ErrorClientCredentialNotValidYes);
+                    status.Errors.Add(string.Format(Resources.ErrorClientCredentialNotValidYes, certValid.ToString(Thread.CurrentThread.CurrentCulture)));
                     return status;
                 }
             }

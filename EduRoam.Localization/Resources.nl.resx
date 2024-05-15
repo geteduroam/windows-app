@@ -312,7 +312,7 @@ Uitzondering: {0}</value>
     <value>Kan profiel niet ophalen wanneer je offline bent</value>
   </data>
   <data name="ErrorClientCredentialNotValidYes" xml:space="preserve">
-    <value>Client gegevens zijn nog niet geldig</value>
+    <value>Client gegevens zijn nog niet geldig. Deze worden geldig op {0}.</value>
   </data>
   <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
     <value>Alles is geconfigureerd!
