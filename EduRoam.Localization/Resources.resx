@@ -352,7 +352,7 @@ Exception: {0}.</value>
     <value>Missing options. Provide the {0} option or both {1} and {2} options</value>
   </data>
   <data name="ErrorUnknownProfile" xml:space="preserve">
-    <value>Unknown profile</value>
+    <value>Unknown profile, retry authentication process</value>
   </data>
   <data name="ErrorUnsupportedConnectionType" xml:space="preserve">
     <value>Connection of type {0} is not supported (yet).</value>

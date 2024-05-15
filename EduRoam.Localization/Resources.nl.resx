@@ -512,7 +512,7 @@ Uitzondering: {0}.</value>
     <value>Ontbrekende opties. Geef de optie {0} of zowel de opties {1} als {2} op</value>
   </data>
   <data name="ErrorUnknownProfile" xml:space="preserve">
-    <value>Onbekend profiel</value>
+    <value>Onbekend profiel, probeer authenticatie proces opnieuw.</value>
   </data>
   <data name="ErrorUnsupportedConnectionType" xml:space="preserve">
     <value>Verbinding van type {0} wordt (nog) niet ondersteund.</value>

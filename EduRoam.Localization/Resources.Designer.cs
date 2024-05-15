@@ -454,7 +454,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Client credentials are not yet valid. They will become valid on {0}.
+        ///   Looks up a localized string similar to Client credentials are not yet valid. They will become valid on {0}..
         /// </summary>
         public static string ErrorClientCredentialNotValidYes {
             get {
@@ -694,7 +694,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unknown profile.
+        ///   Looks up a localized string similar to Unknown profile, retry authentication process.
         /// </summary>
         public static string ErrorUnknownProfile {
             get {
