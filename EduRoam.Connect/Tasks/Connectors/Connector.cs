@@ -91,6 +91,10 @@ namespace EduRoam.Connect.Tasks.Connectors
                 // if user refuses to install a root CA (should never be prompted to at this stage), abort
                 try
                 {
+                    // remove current certificates
+                    RemoveWiFiConfigurationTask.RemoveCertificates();
+
+                    // install certificates
                     authMethodInstaller.InstallCertificates();
 
                     // Everything is now in order, install the profile!
