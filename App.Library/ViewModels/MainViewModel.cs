@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.Windows;
 
 using NETWORKLIST;
+using App.Library.Properties;
 
 namespace App.Library.ViewModels
 {
@@ -225,8 +226,8 @@ namespace App.Library.ViewModels
             if (!EapConfigTask.IsEapConfigSupported(eapConfig))
             {
                 _ = MessageBox.Show(
-                    Resources.WarningProfileNotSupported,
-                    Resources.WarningNoSupportedAuthenticationMethod,
+                    EduRoam.Localization.Resources.WarningProfileNotSupported,
+                    EduRoam.Localization.Resources.WarningNoSupportedAuthenticationMethod,
                     MessageBoxButton.OK,
                     MessageBoxImage.Exclamation);
                 return false;
@@ -330,10 +331,11 @@ namespace App.Library.ViewModels
             try
             {
                 profile = this.idpDownloader.GetProfileFromId(profileId);
-
+                
                 if (profile == null)
                 {
-                    MessageBox.Show(Resources.ErrorUnknownProfile, caption: "geteduroam - Exception");
+                    this.Logger.LogError($"Unknown Profile, profile with id {profileId} could not be found.");
+                    MessageBox.Show(EduRoam.Localization.Resources.ErrorUnknownProfile, caption: $"{Settings.Settings.ApplicationIdentifier} - Exception");
                     return;
                 }
 
@@ -341,8 +343,8 @@ namespace App.Library.ViewModels
             }
             catch (EduroamAppUserException eauExc)
             {
-                this.Logger.LogError(eauExc, "geteduroam - Exception");
-                MessageBox.Show(eauExc.UserFacingMessage, caption: "geteduroam - Exception");
+                this.Logger.LogError(eauExc, $"{Settings.Settings.ApplicationIdentifier} - Exception");
+                MessageBox.Show(eauExc.UserFacingMessage, caption: $"{Settings.Settings.ApplicationIdentifier} - Exception");
                 return;
             }
 
@@ -418,7 +420,7 @@ namespace App.Library.ViewModels
                     this.SetActiveContent(new ConnectViewModel(this, eapConfig, defaultConnector));
                     break;
                 default:
-                    throw new NotSupportedException(string.Format(Resources.ErrorUnsupportedConnectionType, connector?.GetType().Name));
+                    throw new NotSupportedException(string.Format(EduRoam.Localization.Resources.ErrorUnsupportedConnectionType, connector?.GetType().Name));
 
             }
         }
@@ -439,7 +441,7 @@ namespace App.Library.ViewModels
             do
             {
                 filepath = FileDialog.GetFileFromDialog(
-                    Resources.LoadEapFile,
+                    EduRoam.Localization.Resources.LoadEapFile,
                     "EAP-CONFIG files (*.eap-config)|*.eap-config|All files (*.*)|*.*");
 
                 if (filepath == null)
@@ -466,14 +468,14 @@ namespace App.Library.ViewModels
             catch (System.Xml.XmlException xmlEx)
             {
                 MessageBox.Show(
-                    Resources.ErrorEapConfigCorrupted +
+                    EduRoam.Localization.Resources.ErrorEapConfigCorrupted +
                     "\nException: " + xmlEx.Message,
                     "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             catch (ArgumentException argEx)
             {
                 MessageBox.Show(
-                    Resources.ErrorEapConfigInvalid +
+                    EduRoam.Localization.Resources.ErrorEapConfigInvalid +
                     "\nException: " + argEx.Message,
                     "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
             }
@@ -511,8 +513,8 @@ namespace App.Library.ViewModels
                 var profileName = profiler.GetCurrentProfileName();
 
                 var confirmRemoval = MessageBox.Show(
-                        string.Format(Resources.RemoveProfileMessage, profileName),
-                        string.Format(Resources.RemoveProfileTitle, profileName),
+                        string.Format(EduRoam.Localization.Resources.RemoveProfileMessage, profileName),
+                        string.Format(EduRoam.Localization.Resources.RemoveProfileTitle, profileName),
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Warning);
 
