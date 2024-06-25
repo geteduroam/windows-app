@@ -238,7 +238,7 @@ namespace EduroamConfigure
 							),
 							new XElement(nsETCPv1 + "DifferentUsername", "false"),
 							new XElement(nsETCPv2 + "PerformServerValidation", "true"),
-							new XElement(nsETCPv2 + "AcceptServerName", "false"),
+							new XElement(nsETCPv2 + "AcceptServerName", serverNames.Any() ? "true" : "false"),
 							new XElement(nsETCPv2 + "TLSExtensions",
 								new XElement(nsETCPv3 + "FilteringInfo",
 									caHashListElement =
