@@ -64,10 +64,10 @@ namespace App.Library
                 if (diffDate <= Settings.Settings.DaysLeftForNotification)
                 {
                     new ToastContentBuilder()
-                        .AddText($"Your {Settings.Settings.ApplicationIdentifier} certificate is about to expire.")
-                        .AddText($"You have {diffDate} days left, please renew your certificate.")
+                        .AddText(string.Format(Resources.CheckCertificateToastP1, Settings.Settings.ApplicationIdentifier))
+                        .AddText(string.Format(Resources.CheckCertificateToastP2, diffDate))
                         .AddButton(new ToastButton()
-                            .SetContent("Renew certificate")
+                            .SetContent(Resources.CheckCertificateToastButton)
                             .SetBackgroundActivation()
                          )
                         .Show();

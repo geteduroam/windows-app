@@ -194,6 +194,33 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Renew account.
+        /// </summary>
+        public static string CheckCertificateToastButton {
+            get {
+                return ResourceManager.GetString("CheckCertificateToastButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your {0} account is about to expire..
+        /// </summary>
+        public static string CheckCertificateToastP1 {
+            get {
+                return ResourceManager.GetString("CheckCertificateToastP1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You have {0} days left, please renew your account..
+        /// </summary>
+        public static string CheckCertificateToastP2 {
+            get {
+                return ResourceManager.GetString("CheckCertificateToastP2", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Configure Wi-Fi based on a institution profile and connect..
         /// </summary>
         public static string CommandDescriptionConnect {

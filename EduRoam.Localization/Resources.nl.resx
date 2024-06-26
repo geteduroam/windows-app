@@ -616,4 +616,13 @@ Uitzondering: {0}</value>
   <data name="ProfileRepairCertificate" xml:space="preserve">
     <value>Repareer je account</value>
   </data>
+  <data name="CheckCertificateToastButton" xml:space="preserve">
+    <value>Account verlengen</value>
+  </data>
+  <data name="CheckCertificateToastP1" xml:space="preserve">
+    <value>Het {0} account verloopt binnenkort.</value>
+  </data>
+  <data name="CheckCertificateToastP2" xml:space="preserve">
+    <value>U heeft {0} dagen, verleng alstublieft uw account.</value>
+  </data>
 </root>
