@@ -8,6 +8,8 @@ using IWshRuntimeLibrary;
 using Microsoft.Win32;
 using Microsoft.Win32.TaskScheduler;
 
+using Semver;
+
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -406,5 +408,53 @@ namespace EduRoam.Connect.Install
             return arg.Replace("%", "^%").Replace(" ", "^ ");
         }
 
+        #region AutoInstaller helper functions
+        /// <summary>
+        /// </summary>
+        public bool CanBeUpdated()
+        {
+            var installedVersion = this.GetFileVersion(this.InstallExePath);
+            var runningVersion = this.GetFileVersion(System.Reflection.Assembly.GetEntryAssembly()!.Location);
+
+            if(SemVersion.ComparePrecedence(installedVersion, runningVersion) == -1)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public void RemoveRunningExecutable()
+        {
+            var extinguishMe = new ProcessStartInfo
+            {
+                FileName = "cmd.exe",
+                Arguments = "/C choice /C Y /N /D Y /T 5 " +
+                 "& Del " + ShellEscape(System.Reflection.Assembly.GetEntryAssembly()!.Location),
+                WindowStyle = ProcessWindowStyle.Hidden,
+                CreateNoWindow = true,
+                WorkingDirectory = "C:\\"
+            };
+            Process.Start(extinguishMe);
+        }
+
+        public void StartApplicationFromInstallLocation()
+        {
+            Process.Start(this.InstallExePath);
+        }
+
+
+        private SemVersion GetFileVersion(string path)
+        {
+            var fileVersion = FileVersionInfo.GetVersionInfo(path);
+            var v = fileVersion.FileVersion;
+            var splittedVersion = v.Split(".".ToCharArray());
+
+
+            var t = new SemVersion(int.Parse(splittedVersion[0]), int.Parse(splittedVersion[1]), int.Parse(splittedVersion[2]));
+            return t;
+        }
+        #endregion
     }
+
 }

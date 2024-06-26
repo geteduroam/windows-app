@@ -63,6 +63,7 @@
     </Compile>
     <Compile Include="ServicesConfiguration.cs" />
     <Compile Include="Templates\LocalDataTemplateSelector.cs" />
+    <Compile Include="Utility\AutoInstaller.cs" />
     <Compile Include="Utility\FileDialog.cs" />
     <Compile Include="ViewModels\BaseConnectViewModel.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />

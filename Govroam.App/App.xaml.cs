@@ -1,4 +1,5 @@
 ﻿using App.Library;
+using App.Library.Utility;
 using App.Settings;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -28,6 +29,16 @@ namespace Govroam.App
             {
                 this.Shutdown(1);
             }
+
+            #region SelfInstaller AutoInstall
+            var resultObject = AutoInstaller.CheckIfInstalled();
+            if (!resultObject)
+            {
+                AutoInstaller.RemoveRunningExecutable();
+                AutoInstaller.StartApplicationFromInstallLocation();
+                this.Shutdown(1);
+            }
+            #endregion
 
             this.serviceProvider = ServicesConfiguration.ConfigureServices();
 
