@@ -314,17 +314,24 @@ namespace EduRoam.Connect.Eap
                 .Where(authMethod => authMethod != null)
                 .Select(authMethod => authMethod!);
 
+            // save the profileid for later, as this function does NOT create a clone!
+            var oldProfileId = this.ProfileId;
+
             if (!authMethods.Any())
             {
                 throw new ArgumentException("No authentication method can accept the client certificate");
             }
 
-            return new EapConfig(
+            var newConfig = new EapConfig(
                 authMethods.ToList(),
                 this.CredentialApplicabilities,
                 this.InstitutionInfo,
                 this.RawOriginalEapConfigXmlData
             );
+
+            newConfig.ProfileId = oldProfileId;
+
+            return newConfig;
         }
 
         /// <summary>
@@ -340,17 +347,24 @@ namespace EduRoam.Connect.Eap
                 .Where(authMethod => authMethod != null)
                 .Select(authMethod => authMethod!);
 
+            // save the profileid for later, as this function does NOT create a clone!
+            var oldProfileId = this.ProfileId;
+
             if (!authMethods.Any())
             {
                 throw new ArgumentException("No authentication accepts the passphrase");
             }
 
-            return new EapConfig(
+            var newConfig = new EapConfig(
                 authMethods.ToList(),
                 this.CredentialApplicabilities,
                 this.InstitutionInfo,
                 this.RawOriginalEapConfigXmlData
             );
+
+            newConfig.ProfileId = oldProfileId;
+
+            return newConfig;
         }
 
         /// <summary>
@@ -366,17 +380,24 @@ namespace EduRoam.Connect.Eap
                 .Where(authMethod => authMethod != null)
                 .Select(authMethod => authMethod!);
 
+            // save the profileid for later, as this function does NOT create a clone!
+            var oldProfileId = this.ProfileId;
+
             if (!authMethods.Any())
             {
                 throw new ArgumentException("No authentication accepts the passphrase");
             }
 
-            return new EapConfig(
+            var newConfig = new EapConfig(
                 authMethods.ToList(),
                 this.CredentialApplicabilities,
                 this.InstitutionInfo,
                 this.RawOriginalEapConfigXmlData
             );
+
+            newConfig.ProfileId = oldProfileId;
+
+            return newConfig;
         }
 
         /// <summary>
