@@ -28,18 +28,7 @@ public static class AutoInstaller
                 canBeUpdated = SelfInstaller.DefaultInstance.CanBeUpdated();
             }
 
-
-            if (!isInstalled)
-            {
-                
-                var result = MessageBox.Show($"{Settings.Settings.ApplicationIdentifier} is niet geïnstalleerd, wilt u deze applicatie installeren voor geavanceerde functionaliteiten?", "- Verzin iets leuks -", MessageBoxButton.YesNo);
-                if(result == MessageBoxResult.Yes)
-                {
-                    SelfInstaller.DefaultInstance.EnsureIsInstalled();
-                    return false;
-                }
-            }
-            else if (isInstalled && canBeUpdated)
+            if (isInstalled && canBeUpdated)
             {
                 var result = MessageBox.Show($"De geinstallerde {Settings.Settings.ApplicationIdentifier} is is ouder dan deze versie, wilt u deze applicatie updaten?", "- Verzin iets leuks -", MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
@@ -47,21 +36,9 @@ public static class AutoInstaller
                     SelfInstaller.DefaultInstance.EnsureIsInstalled();
                     return false;
                 }
-            } else
-            {
-                var msgResult = MessageBox.Show($"U heeft {Settings.Settings.ApplicationIdentifier} al geinstalleerd maar draait hem vanuit een foutieve locatie. Wilt u de juiste versie openen?", "- Verzin iets leuks -", MessageBoxButton.YesNo);
-                if (msgResult == MessageBoxResult.Yes)
-                {
-                    return false;
-                }
             }
         }
         return true;
-    }
-
-    public static void RemoveRunningExecutable()
-    {
-        SelfInstaller.DefaultInstance.RemoveRunningExecutable();
     }
 
     public static void StartApplicationFromInstallLocation()

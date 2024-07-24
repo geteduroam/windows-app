@@ -33,7 +33,6 @@ namespace Eduroam.App
             var resultObject = AutoInstaller.CheckIfInstalled();
             if(!resultObject)
             {
-                AutoInstaller.RemoveRunningExecutable();
                 AutoInstaller.StartApplicationFromInstallLocation();
                 this.Shutdown(1);
             } 

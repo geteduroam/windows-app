@@ -151,27 +151,16 @@ namespace EduRoam.Connect.Install
 
         public void EnsureIsInstalled()
         {
-            if (this.IsRunningInInstallLocation)
+            if (this.IsInstalled && this.CanBeUpdated())
             {
-                return; // TODO: some flow to update itself
-            }
-
-            if (this.IsInstalled)
-            {
-                // TODO: assemblyversion instad of file date
-                var d1 = System.IO.File.GetLastWriteTime(ThisExePath);
-                var d2 = System.IO.File.GetLastWriteTime(this.InstallExePath);
-                if (DateTime.Compare(d1, d2) <= 0)
+                if (this.IsRunningInInstallLocation)
                 {
-                    // TODO: console no work
-                    Console.WriteLine(
-                        "The date of the currently installed version " +
-                        "is equal to or newer than this one.");
-                    return;
-                }
+                    this.RemoveRunningExecutable();
+                } else
+                {
+                    this.RemoveInstalledExecutable();
+                }               
             }
-
-            // TODO: user downloads new geteduroam -> runs the file -> single-instance running from install folder starts -> no update of binary
 
             this.InstallToUserLocal();
         }
@@ -424,6 +413,9 @@ namespace EduRoam.Connect.Install
             return false;
         }
 
+        /// <summary>
+        /// Removes the installed executable when its running from installed location
+        /// </summary>
         public void RemoveRunningExecutable()
         {
             var extinguishMe = new ProcessStartInfo
@@ -436,6 +428,14 @@ namespace EduRoam.Connect.Install
                 WorkingDirectory = "C:\\"
             };
             Process.Start(extinguishMe);
+        }
+
+        /// <summary>
+        /// Removes the installed executable when its running from other location then installed location
+        /// </summary>
+        public void RemoveInstalledExecutable()
+        {
+            System.IO.File.Delete(this.InstallExePath);
         }
 
         public void StartApplicationFromInstallLocation()
