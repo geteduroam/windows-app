@@ -91,8 +91,8 @@ namespace EduRoam.Connect.Tasks.Connectors
                 // if user refuses to install a root CA (should never be prompted to at this stage), abort
                 try
                 {
-                    // remove current certificates
-                    RemoveWiFiConfigurationTask.RemoveCertificates();
+                    // remove current client certificates
+                    RemoveWiFiConfigurationTask.RemoveCertificates(true);
 
                     // install certificates
                     authMethodInstaller.InstallCertificates();
