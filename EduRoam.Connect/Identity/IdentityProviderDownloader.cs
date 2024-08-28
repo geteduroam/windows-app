@@ -17,6 +17,10 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Management;
+
+using EduRoam.Connect.Converter;
+using EduRoam.Connect.Identity.v2;
 
 namespace EduRoam.Connect.Identity
 {
@@ -48,11 +52,26 @@ namespace EduRoam.Connect.Identity
 
         private static HttpClient InitializeHttpClient()
         {
+            var r = string.Empty;
+            using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem"))
+            {
+                var information = searcher.Get();
+                if (information != null)
+                {
+                    foreach (ManagementObject obj in information)
+                    {
+                        r = obj["Caption"].ToString() + "; " + obj["OSArchitecture"].ToString();
+                    }
+                }
+                r = r.Replace("NT 5.1.2600", "XP");
+                r = r.Replace("NT 5.2.3790", "Server 2003");
+            }
+
             var client = new HttpClient(Handler, false);
 #if DEBUG
-            client.DefaultRequestHeaders.Add("User-Agent", $"{Settings.ApplicationIdentifier}-win/" + LetsWifi.Instance.VersionNumber + "+DEBUG HttpClient (Windows NT 10.0; Win64; x64)");
+            client.DefaultRequestHeaders.Add("User-Agent", $"{Settings.ApplicationIdentifier}-win/{LetsWifi.Instance.VersionNumber} DEBUG HttpClient ({r})");
 #else
-            client.DefaultRequestHeaders.Add("User-Agent", $"{Settings.ApplicationIdentifier}-win/" + LetsWifi.Instance.VersionNumber + " HttpClient (Windows NT 10.0; Win64; x64)");
+            client.DefaultRequestHeaders.Add("User-Agent", $"{Settings.ApplicationIdentifier}-win/{LetsWifi.Instance.VersionNumber} HttpClient ({r})");
 #endif
             // This client will not be used for subsequent requests,
             // so don't keep the connection open any longer than necessary
@@ -98,14 +117,33 @@ namespace EduRoam.Connect.Identity
         {
             try
             {
+                if (Cache.IdentityProviders != null)
+                {
+                    this.Providers = Cache.IdentityProviders;
+                    return;
+                }
+                
                 if (!this.Providers.Any())
                 {
+                    var isNewVersion = ProviderApiUrl.ToString().Contains("/v2/");
+                    
                     // downloads json file as string
                     var apiJson = await DownloadUrlAsString(ProviderApiUrl, new string[] { "application/json" }).ConfigureAwait(false);
 
-                    // gets api instance from json
-                    var discovery = JsonConvert.DeserializeObject<DiscoveryApi>(apiJson);
-                    this.Providers = discovery?.Instances ?? new List<IdentityProvider>();
+                    DiscoveryApi discoveryData;
+
+                    if (isNewVersion)
+                    {
+                        var discovery = JsonConvert.DeserializeObject<LetsWifiDiscovery>(apiJson);
+                        discoveryData = DiscoveryConverter.Covert(discovery ?? new LetsWifiDiscovery());
+                    }
+                    else
+                    {
+                        discoveryData = JsonConvert.DeserializeObject<DiscoveryApi>(apiJson) ?? new DiscoveryApi();
+                    }
+                    
+                    this.Providers = discoveryData?.Instances ?? new List<IdentityProvider>();
+                    Cache.IdentityProviders = (List<IdentityProvider>?)this.Providers;
                 }
             }
             catch (JsonSerializationException e)
@@ -331,23 +369,6 @@ namespace EduRoam.Connect.Identity
 
             return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
-
-#pragma warning disable CA2227 // Collection properties should be read only
-        private class DiscoveryApi
-        {
-            public DiscoveryApi()
-            {
-                this.Version = "";
-                this.Seq = "";
-                this.Instances = new List<IdentityProvider>();
-            }
-
-            public string Version { get; set; }
-            public string Seq { get; set; }
-            public List<IdentityProvider> Instances { get; set; }
-        }
-#pragma warning restore CA2227 // Collection properties should be read only
-
 
         // Protected implementation of Dispose pattern.
         private bool disposed;
