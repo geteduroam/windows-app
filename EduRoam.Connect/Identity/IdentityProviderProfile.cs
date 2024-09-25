@@ -11,6 +11,12 @@ namespace EduRoam.Connect.Identity
 
         public string Name { get; set; }
 
+
+        /// <summary>
+        /// If this variable is known, the profile is a LetsWifi profile and it should be used to get the EAP config
+        /// </summary>
+        public string LetsWifiEndpoint { get; set; }
+
         [JsonProperty("eapconfig_endpoint")]
         public string EapConfigEndpoint { get; set; }
 

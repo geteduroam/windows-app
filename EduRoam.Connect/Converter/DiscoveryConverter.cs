@@ -26,10 +26,11 @@ namespace EduRoam.Connect.Converter
                         Name = profile.Name.ContainsKey("any") ? profile.Name["any"] : institution.Name["any"],
                         Id = profile.Id,
                         OAuth = profile.Type == "letswifi",
-                        EapConfigEndpoint = profile.Type == "letswifi" ? $"{profile.LetsWifiEndpoint}api/eap-config/" : profile.EapConfigEndpoint ?? null,
-                        AuthorizationEndpoint = profile.Type == "letswifi" ? $"{profile.LetsWifiEndpoint}oauth/authorize/" : null,
-                        TokenEndpoint = profile.Type == "letswifi" ? $"{profile.LetsWifiEndpoint}oauth/token/" : null,
-                        Redirect = profile.Type == "webview" ? profile.WebViewEndpoint : null
+                        //EapConfigEndpoint = profile.Type == "letswifi" ? $"{profile.LetsWifiEndpoint}api/eap-config/" : profile.EapConfigEndpoint ?? null,
+                        //AuthorizationEndpoint = profile.Type == "letswifi" ? $"{profile.LetsWifiEndpoint}oauth/authorize/" : null,
+                        //TokenEndpoint = profile.Type == "letswifi" ? $"{profile.LetsWifiEndpoint}oauth/token/" : null,
+                        Redirect = profile.Type == "webview" ? profile.WebViewEndpoint : null,
+                        LetsWifiEndpoint = profile.LetsWifiEndpoint
                     }).ToList()
                 }).ToList()
             };

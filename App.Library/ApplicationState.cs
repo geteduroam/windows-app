@@ -1,7 +1,9 @@
 ﻿using App.Library.ViewModels;
 
+using EduRoam.Connect;
 using EduRoam.Connect.Identity;
 
+using System;
 using System.Collections.Generic;
 
 namespace App.Library
@@ -38,7 +40,7 @@ namespace App.Library
             }
             set
             {
-                this.selectedProfile = value;
+                this.selectedProfile = value;           
                 this.CallPropertyChanged();
             }
         }

@@ -195,7 +195,7 @@ namespace EduRoam.Connect.Identity
         public async Task<EapConfig> DownloadEapConfig(string profileId)
         {
             await this.LoadProviders();
-            var profile = this.GetProfileFromId(profileId);
+            var profile = await this.GetProfileFromId(profileId);
             if (string.IsNullOrEmpty(profile?.EapConfigEndpoint))
             {
                 throw new EduroamAppUserException("Requested profile not listed in discovery");
@@ -237,7 +237,7 @@ namespace EduRoam.Connect.Identity
         /// <returns>The IdentityProviderProfile with the given profileId</returns>
         /// 
         /// <exception cref="EduroamAppUserException">If LoadProviders() was not called or threw an exception</exception>
-        public IdentityProviderProfile? GetProfileFromId(string profileId)
+        public async Task<IdentityProviderProfile?> GetProfileFromId(string profileId)
         {
             if (!this.Loaded)
             {
@@ -250,6 +250,13 @@ namespace EduRoam.Connect.Identity
                 {
                     if (profile.Id == profileId)
                     {
+                        if (!string.IsNullOrEmpty(profile.LetsWifiEndpoint))
+                        {
+                            var letsWifiProfile = await DownloadLetsWifiProfile(profile);
+                            profile.EapConfigEndpoint = letsWifiProfile?.EapConfigEndpoint;
+                            profile.TokenEndpoint = letsWifiProfile?.TokenEndpoint;
+                            profile.AuthorizationEndpoint = letsWifiProfile?.AuthorizationEndpoint;
+                        }
                         return profile;
                     }
                 }
@@ -349,6 +356,29 @@ namespace EduRoam.Connect.Identity
                 // is to make sure the API matches again
                 throw new HttpRequestException("The request to " + url + " was interrupted", e);
             }
+        }
+
+        private async Task<LetsWifiProfile.ProfileRoot> DownloadLetsWifiProfile(IdentityProviderProfile profile)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(profile.LetsWifiEndpoint))
+                {
+                    var letsWifiProfileJson = await DownloadUrlAsString(new Uri(profile.LetsWifiEndpoint), ["application/json"], null);
+                    var letsWifiProfile = JsonConvert.DeserializeObject<LetsWifiProfile>(letsWifiProfileJson);
+
+                    return letsWifiProfile.Root;
+                } else
+                {
+                    throw new Exception("No LetsWifi endpoint found in profile");
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+
+            return new();
         }
 
         private static async Task<string> parseResponse(HttpResponseMessage response, string[]? accept)

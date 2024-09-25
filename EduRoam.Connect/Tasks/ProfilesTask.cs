@@ -59,7 +59,7 @@ namespace EduRoam.Connect.Tasks
             using var idpDownloader = new IdentityProviderDownloader();
 
             await idpDownloader.LoadProviders();
-            return idpDownloader.GetProfileFromId(profileId);
+            return await idpDownloader.GetProfileFromId(profileId);
         }
 
         public string GetCurrentProfileName()
