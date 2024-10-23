@@ -31,12 +31,28 @@ namespace App.Library
 
                 return true;
             }
-
+            
             if (contains("/install")) // todo: MessageBox.Show(yes/no)
             {
                 InstallTask.Install();
 
                 return true;
+            }
+
+            if (contains("/install-eap-config"))
+            {
+                if (!string.IsNullOrEmpty(args[1]))
+                {
+                    Settings.Settings.EapConfigFileLocation = args[1];
+                }
+                else
+                {
+                    MessageBox.Show("No argument given for eap-config file location", $"Exception {Settings.Settings.ApplicationIdentifier}");
+                    return true;
+                }
+
+                // continue to app
+                return false;
             }
 
             if (contains("/uninstall"))

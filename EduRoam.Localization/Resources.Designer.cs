@@ -1021,6 +1021,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string NoText {
+            get {
+                return ResourceManager.GetString("NoText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to n.
         /// </summary>
         public static string NotSure {
@@ -1044,6 +1053,15 @@ namespace EduRoam.Localization {
         public static string OAuthTitle {
             get {
                 return ResourceManager.GetString("OAuthTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Oke.
+        /// </summary>
+        public static string OkeText {
+            get {
+                return ResourceManager.GetString("OkeText", resourceCulture);
             }
         }
         
@@ -1495,6 +1513,15 @@ namespace EduRoam.Localization {
         public static string Yes {
             get {
                 return ResourceManager.GetString("Yes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string YesText {
+            get {
+                return ResourceManager.GetString("YesText", resourceCulture);
             }
         }
     }

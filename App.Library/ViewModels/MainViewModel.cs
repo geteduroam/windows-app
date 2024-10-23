@@ -41,7 +41,7 @@ namespace App.Library.ViewModels
         public MainViewModel(ILogger<MainViewModel> logger)
         {
             this.NewProfileCommand = new DelegateCommand(this.NewProfileCommandAction, this.CanNewProfileCommandAction);
-            this.LoadEapFileCommand = new DelegateCommand(this.LoadEapFile);
+            this.LoadEapFileCommand = new DelegateCommand(this.GetEapFileFromDialog);
             this.RefreshCommand = new AsyncCommand(this.RefreshAsync);
             this.ReauthenticateCommand = new DelegateCommand(this.Reauthenticate);
             this.RemoveProfileCommand = new DelegateCommand(this.RemoveProfile);
@@ -201,7 +201,23 @@ namespace App.Library.ViewModels
         {
             var status = new StatusTask().GetStatus();
 
-            if (status.ActiveProfile)
+            if (!string.IsNullOrEmpty(Settings.Settings.EapConfigFileLocation))
+            {
+                var message = status.ActiveProfile ? "Er is al een profiel actief. Wilt u deze overschrijven met het huidige geselecteerde eap-config?" : "Wilt u de huidige geselecteerde eap-config configureren?";
+                
+                this.SetActiveContent(new ConfirmViewModel(this, message, false, OnConfirm, OnDeny));
+
+                void OnConfirm()
+                {
+                    this.LoadEapFile(Settings.Settings.EapConfigFileLocation!);
+                }
+
+                void OnDeny()
+                {
+                    this.SetActiveContent(new StatusViewModel(this));
+                }
+            }
+            else if (status.ActiveProfile)
             {
                 this.SetActiveContent(new StatusViewModel(this));
             }
@@ -431,9 +447,8 @@ namespace App.Library.ViewModels
 		/// Asks the user to supply a .eap-config file.
 		/// Returns null if user aborted.
 		/// </summary>
-		/// <returns>EapConfig object or null</returns>
-		/// <exception cref="XmlException"></exception>
-		public void LoadEapFile()
+		/// <returns></returns>
+		public void GetEapFileFromDialog()
         {
             Debug.WriteLine("LoadEapFile");
 
@@ -451,34 +466,7 @@ namespace App.Library.ViewModels
             }
             while (!FileDialog.ValidateFile(filepath, new List<string> { ".eap-config" }));
 
-            // read, validate, parse and return
-            try
-            {
-                var eapConfigurator = new EapConfigTask();
-                // create Eap-config and open Profile view
-                var eapConfig = EapConfigTask.GetEapConfig(new FileInfo(filepath));
-
-                if (eapConfig != null)
-                {
-                    eapConfig.ProfileId = filepath;
-
-                    this.SetActiveContent(new ProfileViewModel(this, eapConfig));
-                }
-            }
-            catch (System.Xml.XmlException xmlEx)
-            {
-                MessageBox.Show(
-                    EduRoam.Localization.Resources.ErrorEapConfigCorrupted +
-                    "\nException: " + xmlEx.Message,
-                    "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-            catch (ArgumentException argEx)
-            {
-                MessageBox.Show(
-                    EduRoam.Localization.Resources.ErrorEapConfigInvalid +
-                    "\nException: " + argEx.Message,
-                    "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            this.LoadEapFile(filepath);
         }
 
         public bool IsARefreshPossible => this.status.ActiveProfile;
@@ -562,6 +550,38 @@ namespace App.Library.ViewModels
         public bool CheckIsConnected()
         {
             return this.networkListManager.IsConnectedToInternet;
+        }
+
+        private void LoadEapFile(string filepath)
+        {
+            // read, validate, parse and return
+            try
+            {
+                var eapConfigurator = new EapConfigTask();
+                // create Eap-config and open Profile view
+                var eapConfig = EapConfigTask.GetEapConfig(new FileInfo(filepath));
+
+                if (eapConfig != null)
+                {
+                    eapConfig.ProfileId = filepath;
+
+                    this.SetActiveContent(new ProfileViewModel(this, eapConfig));
+                }
+            }
+            catch (System.Xml.XmlException xmlEx)
+            {
+                MessageBox.Show(
+                    EduRoam.Localization.Resources.ErrorEapConfigCorrupted +
+                    "\nException: " + xmlEx.Message,
+                    "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (ArgumentException argEx)
+            {
+                MessageBox.Show(
+                    EduRoam.Localization.Resources.ErrorEapConfigInvalid +
+                    "\nException: " + argEx.Message,
+                    "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 #pragma warning restore CA1822 // Mark members as static

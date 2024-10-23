@@ -218,6 +218,15 @@ namespace EduRoam.Connect.Install
                     Registry.SetValue(this.rnsUninstall, key, value);
                 });
 
+            // Create SubKey in Regex for file association (.eap/.eap-config)
+            var fileRegEap = Registry.CurrentUser.CreateSubKey("Software\\Classes\\.eap");
+            fileRegEap.CreateSubKey("shell\\open\\command").SetValue("", $"{this.InstallExePath} /install-eap-config \"%1\"");
+            fileRegEap.Close();
+
+            var fileRegEapConfig = Registry.CurrentUser.CreateSubKey("Software\\Classes\\.eap-config");
+            fileRegEapConfig.CreateSubKey("shell\\open\\command").SetValue("", $"{this.InstallExePath} /install-eap-config \"%1\"");
+            fileRegEapConfig.Close();
+
             // Add shortcut to start menu
             Debug.WriteLine("Create shortcut: " + this.StartMenuLnkPath);
             if (!System.IO.File.Exists(this.StartMenuLnkPath))

@@ -601,8 +601,17 @@ Exception: {0}</value>
   <data name="WarnRealmMismatch" xml:space="preserve">
     <value>/!\ The realm for the OuterIdentity will be set to "{0}" but the profile specified "{1}"</value>
   </data>
+  <data name="YesText" xml:space="preserve">
+    <value>Yes</value>
+  </data>
   <data name="Yes" xml:space="preserve">
     <value>✓</value>
+  </data>
+  <data name="NoText" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="OkeText" xml:space="preserve">
+    <value>Oke</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
     <value>eduroam requires an active internet connection.</value>
