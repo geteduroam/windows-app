@@ -279,21 +279,26 @@ namespace EduRoam.Connect.Identity
             HttpResponseMessage response;
             try
             {
-                if (accessToken == null)
+                using (var request = new HttpRequestMessage
                 {
-                    response = await Http.GetAsync(url);
-                }
-                else
+                    Method = HttpMethod.Get,
+                    RequestUri = url
+                })
                 {
-                    using var request = new HttpRequestMessage
+                    if (accessToken != null)
                     {
-                        Method = HttpMethod.Post,
-                        Content = new StringContent(""),
-                        RequestUri = url
-                    };
-                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                        request.Method = HttpMethod.Post;
+                        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                    }
+
+                    foreach (var acceptValue in accept ?? new string[] { })
+                    {
+                        request.Headers.Add("Accept", acceptValue);
+                    }
+
                     response = await Http.SendAsync(request).ConfigureAwait(true);
                 }
+
             }
             catch (TaskCanceledException e)
             {
@@ -364,7 +369,11 @@ namespace EduRoam.Connect.Identity
             {
                 if (!string.IsNullOrEmpty(profile.LetsWifiEndpoint))
                 {
-                    var letsWifiProfileJson = await DownloadUrlAsString(new Uri(profile.LetsWifiEndpoint), ["application/json"], null);
+                    var letsWifiProfileJson = await DownloadUrlAsString(
+                        url: new Uri(profile.LetsWifiEndpoint), 
+                        accept: ["application/json"], 
+                        accessToken: null
+                    );
                     var letsWifiProfile = JsonConvert.DeserializeObject<LetsWifiProfile>(letsWifiProfileJson);
 
                     return letsWifiProfile.Root;
@@ -376,6 +385,8 @@ namespace EduRoam.Connect.Identity
             catch (Exception e)
             {
                 Debug.WriteLine(e);
+
+                throw new EduroamAppUserException(e.Message, "Error occurred while retrieving LetsWifi profile");
             }
 
             return new();

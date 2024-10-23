@@ -31,14 +31,17 @@ namespace EduRoam.Connect.Identity
 
             // NICE TO HAVE: add realms/domain as possible match
 
-            // Lexically sort by prioritized criterias.
+            // Lexically sort by prioritized criterias. Searches through the searchTags list
             var sortedList = providers
                 // Precompute compute the normalized name
-                .Select(provider => (nname: NormalizeString(provider.Name), provider))
+                .Select(provider => (searchTags: provider.SearchTags.Select(t => NormalizeString(t)).ToList(), provider))
 
                 // Actually search for the searchterm
-                .Where(p => p.nname.Contains(query))
+                .Where(p => p.searchTags.Any(t => t.Contains(query)))
 
+                // Cast the found tag to a normalized name, this will be used to order it
+                .Select(provider => (nname: provider.searchTags.Where(t => t.Contains(query)).FirstOrDefault(), provider.provider))
+               
                 // name contains a word equal to the exact search string
                 .OrderByDescending(p => p.nname.Split(null).Contains(query))
 

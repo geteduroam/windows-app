@@ -30,7 +30,7 @@ public static class AutoInstaller
 
             if (isInstalled && canBeUpdated)
             {
-                var result = MessageBox.Show($"De geinstallerde {Settings.Settings.ApplicationIdentifier} is is ouder dan deze versie, wilt u deze applicatie updaten?", "- Verzin iets leuks -", MessageBoxButton.YesNo);
+                var result = MessageBox.Show($"De geinstallerde {Settings.Settings.ApplicationIdentifier} is is ouder dan deze versie, wilt u deze applicatie updaten?", "Update beschikbaar!", MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                 {
                     SelfInstaller.DefaultInstance.EnsureIsInstalled();

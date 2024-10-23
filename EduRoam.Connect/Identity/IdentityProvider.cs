@@ -12,6 +12,8 @@ namespace EduRoam.Connect.Identity
         public string Id { get; set; }
         public List<IdentityProviderProfile> Profiles { get; set; }
 
+        public List<string> SearchTags { get; set; } = new List<string>();
+
         /// <summary>
         /// How the institution is shown to the end user
         /// </summary>
