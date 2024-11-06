@@ -10,12 +10,15 @@ namespace EduRoam.Connect
             return new List<string>() { value };
         }
 
-        public static string ToHexBinary(this string thumb)
+        // When Windows makes a Wi-Fi profile, it formats the 8 bit hexits
+        // lower case with a space after every hexit, including the last one
+        // Formatting it this way does not seem necessary for the profile to work,
+        // but we do so anyway in order to minimize potential problems
+        public static string ToHexString(this string thumb)
         {
             var value = Regex.Replace(thumb, " ", "");
             value = Regex.Replace(value, ".{2}", "$0 ");
-            value = value.ToUpperInvariant();
-            return value.Trim();
+            return value.ToLowerInvariant();
         }
     }
 }
