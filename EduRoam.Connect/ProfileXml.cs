@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text.RegularExpressions;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace EduRoam.Connect
@@ -137,21 +137,13 @@ namespace EduRoam.Connect
 
             // Construct XML document
             XElement ssidConfigElement;
-            XElement hs2Element, roamingConsortiumElement;
 
             var newProfile =
                 new XElement(nsWLAN + "WLANProfile",
                     new XElement(nsWLAN + "name", profileName),
                     ssidConfigElement =
                     new XElement(nsWLAN + "SSIDConfig"),
-                    hs2Element =
-                    new XElement(nsWLAN + "Hotspot2",
-                        new XElement(nsWLAN + "DomainName", authMethod.EapConfig?.InstitutionInfo.InstId),
-                        //new XElement(nsWLAN + "NAIRealm", ), // A list of Network Access Identifier (NAI) Realm identifiers. Entries in this list are usually of the form user@domain.
-                        //new XElement(nsWLAN + "Network3GPP", ), // A list of Public Land Mobile Network (PLMN) IDs.
-                        roamingConsortiumElement =
-                        new XElement(nsWLAN + "RoamingConsortium") // A list of Organizationally Unique Identifiers (OUI) assigned by IEEE.
-                    ),
+                    withHS20 ? GetHotspot2Element(authMethod) : null,
                     new XElement(nsWLAN + "connectionType", "ESS"),
                     new XElement(nsWLAN + "connectionMode", "auto"),
                     new XElement(nsWLAN + "autoSwitch", "false"),
@@ -168,7 +160,7 @@ namespace EduRoam.Connect
                             new XElement(nsWLAN + "preAuthMode", "disabled"),
                             new XElement(nsOneX + "OneX",
                                 //new XElement(nsOneX + "cacheUserData", "true"),
-                                new XElement(nsOneX + "authMode", "user"), // user 
+                                new XElement(nsOneX + "authMode", "user"), // user
                                 new XElement(nsOneX + "EAPConfig",
                                     CreateEapConfiguration(
                                         eapType: authMethod.EapType,
@@ -198,23 +190,9 @@ namespace EduRoam.Connect
                 new XElement(nsWLAN + "nonBroadcast", hiddenNetwork ? "true" : "false")
             );
 
-            // Populate the Hs2 field
-            authMethod.ConsortiumOIDs.ForEach(oui =>
-                roamingConsortiumElement.Add(
-                    new XElement(nsWLAN + "OUI", oui)
-                ));
-            // ... or remove it if it shouldn't be there
-            if (!withHS20)
-            {
-                hs2Element.Remove();
-            }
-
             var profileXml = newProfile.ToString();
 
-            using var profileSchema = ReadProfileSchema("WLANProfile-v1.xsd");
-            var isValid = Validator.ValidateXml(profileXml, profileSchema);
-
-            if (!isValid)
+            if (!validateXml(profileXml, "WLANProfile-v1.xsd"))
             {
                 throw new WLANProfileException("WLAN profile (xml) is invalid");
             }
@@ -222,11 +200,25 @@ namespace EduRoam.Connect
             return (profileName, profileXml);
         }
 
-        private static Stream ReadProfileSchema(string WLANProfileSchemaResource)
+        private static XElement? GetHotspot2Element(AuthenticationMethod authMethod)
         {
-            var assembly = Assembly.GetExecutingAssembly();
+            XElement roamingConsortiumElement;
 
-            return assembly.GetManifestResourceStream($"EduRoam.Connect.{WLANProfileSchemaResource}");
+            var hs20Element = new XElement(nsWLAN + "Hotspot2",
+                new XElement(nsWLAN + "DomainName", authMethod.EapConfig?.InstitutionInfo.InstId),
+                //new XElement(nsWLAN + "NAIRealm", ), // A list of Network Access Identifier (NAI) Realm identifiers. Entries in this list are usually of the form user@domain.
+                // new XElement(nsWLAN + "Network3GPP", ), // A list of Public Land Mobile Network (PLMN) IDs.
+                roamingConsortiumElement =
+                new XElement(nsWLAN + "RoamingConsortium") // A list of Organizationally Unique Identifiers (OUI) assigned by IEEE.
+            );
+
+            authMethod.ConsortiumOIDs.ForEach(oui =>
+                roamingConsortiumElement.Add(
+                    new XElement(nsWLAN + "OUI", oui)
+                )
+            );
+
+            return hs20Element;
         }
 
         private static XElement CreateEapConfiguration(
@@ -262,7 +254,7 @@ namespace EduRoam.Connect
                                     new XElement(nsETCPv1 + "SimpleCertSelection", "true")
                                 )
                             ),
-                            GetServerValidationElement(nsETCPv1 + "TrustedRootCA", serverNames, caThumbprints),
+                            GetServerValidationElement(nsETCPv1, serverNames, caThumbprints),
                             new XElement(nsETCPv1 + "DifferentUsername", "false")
                         )
                     )
@@ -302,7 +294,7 @@ namespace EduRoam.Connect
                     new XElement(nsBECP + "Eap", // PEAP
                         new XElement(nsBECP + "Type", (int)eapType),
                         new XElement(nsMPCPv1 + "EapType",
-                            GetServerValidationElement(nsMPCPv1 + "TrustedRootCA", serverNames, caThumbprints),
+                            GetServerValidationElement(nsMPCPv1, serverNames, caThumbprints),
                             new XElement(nsMPCPv1 + "FastReconnect", "true"),
                             new XElement(nsMPCPv1 + "InnerEapOptional", "false"),
                             new XElement(nsBECP + "Eap", // MSCHAPv2
@@ -331,7 +323,7 @@ namespace EduRoam.Connect
             {
                 configElement.Add(
                     new XElement(nsTTLS + "EapTtls",
-                        GetServerValidationElement(nsTTLS + "TrustedRootCAHash", serverNames, caThumbprints),
+                        GetServerValidationElement(nsTTLS, serverNames, caThumbprints),
                         new XElement(nsTTLS + "Phase2Authentication",
                             innerAuthType switch
                             {
@@ -389,16 +381,50 @@ namespace EduRoam.Connect
             return eapConfiguration;
         }
 
-        private static XElement GetServerValidationElement(XName thumbprintNodeName, List<string> serverNames, List<string> caThumbprints)
+        /// <summary>
+        /// Create the XML node for server validation, verifying the CA by thumbprint and the server certificate by CN or subjectAltName
+        /// </summary>
+        /// <param name="ns">The namespace for this server validation element; this depends on the authentication method, valid values are currently nsETCPv1, nsMPCPv1 and nsTTLS</param>
+        /// <param name="serverNames">List of server names, at least one of these must match the CN or subjectAltName of the certificate from the RADIUS server</param>
+        /// <param name="caThumbprints">List of trusted CA thumbprints; the server certificate must be signed by one of these roots</param>
+        private static XElement GetServerValidationElement(XNamespace ns, List<string> serverNames, List<string> caThumbprints)
         {
-            var serverValidationElement = new XElement(nsETCPv1 + "ServerValidation",
-                new XElement(nsETCPv1 + "DisableUserPromptForServerValidation", "true"),
-                new XElement(nsETCPv1 + "ServerNames", string.Join(";", serverNames))
+            // Windows uses different XML namespaces for different authentication methods,
+            // and they are not completely consistent with naming across these different namespaces
+            var thumbprintNodeName = ns == nsTTLS ? "TrustedRootCAHash" : "TrustedRootCA";
+            var disablePromptNodeName = ns == nsTTLS ? "DisablePrompt" : "DisableUserPromptForServerValidation";
+
+            var serverValidationElement = new XElement(ns + "ServerValidation",
+                new XElement(ns + disablePromptNodeName, "true"),
+                new XElement(ns + "ServerNames", string.Join(";", serverNames))
             );
             caThumbprints.ForEach(thumb =>
-                serverValidationElement.Add(new XElement(thumbprintNodeName, thumb.ToHexString())));
+                serverValidationElement.Add(new XElement(ns + thumbprintNodeName, thumb.ToHexString())));
 
             return serverValidationElement;
+        }
+
+        private static bool validateXml(string xmlContent, string xsdResource)
+        {
+            var xsdContent = Assembly.GetExecutingAssembly().GetManifestResourceStream($"EduRoam.Connect.{xsdResource}");
+
+            var isValid = true;
+            var settings = new XmlReaderSettings();
+            settings.ValidationType = ValidationType.Schema;
+            settings.ConformanceLevel = ConformanceLevel.Fragment;
+            settings.CheckCharacters = true;
+            settings.Schemas.Add(null, XmlReader.Create(xsdContent));
+            settings.ValidationEventHandler += (sender, e) =>
+            {
+                isValid = false;
+            };
+
+            using (var reader = XmlReader.Create(new StringReader(xmlContent), settings))
+            {
+                while (reader.Read()) { }
+            }
+
+            return isValid;
         }
 
         /// <summary>
