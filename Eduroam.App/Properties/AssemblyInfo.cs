@@ -8,7 +8,7 @@ using System.Windows;
 [assembly: AssemblyTitle("geteduroam for Windows")]
 [assembly: AssemblyDescription("eduroam configuration utility")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Surf")]
+[assembly: AssemblyCompany("SURF")]
 [assembly: AssemblyProduct("geteduroam")]
 [assembly: AssemblyCopyright("Copyright © 2018-2024")]
 [assembly: AssemblyTrademark("")]
@@ -47,6 +47,6 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("4.1.3")]
-[assembly: AssemblyFileVersion("4.1.3")]
+[assembly: AssemblyVersion("4.1.3.1")]
+[assembly: AssemblyFileVersion("4.1.3.1")]
 [assembly: AssemblyMetadata("Keywords", "geteduroam, eduroam")]
