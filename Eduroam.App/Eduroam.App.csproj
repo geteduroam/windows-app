@@ -157,6 +157,10 @@
       <Project>{5edd4a2f-2b8f-4878-b3bd-8234f2c7ba0d}</Project>
       <Name>App.Library</Name>
     </ProjectReference>
+    <ProjectReference Include="..\App.Settings\App.Settings.csproj">
+      <Project>{27378484-7ab6-4625-8906-9f87b66f7461}</Project>
+      <Name>App.Settings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EduRoam.Localization\EduRoam.Localization.csproj">
       <Project>{a13e5e20-857e-49ed-b307-bb2a73896902}</Project>
       <Name>EduRoam.Localization</Name>

@@ -86,6 +86,33 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string AppTitle {
+            get {
+                return ResourceManager.GetString("AppTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The installed {0} is older than this version. Would you like to update this application?.
+        /// </summary>
+        public static string AppUpdateAvailable {
+            get {
+                return ResourceManager.GetString("AppUpdateAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This version of {0} is not compatible with the current Windows architecture. Please use a version of the application optimized for this system..
+        /// </summary>
+        public static string ArchitectureNotCompatible {
+            get {
+                return ResourceManager.GetString("ArchitectureNotCompatible", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to continue?.
         /// </summary>
         public static string AreYouSure {

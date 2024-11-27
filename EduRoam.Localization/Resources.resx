@@ -628,4 +628,13 @@ Exception: {0}</value>
   <data name="CheckCertificateToastP2" xml:space="preserve">
     <value>You have {0} days left, please renew your account.</value>
   </data>
+  <data name="AppTitle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ArchitectureNotCompatible" xml:space="preserve">
+    <value>This version of {0} is not compatible with the current Windows architecture. Please use a version of the application optimized for this system.</value>
+  </data>
+  <data name="AppUpdateAvailable" xml:space="preserve">
+    <value>The installed {0} is older than this version. Would you like to update this application?</value>
+  </data>
 </root>

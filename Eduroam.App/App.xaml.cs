@@ -1,11 +1,11 @@
 ﻿using App.Library;
 using App.Library.Utility;
-
-using DocumentFormat.OpenXml.Wordprocessing;
-
 using Microsoft.Extensions.DependencyInjection;
+using App.Settings;
 
+using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Windows;
 
 using LanguageResources = EduRoam.Localization.Resources;
@@ -29,13 +29,24 @@ namespace Eduroam.App
                 this.Shutdown(1);
             }
 
-            #region SelfInstaller AutoInstall
-            var resultObject = AutoInstaller.CheckIfInstalled();
-            if(!resultObject)
+            #region Architecture Check
+            if (RuntimeInformation.ProcessArchitecture is not Architecture.Arm64 or Architecture.Arm
+                && ArchitectureHelper.IsArm64())
             {
-                AutoInstaller.StartApplicationFromInstallLocation();
-                this.Shutdown(1);
-            } 
+                Settings.IsArchitectureIncompatible = true;
+            }
+            #endregion
+
+            #region SelfInstaller AutoInstall
+            if (!Settings.IsArchitectureIncompatible)
+            {
+                var resultObject = AutoInstaller.CheckIfInstalled();
+                if (!resultObject)
+                {
+                    AutoInstaller.StartApplicationFromInstallLocation();
+                    this.Shutdown(1);
+                }
+            }
             #endregion
 
 
