@@ -33,13 +33,14 @@ namespace Govroam.App
             }
 
             #region Architecture Check
-            if (RuntimeInformation.ProcessArchitecture is not Architecture.Arm64 or Architecture.Arm
-                && ArchitectureHelper.IsArm64())
+            if (
+                (RuntimeInformation.ProcessArchitecture is not Architecture.Arm64 or Architecture.Arm && ArchitectureHelper.IsArm64()) ||
+                (RuntimeInformation.ProcessArchitecture is Architecture.Arm64 or Architecture.Arm && !ArchitectureHelper.IsArm64())
+            )
             {
                 Settings.IsArchitectureIncompatible = true;
             }
             #endregion
-
 
             #region SelfInstaller AutoInstall
             if (!Settings.IsArchitectureIncompatible)
