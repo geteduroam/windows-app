@@ -2,6 +2,8 @@
 
 using Newtonsoft.Json;
 
+using Semver;
+
 namespace EduRoam.Connect.Identity.v2
 {
     public class LetsWifiDiscovery
@@ -12,6 +14,7 @@ namespace EduRoam.Connect.Identity.v2
         public class DiscoveryRoot
         {
             public List<DiscoveryInstitution> Providers { get; set; } = new();
+            public Dictionary<string, SemVersion> MinimalAppVersion = new();
             public string Seq { get; set; } = null!;
         }
         

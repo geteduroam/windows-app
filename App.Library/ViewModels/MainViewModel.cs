@@ -216,24 +216,44 @@ namespace App.Library.ViewModels
                 this.SetStartContent();
             }
 
-
             void OnDenyUnsupported()
             {
                 Application.Current.Shutdown(1);
             }
 
-            if (SemVersion.ComparePrecedence(SelfInstaller.DefaultInstance.GetCurrentVersion(), UpdateChecker.MinimalSupportedVersion) == -1)
+            if (this.idpDownloader.OutdatedAppFailure)
             {
-                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.VersionNoLongerSupported, Settings.Settings.ApplicationIdentifier, SelfInstaller.DefaultInstance.GetCurrentVersionString(), UpdateChecker.MinimalSupportedVersion, UpdateChecker.NewVersion), confirmOnly: false, OnConfirmUpdate, OnDenyUnsupported));
+                this.SetActiveContent(new ConfirmViewModel(
+                    this, 
+                    string.Format(
+                        EduRoam.Localization.Resources.VersionNoLongerSupported, 
+                        Settings.Settings.ApplicationIdentifier, 
+                        Settings.Settings.ApplicationVersion, 
+                        this.idpDownloader.MinimalAppVersion?.ToString() ?? "Unsupported", 
+                        UpdateChecker.NewVersion
+                    ), 
+                    confirmOnly: false, 
+                    OnConfirmUpdate, 
+                    OnDenyUnsupported
+                ));
 
                 return;
             }
 
             if (UpdateChecker.IsUpdateAvailable)
             {
-                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.UpdateAvailableMessage, Settings.Settings.ApplicationIdentifier, SelfInstaller.DefaultInstance.GetCurrentVersionString(), UpdateChecker.NewVersion), confirmOnly: false, OnConfirmUpdate, OnDenyUpdate));
-
-
+                this.SetActiveContent(new ConfirmViewModel(
+                    this, 
+                    string.Format(
+                        EduRoam.Localization.Resources.UpdateAvailableMessage, 
+                        Settings.Settings.ApplicationIdentifier, 
+                        Settings.Settings.ApplicationVersion, 
+                        UpdateChecker.NewVersion
+                    ), 
+                    confirmOnly: false, 
+                    OnConfirmUpdate, 
+                    OnDenyUpdate
+                ));
 
                 return;
             }

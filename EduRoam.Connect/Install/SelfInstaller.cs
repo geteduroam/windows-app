@@ -420,13 +420,7 @@ namespace EduRoam.Connect.Install
         /// <summary>
         /// For AutoInstaller, location is Install Path
         /// </summary>
-        public bool CanBeUpdated()
-        {
-            var installedVersion = this.GetFileVersion(this.InstallExePath);
-            var runningVersion = this.GetFileVersion(System.Reflection.Assembly.GetEntryAssembly()!.Location);
-
-            return (SemVersion.ComparePrecedence(installedVersion, runningVersion) == -1);
-        }
+        public bool CanBeUpdated() => this.CanBeUpdated(Settings.GetFileVersion(this.InstallExePath));
 
         /// <summary>
         /// For UpdateChecker, location is Current path
@@ -435,7 +429,7 @@ namespace EduRoam.Connect.Install
         /// <returns></returns>
         public bool CanBeUpdated(SemVersion newVersion)
         {
-            var installedVersion = this.GetCurrentVersion();
+            var installedVersion = Settings.ApplicationVersion;
             return (SemVersion.ComparePrecedence(installedVersion, newVersion) == -1);
         }
 
@@ -468,19 +462,6 @@ namespace EduRoam.Connect.Install
         {
             Process.Start(this.InstallExePath);
         }
-
-        private SemVersion GetFileVersion(string path)
-        {
-            var fileVersion = FileVersionInfo.GetVersionInfo(path);
-            var v = fileVersion.FileVersion;
-            var splittedVersion = v.Split(".".ToCharArray());
-
-
-            return new SemVersion(int.Parse(splittedVersion[0]), int.Parse(splittedVersion[1]), int.Parse(splittedVersion[2]));
-        }
-
-        public SemVersion GetCurrentVersion() => this.GetFileVersion(ThisExePath);
-        public string GetCurrentVersionString() => this.GetCurrentVersion().ToString();
         #endregion
     }
 

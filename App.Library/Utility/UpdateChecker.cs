@@ -24,7 +24,6 @@ public static class UpdateChecker
 
     public static UpdateResponseRootDto UpdateData { get; set; } = new();       
     public static bool IsUpdateAvailable { get; set; }
-    public static SemVersion? MinimalSupportedVersion { get; set; } 
     public static string NewVersion { get; set; }
 
     // http objects
@@ -41,7 +40,6 @@ public static class UpdateChecker
         var newVersion = new SemVersion(parsedVersion.Major, parsedVersion.Minor, parsedVersion.Build);
 
         var parsedMinimalSupportedVersion = Version.Parse(UpdateData.MinimalSupportedVersion);
-        MinimalSupportedVersion = new SemVersion(parsedMinimalSupportedVersion.Major, parsedMinimalSupportedVersion.Minor, parsedMinimalSupportedVersion.Build);
 
         IsUpdateAvailable = SelfInstaller.DefaultInstance.CanBeUpdated(newVersion);
 

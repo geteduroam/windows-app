@@ -21,6 +21,8 @@ using System.Management;
 
 using EduRoam.Connect.Converter;
 using EduRoam.Connect.Identity.v2;
+using Semver;
+using System.Reflection;
 
 namespace EduRoam.Connect.Identity
 {
@@ -49,6 +51,9 @@ namespace EduRoam.Connect.Identity
         }
 
         public bool Loaded { get => this.Providers.Any(); }
+
+        public bool OutdatedAppFailure { get; private set; } = false; // Changes to true if discovery shows we are outdated
+        public SemVersion MinimalAppVersion { get; private set; }
 
         private static HttpClient InitializeHttpClient()
         {
@@ -134,8 +139,21 @@ namespace EduRoam.Connect.Identity
 
                     if (isNewVersion)
                     {
-                        var discovery = JsonConvert.DeserializeObject<LetsWifiDiscovery>(apiJson);
-                        discoveryData = DiscoveryConverter.Covert(discovery ?? new LetsWifiDiscovery());
+                        var discovery = JsonConvert.DeserializeObject<LetsWifiDiscovery>(apiJson) ?? new LetsWifiDiscovery();
+                        SemVersion? minimalVersion = null;
+                        discovery.Root.MinimalAppVersion.TryGetValue(Settings.OAuthClientId, out minimalVersion);
+                        this.MinimalAppVersion = minimalVersion;
+                        if (minimalVersion == null || SemVersion.ComparePrecedence(Settings.ApplicationVersion, minimalVersion) == -1)
+                        {
+                            // We are too old, remove downloaded discovery
+                            discovery = new LetsWifiDiscovery();
+                            discoveryData = new DiscoveryApi();
+                            this.OutdatedAppFailure = true;
+                        }
+                        else
+                        {
+                            discoveryData = DiscoveryConverter.Covert(discovery);
+                        }
                     }
                     else
                     {
