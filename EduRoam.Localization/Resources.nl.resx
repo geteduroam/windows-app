@@ -242,7 +242,7 @@ Kan geen verbinding maken met eduroam.</value>
     <value>Gebruikersnaam:</value>
   </data>
   <data name="DaysLeft" xml:space="preserve">
-    <value>{0} dagen over</value>
+    <value>{0} dagen geldig</value>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Klaar</value>
@@ -373,13 +373,13 @@ Uitzondering: {0}</value>
     <value>Selecteer een bestand.</value>
   </data>
   <data name="HoursLeft" xml:space="preserve">
-    <value>{0} uur over</value>
+    <value>{0} uur geldig</value>
   </data>
   <data name="IsSure" xml:space="preserve">
     <value>j</value>
   </data>
   <data name="LabelAccountValidFor" xml:space="preserve">
-    <value>Uw account is geldig voor</value>
+    <value>Uw account is nog</value>
   </data>
   <data name="LabelEmail" xml:space="preserve">
     <value>E-mail</value>
