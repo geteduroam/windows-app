@@ -6,11 +6,9 @@ using ManagedNativeWifi;
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -459,10 +457,9 @@ namespace EduRoam.Connect
         /// <returns>all Wireless interface IDs</returns>
         private static IEnumerable<Guid> GetAllInterfaceIds()
         {
-            return NetworkInterface.GetAllNetworkInterfaces()
-                .Where(nic => nic.NetworkInterfaceType == NetworkInterfaceType.Wireless80211) // TODO: Wired 802.1x support
-                .Where(nic => nic.Speed != -1) // lol
-                .Select(nic => new Guid(nic.Id));
+            return NativeWifi.EnumerateInterfaces()
+                .Where(nic => nic.State != InterfaceState.NotReady)
+                .Select(nic => nic.Id);
         }
 
     }
