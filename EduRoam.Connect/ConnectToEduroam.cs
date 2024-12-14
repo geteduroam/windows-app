@@ -143,17 +143,8 @@ namespace EduRoam.Connect
             // gets updated eduroam network packs
             foreach (var network in EduRoamNetwork.GetConfigured())
             {
-                // dont try to connect with Passpoint to prevent errors - fallback on SSID
-                if (network.ProfileName.Contains(" via Passpoint"))
-                {
-                    return false;
-                }
-
-                var success = await network.TryToConnect();
-                if (success)
-                {
+                if (await network.TryToConnect())
                     return true;
-                }
             }
             return false;
         }

@@ -29,37 +29,24 @@ namespace EduRoam.Connect
         // Properties
         private readonly BaseConfigStore store = new RegistryStore();
 
-        private AvailableNetworkPack? NetworkPack { get; }
-
         private ProfilePack? ProfilePack { get; }
 
         public Guid InterfaceId { get; }
 
-        public string ProfileName { get => this.ProfilePack?.Name ?? this.NetworkPack?.ProfileName ?? ""; }
+        public string? ProfileName { get => this.ProfilePack?.Name; }
 
-        [MemberNotNullWhen(true, nameof(this.NetworkPack))]
-        public bool IsAvailable { get => this.NetworkPack != null; }
 
         private EduRoamNetwork(Guid interfaceId)
         {
-            this.NetworkPack = null;
             this.ProfilePack = null;
             this.InterfaceId = interfaceId; // non-nullable
         }
 
         private EduRoamNetwork(
-            AvailableNetworkPack? networkPack,
-            ProfilePack? profilePack,
+            ProfilePack profilePack,
             object? _ = null) // last argument is ConfiguredWLANProfile
-            : this(profilePack?.Interface.Id ?? networkPack?.Interface.Id ?? throw new ArgumentNullException("Network and Profile Interface id's"))
+            : this(profilePack.Interface.Id)
         {
-            Debug.Assert((networkPack, profilePack) != (null, null));
-            Debug.Assert(
-                networkPack == null
-                || profilePack == null
-                || networkPack.Interface.Id == profilePack.Interface.Id);
-
-            this.NetworkPack = networkPack;
             this.ProfilePack = profilePack;
         }
 
@@ -307,16 +294,22 @@ namespace EduRoam.Connect
 
         public async Task<bool> TryToConnect()
         {
-            if (!this.IsAvailable)
+            try
             {
-                return false;
+                return await NativeWifi.ConnectNetworkAsync(
+                    interfaceId: this.InterfaceId,
+                    profileName: this.ProfileName,
+                    bssType: BssType.Infrastructure,
+                    timeout: TimeSpan.FromSeconds(8)
+                );
             }
-
-            return await NativeWifi.ConnectNetworkAsync(
-                interfaceId: this.NetworkPack.Interface.Id,
-                profileName: this.NetworkPack.ProfileName,
-                bssType: this.NetworkPack.BssType,
-                timeout: TimeSpan.FromSeconds(8));
+            catch (Win32Exception e)
+            {
+                // Will typically happen on Passpoint, probably because the ProfileName does not match the profile in Windows?
+                // MethodName: WlanConnect, ErrorCode: 2147500035, ErrorMessage: Invalid pointer
+                Debug.Print(e.Message);
+            }
+            return false;
         }
 
         // static interface:
@@ -333,25 +326,8 @@ namespace EduRoam.Connect
                 return Enumerable.Empty<EduRoamNetwork>();
             }
 
-            PruneStaleProfiles();
-
-            // TODO: multiple profiles on a single interface creates duplicate work further down
-            //       perhaps group by InterfaceId and have a list of ProfileName in each EduroamNetwork?
-            var availableNetworks = (eapConfig == null ? Enumerable.Empty<AvailableNetworkPack>() : GetAllMatchingNetworkPacks(eapConfig.SSIDs))
-                .Select(networkPack => new EduRoamNetwork(networkPack, null))
-                .ToList();
-
-            var configuredInterfaces = availableNetworks
-                .Where(network => network.NetworkPack != null)
-                .Select(network => network.NetworkPack!.Interface.Id)
-                .ToImmutableHashSet();
-
-            // These are not available, but they are configurable
-            var unavailableNetworks = GetAllInterfaceIds()
-                .Where(guid => !configuredInterfaces.Contains(guid))
+            return GetAllInterfaceIds()
                 .Select(guid => new EduRoamNetwork(guid));
-
-            return availableNetworks.Concat(unavailableNetworks);
         }
 
         /// <summary>
@@ -373,8 +349,7 @@ namespace EduRoam.Connect
                     outerKeySelector: networkPPack => (networkPPack.ppack.Name, networkPPack.ppack.Interface.Id),
                     innerKeySelector: persitedProfile => (persitedProfile.ProfileName, persitedProfile.InterfaceId),
                     // note, EduroamNetwork doesn't actually use persistedProfile
-                    resultSelector: (networkPPack, persistedProfile) => new EduRoamNetwork(networkPPack.network, networkPPack.ppack, persistedProfile))
-                .OrderByDescending(network => network.IsAvailable);
+                    resultSelector: (networkPPack, persistedProfile) => new EduRoamNetwork(networkPPack.ppack, persistedProfile));
         }
 
         /// <param name="eapConfig">EAP config</param>
@@ -468,23 +443,6 @@ namespace EduRoam.Connect
         }
 
         /// <summary>
-        /// Gets all available network packs with a profile configured
-        /// </summary>
-        /// <returns>Network packs</returns>
-        private static IEnumerable<AvailableNetworkPack> GetAllAvailableNetworkPacksWithProfiles()
-        {
-            if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
-            {
-                return Enumerable.Empty<AvailableNetworkPack>();
-            }
-
-            // TODO, maybe join in the profile pack?
-
-            return NativeWifi.EnumerateAvailableNetworks()
-                .Where(network => !string.IsNullOrEmpty(network.ProfileName));
-        }
-
-        /// <summary>
         /// Gets all installed profile packs on the machine
         /// </summary>
         /// <returns>Profile packs</returns>
@@ -510,37 +468,15 @@ namespace EduRoam.Connect
                 return Enumerable.Empty<(ProfilePack, AvailableNetworkPack?)>();
             }
 
-            // List all WLAN profiles installed on machine
-            var allProfilePacks = NativeWifi.EnumerateProfiles().ToList();
-
-            // inner join with available networks (in range)
-            var availableProfileNetworks = allProfilePacks
-                .Join<ProfilePack, AvailableNetworkPack, (string, Guid id), (ProfilePack ppack, AvailableNetworkPack? network)>(GetAllAvailableNetworkPacksWithProfiles(),
-                    ppack => (ppack.Name, ppack.Interface.Id),
-                    network => (network.ProfileName, network.Interface.Id),
-                    (ppack, network) => (ppack, network))
-                .ToList();
-
-            // create intermediate hash set of available profile packs, for quick lookups
-            var availableProfilePacks = availableProfileNetworks
-                .Select(item => item.ppack)
-                .ToImmutableHashSet();
-
-            // filter out the available profile packs from all profile packs
-            var unavailableProfiles = allProfilePacks
-                .Where(ppack => !availableProfilePacks.Contains(ppack))
+            return NativeWifi.EnumerateProfiles()
                 .Select(ppack => (ppack, network: (AvailableNetworkPack?)null))
                 .ToList();
-
-            return availableProfileNetworks
-                .Concat(unavailableProfiles)
-                .Where(profile => profile.ppack.Interface?.Id != null || profile.network?.Interface?.Id != null);
         }
 
         /// <summary>
         /// Get all available networks matching the SSID.
         /// </summary>
-        /// <param name="credentialApplicabilities"></param>
+        /// <param name="ssids"></param>
         /// <returns>Network packs</returns>
         private static IOrderedEnumerable<AvailableNetworkPack> GetAllMatchingNetworkPacks(
             IEnumerable<string> ssids)
@@ -550,7 +486,19 @@ namespace EduRoam.Connect
                 return Enumerable.Empty<AvailableNetworkPack>().OrderBy(_ => false);
             }
 
-            return NativeWifi.EnumerateAvailableNetworks()
+            var networks = NativeWifi.EnumerateAvailableNetworks();
+            try
+            {
+                networks.ToList(); // forces lazy loading, triggering the exception
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                // User rejected Location access
+                // System.UnauthorizedAccessException: 'MethodName: WlanGetAvailableNetworkList, ErrorCode: 5, ErrorMessage: Access is denied.
+                Debug.Print(e.Message);
+                networks = Enumerable.Empty<AvailableNetworkPack>();
+            }
+            return networks
                 .Where(network => ssids.Contains(network.Ssid.ToString()))
                 .OrderBy(network => string.IsNullOrEmpty(network.ProfileName));
         }
