@@ -278,10 +278,6 @@ Impossibile connettersi perché non è stato possibile trovare EAP Config</value
     <value>Tutto è configurato!
 Impossibile connettersi a eduroam, probabilmente sei fuori copertura.</value>
   </data>
-  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Tutto è configurato!
-Impossibile connettersi a eduroam.</value>
-  </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>Il nome utente deve contenere @ esattamente una volta</value>
   </data>

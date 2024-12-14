@@ -278,10 +278,6 @@ No ha sido posible conectarse porque no se encontró ninguna configuración de E
     <value>Todo está configurado.
 No ha sido posible conectarse a eduroam porque probablemente estás fuera de cobertura.</value>
   </data>
-  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Todo está configurado.
-No ha sido posible conectarse a eduroam.</value>
-  </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>El nombre de usuario debe contener @ exactamente una vez.</value>
   </data>

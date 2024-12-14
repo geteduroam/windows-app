@@ -276,10 +276,6 @@ Impossible de se connecter car la configuration EAP est introuvable</value>
     <value>Tout est configuré !
 Impossible de vous connecter à eduroam, vous êtes probablement hors de couverture.</value>
   </data>
-  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Tout est configuré !
-Impossible de se connecter à eduroam.</value>
-  </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>Le nom d'utilisateur doit contenir @ une fois</value>
   </data>

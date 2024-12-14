@@ -352,26 +352,6 @@ namespace EduRoam.Connect
                     resultSelector: (networkPPack, persistedProfile) => new EduRoamNetwork(networkPPack.ppack, persistedProfile));
         }
 
-        /// <param name="eapConfig">EAP config</param>
-        /// <returns>true if at least one network is available</returns>
-        public static bool IsNetworkInRange(EapConfig eapConfig)
-        {
-            if (eapConfig == null)
-            {
-                throw new ArgumentNullException(nameof(eapConfig));
-            }
-
-            // NICE TO HAVE: some way to detect if any Hs2 hotspot is available if no matching ssid are found
-            return IsNetworkInRange(eapConfig.SSIDs);
-        }
-
-        /// <param name="ssids">SSID to look for</param>
-        /// <returns>true if at least one network is available</returns>
-        public static bool IsNetworkInRange(IEnumerable<string> ssids)
-        {
-            return GetAllMatchingNetworkPacks(ssids).Any();
-        }
-
         private static void PruneStaleProfiles()
         {
             // look through installed profiles and remove persisted profile configurations which have been uninstalled by user
@@ -471,36 +451,6 @@ namespace EduRoam.Connect
             return NativeWifi.EnumerateProfiles()
                 .Select(ppack => (ppack, network: (AvailableNetworkPack?)null))
                 .ToList();
-        }
-
-        /// <summary>
-        /// Get all available networks matching the SSID.
-        /// </summary>
-        /// <param name="ssids"></param>
-        /// <returns>Network packs</returns>
-        private static IOrderedEnumerable<AvailableNetworkPack> GetAllMatchingNetworkPacks(
-            IEnumerable<string> ssids)
-        {
-            if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
-            {
-                return Enumerable.Empty<AvailableNetworkPack>().OrderBy(_ => false);
-            }
-
-            var networks = NativeWifi.EnumerateAvailableNetworks();
-            try
-            {
-                networks.ToList(); // forces lazy loading, triggering the exception
-            }
-            catch (UnauthorizedAccessException e)
-            {
-                // User rejected Location access
-                // System.UnauthorizedAccessException: 'MethodName: WlanGetAvailableNetworkList, ErrorCode: 5, ErrorMessage: Access is denied.
-                Debug.Print(e.Message);
-                networks = Enumerable.Empty<AvailableNetworkPack>();
-            }
-            return networks
-                .Where(network => ssids.Contains(network.Ssid.ToString()))
-                .OrderBy(network => string.IsNullOrEmpty(network.ProfileName));
         }
 
         /// <summary>

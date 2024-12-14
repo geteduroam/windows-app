@@ -279,11 +279,6 @@ Kan geen verbinding maken omdat EAP Config niet kan worden gevonden</value>
 
 Echter, we kunnen momenteel geen verbinding maken met {0}, het netwerk is buiten bereik. Zodra het binnen bereik is, zal je systeem verbinding maken met {0}.</value>
   </data>
-  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Alles is correct ingesteld!
-
-Echter, we kunnen momenteel geen verbinding maken met {0}, ook al is het binnen bereik. Je kunt nog steeds verbinding maken door het handmatig te selecteren in je Windows-instellingen.</value>
-  </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>De gebruikersnaam moet precies één keer @ bevatten</value>
   </data>

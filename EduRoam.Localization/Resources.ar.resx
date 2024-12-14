@@ -278,10 +278,6 @@
     <value>تم ضبط كل شيء! 
 تعذر الاتصال بشبكة eduroam، ربما تكون خارج نطاق التغطية.</value>
   </data>
-  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
-    <value>تم ضبط كل شيء! 
-تعذر الاتصال بشبكة eduroam.</value>
-  </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>يجب أن يحتوي اسم المستخدم على الرمز "@" مرة واحدة فقط</value>
   </data>

@@ -123,15 +123,8 @@ namespace EduRoam.Connect.Tasks.Connectors
             }
             else
             {
-                if (EduRoamNetwork.IsNetworkInRange(eapConfigWithCredentials))
-                {
-                    status.Errors.Add(string.Format(Resources.ErrorConfiguredButUnableToConnect, Settings.ApplicationIdentifier));
-                }
-                else
-                {
                     // Hs2 is not enumerable
                     status.Errors.Add(string.Format(Resources.ErrorConfiguredButProbablyOutOfCoverage, Settings.ApplicationIdentifier));
-                }
             }
 
             return status;

@@ -278,10 +278,6 @@ of the current client certificate has more than a 3rd left</value>
     <value>Всичко е конфигурирано!
 Не може да се свържете с eduroam. Вероятно нямате покритие.</value>
   </data>
-  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Всичко е конфигурирано!
-Не може да се свърже с eduroam.</value>
-  </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>Потребителското име трябва да съдържа само един път @</value>
   </data>

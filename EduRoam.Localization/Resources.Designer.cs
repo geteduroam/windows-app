@@ -520,17 +520,6 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Everything is set up correctly!
-        ///
-        ///However, we&apos;re currently unable to connect to {0}, even though it&apos;s in range. You can still connect by manually selecting it in your Windows settings..
-        /// </summary>
-        public static string ErrorConfiguredButUnableToConnect {
-            get {
-                return ResourceManager.GetString("ErrorConfiguredButUnableToConnect", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Username must contain @ exactly once.
         /// </summary>
         public static string ErrorCredentialsAtChar {

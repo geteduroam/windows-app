@@ -76,10 +76,6 @@ namespace EduRoam.Connect.Tasks
                     status.Errors.Add(Resources.ErrorConfiguredButNotConnected);
 
                 }
-                else if (EduRoamNetwork.IsNetworkInRange(eapConfig))
-                {
-                    status.Errors.Add(string.Format(Resources.ErrorConfiguredButUnableToConnect, Settings.ApplicationIdentifier));
-                }
                 else
                 {
                     // Hs2 is not enumerable

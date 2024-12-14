@@ -278,10 +278,6 @@ Ei saanud ühendada, sest ei leitud EAP Config (seadistust).</value>
     <value>Kõik on seadistatud.
 Ei saa eduroamiga ühendada, oled arvatavasti väljaspool leviala.</value>
   </data>
-  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Kõik on seadistatud.
-Ei saa eduroamiga ühendada.</value>
-  </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>Kasutajanimes peab olema üksainus @</value>
   </data>
