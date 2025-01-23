@@ -21,6 +21,7 @@ using System.Management;
 
 using EduRoam.Connect.Converter;
 using EduRoam.Connect.Identity.v2;
+using System.Text;
 
 namespace EduRoam.Connect.Identity
 {
@@ -52,7 +53,7 @@ namespace EduRoam.Connect.Identity
 
         private static HttpClient InitializeHttpClient()
         {
-            var r = string.Empty;
+            var systemInformation = string.Empty;
             using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_OperatingSystem"))
             {
                 var information = searcher.Get();
@@ -60,18 +61,23 @@ namespace EduRoam.Connect.Identity
                 {
                     foreach (ManagementObject obj in information)
                     {
-                        r = obj["Caption"].ToString() + "; " + obj["OSArchitecture"].ToString();
+                        // https://learn.microsoft.com/en-us/windows/win32/cimwin32prov/win32-operatingsystem
+                        systemInformation = obj["Caption"].ToString() + "; " + obj["OSArchitecture"].ToString();
                     }
                 }
-                r = r.Replace("NT 5.1.2600", "XP");
-                r = r.Replace("NT 5.2.3790", "Server 2003");
+                // Convert from ASCII and back again to remove invalid characters for the User-Agent header
+                // These characters will be converted to question marks
+                systemInformation = Encoding.ASCII.GetString(Encoding.ASCII.GetBytes(systemInformation
+                        .Replace("NT 5.1.2600", "XP")
+                        .Replace("NT 5.2.3790", "Server 2003")
+                    ));
             }
 
             var client = new HttpClient(Handler, false);
 #if DEBUG
-            client.DefaultRequestHeaders.Add("User-Agent", $"{Settings.ApplicationIdentifier}-win/{LetsWifi.Instance.VersionNumber} DEBUG HttpClient ({r})");
+            client.DefaultRequestHeaders.Add("User-Agent", $"{Settings.ApplicationIdentifier}-win-debug/{LetsWifi.Instance.VersionNumber} ({systemInformation}) HttpClient");
 #else
-            client.DefaultRequestHeaders.Add("User-Agent", $"{Settings.ApplicationIdentifier}-win/{LetsWifi.Instance.VersionNumber} HttpClient ({r})");
+            client.DefaultRequestHeaders.Add("User-Agent", $"{Settings.ApplicationIdentifier}-win/{LetsWifi.Instance.VersionNumber} ({systemInformation}) HttpClient");
 #endif
             // This client will not be used for subsequent requests,
             // so don't keep the connection open any longer than necessary
