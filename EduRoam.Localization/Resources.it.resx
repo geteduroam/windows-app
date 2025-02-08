@@ -117,25 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppCommandsHelp" xml:space="preserve">
-    <value>Comandi CLI supportati:
-
-    /? : 
-            Show this help text
-    /help : 
-            Mostra questo testo di aiuto
-    /install : 
-            Installa questo file binario in %USER%/AppData/Local
-    /uninstall : 
-            Disinstalla questo file binario da %USER%/AppData/Local insieme
-            a qualsiasi dato di configurazione
-    /refresh : 
-            Aggiorna il certificato utente utilizzando il token di aggiornamento.
-            Viene chiamato automaticamente da un'attività pianificata in Windows.
-    /refresh-force : 
-            Aggiorna il certificato utente utilizzando il token di aggiornamento.
-            Aggiornerà il profilo anche se il periodo di validità
-            rimanente del certificato client corrente è più di 1/3 del totale.</value>
+  <data name="AppCommandLineHelpFlagsTitle" xml:space="preserve">
+    <value>Comandi CLI supportati:</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsHelp" xml:space="preserve">
+    <value>Mostra questo testo di aiuto.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsInstall" xml:space="preserve">
+    <value>Installa questo file binario in %USER%/AppData/Local.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsUninstall" xml:space="preserve">
+    <value>Disinstalla questo file binario da %USER%/AppData/Local insieme
+a qualsiasi dato di configurazione.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsRefresh" xml:space="preserve">
+    <value>Aggiorna il certificato utente utilizzando il token di aggiornamento.
+Viene chiamato automaticamente da un'attività pianificata in Windows.
+/force : 
+Aggiorna il certificato utente utilizzando il token di aggiornamento.
+Aggiornerà il profilo anche se il periodo di validità
+rimanente del certificato client corrente è più di 1/3 del totale.</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
     <value>Sei sicuro di voler continuare?</value>

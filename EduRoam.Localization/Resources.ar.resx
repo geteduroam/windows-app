@@ -117,24 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppCommandsHelp" xml:space="preserve">
-    <value>أوامر CLI المدعومة:
-    /? : 
-            أظهر نص المساعدة هذا
-    /help : 
-           أظهر نص المساعدة هذا
-    /install : 
-            Install this binary to %USER%/AppData/Local
-    /uninstall : 
-            Uninstall this binary from %USER%/AppData/Local along
-            with any configured data.
-    /refresh : 
-            Refresh the user certificate using the refresh token.
-            Is called automatically by a scheduled task in windows.
-    /refresh-force : 
-            Refresh the user certificate using the refresh token.
-            Will refresh the profile even if the validity period
-            of the current client certificate has more than a 3rd left</value>
+  <data name="AppCommandLineHelpFlagsTitle" xml:space="preserve">
+    <value>أوامر CLI المدعومة:</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsHelp" xml:space="preserve">
+    <value>أظهر نص المساعدة هذا</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
     <value>هل أنت متأكد أنك تريد الاستمرار؟</value>

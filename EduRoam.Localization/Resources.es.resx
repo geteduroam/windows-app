@@ -117,25 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppCommandsHelp" xml:space="preserve">
-    <value>Parámetros de comando CLI:
-
-    /? : 
-            Mostrar este texto de ayuda
-    /help : 
-            Mostrar este texto de ayuda
-    /install : 
-            Instalar este binario en %USER%/AppData/Local
-    /uninstall : 
-            Desinstalar este binario de %USER%/AppData/Local junto
-            con cualquier dato configurado
-    /refresh : 
-            Actualizar el certificado de usuario utilizando el token de actualización.
-            Se llama automáticamente mediante una tarea programada en Windows.
-    /refresh-force : 
-            Actualizar el certificado de usuario utilizando el token de actualización.
-            Actualizará el perfil incluso si el período de validez
-            del certificado de cliente actual tiene más de un 1/3 restante</value>
+  <data name="AppCommandLineHelpFlagsTitle" xml:space="preserve">
+    <value>Parámetros de comando CLI:</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsHelp" xml:space="preserve">
+    <value>Mostrar este texto de ayuda.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsInstall" xml:space="preserve">
+    <value>Instalar este binario en %USER%/AppData/Local.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsUninstall" xml:space="preserve">
+    <value>Desinstalar este binario de %USER%/AppData/Local junto
+con cualquier dato configurado.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsRefresh" xml:space="preserve">
+    <value>Actualizar el certificado de usuario utilizando el token de actualización.
+Se llama automáticamente mediante una tarea programada en Windows.
+/force : 
+Actualizar el certificado de usuario utilizando el token de actualización.
+Actualizará el perfil incluso si el período de validez
+del certificado de cliente actual tiene más de un 1/3 restante</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
     <value>¿Estás seguro de que quieres continuar?</value>

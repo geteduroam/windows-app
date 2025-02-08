@@ -117,24 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppCommandsHelp" xml:space="preserve">
-    <value>Commandes CLI prises en charge :
-
-/? :
-    Afficher ce texte d'aide
-/help :
-    Afficher ce texte d'aide
-/install :
-    Installez ce binaire sur %USER%/AppData/Local
-/uninstall :
-     Désinstallez ce binaire de %USER%/AppData/Local avec
-avec toutes les données configurées
-/refresh :
-     Actualisez le certificat utilisateur à l'aide du jeton d'actualisation.
-     Est appelé automatiquement par une tâche planifiée dans Windows.
-/refresh-force :
-     Actualisez le certificat utilisateur à l'aide du jeton d'actualisation.
-     Actualisera le profil même si la période de validité
+  <data name="AppCommandLineHelpFlagsTitle" xml:space="preserve">
+    <value>Commandes CLI prises en charge :</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsHelp" xml:space="preserve">
+    <value>Afficher ce texte d'aide.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsInstall" xml:space="preserve">
+    <value>Installez ce binaire sur %USER%/AppData/Local,</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsUninstall" xml:space="preserve">
+    <value>Désinstallez ce binaire de %USER%/AppData/Local avec
+avec toutes les données configurées.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsRefresh" xml:space="preserve">
+    <value>Actualisez le certificat utilisateur à l'aide du jeton d'actualisation.
+Est appelé automatiquement par une tâche planifiée dans Windows.
+/force :
+Actualisez le certificat utilisateur à l'aide du jeton d'actualisation.
+Actualisera le profil même si la période de validité
 du certificat client actuel en a plus d'un tiers</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">

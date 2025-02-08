@@ -7,7 +7,6 @@ using Microsoft.Toolkit.Uwp.Notifications;
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -31,79 +30,126 @@ namespace App.Library
             }
 
             var force = false;
-            var verbose = true;
-            switch (args[0].ToLowerInvariant())
+            Boolean? verbose = null;
+            string action = null;
+
+            for(var i=0;i<args.Length;i++) switch (args[i].ToLowerInvariant())
             {
+                case "/force":
+                    force = true;
+                    break;
+
+                case "/silent":
+                    verbose = false;
+                    break;
+
+                case "/verbose":
+                    verbose = true;
+                    break;
+
                 case "/install":
-                    {
-                        InstallTask.Install();
-
-                        return true; // terminate after
-                    }
-
                 case "/uninstall":
-                    {
-                        UninstallTask.Uninstall(verbose);
-
-                        return true; // terminate after
-                    }
+                case "/certificate-notify":
+                case "/close":
+                case "/refresh":
+                case "/help":
+                    action = action == null ? args[i].ToLowerInvariant() : "/help";
+                    break;
 
                 case "/force-refresh":
                 case "/refresh-force":
                     force = true;
-                    goto case "/refresh";
-                case "/refresh":
-                    {
-                        force |= args.Length >= 2 && string.Equals(args[1], "/force", StringComparison.OrdinalIgnoreCase);
-                        Task.Run(async () => { await RefreshTask.RefreshAsync(force: force); });
-
-                        return true; // terminate after
-                    }
+                    action = action == null ? "/refresh" : "/help";
+                    break;
 
                 case "/check-certificate":
-                    {
-                        var st = new StatusTask();
-                        var gst = st.GetStatus();
-                        var diffDate = (gst.ExpirationDate - DateTime.Now).Value.Days;
+                    action = action == null ? "/certificate-notify" : "/help";
+                    break;
 
-                        if (diffDate <= Settings.Settings.DaysLeftForNotification)
-                        {
-                            new ToastContentBuilder()
-                                .AddText(string.Format(Resources.CheckCertificateToastP1, Settings.Settings.ApplicationIdentifier))
-                                .AddText(string.Format(Resources.CheckCertificateToastP2, diffDate))
-                                .AddButton(new ToastButton()
-                                    .SetContent(Resources.CheckCertificateToastButton)
-                                    .SetBackgroundActivation()
-                                 )
-                                .Show();
-                        }
-
-                        return true; // terminate after
-                    }
-
-                case "/close":
                 case "/background":
-                    return true; // Deprecated flags, just terminate
+                    action = action == null ? "/close" : "/help";
+                    break;
 
                 case "/?":
-                case "/help":
                 default:
-                    {
-                        ShowHelpText();
+                    action = "/help";
+                    break;
+            }
 
-                        return true; // terminate after
-                    }
+            // Prevent /force on actions that don't support it
+            if (force) switch (action)
+            {
+                case "/install":
+                case "/uninstall":
+                case null:
+                    action = "/help";
+                    break;
+            }
+
+            switch (action)
+            {
+                case "/install": InstallTask.Install(verbose ?? false); return true;
+                case "/uninstall": UninstallTask.Uninstall(verbose ?? true); return true;
+                case "/refresh": RefreshCertificate(force, verbose ?? false); return true;
+                case "/certificate-notify": CertificateToast(force || (verbose ?? false)); return true;
+                case "/close": return true;
+                case "/help":
+                case null:
+                default:
+                    ShowHelpText();
+                    return true;
+            }
+        }
+
+        private static void RefreshCertificate(bool force, bool verbose)
+        {
+            var expiration = Task.Run(async () => { return await RefreshTask.RefreshAsync(force: force); });
+            expiration.RunSynchronously();
+
+            if (verbose) {
+                MessageBox.Show(string.IsNullOrWhiteSpace(expiration.Result) ? expiration.Result : "The certificate was not renewed");
+            }
+        }
+
+        private static void CertificateToast(bool verbose)
+        {
+            var st = new StatusTask();
+            var gst = st.GetStatus();
+            var diffDate = (gst.ExpirationDate - DateTime.Now).Value.Days;
+
+            if (verbose || diffDate <= Settings.Settings.DaysLeftForNotification)
+            {
+                new ToastContentBuilder()
+                    .AddText(string.Format(Resources.CheckCertificateToastP1, Settings.Settings.ApplicationIdentifier))
+                    .AddText(string.Format(Resources.CheckCertificateToastP2, diffDate))
+                    .AddButton(new ToastButton()
+                        .SetContent(Resources.CheckCertificateToastButton)
+                        .SetBackgroundActivation()
+                     )
+                    .Show();
             }
         }
 
         private static void ShowHelpText() =>
             MessageBox.Show(
                 string.Join(
-                    "\n",
+                    "\r\n",
                     new List<string>
                     {
-                        Resources.AppCommandsHelp,
+                        Resources.AppCommandLineHelpFlagsTitle,
+                        string.Empty,
+                        "      /help, /? :",
+                        HelpTextIndent(Resources.AppCommandLineHelpFlagsHelp),
+                        "      /install :",
+                        HelpTextIndent(Resources.AppCommandLineHelpFlagsInstall),
+                        "      /uninstall :",
+                        HelpTextIndent(Resources.AppCommandLineHelpFlagsUninstall),
+                        "      /refresh :",
+                        HelpTextIndent(Resources.AppCommandLineHelpFlagsRefresh),
                     }),
-                caption: Assembly.GetEntryAssembly()!.GetName().Name);
+                caption: Settings.Settings.ApplicationIdentifier);
+
+        private static string HelpTextIndent(string s) =>
+            "            " + s.Replace("\n", "\n            ");
     }
 }

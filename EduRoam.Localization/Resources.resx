@@ -117,27 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppCommandsHelp" xml:space="preserve">
-    <value>Supported CLI commands:
-
-    /? : 
-            Show this help text
-    /help : 
-            Show this help text
-    /install : 
-            Install this binary to %USER%/AppData/Local
-    /uninstall : 
-            Uninstall this binary from %USER%/AppData/Local along
-            with any configured data.
-    /refresh : 
-            Refresh the user certificate using the refresh token.
-            Is called automatically by a scheduled task in windows.
-            This option does nothing if the user certificate has
-            more than a third of it's validity left.
-    /refresh-force : 
-            Refresh the user certificate using the refresh token.
-            Will refresh the profile even if the validity period
-            of the current client certificate has more than a 3rd left</value>
+  <data name="AppCommandLineHelpFlagsTitle" xml:space="preserve">
+    <value>Supported command line flags:</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsHelp" xml:space="preserve">
+    <value>Show this help text.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsInstall" xml:space="preserve">
+    <value>Install this program to %USER%/AppData/Local.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsUninstall" xml:space="preserve">
+    <value>Uninstall this program from %USER%/AppData/Local,
+along with any configured data.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsRefresh" xml:space="preserve">
+    <value>Refresh the user certificate using the refresh token.
+Intended to be called automatically by a scheduled task in windows.
+This option does nothing if the user certificate has
+more than a third of its validity left.
+Combine with /force to refresh regardless of validity.</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
     <value>Are you sure you want to continue?</value>
@@ -660,5 +658,11 @@ If you click "No" {0} will exit.</value>
   </data>
   <data name="ButtonAppConnect" xml:space="preserve">
     <value>Connect to {0}</value>
+  </data>
+  <data name="InstallSuccess" xml:space="preserve">
+    <value>{0} has been successfully installed.</value>
+  </data>
+  <data name="InstallTitle" xml:space="preserve">
+    <value>{0} installation</value>
   </data>
 </root>

@@ -117,24 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppCommandsHelp" xml:space="preserve">
-    <value>Unterstützte Kommandozeilenkommandos:
-
- /? : 
-     Zeigt diese Hilfe an
-/help : 
-     Zeigt diese Hilfe an
-/install : 
-     Installiert das Programm in %USER%/AppData/Local
-/uninstall : 
-     Löscht diese Programm aus %USER%/AppData/Local mit allen zugehörigen Daten
-/refresh : 
-     Erneuert das Nutzerzertifikat mit dem Erneuerungstoken.
-     Wird automatisch durch einen Systemdienst aufgerufen.
-/refresh-force : 
-     Erneuert das Nutzerzertifikat mit dem Erneuerungstoken.
-     Das Zertifkat wird auf jeden Fall erneuert, selbst wenn das aktuelle
-     Zertifikat noch mehr als ein Drittel Laufzeit Rest hat.</value>
+  <data name="AppCommandLineHelpFlagsTitle" xml:space="preserve">
+    <value>Unterstützte Kommandozeilenkommandos:</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsHelp" xml:space="preserve">
+    <value>Zeigt diese Hilfe an.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsInstall" xml:space="preserve">
+    <value>Installiert das Programm in %USER%/AppData/Local.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsUninstall" xml:space="preserve">
+    <value>Löscht diese Programm aus %USER%/AppData/Local mit allen zugehörigen Daten.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsRefresh" xml:space="preserve">
+    <value>Erneuert das Nutzerzertifikat mit dem Erneuerungstoken.
+Wird automatisch durch einen Systemdienst aufgerufen.
+/force : 
+Erneuert das Nutzerzertifikat mit dem Erneuerungstoken.
+Das Zertifkat wird auf jeden Fall erneuert, selbst wenn das aktuelle
+Zertifikat noch mehr als ein Drittel Laufzeit Rest hat.</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
     <value>Sind Sie sicher dass Sie fortfahren möchten?</value>

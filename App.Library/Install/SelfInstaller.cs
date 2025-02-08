@@ -113,7 +113,7 @@ namespace App.Library.Install
 
         public string UserUninstallCommand
         {
-            get => this.UserInstallExePath + " /Uninstall";
+            get => this.UserInstallExePath + " /uninstall /verbose";
         }
 
         public string UserStartMenuLnkPath
@@ -471,7 +471,7 @@ namespace App.Library.Install
                     task.RegistrationInfo.Author = this.applicationMetadata.Publisher;
                 }
 
-                task.Actions.Add(new ExecAction(this.InstalledExePath, arguments: "/refresh"));
+                task.Actions.Add(new ExecAction(this.InstalledExePath, arguments: "/refresh /silent"));
 
                 // TODO: switch from the schedule below to the schedule above when certificate lifetime is extended for production
 
@@ -515,7 +515,7 @@ namespace App.Library.Install
                     toastTask.RegistrationInfo.Author = this.applicationMetadata.Publisher;
                 }
 
-                toastTask.Actions.Add(new ExecAction(this.InstalledExePath, arguments: "/check-certificate"));
+                toastTask.Actions.Add(new ExecAction(this.InstalledExePath, arguments: "/certificate-notify"));
 
                 toastTask.Triggers.Add(new DailyTrigger(1)
                 {

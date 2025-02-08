@@ -117,25 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppCommandsHelp" xml:space="preserve">
-    <value>Toetatud CLI käsud:
-
-    /? : 
-            Näita seda abiteksti
-    /help : 
-            Näita seda abiteksti
-    /install : 
-            Paigalda programm sihtkohta: %USER%/AppData/Local
-    /uninstall : 
-            Eemalda programm sihtkohast %USER%/AppData/Local along
-            koos seadistusandmetega
-    /refresh : 
-            Uuenduskoodi kasutades uuenda kasutajasertifikaat
-            Käivitatakse automaatselt Windowsis ajastatud toiminguga.
-    /refresh-force : 
-            Uuenduskoodi kasutades uuenda kasutajasertifikaat.
-            Uuendab profiili ka siis, kui kliendisertifikaadi kehtivusperioodist 
-            on rohkem kui 1/3 veel ees.</value>
+  <data name="AppCommandLineHelpFlagsTitle" xml:space="preserve">
+    <value>Toetatud CLI käsud:</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsHelp" xml:space="preserve">
+    <value>Näita seda abiteksti.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsInstall" xml:space="preserve">
+    <value>Paigalda programm sihtkohta: %USER%/AppData/Local.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsUninstall" xml:space="preserve">
+    <value>Eemalda programm sihtkohast %USER%/AppData/Local along
+koos seadistusandmetega.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsRefresh" xml:space="preserve">
+    <value>Uuenduskoodi kasutades uuenda kasutajasertifikaat
+Käivitatakse automaatselt Windowsis ajastatud toiminguga.
+/force : 
+Uuenduskoodi kasutades uuenda kasutajasertifikaat.
+Uuendab profiili ka siis, kui kliendisertifikaadi kehtivusperioodist 
+on rohkem kui 1/3 veel ees.</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
     <value>Kas oled kindel, et soovid jätkata?</value>

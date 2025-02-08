@@ -117,25 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppCommandsHelp" xml:space="preserve">
-    <value>Ondersteunde CLI-opdrachten:
-
-    /? :
-            Toon deze helptekst
-    /help :
-            Toon deze helptekst
-    /install :
-            Installeer dit programma in %USER%/AppData/Local
-    /uninstall :
-            Verwijder dit programma uit %USER%/AppData/Local,
-            en verwijder alle configuratie
-    /refresh :
-            Vernieuw het gebruikerscertificaat met behulp van het refresh token.
-            Bedoeld om automatisch aangeroepen te worden door een geplande taak in Windows.
-            Deze optie doet niets als het certificaat nog meer dan een derde van de geldigheidsperiode over heeft.
-    /refresh-force :
-            Vernieuw het gebruikerscertificaat met behulp van het refresh token,
-            ongeacht de geldigheid van het bestaande certificaat.</value>
+  <data name="AppCommandLineHelpFlagsTitle" xml:space="preserve">
+    <value>Ondersteunde opdrachtprompt argumenten:</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsHelp" xml:space="preserve">
+    <value>Toon deze helptekst,</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsInstall" xml:space="preserve">
+    <value>Installeer dit programma in %USER%/AppData/Local.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsUninstall" xml:space="preserve">
+    <value>Verwijder dit programma uit %USER%/AppData/Local,
+en verwijder alle configuratie.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsRefresh" xml:space="preserve">
+    <value>Vernieuw het gebruikerscertificaat met behulp van het refresh token.
+Bedoeld om automatisch aangeroepen te worden door een geplande taak in Windows.
+Deze optie doet niets als het certificaat nog meer dan een derde van de geldigheidsperiode over heeft.
+Gebruik /force om het certificaat te vernieuwen ongeacht de resterende geldigheid.</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
     <value>Weet je zeker dat je wilt doorgaan?</value>
@@ -644,5 +643,11 @@ Als je op "Nee" klikt, wordt {0} afgesloten.</value>
   </data>
   <data name="ButtonAppConnect" xml:space="preserve">
     <value>Verbind met {0}</value>
+  </data>
+  <data name="InstallSuccess" xml:space="preserve">
+    <value>De installatie van {0} is geslaagd.</value>
+  </data>
+  <data name="InstallTitle" xml:space="preserve">
+    <value>{0} installatie</value>
   </data>
 </root>

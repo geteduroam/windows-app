@@ -117,25 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AppCommandsHelp" xml:space="preserve">
-    <value>Comandes de consola reconegudes:
-
-    /? : 
-           Mostra el text d'ajuda
-    /help : 
-            Mostra el text d'ajuda
-    /install : 
-            Instal·la aquest binari a %USER%/AppData/Local
-    /uninstall : 
-            Elimina aquest binari de %USER%/AppData/Local juntament
-            amb tota la configuració
-    /refresh : 
-            Actualiza el certificat d'usuari amb un token d'actualització.
-            S'activa automàticament per una tasca programada.
-    /refresh-force : 
-            Actualiza el certificat d'usuari amb un token d'actualització.
-            Actualitzarà el perfil encara que el període de validesa
-            del certificat actual tingui una 3a part restant.</value>
+  <data name="AppCommandLineHelpFlagsTitle" xml:space="preserve">
+    <value>Comandes de consola reconegudes:</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsHelp" xml:space="preserve">
+    <value>Mostra el text d'ajuda</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsInstall" xml:space="preserve">
+    <value>Instal·la aquest binari a %USER%/AppData/Local.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsUninstall" xml:space="preserve">
+    <value>Elimina aquest binari de %USER%/AppData/Local juntament
+amb tota la configuració.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsRefresh" xml:space="preserve">
+    <value>Actualiza el certificat d'usuari amb un token d'actualització.
+S'activa automàticament per una tasca programada.
+/force : 
+Actualiza el certificat d'usuari amb un token d'actualització.
+Actualitzarà el perfil encara que el període de validesa
+del certificat actual tingui una 3a part restant.</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
     <value>Segur que voleu continuar?</value>

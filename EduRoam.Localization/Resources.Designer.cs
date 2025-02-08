@@ -61,25 +61,52 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Supported CLI commands:
-        ///
-        ///    /? : 
-        ///            Show this help text
-        ///    /help : 
-        ///            Show this help text
-        ///    /install : 
-        ///            Install this binary to %USER%/AppData/Local
-        ///    /uninstall : 
-        ///            Uninstall this binary from %USER%/AppData/Local along
-        ///            with any configured data.
-        ///    /refresh : 
-        ///            Refresh the user certificate using the refresh token.
-        ///            Is called automatically by a scheduled task in windows.
-        ///            This option does nothing if th [rest of string was truncated]&quot;;.
+        ///   Looks up a localized string similar to Show this help text..
         /// </summary>
-        public static string AppCommandsHelp {
+        public static string AppCommandLineHelpFlagsHelp {
             get {
-                return ResourceManager.GetString("AppCommandsHelp", resourceCulture);
+                return ResourceManager.GetString("AppCommandLineHelpFlagsHelp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install this program to %USER%/AppData/Local..
+        /// </summary>
+        public static string AppCommandLineHelpFlagsInstall {
+            get {
+                return ResourceManager.GetString("AppCommandLineHelpFlagsInstall", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh the user certificate using the refresh token.
+        ///Intended to be called automatically by a scheduled task in windows.
+        ///This option does nothing if the user certificate has
+        ///more than a third of its validity left.
+        ///Combine with /force to refresh regardless of validity..
+        /// </summary>
+        public static string AppCommandLineHelpFlagsRefresh {
+            get {
+                return ResourceManager.GetString("AppCommandLineHelpFlagsRefresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Supported command line flags:.
+        /// </summary>
+        public static string AppCommandLineHelpFlagsTitle {
+            get {
+                return ResourceManager.GetString("AppCommandLineHelpFlagsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uninstall this program from %USER%/AppData/Local,
+        ///along with any configured data..
+        /// </summary>
+        public static string AppCommandLineHelpFlagsUninstall {
+            get {
+                return ResourceManager.GetString("AppCommandLineHelpFlagsUninstall", resourceCulture);
             }
         }
         
@@ -842,6 +869,24 @@ namespace EduRoam.Localization {
         public static string HoursLeft {
             get {
                 return ResourceManager.GetString("HoursLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} has been successfully installed..
+        /// </summary>
+        public static string InstallSuccess {
+            get {
+                return ResourceManager.GetString("InstallSuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} installation.
+        /// </summary>
+        public static string InstallTitle {
+            get {
+                return ResourceManager.GetString("InstallTitle", resourceCulture);
             }
         }
         
