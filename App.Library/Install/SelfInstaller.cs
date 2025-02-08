@@ -214,7 +214,7 @@ namespace App.Library.Install
             this.SetScheduledTask(false); // TODO fix scheduled task for global installation if global installed
             this.SetFileAssociationRegistered(false);
 
-            if (this.RemoveFromUserLocal())
+            if (this.DeleteFromUserLocal())
             {
                 this.SetUserInstalledState(false);
                 return true;
@@ -249,49 +249,45 @@ namespace App.Library.Install
 
             if (System.IO.File.Exists(this.UserInstallExePath))
             {
-                // Version 4.2.0 and 4.2.1 will call us with /install, while running from user install exe path
-                // and we're on a temporary location, so we cannot be sure we can remove the existing file.
-                // But we can try to move it somewhere else.
+                // Version 4.2.0 and 4.2.1 will call us with /install, running from user install exe path.
+                // We're on a temporary location, and the user install exe is also still running.
+                // This would be a deadlock since we can't install and they won't quit.
+                // But we can try to move the user installed exe somewhere else instead.
+                // Actually, let's do that anyway, so rollback gets easier.
 
-                SemVersion version;
+                var tryDelete = false;
+                SemVersion version = null;
                 try
                 {
                     version = this.GetFileVersion(this.UserInstallExePath);
                 }
-                catch (Exception _)
+                catch (Exception) {}
+
+                var moveTarget = version == null ? null
+                    : this.UserInstallDir + Path.DirectorySeparatorChar + this.applicationIdentifier + "-" + version + ".exe";
+                while (moveTarget == null || !TryDelete(moveTarget))
                 {
-                    version = null;
+                    // The rename target exists already, then we'll move the existing exe to
+                    // AppData\Local\Temp instead, and try to delete it.
+                    moveTarget = this.UninstallDir + Path.DirectorySeparatorChar + this.applicationIdentifier + "_exe-" + Guid.NewGuid() + ".delete";
+                    tryDelete = true;
                 }
 
-                string tempPath = null;
-                do
+                if (tryDelete) {
+                    // We try to delete the currently installed file
+                    DeleteOrMoveFile(this.UserInstallExePath, moveTarget, this.UninstallDir);
+                }
+                else
                 {
-                    tempPath = version == null
-                        ? this.UninstallDir + Path.DirectorySeparatorChar + this.applicationIdentifier + "_exe-" + Guid.NewGuid() + ".delete"
-                        : this.UserInstallDir + Path.DirectorySeparatorChar + this.applicationIdentifier + "-" + version + ".exe";
-
-                    if (System.IO.File.Exists(tempPath))
-                    {
-                        try
-                        {
-                            System.IO.File.Delete(tempPath);
-                        }
-                        catch (IOException _) { }
-                    }
-                    if (version != null && System.IO.File.Exists(tempPath))
-                    {
-                        version = null;
-                    }
-                } while (System.IO.File.Exists(tempPath));
-
-                RemoveOrRenameFile(this.UserInstallExePath, tempPath, version == null ? this.UninstallDir : null);
+                    // We try to rename the currently installed file to <appname>-<version>.exe
+                    MoveFile(this.UserInstallExePath, moveTarget);
+                }
             }
 
-            if (tryMove) try
+            if (tryMove && MoveFile(path ?? RunningExePath, this.UserInstallExePath))
             {
-                System.IO.File.Move(path ?? RunningExePath, this.UserInstallExePath);
                 return;
-            } catch (UnauthorizedAccessException) { }
+            }
 
             // write executable, not retaining Zone.Identifier NTFS stream
             /*
@@ -306,10 +302,10 @@ namespace App.Library.Install
         /// <summary>
         /// Removes the installed executable when its running from installed location
         /// </summary>
-        public bool RemoveFromUserLocal()
+        public bool DeleteFromUserLocal()
         {
             var uninstallTempFile = this.UninstallDir + Path.DirectorySeparatorChar + this.applicationIdentifier + "_exe-" + Guid.NewGuid() + ".delete";
-            if (!RemoveOrRenameFile(this.UserInstallExePath, uninstallTempFile, this.UninstallDir)) return false;
+            if (!DeleteOrMoveFile(this.UserInstallExePath, uninstallTempFile, this.UninstallDir)) return false;
 
             // Delete myself after 15 seconds:
             if (System.IO.File.Exists(uninstallTempFile))
@@ -338,6 +334,9 @@ namespace App.Library.Install
         }
         private static bool TryDelete(string path)
         {
+            if (!System.IO.File.Exists(path))
+                return true;
+
             try
             {
                 System.IO.File.Delete(path);
@@ -346,29 +345,28 @@ namespace App.Library.Install
             catch (UnauthorizedAccessException e) { Debug.WriteLine(e); }
             return !System.IO.File.Exists(path);
         }
-        private static bool RemoveOrRenameFile(string path, string moveTarget, string? moveDirectory = null)
+        private static bool DeleteOrMoveFile(string path, string moveTarget, string? moveDirectory = null)
+        {
+            // Maybe we can just remove it anyway, since it's not us
+            if (TryDelete(path)) return true;
+
+            // We were not allowed to remove ourselves, probably because the application is still running
+            // We move the file to a Temp directory instead
+            return MoveFile(path, moveTarget, moveDirectory);
+        }
+
+        private static bool MoveFile(string path, string moveTarget, string? moveDirectory = null)
         {
             try
             {
-                // Maybe we can just remove it anyway, since it's not us
-                System.IO.File.Delete(path);
+                if (moveDirectory != null)
+                    Directory.CreateDirectory(moveDirectory);
+                System.IO.File.Move(path, moveTarget);
                 return true;
             }
-            catch (UnauthorizedAccessException _)
+            catch (Exception e)
             {
-                // We were not allowed to remove ourselves, probably because the application is still running
-                // We move the file to the Temp directory
-                try
-                {
-                    if (moveDirectory != null)
-                        Directory.CreateDirectory(moveDirectory);
-                    System.IO.File.Move(path, moveTarget);
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    return false;
-                }
+                return false;
             }
         }
         #region Installers/uninstallers for different Windows components
@@ -447,10 +445,7 @@ namespace App.Library.Install
             {
                 // Remove start menu link
                 Debug.WriteLine("Delete file: " + this.UserStartMenuLnkPath);
-                if (System.IO.File.Exists(this.UserStartMenuLnkPath))
-                {
-                    System.IO.File.Delete(this.UserStartMenuLnkPath);
-                }
+                TryDelete(this.UserStartMenuLnkPath);
             }
         }
         public void SetScheduledTask(bool installed)
