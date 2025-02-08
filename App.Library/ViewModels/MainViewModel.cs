@@ -547,7 +547,12 @@ namespace App.Library.ViewModels
 
         public void Uninstall()
         {
-            try
+            var result = MessageBox.Show(
+                string.Format(EduRoam.Localization.Resources.WarningUninstall, Settings.Settings.ApplicationIdentifier), 
+                EduRoam.Localization.Resources.CommandDescriptionUninstall, 
+                MessageBoxButton.OKCancel
+            );
+            if (result == MessageBoxResult.OK) try
             {
                 UninstallTask.Uninstall(true);
             }
