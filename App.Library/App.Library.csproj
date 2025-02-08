@@ -220,10 +220,6 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\help-icon.png" />
-    <Resource Include="Images\menu-icon.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\App.Settings\App.Settings.csproj">
       <Project>{27378484-7ab6-4625-8906-9f87b66f7461}</Project>
       <Name>App.Settings</Name>

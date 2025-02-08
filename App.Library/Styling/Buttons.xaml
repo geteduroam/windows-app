@@ -8,8 +8,7 @@
     <FontFamily x:Key="IconFont">Segoe MDL2 Assets</FontFamily>
 
     <!-- https://learn.microsoft.com/en-us/windows/apps/design/style/segoe-ui-symbol-font -->
-    <clr:String x:Key="HelpIcon">&#xE897;</clr:String>
-    <clr:String x:Key="MenuIcon">&#xE700;</clr:String>
+    <clr:String x:Key="MenuIcon">&#xE712;</clr:String>
     <clr:String x:Key="SearchIcon">&#xE721;</clr:String>
     
     <Style x:Key="IconButton" TargetType="Button">
