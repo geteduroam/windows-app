@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.IO;
 
-namespace EduRoam.Connect.Install
+namespace App.Library.Install
 {
     public partial class SelfInstaller
     {
@@ -42,11 +42,11 @@ namespace EduRoam.Connect.Install
                 SelfInstaller installer)
             {
                 _ = installer ?? throw new ArgumentNullException(paramName: nameof(installer));
-                this.DisplayIcon = installer.InstallExePath;
-                this.InstallLocation = installer.InstallDir;
+                this.DisplayIcon = installer.UserInstallExePath;
+                this.InstallLocation = installer.UserInstallDir;
                 this.InstallDate = DateTime.Today.ToString("yyyyMMdd", CultureInfo.InvariantCulture);
-                this.UninstallString = installer.UninstallCommand;
-                this.EstimatedSize = (uint)new FileInfo(ThisExePath).Length / 1024;
+                this.UninstallString = installer.UserUninstallCommand;
+                this.EstimatedSize = (uint)new FileInfo(RunningExePath).Length / 1024;
                 this.ModifyPath = null;
                 // TODO: SettingsIdentifier = ?
             }

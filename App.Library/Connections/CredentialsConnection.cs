@@ -1,4 +1,6 @@
-﻿using EduRoam.Connect.Tasks.Connectors;
+﻿using App.Library.Install;
+
+using EduRoam.Connect.Tasks.Connectors;
 
 using System;
 using System.Threading.Tasks;
@@ -19,6 +21,8 @@ namespace App.Library.Connections
 
         public async Task<TaskStatus> ConfigureAndConnectAsync(ConnectionProperties properties)
         {
+            SelfInstaller.DefaultInstance.EnsureIsInstalled();
+
             var userName = properties.UserName ?? throw new ArgumentNullException(nameof(properties));
             var password = properties.Password ?? throw new ArgumentNullException(nameof(properties));
 

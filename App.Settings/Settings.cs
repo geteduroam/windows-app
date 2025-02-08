@@ -1,5 +1,4 @@
-﻿using System.Data;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace App.Settings
 {

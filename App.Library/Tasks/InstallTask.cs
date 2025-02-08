@@ -1,6 +1,6 @@
-﻿using EduRoam.Connect.Install;
+﻿using App.Library.Install;
 
-namespace EduRoam.Connect.Tasks
+namespace App.Library.Tasks
 {
     public class InstallTask
     {

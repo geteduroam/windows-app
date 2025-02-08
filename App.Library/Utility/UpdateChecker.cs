@@ -9,6 +9,7 @@ using App.Library.Models;
 using System.IO;
 using System.Diagnostics;
 using Microsoft.Win32;
+using App.Library.Install;
 
 namespace App.Library.Utility;
 
@@ -32,13 +33,13 @@ public static class UpdateChecker
 
         await DownloadUpdateJsonAsync();
         NewVersion = UpdateData.CurrentVersion;
-        var parsedVersion = Version.Parse(UpdateData.CurrentVersion);
-        var newVersion = new SemVersion(parsedVersion.Major, parsedVersion.Minor, parsedVersion.Build);
+        var newVersion = SemVersion.Parse(UpdateData.CurrentVersion, SemVersionStyles.Strict);
 
         var parsedMinimalSupportedVersion = Version.Parse(UpdateData.MinimalSupportedVersion);
         MinimalSupportedVersion = new SemVersion(parsedMinimalSupportedVersion.Major, parsedMinimalSupportedVersion.Minor, parsedMinimalSupportedVersion.Build);
 
-        IsUpdateAvailable = SelfInstaller.DefaultInstance.CanBeUpdated(newVersion);
+        // If the app was already installed, we should already have aborted here 
+        IsUpdateAvailable = SelfInstaller.DefaultInstance.CanUpdateRunning(newVersion);
 
         return IsUpdateAvailable;
     }
@@ -46,61 +47,49 @@ public static class UpdateChecker
     private static bool IsUpdateAllowedByPolicy(RegistryKey registryBaseKey)
     {
         var key = registryBaseKey.OpenSubKey(string.Format(RegistryBase, Settings.Settings.ApplicationIdentifier));
-        if (key == null) return true;
-        return !Convert.ToBoolean(key.GetValue("DisableAutoUpdate", false));
+        return key == null || !Convert.ToBoolean(key.GetValue("DisableAutoUpdate", false));
     }
 
     /// <summary>
     /// Downloads the correct executable from the location specified in the updateUrl response
     /// </summary>
     /// <returns></returns>
-    public static async Task<bool> DownloadUpdateAsync()
+    public static async Task DownloadUpdateAsync()
     {
         try
         {
             var tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid().ToString()}_{Settings.Settings.ApplicationIdentifier}.exe");
-            var installedPath = SelfInstaller.DefaultInstance.InstallExePath;
 
             using (var client = new WebClient())
             {
                 await client.DownloadFileTaskAsync(UpdateData.DownloadUrl, tempPath);
-
-                var batchFilePath = Path.Combine(Path.GetTempPath(), "update.bat");
-                var batchFileContent = $@"
-@echo off
-timeout /t 2 /nobreak
-start """" ""{tempPath}"" /install
-timeout /t 2 /nobreak
-start """" ""{installedPath}""
-del ""{tempPath}""
-del ""%~f0""
-";
-                File.WriteAllText(batchFilePath, batchFileContent);
-
-                Process.Start(new ProcessStartInfo
+                try
                 {
-                    FileName = batchFilePath,
-                    UseShellExecute = true,
-                    CreateNoWindow = true,
-                    WindowStyle = ProcessWindowStyle.Hidden
-                });
-
+                    SelfInstaller.DefaultInstance.UpdateWithFile(tempPath);
+                    SelfInstaller.DefaultInstance.StartApplicationFromInstallLocation();
+                }
+                finally
+                {
+                    try
+                    {
+                        File.Delete(tempPath);
+                    }
+                    catch (IOException _) { }
+                }
                 Environment.Exit(0);
             }
 
         } catch(Exception e)
         {
-            // Skip for now
+            Debug.WriteLine(e.Message);
         }
-
-        return true;
     }
 
     #region Private helper functions
     private static Uri GetUpdateUrl()
     {
-        var arch = ArchitectureHelper.GetNativeMachineType().ToString().ToLower();
-        var updateUrl = string.Format(UpdateUrlBase, Settings.Settings.UpdateBaseUrl, arch);
+        var arch = ArchitectureHelper.GetNativeMachineType();
+        var updateUrl = string.Format(UpdateUrlBase, Settings.Settings.UpdateBaseUrl, arch.ToString().ToLower());
 
         return new Uri(updateUrl);
     }

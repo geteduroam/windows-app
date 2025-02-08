@@ -1,4 +1,5 @@
-﻿using EduRoam.Connect.Install;
+﻿using App.Library.Tasks;
+
 using EduRoam.Connect.Tasks;
 using EduRoam.Localization;
 
@@ -6,7 +7,6 @@ using Microsoft.Toolkit.Uwp.Notifications;
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
@@ -31,6 +31,7 @@ namespace App.Library
             }
 
             var force = false;
+            var verbose = true;
             switch (args[0].ToLowerInvariant())
             {
                 case "/install":
@@ -42,7 +43,7 @@ namespace App.Library
 
                 case "/uninstall":
                     {
-                        UninstallTask.Uninstall(_ => { Environment.Exit(0); });
+                        UninstallTask.Uninstall(verbose);
 
                         return true; // terminate after
                     }

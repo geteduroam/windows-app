@@ -30,7 +30,6 @@
 		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Semver" Version="2.3.0" />
 		<PackageReference Include="System.Collections.Immutable" Version="7.0.0" />
 		<PackageReference Include="System.Management" Version="4.7.0" />
 		<PackageReference Include="TaskScheduler" Version="2.10.1" />
@@ -39,18 +38,6 @@
 	<ItemGroup>
 	  <ProjectReference Include="..\App.Settings\App.Settings.csproj" />
 	  <ProjectReference Include="..\EduRoam.Localization\EduRoam.Localization.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>	  
-		<COMReference Include="IWshRuntimeLibrary">
-			<Guid>{F935DC20-1CF0-11D0-ADB9-00C04FD58A0B}</Guid>
-			<VersionMajor>1</VersionMajor>
-			<VersionMinor>0</VersionMinor>
-			<Lcid>0</Lcid>
-			<WrapperTool>tlbimp</WrapperTool>
-			<Isolated>False</Isolated>
-			<EmbedInteropTypes>True</EmbedInteropTypes>
-		</COMReference>
 	</ItemGroup>
 
 	<ItemGroup>

@@ -1,13 +1,12 @@
 ﻿using App.Library.Command;
 using App.Library.Utility;
+using App.Library.Install;
 
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
-using EduRoam.Connect.Install;
 using EduRoam.Connect.Tasks;
 using EduRoam.Connect.Tasks.Connectors;
-using EduRoam.Localization;
 
 using Microsoft.Extensions.Logging;
 
@@ -16,13 +15,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
 using NETWORKLIST;
 using Semver;
+using App.Library.Tasks;
 
 namespace App.Library.ViewModels
 {
@@ -216,16 +215,16 @@ namespace App.Library.ViewModels
                 Application.Current.Shutdown(1);
             }
 
-            if (SemVersion.ComparePrecedence(SelfInstaller.DefaultInstance.GetCurrentVersion(), UpdateChecker.MinimalSupportedVersion) == -1)
+            if (SemVersion.ComparePrecedence(SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.MinimalSupportedVersion) == -1)
             {
-                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.VersionNoLongerSupported, Settings.Settings.ApplicationIdentifier, SelfInstaller.DefaultInstance.GetCurrentVersionString(), UpdateChecker.MinimalSupportedVersion, UpdateChecker.NewVersion), confirmOnly: false, OnConfirmUpdate, OnDenyUnsupported));
+                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.VersionNoLongerSupported, Settings.Settings.ApplicationIdentifier, SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.MinimalSupportedVersion, UpdateChecker.NewVersion), confirmOnly: false, OnConfirmUpdate, OnDenyUnsupported));
 
                 return;
             }
 
             if (UpdateChecker.IsUpdateAvailable)
             {
-                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.UpdateAvailableMessage, Settings.Settings.ApplicationIdentifier, SelfInstaller.DefaultInstance.GetCurrentVersionString(), UpdateChecker.NewVersion), confirmOnly: false, OnConfirmUpdate, OnDenyUpdate));
+                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.UpdateAvailableMessage, Settings.Settings.ApplicationIdentifier, SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.NewVersion), confirmOnly: false, OnConfirmUpdate, OnDenyUpdate));
 
 
 
@@ -548,7 +547,14 @@ namespace App.Library.ViewModels
 
         public void Uninstall()
         {
-            UninstallTask.Uninstall(_ => this.CloseApp());
+            try
+            {
+                UninstallTask.Uninstall(true);
+            }
+            finally
+            {
+                this.CloseApp();
+            }
         }
 
         public void OpenMenu()

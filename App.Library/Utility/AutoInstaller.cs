@@ -1,11 +1,5 @@
-﻿using EduRoam.Connect.Install;
+﻿using App.Library.Install;
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace App.Library.Utility;
@@ -18,14 +12,13 @@ public static class AutoInstaller
     /// <returns>Returns false is the running executable is the WRONG version, true if you are running the correct one</returns>
     public static bool CheckIfInstalled()
     {
-        if (SelfInstaller.ThisExePath != SelfInstaller.DefaultInstance.InstallExePath)
+        if (SelfInstaller.RunningExePath != SelfInstaller.DefaultInstance.UserInstallExePath)
         {
-
-            var isInstalled = SelfInstaller.DefaultInstance.IsInstalled;
+            var isInstalled = SelfInstaller.DefaultInstance.IsUserInstalled;
             var canBeUpdated = false;
             if (isInstalled)
             {
-                canBeUpdated = SelfInstaller.DefaultInstance.CanBeUpdated();
+                canBeUpdated = SelfInstaller.DefaultInstance.IsRunningNewerThanUserInstalled();
             }
 
             if (isInstalled && canBeUpdated)
