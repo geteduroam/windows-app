@@ -1,4 +1,6 @@
-﻿using Microsoft.Win32;
+﻿using App.Settings;
+
+using Microsoft.Win32;
 
 using Newtonsoft.Json;
 
@@ -115,7 +117,7 @@ namespace EduRoam.Connect.Store
             this.UpdateWifiRefreshToken(null);
         }
 
-        private readonly static string AppRegistryNamespace = new Configuration().AppRegistryNamespace;
+        private readonly static string AppRegistryNamespace = $"HKEY_CURRENT_USER\\Software\\{Settings.ApplicationName}";
 
         private static T? GetValue<T>(string key)
         {

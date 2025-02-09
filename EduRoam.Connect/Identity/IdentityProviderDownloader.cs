@@ -28,7 +28,7 @@ namespace EduRoam.Connect.Identity
     public class IdentityProviderDownloader : IDisposable
     {
         // constants
-        private static readonly Uri ProviderApiUrl = new Configuration().ProviderApiUrl;
+        private static readonly Uri ProviderApiUrl = new Uri(Settings.DiscoveryUrl);
 
         // http objects
         private static readonly HttpClientHandler Handler = new()

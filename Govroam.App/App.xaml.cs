@@ -4,7 +4,10 @@ using App.Settings;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using System;
 using System.Windows;
+
+using static System.Net.WebRequestMethods;
 
 using LanguageResources = EduRoam.Localization.Resources;
 
@@ -25,6 +28,7 @@ namespace Govroam.App
             Settings.NetworkName = "govroam";
             Settings.UpdateBaseUrl = "https://getgovroam.nl";
             Settings.HelpUrl = "https://govroam.nl/support";
+            Settings.DiscoveryUrl = "https://getgovroam.nl/v3/discovery.json";
 
             if (CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args))
             {

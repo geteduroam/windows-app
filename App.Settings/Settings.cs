@@ -10,5 +10,6 @@
         public static int DaysLeftForNotification { get; set; } = 10;
         public static string? EapConfigFileLocation { get; set; } = null;
         public static string HelpUrl { get; set; } = "https://geteduroam.app/";
+        public static string DiscoveryUrl { get; set; } = "https://discovery.eduroam.app/v3/discovery.json";
     }
 }
