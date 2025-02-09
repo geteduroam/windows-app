@@ -438,7 +438,7 @@ Exception: {0}</value>
   <data name="OAuthExplanation" xml:space="preserve">
     <value>Pour continuer vous devez vous authentifier dans votre navigateur, une fenêtre devrait s'ouvrir automatiquement.</value>
   </data>
-  <data name="OAuthTitle" xml:space="preserve">
+  <data name="OAuthWaitingTitle" xml:space="preserve">
     <value>attente ...</value>
   </data>
   <data name="OptionDescriptionCertificatePath" xml:space="preserve">

@@ -440,7 +440,7 @@ Errore: {0}</value>
   <data name="OAuthExplanation" xml:space="preserve">
     <value>Per proseguire è necessario autenticarsi nel browser, dovrebbe essersi aperta automaticamente una finestra.</value>
   </data>
-  <data name="OAuthTitle" xml:space="preserve">
+  <data name="OAuthWaitingTitle" xml:space="preserve">
     <value>In attesa ...</value>
   </data>
   <data name="OptionDescriptionCertificatePath" xml:space="preserve">

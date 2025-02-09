@@ -446,7 +446,7 @@ Exception: {0}</value>
   <data name="OAuthExplanation" xml:space="preserve">
     <value>To continue you need to authenticate in your browser, a window should have opened automatically.</value>
   </data>
-  <data name="OAuthTitle" xml:space="preserve">
+  <data name="OAuthWaitingTitle" xml:space="preserve">
     <value>Waiting ...</value>
   </data>
   <data name="OptionDescriptionCertificatePath" xml:space="preserve">
@@ -664,5 +664,18 @@ If you click "No" {0} will exit.</value>
   </data>
   <data name="InstallTitle" xml:space="preserve">
     <value>{0} installation</value>
+  </data>
+  <data name="OAuthResponseAcceptedTitle" xml:space="preserve">
+    <value>You have been authorized!</value>
+  </data>
+  <data name="OAuthResponseRejectedTitle" xml:space="preserve">
+    <value>Authorization has been rejected.</value>
+  </data>
+  <data name="OAuthResponseCloseMessage" xml:space="preserve">
+    <value>You may now close this tab and
+return to the app.</value>
+  </data>
+  <data name="OAuthAuthorizationTitle" xml:space="preserve">
+    <value>Authorization</value>
   </data>
 </root>

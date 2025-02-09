@@ -437,7 +437,7 @@ Erand: {0}</value>
   <data name="OAuthExplanation" xml:space="preserve">
     <value>Jätkamiseks pead end brauseris autentima, aken peaks olema automaatselt avanenud</value>
   </data>
-  <data name="OAuthTitle" xml:space="preserve">
+  <data name="OAuthWaitingTitle" xml:space="preserve">
     <value>Ootel...</value>
   </data>
   <data name="OptionDescriptionCertificatePath" xml:space="preserve">

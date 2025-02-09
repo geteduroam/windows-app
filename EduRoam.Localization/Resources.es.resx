@@ -440,7 +440,7 @@ Excepción: {0}</value>
   <data name="OAuthExplanation" xml:space="preserve">
     <value>Para continuar necesitas autenticarte en tu navegador. Una ventana debería haberse abierto automáticamente.</value>
   </data>
-  <data name="OAuthTitle" xml:space="preserve">
+  <data name="OAuthWaitingTitle" xml:space="preserve">
     <value>Esperando...</value>
   </data>
   <data name="OptionDescriptionCertificatePath" xml:space="preserve">

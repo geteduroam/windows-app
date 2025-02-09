@@ -419,7 +419,7 @@
   <data name="OAuthExplanation" xml:space="preserve">
     <value>За да продължите, трябва да се автентикирате в браузъра си. Трябва автоматично да се отвори прозорец.</value>
   </data>
-  <data name="OAuthTitle" xml:space="preserve">
+  <data name="OAuthWaitingTitle" xml:space="preserve">
     <value>Изчакайте ...</value>
   </data>
   <data name="OptionDescriptionCertificatePath" xml:space="preserve">

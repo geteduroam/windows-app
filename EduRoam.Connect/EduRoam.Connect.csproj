@@ -16,6 +16,7 @@
 
 	<ItemGroup>
 	  <None Remove="EapHostUserCredentials.xsd" />
+	  <None Remove="OAuthResponse.html" />
 	  <None Remove="WLANProfile-v1.xsd" />
 	</ItemGroup>
 
@@ -40,6 +41,7 @@
 
 	<ItemGroup>
 	  <EmbeddedResource Include="EapHostUserCredentials.xsd" />
+	  <EmbeddedResource Include="OAuthResponse.html" />
 	  <EmbeddedResource Include="WLANProfile-v1.xsd" />
 	</ItemGroup>
 

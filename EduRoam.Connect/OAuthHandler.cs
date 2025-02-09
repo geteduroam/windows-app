@@ -7,10 +7,15 @@ using EduRoam.Connect.Identity;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+
+using SharedResources = EduRoam.Localization.Resources;
 
 namespace EduRoam.Connect
 {
@@ -183,13 +188,14 @@ namespace EduRoam.Connect
                 {
                     using var response = context.Response;
                     // constructs a response
-                    var responseString = Encoding.ASCII.GetBytes(authorizationCode == null
-                        ? (Settings.ApplicationName == "geteduroam" ? OAuthResources.oauth_rejected_geteduroam : OAuthResources.oauth_rejected_getgovroam)
-                        : (Settings.ApplicationName == "geteduroam" ? OAuthResources.oauth_accepted_geteduroam : OAuthResources.oauth_accepted_getgovroam));
+                    var responseString = this.GetResponseString(
+                        title: authorizationCode == null ? SharedResources.OAuthResponseRejectedTitle : SharedResources.OAuthResponseAcceptedTitle,
+                        message: SharedResources.OAuthResponseCloseMessage
+                    );
 
                     // outputs response to web server
                     response.ContentLength64 = responseString.Length;
-                    response.OutputStream.Write(responseString, 0, responseString.Length);
+                    response.OutputStream.Write(Encoding.UTF8.GetBytes(responseString), 0, responseString.Length);
                     response.Close();
                 }
                 catch (HttpListenerException e)
@@ -231,6 +237,45 @@ namespace EduRoam.Connect
                     // resumes main thread
                     this.MainThread?.Set();
                 }
+            }
+        }
+
+        private string GetResponseString(string title, string message)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceName = assembly.GetManifestResourceNames()
+              .Single(str => str.EndsWith(".OAuthResponse.html"));
+
+            using var stream = assembly.GetManifestResourceStream(resourceName);
+            using var reader = new StreamReader(stream);
+
+            // The complete file contains { and } in CSS,
+            // so it's not a valid string for string.Format
+            return reader.ReadToEnd()
+                .Replace("{0}", Settings.ApplicationName)
+                .Replace("{1}", SharedResources.OAuthAuthorizationTitle)
+                .Replace("{2}", title)
+                .Replace("{3}", message)
+                .Replace("{4}", GetSvgEscaped(".logo-light.svg") ?? "")
+                .Replace("{5}", GetSvgEscaped(".logo-dark.svg") ?? GetSvgEscaped(".logo-light.svg") ?? "");
+        }
+        public static string? GetSvgEscaped(string filename)
+        {
+            var assembly = Assembly.GetEntryAssembly();
+            var names = assembly.GetManifestResourceNames();
+            try
+            {
+                var resourceName = names.Single(str => str.EndsWith(filename));
+
+                using var stream = assembly.GetManifestResourceStream(resourceName);
+                using var memoryStream = new MemoryStream();
+                stream.CopyTo(memoryStream);
+                var base64 = Convert.ToBase64String(memoryStream.ToArray());
+                return "data:image/svg+xml; base64," + base64;
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
             }
         }
     }

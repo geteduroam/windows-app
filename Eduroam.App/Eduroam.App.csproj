@@ -202,6 +202,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="logo.png" />
+    <EmbeddedResource Include="logo-dark.svg" />
+    <EmbeddedResource Include="logo-light.svg" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Costura.Fody">

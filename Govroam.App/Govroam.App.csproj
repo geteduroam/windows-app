@@ -179,6 +179,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="logo-light.svg" />
     <Resource Include="application-icon.png" />
     <Resource Include="FodyWeavers.xml" />
     <Content Include="getgovroam.ico">

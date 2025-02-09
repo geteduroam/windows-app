@@ -440,7 +440,7 @@ Ausnahmefehler: {0}</value>
   <data name="OAuthExplanation" xml:space="preserve">
     <value>Jetzt sollte sich ein Browserfenster geöffnet haben, in dem Sie sich nei authentifizieren können.</value>
   </data>
-  <data name="OAuthTitle" xml:space="preserve">
+  <data name="OAuthWaitingTitle" xml:space="preserve">
     <value>Warten ...</value>
   </data>
   <data name="OptionDescriptionCertificatePath" xml:space="preserve">

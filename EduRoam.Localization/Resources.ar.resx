@@ -420,7 +420,7 @@
   <data name="OAuthExplanation" xml:space="preserve">
     <value>للمتابعة، تحتاج إلى المصادقة في متصفحك، ومن المفترض أن يتم فتح نافذة تلقائيًا.</value>
   </data>
-  <data name="OAuthTitle" xml:space="preserve">
+  <data name="OAuthWaitingTitle" xml:space="preserve">
     <value>في الانتظار...</value>
   </data>
   <data name="OptionDescriptionCertificatePath" xml:space="preserve">

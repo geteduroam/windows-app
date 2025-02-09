@@ -47,7 +47,7 @@ namespace App.Library.ViewModels
             this.profile = profile;
         }
 
-        public override string PageTitle => SharedResources.OAuthTitle;
+        public override string PageTitle => SharedResources.OAuthWaitingTitle;
 
         protected override bool CanNavigateNextAsync()
         {

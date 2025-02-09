@@ -1107,6 +1107,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Authorization.
+        /// </summary>
+        public static string OAuthAuthorizationTitle {
+            get {
+                return ResourceManager.GetString("OAuthAuthorizationTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To continue you need to authenticate in your browser, a window should have opened automatically..
         /// </summary>
         public static string OAuthExplanation {
@@ -1116,11 +1125,39 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have been authorized!.
+        /// </summary>
+        public static string OAuthResponseAcceptedTitle {
+            get {
+                return ResourceManager.GetString("OAuthResponseAcceptedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You may now close this tab and
+        ///return to the app..
+        /// </summary>
+        public static string OAuthResponseCloseMessage {
+            get {
+                return ResourceManager.GetString("OAuthResponseCloseMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Authorization has been rejected..
+        /// </summary>
+        public static string OAuthResponseRejectedTitle {
+            get {
+                return ResourceManager.GetString("OAuthResponseRejectedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Waiting ....
         /// </summary>
-        public static string OAuthTitle {
+        public static string OAuthWaitingTitle {
             get {
-                return ResourceManager.GetString("OAuthTitle", resourceCulture);
+                return ResourceManager.GetString("OAuthWaitingTitle", resourceCulture);
             }
         }
         
