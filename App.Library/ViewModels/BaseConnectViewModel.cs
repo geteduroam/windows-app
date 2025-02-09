@@ -87,7 +87,7 @@ namespace App.Library.ViewModels
             }
             catch (EduroamAppUserException eauExc)
             {
-                this.Owner.Logger.LogError(eauExc, string.Format(Resources.NoConnection, Settings.Settings.ApplicationIdentifier), eauExc.UserFacingMessage);
+                this.Owner.Logger.LogError(eauExc, string.Format(Resources.NoConnection, Settings.Settings.ApplicationName), eauExc.UserFacingMessage);
                 this.connectionStatus = TaskStatus.AsFailure(eauExc.UserFacingMessage);
             }
 

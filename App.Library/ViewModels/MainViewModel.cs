@@ -150,7 +150,7 @@ namespace App.Library.ViewModels
             }
         }
 
-        public string AppTitle => Settings.Settings.AppTitle;
+        public string AppTitle => Settings.Settings.ApplicationName;
 
         public string PageTitle
         {
@@ -217,14 +217,14 @@ namespace App.Library.ViewModels
 
             if (SemVersion.ComparePrecedence(SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.MinimalSupportedVersion) == -1)
             {
-                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.VersionNoLongerSupported, Settings.Settings.ApplicationIdentifier, SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.MinimalSupportedVersion, UpdateChecker.NewVersion), confirmOnly: false, OnConfirmUpdate, OnDenyUnsupported));
+                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.VersionNoLongerSupported, Settings.Settings.ApplicationName, SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.MinimalSupportedVersion, UpdateChecker.NewVersion), confirmOnly: false, OnConfirmUpdate, OnDenyUnsupported));
 
                 return;
             }
 
             if (UpdateChecker.IsUpdateAvailable)
             {
-                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.UpdateAvailableMessage, Settings.Settings.ApplicationIdentifier, SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.NewVersion), confirmOnly: false, OnConfirmUpdate, OnDenyUpdate));
+                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.UpdateAvailableMessage, Settings.Settings.ApplicationName, SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.NewVersion), confirmOnly: false, OnConfirmUpdate, OnDenyUpdate));
 
 
 
@@ -370,7 +370,7 @@ namespace App.Library.ViewModels
                 if (profile == null)
                 {
                     this.Logger.LogError($"Unknown Profile, profile with id {profileId} could not be found.");
-                    MessageBox.Show(EduRoam.Localization.Resources.ErrorUnknownProfile, caption: $"{Settings.Settings.ApplicationIdentifier} - Exception");
+                    MessageBox.Show(EduRoam.Localization.Resources.ErrorUnknownProfile, caption: $"{Settings.Settings.ApplicationName} - Exception");
                     return;
                 }
 
@@ -378,8 +378,8 @@ namespace App.Library.ViewModels
             }
             catch (EduroamAppUserException eauExc)
             {
-                this.Logger.LogError(eauExc, $"{Settings.Settings.ApplicationIdentifier} - Exception");
-                MessageBox.Show(eauExc.UserFacingMessage, caption: $"{Settings.Settings.ApplicationIdentifier} - Exception");
+                this.Logger.LogError(eauExc, $"{Settings.Settings.ApplicationName} - Exception");
+                MessageBox.Show(eauExc.UserFacingMessage, caption: $"{Settings.Settings.ApplicationName} - Exception");
                 return;
             }
 
@@ -548,7 +548,7 @@ namespace App.Library.ViewModels
         public void Uninstall()
         {
             var result = MessageBox.Show(
-                string.Format(EduRoam.Localization.Resources.WarningUninstall, Settings.Settings.ApplicationIdentifier), 
+                string.Format(EduRoam.Localization.Resources.WarningUninstall, Settings.Settings.ApplicationName), 
                 EduRoam.Localization.Resources.CommandDescriptionUninstall, 
                 MessageBoxButton.OKCancel
             );

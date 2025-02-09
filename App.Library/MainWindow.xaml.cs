@@ -55,7 +55,7 @@ namespace App.Library
             };
 
             // TODO: Can we do a string.Format directly in the XAML?
-            this.WaitingConnection.Text = string.Format(EduRoam.Localization.Resources.NoConnection, Settings.Settings.ApplicationIdentifier);
+            this.WaitingConnection.Text = string.Format(EduRoam.Localization.Resources.NoConnection, Settings.Settings.ApplicationName);
         }
 
         private void Dispatcher_UnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

@@ -120,7 +120,7 @@ namespace App.Library
             if (verbose || diffDate <= Settings.Settings.DaysLeftForNotification)
             {
                 new ToastContentBuilder()
-                    .AddText(string.Format(Resources.CheckCertificateToastP1, Settings.Settings.ApplicationIdentifier))
+                    .AddText(string.Format(Resources.CheckCertificateToastP1, Settings.Settings.ApplicationName))
                     .AddText(string.Format(Resources.CheckCertificateToastP2, diffDate))
                     .AddButton(new ToastButton()
                         .SetContent(Resources.CheckCertificateToastButton)
@@ -147,7 +147,7 @@ namespace App.Library
                         "      /refresh :",
                         HelpTextIndent(Resources.AppCommandLineHelpFlagsRefresh),
                     }),
-                caption: Settings.Settings.ApplicationIdentifier);
+                caption: Settings.Settings.ApplicationName);
 
         private static string HelpTextIndent(string s) =>
             "            " + s.Replace("\n", "\n            ");

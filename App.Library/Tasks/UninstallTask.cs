@@ -26,7 +26,7 @@ namespace App.Library.Tasks
                     var messageBoxProcess = new ProcessStartInfo
                     {
                         FileName = "mshta",
-                        Arguments = $"vbscript:Execute(\"msgbox \"\"{string.Format(Resources.UninstallNotification, Settings.Settings.ApplicationIdentifier)}\"\", 0, \"\"{string.Format(Resources.UninstallNotificationTitle, Settings.Settings.ApplicationIdentifier)}\"\":close\")",
+                        Arguments = $"vbscript:Execute(\"msgbox \"\"{string.Format(Resources.UninstallNotification, Settings.Settings.ApplicationName)}\"\", 0, \"\"{string.Format(Resources.UninstallNotificationTitle, Settings.Settings.ApplicationName)}\"\":close\")",
                         WindowStyle = ProcessWindowStyle.Normal, // Shows a console in the taskbar, but it's hidden
                         CreateNoWindow = true,
                         WorkingDirectory = "C:\\"

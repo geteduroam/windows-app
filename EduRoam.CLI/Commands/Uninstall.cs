@@ -23,7 +23,7 @@ namespace EduRoam.CLI.Commands
 
             command.SetHandler(() =>
             {
-                ConsoleExtension.WriteWarning(string.Format(SharedResources.WarningUninstall, Settings.ApplicationIdentifier));
+                ConsoleExtension.WriteWarning(string.Format(SharedResources.WarningUninstall, Settings.ApplicationName));
 
                 if (CertificateStore.AnyRootCaInstalledByUs())
                 {
@@ -41,7 +41,7 @@ namespace EduRoam.CLI.Commands
                 }
                 else
                 {
-                    ConsoleExtension.WriteError(string.Format(SharedResources.ErrorNotUninstalled, Settings.ApplicationIdentifier));
+                    ConsoleExtension.WriteError(string.Format(SharedResources.ErrorNotUninstalled, Settings.ApplicationName));
                 }
             });
 

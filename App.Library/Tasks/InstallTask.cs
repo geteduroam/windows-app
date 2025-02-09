@@ -15,8 +15,8 @@ namespace App.Library.Tasks
             if (showMessageBox)
             {
                 MessageBox.Show(
-                    string.Format(Resources.InstallSuccess, Settings.Settings.ApplicationIdentifier),
-                    caption: string.Format(Resources.InstallTitle, Settings.Settings.ApplicationIdentifier));
+                    string.Format(Resources.InstallSuccess, Settings.Settings.ApplicationName),
+                    caption: string.Format(Resources.InstallTitle, Settings.Settings.ApplicationName));
             }
         }
     }

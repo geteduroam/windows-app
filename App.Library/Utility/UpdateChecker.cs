@@ -46,7 +46,7 @@ public static class UpdateChecker
 
     private static bool IsUpdateAllowedByPolicy(RegistryKey registryBaseKey)
     {
-        var key = registryBaseKey.OpenSubKey(string.Format(RegistryBase, Settings.Settings.ApplicationIdentifier));
+        var key = registryBaseKey.OpenSubKey(string.Format(RegistryBase, Settings.Settings.ApplicationName));
         return key == null || !Convert.ToBoolean(key.GetValue("DisableAutoUpdate", false));
     }
 
@@ -58,7 +58,7 @@ public static class UpdateChecker
     {
         try
         {
-            var tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid().ToString()}_{Settings.Settings.ApplicationIdentifier}.exe");
+            var tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid().ToString()}_{Settings.Settings.ApplicationName}.exe");
 
             using (var client = new WebClient())
             {

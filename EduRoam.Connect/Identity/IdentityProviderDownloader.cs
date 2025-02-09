@@ -75,9 +75,9 @@ namespace EduRoam.Connect.Identity
 
             var client = new HttpClient(Handler, false);
 #if DEBUG
-            client.DefaultRequestHeaders.Add("User-Agent", $"{Settings.ApplicationIdentifier}-win-debug/{LetsWifi.Instance.VersionNumber} ({systemInformation}) HttpClient");
+            client.DefaultRequestHeaders.Add("User-Agent", $"{Settings.ApplicationName}-win-debug/{LetsWifi.Instance.VersionNumber} ({systemInformation}) HttpClient");
 #else
-            client.DefaultRequestHeaders.Add("User-Agent", $"{Settings.ApplicationIdentifier}-win/{LetsWifi.Instance.VersionNumber} ({systemInformation}) HttpClient");
+            client.DefaultRequestHeaders.Add("User-Agent", $"{Settings.ApplicationName}-win/{LetsWifi.Instance.VersionNumber} ({systemInformation}) HttpClient");
 #endif
             // This client will not be used for subsequent requests,
             // so don't keep the connection open any longer than necessary

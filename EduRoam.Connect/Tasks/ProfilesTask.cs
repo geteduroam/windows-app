@@ -66,7 +66,7 @@ namespace EduRoam.Connect.Tasks
 
         public string GetCurrentProfileName()
         {
-            return this.store.IdentityProvider?.DisplayName ?? Settings.AppTitle;
+            return this.store.IdentityProvider?.DisplayName ?? Settings.ApplicationName;
         }
 
         public void RemoveCurrentProfile()

@@ -34,11 +34,11 @@ namespace App.Library.Install
         }
 
         public static SelfInstaller DefaultInstance => new(
-            applicationIdentifier: Settings.Settings.ApplicationIdentifier,
+            applicationIdentifier: Settings.Settings.ApplicationName,
             applicationMetadata: new ApplicationMeta()
             {
-                DisplayName = Settings.Settings.ApplicationIdentifier,  // [REQUIRED] ProductName
-                Publisher = "SURF",  // [REQUIRED] Manufacturer
+                DisplayName = Settings.Settings.ApplicationName,  // [REQUIRED] ProductName
+                Publisher = Settings.Settings.Publisher,  // [REQUIRED] Manufacturer
                 Version = RunningVersion.ToString(),
                 VersionMajor = RunningVersion.Major.ToString(),
                 VersionMinor = RunningVersion.Minor.ToString(),
@@ -611,7 +611,7 @@ namespace App.Library.Install
             {
                 var fileVersion = FileVersionInfo.GetVersionInfo(path);
                 if (fileVersion == null) return false;
-                return fileVersion.ProductName == Settings.Settings.ApplicationIdentifier;
+                return fileVersion.ProductName == Settings.Settings.ApplicationName;
             }
             catch (FileNotFoundException)
             {

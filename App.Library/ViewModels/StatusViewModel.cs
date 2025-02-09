@@ -69,7 +69,7 @@ namespace App.Library.ViewModels
 
         public string TimeLeft => this.status.TimeLeft ?? "-";
 
-        public string ConnectToResource => string.Format(Resources.ButtonAppConnect, Settings.Settings.ApplicationTitle) ?? "...";
+        public string ConnectToResource => string.Format(Resources.ButtonAppConnect, Settings.Settings.NetworkName);
 
         private void SelectOtherInstitution()
         {

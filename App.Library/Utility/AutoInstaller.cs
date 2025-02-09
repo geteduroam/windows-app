@@ -23,7 +23,7 @@ public static class AutoInstaller
 
             if (isInstalled && canBeUpdated)
             {
-                var result = MessageBox.Show(string.Format(EduRoam.Localization.Resources.UpdateCurrentFileNewer, Settings.Settings.ApplicationIdentifier), EduRoam.Localization.Resources.UpdateAvailable, MessageBoxButton.YesNo);
+                var result = MessageBox.Show(string.Format(EduRoam.Localization.Resources.UpdateCurrentFileNewer, Settings.Settings.ApplicationName), EduRoam.Localization.Resources.UpdateAvailable, MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                 {
                     SelfInstaller.DefaultInstance.EnsureIsInstalled();
