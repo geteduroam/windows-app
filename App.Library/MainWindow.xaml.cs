@@ -1,7 +1,4 @@
-﻿using App.Library.Utility;
-using App.Library.ViewModels;
-
-using EduRoam.Connect.Tasks;
+﻿using App.Library.ViewModels;
 
 using Microsoft.Extensions.Logging;
 

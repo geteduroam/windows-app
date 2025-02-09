@@ -1,5 +1,3 @@
-using DocumentFormat.OpenXml;
-
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
 
