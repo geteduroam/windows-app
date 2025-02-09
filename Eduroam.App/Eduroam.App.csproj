@@ -170,7 +170,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <EmbeddedResource Include="appsettings.json" />
     <None Include="Eduroam.App_TemporaryKey.pfx" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
@@ -186,6 +185,10 @@
     <ProjectReference Include="..\App.Library\App.Library.csproj">
       <Project>{5edd4a2f-2b8f-4878-b3bd-8234f2c7ba0d}</Project>
       <Name>App.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\App.Settings\App.Settings.csproj">
+      <Project>{27378484-7AB6-4625-8906-9F87B66F7461}</Project>
+      <Name>App.Settings</Name>
     </ProjectReference>
     <ProjectReference Include="..\EduRoam.Localization\EduRoam.Localization.csproj">
       <Project>{a13e5e20-857e-49ed-b307-bb2a73896902}</Project>

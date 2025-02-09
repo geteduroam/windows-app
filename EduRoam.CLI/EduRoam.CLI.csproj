@@ -75,11 +75,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Resources.Designer.cs" />
-    <Compile Include="ServicesConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <EmbeddedResource Include="appsettings.json" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="FodyWeavers.xml" />

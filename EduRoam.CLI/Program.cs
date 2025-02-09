@@ -1,5 +1,5 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using EduRoam.CLI;
+using App.Library;
 
 using Microsoft.Extensions.DependencyInjection;
 

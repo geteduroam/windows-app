@@ -4,10 +4,7 @@ using App.Settings;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using System;
 using System.Windows;
-
-using static System.Net.WebRequestMethods;
 
 using LanguageResources = EduRoam.Localization.Resources;
 

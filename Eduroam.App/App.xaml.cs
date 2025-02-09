@@ -1,5 +1,6 @@
 ﻿using App.Library;
 using App.Library.Utility;
+using App.Settings;
 
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,6 +20,12 @@ namespace Eduroam.App
         private void App_OnStartup(object sender, StartupEventArgs e)
         {
             LanguageResources.Culture = System.Globalization.CultureInfo.CurrentUICulture;
+            Settings.OAuthClientId = "app.geteduroam.win";
+            Settings.ApplicationName = "geteduroam";
+            Settings.NetworkName = "eduroam";
+            Settings.UpdateBaseUrl = "https://dl.eduroam.app";
+            Settings.HelpUrl = "https://geteduroam.app/";
+            Settings.DiscoveryUrl = "https://discovery.eduroam.app/v3/discovery.json";
 
             if (CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args))
             {
@@ -35,7 +42,6 @@ namespace Eduroam.App
                 return;
             }
             #endregion
-
 
             this.serviceProvider = ServicesConfiguration.ConfigureServices();
 
