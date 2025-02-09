@@ -89,6 +89,14 @@
     <EmbeddedResource Include="Resources.resx" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\App.Library\App.Library.csproj">
+      <Project>{5EDD4A2F-2B8F-4878-B3BD-8234F2C7BA0D}</Project>
+      <Name>App.Library</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\App.Settings\App.Settings.csproj">
+      <Project>{27378484-7AB6-4625-8906-9F87B66F7461}</Project>
+      <Name>App.Settings</Name>
+    </ProjectReference>
     <ProjectReference Include="..\EduRoam.Connect\EduRoam.Connect.csproj">
       <Project>{738d8145-ae85-4d16-9ddb-ce6f7825434d}</Project>
       <Name>EduRoam.Connect</Name>

@@ -207,11 +207,11 @@ No s'ha pogut connectar perquè no s'ha trobat cap configuració EAP.</value>
   </data>
   <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
     <value>Tot està configurat!
-No es pot connectar a eduroam, probablement estàs fora de cobertura.</value>
+No es pot connectar a {0}, probablement estàs fora de cobertura.</value>
   </data>
   <data name="ConfiguredButUnableToConnect" xml:space="preserve">
     <value>Tot està configurat!
-No es pot connectar a eduroam.</value>
+No es pot connectar a {0}.</value>
   </data>
   <data name="ConfiguredEap" xml:space="preserve">
     <value>EAP està configurat.</value>
@@ -272,7 +272,7 @@ No s'ha pogut connectar perquè no s'ha trobat cap configuració EAP.</value>
   </data>
   <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
     <value>Tot està configurat!
-No es pot connectar a eduroam, probablement estàs fora de cobertura.</value>
+No es pot connectar a {0}, probablement estàs fora de cobertura.</value>
   </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>El nom d'usuari ha de contenir @ exactament una vegada.</value>
@@ -330,7 +330,7 @@ Excepció: {0}.</value>
     <value>Sense connexió a internet</value>
   </data>
   <data name="ErrorNotUninstalled" xml:space="preserve">
-    <value>geteduroam no s'ha desinstal·lat.</value>
+    <value>{0} no s'ha desinstal·lat.</value>
   </data>
   <data name="ErrorOptionIsEmpty" xml:space="preserve">
     <value>l'opció {0}  no pot ser buida o amb només espais en blanc</value>
@@ -574,7 +574,7 @@ Excepció: {0}</value>
     <value>El perfil que heu seleccionat no és compatible amb aquesta aplicació.</value>
   </data>
   <data name="WarningUninstall" xml:space="preserve">
-    <value>Esteu actualment en el procés de desinstal·lació completa de geteduroam.</value>
+    <value>Esteu actualment en el procés de desinstal·lació completa de {0}.</value>
   </data>
   <data name="WarningUninstallCertificates" xml:space="preserve">
     <value>Això significa desinstal·lar tots els certificats arrel de confiança instal·lats per aquesta aplicació.</value>
@@ -586,9 +586,9 @@ Excepció: {0}</value>
     <value>El domini per a la Identitat Exterior s'establirà a "{0}" però heu especificat el perfil "{1}"</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
-    <value>eduroam requereix una connexió a internet activa.</value>
+    <value>{0} requereix una connexió a internet activa.</value>
   </data>
-  <data name="ConnectToEduroam" xml:space="preserve">
-    <value>Connecta't a eduroam</value>
+  <data name="ConnectTo0" xml:space="preserve">
+    <value>Connecta't a {0}</value>
   </data>
 </root>

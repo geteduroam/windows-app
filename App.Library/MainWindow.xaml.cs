@@ -53,6 +53,9 @@ namespace App.Library
                 var currentStyle = GetWindowLong(hwnd, GWL_STYLE);
                 SetWindowLong(hwnd, GWL_STYLE, currentStyle & ~WS_MAXIMIZEBOX);
             };
+
+            // TODO: Can we do a string.Format directly in the XAML?
+            this.WaitingConnection.Text = string.Format(EduRoam.Localization.Resources.NoConnection, Settings.Settings.ApplicationIdentifier);
         }
 
         private void Dispatcher_UnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)

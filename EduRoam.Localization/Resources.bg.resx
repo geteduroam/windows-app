@@ -186,11 +186,11 @@
   </data>
   <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
     <value>Всичко е конфигурирано!
-Не може да се свържете с eduroam. Вероятно нямате покритие.</value>
+Не може да се свържете с {0}. Вероятно нямате покритие.</value>
   </data>
   <data name="ConfiguredButUnableToConnect" xml:space="preserve">
     <value>Всичко е конфигурирано!
-Не може да се свърже с eduroam.</value>
+Не може да се свърже с {0}.</value>
   </data>
   <data name="ConfiguredEap" xml:space="preserve">
     <value>EAP е конфигуриран</value>
@@ -251,7 +251,7 @@
   </data>
   <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
     <value>Всичко е конфигурирано!
-Не може да се свържете с eduroam. Вероятно нямате покритие.</value>
+Не може да се свържете с {0}. Вероятно нямате покритие.</value>
   </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>Потребителското име трябва да съдържа само един път @</value>
@@ -309,7 +309,7 @@
     <value>Няма връзка с интернет</value>
   </data>
   <data name="ErrorNotUninstalled" xml:space="preserve">
-    <value>geteduroam не е деинсталиран.</value>
+    <value>{0} не е деинсталиран.</value>
   </data>
   <data name="ErrorOptionIsEmpty" xml:space="preserve">
     <value>стойността на опцията {0} не може да бъде празна или само интервал</value>
@@ -553,7 +553,7 @@
     <value>Профилът, който сте посочили, не се поддържа от това приложение.</value>
   </data>
   <data name="WarningUninstall" xml:space="preserve">
-    <value>В момента тече процес на пълно деинсталиране на geteduroam</value>
+    <value>В момента тече процес на пълно деинсталиране на {0}.</value>
   </data>
   <data name="WarningUninstallCertificates" xml:space="preserve">
     <value>Това означава деинсталиране на всички trusted root certificates, инсталирани от това приложение.</value>
@@ -565,9 +565,9 @@
     <value>Домейна за OuterIdentity ще бъде променен на "{0}" освен специфицирания профил "{1}"</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
-    <value>eduroam изисква активна интернет връзка.</value>
+    <value>{0} изисква активна интернет връзка.</value>
   </data>
-  <data name="ConnectToEduroam" xml:space="preserve">
-    <value>Свързване с eduroam</value>
+  <data name="ConnectTo0" xml:space="preserve">
+    <value>Свързване с {0}</value>
   </data>
 </root>

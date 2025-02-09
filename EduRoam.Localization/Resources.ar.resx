@@ -192,11 +192,11 @@
   </data>
   <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
     <value>تم ضبط اعدادات كل شيء! 
-تعذر الاتصال بشبكة eduroam، ربما تكون خارج نطاق التغطية.</value>
+تعذر الاتصال بشبكة {0}، ربما تكون خارج نطاق التغطية.</value>
   </data>
   <data name="ConfiguredButUnableToConnect" xml:space="preserve">
     <value>تم ضبط اعدادات كل شيء! 
-تعذر الاتصال بشبكة eduroam.</value>
+تعذر الاتصال بشبكة {0}.</value>
   </data>
   <data name="ConfiguredEap" xml:space="preserve">
     <value>تم ضبط EAP.</value>
@@ -258,7 +258,7 @@
   </data>
   <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
     <value>تم ضبط كل شيء! 
-تعذر الاتصال بشبكة eduroam، ربما تكون خارج نطاق التغطية.</value>
+تعذر الاتصال بشبكة {0}، ربما تكون خارج نطاق التغطية.</value>
   </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>يجب أن يحتوي اسم المستخدم على الرمز "@" مرة واحدة فقط</value>
@@ -316,7 +316,7 @@
     <value>لا يوجد اتصال بالإنترنت</value>
   </data>
   <data name="ErrorNotUninstalled" xml:space="preserve">
-    <value>لم يتم إلغاء تثبيت geteduroam.</value>
+    <value>لم يتم إلغاء تثبيت {0}.</value>
   </data>
   <data name="ErrorOptionIsEmpty" xml:space="preserve">
     <value>لا يمكن أن تكون قيمة خيار {0} فارغة أو مسافة بيضاء فقط</value>
@@ -554,7 +554,7 @@
     <value>ملف التعريف الذي حددته غير مدعوم من قبل هذا التطبيق.</value>
   </data>
   <data name="WarningUninstall" xml:space="preserve">
-    <value>أنت حاليًا تقوم بإلغاء تثبيت geteduroam بالكامل</value>
+    <value>أنت حاليًا تقوم بإلغاء تثبيت {0} بالكامل</value>
   </data>
   <data name="WarningUninstallCertificates" xml:space="preserve">
     <value>وهذا يعني إلغاء تثبيت جميع شهادات الجذر الموثوقة التي تم تثبيتها بواسطة هذا التطبيق.</value>
@@ -572,9 +572,9 @@
     <value>لا</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
-    <value>يتطلب eduroam اتصالاً نشطًا بالإنترنت.</value>
+    <value>يتطلب {0} اتصالاً نشطًا بالإنترنت.</value>
   </data>
-  <data name="ConnectToEduroam" xml:space="preserve">
-    <value>الاتصال بـ eduroam</value>
+  <data name="ConnectTo0" xml:space="preserve">
+    <value>الاتصال بـ {0}</value>
   </data>
 </root>

@@ -205,11 +205,11 @@ Kon geen verbinding maken omdat er geen EAP-configuratie kon worden gevonden</va
   </data>
   <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
     <value>Alles is geconfigureerd!
-Kan geen verbinding maken met eduroam, waarschijnlijk heb je geen bereik.</value>
+Kan geen verbinding maken met {0}, waarschijnlijk heb je geen bereik.</value>
   </data>
   <data name="ConfiguredButUnableToConnect" xml:space="preserve">
     <value>Alles is geconfigureerd!
-Kan geen verbinding maken met eduroam.</value>
+Kan geen verbinding maken met {0}.</value>
   </data>
   <data name="ConfiguredEap" xml:space="preserve">
     <value>EAP is geconfigureerd</value>
@@ -271,7 +271,7 @@ Kan geen verbinding maken omdat EAP Config niet kan worden gevonden</value>
   <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
     <value>Alles is correct ingesteld! 
 
-Echter, we kunnen momenteel geen verbinding maken met {0}, het netwerk is buiten bereik. Zodra het binnen bereik is, zal je systeem verbinding maken met {0}.</value>
+Echter, we kunnen momenteel geen verbinding maken met {0}, het netwerk is buiten bereik. Zodra het binnen bereik is, zal je systeem verbinding maken.</value>
   </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>De gebruikersnaam moet precies één keer @ bevatten</value>
@@ -329,7 +329,7 @@ Uitzondering: {0}.</value>
     <value>Geen internet verbinding</value>
   </data>
   <data name="ErrorNotUninstalled" xml:space="preserve">
-    <value>geteduroam is niet verwijderd.</value>
+    <value>{0} is niet verwijderd.</value>
   </data>
   <data name="ErrorOptionIsEmpty" xml:space="preserve">
     <value>De optiewaarde van {0} mag niet leeg zijn of alleen witruimte</value>
@@ -531,7 +531,7 @@ Uitzondering: {0}</value>
     <value>Gebruiksvoorwaarden</value>
   </data>
   <data name="UninstallNotification" xml:space="preserve">
-    <value>De applicatie en de configuratie ervan zijn verwijderd.</value>
+    <value>{0} en de configuratie ervan zijn verwijderd.</value>
   </data>
   <data name="Username" xml:space="preserve">
     <value>Gebruikersnaam</value>
@@ -573,10 +573,10 @@ Uitzondering: {0}</value>
     <value>Het profiel dat u heeft geselecteerd, wordt niet ondersteund door deze applicatie.</value>
   </data>
   <data name="WarningUninstall" xml:space="preserve">
-    <value>U bent momenteel bezig met het volledig verwijderen van geteduroam</value>
+    <value>U staat op het punt om {0} volledig te verwijderen.</value>
   </data>
   <data name="WarningUninstallCertificates" xml:space="preserve">
-    <value>Dit betekent dat alle vertrouwde rootcertificaten die door deze applicatie zijn geïnstalleerd, moeten worden verwijderd.</value>
+    <value>Dit betekent dat alle vertrouwde rootcertificaten die door deze applicatie zijn geïnstalleerd, zullen worden verwijderd.</value>
   </data>
   <data name="WarningUnsupportedFileType" xml:space="preserve">
     <value>Het door u gekozen bestandstype wordt niet ondersteund.</value>
@@ -594,10 +594,10 @@ Uitzondering: {0}</value>
     <value>OK</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
-    <value>eduroam vereist een actieve internetverbinding.</value>
+    <value>{0} heeft een actieve internetverbinding nodig.</value>
   </data>
-  <data name="ConnectToEduroam" xml:space="preserve">
-    <value>Verbind met eduroam</value>
+  <data name="ConnectTo0" xml:space="preserve">
+    <value>Verbind met {0}</value>
   </data>
   <data name="ExampleRealm" xml:space="preserve">
     <value>voorbeeld</value>

@@ -206,11 +206,11 @@ Could not connect because no EAP Config could be found</value>
   </data>
   <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
     <value>Everything is configured!
-Unable to connect to eduroam, you're probably out of coverage.</value>
+Unable to connect to {0}, you're probably out of coverage.</value>
   </data>
   <data name="ConfiguredButUnableToConnect" xml:space="preserve">
     <value>Everything is configured!
-Unable to connect to eduroam.</value>
+Unable to connect to {0}.</value>
   </data>
   <data name="ConfiguredEap" xml:space="preserve">
     <value>EAP is configured</value>
@@ -330,7 +330,7 @@ Exception: {0}.</value>
     <value>No internet connection</value>
   </data>
   <data name="ErrorNotUninstalled" xml:space="preserve">
-    <value>geteduroam has not been uninstalled.</value>
+    <value>{0} has not been uninstalled.</value>
   </data>
   <data name="ErrorOptionIsEmpty" xml:space="preserve">
     <value>{0} option value cannot be empty or whitespace only</value>
@@ -538,7 +538,7 @@ Exception: {0}</value>
     <value>Terms of Use</value>
   </data>
   <data name="UninstallNotification" xml:space="preserve">
-    <value>The application and its configuration have been uninstalled.</value>
+    <value>{0} and its configuration have been removed.</value>
   </data>
   <data name="Username" xml:space="preserve">
     <value>Username</value>
@@ -580,7 +580,7 @@ Exception: {0}</value>
     <value>The profile you have selected is not supported by this application.</value>
   </data>
   <data name="WarningUninstall" xml:space="preserve">
-    <value>You are currently in the process of completly uninstalling geteduroam</value>
+    <value>You are currently in the process of completly uninstalling {0}.</value>
   </data>
   <data name="WarningUninstallCertificates" xml:space="preserve">
     <value>This means uninstalling all the trusted root certificates installed by this application.</value>
@@ -609,10 +609,10 @@ Exception: {0}</value>
     <value>OK</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
-    <value>eduroam requires an active internet connection.</value>
+    <value>{0} requires an active internet connection.</value>
   </data>
-  <data name="ConnectToEduroam" xml:space="preserve">
-    <value>Connect to eduroam</value>
+  <data name="ConnectTo0" xml:space="preserve">
+    <value>Connect to {0}</value>
   </data>
   <data name="ExampleRealm" xml:space="preserve">
     <value>example</value>

@@ -206,11 +206,11 @@ Es konnte keine Verbindung hergestellt werden da keine EAP Konfigurationsdaten g
   </data>
   <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
     <value>Alles eingerichtet!
-Es konnte keine Verbindung zu eduroam hergestellt werden, wahrscheinlich sind Sie außer Reichweite.</value>
+Es konnte keine Verbindung zu {0} hergestellt werden, wahrscheinlich sind Sie außer Reichweite.</value>
   </data>
   <data name="ConfiguredButUnableToConnect" xml:space="preserve">
     <value>Alles eingerichtet!
-Es konnte keine Verbindung zu eduroam hergestellt werden.</value>
+Es konnte keine Verbindung zu {0} hergestellt werden.</value>
   </data>
   <data name="ConfiguredEap" xml:space="preserve">
     <value>EAP ist eingerichtet</value>
@@ -330,7 +330,7 @@ Ausnahmefehler: {0}.</value>
     <value>Keine Internetverbindung</value>
   </data>
   <data name="ErrorNotUninstalled" xml:space="preserve">
-    <value>geteduroam wurde nicht deinstalliert.</value>
+    <value>{0} wurde nicht deinstalliert.</value>
   </data>
   <data name="ErrorOptionIsEmpty" xml:space="preserve">
     <value>{0} Wert darf nicht leer oder ausschließlich Leerzeichen sein</value>
@@ -574,7 +574,7 @@ Ausnahmefehler: {0}</value>
     <value>Das ausgewählte Profil wird durch dieses Programm nicht unterstützt. </value>
   </data>
   <data name="WarningUninstall" xml:space="preserve">
-    <value>Sie sind dabei, das Programm geteduroam vollständig zu deinstallieren</value>
+    <value>Sie sind dabei, das Programm {0} vollständig zu deinstallieren.</value>
   </data>
   <data name="WarningUninstallCertificates" xml:space="preserve">
     <value>Dadurch werden auch alle installierten Wurzelzertifikate wieder entfernt.</value>
@@ -586,9 +586,9 @@ Ausnahmefehler: {0}</value>
     <value>Der Realm für die äußere Identität wird auf "{0}" gesetzt obwohl im Profil "{1}" angegeben ist</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
-    <value>geteduroam benötigt eine aktive Internetverbindung.</value>
+    <value>{0} benötigt eine aktive Internetverbindung.</value>
   </data>
-  <data name="ConnectToEduroam" xml:space="preserve">
-    <value>Mit eduroam verbinden</value>
+  <data name="ConnectTo0" xml:space="preserve">
+    <value>Mit {0} verbinden</value>
   </data>
 </root>

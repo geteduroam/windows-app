@@ -92,7 +92,6 @@
                     <TextBlock x:Name="WaitingConnection" 
                                Margin="5"
                                FontSize="{StaticResource Font.Default}"
-                               Text="{x:Static lang:Resources.NoConnection}"
                                TextAlignment="Center" />
                 </StackPanel>
             </Grid>

@@ -207,11 +207,11 @@ No ha sido posible conectarse porque no se encontró ninguna configuración de E
   </data>
   <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
     <value>Todo está configurado.
-No ha sido posible conectarse a eduroam porque probablemente estás fuera de cobertura.</value>
+No ha sido posible conectarse a {0} porque probablemente estás fuera de cobertura.</value>
   </data>
   <data name="ConfiguredButUnableToConnect" xml:space="preserve">
     <value>Todo está configurado.
-No ha sido posible conectarse a eduroam.</value>
+No ha sido posible conectarse a {0}.</value>
   </data>
   <data name="ConfiguredEap" xml:space="preserve">
     <value>EAP está configurado</value>
@@ -272,7 +272,7 @@ No ha sido posible conectarse porque no se encontró ninguna configuración de E
   </data>
   <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
     <value>Todo está configurado.
-No ha sido posible conectarse a eduroam porque probablemente estás fuera de cobertura.</value>
+No ha sido posible conectarse a {0} porque probablemente estás fuera de cobertura.</value>
   </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>El nombre de usuario debe contener @ exactamente una vez.</value>
@@ -330,7 +330,7 @@ Excepción: {0}.</value>
     <value>Sin conexión a internet</value>
   </data>
   <data name="ErrorNotUninstalled" xml:space="preserve">
-    <value>geteduroam no ha sido desinstalado.</value>
+    <value>{0} no ha sido desinstalado.</value>
   </data>
   <data name="ErrorOptionIsEmpty" xml:space="preserve">
     <value>La opción {0} no puede estar vacía o contener sólo espacios en blanco</value>
@@ -574,7 +574,7 @@ Excepción: {0}</value>
     <value>El perfil que has seleccionado no es compatible con esta aplicación.</value>
   </data>
   <data name="WarningUninstall" xml:space="preserve">
-    <value>Estás ahora en el proceso de desinstalar completamente geteduroam</value>
+    <value>Estás ahora en el proceso de desinstalar completamente {0}.</value>
   </data>
   <data name="WarningUninstallCertificates" xml:space="preserve">
     <value>Esto significa desinstalar todos los certificados raíz instalados por esta aplicación.</value>
@@ -586,9 +586,9 @@ Excepción: {0}</value>
     <value>El dominio de la OuterIdentity se establecerá como "{0}" pero el perfil indicaba "{1}"</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
-    <value>eduroam requiere una conexión a internet activa.</value>
+    <value>{0} requiere una conexión a internet activa.</value>
   </data>
-  <data name="ConnectToEduroam" xml:space="preserve">
-    <value>Conéctate a eduroam</value>
+  <data name="ConnectTo0" xml:space="preserve">
+    <value>Conéctate a {0}</value>
   </data>
 </root>

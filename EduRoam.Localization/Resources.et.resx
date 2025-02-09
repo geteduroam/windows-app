@@ -207,11 +207,11 @@ Ei saanud ühendada, sest ei leitud EAP Config (seadistust).</value>
   </data>
   <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
     <value>Kõik on seadistatud.
-Ei saa eduroamiga ühendada, oled arvatavasti väljaspool leviala.</value>
+Ei saa {0}iga ühendada, oled arvatavasti väljaspool leviala.</value>
   </data>
   <data name="ConfiguredButUnableToConnect" xml:space="preserve">
     <value>Kõik on seadistatud.
-Ei saa eduroamiga ühendada.</value>
+Ei saa {0}iga ühendada.</value>
   </data>
   <data name="ConfiguredEap" xml:space="preserve">
     <value>EAP on seadistatud</value>
@@ -272,7 +272,7 @@ Ei saanud ühendada, sest ei leitud EAP Config (seadistust).</value>
   </data>
   <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
     <value>Kõik on seadistatud.
-Ei saa eduroamiga ühendada, oled arvatavasti väljaspool leviala.</value>
+Ei saa {0}iga ühendada, oled arvatavasti väljaspool leviala.</value>
   </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>Kasutajanimes peab olema üksainus @</value>
@@ -330,7 +330,7 @@ Erand: {0}.</value>
     <value>Internetiühendust ei ole</value>
   </data>
   <data name="ErrorNotUninstalled" xml:space="preserve">
-    <value>geteduroam'i ei ole eemaldatud.</value>
+    <value>{0}'i ei ole eemaldatud.</value>
   </data>
   <data name="ErrorOptionIsEmpty" xml:space="preserve">
     <value>{0} valikväärtus ei tohi olla tühi ega koosneda tühikust</value>
@@ -570,7 +570,7 @@ Erand: {0}</value>
     <value>Valitud profiili see rakendus ei toeta.</value>
   </data>
   <data name="WarningUninstall" xml:space="preserve">
-    <value>Oled geteduroami täielikult eemaldamas.</value>
+    <value>Oled {0}i täielikult eemaldamas.</value>
   </data>
   <data name="WarningUninstallCertificates" xml:space="preserve">
     <value>See tähendab rakenduse poolt paigaldatud usaldatud juursertifikaatide eemaldamist.</value>
@@ -585,9 +585,9 @@ Erand: {0}</value>
     <value>Jah</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
-    <value>eduroam vajab toimivat internetiühendust.</value>
+    <value>{0} vajab toimivat internetiühendust.</value>
   </data>
-  <data name="ConnectToEduroam" xml:space="preserve">
-    <value>Ühenda eduroamiga</value>
+  <data name="ConnectTo0" xml:space="preserve">
+    <value>Ühenda {0}iga</value>
   </data>
 </root>

@@ -1,6 +1,8 @@
-﻿using EduRoam.Connect;
+﻿using App.Settings;
+
+using EduRoam.Connect;
 using EduRoam.Connect.Install;
-using EduRoam.Connect.Tasks;
+using App.Library.Tasks;
 
 using System;
 using System.CommandLine;
@@ -21,7 +23,7 @@ namespace EduRoam.CLI.Commands
 
             command.SetHandler(() =>
             {
-                ConsoleExtension.WriteWarning(SharedResources.WarningUninstall);
+                ConsoleExtension.WriteWarning(string.Format(SharedResources.WarningUninstall, Settings.ApplicationIdentifier));
 
                 if (CertificateStore.AnyRootCaInstalledByUs())
                 {
@@ -34,11 +36,12 @@ namespace EduRoam.CLI.Commands
 
                 if (confirmed)
                 {
-                    UninstallTask.Uninstall((success) => Console.WriteLine("Ready"));
+                    if (UninstallTask.Uninstall(false))
+                        Console.WriteLine("Ready");
                 }
                 else
                 {
-                    ConsoleExtension.WriteError(SharedResources.ErrorNotUninstalled);
+                    ConsoleExtension.WriteError(string.Format(SharedResources.ErrorNotUninstalled, Settings.ApplicationIdentifier));
                 }
             });
 

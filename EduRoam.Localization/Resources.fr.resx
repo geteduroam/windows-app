@@ -206,10 +206,10 @@ du certificat client actuel en a plus d'un tiers</value>
 Impossible de se connecter car aucune configuration EAP n'a pu être trouvée</value>
   </data>
   <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>Tout est configuré ! Impossible de vous connecter à eduroam, vous êtes probablement hors de couverture.</value>
+    <value>Tout est configuré ! Impossible de vous connecter à {0}, vous êtes probablement hors de couverture.</value>
   </data>
   <data name="ConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Tout est configuré ! Impossible de se connecter à eduroam.</value>
+    <value>Tout est configuré ! Impossible de se connecter à {0}.</value>
   </data>
   <data name="ConfiguredEap" xml:space="preserve">
     <value>EAP est configuré</value>
@@ -270,7 +270,7 @@ Impossible de se connecter car la configuration EAP est introuvable</value>
   </data>
   <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
     <value>Tout est configuré !
-Impossible de vous connecter à eduroam, vous êtes probablement hors de couverture.</value>
+Impossible de vous connecter à {0}, vous êtes probablement hors de couverture.</value>
   </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>Le nom d'utilisateur doit contenir @ une fois</value>
@@ -328,7 +328,7 @@ Exception: {0}.</value>
     <value>Pas de connexion Internet</value>
   </data>
   <data name="ErrorNotUninstalled" xml:space="preserve">
-    <value>geteduroam n'a pas été désinstallé.</value>
+    <value>{0} n'a pas été désinstallé.</value>
   </data>
   <data name="ErrorOptionIsEmpty" xml:space="preserve">
     <value>{0}la valeur de l'option ne peut pas être vide ou uniquement des espaces</value>
@@ -572,7 +572,7 @@ Exception: {0}</value>
     <value>Le profil que vous avez sélectionné n'est pas pris en charge par cette application.</value>
   </data>
   <data name="WarningUninstall" xml:space="preserve">
-    <value>Vous êtes actuellement en train de désinstaller complètement geteduroam</value>
+    <value>Vous êtes actuellement en train de désinstaller complètement {0}.</value>
   </data>
   <data name="WarningUninstallCertificates" xml:space="preserve">
     <value>Cela signifie désinstaller tous les certificats racines de confiance installés par cette application.</value>
@@ -584,9 +584,9 @@ Exception: {0}</value>
     <value>Le domaine de OuterIdentity sera défini sur "{0}" mais le profil spécifié "{1}"</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
-    <value>eduroam nécessite une connexion Internet active.</value>
+    <value>{0} nécessite une connexion Internet active.</value>
   </data>
-  <data name="ConnectToEduroam" xml:space="preserve">
-    <value>Se connecter à eduroam</value>
+  <data name="ConnectTo0" xml:space="preserve">
+    <value>Se connecter à {0}</value>
   </data>
 </root>

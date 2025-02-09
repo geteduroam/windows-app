@@ -365,7 +365,7 @@ namespace EduRoam.Localization {
         
         /// <summary>
         ///   Looks up a localized string similar to Everything is configured!
-        ///Unable to connect to eduroam, you&apos;re probably out of coverage..
+        ///Unable to connect to {0}, you&apos;re probably out of coverage..
         /// </summary>
         public static string ConfiguredButProbablyOutOfCoverage {
             get {
@@ -375,7 +375,7 @@ namespace EduRoam.Localization {
         
         /// <summary>
         ///   Looks up a localized string similar to Everything is configured!
-        ///Unable to connect to eduroam..
+        ///Unable to connect to {0}..
         /// </summary>
         public static string ConfiguredButUnableToConnect {
             get {
@@ -411,11 +411,11 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Connect to eduroam.
+        ///   Looks up a localized string similar to Connect to {0}.
         /// </summary>
-        public static string ConnectToEduroam {
+        public static string ConnectTo0 {
             get {
-                return ResourceManager.GetString("ConnectToEduroam", resourceCulture);
+                return ResourceManager.GetString("ConnectTo0", resourceCulture);
             }
         }
         
@@ -762,7 +762,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to geteduroam has not been uninstalled..
+        ///   Looks up a localized string similar to {0} has not been uninstalled..
         /// </summary>
         public static string ErrorNotUninstalled {
             get {
@@ -1089,7 +1089,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to eduroam requires an active internet connection..
+        ///   Looks up a localized string similar to {0} requires an active internet connection..
         /// </summary>
         public static string NoConnection {
             get {
@@ -1414,7 +1414,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The application and its configuration have been uninstalled..
+        ///   Looks up a localized string similar to {0} and its configuration have been removed..
         /// </summary>
         public static string UninstallNotification {
             get {
@@ -1591,7 +1591,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You are currently in the process of completly uninstalling geteduroam.
+        ///   Looks up a localized string similar to You are currently in the process of completly uninstalling {0}..
         /// </summary>
         public static string WarningUninstall {
             get {
