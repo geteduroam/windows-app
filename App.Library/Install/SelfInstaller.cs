@@ -178,19 +178,26 @@ namespace App.Library.Install
                 this.EnsureIsInstalled(path);
             }
         }
-        public void EnsureIsInstalled(string? path = null)
+        public bool EnsureIsInstalled(string? path = null)
         {
             if (!this.IsGloballyInstalled) {
-                if (path == null || this.CanUpdateUserInstalled(this.GetFileVersion(path))
-                    || (path == null && !this.IsRunningInUserInstallLocation && this.IsRunningNewerThanUserInstalled()))
+                if (!this.IsUserInstalled
+                    || path == null
+                    ? this.IsRunningNewerThanUserInstalled()
+                    : this.CanUpdateUserInstalled(this.GetFileVersion(path))
+                )
                 {
-                    this.InstallToUserLocal(path);
+                    if (!this.InstallToUserLocal(path))
+                    {
+                        return false;
+                    }
                     this.SetUserInstalledState(true);
                 }
             }
             this.SetFileAssociationRegistered(true);
             this.SetStartMenuEntry(true);
             this.SetScheduledTask(true);
+            return true;
         }
         /// <summary>
         /// Uninstalls the program, this will also remove all configuration unless the application is also globally installed
@@ -239,8 +246,19 @@ namespace App.Library.Install
         /// </summary>
         /// <param name="path">Path of the file to install, null for the currently running file</param>
         /// <param name="tryMove">Normally the installation is done by copying the file, removing all metadata, but with this setting the file is moved instead; if moving fails the normal copy method is used regardless</param>
-        private void InstallToUserLocal(string? path, bool tryMove = false)
+        private bool InstallToUserLocal(string? path, bool tryMove = false)
         {
+            path = path ?? RunningExePath;
+
+            if (path == null || path == this.UserInstallExePath || !System.IO.File.Exists(path))
+            {
+                throw new ArgumentException("Invalid path for application to install: " + path, nameof(path));
+            }
+            if (!this.IsSameApplication(path))
+            {
+                throw new ArgumentException("Path to install is a different application: " + path, nameof(path));
+            }
+
             // Create target install directory
             if (!Directory.Exists(this.UserInstallDir))
             {
@@ -284,9 +302,9 @@ namespace App.Library.Install
                 }
             }
 
-            if (tryMove && MoveFile(path ?? RunningExePath, this.UserInstallExePath))
+            if (tryMove && MoveFile(path, this.UserInstallExePath))
             {
-                return;
+                return true;
             }
 
             // write executable, not retaining Zone.Identifier NTFS stream
@@ -296,8 +314,9 @@ namespace App.Library.Install
             //
             // Reading and writing manually works better, because then the resulting .exe can be openend
             // at startup or by the scheduler without the user getting "Are you sure you want to run this software?"
-            var binaryExe = System.IO.File.ReadAllBytes(path ?? RunningExePath);
+            var binaryExe = System.IO.File.ReadAllBytes(path);
             System.IO.File.WriteAllBytes(this.UserInstallExePath, binaryExe);
+            return true;
         }
         /// <summary>
         /// Removes the installed executable when its running from installed location
