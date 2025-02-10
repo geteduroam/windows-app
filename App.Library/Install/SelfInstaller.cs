@@ -163,19 +163,28 @@ namespace App.Library.Install
         {
             get => this.GlobalInstallExePath == RunningExePath;
         }
-        public void UpdateWithFile(string path)
+        public bool UpdateWithFile(string path, bool deleteSource)
         {
             if(this.IsUserInstalled)
             {
-                if (this.CanUpdateUserInstalled(this.GetFileVersion(path)))
+                if (!this.CanUpdateUserInstalled(this.GetFileVersion(path)))
                 {
-                    this.InstallToUserLocal(path, true);
-                    this.SetUserInstalledState(true);
+                    return false;
                 }
+                if (!this.InstallToUserLocal(path, deleteSource))
+                {
+                    return false;
+                }
+                this.SetUserInstalledState(true);
+                if (deleteSource)
+                {
+                    TryDelete(path);
+                }
+                return true;
             }
             else
             {
-                this.EnsureIsInstalled(path);
+                return this.EnsureIsInstalled(path);
             }
         }
         public bool EnsureIsInstalled(string? path = null)

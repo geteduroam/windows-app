@@ -65,7 +65,7 @@ public static class UpdateChecker
                 await client.DownloadFileTaskAsync(UpdateData.DownloadUrl, tempPath);
                 try
                 {
-                    SelfInstaller.DefaultInstance.UpdateWithFile(tempPath);
+                    SelfInstaller.DefaultInstance.UpdateWithFile(tempPath, true);
                     SelfInstaller.DefaultInstance.StartApplicationFromInstallLocation();
                 }
                 finally

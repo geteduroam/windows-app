@@ -26,7 +26,7 @@ public static class AutoInstaller
                 var result = MessageBox.Show(string.Format(EduRoam.Localization.Resources.UpdateCurrentFileNewer, Settings.Settings.ApplicationName), EduRoam.Localization.Resources.UpdateAvailable, MessageBoxButton.YesNo);
                 if (result == MessageBoxResult.Yes)
                 {
-                    SelfInstaller.DefaultInstance.EnsureIsInstalled();
+                    SelfInstaller.DefaultInstance.UpdateWithFile(SelfInstaller.RunningExePath, false);
                     return false;
                 }
             }
