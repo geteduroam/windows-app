@@ -39,6 +39,7 @@ namespace App.Library.ViewModels
 
         public MainViewModel(ILogger<MainViewModel> logger)
         {
+            this.ApplicationTitle = Settings.Settings.ApplicationName;
             this.NewProfileCommand = new DelegateCommand(this.NewProfileCommandAction, this.CanNewProfileCommandAction);
             this.LoadEapFileCommand = new DelegateCommand(this.GetEapFileFromDialog);
             this.RefreshCommand = new AsyncCommand(this.RefreshAsync);
@@ -83,6 +84,7 @@ namespace App.Library.ViewModels
                 });
 
         }
+        public string ApplicationTitle { get; set; }
 
         public bool IsConnected { get; set; }
 

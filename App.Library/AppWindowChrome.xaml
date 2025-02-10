@@ -4,10 +4,18 @@
                     xmlns:shell="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:lang = "clr-namespace:EduRoam.Localization;assembly=EduRoam.Localization"
                     xmlns:b = "clr-namespace:App.Library.Binding">
+    
+    <!-- Needed for showing the .ico file
+    Also add xmlns:converters="clr-namespace:App.Library.Converters" to the <ResourceDirectory> at the top
+    
+    <converters:ImageConverter x:Key="ImageConverter" />
+    <converters:ImageConverter x:Key="AppImageConverter" AppSpecific="True" />
+    -->
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
     <b:MainViewModelProxy x:Key="proxy" DataCtx="{Binding}" />
-    
+
     <Style x:Key="StandardStyle" TargetType="{x:Type local:MainWindow}">
         <Setter Property="FontSize" Value="{StaticResource Font.Default}" />
         <Setter Property="shell:WindowChrome.WindowChrome">
@@ -25,22 +33,32 @@
                         </Border>
 
                         <Grid x:Name="TitleBar" 
-                              Margin="10, 1, 145, 0" Height="23"
+                              Margin="10, 1, 145, 0" Height="26"
                               HorizontalAlignment="Stretch" 
                               VerticalAlignment="Top"
                               Background="{DynamicResource BackgroundBrush}">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="24" />
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="48" />
                             </Grid.ColumnDefinitions>
 
-                            <Button Grid.Column="2" 
+                            <!--
+                            <Image Grid.Column="0" Width="20" Height="20" Margin="2" 
+                                Source="{Binding Converter={StaticResource AppImageConverter}, ConverterParameter=geteduroam.ico}" />
+                            -->
+                            <Label Grid.Column="0" x:Name="ApplicationTitle"
+                                Content="{Binding ApplicationTitle}" 
+                                FontFamily="Segoe UI" 
+                                FontSize="12"
+                                HorizontalAlignment="Left" />
+
+                            <Button Grid.Column="1" 
                                     x:Name="AppMenu"
                                     Content="{StaticResource MenuIcon}"
                                     HorizontalAlignment="Right"
                                     FontSize="16"
-                                    Width="48"
+                                    Width="36"
+                                    Height="24"
                                     Command="{Binding OpenMenuCommand}"
                                     shell:WindowChrome.IsHitTestVisibleInChrome="True"
                                     Style="{DynamicResource TitleBarButton}">
