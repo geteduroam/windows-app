@@ -666,7 +666,7 @@ If you click "No" {0} will exit.</value>
     <value>{0} installation</value>
   </data>
   <data name="OAuthResponseAcceptedTitle" xml:space="preserve">
-    <value>You have been authorized!</value>
+    <value>The app has been authorized!</value>
   </data>
   <data name="OAuthResponseRejectedTitle" xml:space="preserve">
     <value>Authorization has been rejected.</value>

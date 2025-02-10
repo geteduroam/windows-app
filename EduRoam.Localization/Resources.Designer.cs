@@ -1125,7 +1125,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You have been authorized!.
+        ///   Looks up a localized string similar to The app has been authorized!.
         /// </summary>
         public static string OAuthResponseAcceptedTitle {
             get {

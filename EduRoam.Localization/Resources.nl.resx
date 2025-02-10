@@ -650,4 +650,16 @@ Als je op "Nee" klikt, wordt {0} afgesloten.</value>
   <data name="InstallTitle" xml:space="preserve">
     <value>{0} installatie</value>
   </data>
+  <data name="OAuthResponseAcceptedTitle" xml:space="preserve">
+    <value>De applicatie is goedgekeurd!</value>
+  </data>
+  <data name="OAuthResponseRejectedTitle" xml:space="preserve">
+    <value>De applicatie is toegang geweigerd.</value>
+  </data>
+  <data name="OAuthResponseCloseMessage" xml:space="preserve">
+    <value>U kunt deze tab nu sluiten en terugkeren naar de applicatie.</value>
+  </data>
+  <data name="OAuthAuthorizationTitle" xml:space="preserve">
+    <value>Authorisatie</value>
+  </data>
 </root>
