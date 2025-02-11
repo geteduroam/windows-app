@@ -64,5 +64,10 @@ namespace App.Library
         {
             this.MainViewModel.Dispose();
         }
+
+        private void MainWindow_Deactivated(object sender, EventArgs e)
+        {
+            this.Topmost = false;
+        }
     }
 }

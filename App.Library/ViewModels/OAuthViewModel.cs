@@ -30,6 +30,7 @@ namespace App.Library.ViewModels
                     {
                         Application.Current.MainWindow.Activate();
                         Application.Current.MainWindow.Focus();
+                        Application.Current.MainWindow.Topmost = true;
                     });
 
                     if (eapConfig != null)

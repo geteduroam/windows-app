@@ -22,7 +22,7 @@
     Closing="MainWindow_OnClosing"
     mc:Ignorable="d"
     WindowStartupLocation="CenterOwner"
-    ResizeMode="CanResize">
+    ResizeMode="CanResize" Deactivated="MainWindow_Deactivated">
 
     <Window.Resources>
         <ResourceDictionary>
