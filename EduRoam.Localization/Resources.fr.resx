@@ -124,11 +124,11 @@
     <value>Afficher ce texte d'aide.</value>
   </data>
   <data name="AppCommandLineHelpFlagsInstall" xml:space="preserve">
-    <value>Installez ce binaire sur %USER%/AppData/Local,</value>
+    <value>Installez ce binaire sur %USER%/AppData/Local.</value>
   </data>
   <data name="AppCommandLineHelpFlagsUninstall" xml:space="preserve">
     <value>Désinstallez ce binaire de %USER%/AppData/Local avec
-avec toutes les données configurées.</value>
+toutes les données configurées.</value>
   </data>
   <data name="AppCommandLineHelpFlagsRefresh" xml:space="preserve">
     <value>Actualisez le certificat utilisateur à l'aide du jeton d'actualisation.
@@ -136,7 +136,7 @@ Est appelé automatiquement par une tâche planifiée dans Windows.
 /force :
 Actualisez le certificat utilisateur à l'aide du jeton d'actualisation.
 Actualisera le profil même si la période de validité
-du certificat client actuel en a plus d'un tiers</value>
+du certificat client actuel en a plus d'un tiers.</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
     <value>Etes-vous sur de vouloir continuer?</value>
@@ -271,6 +271,10 @@ Impossible de se connecter car la configuration EAP est introuvable</value>
   <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
     <value>Tout est configuré !
 Impossible de vous connecter à {0}, vous êtes probablement hors de couverture.</value>
+  </data>
+  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Tout est configuré !
+Impossible de se connecter à {0}.</value>
   </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>Le nom d'utilisateur doit contenir @ une fois</value>

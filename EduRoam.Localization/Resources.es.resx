@@ -274,6 +274,10 @@ No ha sido posible conectarse porque no se encontró ninguna configuración de E
     <value>Todo está configurado.
 No ha sido posible conectarse a {0} porque probablemente estás fuera de cobertura.</value>
   </data>
+  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Todo está configurado.
+No ha sido posible conectarse a {0}.</value>
+  </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>El nombre de usuario debe contener @ exactamente una vez.</value>
   </data>
@@ -323,7 +327,7 @@ No ha sido posible conectarse a {0} porque probablemente estás fuera de cobertu
     <value>No se ha proporcionado ningún certificado (válido) de cliente (parámetro {0}.</value>
   </data>
   <data name="ErrorNoConnection" xml:space="preserve">
-    <value>No se ha podido establecer conexión. 
+    <value>No se ha podido establecer conexión.
 Excepción: {0}.</value>
   </data>
   <data name="ErrorNoInternet" xml:space="preserve">
@@ -333,7 +337,7 @@ Excepción: {0}.</value>
     <value>{0} no ha sido desinstalado.</value>
   </data>
   <data name="ErrorOptionIsEmpty" xml:space="preserve">
-    <value>La opción {0} no puede estar vacía o contener sólo espacios en blanco</value>
+    <value>La opción {0} no puede estar vacía o contener sólo espacios en blanco.</value>
   </data>
   <data name="ErrorRequiredCertificatesNotInstalled" xml:space="preserve">
     <value>No se han instalado todos los certificados requeridos.</value>

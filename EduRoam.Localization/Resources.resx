@@ -274,6 +274,11 @@ Could not connect because EAP Config could not be found</value>
 
 However, we're currently unable to connect to {0}, the network is out of range. Once in range, your system will connect to {0}.</value>
   </data>
+  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Everything is set up correctly!
+
+However, we're currently unable to connect to {0}, even though it's in range. You can still connect by manually selecting it in your Windows settings.</value>
+  </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>Username must contain @ exactly once</value>
   </data>

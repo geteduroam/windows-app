@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -117,461 +117,482 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AppCommandLineHelpFlagsTitle" xml:space="preserve">
+    <value>Підримувані команди CLI:</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsHelp" xml:space="preserve">
+    <value>Показати цей текст довідки.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsInstall" xml:space="preserve">
+    <value>Встановити цей бінарний файл до %USER%/AppData/Local.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsUninstall" xml:space="preserve">
+    <value>Видалити цей бінарний файл з %USER%/AppData/Local along
+з усіма налаштованими даними.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsRefresh" xml:space="preserve">
+    <value>Оновіть сертифікат користувача за допомогою маркера оновлення.
+Викликається автоматично запланованим завданням у windows.
+/force :
+Оновіть сертифікат користувача за допомогою маркера оновлення.
+Оновіть сертифікат користувача навіть якщо до закінчення терміну дії
+поточного сертифіката клієнта залишилося більше 3-ни.</value>
+  </data>
   <data name="AreYouSure" xml:space="preserve">
-    <value>Сигурни ли сте, че искате да продължите?</value>
+    <value>Ви впевнені, що бажаєте продовжити?</value>
   </data>
   <data name="ButtonClose" xml:space="preserve">
-    <value>Затваряне</value>
+    <value>Закрити</value>
   </data>
   <data name="ButtonConnect" xml:space="preserve">
-    <value>Свързване</value>
+    <value>Підключитися</value>
   </data>
   <data name="ButtonInstall" xml:space="preserve">
-    <value>Инсталиране</value>
+    <value>Встановити</value>
   </data>
   <data name="ButtonNext" xml:space="preserve">
-    <value>Следващ</value>
+    <value>Наступний</value>
   </data>
   <data name="ButtonPrevious" xml:space="preserve">
-    <value>Предишен</value>
+    <value>Попередній</value>
   </data>
   <data name="ButtonBack" xml:space="preserve">
     <value>Назад</value>
   </data>
   <data name="CertificateLabel" xml:space="preserve">
-    <value>Сертификат:</value>
+    <value>Сертифікат:</value>
   </data>
   <data name="CertificatesInstallationNotification" xml:space="preserve">
-    <value>За да продължите, трябва да бъдат инсталирани следните сертификати.</value>
+    <value>Для продовження роботи необхідно встановити наступні сертифікати.</value>
   </data>
   <data name="CertificatesInstallationStatus" xml:space="preserve">
-    <value>{0}, инсталирани: {1}</value>
+    <value>{0},встановлений:{1}</value>
   </data>
   <data name="CertificateTitleInstalled" xml:space="preserve">
-    <value>сертификатите са инсталирани</value>
+    <value>сертифікати встановлені</value>
   </data>
   <data name="CertificateTitleStart" xml:space="preserve">
-    <value>За да продължите, трябва да инсталирате сертификатите от списъка</value>
+    <value>Для того, щоб продовжити, вам необхідно встановити перелічені сертифікати</value>
   </data>
   <data name="CommandDescriptionConnect" xml:space="preserve">
-    <value>Конфигурирайте Wi-Fi на базата на профила на организацията и се свържете.</value>
+    <value>Налаштуйте Wi-Fi на основі профілю закладу та підключіться.</value>
   </data>
   <data name="CommandDescriptionInstall" xml:space="preserve">
-    <value>Инсталирайте този файл в %USER%/AppData/Local</value>
+    <value>Встановіть цей бінарний файл до %USER%/AppData/Local</value>
   </data>
   <data name="CommandDescriptionList" xml:space="preserve">
-    <value>Вземете списък с организациите или с профилите на организация.</value>
+    <value>Отримайте список установ або профілі для установи.</value>
   </data>
   <data name="CommandDescriptionReauthenticate" xml:space="preserve">
-    <value>Повторна автентикация</value>
+    <value>Повторна автентифікація</value>
   </data>
   <data name="CommandDescriptionRefresh" xml:space="preserve">
-    <value>Опреснете идентификационните данни</value>
+    <value>Оновити облікові дані</value>
   </data>
   <data name="CommandDescriptionRemove" xml:space="preserve">
-    <value>Премахнете конфигурирания Wi-Fi профил и/или root сертификатите</value>
+    <value>Видалити налаштований профіль Wi-Fi та/або кореневі сертифікати</value>
   </data>
   <data name="CommandDescriptionShow" xml:space="preserve">
-    <value>Показване на информацията за конфигурацията на EAP</value>
+    <value>Показати інформацію про конфігурацію EAP</value>
   </data>
   <data name="CommandDescriptionStatus" xml:space="preserve">
-    <value>Показване на състояние</value>
+    <value>Показати статус</value>
   </data>
   <data name="CommandDescriptionUninstall" xml:space="preserve">
-    <value>Деинсталиране на приложение</value>
+    <value>Видалити додаток</value>
   </data>
   <data name="ConfiguredButNotConnected" xml:space="preserve">
-    <value>Всчико е конфигурирано!
-Не може да се свържете, защото не може да бъде намерена EAP конфигурация.</value>
+    <value>Все налаштовано!
+Не вдалося підключитися, оскільки не знайдено конфігурацію EAP</value>
   </data>
   <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>Всичко е конфигурирано!
-Не може да се свържете с {0}. Вероятно нямате покритие.</value>
+    <value>Все налаштовано!
+Не вдається підключитися до {0}, ймовірно, ви перебуваєте поза зоною покриття.</value>
   </data>
   <data name="ConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Всичко е конфигурирано!
-Не може да се свърже с {0}.</value>
+    <value>Все налаштовано!
+Не вдається підключитися до {0}.</value>
   </data>
   <data name="ConfiguredEap" xml:space="preserve">
-    <value>EAP е конфигуриран</value>
+    <value>EAP налаштовано</value>
   </data>
   <data name="ConnectionUsernameAndPasswordRequired" xml:space="preserve">
-    <value>Моля, въведете потребителско име и парола, за да се свържете.</value>
+    <value>Будь ласка, введіть ім'я користувача та пароль для підключення.</value>
   </data>
   <data name="ConsentMain" xml:space="preserve">
-    <value>Условия за ползване</value>
+    <value>Умови використання</value>
   </data>
   <data name="ConsentPost" xml:space="preserve">
-    <value>на организацията</value>
+    <value>установи</value>
   </data>
   <data name="ConsentPre" xml:space="preserve">
-    <value>Натискайки 'Следващ', Вие се съгласявате, че</value>
+    <value>Натискаючи кнопку "Далі", ви погоджуєтеся з</value>
   </data>
   <data name="CredentialsLabel" xml:space="preserve">
-    <value>Въведете потребителското име и паролата си</value>
+    <value>Введіть ваше ім'я користувача та пароль</value>
   </data>
   <data name="CredentialsPasswordLabel" xml:space="preserve">
-    <value>Парола:</value>
+    <value>Пароль:</value>
   </data>
   <data name="CredentialsUsernameLabel" xml:space="preserve">
-    <value>Потребителско име:</value>
+    <value>Ім'я користувача:</value>
   </data>
   <data name="DaysLeft" xml:space="preserve">
-    <value>{0} повече дни</value>
+    <value>{0}більше днів</value>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Готово</value>
   </data>
   <data name="ErrorApi" xml:space="preserve">
-    <value>API грешка</value>
+    <value>Помилка API</value>
   </data>
   <data name="ErrorCannotConnectWithServer" xml:space="preserve">
-    <value>Не може да се свържете със сървъра.
+    <value>Не вдалося підключитися до сервера.
 
-Уверете се, че сте свързани с интернет, и опитайте отново.
+Переконайтеся, що ви підключені до Інтернету, а потім спробуйте ще раз.
 
-Изключение: {0}</value>
+Виняток:{0}</value>
   </data>
   <data name="ErrorCannotFetchTokens" xml:space="preserve">
-    <value>Не може да извлече token json.
-Изключение: {0}</value>
+    <value>Не вдалося отримати маркер json.
+Виняток:{0}</value>
   </data>
   <data name="ErrorCannotRemoveWLANProfile" xml:space="preserve">
-    <value>Някакъв WLAN профил не може да бъде премахнат</value>
+    <value>Не вдалося видалити деякі профілі WLAN</value>
   </data>
   <data name="ErrorCannotRetrieveProfileWhenOffline" xml:space="preserve">
-    <value>Не може да се извлече профил, когато сте офлайн</value>
+    <value>Не вдається отримати профіль в режимі офлайн</value>
   </data>
   <data name="ErrorClientCredentialNotValidYes" xml:space="preserve">
-    <value>Идентификационните данни на клиента все още не са валидни.</value>
+    <value>Облікові дані клієнта ще недійсні. {0}</value>
   </data>
   <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
-    <value>Всчико е конфигурирано!
-Не може да се свържете, защото не може да бъде намерена EAP конфигурация.</value>
+    <value>Все налаштовано!
+Не вдалося підключитися, оскільки не вдалося знайти конфігурацію EAP</value>
   </data>
   <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>Всичко е конфигурирано!
-Не може да се свържете с {0}. Вероятно нямате покритие.</value>
+    <value>Все налаштовано!
+Не вдається підключитися до {0}, ймовірно, ви перебуваєте поза зоною покриття.</value>
   </data>
   <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Всичко е конфигурирано!
-Не може да се свърже с {0}.</value>
+    <value>Все налаштовано!
+Не вдається підключитися до {0}.</value>
   </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
-    <value>Потребителското име трябва да съдържа само един път @</value>
+    <value>Ім'я користувача повинно містити @ лише один раз</value>
   </data>
   <data name="ErrorCredentialsEndsWith" xml:space="preserve">
-    <value>Потребителското име не може да завършва с точка или интервал</value>
+    <value>Ім'я користувача не може закінчуватися крапкою або пробілом</value>
   </data>
   <data name="ErrorCredentialsEndWithRealm" xml:space="preserve">
-    <value>Потребителското име трябва да завършва с .{0} или @{0}</value>
+    <value>Ім'я користувача повинно закінчуватися символами .{0} або @{0}</value>
   </data>
   <data name="ErrorCredentialsEndWithRealmNoSubdomain" xml:space="preserve">
-    <value>Потребителското име трябва да завършва с @{0}</value>
+    <value>Ім'я користувача повинно закінчуватися на @{0}</value>
   </data>
   <data name="ErrorCredentialsSpecialCharacters" xml:space="preserve">
-    <value>Символи като . и @ не може да бъдат един до друг. </value>
+    <value>Такі символи, як . і @ не можуть бути поруч один з одним</value>
   </data>
   <data name="ErrorEapConfigCorrupted" xml:space="preserve">
-    <value>Посоченият конфигурационен файл на EAP е счупен. Моля, изберете друг файл.</value>
+    <value>Вибраний файл налаштування EAP пошкоджено. Будь ласка, виберіть інший файл.</value>
   </data>
   <data name="ErrorEapConfigInvalid" xml:space="preserve">
-    <value>Не може да се чете от файла. Уверете се, че сте посочили валиден конфигурационен файл на EAP.</value>
+    <value>Не вдалося прочитати файл. Переконайтеся, що вибрано правильний файл конфігурації EAP.</value>
   </data>
   <data name="ErrorEapConfigIsEmpty" xml:space="preserve">
-    <value>Не може да се свърже, конфигигурацията на EAP е празна</value>
+    <value>Не вдалося підключитися, конфігурація EAP порожня</value>
   </data>
   <data name="ErrorEapNotConfigured" xml:space="preserve">
-    <value>EAP не може да бъде конфигуриран</value>
+    <value>Не вдалося налаштувати EAP</value>
   </data>
   <data name="ErrorInternetConnection" xml:space="preserve">
-    <value>Грешка при свързване с интернет</value>
+    <value>Помилка при підключенні до Інтернету</value>
   </data>
   <data name="ErrorInvalidCertificatePath" xml:space="preserve">
-    <value>Невалиден път до сертификат</value>
+    <value>Невірний шлях до сертифікату</value>
   </data>
   <data name="ErrorInvalidCredentials" xml:space="preserve">
-    <value>Потребителското име и/или паролата са невалидни</value>
+    <value>Ім'я користувача та/або пароль не дійсні</value>
   </data>
   <data name="ErrorInvalidEapConfig" xml:space="preserve">
-    <value>Предоставена е невалидна EAP конфигурация. Моля, докладвайте за грешка.</value>
+    <value>Надано невірну конфігурацію EAP, це не повинно відбуватися, будь ласка, повідомте про помилку.</value>
   </data>
   <data name="ErrorMissingCredentials" xml:space="preserve">
-    <value>Не са предоставени идентификационни данни</value>
+    <value>Облікові дані не надаються</value>
   </data>
   <data name="ErrorMissingRequiredCACertificate" xml:space="preserve">
-    <value>Необходимият CA сертификат не е инсталиран. Моля, докладвайте за грешка</value>
+    <value>Необхідний сертифікат ЦС не встановлений, цього не повинно статися, будь ласка, повідомте про помилку</value>
   </data>
   <data name="ErrorNoClientCertificateProvided" xml:space="preserve">
-    <value>Не е предоставен (валиден) клиентски сертификат ({0} параметър.</value>
+    <value>Не було надано жодного (дійсного) сертифіката клієнта ({0}параметр.</value>
   </data>
   <data name="ErrorNoConnection" xml:space="preserve">
-    <value>Не може да се свърже.
-Изключение: {0}.</value>
+    <value>Не вдалося підключитися.
+Виняток: {0}.</value>
   </data>
   <data name="ErrorNoInternet" xml:space="preserve">
-    <value>Няма връзка с интернет</value>
+    <value>Немає підключення до Інтернету</value>
   </data>
   <data name="ErrorNotUninstalled" xml:space="preserve">
-    <value>{0} не е деинсталиран.</value>
+    <value>{0} не було видалено.</value>
   </data>
   <data name="ErrorOptionIsEmpty" xml:space="preserve">
-    <value>стойността на опцията {0} не може да бъде празна или само интервал</value>
+    <value>{0}значення параметра не може бути порожнім або лише пробілом</value>
   </data>
   <data name="ErrorRequiredCertificatesNotInstalled" xml:space="preserve">
-    <value>Не всички необходими сертификати са инсталирани.</value>
+    <value>Не всі необхідні сертифікати встановлені.</value>
   </data>
   <data name="ErrorShowCommandOptions" xml:space="preserve">
-    <value>Липсват опции. Осигурете опция {0} или опции {1} и {2}</value>
+    <value>Відсутні параметри. Вкажіть{0} параметр або обидва{1} і {2}параметри</value>
   </data>
   <data name="ErrorUnknownProfile" xml:space="preserve">
-    <value>Неизвестен профил</value>
+    <value>Невідомий профіль</value>
   </data>
   <data name="ErrorUnsupportedConnectionType" xml:space="preserve">
-    <value>Свързване на тип {0} (все още) не се поддържа.</value>
+    <value>Підключення типу {0} не підтримується (поки що).</value>
   </data>
   <data name="ErrorUnsupportedInstituteOrProfile" xml:space="preserve">
-    <value>Организацията или профилът не се поддържат  или са изменени.
-Моля, посочете друга организация или профил.
+    <value>Установа чи профіль або не підтримуються або мають неправильний формат.
+Виберіть іншу установу або профіль.
 
-Изключение: {0}</value>
+Виняток: {0}</value>
   </data>
   <data name="ErrorUnsupportedProfile" xml:space="preserve">
-    <value>Профилът, който сте посочили, не се поддържа от приложението. Не е намерен метод за автентикация.</value>
+    <value>Вибраний вами профіль не підтримується цією програмою. Не знайдено жодного підтримуваного методу автентифікації.</value>
   </data>
   <data name="ErrorWirelessUnavailable" xml:space="preserve">
-    <value>На този компютър не е налична безжична връзка</value>
+    <value>Бездротовий зв'язок недоступний на цьому комп'ютері</value>
   </data>
   <data name="FileDialogSelectFile" xml:space="preserve">
-    <value>Моля, изберете файл.</value>
+    <value>Будь ласка, виберіть файл.</value>
   </data>
   <data name="HoursLeft" xml:space="preserve">
-    <value>{0} повече часа</value>
+    <value>{0} більше часу</value>
   </data>
   <data name="ChoiceKeyYes" xml:space="preserve">
     <value>y</value>
   </data>
   <data name="LabelAccountValidFor" xml:space="preserve">
-    <value>Вашият акаунт е валиден за</value>
+    <value>Ваш обліковий запис дійсний протягом</value>
   </data>
   <data name="LabelEmail" xml:space="preserve">
-    <value>И-мейл</value>
+    <value>E-mail</value>
   </data>
   <data name="LabelHelp" xml:space="preserve">
-    <value>Помощ</value>
+    <value>Допомога</value>
   </data>
   <data name="LabelPhone" xml:space="preserve">
     <value>Телефон</value>
   </data>
   <data name="LabelProfile" xml:space="preserve">
-    <value>Профил</value>
+    <value>профіль</value>
   </data>
   <data name="LabelSupported" xml:space="preserve">
-    <value>Поддържан</value>
+    <value>Підтримується</value>
   </data>
   <data name="LabelTermsOfUse" xml:space="preserve">
-    <value>Условия за ползване</value>
+    <value>Умови використання</value>
   </data>
   <data name="LabelVersion" xml:space="preserve">
-    <value>Версия на приложението</value>
+    <value>Версія програми</value>
   </data>
   <data name="LabelWeb" xml:space="preserve">
-    <value>Уеб</value>
+    <value>веб</value>
   </data>
   <data name="LoadCertificateFile" xml:space="preserve">
-    <value>Посочете Client Certificate bundle</value>
+    <value>Виберіть пакет сертифікатів клієнта</value>
   </data>
   <data name="LoadEapFile" xml:space="preserve">
-    <value>Изберете конфигурационния файл на EAP</value>
+    <value>Виберіть файл конфігурації EAP</value>
   </data>
   <data name="Loading" xml:space="preserve">
-    <value>Зареждане</value>
+    <value>Завантаження</value>
   </data>
   <data name="LocalCertificateLabel" xml:space="preserve">
-    <value>Този профил изисква локален сертификат</value>
+    <value>Для цього профілю потрібен місцевий сертифікат</value>
   </data>
   <data name="LoginTitle" xml:space="preserve">
-    <value>Влизане</value>
+    <value>логін</value>
   </data>
   <data name="MenuItemLoadEAP" xml:space="preserve">
-    <value>Заредете файл .eap-config...</value>
+    <value>Завантажити файл .eap-config...</value>
   </data>
   <data name="MenuItemReauthenticate" xml:space="preserve">
-    <value>Повторна автентикация...</value>
+    <value>Повторно пройдіть авторизацію...</value>
   </data>
   <data name="MenuItemRefresh" xml:space="preserve">
-    <value>Опреснете идентификационните данни</value>
+    <value>Оновити облікові дані</value>
   </data>
   <data name="MenuItemRemoveCertificates" xml:space="preserve">
-    <value>Премахнете root сертификатите... </value>
+    <value>Видалити кореневі сертифікати...</value>
   </data>
   <data name="MenuItemRemoveProfile" xml:space="preserve">
-    <value>Премахнете конфигурирания Wi-Fi профил...</value>
+    <value>Видалити налаштований профіль Wi-Fi...</value>
   </data>
   <data name="MenuItemUninstall" xml:space="preserve">
-    <value>Деинсталиране на приложение... </value>
+    <value>Видалити програму...</value>
   </data>
   <data name="MinutesLeft" xml:space="preserve">
-    <value>{0} повече минути</value>
+    <value>{0} ще кілька хвилин</value>
   </data>
   <data name="NoEAPConfig" xml:space="preserve">
-    <value>Няма информация за EAP Config, която да бъде показана</value>
+    <value>Відсутня інформація про конфігурацію EAP</value>
   </data>
   <data name="ChoiceKeyNo" xml:space="preserve">
     <value>n</value>
   </data>
   <data name="OAuthExplanation" xml:space="preserve">
-    <value>За да продължите, трябва да се автентикирате в браузъра си. Трябва автоматично да се отвори прозорец.</value>
+    <value>Щоб продовжити, вам потрібно авторизуватися у вашому браузері, вікно повинно відкритися автоматично.</value>
   </data>
   <data name="OAuthWaitingTitle" xml:space="preserve">
-    <value>Изчакайте ...</value>
+    <value>Очікування...</value>
   </data>
   <data name="OptionDescriptionCertificatePath" xml:space="preserve">
-    <value>Път до файла със сертификата</value>
+    <value>Шлях до файлу сертифіката</value>
   </data>
   <data name="OptionDescriptionEAPConfig" xml:space="preserve">
-    <value>Път до конфигурацията на EAP .eap-config.</value>
+    <value>Шлях до конфігурації EAP .eap-config.</value>
   </data>
   <data name="OptionDescriptionForce" xml:space="preserve">
-    <value>Принудително действие.</value>
+    <value>Примусова дія</value>
   </data>
   <data name="OptionDescriptionInstitute" xml:space="preserve">
-    <value>Име на организацията, с която да се свържете.</value>
+    <value>Назва установи, до якої потрібно підключитися.</value>
   </data>
   <data name="OptionDescriptionProfile" xml:space="preserve">
-    <value>Профил на организацията, чрез който да се свържете.</value>
+    <value>Профіль установи для підключення.</value>
   </data>
   <data name="OptionDescriptionQuery" xml:space="preserve">
-    <value>Заявка за филтриране на елементи</value>
+    <value>Запит на фільтрування елементів</value>
   </data>
   <data name="OptionRequired" xml:space="preserve">
-    <value>Изисква се опция {0}</value>
+    <value>Параметр {0} обов'язковий</value>
   </data>
   <data name="Passphrase" xml:space="preserve">
-    <value>Фраза за сертификата</value>
+    <value>Парольна фраза сертифіката</value>
   </data>
   <data name="PassphraseLabel" xml:space="preserve">
-    <value>Въведете паролата за сертификата</value>
+    <value>Введіть пароль до сертифікату</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>Парола</value>
+    <value>Пароль</value>
   </data>
   <data name="PasswordLabel" xml:space="preserve">
-    <value>Парола:</value>
+    <value>Пароль:</value>
   </data>
   <data name="ProfileContactInfo" xml:space="preserve">
-    <value>Контакти</value>
+    <value>Контактна інформація</value>
   </data>
   <data name="ProfileEmail" xml:space="preserve">
-    <value>Имейл</value>
+    <value>Email</value>
   </data>
   <data name="ProfileLabel" xml:space="preserve">
-    <value>Име на профил</value>
+    <value>Ім'я профілю</value>
   </data>
   <data name="ProfileNotAffiliatedInstitution" xml:space="preserve">
-    <value>Не сте присъединен към организация?</value>
+    <value>Не пов'язані з установою?</value>
   </data>
   <data name="ProfilePhone" xml:space="preserve">
     <value>Телефон</value>
   </data>
   <data name="ProfileRemoveConfirmation" xml:space="preserve">
-    <value>Това ще премахне цялата конфигурация за '{0}'.</value>
+    <value>Це призведе до видалення всіх налаштувань для '{0}'.</value>
   </data>
   <data name="ProfileSelectOtherInstitution" xml:space="preserve">
-    <value>Изберете друг профил</value>
+    <value>Виберіть інший профіль</value>
   </data>
   <data name="ProfileWeb" xml:space="preserve">
-    <value>Уеб</value>
+    <value>Web</value>
   </data>
   <data name="RedirectText" xml:space="preserve">
-    <value>За повече информация относно как да се свържете кликнете тук и ще бъдете пренасочени към сайта на организацията . Когато кликнете върху връзката, това приложение ще се затвори.</value>
+    <value>Натисніть тут, щоб перейти на сайт установ для отримання додаткової інформації про те, як підключитися. Коли ви натиснете на посилання, ця програма закриється.</value>
   </data>
   <data name="RedirectTitle" xml:space="preserve">
-    <value>Пренасочване</value>
+    <value>Перенаправлення</value>
   </data>
   <data name="RemoveProfileMessage" xml:space="preserve">
-    <value>Това ще премахне цялата конфигурация за
+    <value>Це призведе до видалення всіх налаштувань для
 {0}</value>
   </data>
   <data name="RemoveProfileTitle" xml:space="preserve">
-    <value>Премахнете {0}</value>
+    <value>Видалити {0}</value>
   </data>
   <data name="RequestToInstallCertificates" xml:space="preserve">
-    <value>Инсталирахте ли всички необходими сертификати?</value>
+    <value>Встановити всі необхідні сертифікати?</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>Потърсете Вашата организация</value>
+    <value>Знайдіть вашу організацію</value>
   </data>
   <data name="SelectFile" xml:space="preserve">
-    <value>Разгледайте</value>
+    <value>Перегляд</value>
   </data>
   <data name="SelectInstitution" xml:space="preserve">
-    <value>Изберете организация</value>
+    <value>Виберіть установу</value>
   </data>
   <data name="SelectProfile" xml:space="preserve">
-    <value>Изберете профил</value>
+    <value>Виберіть профіль</value>
   </data>
   <data name="TermsOfUseTitle" xml:space="preserve">
-    <value>Условия за ползване</value>
+    <value>Умови використання</value>
   </data>
   <data name="UninstallNotification" xml:space="preserve">
-    <value>Приложението и неговата конфигурация са деинсталирани.</value>
+    <value>Додаток і його конфігурація були видалені.</value>
   </data>
   <data name="Username" xml:space="preserve">
-    <value>Потребителско име</value>
+    <value>Ім'я користувача</value>
   </data>
   <data name="UserNameWatermark" xml:space="preserve">
     <value>@example.com</value>
   </data>
   <data name="VersionDebug" xml:space="preserve">
-    <value>{0}+Отстраняване на грешки</value>
+    <value>{0}+Налагодження</value>
   </data>
   <data name="VersionDebugNoVersion" xml:space="preserve">
-    <value>Отстраняване на грешки</value>
+    <value>Налагодження</value>
   </data>
   <data name="VersionRelease" xml:space="preserve">
     <value>{0}</value>
   </data>
   <data name="VersionReleaseNoVersion" xml:space="preserve">
-    <value>Без версия</value>
+    <value>Без версій</value>
   </data>
   <data name="WarningFileDoesNotExist" xml:space="preserve">
-    <value>Посоченият файл не съществува.</value>
+    <value>Вказаного файлу не існує.</value>
   </data>
   <data name="WarningInstallCertificates" xml:space="preserve">
-    <value>Първо трябва да инсталирате сертификатите от InstallCertificates</value>
+    <value>Спочатку потрібно встановити сертифікати за допомогою InstallCertificates</value>
   </data>
   <data name="WarningMissingCertificates" xml:space="preserve">
-    <value>Липсват сертификати</value>
+    <value>Відсутні сертифікати</value>
   </data>
   <data name="WarningNoInstitutesFound" xml:space="preserve">
-    <value>Не са намерени организации</value>
+    <value>Не знайдено жодної установи</value>
   </data>
   <data name="WarningNoProfilesFound" xml:space="preserve">
-    <value>Не са намерени профили</value>
+    <value>Не знайдено жодного профілю</value>
   </data>
   <data name="WarningNoSupportedAuthenticationMethod" xml:space="preserve">
-    <value>Не е намерен метод за автентикация.</value>
+    <value>Не знайдено жодного підтримуваного методу автентифікації.</value>
   </data>
   <data name="WarningProfileNotSupported" xml:space="preserve">
-    <value>Профилът, който сте посочили, не се поддържа от това приложение.</value>
+    <value>Вибраний вами профіль не підтримується цією програмою.</value>
   </data>
   <data name="WarningUninstall" xml:space="preserve">
-    <value>В момента тече процес на пълно деинсталиране на {0}.</value>
+    <value>Зараз ви перебуваєте в процесі повного видалення {0}.</value>
   </data>
   <data name="WarningUninstallCertificates" xml:space="preserve">
-    <value>Това означава деинсталиране на всички trusted root certificates, инсталирани от това приложение.</value>
+    <value>Це означає видалення всіх довірених кореневих сертифікатів, встановлених цією програмою.</value>
   </data>
   <data name="WarningUnsupportedFileType" xml:space="preserve">
-    <value>Не се поддържа типа на файла, който сте избрали.</value>
+    <value>Вибраний вами тип файлу не підтримується.</value>
   </data>
   <data name="WarnRealmMismatch" xml:space="preserve">
-    <value>Домейна за OuterIdentity ще бъде променен на "{0}" освен специфицирания профил "{1}"</value>
+    <value>Домен для OuterIdentity буде встановлено на "{0}", але в профілі вказано "{1}"</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
-    <value>{0} изисква активна интернет връзка.</value>
+    <value>Для {0} потрібне активне підключення до Інтернету.</value>
   </data>
   <data name="ConnectTo0" xml:space="preserve">
-    <value>Свързване с {0}</value>
+    <value>Підключитися до {0}</value>
   </data>
 </root>

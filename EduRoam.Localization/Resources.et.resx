@@ -274,6 +274,10 @@ Ei saanud ühendada, sest ei leitud EAP Config (seadistust).</value>
     <value>Kõik on seadistatud.
 Ei saa {0}iga ühendada, oled arvatavasti väljaspool leviala.</value>
   </data>
+  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Kõik on seadistatud.
+Ei saa {0}iga ühendada.</value>
+  </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>Kasutajanimes peab olema üksainus @</value>
   </data>
@@ -323,7 +327,7 @@ Ei saa {0}iga ühendada, oled arvatavasti väljaspool leviala.</value>
     <value>Ei esitatud (kehtivat) kliendisertifikaati ({0} parameeter.</value>
   </data>
   <data name="ErrorNoConnection" xml:space="preserve">
-    <value>Ei saanud ühendada. 
+    <value>Ei saanud ühendada.
 Erand: {0}.</value>
   </data>
   <data name="ErrorNoInternet" xml:space="preserve">
@@ -483,7 +487,7 @@ Erand: {0}</value>
     <value>Profiili nimi</value>
   </data>
   <data name="ProfileNotAffiliatedInstitution" xml:space="preserve">
-    <value>EI ole asutusega seotud?</value>
+    <value>Ei ole asutusega seotud?</value>
   </data>
   <data name="ProfilePhone" xml:space="preserve">
     <value>Telefon</value>

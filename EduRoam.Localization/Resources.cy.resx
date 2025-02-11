@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -118,467 +118,480 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppCommandLineHelpFlagsTitle" xml:space="preserve">
-    <value>أوامر CLI المدعومة:</value>
+    <value>Gorchmynion CLI â chymorth:</value>
   </data>
   <data name="AppCommandLineHelpFlagsHelp" xml:space="preserve">
-    <value>أظهر نص المساعدة هذا</value>
+    <value>Dangos y testun cymorth hwn</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsInstall" xml:space="preserve">
+    <value>Gosod y deuaidd hwn i %USER%/AppData/Local.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsUninstall" xml:space="preserve">
+    <value>Dadosod y deuaidd hwn o %USER%/AppData/Local ynghyd
+unrhyw ddata wedi'i ffurfweddu</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsRefresh" xml:space="preserve">
+    <value>Adnewyddwch y dystysgrif defnyddiwr gan ddefnyddio'r tocyn adnewyddu.
+Yn cael ei alw'n awtomatig gan dasg a drefnwyd yn Windows.
+/force :
+Adnewyddu'r dystysgrif defnyddiwr gan ddefnyddio'r tocyn adnewyddu.
+Bydd yn adnewyddu'r proffil hyd yn oed os oes gan gyfnod dilysrwydd
+tystysgrif gyfredol y cleient fwy na thraean ar ôl</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
-    <value>هل أنت متأكد أنك تريد الاستمرار؟</value>
+    <value>Ydych chi'n siŵr eich bod am barhau?</value>
   </data>
   <data name="ButtonClose" xml:space="preserve">
-    <value>إغلاق</value>
+    <value>Cau</value>
   </data>
   <data name="ButtonConnect" xml:space="preserve">
-    <value>اتصال</value>
+    <value>Cysylltu</value>
   </data>
   <data name="ButtonInstall" xml:space="preserve">
-    <value>تثبيت</value>
+    <value>Gosod</value>
   </data>
   <data name="ButtonNext" xml:space="preserve">
-    <value>التالي</value>
+    <value>Nesaf</value>
   </data>
   <data name="ButtonPrevious" xml:space="preserve">
-    <value>السابق</value>
+    <value>Blaenorol</value>
   </data>
   <data name="ButtonBack" xml:space="preserve">
-    <value>الرجوع</value>
+    <value>Cefn</value>
   </data>
   <data name="CertificateLabel" xml:space="preserve">
-    <value>شهادة:</value>
+    <value>Tystysgrif:</value>
   </data>
   <data name="CertificatesInstallationNotification" xml:space="preserve">
-    <value>للمتابعة، يجب تثبيت الشهادات التالية.</value>
+    <value>Er mwyn parhau mae'n rhaid gosod y tystysgrifau canlynol.</value>
   </data>
   <data name="CertificatesInstallationStatus" xml:space="preserve">
-    <value>{0}, تم التثبيت: {1}</value>
+    <value>{0}, wedi'i osod: {1}</value>
   </data>
   <data name="CertificateTitleInstalled" xml:space="preserve">
-    <value>تم تثبيت الشهادات</value>
+    <value>tystysgrifau yn cael eu gosod</value>
   </data>
   <data name="CertificateTitleStart" xml:space="preserve">
-    <value>للمتابعة، يجب تثبيت الشهادات المُدرجة.</value>
+    <value>Er mwyn parhau mae'n rhaid i chi osod y tystysgrifau rhestredig</value>
   </data>
   <data name="CommandDescriptionConnect" xml:space="preserve">
-    <value>قم بضبط إعدادات شبكة Wi-Fi استنادًا إلى ملف المؤسسة ثم قم بالاتصال.</value>
+    <value>Ffurfweddwch Wi-Fi yn seiliedig ar broffil sefydliad a chysylltu.</value>
   </data>
   <data name="CommandDescriptionInstall" xml:space="preserve">
-    <value>قم بتثبيت هذا البرنامج في  %USER%/AppData/Local</value>
+    <value>Gosodwch y deuaidd hwn i %USER%/AppData/Local</value>
   </data>
   <data name="CommandDescriptionList" xml:space="preserve">
-    <value>احصل على قائمة المؤسسات أو الملفات التعريفية لمؤسسة ما</value>
+    <value>Mynnwch restr o sefydliadau neu broffiliau ar gyfer sefydliad.</value>
   </data>
   <data name="CommandDescriptionReauthenticate" xml:space="preserve">
-    <value>إعادة المصادقة</value>
+    <value>Ail-ddilysu</value>
   </data>
   <data name="CommandDescriptionRefresh" xml:space="preserve">
-    <value>تحديث بيانات الاعتماد</value>
+    <value>Adnewyddu tystlythyrau</value>
   </data>
   <data name="CommandDescriptionRemove" xml:space="preserve">
-    <value>إزالة ملف ضبط الشبكة اللاسلكية Wi-Fi المُعين و/أو الشهادات الجذرية root certificates</value>
+    <value>Dileu proffil Wi-Fi a/neu tystysgrifau gwraidd wedi'u ffurfweddu</value>
   </data>
   <data name="CommandDescriptionShow" xml:space="preserve">
-    <value>عرض معلومات EAP config </value>
+    <value>Dangos gwybodaeth EAP Config</value>
   </data>
   <data name="CommandDescriptionStatus" xml:space="preserve">
-    <value>عرض الحالة</value>
+    <value>Dangos statws</value>
   </data>
   <data name="CommandDescriptionUninstall" xml:space="preserve">
-    <value>إلغاء تثبيت التطبيق</value>
+    <value>Dadosod y cais</value>
   </data>
   <data name="ConfiguredButNotConnected" xml:space="preserve">
-    <value>تم ضبط اعدادات كل شيء!
-تعذر الاتصال بسبب عدم العثور على ضبط EAP.</value>
+    <value>Mae popeth wedi'i ffurfweddu!
+Methu cysylltu oherwydd nid oedd modd dod o hyd i EAP Config</value>
   </data>
   <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>تم ضبط اعدادات كل شيء! 
-تعذر الاتصال بشبكة {0}، ربما تكون خارج نطاق التغطية.</value>
+    <value>Mae popeth wedi'i ffurfweddu!
+Methu cysylltu ag {0}, mae'n debyg eich bod allan o sylw.</value>
   </data>
   <data name="ConfiguredButUnableToConnect" xml:space="preserve">
-    <value>تم ضبط اعدادات كل شيء! 
-تعذر الاتصال بشبكة {0}.</value>
+    <value>Mae popeth wedi'i ffurfweddu!
+Methu cysylltu ag {0}.</value>
   </data>
   <data name="ConfiguredEap" xml:space="preserve">
-    <value>تم ضبط EAP.</value>
+    <value>Mae EAP wedi'i ffurfweddu</value>
   </data>
   <data name="ConnectionUsernameAndPasswordRequired" xml:space="preserve">
-    <value>الرجاء توفير اسم المستخدم وكلمة المرور للاتصال.</value>
+    <value>Rhowch enw defnyddiwr a cyfrinair i cysylltu.</value>
   </data>
   <data name="ConsentMain" xml:space="preserve">
-    <value>شروط الاستخدام</value>
+    <value>Telerau Defnyddio</value>
   </data>
   <data name="ConsentPost" xml:space="preserve">
-    <value>للمؤسسة</value>
+    <value>o'r sefydliad</value>
   </data>
   <data name="ConsentPre" xml:space="preserve">
-    <value>بالنقر على 'التالي'، أنت توافق على</value>
+    <value>Drwy glicio 'Nesaf' rydych yn cytuno i'r</value>
   </data>
   <data name="CredentialsLabel" xml:space="preserve">
-    <value>أدخل اسم المستخدم وكلمة المرور الخاصة بك.</value>
+    <value>Rhowch eich enw defnyddiwr a cyfrinair</value>
   </data>
   <data name="CredentialsPasswordLabel" xml:space="preserve">
-    <value>كلمة المرور:</value>
+    <value>Cyfrinair:</value>
   </data>
   <data name="CredentialsUsernameLabel" xml:space="preserve">
-    <value>اسم المستخدم:</value>
+    <value>Enw defnyddiwr:</value>
   </data>
   <data name="DaysLeft" xml:space="preserve">
-    <value>{0} أيام إضافية</value>
+    <value>{0} diwrnod arall</value>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>انتهى</value>
+    <value>Gwneud</value>
   </data>
   <data name="ErrorApi" xml:space="preserve">
-    <value>خطأ في API</value>
+    <value>Gwall API</value>
   </data>
   <data name="ErrorCannotConnectWithServer" xml:space="preserve">
-    <value>تعذر الاتصال بالخادم.
+    <value>Methu cysylltu â'r gweinydd.
 
-تأكد من أنك متصل بالإنترنت، ثم حاول مرة أخرى.
+Sicrhewch eich bod wedi'ch cysylltu â'r rhyngrwyd, yna ceisiwch eto.
 
-استثناء: {0}</value>
+Eithriad: {0}</value>
   </data>
   <data name="ErrorCannotFetchTokens" xml:space="preserve">
-    <value>تعذر جلب رمز  Token لـ JSON .
-
-استثناء: {0}</value>
+    <value>Methu â nôl tocyn json.
+Eithriad: {0}</value>
   </data>
   <data name="ErrorCannotRemoveWLANProfile" xml:space="preserve">
-    <value>لا يمكن إزالة بعض ملفات تعريف WLAN</value>
+    <value>Nid oedd modd tynnu rhywfaint o proffil Wi-Fi</value>
   </data>
   <data name="ErrorCannotRetrieveProfileWhenOffline" xml:space="preserve">
-    <value>لا يمكن استرداد الملف التعريفي عندما تكون غير متصل بالإنترنت</value>
+    <value>Methu nôl proffil pan all-lein</value>
   </data>
   <data name="ErrorClientCredentialNotValidYes" xml:space="preserve">
-    <value>بيانات اعتماد العميل ليست صالحة بعد</value>
+    <value>Nid yw manylion y cleient yn ddilys eto. {0}</value>
   </data>
   <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
-    <value>تم ضبط كل شيء!
-تعذر الاتصال بسبب عدم العثور على إعدادات EAP</value>
+    <value>Mae popeth wedi'i ffurfweddu!
+Methu cysylltu oherwydd ni fu modd dod o hyd i EAP Config</value>
   </data>
   <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>تم ضبط كل شيء! 
-تعذر الاتصال بشبكة {0}، ربما تكون خارج نطاق التغطية.</value>
+    <value>Mae popeth wedi'i ffurfweddu!
+Methu cysylltu ag {0}, mae'n debyg eich bod allan o sylw.</value>
   </data>
   <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
-    <value>تم ضبط كل شيء!
-تعذر الاتصال بشبكة {0}.</value>
+    <value>Mae popeth wedi'i ffurfweddu!
+Methu cysylltu ag {0}.</value>
   </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
-    <value>يجب أن يحتوي اسم المستخدم على الرمز "@" مرة واحدة فقط</value>
+    <value>Rhaid i'r enw defnyddiwr gynnwys @ unwaith yn unig</value>
   </data>
   <data name="ErrorCredentialsEndsWith" xml:space="preserve">
-    <value>لا يمكن أن ينتهي اسم المستخدم بفاصلة أو مسافة</value>
+    <value>Ni all enw defnyddiwr orffen gyda dot neu ofod gwyn</value>
   </data>
   <data name="ErrorCredentialsEndWithRealm" xml:space="preserve">
-    <value>يجب أن ينتهي اسم المستخدم بالنقطة . {0} أو @ {0}</value>
+    <value>Rhaid i'r enw defnyddiwr orffen gyda .{0} neu @{0}</value>
   </data>
   <data name="ErrorCredentialsEndWithRealmNoSubdomain" xml:space="preserve">
-    <value>يجب أن ينتهي اسم المستخدم بالرمز "@" {0}</value>
+    <value>Rhaid i'r enw defnyddiwr orffen gyda @{0}</value>
   </data>
   <data name="ErrorCredentialsSpecialCharacters" xml:space="preserve">
-    <value>لا يمكن أن تكون الرموز  مثل "." و "@" متجاورة</value>
+    <value>Cymeriadau fel . ac ni all @ fod yn gyfagos i'w gilydd</value>
   </data>
   <data name="ErrorEapConfigCorrupted" xml:space="preserve">
-    <value>تم تلف ملف ضبط EAP المحدد. يرجى اختيار ملف آخر.</value>
+    <value>Mae'r ffeil ffurfweddu EAP a ddewiswyd wedi'i llygru. Dewiswch ffeil arall.</value>
   </data>
   <data name="ErrorEapConfigInvalid" xml:space="preserve">
-    <value>لا يمكن القراءة من الملف. تأكد من تحديد ملف ضبط EAP صالح.</value>
+    <value>Methu darllen o'r ffeil. Gwnewch yn siŵr eich bod yn dewis ffeil ffurfweddu EAP dilys.</value>
   </data>
   <data name="ErrorEapConfigIsEmpty" xml:space="preserve">
-    <value>تعذر الاتصال، لا يوجد ضبط EAP </value>
+    <value>Methu cysylltu, mae EAP Configuration yn wag</value>
   </data>
   <data name="ErrorEapNotConfigured" xml:space="preserve">
-    <value>لا يمكن ضبط EAP</value>
+    <value>Nid oedd modd ffurfweddu EAP</value>
   </data>
   <data name="ErrorInternetConnection" xml:space="preserve">
-    <value>خطأ في اتصال الإنترنت</value>
+    <value>Gwall gyda cysylltiad rhyngrwyd</value>
   </data>
   <data name="ErrorInvalidCertificatePath" xml:space="preserve">
-    <value>مسار ملف الشهادة غير صالح</value>
+    <value>Llwybr tystysgrif annilys</value>
   </data>
   <data name="ErrorInvalidCredentials" xml:space="preserve">
-    <value>اسم المستخدم و/أو كلمة المرور غير صالحة</value>
+    <value>Enw defnyddiwr a/neu gyfrinair yn annilys</value>
   </data>
   <data name="ErrorInvalidEapConfig" xml:space="preserve">
-    <value>ضبط اعدادات EAP غير صالح ، هذا لا ينبغي أن يحدث، يرجى الإبلاغ عن الخطأ.</value>
+    <value>Wedi darparu ffurfwedd EAP annilys, ni ddylai hyn ddigwydd, rhowch wybod am nam.</value>
   </data>
   <data name="ErrorMissingCredentials" xml:space="preserve">
-    <value>لم يتم توفير بيانات الاعتماد</value>
+    <value>Nid yw manylion adnabod yn cael eu darparu</value>
   </data>
   <data name="ErrorMissingRequiredCACertificate" xml:space="preserve">
-    <value>لم يتم تثبيت شهادة CA المطلوبة، لا ينبغي أن يحدث هذا، يرجى الإبلاغ عن خطأ</value>
+    <value>Ni osodwyd y tystysgrif CA ofynnol, ni ddylai hyn ddigwydd, rhowch wybod am nam</value>
   </data>
   <data name="ErrorNoClientCertificateProvided" xml:space="preserve">
-    <value>لم يتم توفير شهادة عميل (صالحة) ({0} parameter.</value>
+    <value>Ni ddarparwyd tystysgrif cleient (dilys) ({0} paramedr.</value>
   </data>
   <data name="ErrorNoConnection" xml:space="preserve">
-    <value>تعذر الاتصال.
-استثناء: {0}.</value>
+    <value>Methu cysylltu.
+Eithriad: {0}.</value>
   </data>
   <data name="ErrorNoInternet" xml:space="preserve">
-    <value>لا يوجد اتصال بالإنترنت</value>
+    <value>Dim cysylltiad rhyngrwyd</value>
   </data>
   <data name="ErrorNotUninstalled" xml:space="preserve">
-    <value>لم يتم إلغاء تثبيت {0}.</value>
+    <value>Nid yw {0} wedi'i ddadosod.</value>
   </data>
   <data name="ErrorOptionIsEmpty" xml:space="preserve">
-    <value>لا يمكن أن تكون قيمة خيار {0} فارغة أو مسافة بيضاء فقط</value>
+    <value>Ni all gwerth opsiwn {0} fod yn wag neu'n ofod gwyn yn unig</value>
   </data>
   <data name="ErrorRequiredCertificatesNotInstalled" xml:space="preserve">
-    <value>لم يتم تثبيت كافة الشهادات المطلوبة.</value>
+    <value>Nid yw'r holl tystysgrifau gofynnol wedi'u gosod.</value>
   </data>
   <data name="ErrorShowCommandOptions" xml:space="preserve">
-    <value>خيارات مفقودة. قم بتوفير الخيار {0} أو كلا الخيارين{1}و{2} </value>
+    <value>Opsiynau ar goll. Darparwch yr opsiwn {0} neu'r ddau opsiwn {1} a {2}</value>
   </data>
   <data name="ErrorUnknownProfile" xml:space="preserve">
-    <value>ملف غير معروف</value>
+    <value>Proffil anhysbys</value>
   </data>
   <data name="ErrorUnsupportedConnectionType" xml:space="preserve">
-    <value>الاتصال من النوع {0} غير مدعوم (حتى الآن).</value>
+    <value>Ni chefnogir cysylltiad o'r math {0} (eto).</value>
   </data>
   <data name="ErrorUnsupportedInstituteOrProfile" xml:space="preserve">
-    <value>المؤسسة أو الملف التعريفي إما غير مدعوم أو تالف.
-الرجاء تحديد مؤسسة أو ملف تعريف مختلف..
+    <value>Mae'r sefydliad neu proffil naill ai heb ei gefnogi neu wedi ei gamffurfio.
+Dewiswch sefydliad neu proffil gwahanol.
 
-استثناء: {0}</value>
+Eithriad: {0}</value>
   </data>
   <data name="ErrorUnsupportedProfile" xml:space="preserve">
-    <value>الملف الذي اخترته غير مدعوم من قبل هذا التطبيق. لم يتم العثور على طريقة مصادقة معتمدة.</value>
+    <value>Nid yw'r proffil rydych wedi'i ddewis yn cael ei gefnogi gan y rhaglen hon. Ni chanfuwyd dull dilysu a gefnogir.</value>
   </data>
   <data name="ErrorWirelessUnavailable" xml:space="preserve">
-    <value>الاتصال اللاسلكي غير متاح على هذا الكمبيوتر</value>
+    <value>Nid yw diwifr ar gael ar y cyfrifiadur hwn</value>
   </data>
   <data name="FileDialogSelectFile" xml:space="preserve">
-    <value>الرجاء اختيار ملف.</value>
+    <value>Dewiswch ffeil.</value>
   </data>
   <data name="HoursLeft" xml:space="preserve">
-    <value>{0} ساعات إضافية</value>
+    <value>{0} awr arall</value>
+  </data>
+  <data name="ChoiceKeyYes" xml:space="preserve">
+    <value>y</value>
   </data>
   <data name="LabelAccountValidFor" xml:space="preserve">
-    <value>حسابك صالح لـ</value>
+    <value>Mae eich cyfrif yn ddilys ar gyfer</value>
   </data>
   <data name="LabelEmail" xml:space="preserve">
-    <value>البريد الإلكتروني</value>
+    <value>E-bost</value>
   </data>
   <data name="LabelHelp" xml:space="preserve">
-    <value>مساعدة</value>
+    <value>Help</value>
   </data>
   <data name="LabelPhone" xml:space="preserve">
-    <value>الهاتف</value>
+    <value>Ffon</value>
   </data>
   <data name="LabelProfile" xml:space="preserve">
-    <value>الملف الشخصي</value>
+    <value>Proffil</value>
   </data>
   <data name="LabelSupported" xml:space="preserve">
-    <value>مدعوم</value>
+    <value>Cefnogir</value>
   </data>
   <data name="LabelTermsOfUse" xml:space="preserve">
-    <value>شروط الاستخدام</value>
+    <value>Telerau defnyddio</value>
   </data>
   <data name="LabelVersion" xml:space="preserve">
-    <value>إصدار التطبيق</value>
+    <value>Fersiwn ap</value>
   </data>
   <data name="LabelWeb" xml:space="preserve">
-    <value>الموقع</value>
+    <value>We</value>
   </data>
   <data name="LoadCertificateFile" xml:space="preserve">
-    <value>اختيار حزمة شهادة العميل Client Certificate</value>
+    <value>Dewiswch bwndel Tystysgrif Cleient</value>
   </data>
   <data name="LoadEapFile" xml:space="preserve">
-    <value>اختيار ملف ضبط EAP</value>
+    <value>Dewiswch ffeil Config EAP</value>
   </data>
   <data name="Loading" xml:space="preserve">
-    <value>جاري التحميل</value>
+    <value>Llwytho</value>
   </data>
   <data name="LocalCertificateLabel" xml:space="preserve">
-    <value>يتطلب هذا الملف التعريفي شهادة محلية</value>
+    <value>Mae angen tystysgrif leol ar y proffil hwn</value>
   </data>
   <data name="LoginTitle" xml:space="preserve">
-    <value>تسجيل الدخول</value>
+    <value>Mewngofnodi</value>
   </data>
   <data name="MenuItemLoadEAP" xml:space="preserve">
-    <value>تحميل ملف .eap-config...</value>
+    <value>Llwytho ffeil .eap-config...</value>
   </data>
   <data name="MenuItemReauthenticate" xml:space="preserve">
-    <value>إعادة المصادقة</value>
+    <value>Ail-ddilysu…</value>
   </data>
   <data name="MenuItemRefresh" xml:space="preserve">
-    <value>تحديث بيانات الاعتماد</value>
+    <value>Adnewyddu tystlythyr</value>
   </data>
   <data name="MenuItemRemoveCertificates" xml:space="preserve">
-    <value>حذف شهادات الجذر</value>
+    <value>Dileu tystysgrifau gwraidd...</value>
   </data>
   <data name="MenuItemRemoveProfile" xml:space="preserve">
-    <value>إزالة ملف ضبط إعدادات شبكة الوايفاي...</value>
+    <value>Dileu proffil Wi-Fi wedi'i ffurfweddu...</value>
   </data>
   <data name="MenuItemUninstall" xml:space="preserve">
-    <value>إلغاء تثبيت التطبيق...</value>
+    <value>Dadosod y cais…</value>
   </data>
   <data name="MinutesLeft" xml:space="preserve">
-    <value>{0}دقائق إضافية</value>
+    <value>{0} munud arall</value>
   </data>
   <data name="NoEAPConfig" xml:space="preserve">
-    <value>لا توجد معلومات ضبط EAP لعرضها.</value>
+    <value>Dim gwybodaeth EAP Config i'w dangos</value>
+  </data>
+  <data name="ChoiceKeyNo" xml:space="preserve">
+    <value>n</value>
   </data>
   <data name="OAuthExplanation" xml:space="preserve">
-    <value>للمتابعة، تحتاج إلى المصادقة في متصفحك، ومن المفترض أن يتم فتح نافذة تلقائيًا.</value>
+    <value>I barhau mae angen i chi ddilysu yn eich porwr, dylai ffenestr fod wedi agor yn awtomatig.</value>
   </data>
   <data name="OAuthWaitingTitle" xml:space="preserve">
-    <value>في الانتظار...</value>
+    <value>Yn aros...</value>
   </data>
   <data name="OptionDescriptionCertificatePath" xml:space="preserve">
-    <value>مسار ملف الشهادة</value>
+    <value>Llwybr ffeil tystysgrif</value>
   </data>
   <data name="OptionDescriptionEAPConfig" xml:space="preserve">
-    <value>المسار إلى ملف ضبط eap-config EAP. </value>
+    <value>Llwybr i EAP Config .eap-config.</value>
   </data>
   <data name="OptionDescriptionForce" xml:space="preserve">
-    <value>إجبار التنفيذ.</value>
+    <value>Gweithredu grym.</value>
   </data>
   <data name="OptionDescriptionInstitute" xml:space="preserve">
-    <value>اسم المؤسسة للاتصال بها.</value>
+    <value>Enw'r sefydliad i gysylltu ag ef.</value>
   </data>
   <data name="OptionDescriptionProfile" xml:space="preserve">
-    <value>ملف المؤسسة للاتصال بها.</value>
+    <value>Proffil y sefydliad i gysylltu ag ef.</value>
   </data>
   <data name="OptionDescriptionQuery" xml:space="preserve">
-    <value>استعلام لتصفية العناصر</value>
+    <value>Ymholiad i hidlo eitemau</value>
   </data>
   <data name="OptionRequired" xml:space="preserve">
-    <value>الخيار {0} مطلوب</value>
+    <value>Mae angen opsiwn {0}</value>
   </data>
   <data name="Passphrase" xml:space="preserve">
-    <value>كلمة مرور الشهادة passphrase</value>
+    <value>Cyfrinair tystysgrif</value>
   </data>
   <data name="PassphraseLabel" xml:space="preserve">
-    <value>أدخل كلمة المرور للشهادة</value>
+    <value>Rhowch cyfrinair ar gyfer y dystysgrif</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>كلمة المرور</value>
+    <value>Cyfrinair</value>
   </data>
   <data name="PasswordLabel" xml:space="preserve">
-    <value>كلمة المرور:</value>
+    <value>Cyfrinair:</value>
   </data>
   <data name="ProfileContactInfo" xml:space="preserve">
-    <value>معلومات الاتصال</value>
+    <value>Gwybodaeth Cyswllt</value>
   </data>
   <data name="ProfileEmail" xml:space="preserve">
-    <value>البريد الالكتروني</value>
+    <value>E-bost</value>
   </data>
   <data name="ProfileLabel" xml:space="preserve">
-    <value>اسم الملف التعريفي</value>
+    <value>Enw Proffil</value>
   </data>
   <data name="ProfileNotAffiliatedInstitution" xml:space="preserve">
-    <value>غير تابع لمؤسسة؟</value>
+    <value>Ddim yn gysylltiedig â sefydliad?</value>
   </data>
   <data name="ProfilePhone" xml:space="preserve">
-    <value>الهاتف</value>
+    <value>Ffon</value>
   </data>
   <data name="ProfileRemoveConfirmation" xml:space="preserve">
-    <value>سيؤدي هذا إلى إزالة كافة الإعدادات لـ '{0}'.</value>
+    <value>Bydd hyn yn dileu'r holl ffurfweddiad ar gyfer '{0}'.</value>
   </data>
   <data name="ProfileSelectOtherInstitution" xml:space="preserve">
-    <value>حدد ملف تعريف آخر</value>
+    <value>Dewiswch proffil arall</value>
   </data>
   <data name="ProfileWeb" xml:space="preserve">
-    <value>موقع</value>
+    <value>We</value>
   </data>
   <data name="RedirectText" xml:space="preserve">
-    <value>انقر هنا لتوجيهك إلى موقع المؤسسة للمزيد من المعلومات حول كيفية الاتصال. عند النقر على الرابط، سيتم إغلاق هذا التطبيق.</value>
+    <value>Cliciwch yma i gael eich ailgyfeirio i wefan y sefydliad am fwy o wybodaeth ar sut i cysylltu. Pan fyddwch yn clicio ar y ddolen bydd y cais hwn yn cau.</value>
   </data>
   <data name="RedirectTitle" xml:space="preserve">
-    <value>إعادة التوجيه</value>
+    <value>Ailgyfeirio</value>
   </data>
   <data name="RemoveProfileMessage" xml:space="preserve">
-    <value>سيؤدي هذا إلى إزالة كافة الاعدادات لـ
-{0}</value>
+    <value>Bydd hyn yn dileu'r holl ffurfweddiad ar gyfer{0}</value>
   </data>
   <data name="RemoveProfileTitle" xml:space="preserve">
-    <value>إزالة{0}</value>
+    <value>Remove {0}</value>
   </data>
   <data name="RequestToInstallCertificates" xml:space="preserve">
-    <value> تثبيت جميع الشهادات المطلوبة؟</value>
+    <value>Gosod yr holl tystysgrifau gofynnol?</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>ابحث عن مؤسستك</value>
+    <value>Chwiliwch eich sefydliad</value>
   </data>
   <data name="SelectFile" xml:space="preserve">
-    <value>تصفح</value>
+    <value>Porwch</value>
   </data>
   <data name="SelectInstitution" xml:space="preserve">
-    <value>اختيار المؤسسة</value>
+    <value>Dewiswch sefydliad</value>
   </data>
   <data name="SelectProfile" xml:space="preserve">
-    <value>اختيار الملف التعريفي</value>
+    <value>Dewiswch proffil</value>
   </data>
   <data name="TermsOfUseTitle" xml:space="preserve">
-    <value>شروط الاستخدام</value>
+    <value>Telerau Defnyddio</value>
   </data>
   <data name="UninstallNotification" xml:space="preserve">
-    <value>تمت إزالة تثبيت التطبيق وإعدادات الضبط.</value>
+    <value>Mae'r cymhwysiad a'i ffurfweddiad wedi'u dadosod.</value>
   </data>
   <data name="Username" xml:space="preserve">
-    <value>اسم المستخدم</value>
+    <value>Enw defnyddiwr</value>
   </data>
   <data name="UserNameWatermark" xml:space="preserve">
     <value>@example.com</value>
   </data>
   <data name="VersionDebug" xml:space="preserve">
-    <value>{0}+تصحيح</value>
+    <value>{0}+Dadfygio</value>
   </data>
   <data name="VersionDebugNoVersion" xml:space="preserve">
-    <value>تصحيح</value>
+    <value>Dadfygio</value>
   </data>
   <data name="VersionRelease" xml:space="preserve">
     <value>{0}</value>
   </data>
   <data name="VersionReleaseNoVersion" xml:space="preserve">
-    <value>بدون إصدار</value>
+    <value>Di-fersiwn</value>
   </data>
   <data name="WarningFileDoesNotExist" xml:space="preserve">
-    <value>الملف المحدد غير موجود.</value>
+    <value>Nid yw'r ffeil penodedig yn bodoli.</value>
   </data>
   <data name="WarningInstallCertificates" xml:space="preserve">
-    <value>يجب عليك أولاً تثبيت الشهادات باستخدام InstallCertificates</value>
+    <value>Yn gyntaf rhaid i chi osod tystysgrifau gyda InstallCertificates</value>
   </data>
   <data name="WarningMissingCertificates" xml:space="preserve">
-    <value>الشهادات المفقودة</value>
+    <value>Tystysgrifau ar goll</value>
   </data>
   <data name="WarningNoInstitutesFound" xml:space="preserve">
-    <value>لم يتم العثور على المؤسسات</value>
+    <value>Ni chanfuwyd unrhyw sefydliadau</value>
   </data>
   <data name="WarningNoProfilesFound" xml:space="preserve">
-    <value>لم يتم العثور على أي ملفات تعريف</value>
+    <value>Heb ganfod proffiliau</value>
   </data>
   <data name="WarningNoSupportedAuthenticationMethod" xml:space="preserve">
-    <value>لم يتم العثور على طريقة مصادقة معتمدة.</value>
+    <value>Ni chanfuwyd dull dilysu a gefnogir.</value>
   </data>
   <data name="WarningProfileNotSupported" xml:space="preserve">
-    <value>ملف التعريف الذي حددته غير مدعوم من قبل هذا التطبيق.</value>
+    <value>Nid yw'r proffil rydych wedi'i ddewis yn cael ei gefnogi gan y rhaglen hon.</value>
   </data>
   <data name="WarningUninstall" xml:space="preserve">
-    <value>أنت حاليًا تقوم بإلغاء تثبيت {0} بالكامل</value>
+    <value>Ar hyn o bryd rydych yn y broses o ddadosod {0} yn llwyr</value>
   </data>
   <data name="WarningUninstallCertificates" xml:space="preserve">
-    <value>وهذا يعني إلغاء تثبيت جميع شهادات الجذر الموثوقة التي تم تثبيتها بواسطة هذا التطبيق.</value>
+    <value>Mae hyn yn golygu dadosod yr holl tystysgrifau gwraidd dibynadwy a osodwyd gan y rhaglen hon.</value>
   </data>
   <data name="WarningUnsupportedFileType" xml:space="preserve">
-    <value>نوع الملف الذي اخترته غير مدعوم.</value>
+    <value>Nid yw'r math o ffeil a ddewisoch yn cael ei gefnogi.</value>
   </data>
   <data name="WarnRealmMismatch" xml:space="preserve">
-    <value>سيتم تعيين نطاق OuterIdentity على "{0}" ولكن تم تحديد ملف التعريف "{1}"</value>
-  </data>
-  <data name="Yes" xml:space="preserve">
-    <value>نعم</value>
-  </data>
-  <data name="No" xml:space="preserve">
-    <value>لا</value>
+    <value>Bydd y parth ar gyfer y OuterIdentity yn cael ei osod i "{0}" ond mae'r proffil wedi'i nodi "{1}"</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
-    <value>يتطلب {0} اتصالاً نشطًا بالإنترنت.</value>
+    <value>Mae angen cysylltiad rhyngrwyd gweithredol ar {0}.</value>
   </data>
   <data name="ConnectTo0" xml:space="preserve">
-    <value>الاتصال بـ {0}</value>
+    <value>Cysylltwch ag {0}</value>
   </data>
 </root>

@@ -274,6 +274,10 @@ Es konnte keine Verbindung hergestellt werden da keine EAP Konfigurationsdaten g
 
 Allerdings können wir derzeit keine Verbindung zu {0} herstellen, da das Netzwerk außerhalb der Reichweite liegt. Sobald es in Reichweite ist, wird Ihr System eine Verbindung zu {0} herstellen.</value>
   </data>
+  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Alles eingerichtet!
+Es konnte keine Verbindung zu {0} hergestellt werden.</value>
+  </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>Der Nutzername muss genau ein @ Zeichen enthalten</value>
   </data>

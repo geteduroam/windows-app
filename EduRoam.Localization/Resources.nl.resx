@@ -121,7 +121,7 @@
     <value>Ondersteunde opdrachtprompt argumenten:</value>
   </data>
   <data name="AppCommandLineHelpFlagsHelp" xml:space="preserve">
-    <value>Toon deze helptekst,</value>
+    <value>Toon deze helptekst.</value>
   </data>
   <data name="AppCommandLineHelpFlagsInstall" xml:space="preserve">
     <value>Installeer dit programma in %USER%/AppData/Local.</value>
@@ -188,7 +188,7 @@ Gebruik /force om het certificaat te vernieuwen ongeacht de resterende geldighei
     <value>Vernieuw inloggegevens</value>
   </data>
   <data name="CommandDescriptionRemove" xml:space="preserve">
-    <value>Verwijder het geconfigureerde Wi-Fi-profiel en/of rootcertificaten</value>
+    <value>Verwijder het geconfigureerde Wi-Fi-profiel en/of basiscertificaten</value>
   </data>
   <data name="CommandDescriptionShow" xml:space="preserve">
     <value>Toon EAP Config informatie</value>
@@ -236,7 +236,7 @@ Kan geen verbinding maken met {0}.</value>
     <value>Gebruikersnaam:</value>
   </data>
   <data name="DaysLeft" xml:space="preserve">
-    <value>{0} dagen geldig</value>
+    <value>{0} dagen resterend</value>
   </data>
   <data name="Done" xml:space="preserve">
     <value>Klaar</value>
@@ -249,11 +249,11 @@ Kan geen verbinding maken met {0}.</value>
 
 Zorg ervoor dat je verbinding hebt met internet en probeer het opnieuw.
 
-Exceptie: {0}</value>
+Foutmelding: {0}</value>
   </data>
   <data name="ErrorCannotFetchTokens" xml:space="preserve">
     <value>Kan token-json niet ophalen.
-Exceptie: {0}</value>
+Foutmelding: {0}</value>
   </data>
   <data name="ErrorCannotRemoveWLANProfile" xml:space="preserve">
     <value>Sommige WLAN-profielen konden niet worden verwijderd</value>
@@ -262,16 +262,22 @@ Exceptie: {0}</value>
     <value>Kan profiel niet ophalen wanneer je offline bent</value>
   </data>
   <data name="ErrorClientCredentialNotValidYes" xml:space="preserve">
-    <value>Client gegevens zijn nog niet geldig. Deze worden geldig op {0}.</value>
+    <value>Gebruikercertificaat is nog niet geldig. Deze wordt geldig op {0}.</value>
   </data>
   <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
     <value>Alles is geconfigureerd!
 Kan geen verbinding maken omdat EAP Config niet kan worden gevonden</value>
   </data>
   <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>Alles is correct ingesteld! 
+    <value>Het {0}-netwerk is geïnstalleerd!
 
-Echter, we kunnen momenteel geen verbinding maken met {0}, het netwerk is buiten bereik. Zodra het binnen bereik is, zal je systeem verbinding maken.</value>
+De verbinding met {0} is nog niet gelukt, het netwerk is waarschijnlijk buiten bereik.
+
+Zodra {0} binnen bereik is, zal je systeem verbinding maken.</value>
+  </data>
+  <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
+    <value>Het {0}-netwerk is geïnstalleerd!
+De verbinding met {0} is niet gelukt.</value>
   </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
     <value>De gebruikersnaam moet precies één keer @ bevatten</value>
@@ -362,13 +368,13 @@ Uitzondering: {0}</value>
     <value>Selecteer een bestand.</value>
   </data>
   <data name="HoursLeft" xml:space="preserve">
-    <value>{0} uur geldig</value>
+    <value>{0} uur resterend</value>
   </data>
   <data name="ChoiceKeyYes" xml:space="preserve">
     <value>j</value>
   </data>
   <data name="LabelAccountValidFor" xml:space="preserve">
-    <value>Uw account is nog</value>
+    <value>Het account heeft nog</value>
   </data>
   <data name="LabelEmail" xml:space="preserve">
     <value>E-mail</value>
@@ -419,7 +425,7 @@ Uitzondering: {0}</value>
     <value>Inloggegevens vernieuwen</value>
   </data>
   <data name="MenuItemRemoveCertificates" xml:space="preserve">
-    <value>Verwijder rootcertificaten...</value>
+    <value>Verwijder basiscertificaten...</value>
   </data>
   <data name="MenuItemRemoveProfile" xml:space="preserve">
     <value>Verwijder geconfigureerde Wi-Fi profiel...</value>
@@ -573,10 +579,10 @@ Uitzondering: {0}</value>
     <value>Het profiel dat u heeft geselecteerd, wordt niet ondersteund door deze applicatie.</value>
   </data>
   <data name="WarningUninstall" xml:space="preserve">
-    <value>U staat op het punt om {0} volledig te verwijderen.</value>
+    <value>{0} en alle configuratie zal verwijderd worden. Doorgaan?</value>
   </data>
   <data name="WarningUninstallCertificates" xml:space="preserve">
-    <value>Dit betekent dat alle vertrouwde rootcertificaten die door deze applicatie zijn geïnstalleerd, zullen worden verwijderd.</value>
+    <value>Dit betekent dat alle vertrouwde basiscertificaten die door deze applicatie zijn geïnstalleerd, zullen worden verwijderd.</value>
   </data>
   <data name="WarningUnsupportedFileType" xml:space="preserve">
     <value>Het door u gekozen bestandstype wordt niet ondersteund.</value>
@@ -615,7 +621,7 @@ Uitzondering: {0}</value>
     <value>Het {0} account verloopt binnenkort.</value>
   </data>
   <data name="CheckCertificateToastP2" xml:space="preserve">
-    <value>U heeft {0} dagen, verleng alstublieft uw account.</value>
+    <value>Verloopt over {0} dagen.</value>
   </data>
   <data name="UpdateAvailable" xml:space="preserve">
     <value>Update beschikbaar</value>
@@ -636,7 +642,7 @@ Nieuwste versie is {3}, wil je deze downloaden en installeren?
 Als je op "Nee" klikt, wordt {0} afgesloten.</value>
   </data>
   <data name="Connected" xml:space="preserve">
-    <value>Je bent nu verbonden met {0}.</value>
+    <value>Verbonden met {0}.</value>
   </data>
   <data name="UninstallNotificationTitle" xml:space="preserve">
     <value>Deïnstalleer {0}</value>
