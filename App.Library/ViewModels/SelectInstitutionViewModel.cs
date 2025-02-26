@@ -5,6 +5,8 @@ using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
 using EduRoam.Connect.Tasks;
 
+using Microsoft.Extensions.Logging;
+
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -49,7 +51,7 @@ namespace App.Library.ViewModels
         public async Task<ObservableCollection<IdentityProvider>> GetInstitutionsAsync()
         {
             var institutes = await InstitutesTask.GetAsync(this.searchText);
-            if (Uri.IsWellFormedUriString(this.searchText.Trim(), UriKind.Absolute) && (this.searchText.ToLower().StartsWith("http://") || this.searchText.ToLower().StartsWith("https://")))
+            if ((this.searchText.ToLower().StartsWith("http://") || this.searchText.ToLower().StartsWith("https://")) && Uri.IsWellFormedUriString(this.searchText.Trim(), UriKind.Absolute))
             {
                 institutes = institutes.Prepend(new IdentityProvider
                 {
@@ -76,7 +78,8 @@ namespace App.Library.ViewModels
                     this.Owner.State.SelectedIdentityProvider = await InstitutesTask.GetProfileFromUrlAsync(this.searchText);
                 } catch (EduroamAppUserException ex)
                 {
-                    this.Owner.SetActiveContent(new ConfirmViewModel(this.Owner, ex.UserFacingMessage, () => { this.Owner.SetActiveContent(this); }));
+                    this.Owner.SetActiveContent(new ConfirmViewModel(this.Owner, string.Format("{0}{1}", ex.UserFacingMessage, !string.IsNullOrEmpty(ex.Message) ? $": {ex.Message}" : ""), () => { this.Owner.SetActiveContent(this); }));
+                    this.Owner.Logger.LogError(string.Format("{0}{1}", ex.UserFacingMessage, !string.IsNullOrEmpty(ex.Message) ? $": {ex.Message}" : ""));
                     return;
                 }
             }
@@ -93,14 +96,7 @@ namespace App.Library.ViewModels
 
                 if (!string.IsNullOrEmpty(autoProfile.Id))
                 {
-                    if (this.Owner.State.SelectedIdentityProvider.DownloadMetadataOnSelect)
-                    {
-                        await this.Owner.HandleProfileSelect(autoProfile.Id, autoProfile);
-                    }
-                    else
-                    {
-                        await this.Owner.HandleProfileSelect(autoProfile.Id);
-                    }
+                    await this.Owner.HandleProfileSelect(autoProfile.Id, autoProfile);
                 }
             }
             else
