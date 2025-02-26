@@ -367,14 +367,14 @@ namespace App.Library.ViewModels
                 if (profile == null)
                 {
                     profile = await this.idpDownloader.GetProfileFromId(profileId);
-                }
 
-                if (profile == null)
-                {
-                    this.Logger.LogError($"Unknown Profile, profile with id {profileId} could not be found.");
-                    MessageBox.Show(EduRoam.Localization.Resources.ErrorUnknownProfile, caption: $"{Settings.Settings.ApplicationName} - Exception");
-                    return;
-                }
+                    if (profile == null)
+                    {
+                        this.Logger.LogError($"Unknown Profile, profile with id {profileId} could not be found.");
+                        MessageBox.Show(EduRoam.Localization.Resources.ErrorUnknownProfile, caption: $"{Settings.Settings.ApplicationName} - Exception");
+                        return;
+                    }
+                }             
 
                 this.State.SelectedProfile = profile;
             }
