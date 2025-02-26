@@ -119,6 +119,22 @@ namespace EduRoam.Connect.Identity
             await this.loadProviderTask;
         }
 
+        /// <summary>
+        /// Adds a new HTTP profile to the list of providers.
+        /// </summary>
+        /// <param name="provider"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public async Task AddHttpProfile(IdentityProvider provider)
+        {
+            await this.LoadProvidersInternal(); 
+            if(Cache.IdentityProviders == null) throw new Exception("No providers loaded");
+
+            Cache.IdentityProviders.Remove(Cache.IdentityProviders.Where(p => p.Id == provider.Id).FirstOrDefault());
+
+            Cache.IdentityProviders.Add(provider);
+        }
+
         private async Task LoadProvidersInternal()
         {
             try
@@ -130,24 +146,13 @@ namespace EduRoam.Connect.Identity
                 }
                 
                 if (!this.Providers.Any())
-                {
-                    var isNewVersion = !ProviderApiUrl.ToString().Contains("/v1/");
-                    
+                {                  
                     // downloads json file as string
                     var apiJson = await DownloadUrlAsString(ProviderApiUrl, new string[] { "application/json" }).ConfigureAwait(false);
 
-                    DiscoveryApi discoveryData;
-
-                    if (isNewVersion)
-                    {
-                        var discovery = JsonConvert.DeserializeObject<LetsWifiDiscovery>(apiJson);
-                        discoveryData = DiscoveryConverter.Covert(discovery ?? new LetsWifiDiscovery());
-                    }
-                    else
-                    {
-                        discoveryData = JsonConvert.DeserializeObject<DiscoveryApi>(apiJson) ?? new DiscoveryApi();
-                    }
-                    
+                    var discovery = JsonConvert.DeserializeObject<LetsWifiDiscovery>(apiJson);
+                    var discoveryData = DiscoveryConverter.Covert(discovery ?? new LetsWifiDiscovery());
+                  
                     this.Providers = discoveryData?.Instances ?? new List<IdentityProvider>();
                     Cache.IdentityProviders = (List<IdentityProvider>?)this.Providers;
                 }
@@ -270,7 +275,6 @@ namespace EduRoam.Connect.Identity
             return null;
         }
 
-
         /// <summary>
         /// Gets a payload as string from url.
         /// </summary>
@@ -317,6 +321,58 @@ namespace EduRoam.Connect.Identity
 
             return await parseResponse(response, accept);
         }
+
+        /// <summary>
+        /// Gets a payload as string from url.
+        /// </summary>
+        /// <param name="url">Url that must be retrieved</param>
+        /// <param name="accept">Content-Type to be expected, null for no check</param>
+        /// <returns>HTTP body</returns>
+        /// 
+        /// <exception cref="HttpRequestException">Anything that went wrong attempting HTTP request, including DNS</exception>
+        /// <exception cref="ApiParsingException">Content-Type did not match accept</exception>
+        private async static Task<DownloadResponseRecord> DownloadUrlAsRecord(Uri url, string[]? accept = null, string? accessToken = null)
+        {
+            HttpResponseMessage response;
+            try
+            {
+                using (var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = url
+                })
+                {
+                    if (accessToken != null)
+                    {
+                        request.Method = HttpMethod.Post;
+                        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+                    }
+
+                    foreach (var acceptValue in accept ?? new string[] { })
+                    {
+                        request.Headers.Add("Accept", acceptValue);
+                    }
+
+                    response = await Http.SendAsync(request).ConfigureAwait(true);
+                }
+
+            }
+            catch (TaskCanceledException e)
+            {
+                // According to the documentation from HttpClient,
+                // this exception will not be thrown, but instead a HttpRequestException
+                // will be thrown.  This is not the case, so this catch and throw
+                // is to make sure the API matches again
+                throw new HttpRequestException("The request to " + url + " was interrupted", e);
+            }
+
+            return new DownloadResponseRecord() {
+                FileType = response.Content.Headers.ContentType?.MediaType,
+                Data = await parseResponse(response, accept)
+            };
+        }
+
+   
         /// <summary>
         /// Upload form and return data as a string.
         /// </summary>
@@ -367,6 +423,69 @@ namespace EduRoam.Connect.Identity
                 // is to make sure the API matches again
                 throw new HttpRequestException("The request to " + url + " was interrupted", e);
             }
+        }
+
+        public async Task<IdentityProvider> DownloadProfileFromUrl(string url)
+        {
+            try
+            {
+                var profile = await DownloadUrlAsRecord(
+                    url: new Uri(url),
+                    accept: ["application/json", "application/eap-config", "application/x-eap-config"],
+                    accessToken: null
+                );
+
+                switch (profile.FileType)
+                {
+                    case "application/eap-config":
+                    case "application/x-eap-config":
+                        return new IdentityProvider()
+                        {
+                            Id = "custom_http_provider",
+                            Name = $"Verbinden met {url.Trim()}",
+                            DownloadMetadataOnSelect = true,
+                            Profiles = new List<IdentityProviderProfile> {
+                                new IdentityProviderProfile
+                                {
+                                    Id = "custom_http_provider_profile",
+                                    EapConfigEndpoint = url.Trim()
+                                }
+                            }
+                        };
+
+                    case "application/json":
+                        var letsWifiProfile = JsonConvert.DeserializeObject<LetsWifiProfile>(profile.Data);
+                        if (letsWifiProfile != null)
+                        {
+                            return new IdentityProvider()
+                            {
+                                Id = "custom_http_provider",
+                                Name = $"Verbinden met {url.Trim()}",
+                                DownloadMetadataOnSelect = true,
+                                Profiles = new List<IdentityProviderProfile> {
+                               new IdentityProviderProfile
+                                {
+                                    Id = "custom_http_provider_profile",
+                                    LetsWifiEndpoint = url.Trim(),
+                                    OAuth = true,
+                                    AuthorizationEndpoint = letsWifiProfile.Root?.AuthorizationEndpoint ?? string.Empty,
+                                    EapConfigEndpoint = letsWifiProfile.Root?.EapConfigEndpoint ?? string.Empty,
+                                    TokenEndpoint = letsWifiProfile.Root?.TokenEndpoint ?? string.Empty
+                                }
+                            }
+                            };
+                        }
+                        break;
+
+                    default:
+                        throw new EduroamAppUserException("", "Error occurred while retrieving LetsWifi or EAP profile");
+                }
+            } catch(Exception)
+            {
+                throw new EduroamAppUserException("Error occurred while retrieving LetsWifi or EAP profile");
+            }
+
+            throw new EduroamAppUserException("", "Error occurred while retrieving LetsWifi or EAP profile");
         }
 
         private async Task<LetsWifiProfile.ProfileRoot> DownloadLetsWifiProfile(IdentityProviderProfile profile)
@@ -431,6 +550,10 @@ namespace EduRoam.Connect.Identity
             this.disposed = true;
         }
 
+        private record DownloadResponseRecord
+        {
+            public string FileType { get; set; } = null!;
+            public string Data { get; set; } = null!;
+        }
     }
-
 }

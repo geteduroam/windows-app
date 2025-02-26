@@ -357,18 +357,21 @@ namespace App.Library.ViewModels
         /// <exception cref="XmlException">Parsing eap-config failed</exception>
         public async Task HandleProfileSelect(
             string profileId,
+            IdentityProviderProfile? profile = null,
             string? eapConfigXml = null,
             bool skipOverview = false)
         {
-            IdentityProviderProfile? profile;
             EapConfig? eapConfig;
 
             this.IsLoading = true;
 
             try
             {
-                profile = await this.idpDownloader.GetProfileFromId(profileId);
-                
+                if (profile == null)
+                {
+                    profile = await this.idpDownloader.GetProfileFromId(profileId);
+                }
+
                 if (profile == null)
                 {
                     this.Logger.LogError($"Unknown Profile, profile with id {profileId} could not be found.");

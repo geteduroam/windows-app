@@ -5,12 +5,11 @@ using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
 using EduRoam.Connect.Tasks;
 
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System;using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 using SharedResources = EduRoam.Localization.Resources;
 
@@ -50,6 +49,16 @@ namespace App.Library.ViewModels
         public async Task<ObservableCollection<IdentityProvider>> GetInstitutionsAsync()
         {
             var institutes = await InstitutesTask.GetAsync(this.searchText);
+            if (this.searchText.ToLower().StartsWith("http://") || this.searchText.ToLower().StartsWith("https://"))
+            {
+                institutes = institutes.Prepend(new IdentityProvider
+                {
+                    Id = "custom_http_provider",
+                    Name = $"Verbinden met {this.searchText}",
+                    DownloadMetadataOnSelect = true
+                });
+            }
+
             return new ObservableCollection<IdentityProvider>(institutes);
         }
 
@@ -60,6 +69,18 @@ namespace App.Library.ViewModels
 
         protected override async Task NavigateNextAsync()
         {
+            if(this.Owner.State.SelectedIdentityProvider.DownloadMetadataOnSelect)
+            {
+                try
+                {
+                    this.Owner.State.SelectedIdentityProvider = await InstitutesTask.GetProfileFromUrlAsync(this.searchText);
+                } catch (EduroamAppUserException ex)
+                {
+                    MessageBox.Show(ex.Message);
+                    return;
+                }
+            }
+
             var availableProfiles = this.Owner.State.SelectedIdentityProvider?.Profiles.Count ?? 0;
 
             if (availableProfiles == 0)
@@ -72,7 +93,14 @@ namespace App.Library.ViewModels
 
                 if (!string.IsNullOrEmpty(autoProfile.Id))
                 {
-                    await this.Owner.HandleProfileSelect(autoProfile.Id);
+                    if (this.Owner.State.SelectedIdentityProvider.DownloadMetadataOnSelect)
+                    {
+                        await this.Owner.HandleProfileSelect(autoProfile.Id, autoProfile);
+                    }
+                    else
+                    {
+                        await this.Owner.HandleProfileSelect(autoProfile.Id);
+                    }
                 }
             }
             else
@@ -123,6 +151,9 @@ namespace App.Library.ViewModels
                 catch (UnknownProfileException)
                 {
                     return false;
+                } catch(EduroamAppUserException ex)
+                {
+                    MessageBox.Show("Lul!");
                 }
             }
 

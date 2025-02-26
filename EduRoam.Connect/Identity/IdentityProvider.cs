@@ -10,6 +10,7 @@ namespace EduRoam.Connect.Identity
         public string Country { get; set; } // ISO2
         public string Name { get; set; }
         public string Id { get; set; }
+        public bool DownloadMetadataOnSelect { get; set; }
         public List<IdentityProviderProfile> Profiles { get; set; }
 
         public List<string> SearchTags { get; set; } = new List<string>();
