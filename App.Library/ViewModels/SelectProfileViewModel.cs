@@ -25,7 +25,7 @@ namespace App.Library.ViewModels
 
         protected override async Task NavigateNextAsync()
         {
-            await this.Owner.HandleProfileSelect(this.Owner.State.SelectedProfile!.Id);
+            await this.Owner.HandleProfileSelect(this.Owner.State.SelectedProfile!.Id, this.Owner.State.SelectedProfile);
         }
     }
 }
