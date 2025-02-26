@@ -5,11 +5,11 @@ using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
 using EduRoam.Connect.Tasks;
 
-using System;using System.Collections.ObjectModel;
+using System;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 
 using SharedResources = EduRoam.Localization.Resources;
 
@@ -49,12 +49,12 @@ namespace App.Library.ViewModels
         public async Task<ObservableCollection<IdentityProvider>> GetInstitutionsAsync()
         {
             var institutes = await InstitutesTask.GetAsync(this.searchText);
-            if (this.searchText.ToLower().StartsWith("http://") || this.searchText.ToLower().StartsWith("https://"))
+            if (Uri.IsWellFormedUriString(this.searchText.Trim(), UriKind.Absolute) && (this.searchText.ToLower().StartsWith("http://") || this.searchText.ToLower().StartsWith("https://")))
             {
                 institutes = institutes.Prepend(new IdentityProvider
                 {
                     Id = "custom_http_provider",
-                    Name = $"Verbinden met {this.searchText}",
+                    Name = string.Format(SharedResources.ConnectTo0, this.searchText),
                     DownloadMetadataOnSelect = true
                 });
             }
@@ -76,7 +76,7 @@ namespace App.Library.ViewModels
                     this.Owner.State.SelectedIdentityProvider = await InstitutesTask.GetProfileFromUrlAsync(this.searchText);
                 } catch (EduroamAppUserException ex)
                 {
-                    MessageBox.Show(ex.Message);
+                    this.Owner.SetActiveContent(new ConfirmViewModel(this.Owner, ex.UserFacingMessage, () => { this.Owner.SetActiveContent(this); }));
                     return;
                 }
             }
@@ -151,9 +151,6 @@ namespace App.Library.ViewModels
                 catch (UnknownProfileException)
                 {
                     return false;
-                } catch(EduroamAppUserException ex)
-                {
-                    MessageBox.Show("Lul!");
                 }
             }
 

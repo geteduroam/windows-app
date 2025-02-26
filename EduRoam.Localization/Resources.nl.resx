@@ -668,4 +668,7 @@ Als je op "Nee" klikt, wordt {0} afgesloten.</value>
   <data name="OAuthAuthorizationTitle" xml:space="preserve">
     <value>Authorisatie</value>
   </data>
+  <data name="ErrorOccurredWhileRetreivingProfile" xml:space="preserve">
+    <value>Er is een fout opgetreden bij het ophalen van het LetsWiFi of EAP profiel.</value>
+  </data>
 </root>

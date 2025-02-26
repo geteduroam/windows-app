@@ -1,5 +1,6 @@
 ﻿using EduRoam.Connect.Exceptions;
 using EduRoam.Connect.Identity;
+using EduRoam.Localization;
 
 using System;
 using System.Collections.Generic;
@@ -49,7 +50,7 @@ namespace EduRoam.Connect.Tasks
             // validate if url is valid
             if(!Uri.IsWellFormedUriString(url.Trim(), UriKind.Absolute))
             {
-                throw new Exception("Invalid URL");
+                throw new EduroamAppUserException(string.Empty, Resources.ErrorOccurredWhileRetreivingProfile);
             }
 
             using var idpDownloader = new IdentityProviderDownloader();

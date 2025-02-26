@@ -683,4 +683,7 @@ return to the app.</value>
   <data name="OAuthAuthorizationTitle" xml:space="preserve">
     <value>Authorization</value>
   </data>
+  <data name="ErrorOccurredWhileRetreivingProfile" xml:space="preserve">
+    <value>Error occurred while retrieving LetsWifi or EAP profile</value>
+  </data>
 </root>

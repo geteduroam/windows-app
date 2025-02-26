@@ -148,9 +148,9 @@ namespace EduRoam.Connect.Identity
                 if (!this.Providers.Any())
                 {                  
                     // downloads json file as string
-                    var apiJson = await DownloadUrlAsString(ProviderApiUrl, new string[] { "application/json" }).ConfigureAwait(false);
+                    var apiJson = await DownloadUrlAsRecord(ProviderApiUrl, new string[] { "application/json" }).ConfigureAwait(false);
 
-                    var discovery = JsonConvert.DeserializeObject<LetsWifiDiscovery>(apiJson);
+                    var discovery = JsonConvert.DeserializeObject<LetsWifiDiscovery>(apiJson.Data);
                     var discoveryData = DiscoveryConverter.Covert(discovery ?? new LetsWifiDiscovery());
                   
                     this.Providers = discoveryData?.Instances ?? new List<IdentityProvider>();
@@ -224,12 +224,12 @@ namespace EduRoam.Connect.Identity
             // downloads and returns eap config file as string
             try
             {
-                var eapXml = await DownloadUrlAsString(
+                var eapXml = await DownloadUrlAsRecord(
                         url: endpoint,
                         accept: new string[] { "application/eap-config", "application/x-eap-config" },
                         accessToken: accessToken
                     );
-                return EapConfig.FromXmlData(eapXml);
+                return EapConfig.FromXmlData(eapXml.Data);
             }
             catch (HttpRequestException e)
             {
@@ -273,53 +273,6 @@ namespace EduRoam.Connect.Identity
                 }
             }
             return null;
-        }
-
-        /// <summary>
-        /// Gets a payload as string from url.
-        /// </summary>
-        /// <param name="url">Url that must be retrieved</param>
-        /// <param name="accept">Content-Type to be expected, null for no check</param>
-        /// <returns>HTTP body</returns>
-        /// 
-        /// <exception cref="HttpRequestException">Anything that went wrong attempting HTTP request, including DNS</exception>
-        /// <exception cref="ApiParsingException">Content-Type did not match accept</exception>
-        private async static Task<string> DownloadUrlAsString(Uri url, string[]? accept = null, string? accessToken = null)
-        {
-            HttpResponseMessage response;
-            try
-            {
-                using (var request = new HttpRequestMessage
-                {
-                    Method = HttpMethod.Get,
-                    RequestUri = url
-                })
-                {
-                    if (accessToken != null)
-                    {
-                        request.Method = HttpMethod.Post;
-                        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-                    }
-
-                    foreach (var acceptValue in accept ?? new string[] { })
-                    {
-                        request.Headers.Add("Accept", acceptValue);
-                    }
-
-                    response = await Http.SendAsync(request).ConfigureAwait(true);
-                }
-
-            }
-            catch (TaskCanceledException e)
-            {
-                // According to the documentation from HttpClient,
-                // this exception will not be thrown, but instead a HttpRequestException
-                // will be thrown.  This is not the case, so this catch and throw
-                // is to make sure the API matches again
-                throw new HttpRequestException("The request to " + url + " was interrupted", e);
-            }
-
-            return await parseResponse(response, accept);
         }
 
         /// <summary>
@@ -442,7 +395,7 @@ namespace EduRoam.Connect.Identity
                         return new IdentityProvider()
                         {
                             Id = "custom_http_provider",
-                            Name = $"Verbinden met {url.Trim()}",
+                            Name = string.Format(Resources.ConnectTo0, url),
                             DownloadMetadataOnSelect = true,
                             Profiles = new List<IdentityProviderProfile> {
                                 new IdentityProviderProfile
@@ -460,7 +413,7 @@ namespace EduRoam.Connect.Identity
                             return new IdentityProvider()
                             {
                                 Id = "custom_http_provider",
-                                Name = $"Verbinden met {url.Trim()}",
+                                Name = string.Format(Resources.ConnectTo0, url),
                                 DownloadMetadataOnSelect = true,
                                 Profiles = new List<IdentityProviderProfile> {
                                new IdentityProviderProfile
@@ -478,14 +431,15 @@ namespace EduRoam.Connect.Identity
                         break;
 
                     default:
-                        throw new EduroamAppUserException("", "Error occurred while retrieving LetsWifi or EAP profile");
+                        // only the userfacing message is needed here
+                        throw new EduroamAppUserException(string.Empty, Resources.ErrorOccurredWhileRetreivingProfile);
                 }
-            } catch(Exception)
+            } catch(Exception ex)
             {
-                throw new EduroamAppUserException("Error occurred while retrieving LetsWifi or EAP profile");
+                throw new EduroamAppUserException(ex.Message, Resources.ErrorOccurredWhileRetreivingProfile);
             }
-
-            throw new EduroamAppUserException("", "Error occurred while retrieving LetsWifi or EAP profile");
+            // only the userfacing message is needed here
+            throw new EduroamAppUserException(string.Empty, Resources.ErrorOccurredWhileRetreivingProfile);
         }
 
         private async Task<LetsWifiProfile.ProfileRoot> DownloadLetsWifiProfile(IdentityProviderProfile profile)
@@ -494,12 +448,12 @@ namespace EduRoam.Connect.Identity
             {
                 if (!string.IsNullOrEmpty(profile.LetsWifiEndpoint))
                 {
-                    var letsWifiProfileJson = await DownloadUrlAsString(
+                    var letsWifiProfileJson = await DownloadUrlAsRecord(
                         url: new Uri(profile.LetsWifiEndpoint), 
                         accept: ["application/json"], 
                         accessToken: null
                     );
-                    var letsWifiProfile = JsonConvert.DeserializeObject<LetsWifiProfile>(letsWifiProfileJson);
+                    var letsWifiProfile = JsonConvert.DeserializeObject<LetsWifiProfile>(letsWifiProfileJson.Data);
 
                     return letsWifiProfile.Root;
                 } else

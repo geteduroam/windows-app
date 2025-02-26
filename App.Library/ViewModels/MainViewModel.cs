@@ -219,17 +219,14 @@ namespace App.Library.ViewModels
 
             if (SemVersion.ComparePrecedence(SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.MinimalSupportedVersion) == -1)
             {
-                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.VersionNoLongerSupported, Settings.Settings.ApplicationName, SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.MinimalSupportedVersion, UpdateChecker.NewVersion), confirmOnly: false, OnConfirmUpdate, OnDenyUnsupported));
+                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.VersionNoLongerSupported, Settings.Settings.ApplicationName, SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.MinimalSupportedVersion, UpdateChecker.NewVersion), OnConfirmUpdate, OnDenyUnsupported));
 
                 return;
             }
 
             if (UpdateChecker.IsUpdateAvailable)
             {
-                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.UpdateAvailableMessage, Settings.Settings.ApplicationName, SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.NewVersion), confirmOnly: false, OnConfirmUpdate, OnDenyUpdate));
-
-
-
+                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.UpdateAvailableMessage, Settings.Settings.ApplicationName, SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.NewVersion), OnConfirmUpdate, OnDenyUpdate));
                 return;
             }
             #endregion

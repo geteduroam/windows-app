@@ -16,14 +16,21 @@ namespace App.Library.ViewModels
         public DelegateCommand ConfirmCommand { get; }
         public DelegateCommand DenyCommand { get; }
 
-        public ConfirmViewModel(MainViewModel owner, string textBlockText, bool confirmOnly, Action onConfirm, Action onDeny) : base(owner)
+        public ConfirmViewModel(MainViewModel owner, string textBlockText, Action onConfirm, Action onDeny) : base(owner)
         {
             this.ConfirmText = textBlockText;
-            this.ShowDenyButton = !confirmOnly;
+            this.ShowDenyButton = true;
             this.onConfirm = onConfirm;
             this.onDeny = onDeny;
             this.ConfirmCommand = new DelegateCommand(this.Confirm);
             this.DenyCommand = new DelegateCommand(this.Deny);
+        }
+        public ConfirmViewModel(MainViewModel owner, string textBlockText, Action onConfirm) : base(owner)
+        {
+            this.ConfirmText = textBlockText;
+            this.ShowDenyButton = false;
+            this.onConfirm = onConfirm;
+            this.ConfirmCommand = new DelegateCommand(this.Confirm);
         }
 
         public override string PageTitle { get; }
