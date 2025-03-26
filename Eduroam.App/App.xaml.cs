@@ -4,6 +4,7 @@ using App.Settings;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using System;
 using System.Windows;
 
 using LanguageResources = EduRoam.Localization.Resources;
@@ -27,19 +28,36 @@ namespace Eduroam.App
             Settings.HelpUrl = "https://geteduroam.app/";
             Settings.DiscoveryUrl = "https://discovery.eduroam.app/v3/discovery.json";
 
-            if (CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args))
+
+            // architecture check
+            var nativeMachineType = ArchitectureHelper.GetNativeMachineType();
+            if (
+                (nativeMachineType == ArchitectureHelper.MachineType.ARM64 && !ArchitectureHelper.IsRunningOnArm64Build())
+                || (nativeMachineType == ArchitectureHelper.MachineType.AMD64 && !ArchitectureHelper.IsRunningOnArm64Build())
+            )
+            {
+                Settings.IsIncompatibleVersion = true;
+                MessageBox.Show("Wrong architecture", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                this.Shutdown(1);
+                return;
+            }
+
+            if (CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args) && !Settings.IsIncompatibleVersion)
             {
                 this.Shutdown(1);
                 return;
             }
 
             #region SelfInstaller AutoInstall
-            var resultObject = AutoInstaller.CheckIfInstalled();
-            if (!resultObject)
+            if (!Settings.IsIncompatibleVersion)
             {
-                AutoInstaller.StartApplicationFromInstallLocation();
-                this.Shutdown(1);
-                return;
+                var resultObject = AutoInstaller.CheckIfInstalled();
+                if (!resultObject)
+                {
+                    AutoInstaller.StartApplicationFromInstallLocation();
+                    this.Shutdown(1);
+                    return;
+                }
             }
             #endregion
 

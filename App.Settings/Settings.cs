@@ -11,5 +11,10 @@
         public static string? EapConfigFileLocation { get; set; } = null;
         public static string HelpUrl { get; set; } = "https://geteduroam.app/";
         public static string DiscoveryUrl { get; set; } = "https://discovery.eduroam.app/v3/discovery.json";
+
+
+        #region Test
+        public static bool IsIncompatibleVersion { get; set; } = false;
+        #endregion
     }
 }

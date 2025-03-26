@@ -83,11 +83,9 @@ public static class ArchitectureHelper
         return (MachineType)nativeMachine;
     }
 
-    public static MachineType GetProcessMachineType()
+    public static bool IsRunningOnArm64Build()
     {
-        var handle = Process.GetCurrentProcess().Handle;
-        IsWow64Process2(handle, out var processMachine, out var nativeMachine);
-
-        return (MachineType)processMachine;
+        return IntPtr.Size == 8 && RuntimeInformation.ProcessArchitecture == Architecture.Arm64;
     }
 }
+ 
