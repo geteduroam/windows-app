@@ -13,7 +13,6 @@
                         Orientation="Vertical">
 
                 <TextBlock x:Name="PageTitle"
-                   Grid.Row="0"
                    FontSize="{StaticResource Font.Large}"
                    Text="{Binding ConfirmTitle}"
                    Visibility="{Binding ConfirmTitle.Length}"
