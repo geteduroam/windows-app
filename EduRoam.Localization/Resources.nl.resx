@@ -671,4 +671,19 @@ Als je op "Nee" klikt, wordt {0} afgesloten.</value>
   <data name="ErrorOccurredWhileRetreivingProfile" xml:space="preserve">
     <value>Er is een fout opgetreden bij het ophalen van het LetsWiFi of EAP profiel.</value>
   </data>
+  <data name="IncompatibleVersionMessage" xml:space="preserve">
+    <value>De versie van {0} die u gebruikt is niet compatibel met uw Windows-architectuur. Klik op Ja om de juiste versie te downloaden, of op Nee om te annuleren.</value>
+  </data>
+  <data name="IncompatibleVersionTitle" xml:space="preserve">
+    <value>Incompatibele versie gedetecteerd</value>
+  </data>
+  <data name="UnsupportedVersionDetectedTitle" xml:space="preserve">
+    <value>Niet-ondersteunde versie gedetecteerd</value>
+  </data>
+  <data name="UpdateAvailableWithVersionNo" xml:space="preserve">
+    <value>Update {0} is beschikbaar.</value>
+  </data>
+  <data name="UpdateAvailableButton" xml:space="preserve">
+    <value>Nu updaten</value>
+  </data>
 </root>

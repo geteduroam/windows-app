@@ -22,6 +22,7 @@ using System.Windows;
 using NETWORKLIST;
 using Semver;
 using App.Library.Tasks;
+using System.ComponentModel;
 
 namespace App.Library.ViewModels
 {
@@ -35,7 +36,8 @@ namespace App.Library.ViewModels
         private readonly Status status;
 
         private readonly INetworkListManager networkListManager;
-
+        public bool UpdateAvailable { get; set; } = false;
+        public string UpdateAvailableText { get; set; }
 
         public MainViewModel(ILogger<MainViewModel> logger)
         {
@@ -49,6 +51,8 @@ namespace App.Library.ViewModels
             this.UninstallCommand = new DelegateCommand(this.Uninstall);
             this.OpenHelpCommand = new DelegateCommand(this.OpenHelp);
             this.OpenMenuCommand = new DelegateCommand(this.OpenMenu);
+            this.CancelUpdateCommand = new DelegateCommand(this.CancelUpdate);
+            this.DoUpdateCommand = new DelegateCommand(this.OnConfirmUpdate);
 
             this.idpDownloader = new IdentityProviderDownloader();
             this.State = new ApplicationState();
@@ -109,6 +113,9 @@ namespace App.Library.ViewModels
         public DelegateCommand UninstallCommand { get; protected set; }
 
         public DelegateCommand OpenHelpCommand { get; protected set; }
+
+        public DelegateCommand CancelUpdateCommand { get; protected set; }
+        public DelegateCommand DoUpdateCommand { get; protected set; }
 
         public Action CloseApp { get; set; }
 
@@ -190,20 +197,20 @@ namespace App.Library.ViewModels
             }
         }
 
+        public void OnConfirmUpdate()
+        {
+            Task.Run(async () =>
+            {
+                await UpdateChecker.DownloadUpdateAsync();
+            });
+        }
+
+
         public void SetStartContent()
         {
             var status = new StatusTask().GetStatus();
 
             #region UpdateChecker
-
-            void OnConfirmUpdate()
-            {
-                Task.Run(async () =>
-                {
-                    await UpdateChecker.DownloadUpdateAsync();
-                });
-            }
-
             void OnDenyUpdate()
             {
                 // User doesn't want to update, lets honor it and just tell the app that there is NO update available
@@ -217,17 +224,26 @@ namespace App.Library.ViewModels
                 Application.Current.Shutdown(1);
             }
 
+            if(Settings.Settings.IsIncompatibleVersion)
+            {
+                this.SetActiveContent(new ConfirmViewModel(this, EduRoam.Localization.Resources.IncompatibleVersionTitle, string.Format(EduRoam.Localization.Resources.IncompatibleVersionMessage, Settings.Settings.ApplicationName), this.OnConfirmUpdate, OnDenyUnsupported));
+                return;
+            }
+
             if (SemVersion.ComparePrecedence(SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.MinimalSupportedVersion) == -1)
             {
-                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.VersionNoLongerSupported, Settings.Settings.ApplicationName, SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.MinimalSupportedVersion, UpdateChecker.NewVersion), OnConfirmUpdate, OnDenyUnsupported));
+                this.SetActiveContent(new ConfirmViewModel(this, EduRoam.Localization.Resources.UnsupportedVersionDetectedTitle, string.Format(EduRoam.Localization.Resources.VersionNoLongerSupported, Settings.Settings.ApplicationName, SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.MinimalSupportedVersion, UpdateChecker.NewVersion), this.OnConfirmUpdate, OnDenyUnsupported));
 
                 return;
             }
 
             if (UpdateChecker.IsUpdateAvailable)
             {
-                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.UpdateAvailableMessage, Settings.Settings.ApplicationName, SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.NewVersion), OnConfirmUpdate, OnDenyUpdate));
-                return;
+                this.UpdateAvailableText = string.Format(EduRoam.Localization.Resources.UpdateAvailableWithVersionNo, UpdateChecker.NewVersion);
+                this.UpdateAvailable = true;
+
+                this.CallPropertyChanged(nameof(this.UpdateAvailableText));
+                this.CallPropertyChanged(nameof(this.UpdateAvailable));
             }
             #endregion
 
@@ -583,6 +599,12 @@ namespace App.Library.ViewModels
         public bool CheckIsConnected()
         {
             return this.networkListManager.IsConnectedToInternet;
+        }
+
+        public void CancelUpdate()
+        {
+            this.UpdateAvailable = false;
+            this.CallPropertyChanged(nameof(this.UpdateAvailable));
         }
 
         private void LoadEapFile(string filepath)

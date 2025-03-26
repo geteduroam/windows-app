@@ -686,4 +686,19 @@ return to the app.</value>
   <data name="ErrorOccurredWhileRetreivingProfile" xml:space="preserve">
     <value>Error occurred while retrieving LetsWifi or EAP profile</value>
   </data>
+  <data name="IncompatibleVersionMessage" xml:space="preserve">
+    <value>The version of {0} you are using is not compatible with your Windows architecture. Click Yes to download the correct version, or No to cancel.</value>
+  </data>
+  <data name="IncompatibleVersionTitle" xml:space="preserve">
+    <value>Incompatible Version Detected</value>
+  </data>
+  <data name="UnsupportedVersionDetectedTitle" xml:space="preserve">
+    <value>Unsupported Version Detected</value>
+  </data>
+  <data name="UpdateAvailableWithVersionNo" xml:space="preserve">
+    <value>Update {0} is available.</value>
+  </data>
+  <data name="UpdateAvailableButton" xml:space="preserve">
+    <value>Update now</value>
+  </data>
 </root>

@@ -893,6 +893,24 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The version of {0} you are using is not compatible with your Windows architecture. Click Yes to download the correct version, or No to cancel..
+        /// </summary>
+        public static string IncompatibleVersionMessage {
+            get {
+                return ResourceManager.GetString("IncompatibleVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incompatible Version Detected.
+        /// </summary>
+        public static string IncompatibleVersionTitle {
+            get {
+                return ResourceManager.GetString("IncompatibleVersionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} has been successfully installed..
         /// </summary>
         public static string InstallSuccess {
@@ -1489,11 +1507,29 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unsupported Version Detected.
+        /// </summary>
+        public static string UnsupportedVersionDetectedTitle {
+            get {
+                return ResourceManager.GetString("UnsupportedVersionDetectedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Update available.
         /// </summary>
         public static string UpdateAvailable {
             get {
                 return ResourceManager.GetString("UpdateAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update now.
+        /// </summary>
+        public static string UpdateAvailableButton {
+            get {
+                return ResourceManager.GetString("UpdateAvailableButton", resourceCulture);
             }
         }
         
@@ -1505,6 +1541,15 @@ namespace EduRoam.Localization {
         public static string UpdateAvailableMessage {
             get {
                 return ResourceManager.GetString("UpdateAvailableMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update {0} is available..
+        /// </summary>
+        public static string UpdateAvailableWithVersionNo {
+            get {
+                return ResourceManager.GetString("UpdateAvailableWithVersionNo", resourceCulture);
             }
         }
         

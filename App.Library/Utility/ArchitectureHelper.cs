@@ -45,13 +45,6 @@ public static class ArchitectureHelper
         ARM64 = 0xAA64, // ARM64 Little-Endian
     }
 
-    [DllImport("kernel32.dll", SetLastError = true)]
-    private static extern bool IsWow64Process2(
-        IntPtr process,
-        out ushort processMachine,
-        out ushort nativeMachine
-    );
-
     public static MachineType GetFileMachineType(string path)
     {
         // https://learn.microsoft.com/en-us/windows/win32/debug/pe-format
@@ -74,6 +67,11 @@ public static class ArchitectureHelper
 
         return signature == 0x00004550 ? (MachineType)machineType : 0;
     }
+    public static void CheckArchitectureCompatability()
+    {
+        var nativeMachineType = GetNativeMachineType();
+        Settings.Settings.IsIncompatibleVersion = (nativeMachineType == MachineType.ARM64 && !IsRunningOnArm64Build()) || (nativeMachineType == MachineType.AMD64 && IsRunningOnArm64Build());
+    }
 
     public static MachineType GetNativeMachineType()
     {
@@ -83,9 +81,17 @@ public static class ArchitectureHelper
         return (MachineType)nativeMachine;
     }
 
-    public static bool IsRunningOnArm64Build()
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool IsWow64Process2(
+        IntPtr process,
+        out ushort processMachine,
+        out ushort nativeMachine
+    );
+
+    private static bool IsRunningOnArm64Build()
     {
         return IntPtr.Size == 8 && RuntimeInformation.ProcessArchitecture == Architecture.Arm64;
     }
+
 }
  

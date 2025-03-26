@@ -10,6 +10,8 @@
     <!-- https://learn.microsoft.com/en-us/windows/apps/design/style/segoe-ui-symbol-font -->
     <clr:String x:Key="MenuIcon">&#xE712;</clr:String>
     <clr:String x:Key="SearchIcon">&#xE721;</clr:String>
+    <clr:String x:Key="CancelIcon">&#xE711;</clr:String>
+    <clr:String x:Key="CancelMediumIcon">&#xF78A;</clr:String>
     
     <Style x:Key="IconButton" TargetType="Button">
         <Setter Property="FontFamily" Value="{StaticResource IconFont}" />

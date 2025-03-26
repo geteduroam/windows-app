@@ -28,19 +28,8 @@ namespace Eduroam.App
             Settings.HelpUrl = "https://geteduroam.app/";
             Settings.DiscoveryUrl = "https://discovery.eduroam.app/v3/discovery.json";
 
-
             // architecture check
-            var nativeMachineType = ArchitectureHelper.GetNativeMachineType();
-            if (
-                (nativeMachineType == ArchitectureHelper.MachineType.ARM64 && !ArchitectureHelper.IsRunningOnArm64Build())
-                || (nativeMachineType == ArchitectureHelper.MachineType.AMD64 && !ArchitectureHelper.IsRunningOnArm64Build())
-            )
-            {
-                Settings.IsIncompatibleVersion = true;
-                MessageBox.Show("Wrong architecture", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                this.Shutdown(1);
-                return;
-            }
+            ArchitectureHelper.CheckArchitectureCompatability();           
 
             if (CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args) && !Settings.IsIncompatibleVersion)
             {

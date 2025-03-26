@@ -44,7 +44,31 @@
     </Window.Resources>
 
     <Grid Background="{DynamicResource BackgroundBrush}" Margin="-1, -1">
-        <Grid Margin="{StaticResource Page-Margin}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid
+            Grid.Row="0"
+            Visibility="{Binding UpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" HorizontalAlignment="Stretch" Background="#FFFFC5" Height="50" Visibility="{Binding ShowUpdateBar, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock VerticalAlignment="Center" Margin="10,0" Text="{Binding UpdateAvailableText}" />
+                <Button Grid.Column="1" Margin="5" Padding="10,0" Content="{x:Static lang:Resources.UpdateAvailableButton}" Style="{DynamicResource WhiteButtonStyle}" Command="{Binding DoUpdateCommand}" />
+                <Button Grid.Column="2" Margin="2" Padding="5,0" FontFamily="{StaticResource IconFont}" Content="{StaticResource CancelMediumIcon}" Style="{DynamicResource IconButton}" Command="{Binding CancelUpdateCommand}" />
+            </Grid>
+        </Grid>
+
+        <Grid Margin="{StaticResource Page-Margin}"
+              Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="{StaticResource PageTitle-Height}" />
                 <RowDefinition Height="*" />
@@ -131,7 +155,8 @@
                         FontFamily="Tahoma" 
                         FontSize="{StaticResource Font.Small}"/>
         </Grid>
-        <Grid>
+        <Grid
+            Grid.Row="99">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="42" />

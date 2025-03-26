@@ -59,7 +59,7 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
@@ -594,5 +594,20 @@ Errore: {0}</value>
   </data>
   <data name="ConnectTo0" xml:space="preserve">
     <value>Connetti a {0}</value>
+  </data>
+  <data name="IncompatibleVersionMessage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="IncompatibleVersionTitle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UnsupportedVersionDetectedTitle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UpdateAvailableWithVersionNo" xml:space="preserve">
+    <value />
+  </data>
+  <data name="UpdateAvailableButton" xml:space="preserve">
+    <value />
   </data>
 </root>
