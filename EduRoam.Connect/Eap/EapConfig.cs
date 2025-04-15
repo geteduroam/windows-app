@@ -105,6 +105,14 @@ namespace EduRoam.Connect.Eap
 
                 // ServerSideCredential
 
+                var serverFingerprints = authMethodXml
+                    .Elements().First(nameIs("EAPMethod"))
+                    .Elements().Where(nameIs("VendorSpecific")).First(xElement => xElement.Attribute("vendor").Value == "1023")
+                    .Elements().FirstOrDefault(nameIs("ServerSideCredential"))?
+                    .Elements().Where(nameIs("Fingerprint"))
+                    .Select(xElement => (string)xElement)
+                    .ToList();
+
                 // get list of strings of CA certificates
                 var serverCAs = serverSideCredentialXml?
                     .Elements().Where(nameIs("CA")) // TODO: <CA format="X.509" encoding="base64"> is assumed, schema does not enforce this
@@ -143,6 +151,7 @@ namespace EduRoam.Connect.Eap
                     innerAuthType,
                     serverCAs ?? new List<string>(),
                     serverNames ?? new List<string>(),
+                    serverFingerprints ?? new List<string>(),
                     clientUserName,
                     clientPassword,
                     clientCert,

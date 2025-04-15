@@ -22,6 +22,7 @@ namespace EduRoam.Connect.Eap
         public EapType EapType { get; }
         public InnerAuthType InnerAuthType { get; }
         public List<string> ServerCertificateAuthorities { get; } // base64 encoded DER certificate
+        public List<string> CertificateThumbprints { get; }
         public List<string> ServerNames { get; }
         public string? ClientUserName { get; } // preset inner identity, expect it to have a realm
         public string? ClientPassword { get; } // preset outer identity
@@ -94,6 +95,8 @@ namespace EduRoam.Connect.Eap
         /// <remarks>The certificates must be disposed after use</remarks>
         public IEnumerable<X509Certificate2> CertificateAuthoritiesAsX509Certificate2()
         {
+            if (this.CertificateThumbprints.Count != 0) yield break;
+
             foreach (var ca in this.ServerCertificateAuthorities)
             {
                 X509Certificate2 cert;
@@ -212,6 +215,7 @@ namespace EduRoam.Connect.Eap
                     this.InnerAuthType,
                     this.ServerCertificateAuthorities,
                     this.ServerNames,
+                    this.CertificateThumbprints,
                     username,
                     password,
                     this.ClientCertificate,
@@ -233,6 +237,7 @@ namespace EduRoam.Connect.Eap
                     this.InnerAuthType,
                     this.ServerCertificateAuthorities,
                     this.ServerNames,
+                    this.CertificateThumbprints,
                     this.ClientUserName,
                     this.ClientPassword,
                     Convert.ToBase64String(File.ReadAllBytes(filePath)),
@@ -256,6 +261,7 @@ namespace EduRoam.Connect.Eap
                     this.InnerAuthType,
                     this.ServerCertificateAuthorities,
                     this.ServerNames,
+                    this.CertificateThumbprints,
                     this.ClientUserName,
                     this.ClientPassword,
                     this.ClientCertificate,
@@ -272,6 +278,7 @@ namespace EduRoam.Connect.Eap
                     this.InnerAuthType,
                     this.ServerCertificateAuthorities,
                     this.ServerNames,
+                    this.CertificateThumbprints,
                     this.ClientUserName,
                     this.ClientPassword,
                     this.ClientCertificate,
@@ -339,6 +346,7 @@ namespace EduRoam.Connect.Eap
             InnerAuthType innerAuthType,
             List<string> serverCertificateAuthorities,
             List<string> serverName,
+            List<string> certificateThumbprints = null,
             string? clientUserName = null,
             string? clientPassword = null,
             string? clientCertificate = null,
@@ -346,7 +354,7 @@ namespace EduRoam.Connect.Eap
             string? clientOuterIdentity = null,
             string? innerIdentitySuffix = null,
             bool innerIdentityHint = false
-        ) : this(null, eapType, innerAuthType, serverCertificateAuthorities, serverName, clientUserName, clientPassword, clientCertificate, clientCertificatePassphrase, clientOuterIdentity, innerIdentitySuffix, innerIdentityHint) { }
+        ) : this(null, eapType, innerAuthType, serverCertificateAuthorities, serverName, certificateThumbprints, clientUserName, clientPassword, clientCertificate, clientCertificatePassphrase, clientOuterIdentity, innerIdentitySuffix, innerIdentityHint) { }
 
         private AuthenticationMethod(
             EapConfig? eapConfig,
@@ -354,6 +362,7 @@ namespace EduRoam.Connect.Eap
             InnerAuthType innerAuthType,
             List<string> serverCertificateAuthorities,
             List<string> serverName,
+            List<string> certificateThumbprints = null,
             string? clientUserName = null,
             string? clientPassword = null,
             string? clientCertificate = null,
@@ -367,6 +376,7 @@ namespace EduRoam.Connect.Eap
             this.EapType = eapType;
             this.InnerAuthType = innerAuthType;
             this.ServerCertificateAuthorities = serverCertificateAuthorities ?? new List<string>();
+            this.CertificateThumbprints = certificateThumbprints ?? new List<string>();
             this.ServerNames = serverName ?? new List<string>();
             this.ClientUserName = clientUserName;
             this.ClientPassword = clientPassword;

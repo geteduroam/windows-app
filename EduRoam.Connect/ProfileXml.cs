@@ -167,7 +167,7 @@ namespace EduRoam.Connect
                                         serverNames: authMethod.ServerNames,
                                         caThumbprints: authMethod.CertificateAuthoritiesAsX509Certificate2()
                                             .Where(cert => cert.Subject == cert.Issuer)
-                                            .Select(cert => cert.Thumbprint).ToList()
+                                            .Select(cert => cert.Thumbprint).Union(authMethod.CertificateThumbprints).ToList()
                                     )
                                 )
                             )
@@ -397,7 +397,7 @@ namespace EduRoam.Connect
                 new XElement(ns + "ServerNames", string.Join(";", serverNames))
             );
             caThumbprints.ForEach(thumb =>
-                serverValidationElement.Add(new XElement(ns + thumbprintNodeName, thumb.ToHexString())));
+                serverValidationElement.Add(new XElement(ns + thumbprintNodeName, thumb.FormatHexString())));
 
             return serverValidationElement;
         }
