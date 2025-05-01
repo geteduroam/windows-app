@@ -19,7 +19,7 @@
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    TextAlignment="Center" 
-                   TextWrapping ="Wrap" />
+                   TextWrapping="Wrap" />
 
                 <TextBlock Text="{Binding ConfirmText}" 
                            TextWrapping="Wrap" 

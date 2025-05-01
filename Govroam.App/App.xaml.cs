@@ -25,27 +25,22 @@ namespace Govroam.App
             Settings.NetworkName = "govroam";
             Settings.UpdateBaseUrl = "https://getgovroam.nl";
             Settings.HelpUrl = "https://govroam.nl/support";
+            Settings.BrowserDownloadUrl = "https://www.govroam.app/";
             Settings.DiscoveryUrl = "https://getgovroam.nl/v3/discovery.json";
 
-            // architecture check
-            ArchitectureHelper.CheckArchitectureCompatability();
-
-            if (CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args) && !Settings.IsIncompatibleVersion)
+            if (CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args))
             {
                 this.Shutdown(1);
                 return;
             }
 
             #region SelfInstaller AutoInstall
-            if (!Settings.IsIncompatibleVersion)
+            var resultObject = AutoInstaller.CheckIfInstalled();
+            if (!resultObject)
             {
-                var resultObject = AutoInstaller.CheckIfInstalled();
-                if (!resultObject)
-                {
-                    AutoInstaller.StartApplicationFromInstallLocation();
-                    this.Shutdown(1);
-                    return;
-                }
+                AutoInstaller.StartApplicationFromInstallLocation();
+                this.Shutdown(1);
+                return;
             }
             #endregion
 

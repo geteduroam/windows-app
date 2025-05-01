@@ -1,5 +1,4 @@
-﻿using EduRoam.Connect.Install;
-using Semver;
+﻿using Semver;
 
 using System.Net;
 using System;
@@ -21,7 +20,7 @@ public static class UpdateChecker
     public static UpdateResponseRootDto UpdateData { get; set; } = new();       
     public static bool IsUpdateAvailable { get; set; }
     public static SemVersion? MinimalSupportedVersion { get; set; } 
-    public static string NewVersion { get; set; }
+    public static SemVersion? NewVersion { get; set; }
 
     // http objects
     public async static Task<bool> CheckIfUpdateAvailableAsync()
@@ -32,14 +31,13 @@ public static class UpdateChecker
         }
 
         await DownloadUpdateJsonAsync();
-        NewVersion = UpdateData.CurrentVersion;
-        var newVersion = SemVersion.Parse(UpdateData.CurrentVersion, SemVersionStyles.Strict);
+        NewVersion = SemVersion.Parse(UpdateData.CurrentVersion, SemVersionStyles.Strict);
 
         var parsedMinimalSupportedVersion = Version.Parse(UpdateData.MinimalSupportedVersion);
         MinimalSupportedVersion = new SemVersion(parsedMinimalSupportedVersion.Major, parsedMinimalSupportedVersion.Minor, parsedMinimalSupportedVersion.Build);
 
         // If the app was already installed, we should already have aborted here 
-        IsUpdateAvailable = SelfInstaller.DefaultInstance.CanUpdateRunning(newVersion);
+        IsUpdateAvailable = SelfInstaller.DefaultInstance.CanUpdateRunning(NewVersion);
 
         return IsUpdateAvailable;
     }
@@ -88,7 +86,7 @@ public static class UpdateChecker
     #region Private helper functions
     private static Uri GetUpdateUrl()
     {
-        var arch = ArchitectureHelper.GetNativeMachineType();
+        var arch = ArchitectureHelper.GetNativeArch();
         var updateUrl = string.Format(UpdateUrlBase, Settings.Settings.UpdateBaseUrl, arch.ToString().ToLower());
 
         return new Uri(updateUrl);

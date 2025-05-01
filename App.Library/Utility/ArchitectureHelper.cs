@@ -45,7 +45,14 @@ public static class ArchitectureHelper
         ARM64 = 0xAA64, // ARM64 Little-Endian
     }
 
-    public static MachineType GetFileMachineType(string path)
+    [DllImport("kernel32.dll", SetLastError = true)]
+    private static extern bool IsWow64Process2(
+        IntPtr process,
+        out ushort processMachine,
+        out ushort nativeMachine
+    );
+
+    public static MachineType GetFileArch(string path)
     {
         // https://learn.microsoft.com/en-us/windows/win32/debug/pe-format
         // Offset 0 contains 0x5A4D (MZ)
@@ -67,31 +74,29 @@ public static class ArchitectureHelper
 
         return signature == 0x00004550 ? (MachineType)machineType : 0;
     }
-    public static void CheckArchitectureCompatability()
-    {
-        var nativeMachineType = GetNativeMachineType();
-        Settings.Settings.IsIncompatibleVersion = (nativeMachineType == MachineType.ARM64 && !IsRunningOnArm64Build()) || (nativeMachineType == MachineType.AMD64 && IsRunningOnArm64Build());
-    }
 
-    public static MachineType GetNativeMachineType()
+    public static MachineType GetNativeArch()
     {
         var handle = Process.GetCurrentProcess().Handle;
-        IsWow64Process2(handle, out var processMachine, out var nativeMachine);
+        IsWow64Process2(handle, out var processMachineNull, out var nativeMachine);
+        // processMachineNull is NULL because it only is set for WOW64, a kind of "universal" binary
 
         return (MachineType)nativeMachine;
     }
-
-    [DllImport("kernel32.dll", SetLastError = true)]
-    private static extern bool IsWow64Process2(
-        IntPtr process,
-        out ushort processMachine,
-        out ushort nativeMachine
-    );
-
-    private static bool IsRunningOnArm64Build()
+    public static MachineType GetProcessArch()
     {
-        return IntPtr.Size == 8 && RuntimeInformation.ProcessArchitecture == Architecture.Arm64;
+        switch (RuntimeInformation.ProcessArchitecture)
+        {
+            case Architecture.X86: return MachineType.I386;
+            case Architecture.X64: return MachineType.AMD64;
+            case Architecture.Arm: return MachineType.ARM;
+            case Architecture.Arm64: return MachineType.ARM64;
+        }
+        return 0;
     }
 
+    public static bool ProcessIsNative()
+    {
+        return GetNativeArch() == GetProcessArch();
+    }
 }
- 

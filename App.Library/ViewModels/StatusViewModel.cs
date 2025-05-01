@@ -4,10 +4,7 @@ using EduRoam.Connect.Tasks;
 using EduRoam.Localization;
 
 using System;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace App.Library.ViewModels
 {
@@ -50,6 +47,13 @@ namespace App.Library.ViewModels
 
         public bool ShowTimeLeft => !string.IsNullOrWhiteSpace(this.status.TimeLeft);
 
+        public bool SelfTestSuccess
+        {
+            get { 
+                return this.Owner.SelfTestSuccess;
+            }
+        }
+
         public bool ShowRenewButton { 
             get {
                 try
@@ -65,7 +69,7 @@ namespace App.Library.ViewModels
             } 
         }
 
-        public bool ShowRepairButton => !this.ShowRenewButton;
+        public bool ShowRepairButton => this.status.ActiveProfile && !this.ShowRenewButton;
 
         public string TimeLeft => this.status.TimeLeft ?? "-";
 

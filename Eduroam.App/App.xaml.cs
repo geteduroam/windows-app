@@ -4,7 +4,6 @@ using App.Settings;
 
 using Microsoft.Extensions.DependencyInjection;
 
-using System;
 using System.Windows;
 
 using LanguageResources = EduRoam.Localization.Resources;
@@ -26,27 +25,22 @@ namespace Eduroam.App
             Settings.NetworkName = "eduroam";
             Settings.UpdateBaseUrl = "https://dl.eduroam.app";
             Settings.HelpUrl = "https://geteduroam.app/";
+            Settings.BrowserDownloadUrl = "https://www.eduroam.app/";
             Settings.DiscoveryUrl = "https://discovery.eduroam.app/v3/discovery.json";
 
-            // architecture check
-            ArchitectureHelper.CheckArchitectureCompatability();           
-
-            if (CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args) && !Settings.IsIncompatibleVersion)
+            if (CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args))
             {
                 this.Shutdown(1);
                 return;
             }
 
             #region SelfInstaller AutoInstall
-            if (!Settings.IsIncompatibleVersion)
+            var resultObject = AutoInstaller.CheckIfInstalled();
+            if (!resultObject)
             {
-                var resultObject = AutoInstaller.CheckIfInstalled();
-                if (!resultObject)
-                {
-                    AutoInstaller.StartApplicationFromInstallLocation();
-                    this.Shutdown(1);
-                    return;
-                }
+                AutoInstaller.StartApplicationFromInstallLocation();
+                this.Shutdown(1);
+                return;
             }
             #endregion
 

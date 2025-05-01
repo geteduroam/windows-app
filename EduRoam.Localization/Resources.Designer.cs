@@ -447,6 +447,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy link.
+        /// </summary>
+        public static string CopyLinkButton {
+            get {
+                return ResourceManager.GetString("CopyLinkButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter your username and password.
         /// </summary>
         public static string CredentialsLabel {
@@ -893,20 +902,11 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The version of {0} you are using is not compatible with your Windows architecture. Click Yes to download the correct version, or No to cancel..
+        ///   Looks up a localized string similar to This version of {0} is for a different architecture than your machine..
         /// </summary>
         public static string IncompatibleVersionMessage {
             get {
                 return ResourceManager.GetString("IncompatibleVersionMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Incompatible Version Detected.
-        /// </summary>
-        public static string IncompatibleVersionTitle {
-            get {
-                return ResourceManager.GetString("IncompatibleVersionTitle", resourceCulture);
             }
         }
         
@@ -1209,6 +1209,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open browser.
+        /// </summary>
+        public static string OpenBrowserButton {
+            get {
+                return ResourceManager.GetString("OpenBrowserButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Certificate filepath.
         /// </summary>
         public static string OptionDescriptionCertificatePath {
@@ -1507,15 +1516,6 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unsupported Version Detected.
-        /// </summary>
-        public static string UnsupportedVersionDetectedTitle {
-            get {
-                return ResourceManager.GetString("UnsupportedVersionDetectedTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Update available.
         /// </summary>
         public static string UpdateAvailable {
@@ -1525,27 +1525,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Update now.
-        /// </summary>
-        public static string UpdateAvailableButton {
-            get {
-                return ResourceManager.GetString("UpdateAvailableButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to A new version of {0} is available. You currently have version {1}, and it can be updated to version {2}. 
-        ///
-        ///Would you like to download and install this new version?.
-        /// </summary>
-        public static string UpdateAvailableMessage {
-            get {
-                return ResourceManager.GetString("UpdateAvailableMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update {0} is available..
+        ///   Looks up a localized string similar to {0} {1} is available..
         /// </summary>
         public static string UpdateAvailableWithVersionNo {
             get {
@@ -1559,6 +1539,15 @@ namespace EduRoam.Localization {
         public static string UpdateCurrentFileNewer {
             get {
                 return ResourceManager.GetString("UpdateCurrentFileNewer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update now.
+        /// </summary>
+        public static string UpdateNowButton {
+            get {
+                return ResourceManager.GetString("UpdateNowButton", resourceCulture);
             }
         }
         
@@ -1599,11 +1588,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This version of {0} is no longer supported. You are using version {1} while the minimal supported version is {2}.
-        ///
-        ///Newest version is {3}, do you want to download and install?
-        ///
-        ///If you click &quot;No&quot; {0} will exit..
+        ///   Looks up a localized string similar to {0} version {1} is no longer supported. Newest version is {2}.
         /// </summary>
         public static string VersionNoLongerSupported {
             get {

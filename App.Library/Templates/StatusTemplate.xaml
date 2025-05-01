@@ -44,6 +44,7 @@
                 Padding="15 0 15 0"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
+                IsEnabled="{Binding SelfTestSuccess}"
                 Command="{Binding SelectOtherInstitutionCommand}">  
                 <Button.Style>
                     <Style TargetType="{x:Type Button}" BasedOn="{StaticResource BlueButtonStyle}">
