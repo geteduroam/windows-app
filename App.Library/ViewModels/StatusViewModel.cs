@@ -47,13 +47,6 @@ namespace App.Library.ViewModels
 
         public bool ShowTimeLeft => !string.IsNullOrWhiteSpace(this.status.TimeLeft);
 
-        public bool SelfTestSuccess
-        {
-            get { 
-                return this.Owner.SelfTestSuccess;
-            }
-        }
-
         public bool ShowRenewButton { 
             get {
                 try
