@@ -105,18 +105,16 @@ namespace EduRoam.Connect.Eap
 
                 // ServerSideCredential
 
-                var serverFingerprints = authMethodXml
-                    .Elements().First(nameIs("EAPMethod"))
-                    .Elements().Where(nameIs("VendorSpecific")).First(xElement => xElement.Attribute("vendor").Value == "1023")
-                    .Elements().FirstOrDefault(nameIs("ServerSideCredential"))?
+                // get list of fingerprints and the CAs they will replace
+                var serverFingerprints = serverSideCredentialXml?
                     .Elements().Where(nameIs("Fingerprint"))
-                    .Select(xElement => (string)xElement)
+                    .Select(xElement => ((string)xElement.Attribute("replace")?.Value, (string)xElement))
                     .ToList();
 
-                // get list of strings of CA certificates
+                // get list of strings of CA certificates and the type, which is a selector for replacement
                 var serverCAs = serverSideCredentialXml?
                     .Elements().Where(nameIs("CA")) // TODO: <CA format="X.509" encoding="base64"> is assumed, schema does not enforce this
-                    .Select(xElement => (string)xElement)
+                    .Select(xElement => ((string)xElement.Attribute("type")?.Value, (string)xElement))
                     .ToList();
 
                 // get list of strings of server IDs
@@ -149,9 +147,9 @@ namespace EduRoam.Connect.Eap
                 authMethods.Add(new AuthenticationMethod(
                     eapType,
                     innerAuthType,
-                    serverCAs ?? new List<string>(),
+                    serverCAs ?? new List<(string,string)>(),
                     serverNames ?? new List<string>(),
-                    serverFingerprints ?? new List<string>(),
+                    serverFingerprints ?? new List<(string,string)>(),
                     clientUserName,
                     clientPassword,
                     clientCert,
