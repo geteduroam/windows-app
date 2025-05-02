@@ -121,11 +121,6 @@ namespace App.Library.Install
             get => UserStartmenuProgramsDir + Path.DirectorySeparatorChar + this.applicationIdentifier + ".lnk";
         }
 
-        public string ScheduledTaskName
-        {
-            get => this.applicationIdentifier + " - Check for updated config";
-        }
-
         // Public interface
 
         /// <summary>
@@ -205,7 +200,6 @@ namespace App.Library.Install
             }
             this.SetFileAssociationRegistered(true);
             this.SetStartMenuEntry(true);
-            this.SetScheduledTask(true);
             return true;
         }
         /// <summary>
@@ -479,6 +473,12 @@ namespace App.Library.Install
         public void SetScheduledTask(bool installed)
         {
             using var ts = new TaskService();
+            var taskDefinitionName = string.Format(
+                "{0}\\{1}\\", 
+                this.applicationIdentifier,
+                Environment.UserName
+            );
+
             if (installed)
             {
                 if (this.InstalledExePath == null)
@@ -488,7 +488,7 @@ namespace App.Library.Install
                 }
 
                 // Register scheduled task to check for updates
-                Debug.WriteLine("Create scheduled task: " + this.ScheduledTaskName);
+                Debug.WriteLine("Create scheduled task: " + taskDefinitionName);
                 var task = ts.NewTask();
                 task.Settings.AllowDemandStart = true;
                 task.Settings.StartWhenAvailable = true; // run as soon as possible after a scheduled start is missed
@@ -524,7 +524,7 @@ namespace App.Library.Install
 
                 try
                 {
-                    ts.RootFolder.RegisterTaskDefinition(this.ScheduledTaskName, task);
+                    ts.RootFolder.RegisterTaskDefinition(taskDefinitionName + "Profile autorefresh", task);
                 }
                 catch (UnauthorizedAccessException)
                 {
@@ -552,7 +552,7 @@ namespace App.Library.Install
 
                 try
                 {
-                    toastService.RootFolder.RegisterTaskDefinition(this.ScheduledTaskName + " - Toast", toastTask);
+                    toastService.RootFolder.RegisterTaskDefinition(taskDefinitionName + "Notification", toastTask);
                 }
                 catch (UnauthorizedAccessException)
                 {
@@ -562,11 +562,34 @@ namespace App.Library.Install
             else
             {
                 // remove update task
-                Debug.WriteLine("Delete scheduled task: " + this.ScheduledTaskName);
-                ts.RootFolder.DeleteTask(this.ScheduledTaskName,
-                    exceptionOnNotExists: false);
-                ts.RootFolder.DeleteTask(this.ScheduledTaskName + " - Toast",
-                    exceptionOnNotExists: false);
+                Debug.WriteLine("Delete scheduled task: " + taskDefinitionName);
+                foreach (var taskName in new string[] { 
+                    taskDefinitionName + "Notification", 
+                    taskDefinitionName + "Profile autorefresh", 
+                    this.applicationIdentifier + " - Check for updated config", 
+                    this.applicationIdentifier + " - Check for updated config - Toast" 
+                })
+                {
+                    try
+                    {
+                        ts.RootFolder.DeleteTask(taskName, exceptionOnNotExists: false);
+                    } catch (System.Runtime.InteropServices.COMException)
+                    {
+                    
+                    }
+                }
+
+                foreach (var folderName in new string[] { taskDefinitionName.TrimEnd('\\'), this.applicationIdentifier })
+                {
+                    try
+                    {
+                        ts.RootFolder.DeleteFolder(folderName, exceptionOnNotExists: false);
+                    }
+                    catch (System.Runtime.InteropServices.COMException)
+                    {
+                        // Exception from HRESULT: 0x80070091
+                    }
+                }
             }
         }
         #endregion

@@ -1,4 +1,5 @@
 ﻿using App.Library.Connections;
+using App.Library.Install;
 
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Exceptions;
@@ -81,9 +82,20 @@ namespace App.Library.ViewModels
             {
                 IList<string> messages = new List<string>();
 
-                await this.ConfigureAndConnectAsync(messages);
-
+                var installTask = new Task(() => SelfInstaller.DefaultInstance.EnsureIsInstalled());
+                installTask.Start();
                 this.Owner.Logger.LogInformation($"(Attempt to) connect to {this.eapConfig.InstitutionInfo.DisplayName} (profile id: {this.eapConfig.ProfileId})");
+                await this.ConfigureAndConnectAsync(messages);
+                installTask.Wait();
+
+                try
+                {
+                    SelfInstaller.DefaultInstance.SetScheduledTask(this.eapConfig.IsOauth);
+                }
+                catch (Exception ex)
+                {
+                    this.Owner.Logger.LogInformation($"Exception when setting scheduled task {ex.Message}");
+                }
             }
             catch (EduroamAppUserException eauExc)
             {
