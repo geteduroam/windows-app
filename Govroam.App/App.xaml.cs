@@ -25,6 +25,7 @@ namespace Govroam.App
             Settings.NetworkName = "govroam";
             Settings.UpdateBaseUrl = "https://getgovroam.nl";
             Settings.HelpUrl = "https://govroam.nl/support";
+            Settings.BrowserDownloadUrl = "https://www.govroam.app/";
             Settings.DiscoveryUrl = "https://getgovroam.nl/v3/discovery.json";
 
             if (CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args))

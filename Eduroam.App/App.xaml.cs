@@ -25,6 +25,7 @@ namespace Eduroam.App
             Settings.NetworkName = "eduroam";
             Settings.UpdateBaseUrl = "https://dl.eduroam.app";
             Settings.HelpUrl = "https://geteduroam.app/";
+            Settings.BrowserDownloadUrl = "https://www.eduroam.app/";
             Settings.DiscoveryUrl = "https://discovery.eduroam.app/v3/discovery.json";
 
             if (CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args))

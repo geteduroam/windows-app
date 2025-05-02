@@ -1,5 +1,6 @@
 ﻿using App.Library.Command;
 using App.Library.Images;
+using App.Library.Utility;
 
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Tasks;
@@ -150,7 +151,7 @@ namespace App.Library.ViewModels
 
         protected override bool CanNavigateNextAsync()
         {
-            return string.IsNullOrWhiteSpace(this.Owner.State.SelectedProfile?.Redirect);
+            return string.IsNullOrWhiteSpace(this.Owner.State.SelectedProfile?.Redirect) && ArchitectureHelper.ProcessIsNative();
         }
 
         protected override Task NavigateNextAsync()

@@ -643,17 +643,8 @@ Exception: {0}</value>
   <data name="UpdateCurrentFileNewer" xml:space="preserve">
     <value>The installed version of {0} is older then this version. Do you want to update?</value>
   </data>
-  <data name="UpdateAvailableMessage" xml:space="preserve">
-    <value>A new version of {0} is available. You currently have version {1}, and it can be updated to version {2}. 
-
-Would you like to download and install this new version?</value>
-  </data>
   <data name="VersionNoLongerSupported" xml:space="preserve">
-    <value>This version of {0} is no longer supported. You are using version {1} while the minimal supported version is {2}.
-
-Newest version is {3}, do you want to download and install?
-
-If you click "No" {0} will exit.</value>
+    <value>{0} version {1} is no longer supported. Newest version is {2}</value>
   </data>
   <data name="Connected" xml:space="preserve">
     <value>You are now connected to {0}.</value>
@@ -685,5 +676,20 @@ return to the app.</value>
   </data>
   <data name="ErrorOccurredWhileRetreivingProfile" xml:space="preserve">
     <value>Error occurred while retrieving LetsWifi or EAP profile</value>
+  </data>
+  <data name="IncompatibleVersionMessage" xml:space="preserve">
+    <value>This version of {0} is for a different architecture than your machine.</value>
+  </data>
+  <data name="UpdateAvailableWithVersionNo" xml:space="preserve">
+    <value>{0} {1} is available.</value>
+  </data>
+  <data name="UpdateNowButton" xml:space="preserve">
+    <value>Update now</value>
+  </data>
+  <data name="OpenBrowserButton" xml:space="preserve">
+    <value>Open browser</value>
+  </data>
+  <data name="CopyLinkButton" xml:space="preserve">
+    <value>Copy link</value>
   </data>
 </root>

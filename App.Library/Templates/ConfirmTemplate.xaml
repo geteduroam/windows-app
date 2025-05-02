@@ -11,6 +11,16 @@
                     Orientation="Vertical">
             <StackPanel VerticalAlignment="Center"
                         Orientation="Vertical">
+
+                <TextBlock x:Name="PageTitle"
+                   FontSize="{StaticResource Font.Large}"
+                   Text="{Binding ConfirmTitle}"
+                   Visibility="{Binding ConfirmTitle.Length}"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   TextAlignment="Center" 
+                   TextWrapping="Wrap" />
+
                 <TextBlock Text="{Binding ConfirmText}" 
                            TextWrapping="Wrap" 
                            TextAlignment="Center">

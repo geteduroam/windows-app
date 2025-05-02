@@ -629,17 +629,8 @@ Uitzondering: {0}</value>
   <data name="UpdateCurrentFileNewer" xml:space="preserve">
     <value>De geinstallerde {0} is is ouder dan deze versie, wilt u deze applicatie updaten?</value>
   </data>
-  <data name="UpdateAvailableMessage" xml:space="preserve">
-    <value>Er is een nieuwe versie van {0} beschikbaar. Momenteel heb je versie {1} en kan deze updaten naar {2}. 
-
-Wil je deze nieuwe versie downloaden en installeren?</value>
-  </data>
   <data name="VersionNoLongerSupported" xml:space="preserve">
-    <value>Deze versie van {0} wordt niet langer ondersteund. Je gebruikt momenteel versie {1}, terwijl de minimaal ondersteunde versie {2} is.
-
-Nieuwste versie is {3}, wil je deze downloaden en installeren?
-
-Als je op "Nee" klikt, wordt {0} afgesloten.</value>
+    <value>{0} versie {1} is niet ondersteund. De nieuwste versie is {2}.</value>
   </data>
   <data name="Connected" xml:space="preserve">
     <value>Verbonden met {0}.</value>
@@ -670,5 +661,14 @@ Als je op "Nee" klikt, wordt {0} afgesloten.</value>
   </data>
   <data name="ErrorOccurredWhileRetreivingProfile" xml:space="preserve">
     <value>Er is een fout opgetreden bij het ophalen van het LetsWiFi of EAP profiel.</value>
+  </data>
+  <data name="IncompatibleVersionMessage" xml:space="preserve">
+    <value>Deze versie van {0} is voor een andere architectuur dan jouw PC.</value>
+  </data>
+  <data name="UpdateAvailableWithVersionNo" xml:space="preserve">
+    <value>{0} {1} is beschikbaar.</value>
+  </data>
+  <data name="UpdateNowButton" xml:space="preserve">
+    <value>Nu updaten</value>
   </data>
 </root>

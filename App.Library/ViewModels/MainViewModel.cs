@@ -22,6 +22,7 @@ using System.Windows;
 using NETWORKLIST;
 using Semver;
 using App.Library.Tasks;
+using EduRoam.Localization;
 
 namespace App.Library.ViewModels
 {
@@ -35,7 +36,12 @@ namespace App.Library.ViewModels
         private readonly Status status;
 
         private readonly INetworkListManager networkListManager;
-
+        public bool ShowNotificationBar { get; set; } = false;
+        public string NotificationButtonCaption { get; set; } = "";
+        public bool UpdateAvailable { get; set; } = false;
+        public bool NotificationDismiss { get; set; } = false;
+        public bool SelfTestSuccess { get; set; } = false;
+        public string NotificationText { get; set; } = "";
 
         public MainViewModel(ILogger<MainViewModel> logger)
         {
@@ -48,7 +54,15 @@ namespace App.Library.ViewModels
             this.RemoveCertificatesCommand = new DelegateCommand(this.RemoveCertificates);
             this.UninstallCommand = new DelegateCommand(this.Uninstall);
             this.OpenHelpCommand = new DelegateCommand(this.OpenHelp);
-            this.OpenMenuCommand = new DelegateCommand(this.OpenMenu);
+            this.OpenSystemMenuCommand = new DelegateCommand(this.OpenSystemMenu);
+            this.CancelUpdateCommand = new DelegateCommand(this.DismissNotification);
+            this.OpenUpdateMenuCommand = new DelegateCommand(this.OpenUpdateMenu);
+            this.DoUpdateCommand = new DelegateCommand(this.OnConfirmUpdate);
+            this.OpenBrowserCommand = new DelegateCommand(this.OnOpenBrowser);
+            this.CopyLinkCommand = new DelegateCommand(this.OnCopyLink);
+
+            // This is updated to the relevant command
+            this.NotificationCommand = new DelegateCommand(() => { });
 
             this.idpDownloader = new IdentityProviderDownloader();
             this.State = new ApplicationState();
@@ -94,7 +108,7 @@ namespace App.Library.ViewModels
 
         public DelegateCommand NewProfileCommand { get; protected set; }
 
-        public DelegateCommand OpenMenuCommand { get; protected set; }
+        public DelegateCommand OpenSystemMenuCommand { get; protected set; }
 
         public DelegateCommand LoadEapFileCommand { get; protected set; }
 
@@ -110,6 +124,13 @@ namespace App.Library.ViewModels
 
         public DelegateCommand OpenHelpCommand { get; protected set; }
 
+        public DelegateCommand CancelUpdateCommand { get; protected set; }
+        public DelegateCommand OpenUpdateMenuCommand { get; protected set; }
+        public DelegateCommand DoUpdateCommand { get; protected set; }
+        public DelegateCommand OpenBrowserCommand { get; protected set; }
+        public DelegateCommand CopyLinkCommand { get; protected set; }
+        public DelegateCommand NotificationCommand { get; protected set; }
+
         public Action CloseApp { get; set; }
 
         private bool _isLoading { get; set; }
@@ -124,7 +145,8 @@ namespace App.Library.ViewModels
             }
         }
 
-        public bool ShowMenu { get; set; }
+        public bool ShowSystemMenu { get; set; }
+        public bool ShowUpdateMenu { get; set; }
 
         public bool ShowLogo
         {
@@ -190,45 +212,95 @@ namespace App.Library.ViewModels
             }
         }
 
+        public void OnConfirmUpdate()
+        {
+            Task.Run(async () =>
+            {
+                await UpdateChecker.DownloadUpdateAsync();
+            });
+        }
+
+        public void OnOpenBrowser()
+        {
+            Process.Start(Settings.Settings.BrowserDownloadUrl);
+        }
+        public void OnCopyLink()
+        {
+            Clipboard.SetText(Settings.Settings.BrowserDownloadUrl);
+        }
         public void SetStartContent()
         {
             var status = new StatusTask().GetStatus();
 
             #region UpdateChecker
-
-            void OnConfirmUpdate()
+            this.SelfTestSuccess = true;
+            this.NotificationDismiss = true;
+            if(!ArchitectureHelper.ProcessIsNative())
             {
-                Task.Run(async () =>
+                // Show a notification bar with a button to open the browser
+                this.SelfTestSuccess = false;
+                this.NotificationDismiss = false;
+                this.ShowNotificationBar = true;
+                this.NotificationButtonCaption = Resources.OpenBrowserButton;
+                this.NotificationCommand = this.OpenBrowserCommand;
+                this.NotificationText = string.Format(Resources.IncompatibleVersionMessage, Settings.Settings.ApplicationName);
+
+                if (UpdateChecker.NewVersion == null || SemVersion.ComparePrecedence(SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.NewVersion) == 1)
                 {
-                    await UpdateChecker.DownloadUpdateAsync();
-                });
-            }
-
-            void OnDenyUpdate()
-            {
-                // User doesn't want to update, lets honor it and just tell the app that there is NO update available
-                UpdateChecker.IsUpdateAvailable = false;
-                this.SetStartContent();
-            }
-
-
-            void OnDenyUnsupported()
-            {
-                Application.Current.Shutdown(1);
-            }
-
-            if (SemVersion.ComparePrecedence(SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.MinimalSupportedVersion) == -1)
-            {
-                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.VersionNoLongerSupported, Settings.Settings.ApplicationName, SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.MinimalSupportedVersion, UpdateChecker.NewVersion), OnConfirmUpdate, OnDenyUnsupported));
-
-                return;
+                    // Our version is newer than what's available, or nothing is available
+                    this.NotificationButtonCaption = Resources.OpenBrowserButton;
+                    this.NotificationCommand = this.OpenBrowserCommand;
+                }
+                else
+                {
+                    // There is an update available, or the same version is available
+                    this.NotificationButtonCaption = Resources.UpdateNowButton;
+                    this.NotificationCommand = this.DoUpdateCommand;
+                    this.UpdateAvailable = true;
+                }
             }
 
             if (UpdateChecker.IsUpdateAvailable)
             {
-                this.SetActiveContent(new ConfirmViewModel(this, string.Format(EduRoam.Localization.Resources.UpdateAvailableMessage, Settings.Settings.ApplicationName, SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.NewVersion), OnConfirmUpdate, OnDenyUpdate));
-                return;
+                if (!ArchitectureHelper.ProcessIsNative())
+                {
+                    this.NotificationText = string.Format(Resources.IncompatibleVersionMessage, Settings.Settings.ApplicationName)
+                        + "\n" + string.Format(Resources.UpdateAvailableWithVersionNo, Settings.Settings.ApplicationName, UpdateChecker.NewVersion);
+                }
+                else
+                {
+                    this.NotificationText = string.Format(Resources.UpdateAvailableWithVersionNo, Settings.Settings.ApplicationName, UpdateChecker.NewVersion);
+                }
+                this.ShowNotificationBar = true;
+                this.UpdateAvailable = true;
+
+                this.NotificationButtonCaption = Resources.UpdateNowButton;
+                this.NotificationCommand = this.DoUpdateCommand;
+
+                if (SemVersion.ComparePrecedence(SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.MinimalSupportedVersion) == -1)
+                {
+                    // This version is older than our minimal supported version
+                    this.NotificationText = string.Format(Resources.VersionNoLongerSupported, Settings.Settings.ApplicationName, SelfInstaller.GetRunningVersion(), UpdateChecker.NewVersion);
+                    this.SelfTestSuccess = false;
+                    this.NotificationDismiss = false;
+                }
             }
+
+            if (SemVersion.ComparePrecedence(SelfInstaller.DefaultInstance.GetRunningVersion(), UpdateChecker.NewVersion) == 1)
+            {
+                // We are running a newer version than available; we cannot automatically download the correct version
+                // Replace the download button with a download button
+                this.UpdateAvailable = false;
+                this.NotificationButtonCaption = Resources.OpenBrowserButton;
+                this.NotificationCommand = this.OpenBrowserCommand;
+            }
+
+            this.CallPropertyChanged(nameof(this.SelfTestSuccess));
+            this.CallPropertyChanged(nameof(this.NotificationText));
+            this.CallPropertyChanged(nameof(this.UpdateAvailable));
+            this.CallPropertyChanged(nameof(this.ShowNotificationBar));
+            this.CallPropertyChanged(nameof(this.NotificationButtonCaption));
+            this.CallPropertyChanged(nameof(this.NotificationCommand));
             #endregion
 
             if (!string.IsNullOrEmpty(Settings.Settings.EapConfigFileLocation))
@@ -564,10 +636,10 @@ namespace App.Library.ViewModels
             }
         }
 
-        public void OpenMenu()
+        public void OpenSystemMenu()
         {
-            this.ShowMenu = true;
-            this.CallPropertyChanged(nameof(this.ShowMenu));
+            this.ShowSystemMenu = true;
+            this.CallPropertyChanged(nameof(this.ShowSystemMenu));
         }
 
         public void OpenHelp()
@@ -585,6 +657,17 @@ namespace App.Library.ViewModels
             return this.networkListManager.IsConnectedToInternet;
         }
 
+        public void DismissNotification()
+        {
+            this.ShowNotificationBar = false;
+            this.CallPropertyChanged(nameof(this.ShowNotificationBar));
+        }
+        public void OpenUpdateMenu()
+        {
+            this.ShowUpdateMenu = true;
+            this.CallPropertyChanged(nameof(this.UpdateAvailable));
+            this.CallPropertyChanged(nameof(this.ShowUpdateMenu));
+        }
         private void LoadEapFile(string filepath)
         {
             // read, validate, parse and return

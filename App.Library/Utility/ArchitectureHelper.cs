@@ -52,7 +52,7 @@ public static class ArchitectureHelper
         out ushort nativeMachine
     );
 
-    public static MachineType GetFileMachineType(string path)
+    public static MachineType GetFileArch(string path)
     {
         // https://learn.microsoft.com/en-us/windows/win32/debug/pe-format
         // Offset 0 contains 0x5A4D (MZ)
@@ -75,19 +75,28 @@ public static class ArchitectureHelper
         return signature == 0x00004550 ? (MachineType)machineType : 0;
     }
 
-    public static MachineType GetNativeMachineType()
+    public static MachineType GetNativeArch()
     {
         var handle = Process.GetCurrentProcess().Handle;
-        IsWow64Process2(handle, out var processMachine, out var nativeMachine);
+        IsWow64Process2(handle, out var processMachineNull, out var nativeMachine);
+        // processMachineNull is NULL because it only is set for WOW64, a kind of "universal" binary
 
         return (MachineType)nativeMachine;
     }
-
-    public static MachineType GetProcessMachineType()
+    public static MachineType GetProcessArch()
     {
-        var handle = Process.GetCurrentProcess().Handle;
-        IsWow64Process2(handle, out var processMachine, out var nativeMachine);
+        switch (RuntimeInformation.ProcessArchitecture)
+        {
+            case Architecture.X86: return MachineType.I386;
+            case Architecture.X64: return MachineType.AMD64;
+            case Architecture.Arm: return MachineType.ARM;
+            case Architecture.Arm64: return MachineType.ARM64;
+        }
+        return 0;
+    }
 
-        return (MachineType)processMachine;
+    public static bool ProcessIsNative()
+    {
+        return GetNativeArch() == GetProcessArch();
     }
 }

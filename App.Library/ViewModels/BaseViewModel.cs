@@ -55,37 +55,40 @@ public abstract class BaseViewModel : NotifyPropertyChanged
         return Task.CompletedTask;
     }
 
-    public bool IsLoading { get; protected set; }
-
-    protected void SetIsLoading(bool value)
-    {
-        this.IsLoading = value;
-        this.CallPropertyChanged(nameof(this.IsLoading));
+    private bool isLoading = false;
+    public bool IsLoading
+    { 
+        get => this.isLoading;
+        protected set
+        {
+            this.isLoading = value;
+            this.CallPropertyChanged(nameof(this.IsLoading));
+        }
     }
 
     private async Task ExecuteNavigateNextActionAsync()
     {
-        this.SetIsLoading(true);
+        this.IsLoading = true;
         try
         {
             await this.NavigateNextAsync();
         }
         finally
         {
-            this.SetIsLoading(false);
+            this.IsLoading = false;
         }
     }
 
     private async Task ExecuteNavigatePreviousActionAsync()
     {
-        this.SetIsLoading(true);
+        this.IsLoading = true;
         try
         {
             await this.NavigatePreviousAsync();
         }
         finally
         {
-            this.SetIsLoading(false);
+            this.IsLoading = false;
         }
     }
 }

@@ -44,7 +44,36 @@
     </Window.Resources>
 
     <Grid Background="{DynamicResource BackgroundBrush}" Margin="-1, -1">
-        <Grid Margin="{StaticResource Page-Margin}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Visibility="{Binding ShowNotificationBar, Converter={StaticResource BooleanToVisibilityConverter}}" Background="#FFFFC5">
+            <Grid HorizontalAlignment="Stretch" Margin="10,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock TextWrapping="Wrap" VerticalAlignment="Center" Margin="0,5" Text="{Binding NotificationText}" />
+                <Button Grid.Column="1" Margin="0,5" Padding="10,0" Height="24" Content="{Binding NotificationButtonCaption}" Style="{DynamicResource WhiteButtonStyle}" Command="{Binding NotificationCommand}">
+                    <Button.ContextMenu>
+                        <ContextMenu IsOpen="{Binding DataCtx.ShowUpdateMenu, Source={StaticResource proxy}}">
+                            <MenuItem Header="{x:Static lang:Resources.UpdateNowButton}" Command="{Binding DataCtx.DoUpdateCommand, Source={StaticResource proxy}}" Visibility="{Binding DataCtx.UpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}}"/>
+                            <Separator Visibility="{Binding DataCtx.UpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}, Source={StaticResource proxy}}" />
+                            <MenuItem Header="{x:Static lang:Resources.OpenBrowserButton}" Command="{Binding DataCtx.OpenBrowserCommand, Source={StaticResource proxy}}"/>
+                            <MenuItem Header="{x:Static lang:Resources.CopyLinkButton}" Command="{Binding DataCtx.CopyLinkCommand, Source={StaticResource proxy}}"/>
+                        </ContextMenu>
+                    </Button.ContextMenu>
+                </Button>
+                <Button FontSize="6" Grid.Column="2" Margin="0,2" Padding="0" Height="24" Width="12" FontFamily="{StaticResource IconFont}" Content="{StaticResource ChevronDownSmallIcon}" Style="{DynamicResource WhiteButtonStyle}" Command="{Binding OpenUpdateMenuCommand}" />
+                <Button Visibility="{Binding NotificationDismiss, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="3" Margin="0,2" Padding="0" Height="24" Width="24" FontFamily="{StaticResource IconFont}" Content="{StaticResource CancelMediumIcon}" Style="{DynamicResource IconButton}" Command="{Binding CancelUpdateCommand}" />
+            </Grid>
+        </Grid>
+
+        <Grid Margin="{StaticResource Page-Margin}"
+              Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="{StaticResource PageTitle-Height}" />
                 <RowDefinition Height="*" />
@@ -131,7 +160,7 @@
                         FontFamily="Tahoma" 
                         FontSize="{StaticResource Font.Small}"/>
         </Grid>
-        <Grid>
+        <Grid Grid.Row="3">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="42" />
