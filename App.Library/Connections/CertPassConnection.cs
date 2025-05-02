@@ -20,8 +20,6 @@ namespace App.Library.Connections
 
         public async Task<TaskStatus> ConfigureAndConnectAsync(ConnectionProperties properties)
         {
-            SelfInstaller.DefaultInstance.EnsureIsInstalled();
-
             var passphrase = properties.Password ?? throw new ArgumentNullException(nameof(properties));
 
             this.connector.Credentials = new ConnectorCredentials(passphrase);

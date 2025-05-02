@@ -19,8 +19,6 @@ namespace App.Library.Connections
 
         public async Task<TaskStatus> ConfigureAndConnectAsync(ConnectionProperties properties)
         {
-            SelfInstaller.DefaultInstance.EnsureIsInstalled();
-
             var status = await this.connector.ConfigureAsync(false);
 
             if (!status.Success)

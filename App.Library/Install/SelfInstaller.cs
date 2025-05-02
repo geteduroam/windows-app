@@ -121,11 +121,6 @@ namespace App.Library.Install
             get => UserStartmenuProgramsDir + Path.DirectorySeparatorChar + this.applicationIdentifier + ".lnk";
         }
 
-        public string ScheduledTaskName
-        {
-            get => this.applicationIdentifier + " - Check for updated config";
-        }
-
         // Public interface
 
         /// <summary>
@@ -205,7 +200,6 @@ namespace App.Library.Install
             }
             this.SetFileAssociationRegistered(true);
             this.SetStartMenuEntry(true);
-            this.SetScheduledTask(true);
             return true;
         }
         /// <summary>
@@ -479,6 +473,12 @@ namespace App.Library.Install
         public void SetScheduledTask(bool installed)
         {
             using var ts = new TaskService();
+            var taskDefinitionName = string.Format(
+                "{0}\\{1}\\", 
+                this.applicationIdentifier,
+                Environment.UserName
+            );
+
             if (installed)
             {
                 if (this.InstalledExePath == null)
@@ -488,7 +488,7 @@ namespace App.Library.Install
                 }
 
                 // Register scheduled task to check for updates
-                Debug.WriteLine("Create scheduled task: " + this.ScheduledTaskName);
+                Debug.WriteLine("Create scheduled task: " + taskDefinitionName);
                 var task = ts.NewTask();
                 task.Settings.AllowDemandStart = true;
                 task.Settings.StartWhenAvailable = true; // run as soon as possible after a scheduled start is missed
@@ -524,7 +524,7 @@ namespace App.Library.Install
 
                 try
                 {
-                    ts.RootFolder.RegisterTaskDefinition(this.ScheduledTaskName, task);
+                    ts.RootFolder.RegisterTaskDefinition(taskDefinitionName + "Profile autorefresh", task);
                 }
                 catch (UnauthorizedAccessException)
                 {
@@ -552,7 +552,7 @@ namespace App.Library.Install
 
                 try
                 {
-                    toastService.RootFolder.RegisterTaskDefinition(this.ScheduledTaskName + " - Toast", toastTask);
+                    toastService.RootFolder.RegisterTaskDefinition(taskDefinitionName + "Notification", toastTask);
                 }
                 catch (UnauthorizedAccessException)
                 {
@@ -562,10 +562,20 @@ namespace App.Library.Install
             else
             {
                 // remove update task
-                Debug.WriteLine("Delete scheduled task: " + this.ScheduledTaskName);
-                ts.RootFolder.DeleteTask(this.ScheduledTaskName,
+                Debug.WriteLine("Delete scheduled task: " + taskDefinitionName);
+                ts.RootFolder.DeleteTask(taskDefinitionName + "Notification",
                     exceptionOnNotExists: false);
-                ts.RootFolder.DeleteTask(this.ScheduledTaskName + " - Toast",
+                ts.RootFolder.DeleteTask(taskDefinitionName + "Profile autorefresh",
+                    exceptionOnNotExists: false);
+                ts.RootFolder.DeleteFolder(taskDefinitionName.TrimEnd('\\'),
+                    exceptionOnNotExists: false);
+                ts.RootFolder.DeleteFolder(this.applicationIdentifier,
+                    exceptionOnNotExists: false);
+
+                // Remove tasks created by old versions
+                ts.RootFolder.DeleteTask(this.applicationIdentifier + " - Check for updated config",
+                    exceptionOnNotExists: false);
+                ts.RootFolder.DeleteTask(this.applicationIdentifier + " - Check for updated config - Toast",
                     exceptionOnNotExists: false);
             }
         }
