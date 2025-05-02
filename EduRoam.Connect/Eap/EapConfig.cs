@@ -105,9 +105,17 @@ namespace EduRoam.Connect.Eap
 
                 // ServerSideCredential
 
+                // get list of fingerprints
+                var serverFingerprints = serverSideCredentialXml?
+                    .Elements().Where(nameIs("WindowsFingerprint"))
+                    .Select(xElement => (string)xElement)
+                    .ToList();
+
                 // get list of strings of CA certificates
                 var serverCAs = serverSideCredentialXml?
-                    .Elements().Where(nameIs("CA")) // TODO: <CA format="X.509" encoding="base64"> is assumed, schema does not enforce this
+                    .Elements().Where(nameIs("CA"))
+                    .Where(XElement => XElement.Attribute("format").Value.Equals("X.509"))
+                    .Where(XElement => XElement.Attribute("encoding").Value.Equals("base64"))
                     .Select(xElement => (string)xElement)
                     .ToList();
 
@@ -125,7 +133,11 @@ namespace EduRoam.Connect.Eap
                 var clientPassword = (string?)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("Password"));
                 var clientCert = (string?)clientSideCredentialXml
-                    ?.Elements().FirstOrDefault(nameIs("ClientCertificate")); // TODO: <ClientCertificate format="PKCS12" encoding="base64"> is assumed
+                    ?.Elements()
+                    .Where(nameIs("ClientCertificate"))
+                    .Where(XElement => XElement.Attribute("format").Value.Equals("PKCS12"))
+                    .Where(XElement => XElement.Attribute("encoding").Value.Equals("base64"))
+                    .FirstOrDefault();
                 var clientCertPasswd = (string?)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("Passphrase"));
 
@@ -143,6 +155,7 @@ namespace EduRoam.Connect.Eap
                     innerAuthType,
                     serverCAs ?? new List<string>(),
                     serverNames ?? new List<string>(),
+                    serverFingerprints ?? new List<string>(),
                     clientUserName,
                     clientPassword,
                     clientCert,

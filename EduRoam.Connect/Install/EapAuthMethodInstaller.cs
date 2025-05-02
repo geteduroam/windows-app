@@ -43,11 +43,14 @@ namespace EduRoam.Connect
                 throw new EduroamAppUserException(Resources.ErrorNoClientCertificateProvided);
             }
 
-            // get all CAs from Authentication method
+            // If we use thumbprints, we won't install any root CA
+            // Server verification is done by fingerprint instead,
+            var installRootCA = this.AuthMethod.CertificateThumbprints.Count == 0;
             foreach (var cert in this.AuthMethod.CertificateAuthoritiesAsX509Certificate2())
-            {
-                // if this doesn't work, try https://stackoverflow.com/a/34174890
-                var isRootCA = cert.Subject == cert.Issuer;
+            {                   
+                var isRootCA = CertificateStore.CertificateIsRootCA(cert);
+                if (isRootCA && !installRootCA) continue;
+
                 CertificateStore.InstallCertificate(cert,
                     isRootCA ? CertificateStore.RootCaStoreName : CertificateStore.InterCaStoreName,
                     CertificateStore.CertStoreLocation);

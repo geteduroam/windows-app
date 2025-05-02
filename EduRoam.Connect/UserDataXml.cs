@@ -128,7 +128,7 @@ namespace EduRoam.Connect
                         new XElement(nsBEUP + "Type", (int)EapType.TLS),
                         new XElement(nsTLS + "EapType",
                             new XElement(nsTLS + "Username", outerIdentity), // TODO: test if this gets used
-                            new XElement(nsTLS + "UserCert", userCertFingerprint?.ToHexString())
+                            new XElement(nsTLS + "UserCert", userCertFingerprint?.FormatHexString())
                         )
                     ),
 

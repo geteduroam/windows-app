@@ -14,7 +14,7 @@ namespace EduRoam.Connect
         // lower case with a space after every hexit, including the last one
         // Formatting it this way does not seem necessary for the profile to work,
         // but we do so anyway in order to minimize potential problems
-        public static string ToHexString(this string thumb)
+        public static string FormatHexString(this string thumb)
         {
             var value = Regex.Replace(thumb, " ", "");
             value = Regex.Replace(value, ".{2}", "$0 ");

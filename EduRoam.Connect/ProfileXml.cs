@@ -167,7 +167,9 @@ namespace EduRoam.Connect
                                         serverNames: authMethod.ServerNames,
                                         caThumbprints: authMethod.CertificateAuthoritiesAsX509Certificate2()
                                             .Where(cert => cert.Subject == cert.Issuer)
-                                            .Select(cert => cert.Thumbprint).ToList()
+                                            .Select(cert => cert.Thumbprint)
+                                            .Union(authMethod.CertificateThumbprints)
+                                            .ToList()
                                     )
                                 )
                             )
@@ -223,8 +225,8 @@ namespace EduRoam.Connect
             EapType eapType,
             InnerAuthType innerAuthType,
             string? outerIdentity,
-            List<string> serverNames,
-            List<string> caThumbprints)
+            IEnumerable<string> serverNames,
+            IEnumerable<string> caThumbprints)
         {
             // creates the root xml strucure, with references to some of its descendants
             XElement configElement;
@@ -385,7 +387,7 @@ namespace EduRoam.Connect
         /// <param name="ns">The namespace for this server validation element; this depends on the authentication method, valid values are currently nsETCPv1, nsMPCPv1 and nsTTLS</param>
         /// <param name="serverNames">List of server names, at least one of these must match the CN or subjectAltName of the certificate from the RADIUS server</param>
         /// <param name="caThumbprints">List of trusted CA thumbprints; the server certificate must be signed by one of these roots</param>
-        private static XElement GetServerValidationElement(XNamespace ns, List<string> serverNames, List<string> caThumbprints)
+        private static XElement GetServerValidationElement(XNamespace ns, IEnumerable<string> serverNames, IEnumerable<string> caThumbprints)
         {
             // Windows uses different XML namespaces for different authentication methods,
             // and they are not completely consistent with naming across these different namespaces
@@ -396,8 +398,9 @@ namespace EduRoam.Connect
                 new XElement(ns + disablePromptNodeName, "true"),
                 new XElement(ns + "ServerNames", string.Join(";", serverNames))
             );
-            caThumbprints.ForEach(thumb =>
-                serverValidationElement.Add(new XElement(ns + thumbprintNodeName, thumb.ToHexString())));
+            foreach (var thumb in caThumbprints) {
+                serverValidationElement.Add(new XElement(ns + thumbprintNodeName, thumb.FormatHexString()));
+            }
 
             return serverValidationElement;
         }
