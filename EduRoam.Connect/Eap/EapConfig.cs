@@ -105,17 +105,17 @@ namespace EduRoam.Connect.Eap
 
                 // ServerSideCredential
 
-                var serverFingerprints = authMethodXml
-                    .Elements().First(nameIs("EAPMethod"))
-                    .Elements().Where(nameIs("VendorSpecific")).First(xElement => xElement.Attribute("vendor").Value == "1023")
-                    .Elements().FirstOrDefault(nameIs("ServerSideCredential"))?
-                    .Elements().Where(nameIs("Fingerprint"))
+                // get list of fingerprints
+                var serverFingerprints = serverSideCredentialXml?
+                    .Elements().Where(nameIs("WindowsFingerprint"))
                     .Select(xElement => (string)xElement)
                     .ToList();
 
                 // get list of strings of CA certificates
                 var serverCAs = serverSideCredentialXml?
-                    .Elements().Where(nameIs("CA")) // TODO: <CA format="X.509" encoding="base64"> is assumed, schema does not enforce this
+                    .Elements().Where(nameIs("CA"))
+                    .Where(XElement => XElement.Attribute("format").Value.Equals("X.509"))
+                    .Where(XElement => XElement.Attribute("encoding").Value.Equals("base64"))
                     .Select(xElement => (string)xElement)
                     .ToList();
 
@@ -133,7 +133,11 @@ namespace EduRoam.Connect.Eap
                 var clientPassword = (string?)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("Password"));
                 var clientCert = (string?)clientSideCredentialXml
-                    ?.Elements().FirstOrDefault(nameIs("ClientCertificate")); // TODO: <ClientCertificate format="PKCS12" encoding="base64"> is assumed
+                    ?.Elements()
+                    .Where(nameIs("ClientCertificate"))
+                    .Where(XElement => XElement.Attribute("format").Value.Equals("PKCS12"))
+                    .Where(XElement => XElement.Attribute("encoding").Value.Equals("base64"))
+                    .FirstOrDefault();
                 var clientCertPasswd = (string?)clientSideCredentialXml
                     ?.Elements().FirstOrDefault(nameIs("Passphrase"));
 

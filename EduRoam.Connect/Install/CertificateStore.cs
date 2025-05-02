@@ -257,6 +257,7 @@ namespace EduRoam.Connect.Install
         }
 
         public static bool CertificateIsRootCA(X509Certificate2? cert)
-            => cert != null && cert?.Subject == cert?.Issuer; // If this doesn't work, try https://stackoverflow.com/a/34174890
+            // Self-signed if subject and issuer match; a root CA is self-signed by definition https://stackoverflow.com/a/34174890
+            => cert != null && cert.Subject == cert.Issuer;
     }
 }

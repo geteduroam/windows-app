@@ -84,13 +84,17 @@ namespace EduRoam.Connect
         }
 
         /// <summary>
-        /// Enumerates the CAs which the eapConfig in question defines
+        /// Enumerates the CAs which the eapConfig in question defines, wrapped a install helper class
         /// </summary>
-        private static IEnumerable<X509Certificate2> EnumerateCAs(EapConfig eapConfig)
+        internal static IEnumerable<X509Certificate2> EnumerateCAs(EapConfig eapConfig)
         {
             _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
+
             var rootCACertificates = eapConfig.AuthenticationMethods
                 .Where(EduRoamNetwork.IsAuthMethodSupported)
+                // If we use thumbprints, we won't install any root CA
+                // Server verification is done by fingerprint instead,
+                .Where(authMethod => authMethod.CertificateThumbprints.Count == 0)
                 .SelectMany(authMethod => authMethod.CertificateAuthoritiesAsX509Certificate2())
                 .Where(CertificateStore.CertificateIsRootCA);
 
@@ -105,6 +109,7 @@ namespace EduRoam.Connect
         {
             _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
             return EnumerateCAs(eapConfig)
+                .GroupBy(cert => cert.Thumbprint, (key, certs) => certs.FirstOrDefault()) // distinct, alternative is to use DistinctBy in MoreLINQ
                 .Select(cert => new CertificateInstaller(cert, CertificateStore.RootCaStoreName, CertificateStore.CertStoreLocation));
         }
 
