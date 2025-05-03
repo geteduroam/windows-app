@@ -105,7 +105,6 @@ namespace EduRoam.Connect.Identity
             {
                 Country = regionInfo?.TwoLetterISORegionName ?? ""
             };
-            Debug.Print("Found country {0}", this.location.Country);
         }
 
         /// <exception cref="ApiParsingException">JSON cannot be deserialized</exception>
@@ -467,8 +466,6 @@ namespace EduRoam.Connect.Identity
 
                 throw new EduroamAppUserException(e.Message, "Error occurred while retrieving LetsWifi profile");
             }
-
-            return new();
         }
 
         private static async Task<string> parseResponse(HttpResponseMessage response, string[]? accept)

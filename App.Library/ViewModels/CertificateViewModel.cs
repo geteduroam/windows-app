@@ -1,12 +1,10 @@
 ﻿using EduRoam.Connect.Eap;
 using EduRoam.Connect.Tasks;
 
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 
 namespace App.Library.ViewModels
 {

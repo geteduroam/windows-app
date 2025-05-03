@@ -4,7 +4,6 @@ using EduRoam.Connect.Install;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace EduRoam.Connect
@@ -19,74 +18,9 @@ namespace EduRoam.Connect
     internal static partial class ConnectToEduroam
     {
         /// <summary>
-        /// Checks the EAP config to see if there is any issues
-        /// TODO: test this
-        /// TODO: use this in ui
-        /// </summary>
-        /// <returns>A tuple on the form: (bool isCritical, string description)</returns>
-        internal static IEnumerable<ValueTuple<bool, string>> LookForWarningsInEapConfig(EapConfig eapConfig)
-        {
-            _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
-
-            if (!EduRoamNetwork.IsEapConfigSupported(eapConfig))
-            {
-                yield return (true, "This configuration is not supported");
-                yield break;
-            }
-
-            if (!eapConfig.AuthenticationMethods
-                    .Where(EduRoamNetwork.IsAuthMethodSupported)
-                    .All(authMethod => authMethod.ServerCertificateAuthorities.Any()))
-            {
-                yield return (true, "This configuration is missing Certificate Authorities");
-            }
-
-            var CAs = EnumerateCAs(eapConfig).ToList();
-
-            var now = DateTime.Now;
-            var has_expired_ca = CAs
-                .Any(caCert => caCert.NotAfter < now);
-
-            var has_a_yet_to_expire_ca = CAs
-                .Any(caCert => now < caCert.NotAfter);
-
-            var has_valid_ca = CAs
-                .Where(caCert => now < caCert.NotAfter)
-                .Any(caCert => caCert.NotBefore < now);
-
-            if (has_expired_ca)
-            {
-                yield return has_valid_ca
-                    ? (false,
-                        "One of the provided Certificate Authorities from this institution has expired.\r\n" +
-                        "There might be some issues connecting to eduroam.")
-                    : (true,
-                        "The provided Certificate Authorities from this institution have all expired!\r\n" +
-                        "Please contact the institution to have the issue fixed!");
-            }
-            else if (!has_valid_ca && has_a_yet_to_expire_ca)
-            {
-                var earliest = CAs
-                    .Where(caCert => now < caCert.NotAfter)
-                    .Max(caCert => caCert.NotBefore);
-
-                yield return (false,
-                    "The Certificate Authorities in this configuration has yet to become valid.\r\n" +
-                    "This configuration will become valid in " + (earliest - now).TotalMinutes + " minutes.");
-            }
-            else if (!has_valid_ca)
-            {
-                yield return (false,
-                    "The Certificate Authorities in this configuration are not valid.");
-            }
-
-            CAs.ForEach(cert => cert.Dispose());
-        }
-
-        /// <summary>
         /// Enumerates the CAs which the eapConfig in question defines, wrapped a install helper class
         /// </summary>
-        internal static IEnumerable<X509Certificate2> EnumerateCAs(EapConfig eapConfig)
+        internal static IEnumerable<CertificateInstaller> EnumerateCAInstallers(EapConfig eapConfig)
         {
             _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
 
@@ -99,16 +33,6 @@ namespace EduRoam.Connect
                 .Where(CertificateStore.CertificateIsRootCA);
 
             return rootCACertificates
-                .GroupBy(cert => cert.Thumbprint, (key, certs) => certs.FirstOrDefault()); // distinct, alternative is to use DistinctBy in MoreLINQ
-        }
-
-        /// <summary>
-        /// Enumerates the CAs which the eapConfig in question defines, wrapped a install helper class
-        /// </summary>
-        internal static IEnumerable<CertificateInstaller> EnumerateCAInstallers(EapConfig eapConfig)
-        {
-            _ = eapConfig ?? throw new ArgumentNullException(paramName: nameof(eapConfig));
-            return EnumerateCAs(eapConfig)
                 .GroupBy(cert => cert.Thumbprint, (key, certs) => certs.FirstOrDefault()) // distinct, alternative is to use DistinctBy in MoreLINQ
                 .Select(cert => new CertificateInstaller(cert, CertificateStore.RootCaStoreName, CertificateStore.CertStoreLocation));
         }

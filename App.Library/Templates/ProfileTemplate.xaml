@@ -117,7 +117,7 @@
             <TextBlock Grid.Row="3" TextWrapping="Wrap" TextAlignment="Center" 
                        Visibility="{Binding HasTermsOfUse, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <TextBlock Text="{x:Static lang:Resources.ConsentPre}" />
-                <Hyperlink Command="{Binding ShowTermsOfUseCommand}" NavigateUri="www.google.com" >
+                <Hyperlink Command="{Binding ShowTermsOfUseCommand}" NavigateUri="" >
                    <TextBlock Text="{x:Static lang:Resources.ConsentMain}" />
                 </Hyperlink>
                 <TextBlock Text="{x:Static lang:Resources.ConsentPost}" />
