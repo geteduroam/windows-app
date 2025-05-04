@@ -27,24 +27,20 @@ namespace EduRoam.Connect.Identity
 {
     public class IdentityProviderDownloader : IDisposable
     {
+        public static readonly IdentityProviderDownloader Instance = new IdentityProviderDownloader();
         // constants
-        private static readonly Uri ProviderApiUrl = new Uri(Settings.DiscoveryUrl);
+        private readonly Uri providerApiUrl = new Uri(Settings.DiscoveryUrl);
 
         // http objects
-        private static readonly HttpClientHandler Handler = new()
-        {
-            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
-            AllowAutoRedirect = true
-        };
-        private static readonly HttpClient Http = InitializeHttpClient();
+        private readonly HttpClient http = InitializeHttpClient();
 
         // state
         private readonly IdpLocation location; // Location with country name determined by user setting or Web API
         private Task? loadProviderTask;
 
-        public IEnumerable<IdentityProvider> Providers { get; private set; }
+        public ICollection<IdentityProvider> Providers { get; private set; }
 
-        public IEnumerable<IdentityProvider> ClosestProviders
+        public IEnumerable<IdentityProvider> ProvidersSortedByCountry
         {
             get => this.Providers.OrderByDescending(p => p.Country == this.location.Country);
         }
@@ -73,7 +69,12 @@ namespace EduRoam.Connect.Identity
                     ));
             }
 
-            var client = new HttpClient(Handler, false);
+            var handler = new HttpClientHandler()
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate,
+                AllowAutoRedirect = true
+            };
+            var client = new HttpClient(handler, false);
 #if DEBUG
             client.DefaultRequestHeaders.Add("User-Agent", $"{Settings.ApplicationName}-win-debug/{LetsWifi.Instance.VersionNumber} ({systemInformation}) HttpClient");
 #else
@@ -82,7 +83,7 @@ namespace EduRoam.Connect.Identity
             // This client will not be used for subsequent requests,
             // so don't keep the connection open any longer than necessary
             client.DefaultRequestHeaders.ConnectionClose = true;
-            client.Timeout = new TimeSpan(0, 0, 8);
+            client.Timeout = new TimeSpan(0, 0, 30);
             return client;
         }
 
@@ -90,9 +91,9 @@ namespace EduRoam.Connect.Identity
         /// The constructor for this class.
         /// Will download the list of all providers
         /// </summary>
-        public IdentityProviderDownloader()
+        private IdentityProviderDownloader()
         {
-            this.Providers = Enumerable.Empty<IdentityProvider>();
+            this.Providers = new HashSet<IdentityProvider>();
 
             // gets country code as set in Settings
             // https://stackoverflow.com/questions/8879259/get-current-location-as-specified-in-region-and-language-in-c-sharp
@@ -125,36 +126,28 @@ namespace EduRoam.Connect.Identity
         /// <param name="provider"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async Task AddHttpProfile(IdentityProvider provider)
+        public void AddHttpProfile(IdentityProvider provider)
         {
-            await this.LoadProvidersInternal(); 
-            if(Cache.IdentityProviders == null) throw new Exception("No providers loaded");
-
-            Cache.IdentityProviders.Remove(Cache.IdentityProviders.Where(p => p.Id == provider.Id).FirstOrDefault());
-
-            Cache.IdentityProviders.Add(provider);
+            if (this.Providers.Count != 0)
+            {
+                this.Providers.Remove(this.Providers.Where(p => p.Id == provider.Id).FirstOrDefault());
+                this.Providers.Add(provider);
+            }
         }
 
         private async Task LoadProvidersInternal()
         {
             try
             {
-                if (Cache.IdentityProviders != null)
-                {
-                    this.Providers = Cache.IdentityProviders;
-                    return;
-                }
-                
                 if (!this.Providers.Any())
                 {                  
                     // downloads json file as string
-                    var apiJson = await DownloadUrlAsRecord(ProviderApiUrl, new string[] { "application/json" }).ConfigureAwait(false);
+                    var apiJson = await this.DownloadUrlAsRecord(this.providerApiUrl, new string[] { "application/json" }).ConfigureAwait(false);
 
                     var discovery = JsonConvert.DeserializeObject<LetsWifiDiscovery>(apiJson.Data);
                     var discoveryData = DiscoveryConverter.Covert(discovery ?? new LetsWifiDiscovery());
                   
-                    this.Providers = discoveryData?.Instances ?? new List<IdentityProvider>();
-                    Cache.IdentityProviders = (List<IdentityProvider>?)this.Providers;
+                    this.Providers = new HashSet<IdentityProvider>(discoveryData?.Instances ?? new List<IdentityProvider>());
                 }
             }
             catch (JsonSerializationException e)
@@ -175,7 +168,7 @@ namespace EduRoam.Connect.Identity
             }
             catch (HttpRequestException e)
             {
-                throw new ApiUnreachableException("Access to discovery API failed " + ProviderApiUrl, e);
+                throw new ApiUnreachableException("Access to discovery API failed " + this.providerApiUrl, e);
             }
             catch (ApiParsingException)
             {
@@ -214,17 +207,17 @@ namespace EduRoam.Connect.Identity
 
             // adds profile ID to url containing json file, which in turn contains url to EAP config file download
             // gets url to EAP config file download from GenerateEapConfig object
-            var eapConfig = await DownloadEapConfig(new Uri(profile.EapConfigEndpoint)).ConfigureAwait(true);
+            var eapConfig = await this.DownloadEapConfig(new Uri(profile.EapConfigEndpoint)).ConfigureAwait(true);
             eapConfig.ProfileId = profileId;
             return eapConfig;
         }
 
-        public static async Task<EapConfig> DownloadEapConfig(Uri endpoint, string? accessToken = null)
+        public async Task<EapConfig> DownloadEapConfig(Uri endpoint, string? accessToken = null)
         {
             // downloads and returns eap config file as string
             try
             {
-                var eapXml = await DownloadUrlAsRecord(
+                var eapXml = await this.DownloadUrlAsRecord(
                         url: endpoint,
                         accept: new string[] { "application/eap-config", "application/x-eap-config" },
                         accessToken: accessToken
@@ -263,7 +256,7 @@ namespace EduRoam.Connect.Identity
                     {
                         if (!string.IsNullOrEmpty(profile.LetsWifiEndpoint))
                         {
-                            var letsWifiProfile = await DownloadLetsWifiProfile(profile);
+                            var letsWifiProfile = await this.DownloadLetsWifiProfile(profile);
                             profile.EapConfigEndpoint = letsWifiProfile?.EapConfigEndpoint;
                             profile.TokenEndpoint = letsWifiProfile?.TokenEndpoint;
                             profile.AuthorizationEndpoint = letsWifiProfile?.AuthorizationEndpoint;
@@ -284,7 +277,7 @@ namespace EduRoam.Connect.Identity
         /// 
         /// <exception cref="HttpRequestException">Anything that went wrong attempting HTTP request, including DNS</exception>
         /// <exception cref="ApiParsingException">Content-Type did not match accept</exception>
-        private async static Task<DownloadResponseRecord> DownloadUrlAsRecord(Uri url, string[]? accept = null, string? accessToken = null)
+        private async Task<DownloadResponseRecord> DownloadUrlAsRecord(Uri url, string[]? accept = null, string? accessToken = null)
         {
             HttpResponseMessage response;
             try
@@ -306,7 +299,7 @@ namespace EduRoam.Connect.Identity
                         request.Headers.Add("Accept", acceptValue);
                     }
 
-                    response = await Http.SendAsync(request).ConfigureAwait(true);
+                    response = await this.http.SendAsync(request).ConfigureAwait(true);
                 }
 
             }
@@ -335,7 +328,7 @@ namespace EduRoam.Connect.Identity
         /// <returns>Response payload</returns>
         /// <exception cref="HttpRequestException">Anything that went wrong attempting HTTP request, including DNS</exception>
         /// <exception cref="ApiParsingException">Content-Type did not match accept</exception>
-        public static Task<string> PostForm(Uri url, NameValueCollection data, string[]? accept = null)
+        public Task<string> PostForm(Uri url, NameValueCollection data, string[]? accept = null)
         {
             if (data == null)
             {
@@ -348,7 +341,7 @@ namespace EduRoam.Connect.Identity
                 Debug.Assert(key != null, "data contains meta data items for retrieving a token");
                 list.Add(new KeyValuePair<string, string?>(key, data[key]));
             }
-            return PostForm(url, list, accept);
+            return this.PostForm(url, list, accept);
         }
 
         /// <summary>
@@ -360,12 +353,12 @@ namespace EduRoam.Connect.Identity
         /// <returns>Response payload</returns>
         /// <exception cref="HttpRequestException">Anything that went wrong attempting HTTP request, including DNS</exception>
         /// <exception cref="ApiParsingException">Content-Type did not match accept</exception>
-        public static async Task<string> PostForm(Uri url, IEnumerable<KeyValuePair<string, string?>> data, string[]? accept = null)
+        public async Task<string> PostForm(Uri url, IEnumerable<KeyValuePair<string, string?>> data, string[]? accept = null)
         {
             try
             {
                 using var form = new FormUrlEncodedContent(data);
-                var response = await Http.PostAsync(url, form);
+                var response = await http.PostAsync(url, form);
                 return await parseResponse(response, accept);
             }
             catch (TaskCanceledException e)
@@ -382,7 +375,7 @@ namespace EduRoam.Connect.Identity
         {
             try
             {
-                var profile = await DownloadUrlAsRecord(
+                var profile = await this.DownloadUrlAsRecord(
                     url: new Uri(url),
                     accept: ["application/json", "application/eap-config", "application/x-eap-config"],
                     accessToken: null
@@ -448,14 +441,14 @@ namespace EduRoam.Connect.Identity
             {
                 if (!string.IsNullOrEmpty(profile.LetsWifiEndpoint))
                 {
-                    var letsWifiProfileJson = await DownloadUrlAsRecord(
+                    var letsWifiProfileJson = await this.DownloadUrlAsRecord(
                         url: new Uri(profile.LetsWifiEndpoint), 
                         accept: ["application/json"], 
                         accessToken: null
                     );
                     var letsWifiProfile = JsonConvert.DeserializeObject<LetsWifiProfile>(letsWifiProfileJson.Data);
 
-                    return letsWifiProfile.Root;
+                    return letsWifiProfile!.Root;
                 } else
                 {
                     throw new Exception("No LetsWifi endpoint found in profile");

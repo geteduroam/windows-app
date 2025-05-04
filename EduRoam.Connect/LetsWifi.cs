@@ -136,7 +136,7 @@ namespace EduRoam.Connect
             string tokenJson;
             try
             {
-                tokenJson = await IdentityProviderDownloader.PostForm(tokenEndpoint, tokenPostData);
+                tokenJson = await IdentityProviderDownloader.Instance.PostForm(tokenEndpoint, tokenPostData);
             }
             catch (HttpRequestException ex)
             {
@@ -228,7 +228,7 @@ namespace EduRoam.Connect
                     return false;
                 }
 
-                var tokenJson = await IdentityProviderDownloader.PostForm(this.TokenEndpoint, tokenFormData, new string[] { "application/json" });
+                var tokenJson = await IdentityProviderDownloader.Instance.PostForm(this.TokenEndpoint, tokenFormData, new string[] { "application/json" });
 
                 // process response
                 this.SetAccessTokensFromJson(tokenJson);
@@ -271,7 +271,7 @@ namespace EduRoam.Connect
                 throw new InvalidOperationException("Expected token_type Bearer but got " + this.AccessTokenType);
             }
 
-            var eapConfig = await IdentityProviderDownloader.DownloadEapConfig(this.EapEndpoint, this.AccessToken);
+            var eapConfig = await IdentityProviderDownloader.Instance.DownloadEapConfig(this.EapEndpoint, this.AccessToken);
             eapConfig.ProfileId = this.ProfileID;
             eapConfig.IsOauth = true;
 
@@ -298,8 +298,7 @@ namespace EduRoam.Connect
             {
                 try
                 {
-                    using var discovery = new IdentityProviderDownloader();
-                    var xml = (await discovery.DownloadEapConfig(profileId)).RawOriginalEapConfigXmlData;
+                    var xml = (await IdentityProviderDownloader.Instance.DownloadEapConfig(profileId)).RawOriginalEapConfigXmlData;
 
                     var identityProvider = this.store.IdentityProvider?.WithEapConfigXml(xml);
                     this.store.UpdateIdentity(identityProvider);

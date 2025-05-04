@@ -14,29 +14,32 @@ namespace EduRoam.Connect.Tasks
         /// <summary>
         /// Get a list of Identity Providers.
         /// </summary>
-        /// <param name="query">Query to filter institutes</param>
+        /// <param name="substring">Query to filter institutes</param>
         /// <remarks>
         /// If no providers available try to download them
         /// </remarks>
         /// <exception cref="ApiParsingException" />
         /// <exception cref="ApiUnreachableException" />
-        public static async Task<IEnumerable<IdentityProvider>> GetAsync(string? query)
+        public static async Task<IEnumerable<IdentityProvider>> SearchAsync(string? substring)
         {
-            using var idpDownloader = new IdentityProviderDownloader();
-
-            await idpDownloader.LoadProviders();
-
-            if (idpDownloader.Loaded)
+            if (string.IsNullOrWhiteSpace(substring))
             {
-                var providers = idpDownloader.ClosestProviders;
-                if (string.IsNullOrWhiteSpace(query))
-                {
-                    return Enumerable.Empty<IdentityProvider>();
-                }
-                return IdentityProviderParser.SortByQuery(providers, query);
+                return Enumerable.Empty<IdentityProvider>();
             }
 
-            return Enumerable.Empty<IdentityProvider>();
+            try
+            {
+                await IdentityProviderDownloader.Instance.LoadProviders();
+            }
+            catch (Exception)
+            {
+            }
+
+            return IdentityProviderDownloader.Instance.Loaded
+                ? IdentityProviderParser.SortByQuery(
+                    IdentityProviderDownloader.Instance.ProvidersSortedByCountry,
+                    substring)
+                : Enumerable.Empty<IdentityProvider>();
         }
 
         /// <summary>
@@ -53,10 +56,10 @@ namespace EduRoam.Connect.Tasks
                 throw new EduroamAppUserException(string.Empty, Resources.ErrorOccurredWhileRetreivingProfile);
             }
 
-            using var idpDownloader = new IdentityProviderDownloader();
+            using var idpDownloader = IdentityProviderDownloader.Instance;
             var profile = await idpDownloader.DownloadProfileFromUrl(url.Trim());
 
-            await idpDownloader.AddHttpProfile(profile); 
+            idpDownloader.AddHttpProfile(profile);
 
             return profile;
         }

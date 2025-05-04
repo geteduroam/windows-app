@@ -1,5 +1,6 @@
 ﻿using App.Library.Command;
 
+using EduRoam.Connect.Identity;
 using EduRoam.Connect.Tasks;
 using EduRoam.Localization;
 
@@ -73,8 +74,9 @@ namespace App.Library.ViewModels
             this.Owner.Restart();
         }   
         
-        private void Reauthenticate()
+        private async void Reauthenticate()
         {
+            await IdentityProviderDownloader.Instance.LoadProviders();
             this.Owner.RemoveCertificates();
             this.Owner.Reauthenticate();
         }

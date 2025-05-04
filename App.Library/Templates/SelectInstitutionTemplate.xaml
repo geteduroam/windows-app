@@ -2,8 +2,13 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:viewModels="clr-namespace:App.Library.ViewModels"
-    xmlns:lang = "clr-namespace:EduRoam.Localization;assembly=EduRoam.Localization" 
-    xmlns:b = "clr-namespace:App.Library.Binding">
+    xmlns:lang="clr-namespace:EduRoam.Localization;assembly=EduRoam.Localization"
+    xmlns:b="clr-namespace:App.Library.Binding"
+    xmlns:converters="clr-namespace:App.Library.Converters">
+
+    <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+    <converters:ImageConverter x:Key="AppImageConverter" AppSpecific="True" />
 
     <DataTemplate DataType="{x:Type viewModels:SelectInstitutionViewModel}">
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -12,17 +17,36 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
+            <Grid Grid.Row="1"
+                  Opacity="0.5"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  Background="{DynamicResource BackgroundBrush}">
+
+                <StackPanel Orientation="Vertical" Margin="0,-80,0,0" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Image Width="160"
+                           Source="{Binding Converter={StaticResource AppImageConverter}, ConverterParameter=application-icon.png}"
+                           Margin="0, 24" />
+                    <TextBlock x:Name="WaitingConnection"
+                               Visibility="{Binding Loaded, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
+                               Margin="5"
+                               FontSize="{StaticResource Font.Default}"
+                               Text="{Binding WaitingConnectionText, StringFormat=\{0\}}"
+                               TextAlignment="Center" />
+                </StackPanel>
+            </Grid>
+
             <TextBox x:Name="SearchBox"
                      Grid.Row="0"
                      Height="24"
                      Padding="4"
-                     BorderBrush="{StaticResource PrimaryBrush}"   
+                     BorderBrush="{StaticResource PrimaryBrush}"
                      VerticalAlignment="Center"
                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
                      b:FocusBinding.IsFocused="true">
                 <TextBox.Resources>
                     <Style TargetType="{x:Type Border}">
-                        <Setter Property="CornerRadius" Value="4"/>
+                        <Setter Property="CornerRadius" Value="4" />
                     </Style>
                 </TextBox.Resources>
             </TextBox>
@@ -40,14 +64,13 @@
 
                 <TextBlock
                         Grid.Column="0"
-                        FontFamily="{StaticResource IconFont}"                                            
+                        FontFamily="{StaticResource IconFont}"
                         Style="{DynamicResource Watermark}"
-                        Text="{StaticResource SearchIcon}">
-                </TextBlock>
+                        Text="{StaticResource SearchIcon}" />
                 <TextBlock
                         Grid.Column="1"
                         Text="{x:Static lang:Resources.Search}"
-                        Style="{DynamicResource Watermark}"/>
+                        Style="{DynamicResource Watermark}" />
             </Grid>
 
             <ListBox
@@ -56,11 +79,12 @@
                 Margin="0, 12,0, 0"
                 Padding="0"
                 IsTabStop="False"
+                Visibility="{Binding Searching, Converter={StaticResource BooleanToVisibilityConverter}}"
                 ItemContainerStyle="{DynamicResource ListBoxItemStyle}"
                 ItemsSource="{Binding Institutions.Result}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 ScrollViewer.VerticalScrollBarVisibility="Visible"
-                BorderBrush="{StaticResource SecondaryBrush}" 
+                BorderBrush="{StaticResource SecondaryBrush}"
                 SelectedItem="{Binding Owner.State.SelectedIdentityProvider}" />
         </Grid>
     </DataTemplate>

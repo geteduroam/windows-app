@@ -15,7 +15,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -29,8 +28,6 @@ namespace App.Library.ViewModels
 #pragma warning disable CA1822 // Members are bound by a template and therefore cannot be static
     public class MainViewModel : NotifyPropertyChanged, IDisposable
     {
-        private readonly IdentityProviderDownloader idpDownloader;
-
         public static readonly SelfInstaller SelfInstaller = SelfInstaller.DefaultInstance;
 
         private readonly Status status;
@@ -46,7 +43,6 @@ namespace App.Library.ViewModels
         public MainViewModel(ILogger<MainViewModel> logger)
         {
             this.ApplicationTitle = Settings.Settings.ApplicationName;
-            this.NewProfileCommand = new DelegateCommand(this.NewProfileCommandAction, this.CanNewProfileCommandAction);
             this.LoadEapFileCommand = new DelegateCommand(this.GetEapFileFromDialog);
             this.RefreshCommand = new AsyncCommand(this.RefreshAsync);
             this.ReauthenticateCommand = new DelegateCommand(this.Reauthenticate);
@@ -64,7 +60,6 @@ namespace App.Library.ViewModels
             // This is updated to the relevant command
             this.NotificationCommand = new DelegateCommand(() => { });
 
-            this.idpDownloader = new IdentityProviderDownloader();
             this.State = new ApplicationState();
 
             this.status = new StatusTask().GetStatus();
@@ -76,28 +71,30 @@ namespace App.Library.ViewModels
 
             this.Logger.LogInformation($"{this.AppTitle}, version: {this.AppVersion}, run as admin: {StatusTask.RunAsAdministrator}");
 
-            Task.Run(
-                async () =>
-                {
-                    while (!this.CheckIsConnected())
-                    {   
-                        Thread.Sleep(1000);
-                    }
+            var eapConfigFile = string.IsNullOrEmpty(Settings.Settings.EapConfigFileLocation)
+                ? EapConfigTask.GetBundledEapConfigFile()
+                : Settings.Settings.EapConfigFileLocation
+                ;
+            if (!string.IsNullOrEmpty(eapConfigFile))
+            {
+                this.LoadEapFile(eapConfigFile!);
+            }
+            else
+            {
+                this.SetActiveContent(new StatusViewModel(this));
+            }
 
-                    #region Updater
-                    await UpdateChecker.CheckIfUpdateAvailableAsync();
-                    #endregion
-
-                    await this.idpDownloader.LoadProviders();
-
-                    this.IsLoading = false;
-                    this.IsConnected = true;
-                    this.SetStartContent();
-                    this.CallPropertyChanged(string.Empty);
-                    DelegateCommand.RaiseCanExecuteChanged();
-                });
-
+            this.VersionCheck();
+            Task.Run(this.checkForUpdates);
         }
+        private async void checkForUpdates()
+        {
+            await UpdateChecker.CheckIfUpdateAvailableAsync();
+            this.VersionCheck();
+            this.CallPropertyChanged(string.Empty);
+            DelegateCommand.RaiseCanExecuteChanged();
+        }
+
         public string ApplicationTitle { get; set; }
 
         public bool IsConnected { get; set; }
@@ -105,8 +102,6 @@ namespace App.Library.ViewModels
         public ApplicationState State { get; private set; }
 
         public BaseViewModel? ActiveContent { get; private set; }
-
-        public DelegateCommand NewProfileCommand { get; protected set; }
 
         public DelegateCommand OpenSystemMenuCommand { get; protected set; }
 
@@ -228,11 +223,8 @@ namespace App.Library.ViewModels
         {
             Clipboard.SetText(Settings.Settings.BrowserDownloadUrl);
         }
-        public void SetStartContent()
+        public void VersionCheck()
         {
-            var status = new StatusTask().GetStatus();
-
-            #region UpdateChecker
             this.SelfTestSuccess = true;
             this.NotificationDismiss = true;
             if(!ArchitectureHelper.ProcessIsNative())
@@ -301,30 +293,6 @@ namespace App.Library.ViewModels
             this.CallPropertyChanged(nameof(this.ShowNotificationBar));
             this.CallPropertyChanged(nameof(this.NotificationButtonCaption));
             this.CallPropertyChanged(nameof(this.NotificationCommand));
-            #endregion
-
-            if (!string.IsNullOrEmpty(Settings.Settings.EapConfigFileLocation))
-            {
-                this.LoadEapFile(Settings.Settings.EapConfigFileLocation!);
-            }
-            else if (status.ActiveProfile)
-            {
-                this.SetActiveContent(new StatusViewModel(this));
-            }
-            else
-            {
-                var eapConfig = EapConfigTask.GetBundledEapConfig();
-
-                if (eapConfig != null)
-                {
-
-                    this.SetActiveContent(new ProfileViewModel(this, eapConfig));
-                }
-                else
-                {
-                    this.SetActiveContent(new StatusViewModel(this));
-                }
-            }
         }
 
         public static bool CheckIfEapConfigIsSupported(EapConfig eapConfig)
@@ -342,29 +310,9 @@ namespace App.Library.ViewModels
             return true;
         }
 
-        private bool CanNewProfileCommandAction()
-        {
-            return this.idpDownloader.Loaded;
-        }
-
-        private void NewProfileCommandAction()
-        {
-            this.SetActiveContent(new SelectInstitutionViewModel(this));
-        }
-
         public void Dispose()
         {
-            this.Dispose(true);
             GC.SuppressFinalize(this);
-            this.idpDownloader.Dispose();
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                this.idpDownloader.Dispose();
-            }
         }
 
         public void SetPreviousActiveContent()
@@ -438,7 +386,7 @@ namespace App.Library.ViewModels
             {
                 if (profile == null)
                 {
-                    profile = await this.idpDownloader.GetProfileFromId(profileId);
+                    profile = await IdentityProviderDownloader.Instance.GetProfileFromId(profileId);
 
                     if (profile == null)
                     {
@@ -482,7 +430,7 @@ namespace App.Library.ViewModels
             {
                 var eapConfiguration = new EapConfigTask();
 
-                eapConfig = await eapConfiguration.GetEapConfigAsync(profile.Id);
+                eapConfig = await eapConfiguration.GetEapConfigAsync(profile);
                 if (eapConfig != null)
                 {
                     if (eapConfig.HasInfo && !skipOverview)
@@ -655,11 +603,6 @@ namespace App.Library.ViewModels
             {
                 Process.Start(new ProcessStartInfo(helpUrl) { UseShellExecute = true });
             }
-        }
-
-        public bool CheckIsConnected()
-        {
-            return this.networkListManager.IsConnectedToInternet;
         }
 
         public void DismissNotification()

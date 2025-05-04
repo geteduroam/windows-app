@@ -19,15 +19,31 @@ namespace App.Library.ViewModels
 {
     public class SelectInstitutionViewModel : BaseViewModel
     {
-
-        private string searchText;
-
         public SelectInstitutionViewModel(MainViewModel owner)
             : base(owner)
         {
-            this.searchText = string.Empty;
+            this.preload();
         }
 
+        private async void preload()
+        {
+            try
+            {
+                await IdentityProviderDownloader.Instance.LoadProviders();
+            }
+            catch (Exception)
+            {
+            }
+
+            this.CallPropertyChanged(nameof(this.Loaded));
+            this.CallPropertyChanged(nameof(this.Searching));
+        }
+
+        public string WaitingConnectionText {
+            get => string.Format(SharedResources.NoConnection, Settings.Settings.ApplicationName); 
+        }
+
+        private string searchText = string.Empty;
         public string SearchText
         {
             get => this.searchText;
@@ -37,49 +53,64 @@ namespace App.Library.ViewModels
                 this.CallPropertyChanged(nameof(this.Institutions));
             }
         }
-
+        public bool Loaded { get => IdentityProviderDownloader.Instance.Loaded; }
+        public bool Searching { get => this.Loaded && !string.IsNullOrWhiteSpace(this.SearchText); }
         public override string PageTitle => SharedResources.SelectInstitution;
 
         public AsyncProperty<ObservableCollection<IdentityProvider>> Institutions
         {
             get
             {
-                return new AsyncProperty<ObservableCollection<IdentityProvider>>(this.GetInstitutionsAsync());
+                return new AsyncProperty<ObservableCollection<IdentityProvider>>(this.PerformSearchAsync());
             }
         }
 
-        public async Task<ObservableCollection<IdentityProvider>> GetInstitutionsAsync()
+        public async Task<ObservableCollection<IdentityProvider>> PerformSearchAsync()
         {
-            var institutes = await InstitutesTask.GetAsync(this.searchText);
-            if ((this.searchText.ToLower().StartsWith("http://") || this.searchText.ToLower().StartsWith("https://")) && Uri.IsWellFormedUriString(this.searchText.Trim(), UriKind.Absolute))
+            var institutes = await InstitutesTask.SearchAsync(this.searchText);
+            var urlProvider = getUrlProvider(this.searchText);
+            if (urlProvider != null)
             {
-                institutes = institutes.Prepend(new IdentityProvider
-                {
-                    Id = "custom_http_provider",
-                    Name = string.Format(SharedResources.ConnectTo0, this.searchText),
-                    DownloadMetadataOnSelect = true
-                });
+                institutes = institutes.Prepend(urlProvider);
             }
 
+            this.CallPropertyChanged(nameof(this.Loaded));
+            this.CallPropertyChanged(nameof(this.Searching));
             return new ObservableCollection<IdentityProvider>(institutes);
+        }
+
+        private static IdentityProvider getUrlProvider(string url)
+        {
+            if ((url.StartsWith("http://") || url.StartsWith("https://")) && Uri.IsWellFormedUriString(url.Trim(), UriKind.Absolute))
+            {
+                return new IdentityProvider
+                {
+                    Id = "custom_http_provider",
+                    Name = string.Format(SharedResources.ConnectTo0, url),
+                    DownloadMetadataOnSelect = true
+                };
+            }
+
+            return null;
         }
 
         protected override bool CanNavigateNextAsync()
         {
-            return this.Owner.State.SelectedIdentityProvider != null;
+            return this.Owner.State.SelectedIdentityProvider != null || getUrlProvider(this.searchText) != null;
         }
 
         protected override async Task NavigateNextAsync()
         {
-            if(this.Owner.State.SelectedIdentityProvider.DownloadMetadataOnSelect)
+            var provider = this.Owner.State.SelectedIdentityProvider ?? getUrlProvider(this.searchText);
+            if(provider.DownloadMetadataOnSelect)
             {
                 try
                 {
                     this.Owner.State.SelectedIdentityProvider = await InstitutesTask.GetProfileFromUrlAsync(this.searchText);
                 } catch (EduroamAppUserException ex)
                 {
-                    this.Owner.SetActiveContent(new ConfirmViewModel(this.Owner, string.Format("{0}{1}", ex.UserFacingMessage, !string.IsNullOrEmpty(ex.Message) ? $": {ex.Message}" : ""), () => { this.Owner.SetActiveContent(this); }));
-                    this.Owner.Logger.LogError(string.Format("{0}{1}", ex.UserFacingMessage, !string.IsNullOrEmpty(ex.Message) ? $": {ex.Message}" : ""));
+                    this.Owner.SetActiveContent(new ConfirmViewModel(this.Owner, string.Format("{0}{1}", ex.UserFacingMessage, string.IsNullOrEmpty(ex.Message) ? "" : $": {ex.Message}"), () => { this.Owner.SetActiveContent(this); }));
+                    this.Owner.Logger.LogError(string.Format("{0}{1}", ex.UserFacingMessage, string.IsNullOrEmpty(ex.Message) ? "" : $": {ex.Message}"));
                     return;
                 }
             }
