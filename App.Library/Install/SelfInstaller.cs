@@ -142,6 +142,10 @@ namespace App.Library.Install
         {
             get => this.IsGloballyInstalled ? this.GlobalInstallExePath : this.IsUserInstalled ? this.UserInstallExePath : null;
         }
+        public string? InstalledDir
+        {
+            get => this.IsGloballyInstalled ? this.GlobalInstallDir : this.IsUserInstalled ? this.UserInstallDir : null;
+        }
         public static SemVersion? RunningVersion { 
             get => _getFileVersion(RunningExePath); 
         }
@@ -184,7 +188,8 @@ namespace App.Library.Install
         }
         public bool EnsureIsInstalled(string? path = null)
         {
-            if (!this.IsGloballyInstalled) {
+            if (!this.IsGloballyInstalled)
+            {
                 if (!this.IsUserInstalled
                     || path == null
                     ? this.IsRunningNewerThanUserInstalled()
@@ -197,9 +202,9 @@ namespace App.Library.Install
                     }
                     this.SetUserInstalledState(true);
                 }
+                this.SetFileAssociationRegistered(true);
+                this.SetStartMenuEntry(true);
             }
-            this.SetFileAssociationRegistered(true);
-            this.SetStartMenuEntry(true);
             return true;
         }
         /// <summary>
@@ -459,8 +464,8 @@ namespace App.Library.Install
                 var lnk = wshell.CreateShortcut(this.UserStartMenuLnkPath) as IWshShortcut;
                 if (lnk != null)
                 {
-                    lnk.TargetPath = this.UserInstallExePath;
-                    lnk.WorkingDirectory = this.UserInstallDir;
+                    lnk.TargetPath = this.InstalledExePath;
+                    lnk.WorkingDirectory = this.InstalledDir;
                     lnk.Save();
                 }
             } else
