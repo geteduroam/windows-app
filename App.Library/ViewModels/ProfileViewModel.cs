@@ -146,7 +146,7 @@ namespace App.Library.ViewModels
 
         private void SelectOtherInstitution()
         {
-            this.Owner.Restart();
+            this.Owner.SelectInstitution();
         }
 
         protected override bool CanNavigateNextAsync()

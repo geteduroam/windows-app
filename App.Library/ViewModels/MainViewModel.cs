@@ -415,7 +415,7 @@ namespace App.Library.ViewModels
             this.CallPropertyChanged(nameof(this.IsReauthenticatePossible));
         }
 
-        public void Restart()
+        public void SelectInstitution()
         {
             this.State.Reset();
             this.SetActiveContent(new SelectInstitutionViewModel(this));
