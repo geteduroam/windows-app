@@ -33,6 +33,7 @@ namespace App.Library.ViewModels
             }
             catch (Exception)
             {
+                Debug.WriteLine("Preloading discovery failed. Will retry on user interaction. This may happen when the internet connection is down.");
             }
 
             this.CallPropertyChanged(nameof(this.Loaded));
