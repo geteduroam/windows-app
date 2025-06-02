@@ -31,7 +31,14 @@ public static class UpdateChecker
         }
 
         await DownloadUpdateJsonAsync();
-        NewVersion = SemVersion.Parse(UpdateData.CurrentVersion, SemVersionStyles.Strict);
+        try
+        {
+            NewVersion = SemVersion.Parse(UpdateData.CurrentVersion, SemVersionStyles.Strict);
+        }
+        catch (Exception) {
+            Debug.WriteLine("Cannot parse version number from update data, continuing as if no update available; may happen if internet is down");
+            return false;
+        }
 
         var parsedMinimalSupportedVersion = Version.Parse(UpdateData.MinimalSupportedVersion);
         MinimalSupportedVersion = new SemVersion(parsedMinimalSupportedVersion.Major, parsedMinimalSupportedVersion.Minor, parsedMinimalSupportedVersion.Build);
