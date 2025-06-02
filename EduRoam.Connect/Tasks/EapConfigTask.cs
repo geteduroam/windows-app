@@ -106,6 +106,7 @@ namespace EduRoam.Connect.Tasks
 
             if (fullProfile.OAuth)
             {
+                await IdentityProviderDownloader.Instance.ResolveProfileEndpoints(fullProfile);
                 var oauthHandler = new OAuthHandler(fullProfile)
                 {
                     MainThread = this.mainThread,

@@ -254,18 +254,26 @@ namespace EduRoam.Connect.Identity
                 {
                     if (profile.Id == profileId)
                     {
-                        if (!string.IsNullOrEmpty(profile.LetsWifiEndpoint))
-                        {
-                            var letsWifiProfile = await this.DownloadLetsWifiProfile(profile);
-                            profile.EapConfigEndpoint = letsWifiProfile?.EapConfigEndpoint;
-                            profile.TokenEndpoint = letsWifiProfile?.TokenEndpoint;
-                            profile.AuthorizationEndpoint = letsWifiProfile?.AuthorizationEndpoint;
-                        }
+                        await this.ResolveProfileEndpoints(profile);
                         return profile;
                     }
                 }
             }
             return null;
+        }
+
+        public async Task ResolveProfileEndpoints(IdentityProviderProfile profile)
+        {
+            if (!string.IsNullOrEmpty(profile.LetsWifiEndpoint))
+            {
+                if (string.IsNullOrEmpty(profile.EapConfigEndpoint) || string.IsNullOrEmpty(profile.TokenEndpoint) || string.IsNullOrEmpty(profile.AuthorizationEndpoint))
+                {
+                    var letsWifiProfile = await this.DownloadLetsWifiProfile(profile);
+                    profile.EapConfigEndpoint = letsWifiProfile.EapConfigEndpoint;
+                    profile.TokenEndpoint = letsWifiProfile.TokenEndpoint;
+                    profile.AuthorizationEndpoint = letsWifiProfile.AuthorizationEndpoint;
+                }
+            }
         }
 
         /// <summary>
