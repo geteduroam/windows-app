@@ -33,7 +33,7 @@ namespace App.Library.ViewModels
 
         public static readonly SelfInstaller SelfInstaller = SelfInstaller.DefaultInstance;
 
-        private readonly Status status;
+        private Status status;
 
         private readonly INetworkListManager networkListManager;
         public bool ShowNotificationBar { get; set; } = false;
@@ -408,6 +408,14 @@ namespace App.Library.ViewModels
             this.CallPropertyChanged(nameof(this.PageTitle));
         }
 
+        private void CallProfilePropertyChanges()
+        {
+            this.CallPropertyChanged(nameof(this.CanProfileBeRemoved));
+            this.CallPropertyChanged(nameof(this.CanCertificatesBeRemoved));
+            this.CallPropertyChanged(nameof(this.IsARefreshPossible));
+            this.CallPropertyChanged(nameof(this.IsReauthenticatePossible));
+        }
+
         public void Restart()
         {
             this.State.Reset();
@@ -610,6 +618,8 @@ namespace App.Library.ViewModels
 
                     // Reset the state and set the content to the status view model
                     this.State.Reset();
+                    this.status = new StatusTask().GetStatus();
+                    this.CallProfilePropertyChanges();
                     this.SetActiveContent(new StatusViewModel(this));
                 }
             }
