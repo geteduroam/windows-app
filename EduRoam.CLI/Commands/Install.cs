@@ -1,4 +1,4 @@
-﻿using EduRoam.Connect.Tasks;
+﻿using App.Library.Tasks;
 
 using System;
 using System.CommandLine;
@@ -19,7 +19,7 @@ namespace EduRoam.CLI.Commands
 
             command.SetHandler(() =>
             {
-                InstallTask.Install();
+                InstallTask.Install(false);
 
                 Console.WriteLine(SharedResources.Done);
             });
