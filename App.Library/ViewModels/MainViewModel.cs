@@ -167,10 +167,9 @@ namespace App.Library.ViewModels
         {
             get
             {
-                var statusTask = new StatusTask();
-                var status = statusTask.GetStatus();
+                this.status = new StatusTask().GetStatus();
 
-                return status.Version;
+                return this.status.Version;
             }
         }
 
@@ -230,7 +229,7 @@ namespace App.Library.ViewModels
         }
         public void SetStartContent()
         {
-            var status = new StatusTask().GetStatus();
+            this.status = new StatusTask().GetStatus();
 
             #region UpdateChecker
             this.SelfTestSuccess = true;
