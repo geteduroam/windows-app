@@ -413,7 +413,7 @@ namespace App.Library.ViewModels
             this.State.Reset();
             this.SetActiveContent(new SelectInstitutionViewModel(this));
         }
-
+        
         /// <summary>
         /// downloads eap config based on profileId
         /// seperated into its own function as this can happen either through
@@ -608,7 +608,9 @@ namespace App.Library.ViewModels
                 {
                     profiler.RemoveCurrentProfile();
 
-                    this.Restart();
+                    // Reset the state and set the content to the status view model
+                    this.State.Reset();
+                    this.SetActiveContent(new StatusViewModel(this));
                 }
             }
         }
