@@ -142,31 +142,25 @@ namespace EduRoam.Connect
                         new XElement(nsTTLS + "Password", password)
                     ),
 
-                (EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => // TODO: matches schema, but produces an error
-
+                var x when
+                x == (EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) ||
+                x == (EapType.TTLS, InnerAuthType.EAP_PEAP_MSCHAPv2) =>
                     new XElement(nsTTLS + "EapTtls",
-                        //new XElement(nsTTLS + "Username", uname),
-                        //new XElement(nsTTLS + "Password", pword),
-                        EapUserData(
-                            innerIdentity,
-                            password,
-                            outerIdentity,
-                            EapType.MSCHAPv2,
-                            InnerAuthType.None
-                        )
-                    ),
-
-                (EapType.TTLS, InnerAuthType.EAP_PEAP_MSCHAPv2) => // TODO: matches schema, but produces an error
-
-                    new XElement(nsTTLS + "EapTtls",
-                        //new XElement(nsTTLS + "Username", uname),
-                        //new XElement(nsTTLS + "Password", pword),
-                        EapUserData(
-                            innerIdentity,
-                            password,
-                            outerIdentity,
-                            EapType.PEAP,
-                            InnerAuthType.EAP_MSCHAPv2
+                        new XElement(nsEHUC + "EapHostUserCredentials",
+                            new XElement(nsEHUC + "EapMethod", // inner
+                                new XElement(nsEC + "Type", (int)EapType.MSCHAPv2),
+                                new XElement(nsEC + "AuthorId", 0)
+                            ),
+                            new XElement(nsEHUC + "Credentials",
+                                // No need to repeat the XAttributes for the schemas here
+                                EapUserData(
+                                    innerIdentity,
+                                    password,
+                                    outerIdentity,
+                                    EapType.MSCHAPv2,
+                                    InnerAuthType.None
+                                )
+                            )
                         )
                     ),
 
@@ -191,8 +185,8 @@ namespace EduRoam.Connect
                 (EapType.TTLS, InnerAuthType.PAP) => !isX86_32,
                 (EapType.TTLS, InnerAuthType.MSCHAP) => !isX86_32,
                 (EapType.TTLS, InnerAuthType.MSCHAPv2) => !isX86_32,
-                //(EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => at_least_win10 && !isX86, // TODO: xml matches the schema, but win32 throws an error.
-                //(EapType.TTLS, InnerAuthType.EAP_PEAP_MSCHAPv2) => at_least_win10 && !isX86, // TODO: xml matches the schema, but win32 throws an error.
+                (EapType.TTLS, InnerAuthType.EAP_MSCHAPv2) => !isX86_32, // https://learn.microsoft.com/en-us/answers/questions/1360790/how-to-include-explicit-credentials-in-a-eap-ttls
+                (EapType.TTLS, InnerAuthType.EAP_PEAP_MSCHAPv2) => !isX86_32, // TODO not sure if we did this correctly
                 _ => false,
             };
         }
