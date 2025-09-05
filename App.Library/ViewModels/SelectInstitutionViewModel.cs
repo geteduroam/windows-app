@@ -46,7 +46,7 @@ namespace App.Library.ViewModels
         }
 
         public string WaitingConnectionText {
-            get => string.Format(SharedResources.NoConnection, Settings.Settings.ApplicationName); 
+            get => "⚠️\n\n" + string.Format(SharedResources.NoConnection, Settings.Settings.ApplicationName); 
         }
 
         private string searchText = string.Empty;
