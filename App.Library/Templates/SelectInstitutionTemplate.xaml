@@ -28,7 +28,7 @@
                            Source="{Binding Converter={StaticResource AppImageConverter}, ConverterParameter=application-icon.png}"
                            Margin="0, 24" />
                     <TextBlock x:Name="WaitingConnection"
-                               Visibility="{Binding Loaded, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
+                               Visibility="{Binding Disconnected, Converter={StaticResource BooleanToVisibilityConverter}}"
                                Margin="5"
                                FontSize="{StaticResource Font.Default}"
                                Text="{Binding WaitingConnectionText, StringFormat=\{0\}}"

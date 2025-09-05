@@ -27,6 +27,9 @@ namespace App.Library.ViewModels
 
         private async void preload()
         {
+            this.CallPropertyChanged(nameof(this.Activated));
+            this.CallPropertyChanged(nameof(this.Disconnected));
+
             try
             {
                 await IdentityProviderDownloader.Instance.LoadProviders();
@@ -36,8 +39,10 @@ namespace App.Library.ViewModels
                 Debug.WriteLine("Preloading discovery failed. Will retry on user interaction. This may happen when the internet connection is down.");
             }
 
+            Activated = true;
             this.CallPropertyChanged(nameof(this.Loaded));
             this.CallPropertyChanged(nameof(this.Searching));
+            this.CallPropertyChanged(nameof(this.Disconnected));
         }
 
         public string WaitingConnectionText {
@@ -54,8 +59,10 @@ namespace App.Library.ViewModels
                 this.CallPropertyChanged(nameof(this.Institutions));
             }
         }
-        public bool Loaded { get => IdentityProviderDownloader.Instance.Loaded; }
+        public bool Loaded => IdentityProviderDownloader.Instance.Loaded;
+        public bool Disconnected { get => this.Activated && !this.Loaded; }
         public bool Searching { get => this.Loaded && !string.IsNullOrWhiteSpace(this.SearchText); }
+        public bool Activated { private set; get; }
         public override string PageTitle => SharedResources.SelectInstitution;
 
         public AsyncProperty<ObservableCollection<IdentityProvider>> Institutions
@@ -75,7 +82,11 @@ namespace App.Library.ViewModels
                 institutes = institutes.Prepend(urlProvider);
             }
 
+            // In case Loaded has changed, we retry the institution list on each keypress,
+            // as long as we haven't succeeded
             this.CallPropertyChanged(nameof(this.Loaded));
+            this.CallPropertyChanged(nameof(this.Disconnected));
+
             this.CallPropertyChanged(nameof(this.Searching));
             return new ObservableCollection<IdentityProvider>(institutes);
         }
