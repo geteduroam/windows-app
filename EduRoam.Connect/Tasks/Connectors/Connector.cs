@@ -78,7 +78,7 @@ namespace EduRoam.Connect.Tasks.Connectors
             }
             catch (Exception exc)
             {
-                return exc;
+                // Ignore
             }
 
             Exception? lastException = null;

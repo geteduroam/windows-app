@@ -393,10 +393,20 @@ namespace App.Library.Install
         }
         #region Installers/uninstallers for different Windows components
 
-        public void SetUserInstalledState(bool installed)
+        public bool SetUserInstalledState(bool installed)
         {
             var installedAppsRegKey = Registry.CurrentUser.OpenSubKey("Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall", true);
             var applicationRegKey = installedAppsRegKey.CreateSubKey(this.applicationIdentifier);
+
+            // According to StackOverflow, this is impossible. But we've had multiple reports of it happening.
+            // https://stackoverflow.com/questions/19849870/under-what-circumstances-will-registrykey-createsubkeystring-return-null
+            Debug.Assert(applicationRegKey != null, "CreateSubKey returned NULL, this is a bug in the Win32 API");
+
+            if (applicationRegKey == null)
+            {
+                return false;
+            }
+            else
             {
                 if (installed)
                 {
@@ -404,20 +414,21 @@ namespace App.Library.Install
                         intWriter: (key, value) =>
                         {
                             if (value != null)
-                            applicationRegKey.SetValue(key, value, RegistryValueKind.DWord);
+                                applicationRegKey.SetValue(key, value, RegistryValueKind.DWord);
                         },
                         strWriter: (key, value) =>
                         {
                             if (value != null)
-                            applicationRegKey.SetValue(key, value);
+                                applicationRegKey.SetValue(key, value);
                         }
                     );
                 }
                 else
                 {
-                    if (applicationRegKey != null)
-                        installedAppsRegKey.DeleteSubKeyTree(this.applicationIdentifier);
+                    installedAppsRegKey.DeleteSubKeyTree(this.applicationIdentifier);
                 }
+
+                return true;
             }
         }
         public void SetFileAssociationRegistered(bool registered)
@@ -573,9 +584,16 @@ namespace App.Library.Install
                     try
                     {
                         ts.RootFolder.DeleteTask(taskName, exceptionOnNotExists: false);
-                    } catch (System.Runtime.InteropServices.COMException)
+                    }
+                    catch (System.Runtime.InteropServices.COMException e)
                     {
-                    
+                        Debug.Assert(false, e.Message);
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        // Since we remove some of the old task names,
+                        // it's possible the task was created by another user and we're not allowed to remove it
+                        // So we ignore this error silently
                     }
                 }
 

@@ -282,10 +282,8 @@ namespace EduRoam.Connect
 
                 // We explicitly ignore errors from NativeWifi,
                 // as any failures probably mean that our info and the info in the OS is out of sync
-                Debug.WriteLineIf(
-                    NativeWifi.DeleteProfile(this.InterfaceId, configuredProfile.ProfileName), // May return false
-                    "ERROR: The profile was not removed, ignoring: " + configuredProfile.ProfileName
-                    );
+                var deleted = NativeWifi.DeleteProfile(this.InterfaceId, configuredProfile.ProfileName);
+                Debug.WriteLineIf(!deleted, "ERROR: The profile was not removed, ignoring: " + configuredProfile.ProfileName);
                 this.store.RemoveConfiguredWLANProfile(configuredProfile);
             }
 

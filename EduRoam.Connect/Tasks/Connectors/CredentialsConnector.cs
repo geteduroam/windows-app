@@ -40,24 +40,23 @@ namespace EduRoam.Connect.Tasks.Connectors
                 return status;
             }
 
-            if (this.eapConfig.RequiredAnonymousIdentRealm != null) // required realm can be empty string!
+            if (this.eapConfig.RequiredAnonymousIdentRealm != null && this.eapConfig.AuthenticationMethods.Where(a => a.ClientOuterIdentity == null).Any()) // required realm can be empty string!
             {
                 // Windows will set the realm itself for PEAP-EAP-MSCHAPv2
                 // If the realm does not match, AND ALL OTHER TESTS ARE OK (no broken rules),
                 // warn the user if the realms mismatch, but don't prevent connecting.
                 var fullUsername = this.Credentials.UserName;
-                var userRealm = fullUsername.Contains('@')
-                    ? fullUsername.Substring(fullUsername.IndexOf('@'))
+                var userRealm = !string.IsNullOrEmpty(fullUsername) && fullUsername.Contains('@')
+                    ? fullUsername!.Substring(fullUsername.IndexOf('@'))
                     : "";
 
                 if (this.eapConfig.RequiredAnonymousIdentRealm != userRealm)
                 {
-                    var strProfileRealm = string.IsNullOrEmpty(this.eapConfig.RequiredAnonymousIdentRealm)
-                        ? "realmless"
-                        : "\"" + this.eapConfig.RequiredAnonymousIdentRealm + "\"";
-
-                    status.Errors = string.Concat(string.Format(Resources.EmojiWarning), ' ', string.Format(Resources.WarnRealmMismatch, userRealm, strProfileRealm)).AsListItem();
-                    return status;
+                    // TODO we can show a warning if connection fails and the realm doesn't match,
+                    // but the other apps don't do this, so let's just disable this functionality for now.
+                    // Additionally, the configuration file can force the realm to match;
+                    // if that was not enabled there must be a good reason for it.
+                    // status.Warnings.Add(string.Format(Resources.WarnRealmMismatch, userRealm, this.eapConfig.RequiredAnonymousIdentRealm));
                 }
             }
 

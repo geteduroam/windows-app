@@ -60,45 +60,45 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -118,426 +118,435 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppCommandLineHelpFlagsTitle" xml:space="preserve">
-    <value>Commandes CLI prises en charge :</value>
+    <value>Wspierane opcje linii komend:</value>
   </data>
   <data name="AppCommandLineHelpFlagsHelp" xml:space="preserve">
-    <value>Afficher ce texte d'aide.</value>
+    <value>Pokaż tę pomoc.</value>
   </data>
   <data name="AppCommandLineHelpFlagsInstall" xml:space="preserve">
-    <value>Installez ce binaire sur %USER%/AppData/Local.</value>
+    <value>Zainstaluj tę aplikację w %USER%/AppData/Local.</value>
   </data>
   <data name="AppCommandLineHelpFlagsUninstall" xml:space="preserve">
-    <value>Désinstallez ce binaire de %USER%/AppData/Local avec
-toutes les données configurées.</value>
+    <value>Odinstaluj tę aplikację z  %USER%/AppData/Local,
+wraz ze wszystkimi danymi konfiguracyjnymi.</value>
   </data>
   <data name="AppCommandLineHelpFlagsRefresh" xml:space="preserve">
-    <value>Actualisez le certificat utilisateur à l'aide du jeton d'actualisation.
-Est appelé automatiquement par une tâche planifiée dans Windows.
-/force :
-Actualisez le certificat utilisateur à l'aide du jeton d'actualisation.
-Actualisera le profil même si la période de validité
-du certificat client actuel en a plus d'un tiers.</value>
+    <value>Odśwież certyfikat użytkownika używając tokenu.
+Powinno się automatycznie wywołać przez zadanie Windows.
+Ta opcja niczego nie robi jezeli certyfikat użytkownika
+jest jeszcze ważny ponad 30 dni.
+Użyj opcji /force by odświeżyć niezależnie od okresu ważności.</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
-    <value>Etes-vous sur de vouloir continuer?</value>
+    <value>Na pewno kontynuować?</value>
   </data>
   <data name="ButtonClose" xml:space="preserve">
-    <value>Fermer</value>
+    <value>Zamknij</value>
   </data>
   <data name="ButtonConnect" xml:space="preserve">
-    <value>Connecter</value>
+    <value>Połącz</value>
   </data>
   <data name="ButtonInstall" xml:space="preserve">
-    <value>Installer</value>
+    <value>Instaluj</value>
   </data>
   <data name="ButtonNext" xml:space="preserve">
-    <value>Suivant</value>
+    <value>Następny</value>
   </data>
   <data name="ButtonPrevious" xml:space="preserve">
-    <value>Précédent</value>
+    <value>Poprzedni</value>
   </data>
   <data name="ButtonBack" xml:space="preserve">
-    <value>Retour</value>
+    <value>Wróć</value>
   </data>
   <data name="CertificateLabel" xml:space="preserve">
-    <value>Certificat</value>
+    <value>Certyfikat:</value>
   </data>
   <data name="CertificatesInstallationNotification" xml:space="preserve">
-    <value>Afin de continuer, les certificats suivants doivent être installés.</value>
+    <value>Aby kontynuować musimy zainstalować następujące certyfikaty:</value>
   </data>
   <data name="CertificatesInstallationStatus" xml:space="preserve">
-    <value>{0}, Installé: {1}</value>
+    <value>{0}, zainstalowano: {1}</value>
   </data>
   <data name="CertificateTitleInstalled" xml:space="preserve">
-    <value>les certificats sont installés</value>
+    <value>zainstalowano certyfikaty</value>
   </data>
   <data name="CertificateTitleStart" xml:space="preserve">
-    <value>Pour continuer, vous devez installer les certificats répertoriés</value>
+    <value>Aby kontynuować musisz zainstalować wymienione certyfikaty</value>
   </data>
   <data name="CommandDescriptionConnect" xml:space="preserve">
-    <value>Configurez le Wi-Fi en fonction d'un profil d'établissement et connectez-vous.</value>
+    <value>Skonfiguruj Wi-Fi na podstawie profilu instytucji i połącz.</value>
   </data>
   <data name="CommandDescriptionInstall" xml:space="preserve">
-    <value>Installez ce binaire sur %USER%/AppData/Local</value>
+    <value>Zainstaluj tę binarkę w %USER%/AppData/Local</value>
   </data>
   <data name="CommandDescriptionList" xml:space="preserve">
-    <value>Obtenez une liste d'établissements ou de profils pour un établissement.</value>
+    <value>Pokaż listę instytucji albo profili dla danej instytucji.</value>
   </data>
   <data name="CommandDescriptionReauthenticate" xml:space="preserve">
-    <value>Réauthentifier</value>
+    <value>Zaloguj się ponownie</value>
   </data>
   <data name="CommandDescriptionRefresh" xml:space="preserve">
-    <value>Actualiser les identifiants</value>
+    <value>Odśwież dane logowania</value>
   </data>
   <data name="CommandDescriptionRemove" xml:space="preserve">
-    <value>Supprimer le profil Wi-Fi configuré et/ou les certificats racine</value>
+    <value>Usuń skonfigurowany profil Wi-Fi i/lub certyfikaty głównych CA </value>
   </data>
   <data name="CommandDescriptionShow" xml:space="preserve">
-    <value>Supprimer le profil Wi-Fi configuré et/ou les certificats racine</value>
+    <value>Pokaż informację z EAP Config</value>
   </data>
   <data name="CommandDescriptionStatus" xml:space="preserve">
-    <value>Afficher l'état</value>
+    <value>Pokaż status</value>
   </data>
   <data name="CommandDescriptionUninstall" xml:space="preserve">
-    <value>Désinstaller l'application</value>
+    <value>Odinstaluj aplikację</value>
   </data>
   <data name="ConfiguredButNotConnected" xml:space="preserve">
-    <value>Tout est configuré !
-Impossible de se connecter car aucune configuration EAP n'a pu être trouvée</value>
+    <value>Wszystko jest skonfigurowane!
+Nie można się było połączyć z powodu braku EAP Config</value>
   </data>
   <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>Tout est configuré ! Impossible de vous connecter à {0}, vous êtes probablement hors de couverture.</value>
+    <value>Wszystko jest skonfigurowane!
+Nie można się połączyć z {0}, prawdopodobnie nie masz zasięgu.</value>
   </data>
   <data name="ConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Tout est configuré ! Impossible de se connecter à {0}.</value>
+    <value>Wszystko jest skonfigurowane!
+Nie można połączyć z {0}.</value>
   </data>
   <data name="ConfiguredEap" xml:space="preserve">
-    <value>EAP est configuré</value>
+    <value>EAP jest skonfigurowany</value>
   </data>
   <data name="ConnectionUsernameAndPasswordRequired" xml:space="preserve">
-    <value>Veuillez fournir un nom d'utilisateur et un mot de passe pour vous connecter.</value>
+    <value>Aby się połączyć podaj login i hasło.</value>
   </data>
   <data name="ConsentMain" xml:space="preserve">
-    <value>Conditions d'utilisation</value>
+    <value>Warunki Użytkowania</value>
   </data>
   <data name="ConsentPost" xml:space="preserve">
-    <value>de l'établissement</value>
+    <value>instytucji</value>
   </data>
   <data name="ConsentPre" xml:space="preserve">
-    <value>En cliquant sur « Suivant », vous acceptez</value>
+    <value>Klikając 'Następny' zgadzasz się na</value>
   </data>
   <data name="CredentialsLabel" xml:space="preserve">
-    <value>Entrez votre nom d'utilisateur et votre mot de passe</value>
+    <value>Wprowadź Twoją nazwę użytkownika i hasło</value>
   </data>
   <data name="CredentialsPasswordLabel" xml:space="preserve">
-    <value>mot de passe:</value>
+    <value>Hasło:</value>
   </data>
   <data name="CredentialsUsernameLabel" xml:space="preserve">
-    <value>Nom d'utilisateur:</value>
+    <value>Login:</value>
   </data>
   <data name="DaysLeft" xml:space="preserve">
-    <value>{0}jours en plus</value>
+    <value>jeszcze {0} dni</value>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Terminer</value>
+    <value>Zakończone</value>
   </data>
   <data name="ErrorApi" xml:space="preserve">
-    <value>erreur API</value>
+    <value>Błąd API</value>
   </data>
   <data name="ErrorCannotConnectWithServer" xml:space="preserve">
-    <value>Impossible de se connecter au serveur.
+    <value>Nie można się połączyć z serwerem.
 
-Assurez-vous que vous êtes connecté à Internet, puis réessayez.
+Upewnij się, ze masz połączenie z internetem i spróbuj ponowanie.
 
-Exception: {0}</value>
+Wyjątek: {0}</value>
   </data>
   <data name="ErrorCannotFetchTokens" xml:space="preserve">
-    <value>Impossible de récupérer le jeton JSON.
-Exception: {0}</value>
+    <value>Nie można pobrać tokena json.
+Wyjątek: {0}</value>
   </data>
   <data name="ErrorCannotRemoveWLANProfile" xml:space="preserve">
-    <value>Certains profils WLAN n'ont pas pu être supprimés</value>
+    <value>Nie udało się usunąć niektórych profili WLAN</value>
   </data>
   <data name="ErrorCannotRetrieveProfileWhenOffline" xml:space="preserve">
-    <value>Impossible de récupérer le profil en mode hors connexion</value>
+    <value>Nie mogę pobrać profilu bez połączenia z siecią</value>
   </data>
   <data name="ErrorClientCredentialNotValidYes" xml:space="preserve">
-    <value>Les informations d'identification du client ne sont pas encore valides. Ils deviendront valides le {0}.</value>
+    <value>Dane logowania klienta nie są jeszcze ważne. Będą ważne od {0}.</value>
   </data>
   <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
-    <value>Tout est configuré !
-Impossible de se connecter car la configuration EAP est introuvable</value>
+    <value>Wszystko skonfigurowane!
+Nie można się było połączyć z powodu braku EAP Config</value>
   </data>
   <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>Tout est configuré !
-Impossible de vous connecter à {0}, vous êtes probablement hors de couverture.</value>
+    <value>Wszystko jest skonfigurowane!
+
+Nie można się było połączyć z {0}, brak zasięgu sieci. Jeżeli będziesz w zasięgu to system automatycznie połączy się z {0}.</value>
   </data>
   <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Tout est configuré !
-Impossible de se connecter à {0}.</value>
+    <value>Wszystko jest skonfigurowane!
+
+Nie można się było połączyć z {0} pomimo, że jest w zasięgu. Mimo tego możesz się połączyć wybierając sieć w ustawieniach Windows.</value>
   </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
-    <value>Le nom d'utilisateur doit contenir @ une fois</value>
+    <value>Login musi zawierać dokładnie jeden znak @</value>
   </data>
   <data name="ErrorCredentialsEndsWith" xml:space="preserve">
-    <value>Le nom d'utilisateur ne peut pas se terminer par un point ou un espace</value>
+    <value>Login nie może się kończyć kropką ani spacją</value>
   </data>
   <data name="ErrorCredentialsEndWithRealm" xml:space="preserve">
-    <value>Le nom d'utilisateur doit se terminer par .{0} ou @{0}</value>
+    <value>Login musi się kończyć ciągiem .{0}lub @{0}</value>
   </data>
   <data name="ErrorCredentialsEndWithRealmNoSubdomain" xml:space="preserve">
-    <value>Le nom d'utilisateur doit se terminer par @ {0}</value>
+    <value>Login musi się kończyć ciągiem @{0}</value>
   </data>
   <data name="ErrorCredentialsSpecialCharacters" xml:space="preserve">
-    <value>Des personnages tels que . et @ ne peuvent pas être adjacents l'un à l'autre</value>
+    <value>Znaki . i @ nie mogą się pojawiać obok siebie</value>
   </data>
   <data name="ErrorEapConfigCorrupted" xml:space="preserve">
-    <value>Le fichier de configuration EAP sélectionné est corrompu. Veuillez choisir un autre fichier.</value>
+    <value>Wybrany plik EAP config jest niepoprawny. Wybierz inny.</value>
   </data>
   <data name="ErrorEapConfigInvalid" xml:space="preserve">
-    <value>Impossible de lire le fichier. Assurez-vous de sélectionner un fichier de configuration EAP valide.</value>
+    <value>Nie można było odczytać pliku. Wskaż prawidłowy plik EAP config.</value>
   </data>
   <data name="ErrorEapConfigIsEmpty" xml:space="preserve">
-    <value>Impossible de se connecter, la configuration EAP est vide</value>
+    <value>Nie można się było połączyć, konfiguracja EAP jest pusta</value>
   </data>
   <data name="ErrorEapNotConfigured" xml:space="preserve">
-    <value>EAP n'a pas pu être configuré</value>
+    <value>Nie udało się skonfigurować EAP</value>
   </data>
   <data name="ErrorInternetConnection" xml:space="preserve">
-    <value>Erreur avec la connexion Internet</value>
+    <value>Błąd połączenia z internetem</value>
   </data>
   <data name="ErrorInvalidCertificatePath" xml:space="preserve">
-    <value>Chemin de certificat invalide</value>
+    <value>Nieprawidłowa ścieżka certyfikatu</value>
   </data>
   <data name="ErrorInvalidCredentials" xml:space="preserve">
-    <value>Le nom d'utilisateur et/ou le mot de passe ne sont pas valides</value>
+    <value>Nieprawidłowy login i/lub hasło</value>
   </data>
   <data name="ErrorInvalidEapConfig" xml:space="preserve">
-    <value>Configuration EAP fournie non valide. Cela ne devrait pas se produire, veuillez signaler un bug.</value>
+    <value>Otrzymano nieprawidłowy EAP config, to nie powinno się zdarzyć, prosimy o  zgłoszenie błędu.</value>
   </data>
   <data name="ErrorMissingCredentials" xml:space="preserve">
-    <value>Les informations d'identification ne sont pas fournies</value>
+    <value>Brak danych logowania</value>
   </data>
   <data name="ErrorMissingRequiredCACertificate" xml:space="preserve">
-    <value>Le certificat CA requis n'a pas été installé, cela ne devrait pas se produire, veuillez signaler un bug</value>
+    <value>Wymagany certyfikat CA nie został zainstalowany, to nie powinno się zdarzyć, prosimy o zgłoszenie błędu.</value>
   </data>
   <data name="ErrorNoClientCertificateProvided" xml:space="preserve">
-    <value>Aucun certificat client (valide) n'a été fourni ({0}paramètre.</value>
+    <value>Nie podano (ważnego) certyfikatu użytkownika (parametr {0}.</value>
   </data>
   <data name="ErrorNoConnection" xml:space="preserve">
-    <value>N'a pas pu se connecter.
-Exception: {0}.</value>
+    <value>Nie można było połączyć.
+Wyjątek: {0}.</value>
   </data>
   <data name="ErrorNoInternet" xml:space="preserve">
-    <value>Pas de connexion Internet</value>
+    <value>Brak połączenia z internetem</value>
   </data>
   <data name="ErrorNotUninstalled" xml:space="preserve">
-    <value>{0} n'a pas été désinstallé.</value>
+    <value>{0}nie został odinstalowany.</value>
   </data>
   <data name="ErrorOptionIsEmpty" xml:space="preserve">
-    <value>{0}la valeur de l'option ne peut pas être vide ou uniquement des espaces</value>
+    <value>opcja {0}nie może być pusta ani tyko spacją</value>
   </data>
   <data name="ErrorRequiredCertificatesNotInstalled" xml:space="preserve">
-    <value>Tous les certificats requis ne sont pas installés.</value>
+    <value>Niektóre wymagane certyfikaty nie są zainstalowane.</value>
   </data>
   <data name="ErrorShowCommandOptions" xml:space="preserve">
-    <value>Options manquantes. Fournir l'option {0} ou les deux {1} et les options {2}</value>
+    <value>Brakujące opcje. Wskaż opcję {0}lub obie opcje {1} i {2}</value>
   </data>
   <data name="ErrorUnknownProfile" xml:space="preserve">
-    <value>Profil inconnu</value>
+    <value>Nieznany profil, ponów proces uwierzytelnienia</value>
   </data>
   <data name="ErrorUnsupportedConnectionType" xml:space="preserve">
-    <value>La connexion de type {0} n'est pas (encore) prise en charge.</value>
+    <value>Połączenie typu {0}nie jest (jeszcze) wspierane.</value>
   </data>
   <data name="ErrorUnsupportedInstituteOrProfile" xml:space="preserve">
-    <value>L'institution ou le profil n'est pas pris en charge ou est mal formé.
-Veuillez sélectionner une autre institution ou un autre profil.
+    <value>Wskazany profil instytucji nie jest wspierany albo błędny.
+Proszę wybierz inny.
 
-Exception: {0}</value>
+Wyjątek: {0}</value>
   </data>
   <data name="ErrorUnsupportedProfile" xml:space="preserve">
-    <value>Le profil que vous avez sélectionné n'est pas pris en charge par cette application. Aucune méthode d'authentification prise en charge n'a été trouvée.</value>
+    <value>Wybrany profil nie jest wspierany przez tę aplikację. Brak wspieranych metod uwierzytelnienia.</value>
   </data>
   <data name="ErrorWirelessUnavailable" xml:space="preserve">
-    <value>Le sans fil n'est pas disponible sur cet ordinateur</value>
+    <value>Na tym komputerze nie ma sieci Wi-Fi</value>
   </data>
   <data name="FileDialogSelectFile" xml:space="preserve">
-    <value>Veuillez sélectionner un fichier.</value>
+    <value>Proszę wybrać plik.</value>
   </data>
   <data name="HoursLeft" xml:space="preserve">
-    <value>{0}plus d'heures</value>
+    <value>jeszcze {0} godzin</value>
   </data>
   <data name="ChoiceKeyYes" xml:space="preserve">
-    <value>y</value>
+    <value>t</value>
+    <comment>Single button press for "yes" in terminal</comment>
   </data>
   <data name="LabelAccountValidFor" xml:space="preserve">
-    <value>Votre compte est valable pour</value>
+    <value>Twoje konto jest ważne przez</value>
   </data>
   <data name="LabelEmail" xml:space="preserve">
     <value>E-mail</value>
   </data>
   <data name="LabelHelp" xml:space="preserve">
-    <value>Aide</value>
+    <value>Pomoc</value>
   </data>
   <data name="LabelPhone" xml:space="preserve">
-    <value>Téléphone</value>
+    <value>Telefon</value>
   </data>
   <data name="LabelProfile" xml:space="preserve">
     <value>Profil</value>
   </data>
   <data name="LabelSupported" xml:space="preserve">
-    <value>Prise en charge</value>
+    <value>Wspierany</value>
   </data>
   <data name="LabelTermsOfUse" xml:space="preserve">
-    <value>Conditions d'utilisation</value>
+    <value>Warunki Użytkownia</value>
   </data>
   <data name="LabelVersion" xml:space="preserve">
-    <value>Version de l'application</value>
+    <value>Wersja aplikacji</value>
   </data>
   <data name="LabelWeb" xml:space="preserve">
     <value>Web</value>
   </data>
   <data name="LoadCertificateFile" xml:space="preserve">
-    <value>Sélectionnez un ensemble de certificats clients</value>
+    <value>Wybierz paczkę certyfikatów klienta</value>
   </data>
   <data name="LoadEapFile" xml:space="preserve">
-    <value>Sélectionnez un fichier de configuration EAP</value>
+    <value>Wybierz plik EAP Config</value>
   </data>
   <data name="Loading" xml:space="preserve">
-    <value>Chargement</value>
+    <value>Ładuję</value>
   </data>
   <data name="LocalCertificateLabel" xml:space="preserve">
-    <value>Ce profil nécessite un certificat local</value>
+    <value>Ten profil wymaga lokalnego certyfikatu</value>
   </data>
   <data name="LoginTitle" xml:space="preserve">
-    <value>Se connecter</value>
+    <value>Zaloguj się</value>
   </data>
   <data name="MenuItemLoadEAP" xml:space="preserve">
-    <value>Chargez le fichier .eap-config...</value>
+    <value>Ładuję plik .eap-config ...</value>
   </data>
   <data name="MenuItemReauthenticate" xml:space="preserve">
-    <value>Réauthentifier...</value>
+    <value>Zaloguj się ponownie ...</value>
   </data>
   <data name="MenuItemRefresh" xml:space="preserve">
-    <value>Actualiser les informations d'identification</value>
+    <value>Odśwież dane logowania</value>
   </data>
   <data name="MenuItemRemoveCertificates" xml:space="preserve">
-    <value>Supprimer les certificats racine...</value>
+    <value>Usuń certyfikaty główne...</value>
   </data>
   <data name="MenuItemRemoveProfile" xml:space="preserve">
-    <value>Supprimer le profil Wi-Fi configuré...</value>
+    <value>Usuń skonfigurowany profile Wi-Fi ...</value>
   </data>
   <data name="MenuItemUninstall" xml:space="preserve">
-    <value>Désinstaller l'application...</value>
+    <value>Odinstaluj aplikację...</value>
   </data>
   <data name="MinutesLeft" xml:space="preserve">
-    <value>{0}minutes supplémentaires</value>
+    <value>jeszcze {0}minut</value>
+  </data>
+  <data name="EmojiNo" xml:space="preserve">
+    <value>✗</value>
+    <comment>Single emoji</comment>
   </data>
   <data name="NoEAPConfig" xml:space="preserve">
-    <value>Aucune information de configuration EAP à afficher</value>
+    <value>Brak informacji EAP Config do pokazania</value>
   </data>
   <data name="ChoiceKeyNo" xml:space="preserve">
-    <value>n</value>
+    <value>t</value>
+    <comment>Single button press for "no" in terminal</comment>
   </data>
   <data name="OAuthExplanation" xml:space="preserve">
-    <value>Pour continuer vous devez vous authentifier dans votre navigateur, une fenêtre devrait s'ouvrir automatiquement.</value>
+    <value>Wby kontynuować musisz się zalogować w przeglądarce, okno powinno się automatycznie otworzyć.</value>
   </data>
   <data name="OAuthWaitingTitle" xml:space="preserve">
-    <value>attente ...</value>
+    <value>Czekam...</value>
   </data>
   <data name="OptionDescriptionCertificatePath" xml:space="preserve">
-    <value>Chemin du fichier de certificat</value>
+    <value>Ścieżka pliku certyfikatu</value>
   </data>
   <data name="OptionDescriptionEAPConfig" xml:space="preserve">
-    <value>Chemin d'accès à la configuration EAP .eap-config.</value>
+    <value>Ścieżka pliku EAP-config .eap-config.</value>
   </data>
   <data name="OptionDescriptionForce" xml:space="preserve">
-    <value>Forcer l’action.</value>
+    <value>Wymuś działanie.</value>
   </data>
   <data name="OptionDescriptionInstitute" xml:space="preserve">
-    <value>Le nom de l'établissement auquel se connecter.</value>
+    <value>Nazwa instytucji z którą się połączyć.</value>
   </data>
   <data name="OptionDescriptionProfile" xml:space="preserve">
-    <value>Profil de l'établissement auquel se connecter.</value>
+    <value>Profil instytucji z którą się połączyć.</value>
   </data>
   <data name="OptionDescriptionQuery" xml:space="preserve">
-    <value>Requête pour filtrer les éléments</value>
+    <value>Filtr wyszukania</value>
   </data>
   <data name="OptionRequired" xml:space="preserve">
-    <value>L'option {0} est requise</value>
+    <value>Wymagana opcja {0}</value>
   </data>
   <data name="Passphrase" xml:space="preserve">
-    <value>Phrase secrète du certificat</value>
+    <value>Hasło certyfikatu</value>
   </data>
   <data name="PassphraseLabel" xml:space="preserve">
-    <value>Entrez le mot de passe pour le certificat</value>
+    <value>Wprowadź hasło certyfikatu</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>Mot de passe</value>
+    <value>Hasło</value>
   </data>
   <data name="PasswordLabel" xml:space="preserve">
-    <value>Mot de passe: </value>
+    <value>Hasło:</value>
   </data>
   <data name="ProfileContactInfo" xml:space="preserve">
-    <value>Coordonnées</value>
+    <value>Informacje kontaktowe</value>
   </data>
   <data name="ProfileEmail" xml:space="preserve">
-    <value>Email</value>
+    <value>E-mail</value>
   </data>
   <data name="ProfileLabel" xml:space="preserve">
-    <value>Nom du Profil</value>
+    <value>Nazwa profilu</value>
   </data>
   <data name="ProfileNotAffiliatedInstitution" xml:space="preserve">
-    <value>Vous n'êtes pas affilié à un établissement ?</value>
+    <value>Nie jesteś powiązany z instytucją?</value>
   </data>
   <data name="ProfilePhone" xml:space="preserve">
-    <value>Téléphone</value>
+    <value>Telefon</value>
   </data>
   <data name="ProfileRemoveConfirmation" xml:space="preserve">
-    <value>Cela supprimera toute la configuration de '{0}'.</value>
+    <value>To usunie całą konfigurację dla '{0}'.</value>
   </data>
   <data name="ProfileSelectOtherInstitution" xml:space="preserve">
-    <value>Sélectionnez un autre profil</value>
+    <value>Wybierz inny profil</value>
   </data>
   <data name="ProfileWeb" xml:space="preserve">
     <value>Web</value>
   </data>
   <data name="RedirectText" xml:space="preserve">
-    <value>Cliquez ici pour être redirigé vers le site des établissements pour plus d'informations sur la façon de vous connecter. Lorsque vous cliquez sur le lien, cette application se fermera.</value>
+    <value>Kliknij by uruchomić przekierowanie do strony instytucji by uzyskać więcej informacji jak się połączyć. Po kliknięciu ta aplikacja zamknie się automatycznie.</value>
   </data>
   <data name="RedirectTitle" xml:space="preserve">
-    <value>Redirection</value>
+    <value>Przekieruj</value>
   </data>
   <data name="RemoveProfileMessage" xml:space="preserve">
-    <value>Cela supprimera toute la configuration pour
+    <value>To usunie całą konfigurację dla
 {0}</value>
   </data>
   <data name="RemoveProfileTitle" xml:space="preserve">
-    <value>Retirer {0}</value>
+    <value>Usuń {0}</value>
   </data>
   <data name="RequestToInstallCertificates" xml:space="preserve">
-    <value>Installer tous les certificats requis ?</value>
+    <value>Zainstalować wszystkie wymagane certyfikaty?</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>Recherchez votre organisation</value>
+    <value>Wyszukaj swoją instytucję</value>
   </data>
   <data name="SelectFile" xml:space="preserve">
-    <value>Parcourir</value>
+    <value>Przeglądaj</value>
   </data>
   <data name="SelectInstitution" xml:space="preserve">
-    <value>Sélectionner un établissement</value>
+    <value>Wybierz instytucję</value>
   </data>
   <data name="SelectProfile" xml:space="preserve">
-    <value>Sélectionner un Profil</value>
+    <value>Wybierz profil</value>
   </data>
   <data name="TermsOfUseTitle" xml:space="preserve">
-    <value>Condition d'utilisation</value>
+    <value>Warunki Użytkowania</value>
   </data>
   <data name="UninstallNotification" xml:space="preserve">
-    <value>L'application et sa configuration ont été désinstallées.</value>
+    <value>Usunięto {0} wraz z całą konfiguracją.</value>
   </data>
   <data name="Username" xml:space="preserve">
-    <value>Nom d'utilisateur</value>
+    <value>Login</value>
   </data>
   <data name="UserNameWatermark" xml:space="preserve">
     <value>@example.com</value>
@@ -552,45 +561,135 @@ Exception: {0}</value>
     <value>{0}</value>
   </data>
   <data name="VersionReleaseNoVersion" xml:space="preserve">
-    <value>Sans version</value>
+    <value>Bez wersji</value>
   </data>
   <data name="WarningFileDoesNotExist" xml:space="preserve">
-    <value>Le fichier spécifié n'existe pas.</value>
+    <value>Wskazany plik nie istnieje.</value>
   </data>
   <data name="WarningInstallCertificates" xml:space="preserve">
-    <value>Vous devez d'abord installer les certificats avec InstallCertificates</value>
+    <value>Musisz najpierw zainstalować certyfikaty przy pomocy InstallCertificates</value>
   </data>
   <data name="WarningMissingCertificates" xml:space="preserve">
-    <value>Certificats manquants</value>
+    <value>Brakujące certyfikaty</value>
   </data>
   <data name="WarningNoInstitutesFound" xml:space="preserve">
-    <value>Aucun institut trouvé</value>
+    <value>Nie znaleziono instytucji</value>
   </data>
   <data name="WarningNoProfilesFound" xml:space="preserve">
-    <value>Aucun profil trouvé</value>
+    <value>Nie znaleziono profili</value>
   </data>
   <data name="WarningNoSupportedAuthenticationMethod" xml:space="preserve">
-    <value>Aucune méthode d'authentification prise en charge n'a été trouvée.</value>
+    <value>Nie znaleziono żadnych wspieranych metod uwierzytelnienia.</value>
   </data>
   <data name="WarningProfileNotSupported" xml:space="preserve">
-    <value>Le profil que vous avez sélectionné n'est pas pris en charge par cette application.</value>
+    <value>Wybrany profil nie jest wspierany przez tę aplikację.</value>
   </data>
   <data name="WarningUninstall" xml:space="preserve">
-    <value>Vous êtes actuellement en train de désinstaller complètement {0}.</value>
+    <value>Jesteś w trakcie całkowitej deinstalacji {0}.</value>
   </data>
   <data name="WarningUninstallCertificates" xml:space="preserve">
-    <value>Cela signifie désinstaller tous les certificats racines de confiance installés par cette application.</value>
+    <value>To oznacza odinstalowanie wszystkich zaufanych certyfikatów głównych zainstalowanych przez tę aplikację.</value>
   </data>
   <data name="WarningUnsupportedFileType" xml:space="preserve">
-    <value>Le type de fichier que vous avez choisi n'est pas pris en charge.</value>
+    <value>Wybrany typ pliku nie jest wspierany.</value>
   </data>
   <data name="WarnRealmMismatch" xml:space="preserve">
-    <value>Le domaine de OuterIdentity sera défini sur "{0}" mais le profil spécifié "{1}"</value>
+    <value>Domena w Tożsamości Zewnętrznej będzie ustawiona na "{0}" pomimo, że profil specyfikuje "{1}"</value>
+  </data>
+  <data name="EmojiWarning" xml:space="preserve">
+    <value>⚠️</value>
+    <comment>Single emoji</comment>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Tak</value>
+  </data>
+  <data name="EmojiYes" xml:space="preserve">
+    <value>✓</value>
+    <comment>Single emoji</comment>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nie</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
-    <value>{0} nécessite une connexion Internet active.</value>
+    <value>{0}wymaga aktywnego połączenia z internetem.</value>
   </data>
   <data name="ConnectTo0" xml:space="preserve">
-    <value>Se connecter à {0}</value>
+    <value>Połącz z {0}</value>
+  </data>
+  <data name="ExampleRealm" xml:space="preserve">
+    <value>przykład</value>
+  </data>
+  <data name="ProfileRenewCertificate" xml:space="preserve">
+    <value>Odśwież konto</value>
+  </data>
+  <data name="ProfileRepairCertificate" xml:space="preserve">
+    <value>Napraw konto</value>
+  </data>
+  <data name="CheckCertificateToastButton" xml:space="preserve">
+    <value>Odnów konto</value>
+  </data>
+  <data name="CheckCertificateToastP1" xml:space="preserve">
+    <value>Twoje konto {0}za chwilę wygaśnie.</value>
+  </data>
+  <data name="CheckCertificateToastP2" xml:space="preserve">
+    <value>Zostało Ci {0}dni, odnów swoje konto.</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Dostępna aktualizacja</value>
+  </data>
+  <data name="UpdateCurrentFileNewer" xml:space="preserve">
+    <value>Zainstalowana wersja {0} jest starsza niż ta wersja. Czy chcesz zaktualizować?</value>
+  </data>
+  <data name="VersionNoLongerSupported" xml:space="preserve">
+    <value>Wersja {0}{1}nie jest już wspierana. Najnowsza wersja to {2}</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Masz połączenie z {0}</value>
+  </data>
+  <data name="UninstallNotificationTitle" xml:space="preserve">
+    <value>Odinstaluj {0}</value>
+  </data>
+  <data name="ButtonAppConnect" xml:space="preserve">
+    <value>Połącz z {0}</value>
+  </data>
+  <data name="InstallSuccess" xml:space="preserve">
+    <value>Instalacja {0} zakończyła się powodzeniem.</value>
+  </data>
+  <data name="InstallTitle" xml:space="preserve">
+    <value>instalacja {0}</value>
+  </data>
+  <data name="OAuthResponseAcceptedTitle" xml:space="preserve">
+    <value>Ta aplikacja została zweryfikowana!</value>
+  </data>
+  <data name="OAuthResponseRejectedTitle" xml:space="preserve">
+    <value>Autoryzacja została odrzucona.</value>
+  </data>
+  <data name="OAuthResponseCloseMessage" xml:space="preserve">
+    <value>Możesz teraz zamknąć zakładkę i 
+wrócić do aplikacji.</value>
+  </data>
+  <data name="OAuthAuthorizationTitle" xml:space="preserve">
+    <value>Uwierzytelnienie</value>
+  </data>
+  <data name="ErrorOccurredWhileRetreivingProfile" xml:space="preserve">
+    <value>Wystąpił błąd przy pobieraniu profilu EAP lib LetsWifi</value>
+  </data>
+  <data name="IncompatibleVersionMessage" xml:space="preserve">
+    <value>Ta wersja {0} jest przeznaczona na inną architekturę niż Twoje urządzenie.</value>
+  </data>
+  <data name="UpdateAvailableWithVersionNo" xml:space="preserve">
+    <value>Dostępne jest {0}{1}</value>
+  </data>
+  <data name="UpdateNowButton" xml:space="preserve">
+    <value>Uaktualnij teraz</value>
+  </data>
+  <data name="OpenBrowserButton" xml:space="preserve">
+    <value>Otwórz przeglądarkę</value>
+  </data>
+  <data name="CopyLinkButton" xml:space="preserve">
+    <value>Skopiuj link</value>
   </data>
 </root>

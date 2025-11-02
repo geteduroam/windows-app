@@ -17,7 +17,7 @@ public class LetsWifiProfile
         public string? TokenEndpoint { get; set; }
 
         [JsonProperty("authorization_endpoint")]
-        public string AuthorizationEndpoint { get; set; } = null!;
+        public string? AuthorizationEndpoint { get; set; } = null!;
     }
 }
 

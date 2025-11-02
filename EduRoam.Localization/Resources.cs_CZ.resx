@@ -60,45 +60,45 @@
             : and then encoded with base64 encoding.
     -->
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -118,480 +118,578 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppCommandLineHelpFlagsTitle" xml:space="preserve">
-    <value>Toetatud CLI käsud:</value>
+    <value>Podporované příznaky příkazového řádku:</value>
   </data>
   <data name="AppCommandLineHelpFlagsHelp" xml:space="preserve">
-    <value>Näita seda abiteksti.</value>
+    <value>Zobrazit tento text nápovědy.</value>
   </data>
   <data name="AppCommandLineHelpFlagsInstall" xml:space="preserve">
-    <value>Paigalda programm sihtkohta: %USER%/AppData/Local.</value>
+    <value>Nainstalovat tento program do %USER%/AppData/Local.</value>
   </data>
   <data name="AppCommandLineHelpFlagsUninstall" xml:space="preserve">
-    <value>Eemalda programm sihtkohast %USER%/AppData/Local along
-koos seadistusandmetega.</value>
+    <value>Odinstalovat tento program z %USER%/AppData/Local,
+včetně všech nastavení.</value>
   </data>
   <data name="AppCommandLineHelpFlagsRefresh" xml:space="preserve">
-    <value>Uuenduskoodi kasutades uuenda kasutajasertifikaat
-Käivitatakse automaatselt Windowsis ajastatud toiminguga.
-/force : 
-Uuenduskoodi kasutades uuenda kasutajasertifikaat.
-Uuendab profiili ka siis, kui kliendisertifikaadi kehtivusperioodist 
-on rohkem kui 1/3 veel ees.</value>
+    <value>Obnovit uživatelský certifikát pomocí obnovovacího tokenu.
+Zamýšleno k automatickému spuštění naplánovanou úlohou v systému-
+Tato možnost nic nedělá, pokud u uživatelského
+certifikátu zbývá více než třetina jeho platnosti.
+Zkombinujte s /force pro obnovení nezávisle na platnosti.</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
-    <value>Kas oled kindel, et soovid jätkata?</value>
+    <value>Opravdu chcete pokračovat?</value>
   </data>
   <data name="ButtonClose" xml:space="preserve">
-    <value>Sulge</value>
+    <value>Zavřít</value>
   </data>
   <data name="ButtonConnect" xml:space="preserve">
-    <value>Ühenda</value>
+    <value>Připojit se</value>
   </data>
   <data name="ButtonInstall" xml:space="preserve">
-    <value>Paigalda</value>
+    <value>Nainstalovat</value>
   </data>
   <data name="ButtonNext" xml:space="preserve">
-    <value>Järgmine</value>
+    <value>Další</value>
   </data>
   <data name="ButtonPrevious" xml:space="preserve">
-    <value>Eelmine</value>
+    <value>Předchozí</value>
   </data>
   <data name="ButtonBack" xml:space="preserve">
-    <value>Tagasi</value>
+    <value>Zpět</value>
   </data>
   <data name="CertificateLabel" xml:space="preserve">
-    <value>Sertifikaat:</value>
+    <value>Certifikát:</value>
   </data>
   <data name="CertificatesInstallationNotification" xml:space="preserve">
-    <value>Jätkamiseks tuleb paigaldada järgmised sertifikaadid.</value>
+    <value>Abyste mohli pokračovat, musí být nainstalovány následující certifikáty.</value>
   </data>
   <data name="CertificatesInstallationStatus" xml:space="preserve">
-    <value>{0}, paigaldatud: {1}</value>
+    <value>{0}, nainstalováno: {1}</value>
   </data>
   <data name="CertificateTitleInstalled" xml:space="preserve">
-    <value>sertifikaadid on paigaldatud</value>
+    <value>certifikátů nainstalováno</value>
   </data>
   <data name="CertificateTitleStart" xml:space="preserve">
-    <value>Jätkamiseks tuleb paigaldada loetletud sertifikaadid.</value>
+    <value>Abyste mohli pokračovat, musíte nainstalovat vypsané certifikáty</value>
   </data>
   <data name="CommandDescriptionConnect" xml:space="preserve">
-    <value>Seadista Wi-Fi vastavalt asutuse profiilile ja ühenda.</value>
+    <value>Nastavit Wi-Fi podle profilu organizace a připojit se.</value>
   </data>
   <data name="CommandDescriptionInstall" xml:space="preserve">
-    <value>Paigalda see programm sihtkohta: %USER%/AppData/Local</value>
+    <value>Nainstalovat tento binární soubor do %USER%/AppData/Local</value>
   </data>
   <data name="CommandDescriptionList" xml:space="preserve">
-    <value>Hangi asutuste nimekiri või asutuse profiilid.</value>
+    <value>Získat seznam organizací nebo profilů organizace</value>
   </data>
   <data name="CommandDescriptionReauthenticate" xml:space="preserve">
-    <value>Autendi uuesti</value>
+    <value>Znovu autentifikovat</value>
   </data>
   <data name="CommandDescriptionRefresh" xml:space="preserve">
-    <value>Uuenda kasutajakonto andmeid</value>
+    <value>Obnovit údaje</value>
   </data>
   <data name="CommandDescriptionRemove" xml:space="preserve">
-    <value>Kustuta seadistatud Wi-Fi profiil ja/või juursertifikaadid</value>
+    <value>Odstranit nastavený profil Wi-Fi a/nebo kořenové certifikáty</value>
   </data>
   <data name="CommandDescriptionShow" xml:space="preserve">
-    <value>Näita EAP Config (seadistamise) teavet</value>
+    <value>Zobrazit informace o konfiguraci EAP</value>
   </data>
   <data name="CommandDescriptionStatus" xml:space="preserve">
-    <value>Näita olekut</value>
+    <value>Zobrazit stav</value>
   </data>
   <data name="CommandDescriptionUninstall" xml:space="preserve">
-    <value>Eemalda rakendus</value>
+    <value>Odinstalovat aplikaci</value>
   </data>
   <data name="ConfiguredButNotConnected" xml:space="preserve">
-    <value>Kõik on seadistatud.
-Ei saanud ühendada, sest ei leitud EAP Config (seadistust).</value>
+    <value>Vše je nastaveno!
+Nepodařilo se připojit, protože nebyla nalezena konfigurace EAP</value>
   </data>
   <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>Kõik on seadistatud.
-Ei saa {0}iga ühendada, oled arvatavasti väljaspool leviala.</value>
+    <value>Vše je nastaveno!
+Nepodařilo se připojit k {0}, nejspíše se nacházíte mimo pokrytí.</value>
   </data>
   <data name="ConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Kõik on seadistatud.
-Ei saa {0}iga ühendada.</value>
+    <value>Vše je nastaveno!
+Nepodařilo se připojit k {0}.</value>
   </data>
   <data name="ConfiguredEap" xml:space="preserve">
-    <value>EAP on seadistatud</value>
+    <value>EAP je nastaveno</value>
   </data>
   <data name="ConnectionUsernameAndPasswordRequired" xml:space="preserve">
-    <value>Palun sisesta ühendamiseks kasutajanimi ja parool.</value>
+    <value>Pro připojení zadejte uživatelské jméno a heslo.</value>
   </data>
   <data name="ConsentMain" xml:space="preserve">
-    <value>Kasutustingimustega</value>
+    <value>Podmínky použití</value>
   </data>
   <data name="ConsentPost" xml:space="preserve">
-    <value>asutuse</value>
+    <value>organizace</value>
   </data>
   <data name="ConsentPre" xml:space="preserve">
-    <value>Klõpsates 'Järgmine' nõustud</value>
+    <value>Kliknutím na „Další“ souhlasíte s dokumentem</value>
   </data>
   <data name="CredentialsLabel" xml:space="preserve">
-    <value>Sisesta oma kasutajanimi ja parool</value>
+    <value>Zadejte vaše uživatelské jméno a heslo</value>
   </data>
   <data name="CredentialsPasswordLabel" xml:space="preserve">
-    <value>Parool:</value>
+    <value>Heslo:</value>
   </data>
   <data name="CredentialsUsernameLabel" xml:space="preserve">
-    <value>Kasutajanimi:</value>
+    <value>Uživatelské jméno:</value>
   </data>
   <data name="DaysLeft" xml:space="preserve">
-    <value>{0} päeva veel</value>
+    <value>dalších {0} dní</value>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Tehtud</value>
+    <value>Hotovo</value>
   </data>
   <data name="ErrorApi" xml:space="preserve">
-    <value>API viga</value>
+    <value>Chyba API</value>
   </data>
   <data name="ErrorCannotConnectWithServer" xml:space="preserve">
-    <value>Ei saanud serveriga ühenduda.
+    <value>Nepodařilo se připojit k serveru.
 
-Kontrolli, kas Sul on internetiühendus olemas, seejärel proovi uuesti.
+Ujistěte se, že jste připojeni k internetu a zkuste to znovu.
 
-Erand: {0}</value>
+Chyba: {0}</value>
   </data>
   <data name="ErrorCannotFetchTokens" xml:space="preserve">
-    <value>Ei saanud kätte koodi  json'i.
-Erand: {0}</value>
+    <value>Nepodařilo se načíst JSON tokenu.
+Chyba: {0}</value>
   </data>
   <data name="ErrorCannotRemoveWLANProfile" xml:space="preserve">
-    <value>Mõnda WiFi profiili ei saanud eemaldada</value>
+    <value>Nepodařilo se odstranit některé profily WLAN</value>
   </data>
   <data name="ErrorCannotRetrieveProfileWhenOffline" xml:space="preserve">
-    <value>Ei saa profiili tuua, kui võrguühendust ei ole</value>
+    <value>Nelze načíst profil, když jste offline</value>
   </data>
   <data name="ErrorClientCredentialNotValidYes" xml:space="preserve">
-    <value>Kliendi kasutajaandmed ei ole veel valideeritud. Need hakkavad kehtima {0}.</value>
+    <value>Údaje klienta zatím nejsou platné. Budou platné {0}.</value>
   </data>
   <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
-    <value>Kõik on seadistatud.
-Ei saanud ühendada, sest ei leitud EAP Config (seadistust).</value>
+    <value>Vše je nastaveno!
+Nepodařilo se připojit, protože nebyla nalezena konfigurace EAP</value>
   </data>
   <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>Kõik on seadistatud.
-Ei saa {0}iga ühendada, oled arvatavasti väljaspool leviala.</value>
+    <value>Vše je správně nastaveno!
+
+Nepodařilo se nám nicméně připojit k síti {0}, síť se nachází mimo dosah. Jakmile budete v dosahu, váš systém se k síti {0} připojí.</value>
   </data>
   <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Kõik on seadistatud.
-Ei saa {0}iga ühendada.</value>
+    <value>Vše je správně nastaveno!
+
+Nepodařilo se nám nicméně připojit k síti {0}, ačkoli se nachází v dosahu. Můžete se k ní ručně připojit jejím výběrem v nastaveních systému Windows.</value>
   </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
-    <value>Kasutajanimes peab olema üksainus @</value>
+    <value>Uživatelské jméno musí obsahovat přesně jeden znak @</value>
   </data>
   <data name="ErrorCredentialsEndsWith" xml:space="preserve">
-    <value>Kasutajanimi ei tohi lõppeda punkti ega tühikuga</value>
+    <value>Uživatelské jméno nesmí končit tečkou nebo mezerou</value>
   </data>
   <data name="ErrorCredentialsEndWithRealm" xml:space="preserve">
-    <value>Kasutajanime lõpus peab olema .{0} või @{0}</value>
+    <value>Uživatelské jméno musí končit na .{0} nebo @{0}</value>
   </data>
   <data name="ErrorCredentialsEndWithRealmNoSubdomain" xml:space="preserve">
-    <value>Kasutajanime lõpus peab olema @{0}</value>
+    <value>Uživatelské jméno musí končit na @{0}</value>
   </data>
   <data name="ErrorCredentialsSpecialCharacters" xml:space="preserve">
-    <value>Sümbolid . ja @ ei tohi olla kõrvuti</value>
+    <value>Znaky jako . a @ se nemohou nacházet vedle sebe</value>
   </data>
   <data name="ErrorEapConfigCorrupted" xml:space="preserve">
-    <value>Valitud EAP seadistusfail on vigane. Palun vali muu fail.</value>
+    <value>Vybraný konfigurační soubor EAP je poškozený. Vyberte prosím jiný soubor.</value>
   </data>
   <data name="ErrorEapConfigInvalid" xml:space="preserve">
-    <value>Faili ei saa lugeda. Palun vali kehtiv EAP seadistusfail.</value>
+    <value>Nepodařilo se přečíst ze souboru. Ujistěte se, že jste vybrali platný konfigurační soubor EAP.</value>
   </data>
   <data name="ErrorEapConfigIsEmpty" xml:space="preserve">
-    <value>Ei saanud ühendada, EAP seadistus on tühi.</value>
+    <value>Nepodařilo se připojit, konfigurace EAP je prázdná</value>
   </data>
   <data name="ErrorEapNotConfigured" xml:space="preserve">
-    <value>EAP-d ei saanud seadistada</value>
+    <value>Nepodařilo se nastavit EAP</value>
   </data>
   <data name="ErrorInternetConnection" xml:space="preserve">
-    <value>Internetiühenduse viga</value>
+    <value>Chyba u připojení k internetu</value>
   </data>
   <data name="ErrorInvalidCertificatePath" xml:space="preserve">
-    <value>Vale sertifikaaditee</value>
+    <value>Neplatná cesta k certifikátu</value>
   </data>
   <data name="ErrorInvalidCredentials" xml:space="preserve">
-    <value>Kasutajanimi ja/või parool ei ole kehtiv</value>
+    <value>Uživatelské jméno a/nebo heslo není platné</value>
   </data>
   <data name="ErrorInvalidEapConfig" xml:space="preserve">
-    <value>Vigane EAP seadistus; seda ei tohiks juhtuda. Palun saada vearaport.</value>
+    <value>Poskytnuta neplatná konfigurace EAP, toto by nemělo nastat, nahlaste to prosím jako chybu.</value>
   </data>
   <data name="ErrorMissingCredentials" xml:space="preserve">
-    <value>Kasutajaandmeid ei ole antud</value>
+    <value>Údaje nebyly poskytnuty</value>
   </data>
   <data name="ErrorMissingRequiredCACertificate" xml:space="preserve">
-    <value>Nõutavat CA sertikaati ei paigaldatud; seda ei tohiks juhtuda. Palun saada vearaport.</value>
+    <value>Požadovaný certifikát CA nebyl nainstalován, toto by nemělo nastat, nahlaste to prosím jako chybu</value>
   </data>
   <data name="ErrorNoClientCertificateProvided" xml:space="preserve">
-    <value>Ei esitatud (kehtivat) kliendisertifikaati ({0} parameeter.</value>
+    <value>Nebyl poskytnut (platný) certifikát klienta ({0} parametr.</value>
   </data>
   <data name="ErrorNoConnection" xml:space="preserve">
-    <value>Ei saanud ühendada.
-Erand: {0}.</value>
+    <value>Nepodařilo se připojit.
+Chyba: {0}.</value>
   </data>
   <data name="ErrorNoInternet" xml:space="preserve">
-    <value>Internetiühendust ei ole</value>
+    <value>Chybí připojení k internetu</value>
   </data>
   <data name="ErrorNotUninstalled" xml:space="preserve">
-    <value>{0}'i ei ole eemaldatud.</value>
+    <value>{0} nebyl odinstalován.</value>
   </data>
   <data name="ErrorOptionIsEmpty" xml:space="preserve">
-    <value>{0} valikväärtus ei tohi olla tühi ega koosneda tühikust</value>
+    <value>Hodnota možnosti {0} nemůže být prázdná nebo obsahovat pouze mezery</value>
   </data>
   <data name="ErrorRequiredCertificatesNotInstalled" xml:space="preserve">
-    <value>Kõiki nõutud sertifikaate ei ole paigaldatud.</value>
+    <value>Nejsou nainstalovány všechny požadované certifikáty.</value>
   </data>
   <data name="ErrorShowCommandOptions" xml:space="preserve">
-    <value>Puuduvad valikud. Tee valik {0} või valikud  {1} ja  {2}</value>
+    <value>Chybí možnosti. Poskytněte možnost {0} nebo možnosti {1} a {2}</value>
   </data>
   <data name="ErrorUnknownProfile" xml:space="preserve">
-    <value>Tundmatu profiil</value>
+    <value>Neznámý profil, opakujte proces autentifikace</value>
   </data>
   <data name="ErrorUnsupportedConnectionType" xml:space="preserve">
-    <value>Tüübiga {0} ühendus ei ole (veel) toetatud.</value>
+    <value>Připojení typu {0} není (zatím) podporováno.</value>
   </data>
   <data name="ErrorUnsupportedInstituteOrProfile" xml:space="preserve">
-    <value>Asutus või profiil ei ole kas toetatud või on vigane.
-Palun vali muu asutus või profiil.
+    <value>Organizace nebo profil není podporován nebo je poškozen.
+Vyberte prosím jinou organizaci nebo profil.
 
-Erand: {0}</value>
+Chyba: {0}</value>
   </data>
   <data name="ErrorUnsupportedProfile" xml:space="preserve">
-    <value>Rakendus ei toeta Su valitud profiili. Ei leitud toetatud autentimismeetodit.</value>
+    <value>Vybraný profil není podporován touto aplikací. Nebyl nalezen žádný podporovaný způsob autentifikace.</value>
   </data>
   <data name="ErrorWirelessUnavailable" xml:space="preserve">
-    <value>Traadita ühendus ei ole sellel arvutil kasutatav</value>
+    <value>Na tomto počítači není dostupné bezdrátové připojení</value>
   </data>
   <data name="FileDialogSelectFile" xml:space="preserve">
-    <value>Palun vali fail</value>
+    <value>Vyberte prosím soubor.</value>
   </data>
   <data name="HoursLeft" xml:space="preserve">
-    <value>{0} tundi veel</value>
+    <value>ještě {0} hodin</value>
   </data>
-  <data name="No" xml:space="preserve">
-    <value>Ei</value>
+  <data name="ChoiceKeyYes" xml:space="preserve">
+    <value>a</value>
+    <comment>Single button press for "yes" in terminal</comment>
   </data>
   <data name="LabelAccountValidFor" xml:space="preserve">
-    <value>Su konto kehtib: </value>
+    <value>Váš účet je platný</value>
   </data>
   <data name="LabelEmail" xml:space="preserve">
     <value>E-mail</value>
   </data>
   <data name="LabelHelp" xml:space="preserve">
-    <value>Abi</value>
+    <value>Nápověda</value>
   </data>
   <data name="LabelPhone" xml:space="preserve">
     <value>Telefon</value>
   </data>
   <data name="LabelProfile" xml:space="preserve">
-    <value>Profiil</value>
+    <value>Profil</value>
   </data>
   <data name="LabelSupported" xml:space="preserve">
-    <value>Toetatud</value>
+    <value>Podporováno</value>
   </data>
   <data name="LabelTermsOfUse" xml:space="preserve">
-    <value>Kasutustingimused</value>
+    <value>Podmínky použití</value>
   </data>
   <data name="LabelVersion" xml:space="preserve">
-    <value>Rakenduse versioon</value>
+    <value>Verze aplikace</value>
   </data>
   <data name="LabelWeb" xml:space="preserve">
-    <value>Veeb</value>
+    <value>Web</value>
   </data>
   <data name="LoadCertificateFile" xml:space="preserve">
-    <value>Vali kliendisertifikaadi kimp</value>
+    <value>Vyberte balíček certifikátů klienta</value>
   </data>
   <data name="LoadEapFile" xml:space="preserve">
-    <value>Vali EAP Config (seadistus)fail</value>
+    <value>Vyberte konfigurační soubor EAP</value>
   </data>
   <data name="Loading" xml:space="preserve">
-    <value>Laadimine</value>
+    <value>Načítání</value>
   </data>
   <data name="LocalCertificateLabel" xml:space="preserve">
-    <value>See profiil vajab lokaalset sertifikaati</value>
+    <value>Tento profil vyžaduje místní certifikát</value>
   </data>
   <data name="LoginTitle" xml:space="preserve">
-    <value>Login</value>
+    <value>Přihlásit se</value>
   </data>
   <data name="MenuItemLoadEAP" xml:space="preserve">
-    <value>Lae fail .eap-config...</value>
+    <value>Načítání souboru .eap-config…</value>
   </data>
   <data name="MenuItemReauthenticate" xml:space="preserve">
-    <value>Autendi uuesti...</value>
+    <value>Znovu autentifikovat…</value>
   </data>
   <data name="MenuItemRefresh" xml:space="preserve">
-    <value>Uuenda kasutajakonto andmeid</value>
+    <value>Obnovit údaj</value>
   </data>
   <data name="MenuItemRemoveCertificates" xml:space="preserve">
-    <value>Eemalda juursertifikaadid...</value>
+    <value>Odstranit kořenové certifikáty…</value>
   </data>
   <data name="MenuItemRemoveProfile" xml:space="preserve">
-    <value>Eemalda seadistatud Wi-Fi profiil...</value>
+    <value>Odstranit nastavený profil Wi-Fi…</value>
   </data>
   <data name="MenuItemUninstall" xml:space="preserve">
-    <value>Eemalda rakendus...</value>
+    <value>Odinstalovat aplikaci…</value>
   </data>
   <data name="MinutesLeft" xml:space="preserve">
-    <value>{0} minutit veel</value>
+    <value>ještě {0} minut</value>
+  </data>
+  <data name="EmojiNo" xml:space="preserve">
+    <value>✗</value>
+    <comment>Single emoji</comment>
   </data>
   <data name="NoEAPConfig" xml:space="preserve">
-    <value>Ei ole EAP Config (seadistamise) teavet, mida näidata</value>
+    <value>Žádné informace o konfiguraci EAP k zobrazení</value>
+  </data>
+  <data name="ChoiceKeyNo" xml:space="preserve">
+    <value>n</value>
+    <comment>Single button press for "no" in terminal</comment>
   </data>
   <data name="OAuthExplanation" xml:space="preserve">
-    <value>Jätkamiseks pead end brauseris autentima, aken peaks olema automaatselt avanenud</value>
+    <value>Pro pokračování se musíte autentifikovat ve vašem prohlížeči, mělo by se automaticky otevřít jeho okno.</value>
   </data>
   <data name="OAuthWaitingTitle" xml:space="preserve">
-    <value>Ootel...</value>
+    <value>Čekání…</value>
   </data>
   <data name="OptionDescriptionCertificatePath" xml:space="preserve">
-    <value>Sertifikaadi asukoht (filepath)</value>
+    <value>Cesta k souboru certifikátu</value>
   </data>
   <data name="OptionDescriptionEAPConfig" xml:space="preserve">
-    <value>EAP seadistuse .eap-config asukoht.</value>
+    <value>Cesta ke konfiguraci EAP .eap-config.</value>
   </data>
   <data name="OptionDescriptionForce" xml:space="preserve">
-    <value>Sundteostamine.</value>
+    <value>Vynutit akci.</value>
   </data>
   <data name="OptionDescriptionInstitute" xml:space="preserve">
-    <value>Asutus, millega ühendada.</value>
+    <value>Název instituce, ke které se připojit.</value>
   </data>
   <data name="OptionDescriptionProfile" xml:space="preserve">
-    <value>Asutuse profiil, millega ühendada.</value>
+    <value>Profil instituce, ke které se připojit.</value>
   </data>
   <data name="OptionDescriptionQuery" xml:space="preserve">
-    <value>Päring üksuste filtreerimiseks</value>
+    <value>Dotaz pro filtrování položek</value>
   </data>
   <data name="OptionRequired" xml:space="preserve">
-    <value>Nõutud on valik {0}</value>
+    <value>Možnost {0} je vyžadována</value>
   </data>
   <data name="Passphrase" xml:space="preserve">
-    <value>Sertifikaadi parool</value>
+    <value>Heslová fráze certifikátu</value>
   </data>
   <data name="PassphraseLabel" xml:space="preserve">
-    <value>Sisesta sertifikaadi parool</value>
+    <value>Zadejte heslo certifikátu</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>Parool</value>
+    <value>Heslo</value>
   </data>
   <data name="PasswordLabel" xml:space="preserve">
-    <value>Parool:</value>
+    <value>Heslo:</value>
   </data>
   <data name="ProfileContactInfo" xml:space="preserve">
-    <value>Kontaktteave</value>
+    <value>Kontaktní informace</value>
   </data>
   <data name="ProfileEmail" xml:space="preserve">
-    <value>Email</value>
+    <value>E-mail</value>
   </data>
   <data name="ProfileLabel" xml:space="preserve">
-    <value>Profiili nimi</value>
+    <value>Název profilu</value>
   </data>
   <data name="ProfileNotAffiliatedInstitution" xml:space="preserve">
-    <value>Ei ole asutusega seotud?</value>
+    <value>Nejste spojeni s organizací?</value>
   </data>
   <data name="ProfilePhone" xml:space="preserve">
     <value>Telefon</value>
   </data>
   <data name="ProfileRemoveConfirmation" xml:space="preserve">
-    <value>See eemaldab seadistuse '{0}' jaoks.</value>
+    <value>Toto odstraní veškerou konfiguraci „{0}“.</value>
   </data>
   <data name="ProfileSelectOtherInstitution" xml:space="preserve">
-    <value>Vali muu profiil</value>
+    <value>Vybrat jiný profil</value>
   </data>
   <data name="ProfileWeb" xml:space="preserve">
-    <value>Veeb</value>
+    <value>Web</value>
   </data>
   <data name="RedirectText" xml:space="preserve">
-    <value>Asutuse ühendumisjuhendile suundumiseks klõpsa siia. Lingile klõpsamise järel praegune rakendus sulgub.</value>
+    <value>Klikněte sem pro přesměrování na web instituce pro více informací o tom, jak se připojit. Po kliknutí na odkaz se tato aplikace zavře.</value>
   </data>
   <data name="RedirectTitle" xml:space="preserve">
-    <value>Suuna ümber</value>
+    <value>Přesměrovat</value>
   </data>
   <data name="RemoveProfileMessage" xml:space="preserve">
-    <value>See eemaldab seadistuse '{0}' jaoks.</value>
+    <value>Toto odstraní veškerou konfiguraci
+{0}</value>
   </data>
   <data name="RemoveProfileTitle" xml:space="preserve">
-    <value>Eemalda {0}</value>
+    <value>Odstranit {0}</value>
   </data>
   <data name="RequestToInstallCertificates" xml:space="preserve">
-    <value>Paigalda kõik nõutud sertifikaadid?</value>
+    <value>Instalovat všechny požadované certifikáty?</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>Otsi oma asutust</value>
+    <value>Vyhledejte svou organizaci</value>
   </data>
   <data name="SelectFile" xml:space="preserve">
-    <value>Lehitse</value>
+    <value>Procházet</value>
   </data>
   <data name="SelectInstitution" xml:space="preserve">
-    <value>Vali asutus</value>
+    <value>Vybrat organizaci</value>
   </data>
   <data name="SelectProfile" xml:space="preserve">
-    <value>Vali profiil</value>
+    <value>Vybrat profil</value>
   </data>
   <data name="TermsOfUseTitle" xml:space="preserve">
-    <value>Kasutustingimused</value>
+    <value>Podmínky použití</value>
   </data>
   <data name="UninstallNotification" xml:space="preserve">
-    <value>Rakendus ja selle seadistused on eemaldatud.</value>
+    <value>{0} a její konfigurace byly odstraněny.</value>
   </data>
   <data name="Username" xml:space="preserve">
-    <value>Kasutajanimi</value>
+    <value>Uživatelské jméno</value>
   </data>
   <data name="UserNameWatermark" xml:space="preserve">
     <value>@example.com</value>
   </data>
   <data name="VersionDebug" xml:space="preserve">
-    <value>{0}+Debug</value>
+    <value>{0}+Ladicí</value>
   </data>
   <data name="VersionDebugNoVersion" xml:space="preserve">
-    <value>Debug</value>
+    <value>Ladicí</value>
   </data>
   <data name="VersionRelease" xml:space="preserve">
     <value>{0}</value>
   </data>
   <data name="VersionReleaseNoVersion" xml:space="preserve">
-    <value>Versionless</value>
+    <value>Bez verze</value>
   </data>
   <data name="WarningFileDoesNotExist" xml:space="preserve">
-    <value>Seda faili ei ole.</value>
+    <value>Daný soubor neexistuje.</value>
   </data>
   <data name="WarningInstallCertificates" xml:space="preserve">
-    <value>Esmalt pead paigaldama sertifikaadid - InstallCertificates</value>
+    <value>Nejprve musíte nainstalovat certifikáty pomocí InstallCertificates</value>
   </data>
   <data name="WarningMissingCertificates" xml:space="preserve">
-    <value>Sertifikaate on puudu</value>
+    <value>Chybějící certifikáty</value>
   </data>
   <data name="WarningNoInstitutesFound" xml:space="preserve">
-    <value>Asutusi ei leitud</value>
+    <value>Nenalezeny žádné instituce</value>
   </data>
   <data name="WarningNoProfilesFound" xml:space="preserve">
-    <value>Profiile ei leitud</value>
+    <value>Nenalezeny žádné profily</value>
   </data>
   <data name="WarningNoSupportedAuthenticationMethod" xml:space="preserve">
-    <value>Toetatud autentimismeetodit ei leitud.</value>
+    <value>Nenalezen podporovaný způsob autentifikace.</value>
   </data>
   <data name="WarningProfileNotSupported" xml:space="preserve">
-    <value>Valitud profiili see rakendus ei toeta.</value>
+    <value>Vybraný profil není touto aplikací podporován.</value>
   </data>
   <data name="WarningUninstall" xml:space="preserve">
-    <value>Oled {0}i täielikult eemaldamas.</value>
+    <value>Momentálně jste v procesu kompletní odinstalace {0}.</value>
   </data>
   <data name="WarningUninstallCertificates" xml:space="preserve">
-    <value>See tähendab rakenduse poolt paigaldatud usaldatud juursertifikaatide eemaldamist.</value>
+    <value>To znamená odinstalaci všech důvěryhodných kořenových certifikátů nainstalovaných touto aplikací.</value>
   </data>
   <data name="WarningUnsupportedFileType" xml:space="preserve">
-    <value>Valitud failitüüp ei ole toetatud.</value>
+    <value>Vybraný typ souboru není podporován.</value>
   </data>
   <data name="WarnRealmMismatch" xml:space="preserve">
-    <value>Välise identiteedi (OuterIdentity) domeeniks pannakse  "{0}", kuid profiilis on määratud "{1}"</value>
+    <value>Oblast pro OuterIdentity bude nastavena na „{0}“, profil ale udal „{1}“</value>
+  </data>
+  <data name="EmojiWarning" xml:space="preserve">
+    <value>⚠️</value>
+    <comment>Single emoji</comment>
   </data>
   <data name="Yes" xml:space="preserve">
-    <value>Jah</value>
+    <value>Ano</value>
+  </data>
+  <data name="EmojiYes" xml:space="preserve">
+    <value>✓</value>
+    <comment>Single emoji</comment>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Ne</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
-    <value>{0} vajab toimivat internetiühendust.</value>
+    <value>{0} vyžaduje aktivní připojení k internetu.</value>
   </data>
   <data name="ConnectTo0" xml:space="preserve">
-    <value>Ühenda {0}iga</value>
+    <value>Připojit se k {0}</value>
+  </data>
+  <data name="ExampleRealm" xml:space="preserve">
+    <value>příklad</value>
+  </data>
+  <data name="ProfileRenewCertificate" xml:space="preserve">
+    <value>Obnovit účet</value>
+  </data>
+  <data name="ProfileRepairCertificate" xml:space="preserve">
+    <value>Opravte svůj účet</value>
+  </data>
+  <data name="CheckCertificateToastButton" xml:space="preserve">
+    <value>Obnovit účet</value>
+  </data>
+  <data name="CheckCertificateToastP1" xml:space="preserve">
+    <value>Váš účet {0} brzy vyprší.</value>
+  </data>
+  <data name="CheckCertificateToastP2" xml:space="preserve">
+    <value>Zbývá vám {0} dní, obnovte prosím svůj účet.</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Je dostupná aktualizace</value>
+  </data>
+  <data name="UpdateCurrentFileNewer" xml:space="preserve">
+    <value>Nainstalovaná verze {0} je starší než tato verze. Chcete provést aktualizaci?</value>
+  </data>
+  <data name="VersionNoLongerSupported" xml:space="preserve">
+    <value>{0} verze {1} již není podporován. Nejnovější verze je {2}</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>Nyní jste připojeni k síti {0}.</value>
+  </data>
+  <data name="UninstallNotificationTitle" xml:space="preserve">
+    <value>Odinstalovat {0}</value>
+  </data>
+  <data name="ButtonAppConnect" xml:space="preserve">
+    <value>Připojit se k {0}</value>
+  </data>
+  <data name="InstallSuccess" xml:space="preserve">
+    <value>{0} byl úspěšně nainstalován.</value>
+  </data>
+  <data name="InstallTitle" xml:space="preserve">
+    <value>Instalace {0}</value>
+  </data>
+  <data name="OAuthResponseAcceptedTitle" xml:space="preserve">
+    <value>Aplikace byla autorizována!</value>
+  </data>
+  <data name="OAuthResponseRejectedTitle" xml:space="preserve">
+    <value>Autorizace byla zamítnuta.</value>
+  </data>
+  <data name="OAuthResponseCloseMessage" xml:space="preserve">
+    <value>Nyní můžete zavřít tuto kartu
+a vrátit se do aplikace.</value>
+  </data>
+  <data name="OAuthAuthorizationTitle" xml:space="preserve">
+    <value>Autorizace</value>
+  </data>
+  <data name="ErrorOccurredWhileRetreivingProfile" xml:space="preserve">
+    <value>Během získávání profilu LetsWifi nebo EAP došlo k chybě</value>
+  </data>
+  <data name="IncompatibleVersionMessage" xml:space="preserve">
+    <value>Tato verze aplikace {0} je určena pro jinou architekturu, než kterou používáte.</value>
+  </data>
+  <data name="UpdateAvailableWithVersionNo" xml:space="preserve">
+    <value>Je dostupný {0} {1}.</value>
+  </data>
+  <data name="UpdateNowButton" xml:space="preserve">
+    <value>Aktualizovat</value>
+  </data>
+  <data name="OpenBrowserButton" xml:space="preserve">
+    <value>Otevřít prohlížeč</value>
+  </data>
+  <data name="CopyLinkButton" xml:space="preserve">
+    <value>Kopírovat odkaz</value>
   </data>
 </root>

@@ -23,7 +23,7 @@ namespace App.Library.ViewModels
                 {
                     var eapConfiguration = new EapConfigTask(new System.Threading.ManualResetEvent(false), new System.Threading.ManualResetEvent(false));
 
-                    var eapConfig = await eapConfiguration.GetEapConfigAsync(this.profile.Id);
+                    var eapConfig = await eapConfiguration.GetEapConfigAsync(this.profile);
 
                     // Forces the window to be focussed again after returning from OAuth flow
                     Application.Current.Dispatcher.Invoke(() =>

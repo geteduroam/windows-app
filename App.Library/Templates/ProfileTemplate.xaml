@@ -135,6 +135,7 @@
                     Margin="5"
                     Text="{x:Static lang:Resources.ProfileNotAffiliatedInstitution}"
                     TextAlignment="Center"
+                    Visibility="{Binding Owner.SelfTestSuccess, Converter={StaticResource BooleanToVisibilityConverter}}"
                     TextWrapping="Wrap" />
                 <Button
                     Grid.Row="1"
@@ -146,6 +147,7 @@
                     VerticalAlignment="Top"
                     Command="{Binding SelectOtherInstitutionCommand}"
                     Content="{x:Static lang:Resources.ProfileSelectOtherInstitution}"
+                    Visibility="{Binding Owner.SelfTestSuccess, Converter={StaticResource BooleanToVisibilityConverter}}"
                     Style="{DynamicResource WhiteButtonStyle}" />
             </Grid>
         </Grid>

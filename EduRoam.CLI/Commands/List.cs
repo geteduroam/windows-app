@@ -83,7 +83,7 @@ namespace EduRoam.CLI.Commands
         {
             try
             {
-                var institutes = await InstitutesTask.GetAsync(query);
+                var institutes = await InstitutesTask.SearchAsync(query);
 
                 if (institutes.Any())
                 {

@@ -31,12 +31,12 @@ namespace EduRoam.Connect.Tasks
                 throw new ArgumentNullException(nameof(institute));
             }
 
-            using var idpDownloader = new IdentityProviderDownloader();
+            using var idpDownloader = IdentityProviderDownloader.Instance;
 
             await idpDownloader.LoadProviders();
             if (idpDownloader.Loaded)
             {
-                var provider = idpDownloader.ClosestProviders.SingleOrDefault(provider => provider.Name.Equals(institute, StringComparison.InvariantCultureIgnoreCase));
+                var provider = idpDownloader.ProvidersSortedByCountry.SingleOrDefault(provider => provider.Name.Equals(institute, StringComparison.InvariantCultureIgnoreCase));
 
                 if (provider == null)
                 {
@@ -58,10 +58,8 @@ namespace EduRoam.Connect.Tasks
 
         public static async Task<IdentityProviderProfile?> GetProfileAsync(string profileId)
         {
-            using var idpDownloader = new IdentityProviderDownloader();
-
-            await idpDownloader.LoadProviders();
-            return await idpDownloader.GetProfileFromId(profileId);
+            await IdentityProviderDownloader.Instance.LoadProviders();
+            return await IdentityProviderDownloader.Instance.GetProfileFromId(profileId);
         }
 
         public string GetCurrentProfileName()

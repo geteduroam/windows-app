@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -59,46 +59,46 @@
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
-  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
-    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+  <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
     <xsd:element name="root" msdata:IsDataSet="true">
       <xsd:complexType>
         <xsd:choice maxOccurs="unbounded">
           <xsd:element name="metadata">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0"/>
               </xsd:sequence>
-              <xsd:attribute name="name" use="required" type="xsd:string" />
-              <xsd:attribute name="type" type="xsd:string" />
-              <xsd:attribute name="mimetype" type="xsd:string" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" use="required" type="xsd:string"/>
+              <xsd:attribute name="type" type="xsd:string"/>
+              <xsd:attribute name="mimetype" type="xsd:string"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="assembly">
             <xsd:complexType>
-              <xsd:attribute name="alias" type="xsd:string" />
-              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="alias" type="xsd:string"/>
+              <xsd:attribute name="name" type="xsd:string"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="data">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
-                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
-              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
-              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
-              <xsd:attribute ref="xml:space" />
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+              <xsd:attribute ref="xml:space"/>
             </xsd:complexType>
           </xsd:element>
           <xsd:element name="resheader">
             <xsd:complexType>
               <xsd:sequence>
-                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
               </xsd:sequence>
-              <xsd:attribute name="name" type="xsd:string" use="required" />
+              <xsd:attribute name="name" type="xsd:string" use="required"/>
             </xsd:complexType>
           </xsd:element>
         </xsd:choice>
@@ -118,435 +118,433 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AppCommandLineHelpFlagsTitle" xml:space="preserve">
-    <value>Supported command line flags:</value>
+    <value>Toetatud CLI käsud:</value>
   </data>
   <data name="AppCommandLineHelpFlagsHelp" xml:space="preserve">
-    <value>Show this help text.</value>
+    <value>Näita seda abiteksti.</value>
   </data>
   <data name="AppCommandLineHelpFlagsInstall" xml:space="preserve">
-    <value>Install this program to %USER%/AppData/Local.</value>
+    <value>Paigalda programm sihtkohta: %USER%/AppData/Local.</value>
   </data>
   <data name="AppCommandLineHelpFlagsUninstall" xml:space="preserve">
-    <value>Uninstall this program from %USER%/AppData/Local,
-along with any configured data.</value>
+    <value>Eemalda programm sihtkohast %USER%/AppData/Local along
+koos seadistusandmetega.</value>
   </data>
   <data name="AppCommandLineHelpFlagsRefresh" xml:space="preserve">
-    <value>Refresh the user certificate using the refresh token.
-Intended to be called automatically by a scheduled task in windows.
-This option does nothing if the user certificate has
-more than a third of its validity left.
-Combine with /force to refresh regardless of validity.</value>
+    <value>Uuenduskoodi kasutades uuenda kasutajasertifikaat
+Käivitatakse automaatselt Windowsis ajastatud toiminguga.
+/force : 
+Uuenduskoodi kasutades uuenda kasutajasertifikaat.
+Uuendab profiili ka siis, kui kliendisertifikaadi kehtivusperioodist 
+on rohkem kui 1/3 veel ees.</value>
   </data>
   <data name="AreYouSure" xml:space="preserve">
-    <value>Are you sure you want to continue?</value>
+    <value>Kas oled kindel, et soovid jätkata?</value>
   </data>
   <data name="ButtonClose" xml:space="preserve">
-    <value>Close</value>
+    <value>Sulge</value>
   </data>
   <data name="ButtonConnect" xml:space="preserve">
-    <value>Connect</value>
+    <value>Ühenda</value>
   </data>
   <data name="ButtonInstall" xml:space="preserve">
-    <value>Install</value>
+    <value>Paigalda</value>
   </data>
   <data name="ButtonNext" xml:space="preserve">
-    <value>Next</value>
+    <value>Järgmine</value>
   </data>
   <data name="ButtonPrevious" xml:space="preserve">
-    <value>Previous</value>
+    <value>Eelmine</value>
   </data>
   <data name="ButtonBack" xml:space="preserve">
-    <value>Back</value>
+    <value>Tagasi</value>
   </data>
   <data name="CertificateLabel" xml:space="preserve">
-    <value>Certificate:</value>
+    <value>Sertifikaat:</value>
   </data>
   <data name="CertificatesInstallationNotification" xml:space="preserve">
-    <value>In order to continue the following certificates have to be installed.</value>
+    <value>Jätkamiseks tuleb paigaldada järgmised sertifikaadid.</value>
   </data>
   <data name="CertificatesInstallationStatus" xml:space="preserve">
-    <value>{0}, installed: {1}</value>
+    <value>{0}, paigaldatud: {1}</value>
   </data>
   <data name="CertificateTitleInstalled" xml:space="preserve">
-    <value>certificates are installed</value>
+    <value>sertifikaadid on paigaldatud</value>
   </data>
   <data name="CertificateTitleStart" xml:space="preserve">
-    <value>In order to continue you have to install the listed certificates</value>
+    <value>Jätkamiseks tuleb paigaldada loetletud sertifikaadid.</value>
   </data>
   <data name="CommandDescriptionConnect" xml:space="preserve">
-    <value>Configure Wi-Fi based on a organisation profile and connect.</value>
+    <value>Seadista Wi-Fi vastavalt asutuse profiilile ja ühenda.</value>
   </data>
   <data name="CommandDescriptionInstall" xml:space="preserve">
-    <value>Install this binary to %USER%/AppData/Local</value>
+    <value>Paigalda see programm sihtkohta: %USER%/AppData/Local</value>
   </data>
   <data name="CommandDescriptionList" xml:space="preserve">
-    <value>Get a list of organisations or profiles for an organisation.</value>
+    <value>Hangi asutuste nimekiri või asutuse profiilid.</value>
   </data>
   <data name="CommandDescriptionReauthenticate" xml:space="preserve">
-    <value>Reauthenticate</value>
+    <value>Autendi uuesti</value>
   </data>
   <data name="CommandDescriptionRefresh" xml:space="preserve">
-    <value>Refresh credentials</value>
+    <value>Uuenda kasutajakonto andmeid</value>
   </data>
   <data name="CommandDescriptionRemove" xml:space="preserve">
-    <value>Remove configured Wi-Fi profile and/or root certificates</value>
+    <value>Kustuta seadistatud Wi-Fi profiil ja/või juursertifikaadid</value>
   </data>
   <data name="CommandDescriptionShow" xml:space="preserve">
-    <value>Show EAP config information</value>
+    <value>Näita EAP Config (seadistamise) teavet</value>
   </data>
   <data name="CommandDescriptionStatus" xml:space="preserve">
-    <value>Show status</value>
+    <value>Näita olekut</value>
   </data>
   <data name="CommandDescriptionUninstall" xml:space="preserve">
-    <value>Uninstall application</value>
+    <value>Eemalda rakendus</value>
   </data>
   <data name="ConfiguredButNotConnected" xml:space="preserve">
-    <value>Everything is configured!
-Could not connect because no EAP config could be found</value>
+    <value>Kõik on seadistatud.
+Ei saanud ühendada, sest ei leitud EAP Config (seadistust).</value>
   </data>
   <data name="ConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>Everything is configured!
-Unable to connect to {0}, you're probably out of coverage.</value>
+    <value>Kõik on seadistatud.
+Ei saa {0}iga ühendada, oled arvatavasti väljaspool leviala.</value>
   </data>
   <data name="ConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Everything is configured!
-Unable to connect to {0}.</value>
+    <value>Kõik on seadistatud.
+Ei saa {0}iga ühendada.</value>
   </data>
   <data name="ConfiguredEap" xml:space="preserve">
-    <value>EAP is configured</value>
+    <value>EAP on seadistatud</value>
   </data>
   <data name="ConnectionUsernameAndPasswordRequired" xml:space="preserve">
-    <value>Please provide a username and password to connect.</value>
+    <value>Palun sisesta ühendamiseks kasutajanimi ja parool.</value>
   </data>
   <data name="ConsentMain" xml:space="preserve">
-    <value>Terms of Use</value>
+    <value>Kasutustingimustega</value>
   </data>
   <data name="ConsentPost" xml:space="preserve">
-    <value>of the organisation</value>
+    <value>asutuse</value>
   </data>
   <data name="ConsentPre" xml:space="preserve">
-    <value>By clicking 'Next' you agree to the</value>
+    <value>Klõpsates 'Järgmine' nõustud</value>
   </data>
   <data name="CredentialsLabel" xml:space="preserve">
-    <value>Enter your username and password</value>
+    <value>Sisesta oma kasutajanimi ja parool</value>
   </data>
   <data name="CredentialsPasswordLabel" xml:space="preserve">
-    <value>Password:</value>
+    <value>Parool:</value>
   </data>
   <data name="CredentialsUsernameLabel" xml:space="preserve">
-    <value>Username:</value>
+    <value>Kasutajanimi:</value>
   </data>
   <data name="DaysLeft" xml:space="preserve">
-    <value>{0} more days</value>
+    <value>{0} päeva veel</value>
   </data>
   <data name="Done" xml:space="preserve">
-    <value>Done</value>
+    <value>Tehtud</value>
   </data>
   <data name="ErrorApi" xml:space="preserve">
-    <value>API error</value>
+    <value>API viga</value>
   </data>
   <data name="ErrorCannotConnectWithServer" xml:space="preserve">
-    <value>Couldn't connect to the server.
+    <value>Ei saanud serveriga ühenduda.
 
-Make sure that you are connected to the internet, then try again.
+Kontrolli, kas Sul on internetiühendus olemas, seejärel proovi uuesti.
 
-Exception: {0}</value>
+Erand: {0}</value>
   </data>
   <data name="ErrorCannotFetchTokens" xml:space="preserve">
-    <value>Couldn't fetch token json.
-Exception: {0}</value>
+    <value>Ei saanud kätte koodi  json'i.
+Erand: {0}</value>
   </data>
   <data name="ErrorCannotRemoveWLANProfile" xml:space="preserve">
-    <value>Some WLAN profile could not be removed</value>
+    <value>Mõnda WiFi profiili ei saanud eemaldada</value>
   </data>
   <data name="ErrorCannotRetrieveProfileWhenOffline" xml:space="preserve">
-    <value>Cannot retrieve profile when offline</value>
+    <value>Ei saa profiili tuua, kui võrguühendust ei ole</value>
   </data>
   <data name="ErrorClientCredentialNotValidYes" xml:space="preserve">
-    <value>Client credentials are not yet valid. They will become valid on {0}.</value>
+    <value>Kliendi kasutajaandmed ei ole veel valideeritud. Need hakkavad kehtima {0}.</value>
   </data>
   <data name="ErrorConfiguredButNotConnected" xml:space="preserve">
-    <value>Everything is configured!
-Could not connect because EAP config could not be found</value>
+    <value>Kõik on seadistatud.
+Ei saanud ühendada, sest ei leitud EAP Config (seadistust).</value>
   </data>
   <data name="ErrorConfiguredButProbablyOutOfCoverage" xml:space="preserve">
-    <value>Everything is set up correctly!
-
-However, we're currently unable to connect to {0}, the network is out of range. Once in range, your system will connect to {0}.</value>
+    <value>Kõik on seadistatud.
+Ei saa {0}iga ühendada, oled arvatavasti väljaspool leviala.</value>
   </data>
   <data name="ErrorConfiguredButUnableToConnect" xml:space="preserve">
-    <value>Everything is set up correctly!
-
-However, we're currently unable to connect to {0}, even though it's in range. You can still connect by manually selecting it in your Windows settings.</value>
+    <value>Kõik on seadistatud.
+Ei saa {0}iga ühendada.</value>
   </data>
   <data name="ErrorCredentialsAtChar" xml:space="preserve">
-    <value>Username must contain @ exactly once</value>
+    <value>Kasutajanimes peab olema üksainus @</value>
   </data>
   <data name="ErrorCredentialsEndsWith" xml:space="preserve">
-    <value>Username cannot end with a period or whitespace</value>
+    <value>Kasutajanimi ei tohi lõppeda punkti ega tühikuga</value>
   </data>
   <data name="ErrorCredentialsEndWithRealm" xml:space="preserve">
-    <value>Username must end with .{0} or @{0}</value>
+    <value>Kasutajanime lõpus peab olema .{0} või @{0}</value>
   </data>
   <data name="ErrorCredentialsEndWithRealmNoSubdomain" xml:space="preserve">
-    <value>Username must end with @{0}</value>
+    <value>Kasutajanime lõpus peab olema @{0}</value>
   </data>
   <data name="ErrorCredentialsSpecialCharacters" xml:space="preserve">
-    <value>Characters . and @ can not be next to each other</value>
+    <value>Sümbolid . ja @ ei tohi olla kõrvuti</value>
   </data>
   <data name="ErrorEapConfigCorrupted" xml:space="preserve">
-    <value>The selected EAP config file is corrupted. Please choose another file.</value>
+    <value>Valitud EAP seadistusfail on vigane. Palun vali muu fail.</value>
   </data>
   <data name="ErrorEapConfigInvalid" xml:space="preserve">
-    <value>Could not read from file. Make sure to select a valid EAP config file.</value>
+    <value>Faili ei saa lugeda. Palun vali kehtiv EAP seadistusfail.</value>
   </data>
   <data name="ErrorEapConfigIsEmpty" xml:space="preserve">
-    <value>Could not connect, EAP configuration is empty</value>
+    <value>Ei saanud ühendada, EAP seadistus on tühi.</value>
   </data>
   <data name="ErrorEapNotConfigured" xml:space="preserve">
-    <value>EAP could not be configured</value>
+    <value>EAP-d ei saanud seadistada</value>
   </data>
   <data name="ErrorInternetConnection" xml:space="preserve">
-    <value>Error with internet connection</value>
+    <value>Internetiühenduse viga</value>
   </data>
   <data name="ErrorInvalidCertificatePath" xml:space="preserve">
-    <value>Invalid certificate path</value>
+    <value>Vale sertifikaaditee</value>
   </data>
   <data name="ErrorInvalidCredentials" xml:space="preserve">
-    <value>Username and/or password are not valid</value>
+    <value>Kasutajanimi ja/või parool ei ole kehtiv</value>
   </data>
   <data name="ErrorInvalidEapConfig" xml:space="preserve">
-    <value>Invalid EAP config provided, this should not happen, please report a bug.</value>
+    <value>Vigane EAP seadistus; seda ei tohiks juhtuda. Palun saada vearaport.</value>
   </data>
   <data name="ErrorMissingCredentials" xml:space="preserve">
-    <value>Credentials are not provided</value>
+    <value>Kasutajaandmeid ei ole antud</value>
   </data>
   <data name="ErrorMissingRequiredCACertificate" xml:space="preserve">
-    <value>Required CA certificate was not installed, this should not happen, please report a bug</value>
+    <value>Nõutavat CA sertikaati ei paigaldatud; seda ei tohiks juhtuda. Palun saada vearaport.</value>
   </data>
   <data name="ErrorNoClientCertificateProvided" xml:space="preserve">
-    <value>No (valid) client certificate was provided ({0} parameter.</value>
+    <value>Ei esitatud (kehtivat) kliendisertifikaati ({0} parameeter.</value>
   </data>
   <data name="ErrorNoConnection" xml:space="preserve">
-    <value>Could not connect. 
-Exception: {0}.</value>
+    <value>Ei saanud ühendada.
+Erand: {0}.</value>
   </data>
   <data name="ErrorNoInternet" xml:space="preserve">
-    <value>No internet connection</value>
+    <value>Internetiühendust ei ole</value>
   </data>
   <data name="ErrorNotUninstalled" xml:space="preserve">
-    <value>{0} has not been uninstalled.</value>
+    <value>{0}'i ei ole eemaldatud.</value>
   </data>
   <data name="ErrorOptionIsEmpty" xml:space="preserve">
-    <value>{0} option value cannot be empty or whitespace only</value>
+    <value>{0} valikväärtus ei tohi olla tühi ega koosneda tühikust</value>
   </data>
   <data name="ErrorRequiredCertificatesNotInstalled" xml:space="preserve">
-    <value>Not all required certificates are installed.</value>
+    <value>Kõiki nõutud sertifikaate ei ole paigaldatud.</value>
   </data>
   <data name="ErrorShowCommandOptions" xml:space="preserve">
-    <value>Missing options. Provide the {0} option or both {1} and {2} options</value>
+    <value>Puuduvad valikud. Tee valik {0} või valikud  {1} ja  {2}</value>
   </data>
   <data name="ErrorUnknownProfile" xml:space="preserve">
-    <value>Unknown profile, retry authentication process</value>
+    <value>Tundmatu profiil</value>
   </data>
   <data name="ErrorUnsupportedConnectionType" xml:space="preserve">
-    <value>Connection of type {0} is not supported (yet).</value>
+    <value>Tüübiga {0} ühendus ei ole (veel) toetatud.</value>
   </data>
   <data name="ErrorUnsupportedInstituteOrProfile" xml:space="preserve">
-    <value>The organisation or profile is either not supported or malformed.
-Please select a different organisation or profile.
+    <value>Asutus või profiil ei ole kas toetatud või on vigane.
+Palun vali muu asutus või profiil.
 
-Exception: {0}</value>
+Erand: {0}</value>
   </data>
   <data name="ErrorUnsupportedProfile" xml:space="preserve">
-    <value>The profile you have selected is not supported by this application. No supported authentification method was found.</value>
+    <value>Rakendus ei toeta Su valitud profiili. Ei leitud toetatud autentimismeetodit.</value>
   </data>
   <data name="ErrorWirelessUnavailable" xml:space="preserve">
-    <value>Wireless is unavailable on this computer</value>
+    <value>Traadita ühendus ei ole sellel arvutil kasutatav</value>
   </data>
   <data name="FileDialogSelectFile" xml:space="preserve">
-    <value>Please select a file.</value>
+    <value>Palun vali fail</value>
   </data>
   <data name="HoursLeft" xml:space="preserve">
-    <value>{0} more hours</value>
+    <value>{0} tundi veel</value>
   </data>
   <data name="ChoiceKeyYes" xml:space="preserve">
-    <value>y</value>
+    <value>jah</value>
     <comment>Single button press for "yes" in terminal</comment>
   </data>
   <data name="LabelAccountValidFor" xml:space="preserve">
-    <value>Your account is valid for</value>
+    <value>Su konto kehtib: </value>
   </data>
   <data name="LabelEmail" xml:space="preserve">
     <value>E-mail</value>
   </data>
   <data name="LabelHelp" xml:space="preserve">
-    <value>Help</value>
+    <value>Abi</value>
   </data>
   <data name="LabelPhone" xml:space="preserve">
-    <value>Phone</value>
+    <value>Telefon</value>
   </data>
   <data name="LabelProfile" xml:space="preserve">
-    <value>Profile</value>
+    <value>Profiil</value>
   </data>
   <data name="LabelSupported" xml:space="preserve">
-    <value>Supported</value>
+    <value>Toetatud</value>
   </data>
   <data name="LabelTermsOfUse" xml:space="preserve">
-    <value>Terms of use</value>
+    <value>Kasutustingimused</value>
   </data>
   <data name="LabelVersion" xml:space="preserve">
-    <value>App version</value>
+    <value>Rakenduse versioon</value>
   </data>
   <data name="LabelWeb" xml:space="preserve">
-    <value>Web</value>
+    <value>Veeb</value>
   </data>
   <data name="LoadCertificateFile" xml:space="preserve">
-    <value>Select a Client Certificate bundle</value>
+    <value>Vali kliendisertifikaadi kimp</value>
   </data>
   <data name="LoadEapFile" xml:space="preserve">
-    <value>Select a EAP config file</value>
+    <value>Vali EAP Config (seadistus)fail</value>
   </data>
   <data name="Loading" xml:space="preserve">
-    <value>Loading</value>
+    <value>Laadimine</value>
   </data>
   <data name="LocalCertificateLabel" xml:space="preserve">
-    <value>This profile requires a local certificate</value>
+    <value>See profiil vajab lokaalset sertifikaati</value>
   </data>
   <data name="LoginTitle" xml:space="preserve">
     <value>Login</value>
   </data>
   <data name="MenuItemLoadEAP" xml:space="preserve">
-    <value>Load .eap-config file...</value>
+    <value>Lae fail .eap-config...</value>
   </data>
   <data name="MenuItemReauthenticate" xml:space="preserve">
-    <value>Reauthenticate...</value>
+    <value>Autendi uuesti...</value>
   </data>
   <data name="MenuItemRefresh" xml:space="preserve">
-    <value>Refresh credential</value>
+    <value>Uuenda kasutajakonto andmeid</value>
   </data>
   <data name="MenuItemRemoveCertificates" xml:space="preserve">
-    <value>Remove root certificates...</value>
+    <value>Eemalda juursertifikaadid...</value>
   </data>
   <data name="MenuItemRemoveProfile" xml:space="preserve">
-    <value>Remove configured Wi-Fi profile...</value>
+    <value>Eemalda seadistatud Wi-Fi profiil...</value>
   </data>
   <data name="MenuItemUninstall" xml:space="preserve">
-    <value>Uninstall application...</value>
+    <value>Eemalda rakendus...</value>
   </data>
   <data name="MinutesLeft" xml:space="preserve">
-    <value>{0} more minutes</value>
+    <value>{0} minutit veel</value>
   </data>
   <data name="EmojiNo" xml:space="preserve">
     <value>✗</value>
     <comment>Single emoji</comment>
   </data>
   <data name="NoEAPConfig" xml:space="preserve">
-    <value>No EAP config info to show</value>
+    <value>Ei ole EAP Config (seadistamise) teavet, mida näidata</value>
   </data>
   <data name="ChoiceKeyNo" xml:space="preserve">
-    <value>n</value>
+    <value>ei ole kindel</value>
     <comment>Single button press for "no" in terminal</comment>
   </data>
   <data name="OAuthExplanation" xml:space="preserve">
-    <value>To continue you need to authenticate in your browser, a window should have opened automatically.</value>
+    <value>Jätkamiseks pead end brauseris autentima, aken peaks olema automaatselt avanenud</value>
   </data>
   <data name="OAuthWaitingTitle" xml:space="preserve">
-    <value>Waiting ...</value>
+    <value>Ootel...</value>
   </data>
   <data name="OptionDescriptionCertificatePath" xml:space="preserve">
-    <value>Certificate filepath</value>
+    <value>Sertifikaadi asukoht (filepath)</value>
   </data>
   <data name="OptionDescriptionEAPConfig" xml:space="preserve">
-    <value>Path to EAP config .eap-config.</value>
+    <value>EAP seadistuse .eap-config asukoht.</value>
   </data>
   <data name="OptionDescriptionForce" xml:space="preserve">
-    <value>Force action.</value>
+    <value>Sundteostamine.</value>
   </data>
   <data name="OptionDescriptionInstitute" xml:space="preserve">
-    <value>The name of the institute to connect to.</value>
+    <value>Asutus, millega ühendada.</value>
   </data>
   <data name="OptionDescriptionProfile" xml:space="preserve">
-    <value>Institute's profile to connect to.</value>
+    <value>Asutuse profiil, millega ühendada.</value>
   </data>
   <data name="OptionDescriptionQuery" xml:space="preserve">
-    <value>Query to filter items</value>
+    <value>Päring üksuste filtreerimiseks</value>
   </data>
   <data name="OptionRequired" xml:space="preserve">
-    <value>Option {0} is required</value>
+    <value>Nõutud on valik {0}</value>
   </data>
   <data name="Passphrase" xml:space="preserve">
-    <value>Certificate passphrase</value>
+    <value>Sertifikaadi parool</value>
   </data>
   <data name="PassphraseLabel" xml:space="preserve">
-    <value>Enter password for the certificate</value>
+    <value>Sisesta sertifikaadi parool</value>
   </data>
   <data name="Password" xml:space="preserve">
-    <value>Password</value>
+    <value>Parool</value>
   </data>
   <data name="PasswordLabel" xml:space="preserve">
-    <value>Password:</value>
+    <value>Parool:</value>
   </data>
   <data name="ProfileContactInfo" xml:space="preserve">
-    <value>Contact Information</value>
+    <value>Kontaktteave</value>
   </data>
   <data name="ProfileEmail" xml:space="preserve">
     <value>Email</value>
   </data>
   <data name="ProfileLabel" xml:space="preserve">
-    <value>Profile name</value>
+    <value>Profiili nimi</value>
   </data>
   <data name="ProfileNotAffiliatedInstitution" xml:space="preserve">
-    <value>Not affiliated with organisation?</value>
+    <value>Ei ole asutusega seotud?</value>
   </data>
   <data name="ProfilePhone" xml:space="preserve">
-    <value>Phone</value>
+    <value>Telefon</value>
   </data>
   <data name="ProfileRemoveConfirmation" xml:space="preserve">
-    <value>This will remove all configuration for '{0}'.</value>
+    <value>See eemaldab seadistuse '{0}' jaoks.</value>
   </data>
   <data name="ProfileSelectOtherInstitution" xml:space="preserve">
-    <value>Select another profile</value>
+    <value>Vali muu profiil</value>
   </data>
   <data name="ProfileWeb" xml:space="preserve">
-    <value>Web</value>
+    <value>Veeb</value>
   </data>
   <data name="RedirectText" xml:space="preserve">
-    <value>Click here to be redirected to the institution's website for more info on how to connect. When you click the link, this application will close.</value>
+    <value>Asutuse ühendumisjuhendile suundumiseks klõpsa siia. Lingile klõpsamise järel praegune rakendus sulgub.</value>
   </data>
   <data name="RedirectTitle" xml:space="preserve">
-    <value>Redirect</value>
+    <value>Suuna ümber</value>
   </data>
   <data name="RemoveProfileMessage" xml:space="preserve">
-    <value>This will remove all configuration for
-{0}</value>
+    <value>See eemaldab seadistuse '{0}' jaoks.</value>
   </data>
   <data name="RemoveProfileTitle" xml:space="preserve">
-    <value>Remove {0}</value>
+    <value>Eemalda {0}</value>
   </data>
   <data name="RequestToInstallCertificates" xml:space="preserve">
-    <value>Install all required certificates?</value>
+    <value>Paigalda kõik nõutud sertifikaadid?</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>Search your organisation</value>
+    <value>Otsi oma asutust</value>
   </data>
   <data name="SelectFile" xml:space="preserve">
-    <value>Browse</value>
+    <value>Lehitse</value>
   </data>
   <data name="SelectInstitution" xml:space="preserve">
-    <value>Select organisation</value>
+    <value>Vali asutus</value>
   </data>
   <data name="SelectProfile" xml:space="preserve">
-    <value>Select profile</value>
+    <value>Vali profiil</value>
   </data>
   <data name="TermsOfUseTitle" xml:space="preserve">
-    <value>Terms of Use</value>
+    <value>Kasutustingimused</value>
   </data>
   <data name="UninstallNotification" xml:space="preserve">
-    <value>{0} and its configuration have been removed.</value>
+    <value>Rakendus ja selle seadistused on eemaldatud.</value>
   </data>
   <data name="Username" xml:space="preserve">
-    <value>Username</value>
+    <value>Kasutajanimi</value>
   </data>
   <data name="UserNameWatermark" xml:space="preserve">
     <value>@example.com</value>
@@ -564,132 +562,131 @@ Exception: {0}</value>
     <value>Versionless</value>
   </data>
   <data name="WarningFileDoesNotExist" xml:space="preserve">
-    <value>The specified file does not exist.</value>
+    <value>Seda faili ei ole.</value>
   </data>
   <data name="WarningInstallCertificates" xml:space="preserve">
-    <value>You must first install certificates with InstallCertificates</value>
+    <value>Esmalt pead paigaldama sertifikaadid - InstallCertificates</value>
   </data>
   <data name="WarningMissingCertificates" xml:space="preserve">
-    <value>Missing certificates</value>
+    <value>Sertifikaate on puudu</value>
   </data>
   <data name="WarningNoInstitutesFound" xml:space="preserve">
-    <value>No institutes found</value>
+    <value>Asutusi ei leitud</value>
   </data>
   <data name="WarningNoProfilesFound" xml:space="preserve">
-    <value>No profiles found</value>
+    <value>Profiile ei leitud</value>
   </data>
   <data name="WarningNoSupportedAuthenticationMethod" xml:space="preserve">
-    <value>No supported authentification method was found.</value>
+    <value>Toetatud autentimismeetodit ei leitud.</value>
   </data>
   <data name="WarningProfileNotSupported" xml:space="preserve">
-    <value>The profile you have selected is not supported by this application.</value>
+    <value>Valitud profiili see rakendus ei toeta.</value>
   </data>
   <data name="WarningUninstall" xml:space="preserve">
-    <value>You are about to completely uninstall {0}.</value>
+    <value>Oled {0}i täielikult eemaldamas.</value>
   </data>
   <data name="WarningUninstallCertificates" xml:space="preserve">
-    <value>This means uninstalling all the trusted root certificates installed by this application.</value>
+    <value>See tähendab rakenduse poolt paigaldatud usaldatud juursertifikaatide eemaldamist.</value>
   </data>
   <data name="WarningUnsupportedFileType" xml:space="preserve">
-    <value>The file type you chose is not supported.</value>
+    <value>Valitud failitüüp ei ole toetatud.</value>
   </data>
   <data name="WarnRealmMismatch" xml:space="preserve">
-    <value>The realm for the OuterIdentity will be set to "{0}" but the profile specified "{1}"</value>
+    <value>Välise identiteedi (OuterIdentity) domeeniks pannakse  "{0}", kuid profiilis on määratud "{1}"</value>
   </data>
   <data name="EmojiWarning" xml:space="preserve">
     <value>⚠️</value>
     <comment>Single emoji</comment>
   </data>
   <data name="Yes" xml:space="preserve">
-    <value>Yes</value>
+    <value>Jah</value>
   </data>
   <data name="EmojiYes" xml:space="preserve">
     <value>✓</value>
     <comment>Single emoji</comment>
   </data>
   <data name="No" xml:space="preserve">
-    <value>No</value>
+    <value>Ei</value>
   </data>
   <data name="OK" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
-    <value>{0} requires an active internet connection.</value>
+    <value>{0} vajab toimivat internetiühendust.</value>
   </data>
   <data name="ConnectTo0" xml:space="preserve">
-    <value>Connect to {0}</value>
+    <value>Ühenda {0}iga</value>
   </data>
   <data name="ExampleRealm" xml:space="preserve">
-    <value>example</value>
+    <value>näide</value>
   </data>
   <data name="ProfileRenewCertificate" xml:space="preserve">
-    <value>Renew account</value>
+    <value>Uuenda kontot</value>
   </data>
   <data name="ProfileRepairCertificate" xml:space="preserve">
-    <value>Repair your account</value>
+    <value>Paranda konto</value>
   </data>
   <data name="CheckCertificateToastButton" xml:space="preserve">
-    <value>Renew account</value>
+    <value>Uuenda kontot</value>
   </data>
   <data name="CheckCertificateToastP1" xml:space="preserve">
-    <value>Your {0} account is about to expire.</value>
+    <value>Su {0} konto on aegumas.</value>
   </data>
   <data name="CheckCertificateToastP2" xml:space="preserve">
-    <value>You have {0} days left, please renew your account.</value>
+    <value>Jäänud on  {0} päeva, palun uuenda oma kontot.</value>
   </data>
   <data name="UpdateAvailable" xml:space="preserve">
-    <value>Update available</value>
+    <value>Uuendus on saadaval</value>
   </data>
   <data name="UpdateCurrentFileNewer" xml:space="preserve">
-    <value>The installed version of {0} is older then this version. Do you want to update?</value>
+    <value>Paigaldatud  {0} versioon on vanem kui see versioon. Kas soovid uuendada?</value>
   </data>
   <data name="VersionNoLongerSupported" xml:space="preserve">
-    <value>{0} version {1} is no longer supported. Newest version is {2}</value>
+    <value>{0} versioon {1} ei ole enam toetatud. Uusim versioon on {2}</value>
   </data>
   <data name="Connected" xml:space="preserve">
-    <value>You are now connected to {0}.</value>
+    <value>Oled ühendatud {0}-ga.</value>
   </data>
   <data name="UninstallNotificationTitle" xml:space="preserve">
-    <value>Uninstall {0}</value>
+    <value>Desinstall {0}</value>
   </data>
   <data name="ButtonAppConnect" xml:space="preserve">
-    <value>Connect to {0}</value>
+    <value>Ühenda {0}iga</value>
   </data>
   <data name="InstallSuccess" xml:space="preserve">
-    <value>{0} has been successfully installed.</value>
+    <value>{0} on edukalt paigaldatud.</value>
   </data>
   <data name="InstallTitle" xml:space="preserve">
-    <value>{0} installation</value>
+    <value>{0} paigaldus</value>
   </data>
   <data name="OAuthResponseAcceptedTitle" xml:space="preserve">
-    <value>The app has been authorised.</value>
+    <value>Rakendus on autoriseeritud!</value>
   </data>
   <data name="OAuthResponseRejectedTitle" xml:space="preserve">
-    <value>Authorisation has been rejected.</value>
+    <value>Autoriseerimine on tagasi lükatud.</value>
   </data>
   <data name="OAuthResponseCloseMessage" xml:space="preserve">
-    <value>You may now close this tab and
-return to the app.</value>
+    <value>Võid nüüd selle vaate sulgeda ja rakendusse naasta.</value>
   </data>
   <data name="OAuthAuthorizationTitle" xml:space="preserve">
-    <value>Authorisation</value>
+    <value>Autoriseerimine</value>
   </data>
   <data name="ErrorOccurredWhileRetreivingProfile" xml:space="preserve">
-    <value>Error occurred while retrieving LetsWifi or EAP profile</value>
+    <value>LetsWifi või EAP profiili hankimisel tekkis viga</value>
   </data>
   <data name="IncompatibleVersionMessage" xml:space="preserve">
-    <value>This version of {0} is for a different processor architecture than your machine.</value>
+    <value>{0} versioon on teistsuguse arhitektuuri jaoks kui Su seade.</value>
   </data>
   <data name="UpdateAvailableWithVersionNo" xml:space="preserve">
-    <value>{0} {1} is available.</value>
+    <value>{0} {1} on saadaval.</value>
   </data>
   <data name="UpdateNowButton" xml:space="preserve">
-    <value>Update now</value>
+    <value>Uuenda nüüd</value>
   </data>
   <data name="OpenBrowserButton" xml:space="preserve">
-    <value>Open browser</value>
+    <value>Ava brauser</value>
   </data>
   <data name="CopyLinkButton" xml:space="preserve">
-    <value>Copy link</value>
+    <value>Kopeeri link</value>
   </data>
 </root>

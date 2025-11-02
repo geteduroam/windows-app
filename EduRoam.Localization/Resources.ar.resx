@@ -123,6 +123,20 @@
   <data name="AppCommandLineHelpFlagsHelp" xml:space="preserve">
     <value>أظهر نص المساعدة هذا</value>
   </data>
+  <data name="AppCommandLineHelpFlagsInstall" xml:space="preserve">
+    <value>Install this program to %USER%/AppData/Local.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsUninstall" xml:space="preserve">
+    <value>Uninstall this program from %USER%/AppData/Local,
+along with any configured data.</value>
+  </data>
+  <data name="AppCommandLineHelpFlagsRefresh" xml:space="preserve">
+    <value>Refresh the user certificate using the refresh token.
+Intended to be called automatically by a scheduled task in windows.
+This option does nothing if the user certificate has
+more than a third of its validity left.
+Combine with /force to refresh regardless of validity.</value>
+  </data>
   <data name="AreYouSure" xml:space="preserve">
     <value>هل أنت متأكد أنك تريد الاستمرار؟</value>
   </data>
@@ -355,6 +369,10 @@
   <data name="HoursLeft" xml:space="preserve">
     <value>{0} ساعات إضافية</value>
   </data>
+  <data name="ChoiceKeyYes" xml:space="preserve">
+    <value>y</value>
+    <comment>Single button press for "yes" in terminal</comment>
+  </data>
   <data name="LabelAccountValidFor" xml:space="preserve">
     <value>حسابك صالح لـ</value>
   </data>
@@ -418,8 +436,16 @@
   <data name="MinutesLeft" xml:space="preserve">
     <value>{0}دقائق إضافية</value>
   </data>
+  <data name="EmojiNo" xml:space="preserve">
+    <value>✗</value>
+    <comment>Single emoji</comment>
+  </data>
   <data name="NoEAPConfig" xml:space="preserve">
     <value>لا توجد معلومات ضبط EAP لعرضها.</value>
+  </data>
+  <data name="ChoiceKeyNo" xml:space="preserve">
+    <value>n</value>
+    <comment>Single button press for "no" in terminal</comment>
   </data>
   <data name="OAuthExplanation" xml:space="preserve">
     <value>للمتابعة، تحتاج إلى المصادقة في متصفحك، ومن المفترض أن يتم فتح نافذة تلقائيًا.</value>
@@ -569,16 +595,100 @@
   <data name="WarnRealmMismatch" xml:space="preserve">
     <value>سيتم تعيين نطاق OuterIdentity على "{0}" ولكن تم تحديد ملف التعريف "{1}"</value>
   </data>
+  <data name="EmojiWarning" xml:space="preserve">
+    <value>⚠️</value>
+    <comment>Single emoji</comment>
+  </data>
   <data name="Yes" xml:space="preserve">
     <value>نعم</value>
   </data>
+  <data name="EmojiYes" xml:space="preserve">
+    <value>✓</value>
+    <comment>Single emoji</comment>
+  </data>
   <data name="No" xml:space="preserve">
     <value>لا</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
   </data>
   <data name="NoConnection" xml:space="preserve">
     <value>يتطلب {0} اتصالاً نشطًا بالإنترنت.</value>
   </data>
   <data name="ConnectTo0" xml:space="preserve">
     <value>الاتصال بـ {0}</value>
+  </data>
+  <data name="ExampleRealm" xml:space="preserve">
+    <value>example</value>
+  </data>
+  <data name="ProfileRenewCertificate" xml:space="preserve">
+    <value>Renew account</value>
+  </data>
+  <data name="ProfileRepairCertificate" xml:space="preserve">
+    <value>Repair your account</value>
+  </data>
+  <data name="CheckCertificateToastButton" xml:space="preserve">
+    <value>Renew account</value>
+  </data>
+  <data name="CheckCertificateToastP1" xml:space="preserve">
+    <value>Your {0} account is about to expire.</value>
+  </data>
+  <data name="CheckCertificateToastP2" xml:space="preserve">
+    <value>You have {0} days left, please renew your account.</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Update available</value>
+  </data>
+  <data name="UpdateCurrentFileNewer" xml:space="preserve">
+    <value>The installed version of {0} is older then this version. Do you want to update?</value>
+  </data>
+  <data name="VersionNoLongerSupported" xml:space="preserve">
+    <value>{0} version {1} is no longer supported. Newest version is {2}</value>
+  </data>
+  <data name="Connected" xml:space="preserve">
+    <value>You are now connected to {0}.</value>
+  </data>
+  <data name="UninstallNotificationTitle" xml:space="preserve">
+    <value>Uninstall {0}</value>
+  </data>
+  <data name="ButtonAppConnect" xml:space="preserve">
+    <value>Connect to {0}</value>
+  </data>
+  <data name="InstallSuccess" xml:space="preserve">
+    <value>{0} has been successfully installed.</value>
+  </data>
+  <data name="InstallTitle" xml:space="preserve">
+    <value>{0} installation</value>
+  </data>
+  <data name="OAuthResponseAcceptedTitle" xml:space="preserve">
+    <value>The app has been authorised.</value>
+  </data>
+  <data name="OAuthResponseRejectedTitle" xml:space="preserve">
+    <value>Authorisation has been rejected.</value>
+  </data>
+  <data name="OAuthResponseCloseMessage" xml:space="preserve">
+    <value>You may now close this tab and
+return to the app.</value>
+  </data>
+  <data name="OAuthAuthorizationTitle" xml:space="preserve">
+    <value>Authorisation</value>
+  </data>
+  <data name="ErrorOccurredWhileRetreivingProfile" xml:space="preserve">
+    <value>Error occurred while retrieving LetsWifi or EAP profile</value>
+  </data>
+  <data name="IncompatibleVersionMessage" xml:space="preserve">
+    <value>This version of {0} is for a different processor architecture than your machine.</value>
+  </data>
+  <data name="UpdateAvailableWithVersionNo" xml:space="preserve">
+    <value>{0} {1} is available.</value>
+  </data>
+  <data name="UpdateNowButton" xml:space="preserve">
+    <value>Update now</value>
+  </data>
+  <data name="OpenBrowserButton" xml:space="preserve">
+    <value>Open browser</value>
+  </data>
+  <data name="CopyLinkButton" xml:space="preserve">
+    <value>Copy link</value>
   </data>
 </root>

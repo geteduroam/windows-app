@@ -19,7 +19,7 @@ namespace App.Library.Binding
     ///     		: base(owner)
     ///     	{
     ///     		this.searchText = string.Empty;
-    ///     		this.Institutions = new AsyncProperty<ObservableCollection<IdentityProvider>>(this.GetInstitutionsAsync());
+    ///     		this.Institutions = new AsyncProperty<ObservableCollection<IdentityProvider>>(this.PerformSearchAsync());
     ///     	}
     ///     
     ///     	public AsyncProperty<ObservableCollection<IdentityProvider>> Institutions
@@ -27,11 +27,11 @@ namespace App.Library.Binding
     ///     		get; private set;
     ///     	}
     ///     
-    ///     	public async Task<ObservableCollection<IdentityProvider>> GetInstitutionsAsync()
+    ///     	public async Task<ObservableCollection<IdentityProvider>> PerformSearchAsync()
     ///     	{
     ///     		var institutesTask = new GetInstitutesTask();
     ///     
-    ///     		var institutes = await institutesTask.GetAsync();
+    ///     		var institutes = await institutesTask.SearchAsync();
     ///     		return new ObservableCollection<IdentityProvider>(institutes);
     ///     	}
     ///     }
