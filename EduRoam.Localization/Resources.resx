@@ -350,7 +350,9 @@ Exception: {0}.</value>
     <value>Unknown profile, retry authentication process</value>
   </data>
   <data name="ErrorUnsupportedConnectionType" xml:space="preserve">
-    <value>Connection of type {0} is not supported (yet).</value>
+    <value>EAP Configuration error: 
+
+Connection of type {0} is not supported.</value>
   </data>
   <data name="ErrorUnsupportedInstituteOrProfile" xml:space="preserve">
     <value>The organisation or profile is either not supported or malformed.

@@ -471,19 +471,20 @@ namespace App.Library.ViewModels
 
             switch (connector)
             {
-                case CredentialsConnector credentialsConnector:
-                    this.SetActiveContent(new ConnectWithCredentialsViewModel(this, eapConfig, credentialsConnector));
-                    break;
-                case CertPassConnector certPassConnector:
-                    this.SetActiveContent(new ConnectWithCertificatePassphraseViewModel(this, eapConfig, certPassConnector));
-                    break;
-                case CertAndCertPassConnector certAndCertPassConnector:
-                    this.SetActiveContent(new ConnectWithLocalCertificatePassphraseViewModel(this, eapConfig, certAndCertPassConnector));
-                    break;
-                case DefaultConnector defaultConnector:
-                    this.SetActiveContent(new ConnectViewModel(this, eapConfig, defaultConnector));
-                    break;
+                //case CredentialsConnector credentialsConnector:
+                //    this.SetActiveContent(new ConnectWithCredentialsViewModel(this, eapConfig, credentialsConnector));
+                //    break;
+                //case CertPassConnector certPassConnector:
+                //    this.SetActiveContent(new ConnectWithCertificatePassphraseViewModel(this, eapConfig, certPassConnector));
+                //    break;
+                //case CertAndCertPassConnector certAndCertPassConnector:
+                //    this.SetActiveContent(new ConnectWithLocalCertificatePassphraseViewModel(this, eapConfig, certAndCertPassConnector));
+                //    break;
+                //case DefaultConnector defaultConnector:
+                //    this.SetActiveContent(new ConnectViewModel(this, eapConfig, defaultConnector));
+                //    break;
                 default:
+                    MessageBox.Show(string.Format(EduRoam.Localization.Resources.ErrorUnsupportedConnectionType, connector?.GetType().Name), "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
                     throw new NotSupportedException(string.Format(EduRoam.Localization.Resources.ErrorUnsupportedConnectionType, connector?.GetType().Name));
 
             }
