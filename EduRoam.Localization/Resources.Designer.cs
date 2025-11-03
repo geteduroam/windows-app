@@ -273,7 +273,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Configure Wi-Fi based on a institution profile and connect..
+        ///   Looks up a localized string similar to Configure Wi-Fi based on a organisation profile and connect..
         /// </summary>
         public static string CommandDescriptionConnect {
             get {
@@ -291,7 +291,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Get a list of institutions or profiles for a institution..
+        ///   Looks up a localized string similar to Get a list of organisations or profiles for an organisation..
         /// </summary>
         public static string CommandDescriptionList {
             get {
@@ -327,7 +327,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show EAP Config information.
+        ///   Looks up a localized string similar to Show EAP config information.
         /// </summary>
         public static string CommandDescriptionShow {
             get {
@@ -355,7 +355,7 @@ namespace EduRoam.Localization {
         
         /// <summary>
         ///   Looks up a localized string similar to Everything is configured!
-        ///Could not connect because no EAP Config could be found.
+        ///Could not connect because no EAP config could be found.
         /// </summary>
         public static string ConfiguredButNotConnected {
             get {
@@ -420,6 +420,24 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Trying to connect. Please wait....
+        /// </summary>
+        public static string ConnectTryingToConnect {
+            get {
+                return ResourceManager.GetString("ConnectTryingToConnect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trying to connect in {0} seconds..
+        /// </summary>
+        public static string ConnectTryingToConnectIn {
+            get {
+                return ResourceManager.GetString("ConnectTryingToConnectIn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Terms of Use.
         /// </summary>
         public static string ConsentMain {
@@ -429,7 +447,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to of the institution.
+        ///   Looks up a localized string similar to of the organisation.
         /// </summary>
         public static string ConsentPost {
             get {
@@ -588,7 +606,7 @@ namespace EduRoam.Localization {
         
         /// <summary>
         ///   Looks up a localized string similar to Everything is configured!
-        ///Could not connect because EAP Config could not be found.
+        ///Could not connect because EAP config could not be found.
         /// </summary>
         public static string ErrorConfiguredButNotConnected {
             get {
@@ -655,7 +673,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Characters such as . and @ can not be adjacent to each other.
+        ///   Looks up a localized string similar to Characters . and @ can not be next to each other.
         /// </summary>
         public static string ErrorCredentialsSpecialCharacters {
             get {
@@ -682,7 +700,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Could not connect, EAP Configuration is empty.
+        ///   Looks up a localized string similar to Could not connect, EAP configuration is empty.
         /// </summary>
         public static string ErrorEapConfigIsEmpty {
             get {
@@ -845,8 +863,8 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The institution or profile is either not supported or malformed.
-        ///Please select a different institution or profile.
+        ///   Looks up a localized string similar to The organisation or profile is either not supported or malformed.
+        ///Please select a different organisation or profile.
         ///
         ///Exception: {0}.
         /// </summary>
@@ -902,7 +920,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This version of {0} is for a different architecture than your machine..
+        ///   Looks up a localized string similar to This version of {0} is for a different processor architecture than your machine..
         /// </summary>
         public static string IncompatibleVersionMessage {
             get {
@@ -1019,7 +1037,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select a EAP Config file.
+        ///   Looks up a localized string similar to Select a EAP config file.
         /// </summary>
         public static string LoadEapFile {
             get {
@@ -1136,7 +1154,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No EAP Config info to show.
+        ///   Looks up a localized string similar to No EAP config info to show.
         /// </summary>
         public static string NoEAPConfig {
             get {
@@ -1145,7 +1163,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Authorization.
+        ///   Looks up a localized string similar to Authorisation.
         /// </summary>
         public static string OAuthAuthorizationTitle {
             get {
@@ -1163,7 +1181,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The app has been authorized!.
+        ///   Looks up a localized string similar to The app has been authorised..
         /// </summary>
         public static string OAuthResponseAcceptedTitle {
             get {
@@ -1182,7 +1200,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Authorization has been rejected..
+        ///   Looks up a localized string similar to Authorisation has been rejected..
         /// </summary>
         public static string OAuthResponseRejectedTitle {
             get {
@@ -1344,7 +1362,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Not affiliated with institution?.
+        ///   Looks up a localized string similar to Not affiliated with organisation?.
         /// </summary>
         public static string ProfileNotAffiliatedInstitution {
             get {
@@ -1407,7 +1425,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click here to be redirected to the insitutions site for more info on how to connect. When you click the link this application will close..
+        ///   Looks up a localized string similar to Click here to be redirected to the institution&apos;s website for more info on how to connect. When you click the link, this application will close..
         /// </summary>
         public static string RedirectText {
             get {
@@ -1471,7 +1489,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select institution.
+        ///   Looks up a localized string similar to Select organisation.
         /// </summary>
         public static string SelectInstitution {
             get {
@@ -1678,7 +1696,7 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You are currently in the process of completly uninstalling {0}..
+        ///   Looks up a localized string similar to You are about to completely uninstall {0}..
         /// </summary>
         public static string WarningUninstall {
             get {

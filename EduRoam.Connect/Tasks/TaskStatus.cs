@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace EduRoam.Connect.Tasks
@@ -45,5 +46,7 @@ namespace EduRoam.Connect.Tasks
         public List<string> Errors { get; set; }
 
         public List<string> Messages { get; set; }
+    
+        public DateTime? CertificateValidFrom { get; set; }
     }
 }

@@ -50,6 +50,11 @@ namespace EduRoam.Connect.Tasks
         /// <exception cref="Exception"></exception>
         public static async Task<IdentityProvider?> GetProfileFromUrlAsync(string url)
         {
+            if (!url.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            {
+                url = $"https://{url}";
+            }
+
             // validate if url is valid
             if(!Uri.IsWellFormedUriString(url.Trim(), UriKind.Absolute))
             {

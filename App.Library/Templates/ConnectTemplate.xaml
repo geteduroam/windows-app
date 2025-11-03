@@ -11,13 +11,22 @@
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            
+
             <TextBlock Grid.Row="0" 
                        Text="{Binding Status}" 
                        TextWrapping="Wrap" 
                        TextAlignment="Center" 
                        Margin="5" />
+
+            <TextBlock Grid.Row="1" 
+                       Visibility="{Binding ShowTimer}"
+                       Text="{Binding TimerText}" 
+                       TextWrapping="Wrap" 
+                       TextAlignment="Center" 
+                       Margin="5" />
+
         </Grid>
     </DataTemplate>
 

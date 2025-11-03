@@ -68,6 +68,7 @@ namespace EduRoam.Connect.Tasks.Connectors
                 {
                     // dispatch the event which creates the clock the end user sees
                     status.Errors.Add(string.Format(Resources.ErrorClientCredentialNotValidYes, certValid.ToString(Thread.CurrentThread.CurrentCulture)));
+                    status.CertificateValidFrom = certValid;
                     return status;
                 }
             }

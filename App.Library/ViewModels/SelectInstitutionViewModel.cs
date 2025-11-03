@@ -76,7 +76,7 @@ namespace App.Library.ViewModels
         public async Task<ObservableCollection<IdentityProvider>> PerformSearchAsync()
         {
             var institutes = await InstitutesTask.SearchAsync(this.searchText);
-            var urlProvider = getUrlProvider(this.searchText);
+            var urlProvider = GetUrlProvider(this.searchText);
             if (urlProvider != null)
             {
                 institutes = institutes.Prepend(urlProvider);
@@ -91,9 +91,9 @@ namespace App.Library.ViewModels
             return new ObservableCollection<IdentityProvider>(institutes);
         }
 
-        private static IdentityProvider getUrlProvider(string url)
-        {
-            if ((url.StartsWith("http://") || url.StartsWith("https://")) && Uri.IsWellFormedUriString(url.Trim(), UriKind.Absolute))
+        private static IdentityProvider GetUrlProvider(string url)
+        { 
+            if(url.Count(c => c == '.') >= 2 || (url.StartsWith("https://") || url.StartsWith("http://")) && Uri.IsWellFormedUriString(url.Trim(), UriKind.Absolute))
             {
                 return new IdentityProvider
                 {
@@ -108,12 +108,12 @@ namespace App.Library.ViewModels
 
         protected override bool CanNavigateNextAsync()
         {
-            return this.Owner.State.SelectedIdentityProvider != null || getUrlProvider(this.searchText) != null;
+            return this.Owner.State.SelectedIdentityProvider != null || GetUrlProvider(this.searchText) != null;
         }
 
         protected override async Task NavigateNextAsync()
         {
-            var provider = this.Owner.State.SelectedIdentityProvider ?? getUrlProvider(this.searchText);
+            var provider = this.Owner.State.SelectedIdentityProvider ?? GetUrlProvider(this.searchText);
             if(provider.DownloadMetadataOnSelect)
             {
                 try

@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 
 using SharedResources = EduRoam.Localization.Resources;
 using TaskStatus = EduRoam.Connect.Tasks.TaskStatus;
@@ -22,6 +23,8 @@ namespace App.Library.ViewModels
         protected readonly EapConfig eapConfig;
 
         protected readonly IConnection connection;
+
+        private Timer timer;
 
         protected TaskStatus? connectionStatus;
 
@@ -69,11 +72,53 @@ namespace App.Library.ViewModels
                 }
                 if (this.connectionStatus.Success)
                 {
+                    this.TimerText = "";
+                    this.CallPropertyChanged(nameof(this.TimerText));
+
                     return string.Join("\n", this.connectionStatus.Messages);
                 }
+
+                if (this.connectionStatus.CertificateValidFrom.HasValue)
+                {
+                    this.timer = new Timer(1000);
+                    this.timer.Elapsed += this.Timer_Elapsed;
+                    this.timer.Start();
+                }
+
                 return string.Join("\n", this.connectionStatus.Errors.Concat(this.connectionStatus.Warnings));
             }
         }
+
+        private void Timer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            var isValidDate = DateTime.Now - this.connectionStatus.CertificateValidFrom.Value;
+            var seconds = Math.Ceiling(isValidDate.TotalSeconds) * (-1);
+
+            if (seconds > 0)
+            {
+                this.TimerText = string.Format(Resources.ConnectTryingToConnectIn, seconds);
+                this.CallPropertyChanged(nameof(this.TimerText));
+            }
+            else
+            {
+                this.TimerText = Resources.ConnectTryingToConnect;
+                this.CallPropertyChanged(nameof(this.TimerText));
+
+                Task.Run(async () => {
+                    await this.ConnectAsync();
+                });
+
+                this.timer.Stop();
+            }
+        }
+
+        public bool ShowTimer()
+        {
+            return this.connectionStatus.CertificateValidFrom.HasValue;
+        }
+
+        public string TimerText { get; set; }
+
 
         protected async Task ConnectAsync()
         {

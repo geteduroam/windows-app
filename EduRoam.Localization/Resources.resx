@@ -692,4 +692,10 @@ return to the app.</value>
   <data name="CopyLinkButton" xml:space="preserve">
     <value>Copy link</value>
   </data>
+  <data name="ConnectTryingToConnect" xml:space="preserve">
+    <value>Trying to connect. Please wait...</value>
+  </data>
+  <data name="ConnectTryingToConnectIn" xml:space="preserve">
+    <value>Trying to connect in {0} seconds.</value>
+  </data>
 </root>
