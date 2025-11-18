@@ -75,8 +75,8 @@ namespace App.Library.ViewModels
 
         public async Task<ObservableCollection<IdentityProvider>> PerformSearchAsync()
         {
-            var institutes = await InstitutesTask.SearchAsync(this.searchText);
-            var urlProvider = GetUrlProvider(this.searchText);
+            var institutes = await InstitutesTask.SearchAsync(this.searchText.Trim());
+            var urlProvider = GetUrlProvider(this.searchText.Trim());
             if (urlProvider != null)
             {
                 institutes = institutes.Prepend(urlProvider);
@@ -92,8 +92,12 @@ namespace App.Library.ViewModels
         }
 
         private static IdentityProvider GetUrlProvider(string url)
-        { 
-            if(url.Count(c => c == '.') >= 2 || (url.StartsWith("https://") || url.StartsWith("http://")) && Uri.IsWellFormedUriString(url.Trim(), UriKind.Absolute))
+        {
+            url = url.Trim('.');
+            if (!url.StartsWith("https://") && !url.StartsWith("http://") && url.Count(c => c == '.') >= 1)
+                url = $"https://{url}";
+            Uri uri;
+            if (Uri.TryCreate(url, UriKind.Absolute, out uri) && uri.PathAndQuery == "/" && (uri.Scheme == "https" || uri.Scheme == "http"))
             {
                 return new IdentityProvider
                 {
@@ -108,12 +112,12 @@ namespace App.Library.ViewModels
 
         protected override bool CanNavigateNextAsync()
         {
-            return this.Owner.State.SelectedIdentityProvider != null || GetUrlProvider(this.searchText) != null;
+            return this.Owner.State.SelectedIdentityProvider != null || GetUrlProvider(this.searchText.Trim()) != null;
         }
 
         protected override async Task NavigateNextAsync()
         {
-            var provider = this.Owner.State.SelectedIdentityProvider ?? GetUrlProvider(this.searchText);
+            var provider = this.Owner.State.SelectedIdentityProvider ?? GetUrlProvider(this.searchText.Trim());
             if(provider.DownloadMetadataOnSelect)
             {
                 try
