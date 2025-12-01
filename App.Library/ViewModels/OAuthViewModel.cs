@@ -1,4 +1,6 @@
-﻿using EduRoam.Connect.Identity;
+﻿using App.Library.Command;
+
+using EduRoam.Connect.Identity;
 using EduRoam.Connect.Tasks;
 
 using System;
@@ -13,33 +15,16 @@ namespace App.Library.ViewModels
     {
         private readonly IdentityProviderProfile profile;
 
+        public DelegateCommand OpenOAuthUrlCommand { get; protected set; }
+
         public OAuthViewModel(MainViewModel owner)
             : base(owner)
         {
             this.profile = this.Owner.State.SelectedProfile ?? throw new ArgumentNullException(nameof(this.profile));
 
-            Task.Run(
-                async () =>
-                {
-                    var eapConfiguration = new EapConfigTask(new System.Threading.ManualResetEvent(false), new System.Threading.ManualResetEvent(false));
+            Task.Run(async () => await this.StartOAuthLogin());
 
-                    var eapConfig = await eapConfiguration.GetEapConfigAsync(this.profile);
-
-                    // Forces the window to be focussed again after returning from OAuth flow
-                    Application.Current.Dispatcher.Invoke(() =>
-                    {
-                        Application.Current.MainWindow.Activate();
-                        Application.Current.MainWindow.Focus();
-                        Application.Current.MainWindow.Topmost = true;
-                    });
-
-                    if (eapConfig != null)
-                    {
-                        this.Owner.SetActiveContent(new CertificateViewModel(this.Owner, eapConfig));
-
-                        return;
-                    }
-                });
+            this.OpenOAuthUrlCommand = new DelegateCommand(async () => await this.StartOAuthLogin());
         }
 
         public OAuthViewModel(MainViewModel owner, IdentityProviderProfile profile)
@@ -58,6 +43,28 @@ namespace App.Library.ViewModels
         protected override Task NavigateNextAsync()
         {
             throw new NotImplementedException();
+        }
+
+        private async Task StartOAuthLogin()
+        {
+            var eapConfiguration = new EapConfigTask(new System.Threading.ManualResetEvent(false), new System.Threading.ManualResetEvent(false));
+
+            var eapConfig = await eapConfiguration.GetEapConfigAsync(this.profile);
+
+            // Forces the window to be focussed again after returning from OAuth flow
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Application.Current.MainWindow.Activate();
+                Application.Current.MainWindow.Focus();
+                Application.Current.MainWindow.Topmost = true;
+            });
+
+            if (eapConfig != null)
+            {
+                this.Owner.SetActiveContent(new CertificateViewModel(this.Owner, eapConfig));
+
+                return;
+            }
         }
     }
 }

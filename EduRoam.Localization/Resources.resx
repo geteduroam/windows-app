@@ -698,4 +698,7 @@ return to the app.</value>
   <data name="ConnectTryingToConnectIn" xml:space="preserve">
     <value>Trying to connect in {0} seconds.</value>
   </data>
+  <data name="BrowserShouldBeOpenedIfNot" xml:space="preserve">
+    <value>A browser window should be opened now, if not click here...</value>
+  </data>
 </root>

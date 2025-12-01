@@ -7,13 +7,18 @@
     <DataTemplate DataType="{x:Type viewModels:OAuthViewModel}">
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="10">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row="0" 
                        Text="{x:Static lang:Resources.OAuthExplanation}" 
                        TextAlignment="Center"
                        TextWrapping="Wrap" />
+
+            <Button Grid.Row="1" Margin="15" Padding="10,0" Style="{DynamicResource WhiteButtonStyle}" Command="{Binding OpenOAuthUrlCommand}">
+                <TextBlock Padding="0, 10" Text="{x:Static lang:Resources.BrowserShouldBeOpenedIfNot}" TextWrapping="Wrap" />
+            </Button>
         </Grid>
     </DataTemplate>
 
