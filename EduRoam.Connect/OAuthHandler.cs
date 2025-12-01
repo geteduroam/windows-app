@@ -6,6 +6,7 @@ using EduRoam.Connect.Identity;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -138,6 +139,11 @@ namespace EduRoam.Connect
                     // creating a new OAuth object will change the oauth's redirect uri,
                     //  which hopefully will prevent a HttpListenerException on a new attempt 
                     this.oauth = new OAuth(new Uri(this.profile.AuthorizationEndpoint));
+                }
+                catch(Exception)
+                {
+                    // Catch all exceptions to avoid infinite crashing loops
+                    isSuccesfull = false;
                 }
 
             } while (!isSuccesfull && attempts < 4);
