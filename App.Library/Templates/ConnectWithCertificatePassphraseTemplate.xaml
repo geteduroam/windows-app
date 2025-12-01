@@ -7,7 +7,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"      
     xmlns:local="clr-namespace:App.Library.Templates"
-    xmlns:b="clr-namespace:App.Library.Binding">
+    xmlns:b="clr-namespace:App.Library.Binding"
+    xmlns:uc="clr-namespace:App.Library.UserControls">
 
     <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
     
@@ -34,11 +35,9 @@
 
                 <Label Grid.Row="2" Grid.Column="0" IsHitTestVisible="False" 
                        Content="{x:Static lang:Resources.PasswordLabel}" VerticalAlignment="Center" HorizontalAlignment="Right" />
-                <PasswordBox Grid.Row="2" Grid.Column="1"
-                             Padding="2,3,2,3" Height="Auto" MinHeight="24"  Margin="5"  
-                             b:FocusBinding.IsFocused="true"
-                             b:BindablePasswordBox.BindPassword="true"  
-                             b:BindablePasswordBox.BoundPassword="{Binding Path=Passphrase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+                <uc:EPasswordBox x:Name="pbCredPassword" Height="Auto" MinHeight="24"  Margin="5" Grid.Row="2" Grid.Column="1" Value="{Binding Path=Passphrase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  />
+
                 <TextBox Margin="5" Visibility="Hidden" Grid.ColumnSpan="1" Grid.Row="2" Grid.Column="1"/>
             </Grid>
 
