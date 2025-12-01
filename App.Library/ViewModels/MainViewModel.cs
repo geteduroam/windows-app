@@ -477,7 +477,7 @@ namespace App.Library.ViewModels
                 //    this.SetActiveContent(new ConnectViewModel(this, eapConfig, defaultConnector));
                 //    break;
                 default:
-                    MessageBox.Show(string.Format(EduRoam.Localization.Resources.ErrorUnsupportedConnectionType, connector?.GetType().Name), "eduroam - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(string.Format(EduRoam.Localization.Resources.ErrorUnsupportedConnectionType, connector?.GetType().Name), $"{Settings.Settings.ApplicationName} - Exception", MessageBoxButton.OK, MessageBoxImage.Error);
                     throw new NotSupportedException(string.Format(EduRoam.Localization.Resources.ErrorUnsupportedConnectionType, connector?.GetType().Name));
 
             }
