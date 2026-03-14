@@ -48,6 +48,7 @@ namespace Govroam.App
 
             var mainWindow = this.serviceProvider.GetService<MainWindow>();
             mainWindow.Show();
+            mainWindow.Activate();
         }
     }
 }

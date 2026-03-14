@@ -48,6 +48,7 @@ namespace Eduroam.App
 
             var mainWindow = this.serviceProvider.GetService<MainWindow>();
             mainWindow.Show();
+            mainWindow.Activate();
         }
     }
 }
