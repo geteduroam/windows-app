@@ -76,8 +76,8 @@ namespace App.Library.ViewModels
         
         private async void Reauthenticate()
         {
+            // TODO: This probably doesn't try the refresh token
             await IdentityProviderDownloader.Instance.LoadProviders();
-            this.Owner.RemoveCertificates();
             this.Owner.Reauthenticate();
         }
     }
