@@ -19,10 +19,16 @@ namespace App.Library
         /// <returns>true if startup is to be aborted</returns>
         public static bool PreGuiCommandLineArgs(string[] args)
         {
-            if (args.Length == 0) {
+            if (args.Length == 0 || (args.Length == 2 && "-ToastActivated -Embedding".Equals(String.Join(" ", args)))) {
+                // When the Toast button is pressed, we get these arguments
+                // If we actually want to have different kinds of Toast buttons,
+                // we should do something smarter here, but for now the button just launches the app.
+
                 return false; // continue to app
             }
-            if (args[0][0] != '/')
+            // We use / flags, and Toast uses -ToastActivated -Embedding
+            // So probably best to not assume that an argument starting with - is a file name
+            if (args[0][0] != '/' && args[0][0] != '-')
             {
                 Settings.Settings.EapConfigFileLocation = args[0];
                 return false; // continue to app
@@ -120,10 +126,9 @@ namespace App.Library
                 new ToastContentBuilder()
                     .AddText(string.Format(Resources.CheckCertificateToastP1, Settings.Settings.ApplicationName))
                     .AddText(string.Format(Resources.CheckCertificateToastP2, diffDate))
-                    .AddButton(new ToastButton()
-                        .SetContent(Resources.CheckCertificateToastButton)
-                        .SetBackgroundActivation()
-                     )
+                    .AddButton(new ToastButton() { ActivationType = ToastActivationType.Foreground }
+                        .SetContent(Resources.CheckCertificateToastButton)                        
+                    )
                     .Show();
             }
         }
