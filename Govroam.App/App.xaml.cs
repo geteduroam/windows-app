@@ -17,7 +17,7 @@ namespace Govroam.App
     {
         private ServiceProvider serviceProvider;
 
-        private void App_OnStartup(object sender, StartupEventArgs e)
+        private async void App_OnStartup(object sender, StartupEventArgs e)
         {
             LanguageResources.Culture = System.Globalization.CultureInfo.CurrentUICulture;
             Settings.OAuthClientId = "app.getgovroam.win";
@@ -28,7 +28,7 @@ namespace Govroam.App
             Settings.BrowserDownloadUrl = "https://www.govroam.app/";
             Settings.DiscoveryUrl = "https://getgovroam.nl/v3/discovery.json";
 
-            if (CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args))
+            if (await CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args))
             {
                 this.Shutdown(1);
                 return;

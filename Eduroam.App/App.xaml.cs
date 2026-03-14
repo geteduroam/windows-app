@@ -17,7 +17,7 @@ namespace Eduroam.App
     {
         private ServiceProvider serviceProvider;
 
-        private void App_OnStartup(object sender, StartupEventArgs e)
+        private async void App_OnStartup(object sender, StartupEventArgs e)
         {
             LanguageResources.Culture = System.Globalization.CultureInfo.CurrentUICulture;
             Settings.OAuthClientId = "app.geteduroam.win";
@@ -28,7 +28,7 @@ namespace Eduroam.App
             Settings.BrowserDownloadUrl = "https://www.eduroam.app/";
             Settings.DiscoveryUrl = "https://discovery.eduroam.app/v3/discovery.json";
 
-            if (CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args))
+            if (await CommandLineArgumentsHandler.PreGuiCommandLineArgs(e.Args))
             {
                 this.Shutdown(1);
                 return;

@@ -7,6 +7,7 @@ using Microsoft.Toolkit.Uwp.Notifications;
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace App.Library
@@ -17,7 +18,7 @@ namespace App.Library
         /// Handles command line args not related to wpf behaviour
         /// </summary>
         /// <returns>true if startup is to be aborted</returns>
-        public static bool PreGuiCommandLineArgs(string[] args)
+        public static async Task<bool> PreGuiCommandLineArgs(string[] args)
         {
             if (args.Length == 0 || (args.Length == 2 && "-ToastActivated -Embedding".Equals(String.Join(" ", args)))) {
                 // When the Toast button is pressed, we get these arguments
@@ -95,7 +96,7 @@ namespace App.Library
             {
                 case "/install": InstallTask.Install(verbose ?? false); return true;
                 case "/uninstall": UninstallTask.Uninstall(verbose ?? true); return true;
-                case "/refresh": RefreshCertificate(force, verbose ?? false); return true;
+                case "/refresh": return await RefreshCertificate(force, verbose ?? false);
                 case "/certificate-notify": CertificateToast(force || (verbose ?? false)); return true;
                 case "/close": return true;
                 case "/help":
@@ -106,13 +107,11 @@ namespace App.Library
             }
         }
 
-        private async static void RefreshCertificate(bool force, bool verbose)
+        private async static Task<bool> RefreshCertificate(bool force, bool verbose)
         {
             var expiration = await RefreshTask.RefreshAsync(force: force);
 
-            if (verbose) {
-                MessageBox.Show(string.IsNullOrWhiteSpace(expiration) ? "The certificate was not renewed" : expiration);
-            }
+            return !verbose || string.IsNullOrWhiteSpace(expiration);
         }
 
         private static void CertificateToast(bool verbose)
