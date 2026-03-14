@@ -11,13 +11,14 @@ namespace App.Library.ViewModels
 {
     internal class StatusViewModel : BaseViewModel
     {
-        private readonly Status status;
+        private readonly StatusTask statusTask;
+        private Status status => this.statusTask.GetStatus();
 
         public StatusViewModel(MainViewModel owner) : base(owner)
         {
             this.SelectOtherInstitutionCommand = new DelegateCommand(this.SelectOtherInstitution, () => true);
             this.RenewAccountCommand = new DelegateCommand(this.Reauthenticate, () => true);
-            this.status = new StatusTask().GetStatus();
+            this.statusTask = new StatusTask();
         }
 
         public override string PageTitle => this.ShowProfileStatus ? this.ProfileName : string.Empty;
@@ -76,9 +77,26 @@ namespace App.Library.ViewModels
         
         private async void Reauthenticate()
         {
-            // TODO: This probably doesn't try the refresh token
-            await IdentityProviderDownloader.Instance.LoadProviders();
-            this.Owner.Reauthenticate();
+            if (await this.Owner.RefreshAsync())
+            {
+                CallPropertyChanged(nameof(ShowTimeLeft));
+                CallPropertyChanged(nameof(TimeLeft));
+                CallPropertyChanged(nameof(ShowRepairButton));
+                CallPropertyChanged(nameof(ShowRenewButton));
+            }
+            else {
+                // RefreshAsync runs without user interaction,
+                // so if new server certificates must be installed,
+                // we end up here.
+                //
+                // TODO: This probably doesn't try the refresh token
+                // TODO: If we do support refresh token, don't use it unless certificate is about to expire,
+                //  as to not trigger rate limit on the server
+                await IdentityProviderDownloader.Instance.LoadProviders();
+                this.Owner.Reauthenticate();
+                // At the end of this, we will have moved to another view,
+                // so we don't need to notify anyone about any changes
+            }
         }
     }
 }

@@ -521,12 +521,16 @@ namespace App.Library.ViewModels
             get => ArchitectureHelper.ProcessIsNative() && this.status.ActiveProfile;
         }
 
-        public async Task RefreshAsync()
+        public async Task<bool> RefreshAsync()
         {
             if (this.status.ActiveProfile)
             {
-                await RefreshTask.RefreshAsync(true);
+                // On success, RefreshAsync returns expiry info as a string
+                // On failure, empty string
+                // In order not to trigger a rate limit on the server, we have force off here
+                return !string.IsNullOrEmpty(await RefreshTask.RefreshAsync(force: false));
             }
+            return false;
         }
 
         public bool IsReauthenticatePossible
