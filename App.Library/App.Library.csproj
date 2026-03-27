@@ -68,6 +68,9 @@
     <Compile Include="Tasks\InstallTask.cs" />
     <Compile Include="Tasks\UninstallTask.cs" />
     <Compile Include="Templates\LocalDataTemplateSelector.cs" />
+    <Compile Include="UserControls\EPasswordBox.xaml.cs">
+      <DependentUpon>EPasswordBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utility\ArchitectureHelper.cs" />
     <Compile Include="Utility\AutoInstaller.cs" />
     <Compile Include="Utility\FileDialog.cs" />
@@ -196,6 +199,10 @@
     <Compile Include="Converters\InverseBooleanConverter.cs" />
     <Compile Include="Converters\InverseBooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\NullToVisibilityConverter.cs" />
+    <Page Include="UserControls\EPasswordBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Images\ImageFunctions.cs" />
