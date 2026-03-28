@@ -120,6 +120,15 @@ namespace EduRoam.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A browser window should be opened now, if not click here....
+        /// </summary>
+        public static string BrowserShouldBeOpenedIfNot {
+            get {
+                return ResourceManager.GetString("BrowserShouldBeOpenedIfNot", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Connect to {0}.
         /// </summary>
         public static string ButtonAppConnect {
