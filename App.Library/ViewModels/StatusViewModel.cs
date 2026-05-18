@@ -57,7 +57,7 @@ namespace App.Library.ViewModels
                     if (!diffDate.HasValue || !this.ShowProfileStatus) return false;
 
                     return ((this.status.ExpirationDate - DateTime.Now).Value.Days <= Settings.Settings.DaysLeftForNotification);
-                } catch(Exception ex)
+                } catch(Exception)
                 {
                     return false;
                 }

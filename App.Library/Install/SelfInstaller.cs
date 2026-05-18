@@ -386,7 +386,7 @@ namespace App.Library.Install
                 System.IO.File.Move(path, moveTarget);
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }

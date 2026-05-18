@@ -76,7 +76,7 @@ namespace EduRoam.Connect.Tasks.Connectors
             {
                 ConnectToEduroam.RemoveAllWLANProfiles();
             }
-            catch (Exception exc)
+            catch (Exception)
             {
                 // Ignore
             }

@@ -79,7 +79,7 @@ public static class UpdateChecker
                     {
                         File.Delete(tempPath);
                     }
-                    catch (IOException _) { }
+                    catch (IOException) { }
                 }
                 Environment.Exit(0);
             }
@@ -110,7 +110,7 @@ public static class UpdateChecker
 
             var deserializedObject = JsonConvert.DeserializeObject<UpdateResponseDto>(response);
             UpdateData = deserializedObject.UpdateRoot;
-        } catch(Exception e)
+        } catch(Exception)
         {
             // maybe log this?!
         }
