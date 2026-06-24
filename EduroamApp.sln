@@ -3,18 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33414.496
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduroamConfigure", "EduroamConfigure\EduroamConfigure.csproj", "{8D2C283D-5868-4329-B86E-060ADF68734C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WpfApp", "WpfApp\WpfApp.csproj", "{88939F1B-5677-49B1-BC07-71605598494A}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{29C0B188-A742-43FB-A624-FC4CE83A527F}"
 	ProjectSection(SolutionItems) = preProject
 		CHANGELOG.md = CHANGELOG.md
 		LICENSE.md = LICENSE.md
 		README.md = README.md
 	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "deprecated", "deprecated", "{C5046DF4-B9BA-468E-A7DE-811832273104}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{2CFFF257-3B7E-471C-8F24-A3FFB796AC3D}"
 	ProjectSection(SolutionItems) = preProject
@@ -56,20 +50,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{8D2C283D-5868-4329-B86E-060ADF68734C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8D2C283D-5868-4329-B86E-060ADF68734C}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{8D2C283D-5868-4329-B86E-060ADF68734C}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{8D2C283D-5868-4329-B86E-060ADF68734C}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{8D2C283D-5868-4329-B86E-060ADF68734C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8D2C283D-5868-4329-B86E-060ADF68734C}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{8D2C283D-5868-4329-B86E-060ADF68734C}.Release|x64.ActiveCfg = Release|Any CPU
-		{88939F1B-5677-49B1-BC07-71605598494A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{88939F1B-5677-49B1-BC07-71605598494A}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{88939F1B-5677-49B1-BC07-71605598494A}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{88939F1B-5677-49B1-BC07-71605598494A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{88939F1B-5677-49B1-BC07-71605598494A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{88939F1B-5677-49B1-BC07-71605598494A}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{88939F1B-5677-49B1-BC07-71605598494A}.Release|x64.ActiveCfg = Release|Any CPU
 		{A13E5E20-857E-49ED-B307-BB2A73896902}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A13E5E20-857E-49ED-B307-BB2A73896902}.Debug|ARM64.ActiveCfg = Debug|Any CPU
 		{A13E5E20-857E-49ED-B307-BB2A73896902}.Debug|ARM64.Build.0 = Debug|Any CPU
@@ -153,10 +133,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{8D2C283D-5868-4329-B86E-060ADF68734C} = {C5046DF4-B9BA-468E-A7DE-811832273104}
-		{88939F1B-5677-49B1-BC07-71605598494A} = {C5046DF4-B9BA-468E-A7DE-811832273104}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4E267844-5CE0-4636-A8E5-5821B83D9864}
