@@ -77,9 +77,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="FodyWeavers.xml" />
     <Content Include="geteduroam.ico" />
   </ItemGroup>
   <ItemGroup>

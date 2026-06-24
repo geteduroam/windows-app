@@ -162,6 +162,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\App.Library\App.Library.csproj">
@@ -180,7 +181,6 @@
   <ItemGroup>
     <EmbeddedResource Include="logo-light.svg" />
     <Resource Include="application-icon.png" />
-    <Resource Include="FodyWeavers.xml" />
     <Content Include="getgovroam.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -179,6 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="FodyWeavers.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\App.Library\App.Library.csproj">
@@ -196,7 +197,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="application-icon.png" />
-    <Resource Include="FodyWeavers.xml" />
     <Content Include="geteduroam.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
