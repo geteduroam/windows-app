@@ -40,7 +40,7 @@ namespace EduRoam.Connect
 
         internal static LetsWifi Instance => instance;
 
-        private string? ProfileID { get => this.store.WifiEndpoint?.ProfileId; }
+        private string ProfileID { get => this.store.WifiEndpoint?.ProfileId ?? ""; }
 
         /// <summary>
         /// 
@@ -102,7 +102,7 @@ namespace EduRoam.Connect
             RegistryStore.Instance.ClearWifiEndpoint();
         }
 
-        public async Task<bool> AuthorizeAccess(IdentityProviderProfile profile, string authorizationCode, string codeVerifier, Uri redirectUri)
+        public async Task<bool> AuthorizeAccess(IdentityProviderProfile profile, string? authorizationCode, string? codeVerifier, Uri redirectUri)
         {
             _ = profile ?? throw new ArgumentNullException(paramName: nameof(profile));
             _ = authorizationCode ?? throw new ArgumentNullException(paramName: nameof(authorizationCode));
@@ -271,8 +271,7 @@ namespace EduRoam.Connect
                 throw new InvalidOperationException("Expected token_type Bearer but got " + this.AccessTokenType);
             }
 
-            var eapConfig = await IdentityProviderDownloader.Instance.DownloadEapConfig(this.EapEndpoint, this.AccessToken);
-            eapConfig.ProfileId = this.ProfileID;
+            var eapConfig = await IdentityProviderDownloader.Instance.DownloadEapConfig(this.ProfileID, this.EapEndpoint, this.AccessToken);
             eapConfig.IsOauth = true;
 
             return eapConfig;
@@ -294,6 +293,7 @@ namespace EduRoam.Connect
             if (!onlyLetsWifi
                 && !this.store.IsRefreshable
                 && this.store.IsReinstallable
+                && profileId != null
                 && !string.IsNullOrEmpty(profileId))
             {
                 try

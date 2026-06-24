@@ -12,7 +12,7 @@ namespace EduRoam.Connect.Store
         public string WebAddress { get; }
         public string Phone { get; }
         public string InstId { get; }
-        public string? ProfileId { get; }
+        public string ProfileId { get; }
         public bool IsOauth { get; }
         public DateTime? NotBefore { get; }
         public DateTime? NotAfter { get; }

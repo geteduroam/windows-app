@@ -4,33 +4,33 @@ namespace EduRoam.Connect.Identity
 {
     public class IdentityProviderProfile
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = "";
 
         [JsonProperty("cat_profile")]
         public int CatProfile { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
 
 
         /// <summary>
         /// If this variable is known, the profile is a LetsWifi profile and it should be used to get the EAP config
         /// </summary>
-        public string LetsWifiEndpoint { get; set; }
+        public string? LetsWifiEndpoint { get; set; }
 
         [JsonProperty("eapconfig_endpoint")]
-        public string EapConfigEndpoint { get; set; }
+        public string? EapConfigEndpoint { get; set; }
 
         [JsonProperty("oauth")]
         public bool OAuth { get; set; }
 
         [JsonProperty("token_endpoint")]
-        public string TokenEndpoint { get; set; }
+        public string? TokenEndpoint { get; set; }
 
         [JsonProperty("authorization_endpoint")]
-        public string AuthorizationEndpoint { get; set; }
+        public string? AuthorizationEndpoint { get; set; }
 
         [JsonProperty("redirect")]
-        public string Redirect { get; set; }
+        public string? Redirect { get; set; }
 
         /// <summary>
         /// How the profile is shown to the end user

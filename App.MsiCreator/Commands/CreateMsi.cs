@@ -29,6 +29,10 @@ namespace App.MsiCreator.Commands
             {
                 var installerTemplateStr = System.IO.File.ReadAllText(installerTemplatePath.FullName);
                 var installerTemplate = Newtonsoft.Json.JsonConvert.DeserializeObject<MsiTemplate>(installerTemplateStr);
+                if (installerTemplate == null)
+                {
+                    throw new Exception($"Could not deserialize installer template from {installerTemplatePath.FullName}");
+                }
                 Create(installerTemplate, exePath);
 
                 Console.WriteLine(".msi created");

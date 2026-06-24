@@ -17,25 +17,33 @@ public static class UpdateChecker
     private const string UpdateUrlBase = "{0}/windows/{1}/update.json"; // {0} has to be replaced with the base url from the settings and {1} has to be replaced with the arch
     private const string RegistryBase = @"Software\{0}"; // {0} has to be replaced with the applicationIdentifier
 
-    public static UpdateResponseRootDto UpdateData { get; set; } = new();       
+    public static UpdateResponseRootDto? UpdateData { get; set; } = new();
     public static bool IsUpdateAvailable { get; set; }
-    public static SemVersion? MinimalSupportedVersion { get; set; } 
+    public static SemVersion? MinimalSupportedVersion { get; set; }
     public static SemVersion? NewVersion { get; set; }
 
     // http objects
     public async static Task<bool> CheckIfUpdateAvailableAsync()
     {
-        if(!IsUpdateAllowedByPolicy(Registry.CurrentUser) || !IsUpdateAllowedByPolicy(Registry.LocalMachine))
+        if (!IsUpdateAllowedByPolicy(Registry.CurrentUser) || !IsUpdateAllowedByPolicy(Registry.LocalMachine))
         {
             return false;
         }
 
         await DownloadUpdateJsonAsync();
+        if (UpdateData == null ||
+            UpdateData.CurrentVersion == null || string.IsNullOrWhiteSpace(UpdateData.CurrentVersion) ||
+            UpdateData.MinimalSupportedVersion == null || string.IsNullOrWhiteSpace(UpdateData.MinimalSupportedVersion))
+        {
+            return false;
+        }
+
         try
         {
             NewVersion = SemVersion.Parse(UpdateData.CurrentVersion, SemVersionStyles.Strict);
         }
-        catch (Exception) {
+        catch (Exception)
+        {
             Debug.WriteLine("Cannot parse version number from update data, continuing as if no update available; may happen if internet is down");
             return false;
         }
@@ -61,6 +69,12 @@ public static class UpdateChecker
     /// <returns></returns>
     public static async Task DownloadUpdateAsync()
     {
+        if (UpdateData == null ||
+            UpdateData.DownloadUrl == null || string.IsNullOrWhiteSpace(UpdateData.DownloadUrl))
+        {
+            throw new InvalidOperationException("Cannot download update, no update data or URL available");
+        }
+
         try
         {
             var tempPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid().ToString()}_{Settings.Settings.ApplicationName}.exe");
@@ -83,8 +97,8 @@ public static class UpdateChecker
                 }
                 Environment.Exit(0);
             }
-
-        } catch(Exception e)
+        }
+        catch (Exception e)
         {
             Debug.WriteLine(e.Message);
         }
@@ -109,8 +123,9 @@ public static class UpdateChecker
             var response = await webClient.DownloadStringTaskAsync(url);
 
             var deserializedObject = JsonConvert.DeserializeObject<UpdateResponseDto>(response);
-            UpdateData = deserializedObject.UpdateRoot;
-        } catch(Exception)
+            UpdateData = deserializedObject?.UpdateRoot;
+        }
+        catch (Exception)
         {
             // maybe log this?!
         }

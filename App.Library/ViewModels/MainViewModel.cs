@@ -126,10 +126,11 @@ namespace App.Library.ViewModels
         public DelegateCommand CopyLinkCommand { get; protected set; }
         public DelegateCommand NotificationCommand { get; protected set; }
 
-        public Action CloseApp { get; set; }
+        public Action? CloseApp { get; set; }
 
         private bool _isLoading { get; set; }
-        public bool IsLoading {
+        public bool IsLoading
+        {
             get
             {
                 return (!IsConnected && _isLoading) ? false : _isLoading;
@@ -226,7 +227,7 @@ namespace App.Library.ViewModels
         {
             this.SelfTestSuccess = true;
             this.NotificationDismiss = true;
-            if(!ArchitectureHelper.ProcessIsNative())
+            if (!ArchitectureHelper.ProcessIsNative())
             {
                 // Show a notification bar with a button to open the browser
                 this.SelfTestSuccess = false;
@@ -368,7 +369,7 @@ namespace App.Library.ViewModels
             this.State.Reset();
             this.SetActiveContent(new SelectInstitutionViewModel(this));
         }
-        
+
         /// <summary>
         /// downloads eap config based on profileId
         /// seperated into its own function as this can happen either through
@@ -401,7 +402,7 @@ namespace App.Library.ViewModels
                         MessageBox.Show(EduRoam.Localization.Resources.ErrorUnknownProfile, caption: $"{Settings.Settings.ApplicationName} - Exception");
                         return;
                     }
-                }             
+                }
 
                 this.State.SelectedProfile = profile;
             }
@@ -412,13 +413,12 @@ namespace App.Library.ViewModels
                 return;
             }
 
-            if (!string.IsNullOrWhiteSpace(eapConfigXml))
+            if (eapConfigXml != null && !string.IsNullOrWhiteSpace(eapConfigXml))
             {
                 // TODO: ^perhaps reuse logic from PersistingStore.IsReinstallable
                 this.Logger.LogInformation($"category: {nameof(this.HandleProfileSelect)}, {nameof(eapConfigXml)} was set");
 
-                eapConfig = EapConfig.FromXmlData(eapConfigXml);
-                eapConfig.ProfileId = profileId;
+                eapConfig = EapConfig.FromXmlData(profileId, eapConfigXml);
             }
             else
             {
@@ -492,11 +492,11 @@ namespace App.Library.ViewModels
         public bool CanEapFileBeLoaded => true;
 
         /// <summary>
-		/// Asks the user to supply a .eap-config file.
-		/// Returns null if user aborted.
-		/// </summary>
-		/// <returns></returns>
-		public void GetEapFileFromDialog()
+        /// Asks the user to supply a .eap-config file.
+        /// Returns null if user aborted.
+        /// </summary>
+        /// <returns></returns>
+        public void GetEapFileFromDialog()
         {
             Debug.WriteLine("LoadEapFile");
 
@@ -517,7 +517,8 @@ namespace App.Library.ViewModels
             this.LoadEapFile(filepath);
         }
 
-        public bool IsARefreshPossible {
+        public bool IsARefreshPossible
+        {
             get => ArchitectureHelper.ProcessIsNative() && this.status.ActiveProfile;
         }
 
@@ -540,10 +541,9 @@ namespace App.Library.ViewModels
 
         public void Reauthenticate()
         {
-            if (this.status.ActiveProfile)
+            if (this.status.ActiveProfile && this.status.Identity.HasValue)
             {
-                var profileId = this.status.Identity.Value.ProfileId!;
-
+                var profileId = this.status.Identity.Value.ProfileId;
                 Task.Run(() => this.HandleProfileSelect(profileId));
             }
         }
@@ -590,18 +590,18 @@ namespace App.Library.ViewModels
         public void Uninstall()
         {
             var result = MessageBox.Show(
-                string.Format(EduRoam.Localization.Resources.WarningUninstall, Settings.Settings.ApplicationName), 
-                EduRoam.Localization.Resources.CommandDescriptionUninstall, 
+                string.Format(EduRoam.Localization.Resources.WarningUninstall, Settings.Settings.ApplicationName),
+                EduRoam.Localization.Resources.CommandDescriptionUninstall,
                 MessageBoxButton.OKCancel
             );
             if (result == MessageBoxResult.OK) try
-            {
-                UninstallTask.Uninstall(true);
-            }
-            finally
-            {
-                this.CloseApp();
-            }
+                {
+                    UninstallTask.Uninstall(true);
+                }
+                finally
+                {
+                    this.CloseApp?.Invoke();
+                }
         }
 
         public void OpenSystemMenu()

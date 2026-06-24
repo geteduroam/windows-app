@@ -11,6 +11,7 @@
     <WarningLevel>4</WarningLevel>
     <LangVersion>latest</LangVersion>
     <Deterministic>true</Deterministic>
+    <Nullable>enable</Nullable>
     <Prefer32Bit>false</Prefer32Bit>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

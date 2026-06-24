@@ -79,8 +79,8 @@ namespace EduRoam.Connect
         public (string?, string?) ParseAndExtractAuthorizationCode(Uri? responseUrl)
         {
             // check if url is valid
-            if (!(responseUrl?.IsWellFormedOriginalString() ?? false)
-                    || string.IsNullOrEmpty(responseUrl?.ToString()))
+            if (responseUrl == null || !responseUrl.IsWellFormedOriginalString()
+                    || string.IsNullOrEmpty(responseUrl.ToString()))
             {
                 throw new EduroamAppUserException("oauth empty reponse url",
                     userFacingMessage: "HTTP request returned nothing valid.");

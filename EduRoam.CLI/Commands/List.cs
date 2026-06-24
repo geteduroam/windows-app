@@ -30,7 +30,7 @@ namespace EduRoam.CLI.Commands
 
             command.SetHandler(async (string? institute, string? query) =>
             {
-                if (!string.IsNullOrWhiteSpace(institute))
+                if (institute != null && !string.IsNullOrWhiteSpace(institute))
                 {
                     await ShowProfilesAsync(institute, query);
                 }

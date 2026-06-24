@@ -56,7 +56,9 @@ namespace App.Library.ViewModels
                     var diffDate = (this.status.ExpirationDate - DateTime.Now);
                     if (!diffDate.HasValue || !this.ShowProfileStatus) return false;
 
-                    return ((this.status.ExpirationDate - DateTime.Now).Value.Days <= Settings.Settings.DaysLeftForNotification);
+                    return
+                        this.status.ExpirationDate.HasValue &&
+                        (this.status.ExpirationDate.Value - DateTime.Now).Days <= Settings.Settings.DaysLeftForNotification;
                 } catch(Exception)
                 {
                     return false;
