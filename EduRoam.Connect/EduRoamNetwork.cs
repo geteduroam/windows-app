@@ -146,17 +146,14 @@ namespace EduRoam.Connect
                     if (ssids.Count == 0)
                     {
                         throw;
-#if !DEBUG
-                    }
-                    else
-                    {
-                        // Accept any error when ssids.Count > 0 for Release version.
-                        // We still are not sure what kind of errors are to be expected
-                        // when configuring HS20, so this gives the best user experience
-                        return;
-#endif
                     }
 
+#if !DEBUG
+                    // Accept any error when ssids.Count > 0 for Release version.
+                    // We still are not sure what kind of errors are to be expected
+                    // when configuring HS20, so this gives the best user experience
+                    return;
+#else
                     // -2147467259 == 0x80004005, which is the most generic error code Windows has to offer
                     // Useless but fun reading:
                     // https://support.microsoft.com/en-us/windows/fix-error-0x80004005-9acfca89-b5e4-b976-6fa1-ef358450f3ac
@@ -196,6 +193,7 @@ namespace EduRoam.Connect
 
                     // Not ignored, so throw
                     throw;
+#endif
                 }
             }
         }
