@@ -125,7 +125,7 @@ namespace App.Library
             if (verbose || diffDate <= Settings.Settings.DaysLeftForNotification)
             {
                 new ToastContentBuilder()
-                    .AddText(string.Format(Resources.CheckCertificateToastP1, Settings.Settings.ApplicationName))
+                    .AddText(string.Format(Resources.CheckCertificateToastP1, Settings.Settings.NetworkName))
                     .AddText(string.Format(Resources.CheckCertificateToastP2, diffDate))
                     .AddButton(new ToastButton() { ActivationType = ToastActivationType.Foreground }
                         .SetContent(Resources.CheckCertificateToastButton)                        
