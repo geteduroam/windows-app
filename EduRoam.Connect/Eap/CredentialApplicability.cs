@@ -54,9 +54,9 @@
         }
 
         internal static CredentialApplicability IEEE80211(
-            string ssid,
-            string consortiumOid,
-            string minRsnProto)
+            string? ssid,
+            string? consortiumOid,
+            string? minRsnProto)
         {
             return new CredentialApplicability(
                 IEEE802x.IEEE80211,
@@ -67,7 +67,7 @@
         }
 
         internal static CredentialApplicability IEEE8023(
-            string networkId)
+            string? networkId)
         {
             return new CredentialApplicability(
                 IEEE802x.IEEE8023,

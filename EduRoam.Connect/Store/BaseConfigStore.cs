@@ -26,7 +26,6 @@ namespace EduRoam.Connect.Store
 
         /// <summary>
         /// A set of the installed CAs and client certificates.
-        /// Managed by EduroamConfigure.CertificateStore
         /// </summary>
         public virtual ImmutableHashSet<Certificate> InstalledCertificates { get; }
 

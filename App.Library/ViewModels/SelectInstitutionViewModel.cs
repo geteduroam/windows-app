@@ -45,8 +45,9 @@ namespace App.Library.ViewModels
             this.CallPropertyChanged(nameof(this.Disconnected));
         }
 
-        public string WaitingConnectionText {
-            get => string.Format(SharedResources.NoConnection, Settings.Settings.ApplicationName); 
+        public string WaitingConnectionText
+        {
+            get => string.Format(SharedResources.NoConnection, Settings.Settings.ApplicationName);
         }
 
         private string searchText = string.Empty;
@@ -91,7 +92,7 @@ namespace App.Library.ViewModels
             return new ObservableCollection<IdentityProvider>(institutes);
         }
 
-        private static IdentityProvider GetUrlProvider(string url)
+        private static IdentityProvider? GetUrlProvider(string url)
         {
             url = url.Trim('.');
             if (!url.StartsWith("https://") && !url.StartsWith("http://") && url.Count(c => c == '.') >= 1)
@@ -118,12 +119,13 @@ namespace App.Library.ViewModels
         protected override async Task NavigateNextAsync()
         {
             var provider = this.Owner.State.SelectedIdentityProvider ?? GetUrlProvider(this.searchText.Trim());
-            if(provider.DownloadMetadataOnSelect)
+            if (provider != null && provider.DownloadMetadataOnSelect)
             {
                 try
                 {
                     this.Owner.State.SelectedIdentityProvider = await InstitutesTask.GetProfileFromUrlAsync(this.searchText);
-                } catch (EduroamAppUserException ex)
+                }
+                catch (EduroamAppUserException ex)
                 {
                     this.Owner.SetActiveContent(new ConfirmViewModel(this.Owner, string.Format("{0}{1}", ex.UserFacingMessage, string.IsNullOrEmpty(ex.Message) ? "" : $": {ex.Message}"), () => { this.Owner.SetActiveContent(this); }));
                     this.Owner.Logger.LogError(string.Format("{0}{1}", ex.UserFacingMessage, string.IsNullOrEmpty(ex.Message) ? "" : $": {ex.Message}"));
@@ -153,17 +155,17 @@ namespace App.Library.ViewModels
         }
 
         /// <summary>
-		/// downloads eap config based on profileId
-		/// seperated into its own function as this can happen either through
-		/// user selecting a profile or a profile being autoselected
-		/// </summary>
-		/// <param name="profileId"></param>
-		/// <param name="eapConfigXml"></param>
-		/// <param name="skipOverview"></param>
-		/// <returns>True if function navigated somewhere</returns>
-		/// <exception cref="XmlException">Parsing eap-config failed</exception>
+        /// downloads eap config based on profileId
+        /// seperated into its own function as this can happen either through
+        /// user selecting a profile or a profile being autoselected
+        /// </summary>
+        /// <param name="profileId"></param>
+        /// <param name="eapConfigXml"></param>
+        /// <param name="skipOverview"></param>
+        /// <returns>True if function navigated somewhere</returns>
+        /// <exception cref="XmlException">Parsing eap-config failed</exception>
         /// <exception cref="EduroamAppUserException"/>
-		private async Task<bool> HandleProfileSelectAsync(string profileId, string? eapConfigXml, bool skipOverview = false)
+        private async Task<bool> HandleProfileSelectAsync(string profileId, string? eapConfigXml, bool skipOverview = false)
         {
             EapConfig? eapConfig = null;
 
@@ -174,13 +176,12 @@ namespace App.Library.ViewModels
 
             var profile = await ProfilesTask.GetProfileAsync(profileId);
 
-            if (!string.IsNullOrWhiteSpace(eapConfigXml))
+            if (eapConfigXml != null && !string.IsNullOrWhiteSpace(eapConfigXml))
             {
                 // TODO: ^perhaps reuse logic from PersistingStore.IsReinstallable
                 Debug.WriteLine(nameof(eapConfigXml) + " was set", category: nameof(HandleProfileSelectAsync));
 
-                eapConfig = EapConfig.FromXmlData(eapConfigXml);
-                eapConfig.ProfileId = profileId;
+                eapConfig = EapConfig.FromXmlData(profileId, eapConfigXml);
             }
             else
             {

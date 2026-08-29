@@ -4,6 +4,7 @@ using App.Settings;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using System;
 using System.Windows;
 
 using LanguageResources = EduRoam.Localization.Resources;
@@ -15,8 +16,6 @@ namespace Eduroam.App
     /// </summary>
     public partial class App : Application
     {
-        private ServiceProvider serviceProvider;
-
         private async void App_OnStartup(object sender, StartupEventArgs e)
         {
             LanguageResources.Culture = System.Globalization.CultureInfo.CurrentUICulture;
@@ -44,9 +43,12 @@ namespace Eduroam.App
             }
             #endregion
 
-            this.serviceProvider = ServicesConfiguration.ConfigureServices();
-
-            var mainWindow = this.serviceProvider.GetService<MainWindow>();
+            var serviceProvider = ServicesConfiguration.ConfigureServices();
+            var mainWindow = serviceProvider.GetService<MainWindow>();
+            if (mainWindow == null)
+            {
+                throw new Exception("MainWindow service not found.");
+            }
             mainWindow.Show();
             mainWindow.Activate();
         }

@@ -21,7 +21,7 @@ namespace EduRoam.Connect.Tasks.Connectors
 
         public static Connector? GetInstance(EapConfig? eapConfig)
         {
-            if (CheckIfEapConfigIsSupported(eapConfig))
+            if (eapConfig != null && CheckIfEapConfigIsSupported(eapConfig))
             {
                 return GetConnectorAsync(eapConfig);
             }
@@ -61,7 +61,7 @@ namespace EduRoam.Connect.Tasks.Connectors
 
         private IEnumerable<CertificateInstaller> GetNotInstalledCertificates()
         {
-            var installers = ConnectToEduroam.EnumerateCAInstallers(this.eapConfig!).ToList();
+            var installers = ConnectToEduroam.EnumerateCAInstallers(this.eapConfig).ToList();
             return installers.Where(installer => !installer.IsInstalled);
         }
 
@@ -76,7 +76,7 @@ namespace EduRoam.Connect.Tasks.Connectors
             {
                 ConnectToEduroam.RemoveAllWLANProfiles();
             }
-            catch (Exception exc)
+            catch (Exception)
             {
                 // Ignore
             }

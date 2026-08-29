@@ -77,13 +77,21 @@ namespace EduRoam.Connect.Tasks.Connectors
 
             if (status.Success)
             {
-                var eapConfigWithCredentials = this.eapConfig.WithLoginCredentials(this.Credentials!.UserName!, this.Credentials!.Password);
+                if (this.Credentials != null && this.Credentials.UserName != null && this.Credentials.Password != null)
+                {
+                    var eapConfigWithCredentials = this.eapConfig.WithLoginCredentials(this.Credentials.UserName, this.Credentials.Password);
 
-                var exception = InstallEapConfig(eapConfigWithCredentials);
-                if (exception != null)
+                    var exception = InstallEapConfig(eapConfigWithCredentials);
+                    if (exception != null)
+                    {
+                        status.Success = false;
+                        status.Errors.Add(exception.Message);
+                    }
+                }
+                else
                 {
                     status.Success = false;
-                    status.Errors.Add(exception.Message);
+                    status.Errors.Add(Resources.ErrorInvalidCredentials);
                 }
             }
 
@@ -112,18 +120,26 @@ namespace EduRoam.Connect.Tasks.Connectors
                 return status;
             }
 
-            var eapConfigWithCredentials = this.eapConfig.WithLoginCredentials(this.Credentials!.UserName!, this.Credentials.Password.ToString()!);
-
-            status.Success = await Task.Run(ConnectToEduroam.TryToConnect);
-
-            if (status.Success)
+            if (this.Credentials != null && this.Credentials.UserName != null && this.Credentials.Password != null)
             {
-                status.Messages.Add(string.Format(Resources.Connected, Settings.NetworkName));
+                var eapConfigWithCredentials = this.eapConfig.WithLoginCredentials(this.Credentials.UserName, this.Credentials.Password.ToString());
+
+                status.Success = await Task.Run(ConnectToEduroam.TryToConnect);
+
+                if (status.Success)
+                {
+                    status.Messages.Add(string.Format(Resources.Connected, Settings.NetworkName));
+                }
+                else
+                {
+                    // Hs2 is not enumerable
+                    status.Errors.Add(string.Format(Resources.ErrorConfiguredButProbablyOutOfCoverage, Settings.NetworkName));
+                }
             }
             else
             {
-                    // Hs2 is not enumerable
-                    status.Errors.Add(string.Format(Resources.ErrorConfiguredButProbablyOutOfCoverage, Settings.ApplicationName));
+                status.Success = false;
+                status.Errors.Add(Resources.ErrorInvalidCredentials);
             }
 
             return status;

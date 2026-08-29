@@ -39,9 +39,9 @@ namespace App.Library.Install
             {
                 DisplayName = Settings.Settings.ApplicationName,  // [REQUIRED] ProductName
                 Publisher = Settings.Settings.Publisher,  // [REQUIRED] Manufacturer
-                Version = RunningVersion.ToString(),
-                VersionMajor = RunningVersion.Major.ToString(),
-                VersionMinor = RunningVersion.Minor.ToString(),
+                Version = RunningVersion?.ToString() ?? "",
+                VersionMajor = RunningVersion?.Major.ToString() ?? "",
+                VersionMinor = RunningVersion?.Minor.ToString() ?? "",
                 HelpLink = Settings.Settings.HelpUrl,  // ARPHELPLINK
                 HelpTelephone = null!,  // ARPHELPTELEPHONE
                 InstallSource = null!,  // SourceDir
@@ -277,7 +277,7 @@ namespace App.Library.Install
                 // Actually, let's do that anyway, so rollback gets easier.
 
                 var tryDelete = false;
-                SemVersion version = null;
+                SemVersion? version = null;
                 try
                 {
                     version = this.GetFileVersion(this.UserInstallExePath);
@@ -386,7 +386,7 @@ namespace App.Library.Install
                 System.IO.File.Move(path, moveTarget);
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
@@ -620,25 +620,30 @@ namespace App.Library.Install
         {
             return this.CanUpdateUserInstalled(RunningVersion);
         }
+
         /// <summary>
         /// For UpdateChecker, location is Current path
         /// </summary>
         /// <param name="latestVersion"></param>
         /// <returns></returns>
-        public bool CanUpdateRunning(SemVersion latestVersion)
+        public bool CanUpdateRunning(SemVersion? latestVersion)
         {
             return !this.IsRunningInGlobalInstallLocation && CanUpdate(RunningVersion, latestVersion);
         }
-        public static bool CanUpdate(SemVersion current, SemVersion latest)
+        public static bool CanUpdate(SemVersion? current, SemVersion? latest)
         {
-            return SemVersion.ComparePrecedence(current, latest) == -1;
+            return
+                current != null &&
+                latest != null &&
+                SemVersion.ComparePrecedence(current, latest) == -1;
         }
+
         /// <summary>
         /// For UpdateChecker, location is installed path
         /// </summary>
         /// <param name="latestVersion"></param>
         /// <returns></returns>
-        public bool CanUpdateUserInstalled(SemVersion latestVersion)
+        public bool CanUpdateUserInstalled(SemVersion? latestVersion)
         {
             if (this.IsRunningInGlobalInstallLocation) return false;
             var installedVersion = this.GetFileVersion(this.UserInstallExePath);
@@ -688,7 +693,7 @@ namespace App.Library.Install
             }
         }
 
-        public SemVersion GetRunningVersion() => RunningVersion;
+        public SemVersion? GetRunningVersion() => RunningVersion;
         #endregion
     }
 

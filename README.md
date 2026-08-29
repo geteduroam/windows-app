@@ -6,7 +6,7 @@ This application helps set up eduroam on end-users' computers by automatically f
 
 * **EduRoam.App**:           The "geteduroam" app.
 * **GovRoam.App**:           The "getgovroam" app.
-* **App.Library**:		     The Wpf graphical user interface
+* **App.Library**:           The Wpf graphical user interface
 * **EduRoam.CLI**:           The "eduroam" command line interface
 * **EduRoam.Connect**:       The logic interfacing with the discovery api, and the logic to parse and configure the various profiles into windows.
 * **EduRoam.Localization**:  The localization resources

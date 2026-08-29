@@ -284,10 +284,9 @@ namespace EduRoam.Connect
             {
                 // Windows wants to add the realm itself, we must only set the local part
                 // This appears to be the case for PEAP-EAP-MSCHAPv2
-                var anonymousUserName = !string.IsNullOrEmpty(outerIdentity) && outerIdentity.Contains('@')
+                var anonymousUserName = outerIdentity != null && outerIdentity.Contains('@')
                     ? outerIdentity.Substring(0, outerIdentity.IndexOf("@"))
-                    : outerIdentity
-                    ;
+                    : outerIdentity;
 
                 // adds MSCHAPv2 specific elements (inner eap)
                 configElement.Add(
