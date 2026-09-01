@@ -71,20 +71,53 @@ namespace EduRoam.Connect.Identity
             return sortedList;
         }
 
+        static IdentityProviderParser()
+        {
+            try
+            {
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            }
+            catch
+            {
+            }
+        }
+
         /// <summary>
         /// removes accents, casing and converts non-US character to US characters (ø to o etc)
         /// </summary>
         private static string NormalizeString(string str)
         {
-            // TODO: perhaps allow non-us characters?
-            var strippedString = Encoding.ASCII.GetString(Encoding.GetEncoding("Cyrillic").GetBytes(str))
-                .ToUpperInvariant()
-                .Replace("-", " ")
-                .Replace("[", "")
-                .Replace("]", "")
-                .Replace("(", "")
-                .Replace(")", "");
-            return strippedString;
+            try
+            {
+                var strippedString = Encoding.ASCII.GetString(Encoding.GetEncoding("Cyrillic").GetBytes(str))
+                    .ToUpperInvariant()
+                    .Replace("-", " ")
+                    .Replace("[", "")
+                    .Replace("]", "")
+                    .Replace("(", "")
+                    .Replace(")", "");
+                return strippedString;
+            }
+            catch
+            {
+                var normalizedString = str.Normalize(NormalizationForm.FormD);
+                var stringBuilder = new StringBuilder(normalizedString.Length);
+                foreach (var c in normalizedString)
+                {
+                    var unicodeCategory = System.Globalization.CharUnicodeInfo.GetUnicodeCategory(c);
+                    if (unicodeCategory != System.Globalization.UnicodeCategory.NonSpacingMark)
+                    {
+                        stringBuilder.Append(c);
+                    }
+                }
+                return stringBuilder.ToString().Normalize(NormalizationForm.FormC)
+                    .ToUpperInvariant()
+                    .Replace("-", " ")
+                    .Replace("[", "")
+                    .Replace("]", "")
+                    .Replace("(", "")
+                    .Replace(")", "");
+            }
         }
 
         private static string StringToAcronym(string str)

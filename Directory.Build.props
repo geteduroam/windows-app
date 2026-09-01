@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup>
+    <RollForward>LatestMajor</RollForward>
+  </PropertyGroup>
+</Project>

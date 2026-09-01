@@ -1,4 +1,4 @@
-﻿using App.Library;
+using App.Library;
 using App.Library.Utility;
 using App.Settings;
 
@@ -19,6 +19,7 @@ namespace Govroam.App
 
         private async void App_OnStartup(object sender, StartupEventArgs e)
         {
+            System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
             LanguageResources.Culture = System.Globalization.CultureInfo.CurrentUICulture;
             Settings.OAuthClientId = "app.getgovroam.win";
             Settings.ApplicationName = "getgovroam";

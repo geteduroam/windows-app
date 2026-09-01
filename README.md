@@ -1,92 +1,183 @@
-# eduroam app for Windows
+# geteduroam / getgovroam for Windows
 
-This application helps set up eduroam on end-users' computers by automatically fetching and installing the required certificates.
+[![.NET 8.0](https://img.shields.io/badge/.NET-8.0%20LTS-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)
+[![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%2F%2011%20(x64%20%26%20ARM64)-0078D6?logo=windows&logoColor=white)](https://www.microsoft.com/windows)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](LICENSE.md)
 
-## Structure
+This application configures **eduroam** and **govroam** wireless networks on Windows end-user devices by securely communicating with the CAT/geteduroam discovery API, parsing `.eap-config` profiles, installing identity certificates, and provisioning native Windows WLAN profiles.
 
-* **EduRoam.App**:           The "geteduroam" app.
-* **GovRoam.App**:           The "getgovroam" app.
-* **App.Library**:		     The Wpf graphical user interface
-* **EduRoam.CLI**:           The "eduroam" command line interface
-* **EduRoam.Connect**:       The logic interfacing with the discovery api, and the logic to parse and configure the various profiles into windows.
-* **EduRoam.Localization**:  The localization resources
+---
 
-## Supported authentication modes
+## Architecture & Features
 
-The following EAP methods can be fully configured:
+The solution is built on **.NET 8.0 LTS** (`net8.0-windows10.0.19041.0`) with dual-architecture native compilation:
 
-* PEAP-MSCHAPv2
-* TLS
-* TTLS-PAP
-* TTLS-MSCHAP
-* TTLS-MSCHAPv2
-* TTLS-EAP-MSCHAPv2
+- **Dual Native Architecture**: Native 64-bit binaries for **x64 (`win-x64`)** and **ARM64 (`win-arm64`)**, ensuring native execution on Intel/AMD systems as well as Qualcomm Snapdragon X Elite/Plus and Surface Pro devices with zero emulation overhead.
+- **Single-File Self-Contained Bundling**: Native .NET 8 single-file publishing (`PublishSingleFile=true`) bundling all assemblies, WPF dependencies, and native C++ runtimes into a zero-dependency standalone executable.
+- **Pure C# COM Interop**: Native COM interface definitions (`IWshRuntimeLibrary` and `NETWORKLIST`) in pure C# (`ComInterop.cs`), replacing legacy MSBuild `tlbimp.exe` type library wrappers and preventing `MSB4803` warnings across cross-architecture targets.
+- **PE Machine Type Detection & WiX v4 Packaging**: Automated PE binary inspection in `App.MsiCreator` detecting `0xAA64` (ARM64) and `0x8664` (x64) machine types to generate native 64-bit WiX v4 Windows Installer (`.msi`) packages targeting `%ProgramFiles64Folder%`.
+- **Cyrillic & International Encoding Support**: Registered `CodePagesEncodingProvider` (`System.Text.Encoding.CodePages`) with Unicode fallback normalization to handle institutional names and Wi-Fi profiles across all international character sets.
 
-The only exception is that on PEAP-MSCHAPv2, the OuterIdentity must have the same realm as the username.
-This is a limitation set by Windows.
+---
 
-For all modes, you can also install Hotspot 2.0.
+## Verified Hardware & Test Environment
 
+Native ARM64 build and execution have been tested and verified on physical Windows on ARM hardware:
 
-## Installation
+| Environment | Details |
+|---|---|
+| **Device Model** | Microsoft Surface Pro (11th Edition, Copilot+ PC) |
+| **Processor** | Qualcomm Snapdragon® X Plus 10-core (X1P64100 @ 3.40 GHz) |
+| **Architecture** | Native 64-bit ARM (`ARM64` / `win-arm64`) |
+| **Operating System** | Windows 11 Pro (Build 26220.x, ARM64) |
+| **Tested Runtimes** | .NET 8.0, .NET 9.0 (`Microsoft.WindowsDesktop.App` 9.0.12), .NET 10.0 (`10.0.9`) |
 
-After a change to the system has been made, geteduroam will install itself to `%HOME%\AppData\Local\geteduroam`.
-It will add itself to the registry to be listed in installed programs, how to uninstall it, and a task will be registered with
-the task scheduler, which will prompt geteduroam check for updates on the profile.
-A tray icon for running in the background can be enabled through a project flag, but it is disabled by default.
+---
 
+## Solution Structure
 
-## Getting started
+The solution `EduroamApp.sln` contains 8 active projects:
+
+| Project | Target Framework | Output | Description |
+|---|---|---|---|
+| **`Eduroam.App`** | `net8.0-windows10.0.19041.0` | `geteduroam.exe` | Main WPF GUI client for eduroam |
+| **`Govroam.App`** | `net8.0-windows10.0.19041.0` | `getgovroam.exe` | Branded WPF GUI client for govroam |
+| **`EduRoam.CLI`** | `net8.0-windows10.0.19041.0` | `eduroam-cli.exe` | Headless, scriptable command-line interface |
+| **`App.Library`** | `net8.0-windows10.0.19041.0` (WPF) | `App.Library.dll` | Shared MVVM UI layer, ViewModels, COM interop, `ArchitectureHelper` |
+| **`EduRoam.Connect`** | `net8.0-windows10.0.19041.0;netstandard2.0` | `EduRoam.Connect.dll` | WLAN profile provisioning, EAP configuration engine, `ManagedNativeWifi` |
+| **`EduRoam.Localization`**| `net8.0-windows10.0.19041.0;netstandard2.0` | `EduRoam.Localization.dll` | Multi-language ResX resources (20+ localized languages) |
+| **`App.Settings`** | `net8.0-windows10.0.19041.0;netstandard2.0` | `App.Settings.dll` | Shared application configuration and discovery constants |
+| **`App.MsiCreator`** | `net8.0-windows10.0.19041.0` | `App.MsiCreator.exe` | WiX v4 / WixSharp automated MSI installer generator |
+
+---
+
+## Supported Authentication Modes
+
+The following EAP and roaming methods can be fully configured:
+
+- **PEAP-MSCHAPv2** *(Note: On PEAP-MSCHAPv2, the OuterIdentity must match the realm of the username due to Windows networking constraints)*
+- **TLS** (Client Certificates)
+- **TTLS-PAP**
+- **TTLS-MSCHAP**
+- **TTLS-MSCHAPv2**
+- **TTLS-EAP-MSCHAPv2**
+- **Hotspot 2.0 / Passpoint** profiles for all supported EAP types
+
+---
+
+## Installation & Lifecycle
+
+- **Local Self-Installation**: When run standalone, after configuring a profile, geteduroam installs itself to `%LOCALAPPDATA%\geteduroam` (or `%ProgramFiles64Folder%\geteduroam` when installed via MSI).
+- **Control Panel Integration**: Adds uninstaller entries to Windows Settings / Control Panel (*Add/Remove Programs*) to cleanly roll back network profiles and certificates upon uninstall.
+- **Certificate Renewal Scheduling**: Registers a background task in Windows Task Scheduler to periodically verify certificate expiration and prompt for renewal.
+
+---
+
+## Getting Started
 
 ### Prerequisites
 
- * Visual Studio 2019/2022 (https://visualstudio.microsoft.com/downloads/) with C# 8.0
- * [.NET Core 6](https://dotnet.microsoft.com/en-us/download/dotnet/6.0)
+- **[.NET 8.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0)** (v8.0.100 or later)
+- **[Visual Studio 2022](https://visualstudio.microsoft.com/vs/)** (v17.8 or later) with the **.NET Desktop Development** workload, or **VS Code** / CLI.
+- **Operating System**: Windows 10 (version 19041.0 / 2004 or later) or Windows 11 (x64 and ARM64).
 
+### Building the Solution
 
-### Running the apps
+Clone the repository and build the entire solution using the .NET CLI:
 
- * Compile the App project (Eduroam.App, Govroam.App or EduRoam.CLI) in Release mode to create geteduroam.exe (in .\bin\Release\net6.0-windows).
- * This executable can be run independently from the rest of the solution, so you can move the folder its in to any desired directory.
+```powershell
+# Restore dependencies
+dotnet restore EduroamApp.sln
 
+# Build all projects in Release configuration
+dotnet build EduroamApp.sln -c Release --no-restore
 
-## Signing
+# Run unit tests
+dotnet test EduroamApp.sln -c Release --no-build
+```
 
-When you have a hardware token, you can sign the application
+---
 
- * Download and install the [Microsoft Windows SDK 10](https://developer.microsoft.com/en-us/windows/downloads/windows-10-sdk)
-   * You need to install the **Windows SDK Signing Tools for Desktop Apps** feature, you can disable all the other features
- * Go to **C:\Program Files (x86)\Windows Kits\10\bin** and find the latest **10.x** version, at the time of writing it's **10.0.18362.0**
- * Inside the **10.x** folder, there's a folder **x64** and in there is a file **signtool.exe**
+## Publishing Single-File Executables
 
-(actually, just go to **C:\Program Files(x86)** and search for **signtool.exe** and use the one that's in an **x64** directory)
+To create self-contained, zero-dependency single-file binaries, use `dotnet publish` with the desired Runtime Identifier (`-r win-x64` or `-r win-arm64`):
 
-Sign by running in the directory containing geteduroam.exe/getgovroam.exe:
+### 64-bit Intel/AMD (`win-x64`)
 
-	"C:\Program Files (x86)\Windows Kits\10\bin\10.x\x64\signtool.exe" sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /a geteduroam.exe
+```powershell
+# geteduroam GUI
+dotnet publish Eduroam.App/Eduroam.App.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish/win-x64/geteduroam
 
-You can drag files to the command window to write their whole paths.
+# getgovroam GUI
+dotnet publish Govroam.App/Govroam.App.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish/win-x64/getgovroam
 
-The timestamp is needed so that the signature remains valid even when the code signing certificate expires
+# eduroam CLI
+dotnet publish EduRoam.CLI/EduRoam.CLI.csproj -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish/win-x64/eduroam-cli
+```
 
-For more information, [check this guide from Digicert](https://www.digicert.com/kb/code-signing/signcode-signtool-command-line.htm)
+### 64-bit ARM (`win-arm64`)
 
-## Dependencies
+```powershell
+# geteduroam GUI
+dotnet publish Eduroam.App/Eduroam.App.csproj -c Release -r win-arm64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish/win-arm64/geteduroam
 
-These dependencies are managed with `NuGet`, native to Visual Studio. The exception being ManagedNativeWifi which has been cloned and patched.
+# getgovroam GUI
+dotnet publish Govroam.App/Govroam.App.csproj -c Release -r win-arm64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish/win-arm64/getgovroam
 
-* Costura (https://github.com/Fody/Costura) ~ [LICENSE](Licenses/Costura_LICENSE.md)
-* Fody (https://github.com/Fody/Fody) ~ [LICENSE](Licenses/Fody_LICENSE.md)
-* DuoVia.FuzzyString by Tyler Jensen (https://www.nuget.org/packages/System.Collections.Immutable/) ~ Apache-2.0
-* Geolocation by Schott Schluer (https://github.com/scottschluer/geolocation) ~ [LICENSE](https://www.nuget.org/packages/Geolocation/1.2.1/license)
-* ManagedNativeWifi by emoacht (https://github.com/emoacht/ManagedNativeWifi) ~ [LICENSE](Licenses/ManagedNativeWifi_LICENSE.md)
-* Newtonsoft.Json by JamesNK (https://github.com/JamesNK/Newtonsoft.Json) ~ [LICENSE](Licenses/Newtonsoft.Json_LICENSE.md)
-* SingleInstanceApp by Taylor Jonl (https://github.com/taylorjonl/SingleInstanceApp) 
-* System.Collections.Immutable (https://www.nuget.org/packages/System.Collections.Immutable/) ~ MIT LICENSE
-* System.CommandLine (https://github.com/dotnet/command-line-api) ~ MIT LICENSE
-* System.Runtime.InteropServices (https://dot.net/) ~ [LICENSE](https://dotnet.microsoft.com/en-us/dotnet_library_license.htm)
-* TaskScheduler by David Hall (https://github.com/dahall/taskscheduler) ~ MIT LICENSE
- 
+# eduroam CLI
+dotnet publish EduRoam.CLI/EduRoam.CLI.csproj -c Release -r win-arm64 --self-contained true -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o publish/win-arm64/eduroam-cli
+```
+
+---
+
+## Creating WiX v4 MSI Installers
+
+`App.MsiCreator` packages published single-file executables into native Windows Installer (`.msi`) packages using **WiX v4** (`WixSharp_wix4.bin`). It automatically inspects the target PE binary's machine type (`0xAA64` for ARM64 vs `0x8664` for x64) to set the appropriate installer platform and options.
+
+```powershell
+# Build App.MsiCreator
+dotnet build App.MsiCreator/App.MsiCreator.csproj -c Release
+
+# Create geteduroam MSI (x64)
+dotnet run --project App.MsiCreator/App.MsiCreator.csproj -c Release --no-build -- create -t App.MsiCreator/Templates/geteduroam/geteduroam-installer.json -e publish/win-x64/geteduroam/geteduroam.exe
+
+# Create geteduroam MSI (ARM64)
+dotnet run --project App.MsiCreator/App.MsiCreator.csproj -c Release --no-build -- create -t App.MsiCreator/Templates/geteduroam/geteduroam-installer.json -e publish/win-arm64/geteduroam/geteduroam.exe
+```
+
+For detailed template options and configuration, see [doc/MSICreator.md](doc/MSICreator.md).
+
+---
+
+## Code Signing
+
+When deploying production builds, sign executables and MSI installers using a valid code signing certificate:
+
+```powershell
+# Using Microsoft Windows SDK signtool.exe
+signtool.exe sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /a "publish/win-x64/geteduroam/geteduroam.exe"
+signtool.exe sign /tr http://timestamp.digicert.com /td sha256 /fd sha256 /a "geteduroam.msi"
+```
+
+---
+
+## Third-Party Dependencies
+
+All dependencies are managed via NuGet:
+
+- **[DuoVia.FuzzyStrings](https://github.com/tylerjensen/DuoVia.FuzzyStrings)** by Tyler Jensen ~ Apache-2.0
+- **[ManagedNativeWifi](https://github.com/emoacht/ManagedNativeWifi)** by emoacht ~ [LICENSE](Licenses/ManagedNativeWifi_LICENSE.md)
+- **[Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json)** by James Newton-King ~ [LICENSE](Licenses/Newtonsoft.Json_LICENSE.md)
+- **[System.CommandLine](https://github.com/dotnet/command-line-api)** by .NET Foundation ~ MIT License
+- **[System.Text.Encoding.CodePages](https://dot.net/)** by .NET Foundation ~ MIT License
+- **[TaskScheduler](https://github.com/dahall/taskscheduler)** by David Hall ~ MIT License
+- **[WixSharp_wix4.bin](https://github.com/oleg-shilo/wixsharp)** by Oleg Shilo ~ MIT License
+- **[NLog.Extensions.Logging](https://github.com/NLog/NLog)** by NLog Team ~ BSD-3-Clause
+- **[Microsoft.Toolkit.Uwp.Notifications](https://github.com/CommunityToolkit/WindowsCommunityToolkit)** ~ MIT License
+- **[Semver](https://github.com/maxhauser/semver)** by Max Hauser ~ MIT License
+
+---
+
 ## License
 
 This project is licensed under the BSD 3-Clause License - see the [LICENSE.md](LICENSE.md) file for details.

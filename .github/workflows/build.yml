@@ -1,0 +1,124 @@
+name: Build, Test & Package (.NET 8 Windows)
+
+on:
+  push:
+    branches:
+      - main
+      - master
+      - develop
+      - 'feature/**'
+      - 'release/**'
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    name: Build & Package (${{ matrix.arch_name }})
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rid: win-x64
+            arch_name: x64
+          - rid: win-arm64
+            arch_name: arm64
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET 8 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Verify .NET Environment
+        run: dotnet --info
+
+      - name: Install WiX Toolset CLI & Extensions
+        run: |
+          dotnet tool install --global wix --version 4.0.5
+          wix extension add --global WixToolset.UI.wixext/4.0.5
+
+      - name: Restore Solution Dependencies
+        run: dotnet restore EduroamApp.sln
+
+      - name: Build Solution (Release)
+        run: dotnet build EduroamApp.sln -c Release --no-restore
+
+      - name: Publish geteduroam (${{ matrix.rid }})
+        run: >
+          dotnet publish Eduroam.App/Eduroam.App.csproj
+          -c Release
+          -r ${{ matrix.rid }}
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -o publish/${{ matrix.rid }}/geteduroam
+
+      - name: Publish getgovroam (${{ matrix.rid }})
+        run: >
+          dotnet publish Govroam.App/Govroam.App.csproj
+          -c Release
+          -r ${{ matrix.rid }}
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -o publish/${{ matrix.rid }}/getgovroam
+
+      - name: Publish eduroam-cli (${{ matrix.rid }})
+        run: >
+          dotnet publish EduRoam.CLI/EduRoam.CLI.csproj
+          -c Release
+          -r ${{ matrix.rid }}
+          --self-contained true
+          -p:PublishSingleFile=true
+          -p:IncludeNativeLibrariesForSelfExtract=true
+          -o publish/${{ matrix.rid }}/eduroam-cli
+
+      - name: Build App.MsiCreator
+        run: dotnet build App.MsiCreator/App.MsiCreator.csproj -c Release
+
+      - name: Generate MSI Installers (${{ matrix.rid }})
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "publish/msi/${{ matrix.rid }}"
+
+          Write-Host "Creating geteduroam MSI..."
+          dotnet run --project App.MsiCreator/App.MsiCreator.csproj -c Release --no-build -- create -t App.MsiCreator/Templates/geteduroam/geteduroam-installer.json -e "publish/${{ matrix.rid }}/geteduroam/geteduroam.exe"
+          Move-Item -Force "geteduroam.msi" "publish/msi/${{ matrix.rid }}/geteduroam-${{ matrix.arch_name }}.msi"
+
+          Write-Host "Creating getgovroam MSI..."
+          dotnet run --project App.MsiCreator/App.MsiCreator.csproj -c Release --no-build -- create -t App.MsiCreator/Templates/getgovroam/getgovroam-installer.json -e "publish/${{ matrix.rid }}/getgovroam/getgovroam.exe"
+          Move-Item -Force "getgovroam.msi" "publish/msi/${{ matrix.rid }}/getgovroam-${{ matrix.arch_name }}.msi"
+
+          Write-Host "Creating geteduroam-cli MSI..."
+          dotnet run --project App.MsiCreator/App.MsiCreator.csproj -c Release --no-build -- create -t App.MsiCreator/Templates/geteduroam-cli/geteduroam-installer.json -e "publish/${{ matrix.rid }}/eduroam-cli/eduroam-cli.exe"
+          Move-Item -Force "geteduroam cli.msi" "publish/msi/${{ matrix.rid }}/geteduroam-cli-${{ matrix.arch_name }}.msi"
+
+          Get-ChildItem -Path "publish/msi/${{ matrix.rid }}" | Format-Table Name, Length, LastWriteTime
+
+      - name: Upload Binaries Artifact (${{ matrix.rid }})
+        uses: actions/upload-artifact@v4
+        with:
+          name: geteduroam-binaries-${{ matrix.rid }}
+          path: publish/${{ matrix.rid }}/
+          if-no-files-found: error
+
+      - name: Upload MSI Installers Artifact (${{ matrix.rid }})
+        uses: actions/upload-artifact@v4
+        with:
+          name: geteduroam-msi-${{ matrix.rid }}
+          path: publish/msi/${{ matrix.rid }}/*.msi
+          if-no-files-found: error

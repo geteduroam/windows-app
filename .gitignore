@@ -263,4 +263,9 @@ __pycache__/
 /Eduroam.App/appsettings.test.json
 /App.MsiCreator/geteduroam.ico
 /App.MsiCreator/geteduroam.msi
-/App.MsiCreator/Templates/
+
+# WiX build artifacts
+*.wxs
+*.msi
+*.wixobj
+*.wixpdb

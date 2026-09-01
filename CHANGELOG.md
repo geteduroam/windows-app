@@ -4,17 +4,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased
+## [4.0.0] - Unreleased
 
-geteduroam 4.0.0 & getgovroam 4.0.0
+### Added
+* **Native ARM64 Architecture Support**: Full native compilation and single-file publishing for ARM64 (`win-arm64`) alongside 64-bit Intel/AMD (`win-x64`), providing native execution on Surface Pro 9/11, Snapdragon X Elite/Plus devices, and Windows Dev Kit with zero emulation overhead.
+* **Pure C# COM Interop (`ComInterop.cs`)**: Replaced legacy MSBuild `tlbimp.exe` / `<COMReference>` bindings with pure C# COM interfaces decorated with `[ComImport]` and `[Guid]` for `IWshRuntimeLibrary` (Windows Script Host shortcuts) and `NETWORKLIST` (network connectivity manager), eliminating `MSB4803` warnings and enabling seamless cross-architecture compilation.
+* **WiX v4 Installer Engine & Architecture Auto-Detection**: Modernized `App.MsiCreator` to use `WixSharp_wix4.bin` 2.14.1 (WiX v4) with automatic PE header binary inspection (`GetPeMachineType`), detecting `0xAA64` (ARM64) and `0x8664` (x64) binaries to configure native 64-bit platforms, Windows Installer 5.0 (for ARM64), and installation paths targeting `%ProgramFiles64Folder%`.
+* **Native Architecture Lock (`ArchitectureHelper`)**: Added `ArchitectureHelper` utility using `IsWow64Process2` and PE header inspection to verify native process execution and prevent accidental emulated execution.
+* **Cyrillic & International Encoding Support**: Integrated `System.Text.Encoding.CodePages` and registered `CodePagesEncodingProvider` across GUI and CLI startup routines (`IdentityProviderParser`, `Eduroam.App`, `Govroam.App`, `EduRoam.CLI`), resolving crashes when parsing institutional profiles containing non-ASCII / Cyrillic (Windows-1251) characters. Added Unicode `NormalizationForm.FormD` diacritic-stripping fallback for robust string search.
+* **Automated CI/CD Pipeline**: Introduced GitHub Actions workflow (`.github/workflows/build.yml`) automating multi-architecture restore, compilation, single-file self-contained publishing, WiX v4 MSI generation, and release artifact archiving across `win-x64` and `win-arm64`.
 
 ### Changed
-* Upgrade to .NET 6.0
-* Refactored WPF from using code-behind to MVVM.
-* Refactored configuration/connection logic
+* **Target Framework Upgrade**: Migrated all active projects to **.NET 8.0 LTS** (`net8.0-windows10.0.19041.0` and `netstandard2.0`).
+* **Native Single-File Publishing**: Replaced `Costura.Fody` IL weaving with native .NET 8 single-file self-contained publishing (`PublishSingleFile=true`, `IncludeNativeLibrariesForSelfExtract=true`, `EnableCompressionInSingleFile=true`).
+* **MVVM Architecture Refactoring**: Modernized WPF presentation layer (`App.Library`) using structured MVVM patterns, data templates, and dependency injection (`Microsoft.Extensions.DependencyInjection` 8.0.0).
+* **Logging Modernization**: Upgraded logging infrastructure to `NLog.Extensions.Logging` 5.3.8 and `Microsoft.Extensions.Logging` 8.0.0.
+* **Dependency Updates**: Updated `ManagedNativeWifi` (2.5.0), `Newtonsoft.Json` (13.0.3), `System.CommandLine` (2.0.0-beta4), `Semver` (2.3.0), and `TaskScheduler` (2.10.1).
 
-### Removed 
-* Geo-location logic
+### Removed
+* **Costura.Fody Elimination**: Removed `Costura.Fody`, `Fody`, and `FodyWeavers.xml` configuration files across all projects.
+* **Legacy Projects**: Removed deprecated `EduroamConfigure` and `WpfApp` legacy prototypes from the active solution.
+* **Geolocation Module**: Removed legacy geolocation subsystem in favor of fast, cached CAT discovery API querying.
+* **Legacy COM TypeLib Dependencies**: Removed obsolete COM type library wrapper dependencies.
+
+### Fixed
+* Fixed crash on startup/search when parsing institutional names with Cyrillic or non-Unicode encodings.
+* Fixed Windows Script Host COM shortcut creation on ARM64 devices.
+* Fixed missing ARM64 Add/Remove Programs registry metadata during MSI installation.
 
 ## [geteduroam 3.2.10](https://github.com/geteduroam/windows-app/releases/tag/geteduroam-3.2.10)
 
