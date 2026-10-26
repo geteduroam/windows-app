@@ -7,7 +7,6 @@ This application helps set up eduroam on end-users' computers by automatically f
 * **EduRoam.App**:           The "geteduroam" app.
 * **GovRoam.App**:           The "getgovroam" app.
 * **App.Library**:           The Wpf graphical user interface
-* **EduRoam.CLI**:           The "eduroam" command line interface
 * **EduRoam.Connect**:       The logic interfacing with the discovery api, and the logic to parse and configure the various profiles into windows.
 * **EduRoam.Localization**:  The localization resources
 
@@ -46,7 +45,7 @@ A tray icon for running in the background can be enabled through a project flag,
 
 ### Running the apps
 
- * Compile the App project (Eduroam.App, Govroam.App or EduRoam.CLI) in Release mode to create geteduroam.exe (in .\bin\Release\net6.0-windows).
+ * Compile the App project (Eduroam.App, Govroam.App) in Release mode to create geteduroam.exe (in .\bin\Release\net6.0-windows).
  * This executable can be run independently from the rest of the solution, so you can move the folder its in to any desired directory.
 
 

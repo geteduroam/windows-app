@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.5.33414.496
+# Visual Studio Version 18
+VisualStudioVersion = 18.11.12324.101 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{29C0B188-A742-43FB-A624-FC4CE83A527F}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,7 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{29C0B188-A
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{2CFFF257-3B7E-471C-8F24-A3FFB796AC3D}"
 	ProjectSection(SolutionItems) = preProject
-		test\cli-commandos.md = test\cli-commandos.md
 		test\Readme.md = test\Readme.md
 		test\template - clientcertificate and passphrase.eap-config = test\template - clientcertificate and passphrase.eap-config
 		test\template - credentials.eap-config = test\template - credentials.eap-config
@@ -29,14 +28,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eduroam.App", "Eduroam.App\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Govroam.App", "Govroam.App\Govroam.App.csproj", "{A78CE888-4E84-4788-9B90-6DB2CE64E949}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduRoam.CLI", "EduRoam.CLI\EduRoam.CLI.csproj", "{4657E4BD-FFEB-42BB-BAE2-4EFE553CBA96}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{6E59533B-0393-4FC5-993F-3133A80B558A}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.MsiCreator", "App.MsiCreator\App.MsiCreator.csproj", "{3A836BA4-B012-47DB-8FFF-B66D1672D43F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Settings", "App.Settings\App.Settings.csproj", "{27378484-7AB6-4625-8906-9F87B66F7461}"
 EndProject
@@ -88,22 +83,6 @@ Global
 		{A78CE888-4E84-4788-9B90-6DB2CE64E949}.Release|ARM64.Build.0 = Release|ARM64
 		{A78CE888-4E84-4788-9B90-6DB2CE64E949}.Release|x64.ActiveCfg = Release|x64
 		{A78CE888-4E84-4788-9B90-6DB2CE64E949}.Release|x64.Build.0 = Release|x64
-		{4657E4BD-FFEB-42BB-BAE2-4EFE553CBA96}.Debug|ARM64.ActiveCfg = Debug|ARM64
-		{4657E4BD-FFEB-42BB-BAE2-4EFE553CBA96}.Debug|ARM64.Build.0 = Debug|ARM64
-		{4657E4BD-FFEB-42BB-BAE2-4EFE553CBA96}.Debug|x64.ActiveCfg = Debug|x64
-		{4657E4BD-FFEB-42BB-BAE2-4EFE553CBA96}.Debug|x64.Build.0 = Debug|x64
-		{4657E4BD-FFEB-42BB-BAE2-4EFE553CBA96}.Release|ARM64.ActiveCfg = Release|ARM64
-		{4657E4BD-FFEB-42BB-BAE2-4EFE553CBA96}.Release|ARM64.Build.0 = Release|ARM64
-		{4657E4BD-FFEB-42BB-BAE2-4EFE553CBA96}.Release|x64.ActiveCfg = Release|x64
-		{4657E4BD-FFEB-42BB-BAE2-4EFE553CBA96}.Release|x64.Build.0 = Release|x64
-		{3A836BA4-B012-47DB-8FFF-B66D1672D43F}.Debug|ARM64.ActiveCfg = Debug|ARM64
-		{3A836BA4-B012-47DB-8FFF-B66D1672D43F}.Debug|ARM64.Build.0 = Debug|ARM64
-		{3A836BA4-B012-47DB-8FFF-B66D1672D43F}.Debug|x64.ActiveCfg = Debug|x64
-		{3A836BA4-B012-47DB-8FFF-B66D1672D43F}.Debug|x64.Build.0 = Debug|x64
-		{3A836BA4-B012-47DB-8FFF-B66D1672D43F}.Release|ARM64.ActiveCfg = Release|ARM64
-		{3A836BA4-B012-47DB-8FFF-B66D1672D43F}.Release|ARM64.Build.0 = Release|ARM64
-		{3A836BA4-B012-47DB-8FFF-B66D1672D43F}.Release|x64.ActiveCfg = Release|x64
-		{3A836BA4-B012-47DB-8FFF-B66D1672D43F}.Release|x64.Build.0 = Release|x64
 		{27378484-7AB6-4625-8906-9F87B66F7461}.Debug|ARM64.ActiveCfg = Debug|Any CPU
 		{27378484-7AB6-4625-8906-9F87B66F7461}.Debug|ARM64.Build.0 = Debug|Any CPU
 		{27378484-7AB6-4625-8906-9F87B66F7461}.Debug|x64.ActiveCfg = Debug|Any CPU
