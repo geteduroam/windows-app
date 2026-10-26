@@ -37,7 +37,7 @@ namespace App.Library
 
             var force = false;
             Boolean? verbose = null;
-            string action = null;
+            string? action = null;
 
             for(var i=0;i<args.Length;i++) switch (args[i].ToLowerInvariant())
             {
@@ -118,12 +118,14 @@ namespace App.Library
         {
             var st = new StatusTask();
             var gst = st.GetStatus();
-            var diffDate = (gst.ExpirationDate - DateTime.Now).Value.Days;
+            if (!gst.ExpirationDate.HasValue)
+                return;
+            var diffDate = (gst.ExpirationDate.Value - DateTime.Now).Days;
 
             if (verbose || diffDate <= Settings.Settings.DaysLeftForNotification)
             {
                 new ToastContentBuilder()
-                    .AddText(string.Format(Resources.CheckCertificateToastP1, Settings.Settings.ApplicationName))
+                    .AddText(string.Format(Resources.CheckCertificateToastP1, Settings.Settings.NetworkName))
                     .AddText(string.Format(Resources.CheckCertificateToastP2, diffDate))
                     .AddButton(new ToastButton() { ActivationType = ToastActivationType.Foreground }
                         .SetContent(Resources.CheckCertificateToastButton)                        

@@ -10,7 +10,7 @@ namespace App.Library.ViewModels
     internal class ConfirmViewModel : BaseViewModel
     {
         private readonly Action onConfirm;
-        private readonly Action onDeny;
+        private readonly Action? onDeny;
         public string ConfirmText { get; set; }
         public bool ShowDenyButton { get; set; }
         public DelegateCommand ConfirmCommand { get; }
@@ -31,9 +31,10 @@ namespace App.Library.ViewModels
             this.ShowDenyButton = false;
             this.onConfirm = onConfirm;
             this.ConfirmCommand = new DelegateCommand(this.Confirm);
+            this.DenyCommand = new DelegateCommand(this.Deny);
         }
 
-        public override string PageTitle { get; }
+        public override string PageTitle { get; } = "";
         protected override bool CanNavigateNextAsync()
         {
             return false;
@@ -51,7 +52,7 @@ namespace App.Library.ViewModels
         private void Confirm()
         {
             // Invoke the confirm callback
-            this.onConfirm?.Invoke();
+            this.onConfirm.Invoke();
         }
 
         private void Deny()
@@ -61,7 +62,5 @@ namespace App.Library.ViewModels
         }
 
         public string ConfirmButtonText => this.ShowDenyButton ? SharedResources.Yes : SharedResources.OK;
-
-
     }
 }

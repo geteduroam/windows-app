@@ -14,7 +14,7 @@ namespace EduRoam.Connect.Eap
         #region Properties
 
         public bool IsOauth { get; set; } // TODO: Setter used for scaffolding to PersistenStorage, need better solution
-        public string? ProfileId { get; set; } // TODO: Setter used for scaffolding to PersistenStorage, need better solution
+        public string ProfileId { get; set; } // TODO: Setter used for scaffolding to PersistenStorage, need better solution
         public List<AuthenticationMethod> AuthenticationMethods { get; }
         public List<CredentialApplicability> CredentialApplicabilities { get; }
         public ProviderInfo InstitutionInfo { get; }
@@ -34,11 +34,13 @@ namespace EduRoam.Connect.Eap
         #region Constructor
 
         private EapConfig(
+            string profileId,
             List<AuthenticationMethod> authenticationMethods,
             List<CredentialApplicability> credentialApplicabilities,
             ProviderInfo institutionInfo,
             string eapConfigXmlData)
         {
+            this.ProfileId = profileId;
             this.AuthenticationMethods = authenticationMethods.Select(authMethod => authMethod.WithEapConfig(this)).ToList();
             this.CredentialApplicabilities = credentialApplicabilities;
             this.InstitutionInfo = institutionInfo;
@@ -50,10 +52,11 @@ namespace EduRoam.Connect.Eap
         /// <summary>
         /// Creates a new EapConfig object from EAP config xml data
         /// </summary>
+        /// <param name="profileId">Profile ID</param>
         /// <param name="eapConfigXmlData">EAP config XML as string</param>
         /// <returns>EapConfig object</returns>
         /// <exception cref="XmlException">Parsing <paramref name="eapConfigXmlData"/> failed</exception>
-        public static EapConfig FromXmlData(string eapConfigXmlData)
+        public static EapConfig FromXmlData(string profileId, string eapConfigXmlData)
         {
             // XML format Documentation:
             // Current:  https://github.com/GEANT/CAT/blob/master/devices/eap_config/eap-metadata.xsd
@@ -232,6 +235,7 @@ namespace EduRoam.Connect.Eap
 
             // create EapConfig object and adds the info
             return new EapConfig(
+                profileId,
                 authMethods,
                 credentialApplicabilities,
                 new ProviderInfo(
@@ -335,16 +339,13 @@ namespace EduRoam.Connect.Eap
                 throw new ArgumentException("No authentication method can accept the client certificate");
             }
 
-            var newConfig = new EapConfig(
+            return new EapConfig(
+                oldProfileId,
                 authMethods.ToList(),
                 this.CredentialApplicabilities,
                 this.InstitutionInfo,
                 this.RawOriginalEapConfigXmlData
             );
-
-            newConfig.ProfileId = oldProfileId;
-
-            return newConfig;
         }
 
         /// <summary>
@@ -368,23 +369,20 @@ namespace EduRoam.Connect.Eap
                 throw new ArgumentException("No authentication accepts the passphrase");
             }
 
-            var newConfig = new EapConfig(
+            return new EapConfig(
+                oldProfileId,
                 authMethods.ToList(),
                 this.CredentialApplicabilities,
                 this.InstitutionInfo,
                 this.RawOriginalEapConfigXmlData
             );
-
-            newConfig.ProfileId = oldProfileId;
-
-            return newConfig;
         }
 
         /// <summary>
         /// Sets the username/password for inner auth.
         /// </summary>
         /// <param name="username">The username for inner auth</param>
-        /// <param name="password">The passpword for inner auth</param>
+        /// <param name="password">The password for inner auth</param>
         /// <returns>Clone of this object with the appropriate properties set</returns>
         /// <exception cref="ArgumentException">The client certificate was not accepted by any authentication method</exception>
         internal EapConfig WithLoginCredentials(string username, string password)
@@ -401,16 +399,13 @@ namespace EduRoam.Connect.Eap
                 throw new ArgumentException("No authentication accepts the passphrase");
             }
 
-            var newConfig = new EapConfig(
+            return new EapConfig(
+                oldProfileId,
                 authMethods.ToList(),
                 this.CredentialApplicabilities,
                 this.InstitutionInfo,
                 this.RawOriginalEapConfigXmlData
             );
-
-            newConfig.ProfileId = oldProfileId;
-
-            return newConfig;
         }
 
         /// <summary>

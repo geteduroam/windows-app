@@ -20,7 +20,7 @@ namespace EduRoam.Connect.Identity
         /// <returns>List of providers ordered by match coefficient</returns>
         public static IEnumerable<IdentityProvider> SortByQuery(IEnumerable<IdentityProvider> providers, string? searchString, int limit = 999)
         {
-            if (string.IsNullOrWhiteSpace(searchString))
+            if (searchString == null || string.IsNullOrWhiteSpace(searchString))
             {
                 return providers;
             }
@@ -114,7 +114,7 @@ namespace EduRoam.Connect.Identity
             // TODO: perhaps move this function?
 
             // If no username given, or no realm is required, do no sanity check
-            if (string.IsNullOrWhiteSpace(username) || requiredRealm == null)
+            if (username == null || string.IsNullOrWhiteSpace(username) || requiredRealm == null)
             {
                 yield break;
             }

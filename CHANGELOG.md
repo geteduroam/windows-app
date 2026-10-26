@@ -15,6 +15,8 @@ geteduroam 4.0.0 & getgovroam 4.0.0
 
 ### Removed 
 * Geo-location logic
+* CLI support
+* MSI builder
 
 ## [geteduroam 3.2.10](https://github.com/geteduroam/windows-app/releases/tag/geteduroam-3.2.10)
 

@@ -31,7 +31,7 @@ namespace EduRoam.Connect.Tasks
             {
                 await IdentityProviderDownloader.Instance.LoadProviders();
             }
-            catch (Exception)
+            catch
             {
             }
 

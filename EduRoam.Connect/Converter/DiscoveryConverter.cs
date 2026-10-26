@@ -27,7 +27,7 @@ namespace EduRoam.Connect.Converter
                     SearchTags = PopulateSearchTags(provider),
                     Profiles = provider.Profiles.Select(profile => new IdentityProviderProfile
                     {
-                        Name = profile.Name?.Count == 0 ? translate(provider.Name) : translate(profile.Name),
+                        Name = profile.Name == null || profile.Name.Count == 0 ? translate(provider.Name) : translate(profile.Name),
                         Id = profile.Id,
                         OAuth = profile.Type == "letswifi",
                         EapConfigEndpoint = profile.Type == "eap-config" ? profile.EapConfigEndpoint : null,
@@ -62,7 +62,7 @@ namespace EduRoam.Connect.Converter
             if(provider.Profiles.Any(p => p.LetsWifiEndpoint != null))
             {
                 var profiles = provider.Profiles.Where(p => p.LetsWifiEndpoint != null);
-                searchTags.AddRange(profiles.Select(p => p.LetsWifiEndpoint).ToList());
+                searchTags.AddRange(profiles.Select(p => p.LetsWifiEndpoint!).ToList());
             }
 
             return searchTags;

@@ -7,11 +7,11 @@ namespace EduRoam.Connect.Identity
     // Stores information found in IdentityProvider json.
     public class IdentityProvider
     {
-        public string Country { get; set; } // ISO2
-        public string Name { get; set; }
-        public string Id { get; set; }
+        public string? Country { get; set; } // ISO2
+        public string Name { get; set; } = "";
+        public string Id { get; set; } = "";
         public bool DownloadMetadataOnSelect { get; set; }
-        public List<IdentityProviderProfile> Profiles { get; set; }
+        public List<IdentityProviderProfile> Profiles { get; set; } = new List<IdentityProviderProfile>();
 
         public List<string> SearchTags { get; set; } = new List<string>();
 

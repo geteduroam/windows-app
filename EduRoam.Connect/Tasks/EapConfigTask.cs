@@ -73,10 +73,7 @@ namespace EduRoam.Connect.Tasks
             var eapConfigContent = File.ReadAllText(filePath);
 
             // create and return EapConfig object
-            var eapConfig = EapConfig.FromXmlData(eapConfigContent);
-            eapConfig.ProfileId = filePath;
-
-            return eapConfig;
+            return EapConfig.FromXmlData(filePath, eapConfigContent);
         }
 
         public static Task<EapConfig?> GetEapConfigAsync()
@@ -133,7 +130,7 @@ namespace EduRoam.Connect.Tasks
         /// <exception cref="EduroamAppUserException">description</exception>
         private static async Task<EapConfig?> DownloadEapConfigAsync(IdentityProviderProfile profile, IdentityProviderDownloader idpDownloader)
         {
-            if (string.IsNullOrEmpty(profile?.Id))
+            if (profile == null || string.IsNullOrEmpty(profile.Id))
             {
                 return null;
             }
@@ -163,11 +160,11 @@ namespace EduRoam.Connect.Tasks
         }
 
         /// <summary>
-		/// Checks if an EAP-config file exists in the same folder as the executable.
-		/// If the installed app and a EAP-config was bundled in a EXE using 7z, then this case will trigger
-		/// </summary>
-		/// <returns>EapConfig or null</returns>
-		public static string? GetBundledEapConfigFile()
+        /// Checks if an EAP-config file exists in the same folder as the executable.
+        /// If the installed app and a EAP-config was bundled in a EXE using 7z, then this case will trigger
+        /// </summary>
+        /// <returns>EapConfig or null</returns>
+        public static string? GetBundledEapConfigFile()
         {
             var appExeLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly()!.Location);
 
@@ -178,26 +175,6 @@ namespace EduRoam.Connect.Tasks
 
             var files = Directory.GetFiles(appExeLocation, "*.eap-config");
             return files.FirstOrDefault();
-        }
-        /// <summary>
-		/// Checks if an EAP-config file exists in the same folder as the executable.
-		/// If the installed app and a EAP-config was bundled in a EXE using 7z, then this case will trigger
-		/// </summary>
-		/// <returns>EapConfig or null</returns>
-		public static EapConfig? GetBundledEapConfig()
-        {
-            try
-            {
-                var eapConfigContent = File.ReadAllText(GetBundledEapConfigFile());
-                var eapConfig = EapConfig.FromXmlData(eapConfigContent);
-
-                return EduRoamNetwork.IsEapConfigSupported(eapConfig)
-                    ? eapConfig
-                    : null;
-            }
-            catch (XmlException) { }
-
-            return null;
         }
     }
 }

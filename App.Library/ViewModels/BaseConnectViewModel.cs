@@ -24,7 +24,7 @@ namespace App.Library.ViewModels
 
         protected readonly IConnection connection;
 
-        private Timer timer;
+        private Timer? timer;
 
         protected TaskStatus? connectionStatus;
 
@@ -47,7 +47,7 @@ namespace App.Library.ViewModels
 
         protected override Task NavigatePreviousAsync()
         {
-            this.Owner.CloseApp();
+            this.Owner.CloseApp?.Invoke();
 
             return Task.CompletedTask;
         }
@@ -91,6 +91,12 @@ namespace App.Library.ViewModels
 
         private void Timer_Elapsed(object sender, ElapsedEventArgs e)
         {
+            if (this.connectionStatus == null || !this.connectionStatus.CertificateValidFrom.HasValue)
+            {
+                this.timer?.Stop();
+                return;
+            }
+
             var isValidDate = DateTime.Now - this.connectionStatus.CertificateValidFrom.Value;
             var seconds = Math.Ceiling(isValidDate.TotalSeconds) * (-1);
 
@@ -104,20 +110,21 @@ namespace App.Library.ViewModels
                 this.TimerText = Resources.ConnectTryingToConnect;
                 this.CallPropertyChanged(nameof(this.TimerText));
 
-                Task.Run(async () => {
+                Task.Run(async () =>
+                {
                     await this.ConnectAsync();
                 });
 
-                this.timer.Stop();
+                this.timer?.Stop();
             }
         }
 
         public bool ShowTimer()
         {
-            return this.connectionStatus.CertificateValidFrom.HasValue;
+            return this.connectionStatus?.CertificateValidFrom.HasValue ?? false;
         }
 
-        public string TimerText { get; set; }
+        public string TimerText { get; set; } = "";
 
 
         protected async Task ConnectAsync()

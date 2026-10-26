@@ -142,8 +142,8 @@ namespace App.Library.Install
         {
             get => this.IsGloballyInstalled ? this.GlobalInstallExePath : this.IsUserInstalled ? this.UserInstallExePath : null;
         }
-        public static SemVersion? RunningVersion { 
-            get => _getFileVersion(RunningExePath); 
+        public static SemVersion RunningVersion {
+            get => _getFileVersion(RunningExePath) ?? new SemVersion(0, 0, 0);
         }
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace App.Library.Install
             {
                 RemoveWiFiConfigurationTask.Remove(omitRootCa: false);
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }
@@ -277,12 +277,15 @@ namespace App.Library.Install
                 // Actually, let's do that anyway, so rollback gets easier.
 
                 var tryDelete = false;
-                SemVersion version = null;
+                SemVersion? version;
                 try
                 {
                     version = this.GetFileVersion(this.UserInstallExePath);
                 }
-                catch (Exception) {}
+                catch
+                {
+                    version = null;
+                }
 
                 var moveTarget = version == null ? null
                     : this.UserInstallDir + Path.DirectorySeparatorChar + this.applicationIdentifier + "-" + version + ".exe";
@@ -386,7 +389,7 @@ namespace App.Library.Install
                 System.IO.File.Move(path, moveTarget);
                 return true;
             }
-            catch (Exception e)
+            catch
             {
                 return false;
             }
@@ -620,29 +623,33 @@ namespace App.Library.Install
         {
             return this.CanUpdateUserInstalled(RunningVersion);
         }
+
         /// <summary>
         /// For UpdateChecker, location is Current path
         /// </summary>
         /// <param name="latestVersion"></param>
         /// <returns></returns>
-        public bool CanUpdateRunning(SemVersion latestVersion)
+        public bool CanUpdateRunning(SemVersion? latestVersion)
         {
             return !this.IsRunningInGlobalInstallLocation && CanUpdate(RunningVersion, latestVersion);
         }
-        public static bool CanUpdate(SemVersion current, SemVersion latest)
+        public static bool CanUpdate(SemVersion current, SemVersion? latest)
         {
-            return SemVersion.ComparePrecedence(current, latest) == -1;
+            return
+                latest != null &&
+                SemVersion.ComparePrecedence(current, latest) == -1;
         }
+
         /// <summary>
         /// For UpdateChecker, location is installed path
         /// </summary>
         /// <param name="latestVersion"></param>
         /// <returns></returns>
-        public bool CanUpdateUserInstalled(SemVersion latestVersion)
+        public bool CanUpdateUserInstalled(SemVersion? latestVersion)
         {
             if (this.IsRunningInGlobalInstallLocation) return false;
             var installedVersion = this.GetFileVersion(this.UserInstallExePath);
-            return CanUpdate(installedVersion, latestVersion);
+            return installedVersion == null || CanUpdate(installedVersion, latestVersion);
         }
 
         public void StartApplicationFromInstallLocation()

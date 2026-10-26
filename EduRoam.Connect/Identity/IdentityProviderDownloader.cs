@@ -200,19 +200,17 @@ namespace EduRoam.Connect.Identity
         {
             await this.LoadProviders();
             var profile = await this.GetProfileFromId(profileId);
-            if (string.IsNullOrEmpty(profile?.EapConfigEndpoint))
+            if (profile == null || string.IsNullOrEmpty(profile.EapConfigEndpoint))
             {
                 throw new EduroamAppUserException("Requested profile not listed in discovery");
             }
 
             // adds profile ID to url containing json file, which in turn contains url to EAP config file download
             // gets url to EAP config file download from GenerateEapConfig object
-            var eapConfig = await this.DownloadEapConfig(new Uri(profile.EapConfigEndpoint)).ConfigureAwait(true);
-            eapConfig.ProfileId = profileId;
-            return eapConfig;
+            return await this.DownloadEapConfig(profileId, new Uri(profile.EapConfigEndpoint)).ConfigureAwait(true);
         }
 
-        public async Task<EapConfig> DownloadEapConfig(Uri endpoint, string? accessToken = null)
+        public async Task<EapConfig> DownloadEapConfig(string profileId, Uri endpoint, string? accessToken = null)
         {
             // downloads and returns eap config file as string
             try
@@ -222,7 +220,7 @@ namespace EduRoam.Connect.Identity
                         accept: new string[] { "application/eap-config", "application/x-eap-config" },
                         accessToken: accessToken
                     );
-                return EapConfig.FromXmlData(eapXml.Data);
+                return EapConfig.FromXmlData(profileId, eapXml.Data);
             }
             catch (HttpRequestException e)
             {
@@ -344,9 +342,10 @@ namespace EduRoam.Connect.Identity
             }
 
             var list = new List<KeyValuePair<string, string?>>(data.Count);
-            foreach (var key in data.AllKeys.Where(k => !string.IsNullOrWhiteSpace(k)))
+            foreach (var key in data.AllKeys)
             {
-                Debug.Assert(key != null, "data contains meta data items for retrieving a token");
+                if (key == null || string.IsNullOrWhiteSpace(key))
+                    continue;
                 list.Add(new KeyValuePair<string, string?>(key, data[key]));
             }
             return this.PostForm(url, list, accept);
@@ -468,8 +467,6 @@ namespace EduRoam.Connect.Identity
 
                 throw new EduroamAppUserException(e.Message, "Error occurred while retrieving LetsWifi profile");
             }
-
-            return new();
         }
 
         private static async Task<string> parseResponse(HttpResponseMessage response, string[]? accept)
@@ -507,7 +504,7 @@ namespace EduRoam.Connect.Identity
 
         private record DownloadResponseRecord
         {
-            public string FileType { get; set; } = null!;
+            public string? FileType { get; set; } = null;
             public string Data { get; set; } = null!;
         }
     }
