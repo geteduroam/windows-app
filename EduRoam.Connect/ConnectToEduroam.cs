@@ -1,5 +1,8 @@
+using App.Settings;
+
 using EduRoam.Connect.Eap;
 using EduRoam.Connect.Install;
+using EduRoam.Localization;
 
 using System;
 using System.Collections.Generic;
@@ -152,6 +155,23 @@ namespace EduRoam.Connect
                     return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// Gets the error message to show when a profile is configured, but connecting failed.
+        /// </summary>
+        /// <remarks>
+        /// If a configured network is visible, connecting failed for another reason
+        /// (e.g. authentication or a timeout), so we must not claim the network is out of range.
+        /// Passpoint (Hotspot 2.0) networks are not listed by Windows, so they fall back to the out of range message.
+        /// </remarks>
+        internal static string GetNotConnectedMessage()
+        {
+            var message = EduRoamNetwork.IsAnyConfiguredNetworkInRange()
+                ? Resources.ErrorConfiguredButUnableToConnect
+                : Resources.ErrorConfiguredButProbablyOutOfCoverage;
+
+            return string.Format(message, Settings.NetworkName);
         }
 
     }

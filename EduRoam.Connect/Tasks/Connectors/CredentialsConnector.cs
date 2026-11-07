@@ -122,8 +122,7 @@ namespace EduRoam.Connect.Tasks.Connectors
             }
             else
             {
-                    // Hs2 is not enumerable
-                    status.Errors.Add(string.Format(Resources.ErrorConfiguredButProbablyOutOfCoverage, Settings.ApplicationName));
+                    status.Errors.Add(ConnectToEduroam.GetNotConnectedMessage());
             }
 
             return status;
