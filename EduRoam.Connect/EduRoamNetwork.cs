@@ -301,7 +301,8 @@ namespace EduRoam.Connect
                     interfaceId: this.InterfaceId,
                     profileName: this.ProfileName,
                     bssType: BssType.Infrastructure,
-                    timeout: TimeSpan.FromSeconds(8)
+                    // Roaming authentication goes through the home institution's server and can take longer than a few seconds
+                    timeout: TimeSpan.FromSeconds(30)
                 );
             }
             catch (Win32Exception e)
@@ -452,6 +453,35 @@ namespace EduRoam.Connect
             return NativeWifi.EnumerateProfiles()
                 .Select(ppack => (ppack, network: (AvailableNetworkPack?)null))
                 .ToList();
+        }
+
+        /// <summary>
+        /// Checks if any network profile configured by this application is currently in range.
+        /// </summary>
+        /// <returns>True if at least one configured SSID profile is visible on its interface</returns>
+        public static bool IsAnyConfiguredNetworkInRange()
+        {
+            if (!IsWlanServiceApiAvailable()) // NativeWifi.EnumerateAvailableNetworks will throw
+            {
+                return false;
+            }
+
+            try
+            {
+                var configuredProfiles = RegistryStore.Instance.ConfiguredWLANProfiles;
+
+                return NativeWifi.EnumerateAvailableNetworks()
+                    .Where(network => !string.IsNullOrEmpty(network.ProfileName))
+                    .Any(network => configuredProfiles.Any(profile =>
+                        profile.InterfaceId == network.Interface.Id
+                        && profile.ProfileName == network.ProfileName));
+            }
+            catch (Exception e)
+            {
+                // Only used to choose an error message, so never fail because of it
+                Debug.Print(e.ToString());
+                return false;
+            }
         }
 
         /// <summary>
